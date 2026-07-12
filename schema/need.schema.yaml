@@ -1,0 +1,525 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/need.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons need schema
+
+description:                  |
+                              Schema for a defence need data item.
+
+                              Capability Commons records what operators,
+                              communities, institutions, and industrial actors
+                              need in order to strengthen European defence and
+                              resilience — with urgent focus on helping Ukraine
+                              resist Russian aggression and enabling Europe to
+                              deter, adapt, and defend.
+
+                              A need captures a consequential gap or desired
+                              outcome experienced by a stakeholder: Ukrainian
+                              personnel and formations, civilian responders,
+                              critical infrastructure operators, European
+                              defence organisations, industrial producers, or
+                              coalition partners.
+
+                              It describes the outcome sought and why it 
+                              matters, without committing to a particular 
+                              technology, supplier, platform, architecture, 
+                              or procurement route.
+
+                              Needs provide validated demand signals around
+                              which engineers, researchers, manufacturers,
+                              investors, volunteers, and public institutions
+                              can mobilise capabilities.
+
+                              Needs may later be viewed through one or more
+                              framings and assessed under those framings via
+                              need_assessment items before decomposition.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                subject
+          role:                 body
+          label:                Subject
+        - field:                outcome
+          role:                 body
+          label:                Outcome
+        - field:                purpose
+          role:                 body
+          label:                Purpose
+        - field:                context
+          role:                 body
+          label:                Context
+        - field:                evidence_basis
+          role:                 body
+          label:                Evidence basis
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - subject
+      - outcome
+      - purpose
+      - context
+      - evidence_basis
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                need
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      subject:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The stakeholder, population, organisation, 
+                              operational unit, community, system, or other 
+                              affected party that experiences, owns, or is
+                              accountable for the need.
+
+                              Identify the subject at the most specific level
+                              justified by the available evidence. Prefer a 
+                              concrete group or role over a vague category.
+
+                              Good examples:
+
+                                * Ukrainian mechanized brigades
+                                * Frontline casualty evacuation teams
+                                * Baltic critical infrastructure operators
+                                * European ammunition manufacturers
+                                * Coalition logistics planners
+
+                              Avoid:
+
+                                * Users
+                                * The military
+                                * Europe
+                                * Stakeholders
+                                * Everyone
+
+                              Do not name a supplier, product, technology, or
+                              proposed solution unless that entity is itself
+                              the stakeholder.
+
+                              When eliciting a need, determine:
+
+                                * Who directly experiences the problem or 
+                                  desired change?
+                                * Who is responsible for achieving or 
+                                  sustaining the outcome?
+                                * Are different stakeholders being incorrectly 
+                                  grouped together?
+                                * Is the subject specific enough to support
+                                  validation, prioritisation, and engagement?
+
+                              The subject should be consistent with the subject
+                              named or implied in the statement.
+
+
+      outcome:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The capability, effect, condition, or change that
+                              the subject requires.
+
+                              Describe what must become possible, reliable,
+                              available, reduced, increased, maintained, 
+                              prevented, or improved.
+
+                              State the outcome independently of any preferred
+                              technology, supplier, platform, product, 
+                              architecture, or procurement route. Focus on the
+                              operational effect, not the equipment expected to
+                              produce it.
+
+                              Prefer:
+
+                                * Timely warning of incoming one-way attack 
+                                  drones
+                                * Reliable resupply of isolated units under
+                                  observation
+                                * Sustained ability to repair damaged 
+                                  power-distribution equipment
+
+                              Avoid:
+
+                                * Purchase additional radars
+                                * Deploy Product X
+                                * Build a mobile application
+                                * Use artificial intelligence to detect drones
+
+                              A proposed implementation may be included only 
+                              when it is an externally imposed constraint rather 
+                              than an unexamined design choice.
+
+                              When eliciting or evaluating the outcome, 
+                              determine:
+
+                                * What must be different from the current state?
+                                * Is the wording observable or operationally 
+                                  meaningful?
+                                * Does it describe an effect rather than an
+                                  artefact?
+                                * Could materially different solutions satisfy
+                                  it?
+                                * Is it too broad to guide analysis, or too
+                                  narrow because it already assumes a solution?
+
+                              The outcome should be concise enough to compare 
+                              with related needs and specific enough to support
+                              later decomposition into criteria, functions, 
+                              and capabilities.
+
+
+      purpose:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The operational, strategic, humanitarian,
+                              industrial, organisational, or resilience value
+                              expected from achieving the outcome.
+
+                              Explain why the outcome matters and what 
+                              higher-level objective, mission effect, risk 
+                              reduction, or beneficial change it supports.
+
+                              Typical purposes include:
+
+                                * Protect personnel
+                                * Preserve freedom of manoeuvre
+                                * Sustain operations
+                                * Reduce exposure to detection or attack
+                                * Maintain essential civilian services
+                                * Increase industrial surge capacity
+                                * Improve coalition interoperability
+                                * Shorten the time from innovation to deployment
+
+                              The purpose should not merely repeat the outcome.
+                              It should express the consequence of satisfying 
+                              the need.
+
+                              For example:
+
+                                outcome:
+                                  Timely warning of incoming strike drones
+
+                                purpose:
+                                  Enable personnel to take protective action 
+                                  and keep critical systems operating during 
+                                  repeated attacks
+
+                              Avoid vague justifications such as:
+
+                                * Improve capability
+                                * Support the mission
+                                * Increase effectiveness
+                                * Because it is important
+
+                              When eliciting or evaluating the purpose, 
+                              determine:
+
+                                * What harm is reduced or opportunity is
+                                  created?
+                                * What operational or strategic objective is
+                                  supported?
+                                * What happens if the need remains unmet?
+                                * Is the stated purpose valuable to the named
+                                  subject or to another stakeholder?
+                                * Does the purpose justify mobilisation of
+                                  effort and resources?
+
+                              The purpose should make the importance of the need
+                              understandable to people outside the immediate 
+                              domain.
+
+
+      context:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The circumstances in which the need exists, 
+                              becomes important, or must be satisfied.
+
+                              Describe relevant operational, geographical, 
+                              temporal, environmental, organisational, legal, 
+                              security, threat, or resource conditions.
+
+                              Context may include:
+
+                                theatre or region
+                                mission or operational phase
+                                threat environment
+                                weather or terrain
+                                electromagnetic conditions
+                                force size or echelon
+                                coalition or national role
+                                available infrastructure
+                                logistics constraints
+                                information-security constraints
+                                urgency or duration
+                                degraded or denied operating conditions
+
+                              Include only conditions that materially change 
+                              the need, its priority, or the range of viable
+                              responses.
+
+                              Prefer:
+
+                                * Front-line operations within range of hostile
+                                  electronic warfare and indirect fire
+
+                                * Prolonged winter attacks on geographically 
+                                  dispersed civilian energy infrastructure
+
+                                * Cross-border coalition logistics involving 
+                                  incompatible national information systems
+
+                              Avoid context that is so broad that it provides 
+                              no useful discrimination:
+
+                                * In wartime
+                                * In Europe
+                                * During operations
+
+                              Also avoid embedding proposed solution details 
+                              unless they are genuine constraints.
+
+                              When eliciting or evaluating context, determine:
+
+                                * Where and when does the need arise?
+                                * Under what threats, constraints, or degraded
+                                  conditions must the outcome be achieved?
+                                * Does the need apply generally, or only to a
+                                  particular mission, actor, location, or 
+                                  period?
+                                * Would changing the context materially change 
+                                  the outcome or candidate solutions?
+                                * Are important boundary conditions missing?
+
+                              Use "general" only when the need is intentionally 
+                              not restricted to a more specific context.
+
+
+      evidence_basis:
+        type:                 string
+        minLength:            1
+        description:          |
+                              A concise account of the evidence supporting the
+                              existence, significance, and formulation of the
+                              need.
+
+                              Summarise what has been observed, reported,
+                              requested, measured, or independently corroborated
+                              and explain how that evidence supports the subject,
+                              outcome, purpose, and context recorded in this data
+                              item.
+
+                              The evidence basis may draw upon:
+
+                                * Direct statements or requests from affected
+                                  stakeholders
+                                * Operational observations and after-action
+                                  reports
+                                * Repeated requests from independent units,
+                                  organisations, or communities
+                                * Procurement, delivery, consumption, failure,
+                                  or shortage data
+                                * Exercises, trials, experiments, or field tests
+                                * Official policy, planning, or capability-gap
+                                  statements
+                                * Reputable journalism and independent analysis
+                                * Quantitative studies, surveys, or monitoring
+                                  reports
+                                * Consistent patterns across multiple public or
+                                  protected sources
+
+                              Describe the evidence rather than merely asserting
+                              that evidence exists. Identify important patterns,
+                              quantities, recurrence, affected populations, or
+                              operational consequences where these are known.
+
+                              Prefer:
+
+                                Ukrainian Ministry of Defence reporting shows
+                                rapid growth in unmanned ground vehicle missions,
+                                while separate frontline reporting repeatedly
+                                describes personnel exposure during resupply and
+                                casualty evacuation. Together, these sources
+                                support a persistent need for safer movement of
+                                supplies and casualties near the line of contact.
+
+                              Avoid:
+
+                                * This is widely known
+                                * Many people say this is needed
+                                * The need is obvious
+                                * Strong evidence exists
+                                * Ukraine urgently needs this
+
+                              Distinguish carefully between:
+
+                                * Direct evidence that a stakeholder experiences
+                                  the need
+                                * Evidence that a problem or adverse condition
+                                  exists
+                                * Evidence supporting the proposed importance or
+                                  consequences of the need
+                                * Interpretation used to derive the need from
+                                  those observations
+
+                              Do not treat the popularity of a proposed solution
+                              as sufficient evidence for the underlying need.
+                              Repeated requests for a particular product may
+                              indicate a genuine operational gap, but the evidence
+                              basis should explain the gap or desired outcome
+                              inferred from those requests.
+
+                              When eliciting or evaluating the evidence basis,
+                              determine:
+
+                                * Who supplied the evidence, and how directly are
+                                  they affected by the need?
+                                * Is the evidence firsthand, independently
+                                  corroborated, or derived from secondary
+                                  reporting?
+                                * Does it demonstrate a recurring need or only an
+                                  isolated incident?
+                                * Is the evidence sufficiently recent for the
+                                  operational context?
+                                * Are quantities, locations, dates, and affected
+                                  groups stated where available?
+                                * Could the evidence support a materially
+                                  different interpretation?
+                                * Are uncertainty, disagreement, selection bias,
+                                  reporting bias, or information-security gaps
+                                  acknowledged?
+                                * Does the evidence support the complete need, or
+                                  only part of its subject, outcome, purpose, or
+                                  context?
+
+                              Detailed source documents, observations, datasets,
+                              and stakeholder statements should normally be
+                              represented as separate data items and connected
+                              through relation edges. This field provides the
+                              human-readable synthesis of that supporting
+                              evidence; it is not a substitute for provenance
+                              or traceability.
+
+                              When adequate evidence is not yet available, state
+                              this explicitly and describe what evidence would be
+                              required to substantiate the need. Do not present
+                              assumptions, inference, or repeated hearsay as
+                              established fact.
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical, concise, human-readable expression 
+                              of the need.
+
+                              The statement should synthesise the subject, 
+                              outcome, purpose, and, where necessary for 
+                              understanding, the relevant context.
+
+                              Recommended form:
+
+                                <subject> needs <outcome> in order to <purpose>.
+
+                              Context may be added when it materially qualifies 
+                              the need:
+
+                                In <context>, <subject> needs <outcome> in order 
+                                to <purpose>.
+
+                              Example:
+
+                                In electromagnetically contested front-line
+                                operations, Ukrainian casualty evacuation 
+                                teams need reliable coordination with receiving 
+                                medical units in order to reduce treatment 
+                                delays and avoid preventable loss of life.
+
+                              The statement should:
+
+                                * Express one coherent need;
+                                * Identify or clearly imply the affected
+                                  subject;
+                                * Describe the desired outcome;
+                                * Explain why the outcome matters;
+                                * Remain independent of avoidable 
+                                  implementation choices;
+                                * Be understandable without specialist 
+                                  knowledge where practical;
+                                * Contain enough detail to distinguish it 
+                                  from adjacent needs;
+                                * Remain concise enough for catalogue, 
+                                  briefing, and prioritisation use.
+
+                              Avoid statements that:
+
+                                * describe a solution rather than a need;
+                                * combine several unrelated needs;
+                                * use unsupported claims of urgency or 
+                                  importance;
+                                * rely on vague terms such as better, modern, 
+                                  enhanced, robust, efficient, or user-friendly 
+                                  without explaining what they mean;
+                                * name a product, supplier, platform, or 
+                                  technology without a genuine externally 
+                                  imposed constraint;
+                                * assert quantitative targets that have not 
+                                  been evidenced or agreed;
+                                * confuse the stakeholder's need with a system
+                                  requirement.
+
+                              When evaluating a statement, check that it is 
+                              consistent with the separately recorded subject,
+                              outcome, purpose, and context. Do not silently
+                              introduce information that is absent from the
+                              source evidence. Record uncertainty, disagreement,
+                              or missing information rather than presenting an
+                              unsupported inference as fact.
+

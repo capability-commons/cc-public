@@ -1,0 +1,634 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/framing.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons framing schema
+
+description:                  |
+                              Schema for a framing data item.
+
+                              A framing is an explicit analytic lens through
+                              which a need is viewed, decomposed, and pursued.
+                              Framing influences what is treated as in scope,
+                              which sub-problems are salient, which evidence
+                              is sought, which solution classes appear relevant,
+                              and which requirements may later be derived.
+
+                              Framing is intentionally not a need, not an
+                              assessment, and not a solution. The underlying need
+                              remains unchanged; framings are parallel, revisable
+                              hypotheses about how to analyse and decompose it.
+
+                              A single need may have zero or many framings. Zero
+                              is valid when a need has not yet been analysed.
+                              Multiple framings enable competing analysis
+                              strategies — for example viewing the same need as
+                              a logistics-resilience problem, an electronic-
+                              warfare problem, or a layered counter-UAS problem —
+                              each of which may yield different decompositions
+                              and later competing solution concepts.
+
+                              Framings are first-class data items linked to needs
+                              through relation edges. Every framing data item
+                              MUST include at least one outgoing relation with
+                              id_rel ``frames`` whose guid_item is the target
+                              need. The need SHOULD reciprocate with id_rel
+                              ``has_framing`` when framings exist.
+
+                              Recommended relation vocabulary for this type:
+
+                                frames
+                                  framing → need
+                                  This framing applies to the named need.
+
+                                alternates_with
+                                  framing ↔ framing
+                                  Peer framings that offer a different analytic
+                                  lens on the same need. Use bidirectionally.
+
+                                suggests
+                                  framing → need | future decomposition item
+                                  A provisional decomposition edge: this framing
+                                  suggests a child need, work package, or later
+                                  decomposition item worth pursuing. Child needs
+                                  created from a framing SHOULD also retain
+                                  refines → parent need.
+
+                                supersedes
+                                  framing → framing
+                                  This framing replaces an earlier framing for
+                                  the same analytic purpose.
+
+                                has_assessment
+                                  need → need assessment
+                                  framing → need assessment
+                                  Reciprocal edges when assessments exist. Each
+                                  assessment MUST link assesses → need and
+                                  under_framing → framing.
+
+                              Downstream type: need_assessment assesses a need
+                              under one framing, answers analytical_questions,
+                              reviews assumptions, and records readiness for
+                              decomposition before child needs are created.
+
+                              Workflow intent (propose_framing_v1):
+
+                                Preconditions:
+                                  - Target need exists with subject, outcome,
+                                    purpose, context, and statement.
+                                  - Author is not selecting a solution; author
+                                    is proposing an analytic lens only.
+
+                                Postconditions:
+                                  - framing item created with required fields.
+                                  - relation includes frames → need.
+                                  - Optional alternates_with links to sibling
+                                    framings on the same need.
+                                  - decomposition_intent and
+                                    candidate_solution_classes remain at class
+                                    level, not product level.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                lens
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                lens
+          role:                 body
+          label:                Lens
+        - field:                emphasis
+          role:                 body
+          label:                Emphasis
+        - field:                background
+          role:                 body
+          label:                Background
+        - field:                rationale
+          role:                 body
+          label:                Rationale
+        - field:                assumptions
+          role:                 body
+          label:                Assumptions
+        - field:                vocabulary
+          role:                 body
+          label:                Vocabulary
+        - field:                decomposition_intent
+          role:                 body
+          label:                Decomposition intent
+        - field:                analytical_questions
+          role:                 body
+          label:                Analytical questions
+        - field:                candidate_solution_classes
+          role:                 body
+          label:                Candidate solution classes
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - lens
+      - emphasis
+      - background
+      - rationale
+      - assumptions
+      - decomposition_intent
+      - analytical_questions
+      - candidate_solution_classes
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                framing
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      lens:
+        type:                 string
+        minLength:            1
+        description:          |
+                              A short name for the analytic lens this framing
+                              applies.
+
+                              The lens identifies the primary way of seeing the
+                              need: the operational function, systems layer,
+                              kill-chain stage, mission thread, or other analytic
+                              category that organises subsequent decomposition
+                              and solution exploration.
+
+                              Prefer concise, reusable lens labels that could
+                              apply across multiple needs:
+
+                                * logistics_resilience
+                                * detect_track_defeat
+                                * electronic_warfare
+                                * layered_counter_uas
+                                * training_sustainment
+                                * industrial_surge
+                                * doctrine_adaptation
+
+                              Avoid:
+
+                                * Product or vendor names
+                                * A specific proposed system
+                                * Vague labels such as better, modern, or
+                                  innovative without analytic meaning
+
+                              When eliciting a lens, determine:
+
+                                * What kind of problem is this need being treated
+                                  as under this framing?
+                                * Would engineers from different disciplines
+                                  recognise the lens as distinct from other
+                                  framings of the same need?
+                                * Does the lens imply a different decomposition
+                                  strategy than sibling framings?
+
+
+      emphasis:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What this framing foregrounds: the aspects of the
+                              need, operating environment, or stakeholder effect
+                              that become central when analysis proceeds under
+                              this lens.
+
+                              Emphasis defines what the framing cares about first.
+                              It should make clear which parts of the need's
+                              outcome, context, or purpose are treated as primary
+                              drivers for decomposition and later solution search.
+
+                              Prefer:
+
+                                * Protecting movement of supplies through known
+                                  corridors under persistent aerial interdiction
+
+                                * Detecting and localising emitting strike drones
+                                  before they reach logistics nodes
+
+                                * Reducing attrition of training airframes during
+                                  on-type interceptor instruction
+
+                              Avoid:
+
+                                * Repeating the entire need outcome verbatim
+                                * Naming a specific technology as the emphasis
+                                * Listing every possible concern without priority
+
+                              When eliciting emphasis, determine:
+
+                                * If only one aspect of the need could be optimised
+                                  under this frame, which would it be?
+                                * What does this framing treat as the main lever
+                                  for satisfying the need?
+                                * What would an analyst spend most effort
+                                  investigating under this frame?
+
+
+      background:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What this framing deliberately de-emphasises,
+                              postpones, or treats as out of scope for the
+                              immediate analysis path.
+
+                              Background prevents hidden scope creep and makes
+                              sibling framings comparable. It is not a permanent
+                              declaration that something does not matter — only
+                              that this analytic path does not centre it.
+
+                              Prefer:
+
+                                * Kinetic intercept of strike drones is not the
+                                  first decomposition path; cueing and route
+                                  protection are.
+
+                                * Offensive mirror-strike capability against
+                                  launch sites is out of scope for this framing;
+                                  defensive logistics continuity is in scope.
+
+                                * Platform-specific procurement is deferred until
+                                  functions are identified.
+
+                              Avoid:
+
+                                * Empty disclaimers such as "other things may
+                                  matter"
+                                * Using background to silently discard hard parts
+                                  of the need without explanation
+
+                              When eliciting background, determine:
+
+                                * What important aspects of the need are intentionally
+                                  not addressed first under this frame?
+                                * What sibling framing would own those aspects?
+                                * Could a reader mistake this framing for the
+                                  whole need if background were omitted?
+
+
+      rationale:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Why this framing is worth pursuing for the linked
+                              need.
+
+                              Explain what analytic advantage, stakeholder
+                              perspective, evidence base, or engineering tradition
+                              makes this lens plausible and useful. The rationale
+                              should justify spending decomposition and solution-
+                              exploration effort on this path rather than only on
+                              sibling framings.
+
+                              Prefer:
+
+                                * Frontline reporting shows logistics interdiction
+                                  as the operational failure mode; this framing
+                                  follows the observed effect chain.
+
+                                * Existing Ukrainian strength in fiber-optic strike
+                                  does not transfer to radio-long-range FPV; a
+                                  doctrine-adaptation framing exposes the mismatch
+                                  explicitly.
+
+                                * Competing framings already cover kinetic defeat;
+                                  this framing explores passive route resilience
+                                  as an under-examined branch.
+
+                              Avoid:
+
+                                * Because this is important
+                                * Because the author prefers this technology area
+                                * Re-stating the need purpose without explaining
+                                  why this lens adds analytic value
+
+                              When eliciting rationale, determine:
+
+                                * Why is this framing distinct from doing nothing
+                                  or using only the need's default reading?
+                                * Who would advocate for this framing and why?
+                                * What new decomposition or solution search does
+                                  it enable?
+
+
+      assumptions:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Assumptions that must hold — or be explicitly tested
+                              — for this framing to remain valid and useful.
+
+                              Assumptions make framing conditional and revisable.
+                              They support later assessment workflows and prevent
+                              implicit beliefs from masquerading as facts.
+
+                              Prefer:
+
+                                * Hostile strike drones continue to emit on
+                                  identifiable control and video bands during
+                                  the engagement window.
+
+                                * Logistics routes under analysis remain fixed
+                                  enough for corridor-based protection to matter.
+
+                                * Training attrition is dominated by hardware loss
+                                  rather than instructor throughput.
+
+                              Avoid:
+
+                                * Assumptions that are actually evidence claims
+                                  without citation — use evidence items instead
+                                * Hidden solution choices disguised as assumptions
+
+                              When eliciting assumptions, determine:
+
+                                * What must be true for this framing to produce
+                                  useful decompositions?
+                                * Which assumptions, if false, would invalidate or
+                                  materially change the framing?
+                                * Are assumptions testable in exercises, trials, or
+                                  further evidence gathering?
+
+
+      vocabulary:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Key terms, boundaries, and analytic hooks used within
+                              this framing.
+
+                              Vocabulary aligns decomposition and later solution
+                              comparison under the same frame. It may include
+                              operational functions, kill-chain labels, system-
+                              layer names, or bounded problem statements internal
+                              to the frame.
+
+                              Prefer structured prose or bullet lists that define
+                              terms precisely enough for downstream LLM workflows
+                              to use them consistently:
+
+                                * interdiction zone — airspace and ground corridor
+                                  segment where logistics movement is observed and
+                                  struck
+
+                                * cueing — detection and warning sufficient to alter
+                                  route or timing, distinct from defeat
+
+                                * radio-long-range FPV — FPV strike platforms whose
+                                  primary control path is radio and whose reach
+                                  exceeds short-range quadcopter envelopes
+
+                              Avoid:
+
+                                * Undefined jargon
+                                * Importing vendor product names as vocabulary terms
+
+                              When eliciting vocabulary, determine:
+
+                                * Which terms will recur in decomposition and
+                                  solution comparison under this frame?
+                                * Are boundaries between terms clear enough to avoid
+                                  overlap with sibling framings?
+                                * Does vocabulary clarify scope without smuggling
+                                  in a chosen design?
+
+
+      decomposition_intent:
+        type:                 string
+        minLength:            1
+        description:          |
+                              How analysis under this framing is expected to
+                              break the need into constituent problems, functions,
+                              or work packages.
+
+                              Decomposition intent is the bridge from framing to
+                              alternative decompositions. It describes the
+                              intended cut pattern — by operational function, by
+                              kill-chain stage, by systems layer, by mission
+                              thread, by stakeholder workflow — without yet
+                              committing to final child items.
+
+                              Prefer:
+
+                                * Decompose into detect, warn, reroute, and recover
+                                  functions along defined logistics corridors.
+
+                                * Decompose into emitter detection, emitter
+                                  localisation, effector cueing, and route denial
+                                  against radio-long-range FPV.
+
+                                * Decompose into durable training airframe,
+                                  recovery after mishap, and throughput of qualified
+                                  pilots.
+
+                              Avoid:
+
+                                * A finished work breakdown structure presented
+                                  as if already validated
+                                * Decomposition that names a single product as the
+                                  only child
+
+                              When eliciting decomposition intent, determine:
+
+                                * What are the first-cut seams along which the
+                                  need should split under this frame?
+                                * Would two analysts following this intent likely
+                                  produce comparable decompositions?
+                                * Which proposed child problems would become inputs
+                                  to competing solution concepts?
+
+
+      analytical_questions:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Questions that this framing drives for subsequent
+                              analysis, evidence gathering, decomposition, and
+                              solution exploration.
+
+                              Analytical questions operationalise the framing for
+                              LLM and human workflows. They should be answerable
+                              in principle and specific enough to guide research.
+
+                              Prefer:
+
+                                * Which logistics nodes show the highest strike
+                                  density under radio-long-range FPV in the last
+                                  90 days?
+
+                                * What detection range is required to cue route
+                                  changes before strike drones reach unloading areas?
+
+                                * Which existing EW systems cover 3.3–4.5 GHz video
+                                  links with directional awareness rather than blunt
+                                  jamming?
+
+                              Avoid:
+
+                                * Generic questions such as "what is the best
+                                  solution?"
+                                * Questions that presuppose a single product answer
+
+                              When eliciting analytical questions, determine:
+
+                                * What must be answered before decomposition is
+                                  credible?
+                                * What must be answered before solution classes
+                                  can be compared fairly?
+                                * Which questions distinguish this framing from
+                                  sibling framings?
+
+
+      candidate_solution_classes:
+        type:                 string
+        minLength:            1
+        description:          |
+                              High-level classes of solution that this framing
+                              makes salient.
+
+                              This field names families of approaches that later
+                              workflows may develop into competing concepts. It
+                              must remain at class level — not a chosen product,
+                              supplier, or detailed design.
+
+                              Prefer:
+
+                                * corridor denial and decoy routing
+                                * distributed RF direction-finding along supply axes
+                                * armoured or UGV-based last-mile logistics
+                                * recoverable training airframes with soft-landing aids
+
+                              Avoid:
+
+                                * Deploy System X
+                                * Purchase Product Y
+                                * Build a mobile app
+
+                              When eliciting candidate solution classes, determine:
+
+                                * What solution families does this framing naturally
+                                  suggest?
+                                * Are classes broad enough that multiple competing
+                                  concepts could exist within each class?
+                                * Do classes remain consistent with the need's
+                                  solution-independent outcome?
+
+
+      status:
+        $ref:                 "#/$defs/framing_status"
+        description:          |
+                              Lifecycle status of this framing for the linked need.
+
+                              Use:
+
+                                exploratory — proposed lens under initial review;
+                                  not yet used for decomposition.
+
+                                active — approved for decomposition and downstream
+                                  analysis workflows. Promotion SHOULD follow an
+                                  accepted need_assessment with readiness_for_
+                                  decomposition ``partial`` or ``ready`` and
+                                  framing_recommendation ``promote_active`` or
+                                  justified override.
+
+                                deferred — preserved but not currently pursued.
+
+                                retired — no longer useful because the need changed,
+                                  evidence falsified assumptions, or a sibling
+                                  framing superseded it.
+
+                              When setting status, determine:
+
+                                * Is this framing ready to drive decomposition?
+                                * Should sibling framings be active concurrently?
+                                * If retired, is supersedes linkage recorded?
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical, concise expression of this framing.
+
+                              Recommended form:
+
+                                Under the <lens> framing, <need subject or need
+                                title> is analysed as <emphasis> rather than as
+                                <background>, in order to <analytic objective>.
+
+                              Example:
+
+                                Under the logistics_resilience framing, rear-area
+                                supply teams are analysed as protecting movement
+                                through interdiction corridors rather than as
+                                defeating every strike drone at range, in order
+                                to identify route-based functions and resilience
+                                concepts that preserve resupply under deep FPV
+                                attack.
+
+                              The statement should:
+
+                                * Name or clearly imply the lens;
+                                * Be readable without opening the full need item;
+                                * Distinguish this framing from sibling framings;
+                                * Remain analytic rather than solution-prescriptive;
+                                * Be consistent with emphasis, background, and
+                                  rationale.
+
+                              When evaluating a statement, check that it does not
+                              introduce commitments absent from the other framing
+                              fields or from the linked need.
+
+
+$defs:
+
+  framing_status:
+    type:                     string
+    enum:
+      - exploratory
+      - active
+      - deferred
+      - retired
+    description:              |
+                              Lifecycle status of a framing relative to analysis
+                              and decomposition workflows.

@@ -1,0 +1,622 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/need_assessment.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons need assessment schema
+
+description:                  |
+                              Schema for a need assessment data item.
+
+                              A need assessment records structured analysis of a
+                              need under a specific framing. It answers the
+                              framing's analytical questions, reviews its
+                              assumptions, identifies remaining gaps, and states
+                              whether decomposition under that framing is
+                              credible yet.
+
+                              A need assessment is intentionally not a need, not
+                              a framing, and not a solution. The underlying need
+                              and framing remain unchanged; the assessment is a
+                              revisable record of what is known, unknown, and
+                              recommended before decomposition proceeds.
+
+                              A single need may have zero or many assessments.
+                              Zero is valid when a framing has not yet been
+                              examined. Multiple assessments may exist for the
+                              same need–framing pair over time (for example an
+                              initial draft and a later field-informed revision).
+
+                              Every need assessment MUST be scoped to exactly one
+                              need and exactly one framing. The framing MUST
+                              frame that need (``frames`` relation from framing
+                              to need).
+
+                              Assessments are first-class data items linked through
+                              relation edges. Every need assessment data item MUST
+                              include:
+
+                                assesses
+                                  need assessment → need
+                                  The need being assessed.
+
+                                under_framing
+                                  need assessment → framing
+                                  The analytic lens under which assessment
+                                  proceeds.
+
+                              Recommended reciprocation:
+
+                                has_assessment
+                                  need → need assessment
+                                  framing → need assessment
+
+                              Recommended relation vocabulary for this type:
+
+                                assesses
+                                  need assessment → need
+
+                                under_framing
+                                  need assessment → framing
+
+                                cites
+                                  need assessment → evidence | source document
+                                  Supporting material for a finding or answer.
+                                  Use when detailed provenance lives in separate
+                                  evidence items.
+
+                                supersedes
+                                  need assessment → need assessment
+                                  This assessment replaces an earlier assessment
+                                  of the same need under the same framing.
+
+                                informs
+                                  need assessment → need assessment
+                                  Optional cross-reference when one assessment
+                                  materially informs another without full
+                                  supersession.
+
+                              Workflow intent (assess_need_under_framing_v1):
+
+                                Preconditions:
+                                  - Target need exists with subject, outcome,
+                                    purpose, context, and statement.
+                                  - Target framing exists with lens, emphasis,
+                                    analytical_questions, assumptions, and
+                                    decomposition_intent.
+                                  - Framing includes ``frames`` → target need.
+                                  - Author is answering framing-driven questions,
+                                    not selecting a solution or final
+                                    decomposition.
+
+                                Postconditions:
+                                  - need assessment item created with required
+                                    fields.
+                                  - relations include assesses → need and
+                                    under_framing → framing.
+                                  - question_responses address framing
+                                    analytical_questions.
+                                  - assumption_review records hold, falsified,
+                                    untested, or qualified assumptions.
+                                  - readiness_for_decomposition and
+                                    framing_recommendation guide whether the
+                                    framing may move to ``active`` status.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                readiness_for_decomposition
+          role:                 badge
+        - field:                framing_recommendation
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                scope
+          role:                 body
+          label:                Scope
+        - field:                findings
+          role:                 body
+          label:                Findings
+        - field:                question_responses
+          role:                 body
+          label:                Question responses
+        - field:                assumption_review
+          role:                 body
+          label:                Assumption review
+        - field:                gaps
+          role:                 body
+          label:                Gaps
+        - field:                readiness_for_decomposition
+          role:                 body
+          label:                Readiness for decomposition
+        - field:                framing_recommendation
+          role:                 body
+          label:                Framing recommendation
+        - field:                need_impact
+          role:                 body
+          label:                Need impact
+        - field:                confidence
+          role:                 body
+          label:                Confidence
+        - field:                limitations
+          role:                 body
+          label:                Limitations
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - scope
+      - findings
+      - question_responses
+      - assumption_review
+      - gaps
+      - readiness_for_decomposition
+      - framing_recommendation
+      - need_impact
+      - confidence
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                need_assessment
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      scope:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What this assessment covers under the linked framing.
+
+                              State which parts of the need, operating context,
+                              and framing emphasis are examined; the time period
+                              or evidence base used; and any deliberate
+                              exclusions. Scope prevents an assessment from being
+                              mistaken for a complete verdict on the whole need.
+
+                              Prefer:
+
+                                * Initial desk assessment of logistics_resilience
+                                  framing for deep radio FPV interdiction, using
+                                  open-source reporting through March 2026; route-
+                                  refusal behaviour and UGV last-mile only.
+
+                                * Field-informed review of RF cueing assumptions
+                                  along two named supply axes; detect-localise
+                                  questions only, not portfolio procurement.
+
+                              Avoid:
+
+                                * Everything about the need
+                                * Scope that silently includes solution selection
+
+                              When eliciting scope, determine:
+
+                                * Which framing questions are in scope for this
+                                  assessment pass?
+                                * What evidence base and recency apply?
+                                * What is explicitly deferred to a later
+                                  assessment or sibling framing?
+
+
+      findings:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Synthesised findings from assessing the need under
+                              the linked framing.
+
+                              Summarise what the assessment establishes about the
+                              need when viewed through the framing's lens.
+                              Findings should be analytic and evidence-grounded,
+                              not a restatement of the need or framing.
+
+                              Prefer:
+
+                                * Route-refusal and delayed rotation appear as
+                                  primary operational effects in reporting on deep
+                                  radio FPV interdiction, supporting the logistics
+                                  resilience emphasis over standoff kill alone.
+
+                                * Existing Ukrainian EW strength against short-
+                                  range video links does not clearly transfer to
+                                  the bands and geometries used by heavy radio FPV
+                                  at 20–40 km depth.
+
+                              Avoid:
+
+                                * Therefore deploy System X
+                                * Repeating the framing statement without adding
+                                  assessed knowledge
+
+                              When eliciting findings, determine:
+
+                                * What new understanding does this assessment add
+                                  beyond the need and framing alone?
+                                * Which findings directly support or challenge
+                                  framing assumptions?
+                                * Which findings will matter for decomposition?
+
+
+      question_responses:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Structured responses to the linked framing's
+                              analytical_questions.
+
+                              Address each framing question explicitly, in the
+                              same order where practical. For each question,
+                              state the answer, supporting evidence, uncertainty,
+                              and implications for decomposition readiness.
+
+                              Prefer a repeating structure such as:
+
+                                Question: <framing analytical question>
+
+                                Response: <answer>
+
+                                Evidence: <sources or cites relations>
+
+                                Uncertainty: <residual doubt>
+
+                                Implication: <effect on decomposition or framing
+                                recommendation>
+
+                              When a question cannot yet be answered, say so and
+                              record what evidence or activity would answer it.
+
+                              Avoid:
+
+                                * Ignoring framing questions not yet answered
+                                * Treating inference as established fact without
+                                  marking uncertainty
+
+
+      assumption_review:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Review of assumptions declared in the linked framing.
+
+                              For each framing assumption, record whether it is
+                              supported, falsified, untested, or qualified under
+                              current evidence. Assumption review makes the
+                              framing conditional and supports framing lifecycle
+                              decisions.
+
+                              Prefer:
+
+                                * Assumption: Logistics corridors remain
+                                  identifiable enough for corridor-based
+                                  protection.
+                                  Status: qualified — major axes are stable but
+                                  local reroutes shift weekly under strike pressure.
+
+                                * Assumption: Hostile strike drones emit on
+                                  identifiable control and video bands during the
+                                  engagement window.
+                                  Status: supported for Rubicon-style platforms in
+                                  cited reporting; band details vary by build.
+
+                              Avoid:
+
+                                * All assumptions hold
+                                * Silent omission of falsified assumptions
+
+                              When eliciting assumption review, determine:
+
+                                * Which assumptions, if false, would invalidate
+                                  or materially change the framing?
+                                * Which assumptions need field trial or classified
+                                  evidence before decomposition?
+
+
+      gaps:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Remaining unknowns before decomposition under this
+                              framing is credible.
+
+                              List unanswered questions, missing evidence, untested
+                              assumptions, and operational data gaps. Gaps should
+                              be specific enough to guide the next research,
+                              exercise, or assessment activity.
+
+                              Prefer:
+
+                                * Warning-time requirements for convoy reroute are
+                                  not quantified from operational data.
+
+                                * Comparative effectiveness of corridor decoys vs
+                                  timed convoy windows is not evidenced.
+
+                              Avoid:
+
+                                * More research needed
+                                * Gaps that are actually disguised solution choices
+
+
+      readiness_for_decomposition:
+        $ref:                 "#/$defs/decomposition_readiness"
+        description:          |
+                              Whether decomposition under the linked framing is
+                              credible yet.
+
+                              Use:
+
+                                blocked — critical gaps or falsified assumptions
+                                  prevent credible decomposition; further
+                                  assessment or evidence required.
+
+                                partial — some functions or seams can be
+                                  decomposed cautiously; major gaps remain for
+                                  other branches.
+
+                                ready — sufficient framing questions and
+                                  assumptions are resolved to proceed with
+                                  decomposition under this framing.
+
+                              When setting readiness, determine:
+
+                                * Could two analysts produce comparable
+                                  decompositions from the framing's
+                                  decomposition_intent today?
+                                * Are blocking gaps explicit in gaps?
+
+
+      framing_recommendation:
+        $ref:                 "#/$defs/framing_recommendation"
+        description:          |
+                              Recommended next step for the linked framing's
+                              lifecycle status.
+
+                              Use:
+
+                                keep_exploratory — framing remains exploratory;
+                                  assessment added knowledge but is insufficient
+                                  to promote.
+
+                                promote_active — framing should move to active
+                                  and drive decomposition workflows.
+
+                                defer_framing — framing preserved but not pursued
+                                  now; sibling framing or evidence gathering
+                                  should take priority.
+
+                                retire_framing — framing no longer useful because
+                                  assumptions were falsified, the need changed,
+                                  or a sibling framing supersedes it.
+
+                              This recommendation does not automatically change
+                              framing status; it records assessed intent for
+                              human or workflow approval.
+
+
+      need_impact:
+        $ref:                 "#/$defs/need_impact"
+        description:          |
+                              Whether this assessment changes understanding of the
+                              linked need itself.
+
+                              Use:
+
+                                none — need statement and fields remain adequate;
+                                  assessment informs framing only.
+
+                                clarifies — assessment sharpens interpretation of
+                                  existing need fields without changing the need
+                                  item yet.
+
+                                qualifies — assessment suggests the need's context,
+                                  outcome, or evidence_basis should be qualified
+                                  in a future need revision.
+
+                                challenges — assessment suggests the need may be
+                                  mis-scoped, duplicated, or unsupported; need
+                                  review required before further work.
+
+                              Need impact is about the need item, not the framing.
+                              Proposed need edits should be recorded explicitly
+                              rather than silently applied in assessment prose.
+
+
+      confidence:
+        $ref:                 "#/$defs/assessment_confidence"
+        description:          |
+                              Overall confidence in this assessment's conclusions.
+
+                              Use:
+
+                                low — limited evidence, high inference, or major
+                                  unresolved gaps.
+
+                                medium — reasonable evidence with acknowledged
+                                  uncertainty and partial gaps.
+
+                                high — strong, recent, corroborated evidence
+                                  directly addresses framing questions and
+                                  assumptions.
+
+                              Confidence applies to the assessment as a whole, not
+                              to individual findings unless stated in
+                              question_responses.
+
+
+      limitations:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Deliberate limits of this assessment pass.
+
+                              Record source constraints, classification boundaries,
+                              author expertise limits, stale evidence, geographic
+                              scope limits, and methods not used. Limitations
+                              support proportionate trust in findings and gaps.
+
+                              Prefer:
+
+                                * Based on open-source reporting only; no access
+                                  to unit-level movement logs or EW spectrum
+                                  surveys.
+
+                                * Does not assess classified countermeasure
+                                  portfolios or procurement timelines.
+
+                              Avoid empty disclaimers without analytic meaning.
+
+
+      status:
+        $ref:                 "#/$defs/assessment_status"
+        description:          |
+                              Lifecycle status of this need assessment.
+
+                              Use:
+
+                                draft — initial capture; not yet reviewed for
+                                  completeness or accuracy.
+
+                                under_review — complete enough for peer or
+                                  stakeholder review.
+
+                                accepted — approved as the current assessment of
+                                  the need under this framing for downstream
+                                  workflows.
+
+                                superseded — replaced by a later assessment;
+                                  retain for history with supersedes linkage.
+
+                                withdrawn — assessment rejected or invalidated;
+                                  do not use for downstream workflows.
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical, concise expression of this assessment.
+
+                              Recommended form:
+
+                                Under the <framing lens> framing, assessment of
+                                <need title> finds <principal finding> with
+                                <readiness_for_decomposition> readiness for
+                                decomposition and recommends <framing_recommendation>.
+
+                              Example:
+
+                                Under the logistics_resilience framing, assessment
+                                of defense against deep long-range radio FPV
+                                logistics interdiction finds route-refusal and
+                                rotation delay dominate reported operational
+                                effects, with partial readiness for decomposition
+                                of sense and move functions, and recommends
+                                keeping the framing exploratory until warning-
+                                time requirements are quantified.
+
+                              The statement should:
+
+                                * Name or clearly imply the framing lens;
+                                * Identify the assessed need;
+                                * Summarise the principal finding;
+                                * State readiness and framing recommendation;
+                                * Be readable without opening the full item.
+
+
+$defs:
+
+  assessment_status:
+    type:                     string
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+    description:              |
+                              Lifecycle status of a need assessment relative to
+                              review and downstream workflows.
+
+
+  decomposition_readiness:
+    type:                     string
+    enum:
+      - blocked
+      - partial
+      - ready
+    description:              |
+                              Whether decomposition under the linked framing is
+                              credible yet.
+
+
+  framing_recommendation:
+    type:                     string
+    enum:
+      - keep_exploratory
+      - promote_active
+      - defer_framing
+      - retire_framing
+    description:              |
+                              Recommended next step for the linked framing's
+                              lifecycle status.
+
+
+  need_impact:
+    type:                     string
+    enum:
+      - none
+      - clarifies
+      - qualifies
+      - challenges
+    description:              |
+                              Whether this assessment changes understanding of
+                              the linked need itself.
+
+
+  assessment_confidence:
+    type:                     string
+    enum:
+      - low
+      - medium
+      - high
+    description:              |
+                              Overall confidence in this assessment's conclusions.

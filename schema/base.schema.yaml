@@ -1,0 +1,313 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/base.schema.yaml
+
+title:                        Capability commons base schema
+
+description:                  |
+                              Common base schema for most capability-commons 
+                              data items.
+
+                              This base schema defines the subset of properties
+                              common to most capability commons data item 
+                              types. 
+
+                              Schemas for more specific data item types extend
+                              this base schema via allOf and add their own
+                              specific properties.
+  
+                              The design intent is to not be prescriptive about
+                              where and how data items are stored, but as a
+                              useful convention, the reference implementation
+                              uses <id_schema>.schema.<ext> for type schema
+                              files that conform to the JSON Schema 2020-12
+                              standard, and <id_item>.<id_schema>.<ext> 
+                              for data items of type <id_schema> (for example
+                              need_auth.need.yaml).
+
+                              Identifiers throughout use lowercase snake_case
+                              (see $defs/identifier).
+
+                              Data item identity uses two fields:
+                              * guid_item (immutable UUID)
+                              * id_item (human-readable identifier)
+                              guid_item and id_item identify the item itself and
+                              are stable across revisions; guid_item shall never
+                              change, and id_item should change only rarely.
+
+type:                         object
+
+required:
+  - id_schema
+  - ver_schema
+  - guid_item
+  - id_item
+  - protective_mark
+  - copyright
+  - license
+  - title
+  - brief
+  - description
+  - relation
+  - workflow
+
+additionalProperties:         true
+
+properties:
+
+
+  id_schema:
+    $ref:                     "#/$defs/identifier"
+    description:              |
+                              Human-readable string providing a unique 
+                              identifier for the schema that this data 
+                              item is intended to conform to. Should match 
+                              the middle segment of the data item filename
+                              (<id_item>.<id_schema>.<ext>) and the 
+                              first segment of the paired schema file 
+                              (<id_schema>.schema.<ext>).
+
+
+  ver_schema:
+    $ref:                     "#/$defs/semver"
+    description:              |
+                              Semantic version string identifying the version 
+                              or variant of the schema that this data item is 
+                              intended to conform to. See https://semver.org/ 
+                              for details.
+
+
+  guid_item:
+    $ref:                     "#/$defs/uuidv4"
+    description:              | 
+                              Opaque, immutable, globally unique UUIDv4 
+                              identifier for this data item. Assigned once
+                              and never changed across revisions, even when
+                              id_item is updated. Lowercase hexadecimal string
+                              in standard 8-4-4-4-12 form. Canonical target for
+                              relation edges.
+
+
+  id_item:
+    $ref:                     "#/$defs/identifier"
+    description:              |
+                              Human-readable identifier for this data item.
+                              Identifies the same item as guid_item across
+                              revisions; should remain stable and should change
+                              only rarely (for example a deliberate rename).
+                              Should match the first segment of the data item
+                              filename (<id_item>.<id_schema>.<ext>). Tooling
+                              may assign guid_item; authors choose id_item for
+                              readable file naming.
+
+
+  protective_mark:
+    $ref:                     "#/$defs/identifier"
+    description:              |
+                              Protective mark identifier controlling permitted
+                              disclosure. A protective mark register may be 
+                              defined later; for now any valid identifier is 
+                              accepted.
+
+
+  copyright:
+    type:                     string
+    description:              |
+                              Copyright claim for the data item.
+
+
+  license:
+    type:                     string
+    description:              |
+                              Human readable license identifier. SPDX identifier 
+                              or SPDX expression where applicable. 
+                              See https://spdx.org/licenses/ for details.
+
+
+  title:
+    type:                     string
+    minLength:                1
+    maxLength:                120
+    description:              Short human readable string providing a title for 
+                              the data item.
+
+
+  brief:
+    type:                     string
+    minLength:                1
+    maxLength:                240
+    description:              One-line summary for dense catalog views.
+
+
+  description:
+    type:                     string
+    minLength:                1
+    description:              |
+                              Longer explanatory text for detail views and
+                              documentation. Markdown-formatted string.
+
+
+  relation:
+    type:                     array
+    description:              |
+                              Outgoing traceability edges to other data items.
+                              Required on every data item; use an empty array 
+                              when this item has no outgoing relations
+                              (relation: []). Each edge names a target by
+                              guid_item and labels the edge with id_rel.
+    items:
+      type:                   object
+      required:
+        - guid_item
+        - id_rel
+      additionalProperties:   false
+      properties:
+        guid_item:
+          $ref:               "#/$defs/uuidv4"
+          description:        |
+                              guid_item of the target data item (UUIDv4).
+                              Canonical reference for traceability graphs.
+        id_rel:
+          $ref:               "#/$defs/identifier"
+          description:        |
+                              Relation-type identifier labelling this edge 
+                              (e.g. implements, contains, supersedes). Open 
+                              vocabulary; a relation register may be defined 
+                              later.
+
+
+  workflow:
+    type:                     object
+    additionalProperties:
+      type: object
+      additionalProperties:   true
+    description:              |
+                              Workflow state for this data item. Required on
+                              every data item; use an empty object when no
+                              workflow has an opinion (workflow: {}). Intended
+                              as a map of id_workflow to per-workflow state;
+                              shape is not yet constrained in this schema.
+
+
+  display:
+    type:                     object
+    description:              |
+                              Optional presentation configuration for generic
+                              renderers (summary, outline, table, detail, and
+                              extensions). May be set on a type schema as
+                              defaults, or on a data item as an override.
+                              Each view maps ordered slot entries from data item
+                              properties to layout roles; the view identifier
+                              selects the renderer layout (e.g. horizontal
+                              table for outline, stacked list for detail).
+    additionalProperties:     false
+    properties:
+
+      default_view:
+        $ref:                 "#/$defs/identifier"
+        description:          |
+                              Preferred view identifier when the UI opens this
+                              item (e.g. summary, outline, detail).
+
+      view:
+        type:                 object
+        description:          |
+                              Map of view identifier to view configuration.
+                              View identifiers are open vocabulary; renderers
+                              implement a known set and ignore unsupported
+                              entries.
+        additionalProperties:
+          $ref:               "#/$defs/view"
+
+
+$defs:
+
+
+  identifier:
+    type:                     string
+    pattern:                  ^[a-z][a-z0-9_]*$
+    description:              |
+                              Lowercase snake_case identifier starting with a
+                              letter (a-z, then letters, digits, or underscores).
+
+
+  semver:
+    type:                     string
+    pattern:                  ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+    description:              |
+                              Semantic version string per https://semver.org/.
+
+
+  uuidv4:
+    type:                     string
+    pattern:                  ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+    description:              |
+                              Lowercase UUID version 4 in standard 8-4-4-4-12
+                              hexadecimal form.
+
+
+  view:
+    type:                     object
+    description:              |
+                              Configuration for one named view (one entry in
+                              display.view).
+    additionalProperties:     false
+    properties:
+
+      supported:
+        type:                 boolean
+        description:          |
+                              When false, renderers should not offer this view 
+                              for items of this type. Defaults to true when 
+                              omitted.
+
+      slot:
+        type:                 array
+        description:          |
+                              Ordered layout slots for this view. Each entry
+                              maps a data item property (or synthetic value)
+                              to a layout role. Slot order is column order for
+                              tabular views (outline, table) and display order
+                              for compact views (summary, detail).
+        items:
+          type:               object
+          required:
+            - field
+            - role
+          additionalProperties: false
+          properties:
+            field:
+              $ref:           "#/$defs/identifier"
+              description:    |
+                              Property name on the data item, or a synthetic
+                              token agreed with the renderer.
+            role:
+              $ref:           "#/$defs/identifier"
+              description:    |
+                              Layout role identifier interpreted by generic
+                              renderers (e.g. title, summary, status, badge,
+                              links).
+            label:
+              type:           string
+              minLength:      1
+              description:    Optional heading override for this slot.
+            synthetic:
+              type:           boolean
+              description:    |
+                              When true, field names a renderer-supplied value
+                              rather than a property on the data item.
+
+      expand:
+        type:                 object
+        description:          |
+                              How hierarchical views discover child data items
+                              from relation (e.g. outline drill-down).
+        additionalProperties: false
+        properties:
+          relation:
+            type:             array
+            description:      |
+                              id_rel identifiers; outgoing relation matching any 
+                              of these types are shown as children when 
+                              expanded.
+            items:
+              $ref:           "#/$defs/identifier"
