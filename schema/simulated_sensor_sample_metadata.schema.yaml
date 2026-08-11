@@ -1,0 +1,406 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/simulated_sensor_sample_metadata.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Simulated sensor sample metadata
+
+description:                  |
+                              Metadata beside one simulated sensor sample.
+                              Layer files (radiance, masks, preview, …) are
+                              separate and listed under ``layer``. This is a
+                              runtime payload contract (not a Capability
+                              Commons base data item with guid_item).
+
+                              Granularity
+                                One metadata document = one sensor = one
+                                sample time. Independent frame rates →
+                                independent documents. Join streams by
+                                ``t_sim_s`` (and ego/sensor ids), not by
+                                assuming a shared frame index.
+
+                              Coordinates (cite coordinate_frame id_item)
+                                * Shared multi-platform positions/velocities:
+                                  ``local_ned`` (run-anchored NED).
+                                * Absolute Earth: ``wgs84_geodetic`` /
+                                  ``wgs84_ecef`` (run header / fusion), not
+                                  required on every sample.
+                                * Sensor world-aligned: ``sensor_package_ned``.
+                                * Sensor boresight-aligned:
+                                  ``sensor_package_body`` (+Z toward scene,
+                                  +X increasing FPA column, +Y right-handed).
+                                * Pixel quantities (com_px, boxes, layers):
+                                  ``fpa_readout_rc`` (row, col).
+                                * Optics-centred FPA pixels (optional):
+                                  ``fpa_principal_px``.
+                                * Quaternions [x,y,z,w]: local → parent as
+                                  noted on each field; unit length ±1e-6.
+
+                              Imaging vs RADAR
+                                For modality eo / lwir, pixel projections and
+                                both bounding boxes are required on each
+                                object. For modality radar (range+pose
+                                model), pixel fields MAY be omitted.
+
+
+type:                         object
+additionalProperties:         false
+
+required:
+  - ver
+  - sample_id
+  - t_sim_s
+  - sensor
+  - object
+  - layer
+
+properties:
+
+  ver:
+    type:                     string
+    const:                    "0.1.0"
+
+  sample_id:
+    type:                     string
+    minLength:                1
+    description:              |
+                              Unique id for this sensor sample (not shared
+                              across sensors unless they truly co-sample).
+
+  t_sim_s:
+    type:                     number
+    description:              |
+                              Puppet / simulation time at which this sample
+                              was taken (seconds). Primary join key across
+                              sensors and egos.
+
+  run_id:
+    type:                     string
+    minLength:                1
+
+  sample_index:
+    type:                     integer
+    minimum:                  0
+    description:              |
+                              0-based index in this sensor's own sample
+                              sequence for the run/clip — not a global
+                              multi-sensor index.
+
+
+  sensor:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - id
+      - modality
+      - profile
+      - position_m
+      - boresight_ned
+      - orientation_xyzw
+    properties:
+      id:
+        type:                 string
+        minLength:            1
+      modality:
+        type:                 string
+        enum:                 [eo, lwir, radar]
+      profile:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Sensor-model profile id (e.g.
+                              dji_o4_air_unit_pro, kurbas_640_alpha,
+                              radar_range_pose_v1).
+      ego_id:
+        type:                 string
+        minLength:            1
+        description:          Vehicle / platform carrying this sensor.
+      position_m:
+        $ref:                 "#/$defs/vec3"
+        description:          |
+                              Sensor design optical centre in ``local_ned``
+                              (metres).
+      boresight_ned:
+        $ref:                 "#/$defs/unit_vec3"
+        description:          |
+                              Unit look-direction in ``local_ned`` (=
+                              sensor_package_body +Z in local_ned). Must
+                              match orientation_xyzw.
+      orientation_xyzw:
+        $ref:                 "#/$defs/quat"
+        description:          |
+                              ``sensor_package_body`` → ``local_ned``.
+      velocity_ned_m_s:
+        $ref:                 "#/$defs/vec3"
+        description:          |
+                              Sensor-centre velocity in ``local_ned`` (m/s).
+      velocity_boresight_m_s:
+        $ref:                 "#/$defs/vec3"
+        description:          |
+                              Same velocity in ``sensor_package_body`` (m/s).
+      width_px:
+        type:                 integer
+        minimum:              1
+        description:          |
+                              Pixel grid width for this sample. Required for
+                              eo / lwir.
+      height_px:
+        type:                 integer
+        minimum:              1
+      fov_deg_horizontal:
+        type:                 number
+        exclusiveMinimum:     0
+        maximum:              180
+        description:          |
+                              Full horizontal field of view of this pixel
+                              grid, degrees (edge to edge), not half-angle.
+      fov_deg_vertical:
+        type:                 number
+        exclusiveMinimum:     0
+        maximum:              180
+        description:          |
+                              Full vertical field of view of this pixel
+                              grid, degrees (edge to edge).
+
+
+  object:
+    type:                     array
+    description:              |
+                              Labelled entities with geometric truth relative
+                              to this sensor. Empty if none. Background is
+                              not listed; it is instance_id 0 in the mask.
+    items:
+      $ref:                   "#/$defs/object"
+
+
+  layer:
+    type:                     array
+    minItems:                 1
+    description:              |
+                              Files written with this sample. Paths are
+                              relative to this metadata file unless absolute.
+    items:
+      type:                   object
+      additionalProperties:   false
+      required:
+        - id
+        - path
+      properties:
+        id:
+          type:               string
+          minLength:          1
+          description:        |
+                              Logical product id (instance_id, class_id,
+                              depth_m, eo_radiance, lwir, preview_rgb,
+                              patch_eo_radiance, …).
+        path:
+          type:               string
+          minLength:          1
+        format:
+          type:               string
+          minLength:          1
+          description:        |
+                              Actual file layout/precision (e.g. exr_rgb_f16,
+                              png_u16). Must not overstate precision.
+        object_id:
+          type:               string
+          minLength:          1
+          description:        |
+                              For per-object patches: ``object[].id``.
+
+
+  seed:
+    type:                     integer
+    description:              Campaign / sampling seed if applicable.
+  code_version:
+    type:                     string
+    minLength:                1
+  note:
+    type:                     string
+    minLength:                1
+
+
+allOf:
+
+  - if:
+      properties:
+        sensor:
+          properties:
+            modality:
+              enum:           [eo, lwir]
+      required:               [sensor]
+    then:
+      properties:
+        sensor:
+          required:
+            - width_px
+            - height_px
+        object:
+          items:
+            required:
+              - com_px
+              - bbox_amodal_px
+              - bbox_modal_px
+
+
+$defs:
+
+  vec2:
+    type:                     array
+    minItems:                 2
+    maxItems:                 2
+    items:                    {type: number}
+    description:              |
+                              Image-plane pair as [delta_row, delta_col]
+                              (or [row, col] rate for velocities).
+
+  vec3:
+    type:                     array
+    minItems:                 3
+    maxItems:                 3
+    items:                    {type: number}
+
+  unit_vec3:
+    type:                     array
+    minItems:                 3
+    maxItems:                 3
+    items:                    {type: number}
+    description:              Unit vector in R³.
+
+  quat:
+    type:                     array
+    minItems:                 4
+    maxItems:                 4
+    items:                    {type: number}
+    description:              Unit quaternion [x, y, z, w].
+
+  rc:
+    type:                     object
+    additionalProperties:     false
+    required:                 [row, col]
+    properties:
+      row:
+        type:                 number
+        description:          Sub-pixel allowed.
+      col:
+        type:                 number
+
+  bbox:
+    type:                     object
+    additionalProperties:     false
+    required:                 [row_min, col_min, row_max, col_max]
+    description:              |
+                              Axis-aligned box in pixel space, half-open
+                              [row_min, row_max) × [col_min, col_max).
+                              May extend outside [0, height) × [0, width)
+                              when the object is partially (amodal) or
+                              wholly off-screen.
+    properties:
+      row_min:                {type: number}
+      col_min:                {type: number}
+      row_max:                {type: number}
+      col_max:                {type: number}
+
+  object:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - id
+      - instance_id
+      - class_id
+      - position_m
+      - orientation_xyzw
+      - range_m
+      - bearing_boresight
+    properties:
+      id:
+        type:                 string
+        minLength:            1
+        description:          Stable id within the run.
+      instance_id:
+        type:                 integer
+        minimum:              1
+        description:          |
+                              Pixel value in the instance_id layer.
+                              0 is reserved for background.
+      class_id:
+        type:                 integer
+        minimum:              0
+        description:          |
+                              Catalogue class id (append-only vocabulary).
+      asset_id:
+        type:                 string
+        minLength:            1
+        description:          Mesh / asset id from the catalogue.
+      livery_id:
+        type:                 string
+        minLength:            1
+      role:
+        type:                 string
+        enum:                 [target, distractor, other]
+      position_m:
+        $ref:                 "#/$defs/vec3"
+        description:          |
+                              Object geometric CoM in ``local_ned`` (m).
+      orientation_xyzw:
+        $ref:                 "#/$defs/quat"
+        description:          |
+                              Object body → ``local_ned``. Body +X is
+                              catalogue nose / forward unless the asset
+                              says otherwise.
+      velocity_ned_m_s:
+        $ref:                 "#/$defs/vec3"
+        description:          CoM velocity in ``local_ned`` (m/s).
+      major_axis_ned:
+        $ref:                 "#/$defs/unit_vec3"
+        description:          |
+                              Unit principal / fuselage axis in
+                              ``local_ned`` (same sense as body +X when
+                              that is nose).
+      range_m:
+        type:                 number
+        minimum:              0
+        description:          |
+                              Euclidean distance from sensor optical
+                              centre to object CoM (m). Simple RADAR
+                              scalar.
+      bearing_boresight:
+        $ref:                 "#/$defs/unit_vec3"
+        description:          |
+                              Unit vector sensor centre → CoM in
+                              ``sensor_package_body``.
+      com_px:
+        $ref:                 "#/$defs/rc"
+        description:          |
+                              CoM in ``fpa_readout_rc`` (may be outside
+                              the raster).
+      bbox_amodal_px:
+        $ref:                 "#/$defs/bbox"
+        description:          |
+                              Amodal AABB in ``fpa_readout_rc``.
+      bbox_modal_px:
+        $ref:                 "#/$defs/bbox"
+        description:          |
+                              Modal (visible) AABB in ``fpa_readout_rc``.
+                              Empty visible set → degenerate box with
+                              row_min == row_max and col_min == col_max.
+      major_axis_image:
+        $ref:                 "#/$defs/vec2"
+        description:          |
+                              major_axis_ned projected to
+                              ``fpa_readout_rc`` as [Δrow, Δcol].
+      velocity_image_px_s:
+        $ref:                 "#/$defs/vec2"
+        description:          |
+                              Projected CoM rate in ``fpa_readout_rc``:
+                              [d(row)/dt, d(col)/dt] per second of
+                              simulation time.
+      occlusion_fraction:
+        type:                 number
+        minimum:              0
+        maximum:              1
+        description:          |
+                              1 − (modal silhouette area / amodal
+                              silhouette area), measured in the image
+                              plane. 0 = fully visible; 1 = fully
+                              occluded (or no amodal area).

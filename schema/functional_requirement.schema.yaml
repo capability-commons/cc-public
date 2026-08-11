@@ -1,0 +1,59 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/functional_requirement.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Functional requirement (entry)
+
+description:                  |
+                              Schema for one functional requirement entry.
+
+                              Requirements are normally embedded in a
+                              functional_block_specification data item
+                              (``requirement[]``), not stored as separate
+                              guid_item items. Each entry is nevertheless a
+                              distinct, addressable requirement with stable
+                              ``id_requirement`` for traceability to
+                              acceptance checks and ICDs.
+
+                              Prefer one block specification with many
+                              requirement entries over one data item per
+                              requirement.
+
+
+type:                         object
+additionalProperties:         false
+
+required:
+  - id_requirement
+  - statement
+
+properties:
+
+  id_requirement:
+    $ref:                     https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+    description:              |
+                              Stable id within this block specification
+                              (snake_case).
+
+  statement:
+    type:                     string
+    minLength:                1
+    description:              |
+                              The requirement — testable, unambiguous,
+                              functional (what the block must do or guarantee,
+                              not how to implement it).
+
+  note:
+    type:                     string
+    minLength:                1
+    description:              Optional rationale, context, or edge cases.
+
+  verifies:
+    type:                     array
+    description:              |
+                              Optional id_check values from this block
+                              spec's acceptance[] that demonstrate this
+                              requirement.
+    items:
+      $ref:                   https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier

@@ -1,0 +1,72 @@
+# One EO sample, one target — modal + amodal boxes.
+# Conforms to simulated_sensor_sample_metadata.schema.yaml
+
+ver:                          "0.1.0"
+sample_id:                    run7_eo_nose_s42
+t_sim_s:                      4.2
+run_id:                       run7
+sample_index:                 42
+
+sensor:
+  id:                         eo_nose
+  modality:                   eo
+  profile:                    dji_o4_air_unit_pro
+  ego_id:                     interceptor_01
+  position_m:                 [120.0, 40.0, 85.0]
+  boresight_ned:              [1.0, 0.0, 0.0]
+  orientation_xyzw:           [0.0, 0.0, 0.0, 1.0]
+  velocity_ned_m_s:           [35.0, 0.0, 0.0]
+  velocity_boresight_m_s:     [35.0, 0.0, 0.0]
+  width_px:                   1920
+  height_px:                  1080
+  fov_deg_horizontal:         155.0
+  fov_deg_vertical:           87.0
+
+object:
+  - id:                       mavic_01
+    instance_id:              1
+    class_id:                 101
+    asset_id:                 mavic3_a
+    livery_id:                camo_green_01
+    role:                     target
+    position_m:               [820.0, 55.0, 90.0]
+    orientation_xyzw:         [0.0, 0.0, 0.0, 1.0]
+    velocity_ned_m_s:         [12.0, 1.0, 0.0]
+    major_axis_ned:           [1.0, 0.0, 0.0]
+    range_m:                  700.4
+    bearing_boresight:        [0.998, 0.021, 0.007]
+    com_px:                   {row: 540.2, col: 1012.5}
+    bbox_amodal_px:
+      row_min:                530.0
+      col_min:                1000.0
+      row_max:                552.0
+      col_max:                1028.0
+    bbox_modal_px:
+      row_min:                530.0
+      col_min:                1000.0
+      row_max:                552.0
+      col_max:                1028.0
+    major_axis_image:         [0.0, 8.0]
+    velocity_image_px_s:      [-2.5, 15.0]
+    occlusion_fraction:       0.0
+
+layer:
+  - id:                       instance_id
+    path:                     f42.instance_id.png
+    format:                   png_u16
+  - id:                       class_id
+    path:                     f42.class_id.png
+    format:                   png_u16
+  - id:                       eo_radiance
+    path:                     f42.eo_radiance.exr
+    format:                   exr_rgb_f16
+  - id:                       preview_rgb
+    path:                     f42.preview.jpg
+    format:                   jpeg
+  - id:                       patch_eo_radiance
+    path:                     patches/mavic_01.exr
+    format:                   exr_rgb_f16
+    object_id:                mavic_01
+
+seed:                         4242
+code_version:                 0.0.0-dev

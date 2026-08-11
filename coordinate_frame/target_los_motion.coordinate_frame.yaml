@@ -1,0 +1,92 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    3f19e8ef-15af-4aff-a345-01e30cc8fe5e
+id_item:                      target_los_motion
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        Target LOS–motion frame
+brief:                        Target-CoM Euclidean frame with +R along LOS to the ego sensor and +M along target velocity projected perpendicular to that LOS.
+description:                  |
+                              Target-centred frame for tracking and sensor
+                              fusion relative to one ego sensor-of-interest.
+                              Origin at the target-of-interest centre of mass.
+
+                              Axes (right-handed), at each sample:
+
+                                +R (range / LOS)
+                                  Unit vector from the target CoM toward the
+                                  nominated ego sensor's design optical
+                                  centre (along the geometric line of sight).
+
+                                +M (motion, transverse)
+                                  Direction of the target's world velocity
+                                  after projection onto the plane perpendicular
+                                  to +R (i.e. the component of motion across
+                                  the sensor's line of sight). Unit length
+                                  when defined.
+
+                                +C (complement)
+                                  Completes the right-handed triad:
+                                  +C = +R × +M.
+
+                              This embeds “motion as seen by the sensor” in 3D:
+                              transverse image-plane motion lines up with +M
+                              under a central projection when +R is the LOS.
+
+                              Degeneracy: if the transverse speed is below a
+                              consumer-chosen epsilon (hover, pure radial
+                              motion), +M is undefined. Consumers MUST apply an
+                              explicit fallback (e.g. hold previous +M, or use
+                              sensor_package_body +X projected into the
+                              transverse plane) and record that choice.
+
+                              Nominated target and ego sensor are runtime
+                              parameters of each use of this frame type.
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         cartesian
+dimension:                    3
+unit:                         metre
+
+origin:
+  policy:                     target_instance
+  statement:                  |
+                              Centre of mass of the nominated
+                              target-of-interest. Axis orientation also
+                              depends on the nominated ego sensor-of-interest
+                              (LOS) and the target velocity at that time.
+
+axis:
+  - id_axis:                  r
+    label:                    R (LOS)
+    sense:                    |
+                              From target CoM toward the ego sensor optical
+                              centre; positive along the line of sight to the
+                              sensor.
+  - id_axis:                  m
+    label:                    M (transverse motion)
+    sense:                    |
+                              Unit direction of target velocity projected
+                              onto the plane perpendicular to +R (across-LOS
+                              motion as relevant to that sensor).
+  - id_axis:                  c
+    label:                    C (complement)
+    sense:                    |
+                              +C = +R × +M (right-handed).
+
+handedness:                   right
+
+status:                       draft
+
+statement:                    |
+                              Target-CoM frame for fusion/tracking: +R along
+                              LOS to the ego sensor, +M along across-LOS
+                              target motion, +C completing the right-handed
+                              triad; undefined +M when motion is purely radial.

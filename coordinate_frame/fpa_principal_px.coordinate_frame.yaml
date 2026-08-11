@@ -1,0 +1,59 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    8ec3939a-a23f-4260-b5b9-77734cbbd7fc
+id_item:                      fpa_principal_px
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        FPA principal-point (pixel)
+brief:                        2D pixel frame on the FPA with origin where the optical axis pierces the array; +X right, +Y up.
+description:                  |
+                              Optical-boresight-centric, focal-plane-array
+                              aligned. Origin at the point where the nominal
+                              optical axis intersects the FPA (design
+                              principal point). Units are pixels. Axes: +X to
+                              the right of the FPA, +Y toward the top of the
+                              FPA, when looking along the boresight toward the
+                              scene. Used for optics-centric image-plane work;
+                              readout indices live in fpa_readout_rc.
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         cartesian
+dimension:                    2
+unit:                         pixel
+
+origin:
+  policy:                     optics_nominal
+  statement:                  |
+                              Intersection of the nominal optical axis with
+                              the FPA (design principal point). Measured
+                              principal-point frames may supersede this after
+                              calibration.
+
+axis:
+  - id_axis:                  x
+    label:                    X
+    sense:                    |
+                              In the FPA plane, positive to the right when
+                              looking along boresight (+Z of
+                              sensor_package_body) toward the scene.
+  - id_axis:                  y
+    label:                    Y
+    sense:                    |
+                              In the FPA plane, positive toward the top of
+                              the array under the same viewpoint.
+
+handedness:                   right
+
+status:                       draft
+
+statement:                    |
+                              2D FPA pixel frame centred on the design
+                              principal point; +X right, +Y up when looking
+                              along the boresight into the scene.

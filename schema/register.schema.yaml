@@ -1,0 +1,233 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/register.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons controlled register schema
+
+description:                  |
+                              Thin parent schema for controlled-vocabulary
+                              register data items.
+
+                              A register is a first-class Capability Commons
+                              item that holds many embedded entries (skills,
+                              relation types, marks, etc.). Entries are the
+                              source of truth for stable join keys used across
+                              other item types. Prefer one register item with
+                              many entries over one data item per entry.
+
+                              Entries are NOT separate data items: they have
+                              no guid_item. Cross-entry links use entry ids
+                              (id_entry or a subtype-specific key) inside the
+                              register. Item-to-item graphs continue to use
+                              base ``relation`` (for example register
+                              supersedes register, or a project cites a
+                              register). Do not put entry ids in relation
+                              guid_item fields.
+
+                              This type is intentionally abstract. Concrete
+                              registers (for example skill_register) extend
+                              it via allOf, set id_schema to their own const,
+                              and MAY add entry fields (category, broader,
+                              domain-specific notes). Do not instantiate
+                              ``register`` directly.
+
+                              Recommended relation vocabulary for register
+                              subtypes:
+
+                                supersedes
+                                  register → register
+                                  Successor overlay: for a given entry id,
+                                  the superseding register wins; entries only
+                                  in the older register remain until removed
+                                  or deprecated in a successor. The superseded
+                                  register SHOULD move to status
+                                  ``superseded``.
+
+                                defines_vocab_for
+                                  register → project | programme | org item
+                                  Optional: this register is the controlled
+                                  vocabulary for matching or elicitation in
+                                  the named scope.
+
+                              Resolution rules (shared by subtypes):
+
+                                * Consumers SHOULD store and join on the
+                                  stable entry id (snake_case), not on label.
+                                * On import from free text, resolve label or
+                                  any alias (case-sensitive exact match first,
+                                  then case-insensitive) to exactly one
+                                  accepted entry. If ambiguous or unknown,
+                                  leave unresolved or add a draft entry —
+                                  do not invent ids silently.
+                                * Deprecated entries remain resolvable for
+                                  historical rows; new writes SHOULD prefer
+                                  the replacement noted in note / related
+                                  fields when present.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                entry
+          role:                 body
+          label:                Entries
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - entry
+      - status
+      - statement
+
+    properties:
+
+      # Subtypes MUST set id_schema to their own const (e.g. skill_register).
+      # Abstract register items MUST NOT be authored.
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      entry:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Ordered list of controlled entries in this
+                              register. Prefer stable id_entry values; use
+                              label for humans and alias for legacy strings.
+        items:
+          $ref:               "#/$defs/register_entry"
+
+
+      status:
+        $ref:                 "#/$defs/register_status"
+        description:          |
+                              Lifecycle status of this register as a whole.
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Short plain-language summary of what this
+                              register controls and who should use it.
+
+
+$defs:
+
+  register_status:
+    type:                     string
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+    description:              |
+                              Lifecycle status of a register relative to
+                              review and use.
+
+
+  entry_status:
+    type:                     string
+    enum:
+      - proposed
+      - accepted
+      - deprecated
+    description:              |
+                              Lifecycle status of an individual register
+                              entry. Deprecated entries remain for resolution
+                              of historical data; prefer replacements for new
+                              writes when documented.
+
+
+  register_entry:
+    type:                     object
+    additionalProperties:     true
+    required:
+      - id_entry
+      - label
+      - status
+    properties:
+
+      id_entry:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Stable lowercase snake_case join key for this
+                              entry within the register (and across consumers
+                              that cite it). Choose a canonical name; put
+                              display variants and legacy form strings in
+                              label and alias.
+
+
+      label:
+        type:                 string
+        minLength:            1
+        maxLength:            200
+        description:          |
+                              Human-facing display label (form multi-select
+                              text, UI chip, report column).
+
+
+      alias:
+        type:                 array
+        description:          |
+                              Alternate labels that MUST resolve to this
+                              entry on import. Include historical spreadsheet
+                              strings and near-duplicates. Use an empty array
+                              when there are none.
+        items:
+          type:               string
+          minLength:          1
+          maxLength:          200
+
+
+      status:
+        $ref:                 "#/$defs/entry_status"
+
+
+      note:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional scope caveat, replacement hint for
+                              deprecated entries, or matcher guidance.

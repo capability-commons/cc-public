@@ -1,0 +1,65 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    eec6c203-84b5-455f-92eb-108dc73f227b
+id_item:                      local_ned
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        Local NED (run anchor)
+brief:                        North-East-Down metres about a nearby run-chosen origin for multi-platform display and triangulation.
+description:                  |
+                              Local tangent Euclidean frame with NED axes.
+                              Origin is a nearby but otherwise arbitrary point
+                              fixed for a run or campaign (supplied in run
+                              metadata, not in this frame definition). Intended
+                              as a shared multi-platform frame for displaying
+                              triangulation and debugging fusion geometry.
+                              Closed-loop fusion may still operate in a sensor-
+                              centric or target-motion frame; this frame is the
+                              common plotting / association space.
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         cartesian
+dimension:                    3
+unit:                         metre
+
+origin:
+  policy:                     run_instance
+  statement:                  |
+                              Chosen once per run/campaign as a nearby
+                              geographic point; constant for that run.
+                              Typically specified as wgs84_geodetic or
+                              wgs84_ecef in the run header. Not tied to any
+                              particular sensor.
+
+axis:
+  - id_axis:                  north
+    label:                    North
+    sense:                    |
+                              Local geodetic north at the origin; positive
+                              north.
+  - id_axis:                  east
+    label:                    East
+    sense:                    |
+                              Local geodetic east at the origin; positive
+                              east.
+  - id_axis:                  down
+    label:                    Down
+    sense:                    |
+                              Along the local vertical toward the ellipsoid /
+                              gravity nadir; positive down.
+
+handedness:                   right
+
+status:                       draft
+
+statement:                    |
+                              Run-anchored local NED frame in metres for
+                              multi-platform triangulation display and shared
+                              scenario geometry; origin pose is run metadata.

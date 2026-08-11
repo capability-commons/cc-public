@@ -1,0 +1,185 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/skill_register.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons skill register schema
+
+description:                  |
+                              Controlled vocabulary of matchable skills and
+                              manufacturing/capability tags for volunteer
+                              placement and task matching.
+
+                              Extends ``register.schema.yaml``. Each entry's
+                              ``id_entry`` is the stable skill id used by
+                              dtu_member_techskills, dtu_project.skill_sought,
+                              and future micro-task schemas. Prefer joining on
+                              id_entry, not on label. Resolve legacy form /
+                              spreadsheet strings via alias (see parent
+                              register resolution rules).
+
+                              Categories:
+
+                                technical — member technical_skill and most
+                                  project skill_sought tags
+
+                                non_technical — coordination, PM, OSINT, etc.
+
+                                manufacturing — manufacturing_capability /
+                                  shop-access tags (often paired with
+                                  has_manufacturing_access)
+
+                              Do not overload project glossaries for this
+                              purpose: glossaries define project language;
+                              skill registers define cross-item matching
+                              vocabulary.
+
+                              Recommended relations (in addition to register):
+
+                                defines_vocab_for
+                                  skill_register → DTU programme / onboarding
+                                  scope item when modelled
+
+                              Matching notes:
+
+                                * Exact id_entry equality is the hard filter.
+                                * related_to / broader support soft ranking
+                                  only — they do not imply the member has the
+                                  related skill.
+                                * Depth (languages, years, hobby vs pro)
+                                  remains in member prose detail fields, not
+                                  in this register.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                entry
+          role:                 body
+          label:                Skills
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/register.schema.yaml
+
+  - type:                     object
+
+    required:
+      - entry
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                skill_register
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      entry:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Skill and manufacturing-capability entries.
+                              id_entry is the skill id for matching.
+        items:
+          $ref:               "#/$defs/skill_entry"
+
+
+$defs:
+
+  skill_category:
+    type:                     string
+    enum:
+      - technical
+      - non_technical
+      - manufacturing
+    description:              |
+                              Which consumer field family this skill primarily
+                              feeds.
+
+
+  skill_entry:
+    allOf:
+      - $ref:                 https://capability-commons.org/schema/register.schema.yaml#/$defs/register_entry
+      - type:                 object
+        required:
+          - category
+        additionalProperties: false
+        properties:
+
+          id_entry:
+            $ref:             https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+          label:
+            type:             string
+            minLength:        1
+            maxLength:        200
+
+          alias:
+            type:             array
+            items:
+              type:           string
+              minLength:      1
+              maxLength:      200
+
+          status:
+            $ref:             https://capability-commons.org/schema/register.schema.yaml#/$defs/entry_status
+
+          note:
+            type:             string
+            minLength:        1
+
+          category:
+            $ref:             "#/$defs/skill_category"
+
+          related_to:
+            type:             array
+            description:      |
+                              Other id_entry values in this register that are
+                              nearby for soft matching (sibling or associated
+                              skills). Empty array when none.
+            items:
+              $ref:           https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+          broader:
+            $ref:             https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+            description:      |
+                              Optional single broader id_entry (hyponym →
+                              hypernym). Soft matching only.

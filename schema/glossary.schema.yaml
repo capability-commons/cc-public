@@ -1,0 +1,475 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/glossary.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons glossary schema
+
+description:                  |
+                              Schema for a project glossary data item.
+
+                              A glossary is a curated, project-scoped vocabulary
+                              of terms and definitions used to keep analysis,
+                              requirements, and collaboration consistent. It
+                              records how a project uses language — not a general
+                              dictionary of the domain.
+
+                              A glossary is intentionally not a need, framing,
+                              assessment, or solution. Terms may inform framing
+                              vocabulary and later requirements, but the glossary
+                              remains a shared reference rather than an analytic
+                              lens or demand signal.
+
+                              One project SHOULD normally have one primary
+                              glossary. Additional glossaries are valid when a
+                              project maintains distinct vocabularies for
+                              audiences, languages, or workstreams (for example
+                              an operational glossary and an engineering
+                              glossary).
+
+                              Glossaries are first-class data items. When a
+                              project data item exists, every glossary SHOULD
+                              include at least one outgoing relation with id_rel
+                              ``defines_for`` whose guid_item is the target
+                              project. The project SHOULD reciprocate with
+                              id_rel ``has_glossary`` when glossaries exist.
+
+                              Recommended relation vocabulary for this type:
+
+                                defines_for
+                                  glossary → project
+                                  This glossary defines terms for the named
+                                  project.
+
+                                has_glossary
+                                  project → glossary
+                                  Reciprocal edge when a project item exists.
+
+                                supersedes
+                                  glossary → glossary
+                                  This glossary is the authoritative successor
+                                  of an earlier glossary for the same project
+                                  or scope. Machines resolving project
+                                  vocabulary SHOULD build an effective term
+                                  map by starting from the superseded
+                                  glossary (and any earlier superseded chain)
+                                  and overlaying each successor: for a given
+                                  id_term, the definition in the superseding
+                                  glossary takes priority. Terms present only
+                                  in an older glossary remain in the effective
+                                  map until a successor removes or replaces
+                                  them (replacement is expressing the same
+                                  id_term with a new definition or marking it
+                                  deprecated). The superseded glossary SHOULD
+                                  move to status ``superseded``.
+
+                                cites
+                                  glossary → source | evidence | standard
+                                  External authority for one or more
+                                  definitions at glossary level. Prefer
+                                  term-level related_to / prefers for links
+                                  inside the vocabulary.
+
+                              Do not use ``extends`` for glossary succession.
+                              Earlier drafts mentioned extends for inheritance;
+                              supersedes with the overlay rule above is the
+                              supported mechanism so priority is unambiguous.
+
+                              Individual terms live inside the glossary as
+                              structured entries in ``term``. Prefer one
+                              glossary item with many term entries over one
+                              data item per term, so the project vocabulary
+                              remains a single reviewable artefact.
+
+                              Cross-term traceability is expressed inside
+                              ``term`` via ``related_to`` and ``prefers``
+                              (references are id_term values in this glossary
+                              or, after overlay, in the effective map). Terms
+                              are not separate data items, so base ``relation``
+                              edges cannot target an individual term.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                language
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                scope
+          role:                 body
+          label:                Scope
+        - field:                audience
+          role:                 body
+          label:                Audience
+        - field:                language
+          role:                 body
+          label:                Language
+        - field:                term
+          role:                 body
+          label:                Terms
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - scope
+      - audience
+      - language
+      - term
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                glossary
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      scope:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The project, programme, workstream, or bounded
+                              context this glossary serves.
+
+                              Name the project at the most specific level that
+                              still covers the full set of terms. If this
+                              glossary covers only a workstream within a larger
+                              project, say so explicitly.
+
+                              Prefer:
+
+                                * Capability Commons public need-capture pilot
+                                * Counter-UAS logistics resilience work package
+                                * Ukrainian casualty-evacuation coordination trial
+
+                              Avoid:
+
+                                * General defence terms
+                                * Everything
+                                * The domain
+
+                              When eliciting scope, determine:
+
+                                * Which project or workstream owns this vocabulary?
+                                * Would a reader from another project correctly
+                                  know whether these definitions apply to them?
+                                * Should this be the project's sole glossary, or
+                                  one of several scoped vocabularies?
+
+
+      audience:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Who is expected to use and be bound by these
+                              definitions.
+
+                              Audience clarifies whether the glossary is for
+                              operators, engineers, analysts, contributors,
+                              or mixed collaboration. It guides tone, precision,
+                              and which contested terms must be included.
+
+                              Prefer:
+
+                                * Cross-functional contributors capturing and
+                                  framing defence needs in Capability Commons
+
+                                * Field engineers and operational planners
+                                  collaborating on logistics-resilience concepts
+
+                              Avoid:
+
+                                * Everyone
+                                * Users
+                                * Stakeholders
+
+                              When eliciting audience, determine:
+
+                                * Who must share these definitions to collaborate
+                                  effectively?
+                                * Are there secondary audiences who only need a
+                                  subset of terms?
+
+
+      language:
+        type:                 string
+        minLength:            2
+        maxLength:            16
+        description:          |
+                              Primary language of term labels and definitions,
+                              preferably as a BCP 47 language tag (for example
+                              ``en``, ``en-GB``, ``uk``, ``uk-UA``).
+
+                              When a project needs parallel glossaries in more
+                              than one language, create separate glossary items
+                              and link them with ``extends`` or reciprocal
+                              ``cites`` relations rather than mixing languages
+                              inside a single term list.
+
+
+      term:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Ordered list of glossary term entries for this
+                              project.
+
+                              Prefer a stable, reviewable order: alphabetical by
+                              term, or grouped by theme with alphabetical order
+                              within each group. Each entry defines one concept;
+                              do not overload a single entry with unrelated
+                              meanings.
+        items:
+          $ref:               "#/$defs/glossary_term"
+
+
+      status:
+        $ref:                 "#/$defs/glossary_status"
+        description:          |
+                              Lifecycle status of this glossary for the project.
+
+                              Use:
+
+                                draft — initial capture; definitions may be
+                                  incomplete or unreviewed.
+
+                                under_review — complete enough for peer or
+                                  stakeholder review.
+
+                                accepted — approved as the current project
+                                  vocabulary for downstream work.
+
+                                superseded — replaced by a later glossary;
+                                  retain for history with supersedes linkage.
+
+                                withdrawn — rejected or no longer applicable;
+                                  do not use for downstream work.
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical, concise expression of this glossary.
+
+                              Recommended form:
+
+                                Glossary of terms for <scope>, for use by
+                                <audience>, defining <n> terms in <language>.
+
+                              Example:
+
+                                Glossary of terms for the Capability Commons
+                                public need-capture pilot, for use by
+                                cross-functional contributors capturing and
+                                framing defence needs, defining shared meanings
+                                for need, framing, and assessment vocabulary
+                                in English.
+
+                              The statement should:
+
+                                * Identify the project or scope;
+                                * Identify the intended audience;
+                                * Remain readable without opening every term;
+                                * Stay consistent with scope, audience, and
+                                  language.
+
+
+$defs:
+
+  glossary_status:
+    type:                     string
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+    description:              |
+                              Lifecycle status of a glossary relative to review
+                              and project use.
+
+
+  term_status:
+    type:                     string
+    enum:
+      - proposed
+      - accepted
+      - deprecated
+    description:              |
+                              Lifecycle status of an individual glossary term
+                              as vocabulary. Does not record whether a named
+                              capability is implemented yet; put that in note
+                              or in other project artefacts.
+
+
+  glossary_term:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - id_term
+      - term
+      - definition
+      - status
+    properties:
+
+      id_term:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Stable lowercase snake_case identifier for this
+                              term within the glossary (for example
+                              ``need``, ``framing``, ``protective_mark``).
+                              This is the machine key for related_to, prefers,
+                              and supersedes overlay. Choose the project's
+                              canonical name in snake_case. When the project
+                              normally speaks in an expanded form, use that
+                              (``false_alarm_rate`` not ``far``) and put the
+                              short form in alias or in term. When the
+                              established project term is itself the acronym
+                              (``ifov``, ``psf``, ``enu``), use the acronym as
+                              id_term.
+
+
+      term:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Human-readable surface form of the term as it
+                              should appear in prose and UI (for example
+                              ``need``, ``need assessment``, ``protective mark``,
+                              ``FAR``). May differ in casing or spacing from
+                              id_term; id_term remains the stable key.
+
+
+      definition:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The project-specific definition of the term.
+
+                              Define how this project uses the term. Prefer a
+                              single coherent meaning. If the term has a special
+                              meaning here that differs from common usage, make
+                              that difference explicit.
+
+                              Prefer:
+
+                                * A defence need data item capturing a
+                                  consequential gap or desired outcome without
+                                  committing to a particular solution.
+
+                              Avoid:
+
+                                * Circular definitions that only restate the term
+                                * Solution prescriptions disguised as definitions
+                                * Vague definitions such as "a key concept"
+
+
+      alias:
+        type:                 array
+        description:          |
+                              Optional alternate labels, abbreviations, or
+                              near-synonyms that SHOULD resolve to this term.
+                              Use an empty array when there are no aliases.
+        items:
+          type:               string
+          minLength:          1
+          maxLength:          120
+
+
+      related_to:
+        type:                 array
+        description:          |
+                              Cross-term links within the vocabulary. Each
+                              entry is an id_term that is related for
+                              machines navigating the glossary (for example
+                              depth related_to slant_range, or subtense
+                              related_to ifov). Order is insignificant.
+                              Unknown id_term values SHOULD be treated as
+                              unresolved references, not as soft text.
+                              Use an empty array when there are no links.
+        items:
+          $ref:               https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+
+      prefers:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              When this term is deprecated (or otherwise
+                              superseded in meaning), the id_term that
+                              SHOULD be used instead. Machines rewriting or
+                              validating vocabulary SHOULD follow prefers
+                              when present. Omit when this term remains the
+                              preferred label.
+
+
+      note:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional usage guidance, boundaries, or
+                              disambiguation notes that do not belong in the
+                              definition itself — for example what the term is
+                              not. Prefer related_to and prefers for
+                              machine-followed cross-links rather than
+                              encoding those links only in note prose.
+
+
+      status:
+        $ref:                 "#/$defs/term_status"
+        description:          |
+                              Lifecycle status of this term entry as a
+                              vocabulary definition — not implementation
+                              readiness of a feature the term names.
+
+                              Use:
+
+                                proposed — candidate term under discussion;
+                                  not yet approved as project vocabulary.
+
+                                accepted — approved for project use.
+
+                                deprecated — retained for history; do not use
+                                  for new work. Set prefers to the replacement
+                                  id_term when known.

@@ -1,0 +1,1208 @@
+id_schema:                    glossary
+ver_schema:                   0.1.0
+
+guid_item:                    bab2a422-e399-4a56-bebf-96b376dbb5b1
+id_item:                      sensor_simulation
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        axair-geoengine sensor simulation glossary
+brief:                        |
+                              Project terms for axair-geoengine geometry oracle, radiometry, sensor model, sampling, and detection.
+description:                  |
+                              Terms that carry a specific meaning in this
+                              project. Generic terms are included only where
+                              this project uses them in a narrower or more
+                              load-bearing sense than usual.
+
+                              For why the system is shaped this way see
+                              DESIGN_NOTES.md; for how to use it see README.md.
+
+                              Cross-term navigation uses related_to on each
+                              term entry (id_term references within this
+                              glossary).
+
+relation:                     []
+
+workflow:                     {}
+
+scope:                        |
+                              axair-geoengine sensor simulation: the Godot
+                              geometry oracle, Python client, radiometric
+                              layers, external sensor model, and detection
+                              campaign tooling.
+
+audience:                     |
+                              Contributors and readers of axair-geoengine —
+                              backend, client, sensor-model, and campaign
+                              authors who must share precise meanings for
+                              geometry-oracle, radiometry, sampling, and
+                              detection vocabulary.
+
+language:                     en
+
+status:                       accepted
+
+statement:                    |
+                              Glossary of terms for the axair-geoengine sensor
+                              simulation project, for use by contributors
+                              sharing geometry-oracle, radiometry, sensor-model,
+                              sampling, and detection vocabulary, defining
+                              project-specific meanings in English.
+
+term:
+
+  - id_term:                  backend
+    term:                     Backend
+    definition:               |
+                              The Godot 4 process that renders. Lives in
+                              src/backend_godot/. Named backend_godot rather
+                              than renderer because it is explicitly one
+                              swappable implementation; a backend_unreal would
+                              sit alongside it.
+    alias:                    []
+    related_to:
+      - client
+      - command
+      - geometry_oracle
+      - strict_puppeting
+      - wire_protocol
+      - xvfb_fallback
+    status:                   accepted
+
+  - id_term:                  client
+    term:                     Client
+    definition:               |
+                              axair_geoengine.client.GeoEngineClient. Typed
+                              Python wrappers mirroring the wire protocol 1:1.
+                              Shares no code with the backend by design.
+    alias:                    []
+    related_to:
+      - backend
+      - catalogue
+      - command
+      - frame_conversion
+      - wire_protocol
+    status:                   accepted
+
+  - id_term:                  command
+    term:                     Command
+    definition:               |
+                              One JSON object sent over the wire, e.g. spawn,
+                              set_camera_pose, capture. Nineteen exist. Each
+                              returns exactly one reply carrying ok: true|false.
+    alias:                    []
+    related_to:
+      - backend
+      - client
+      - dispatch
+      - protocol_version
+      - round_trip_latency
+      - strict_puppeting
+      - wire_protocol
+    status:                   accepted
+
+  - id_term:                  dispatch
+    term:                     Dispatch
+    definition:               |
+                              The two dictionaries in geo_link_server.gd mapping
+                              command name to handler: _dispatch for
+                              synchronous, _async_dispatch for handlers that
+                              must be awaited. capture is the only member of
+                              the second.
+    alias:                    []
+    related_to:
+      - command
+    status:                   accepted
+
+  - id_term:                  geometry_oracle
+    term:                     Geometry oracle
+    definition:               |
+                              What the backend is: it emits per-pixel ground
+                              truth derived from scene geometry and materials,
+                              and models no sensor. The distinction is the
+                              project's central premise. Detector noise,
+                              optics, waveband response and scattering all live
+                              outside it.
+    alias:                    []
+    related_to:
+      - backend
+      - layer
+      - strict_puppeting
+    status:                   accepted
+
+  - id_term:                  layer
+    term:                     Layer
+    definition:               |
+                              One named ground-truth product of a capture
+                              (color_display, depth, radiance_linear, …).
+                              Requested by name; each is written as its own
+                              file.
+    alias:                    []
+    related_to:
+      - cull_mask
+      - declared_layer
+      - depth
+      - geometry_oracle
+      - manifest
+      - sidecar
+    status:                   accepted
+
+  - id_term:                  declared_layer
+    term:                     Declared layer
+    definition:               |
+                              A layer with a protocol seam but no render pass
+                              yet (normal, instance_id, class_id, material_id).
+                              Appears in describe_layers() with
+                              implemented: false; requesting one fails with a
+                              clear message rather than silently returning
+                              nothing.
+    alias:                    []
+    related_to:
+      - layer
+    status:                   accepted
+
+  - id_term:                  manifest
+    term:                     Manifest
+    definition:               |
+                              In the prototype: the dictionary capture returns
+                              and writes as a <basename>.json sidecar (layer
+                              paths, camera, entities, environment, terrain).
+                              In v2 campaigns, prefer distinguishing (a) the
+                              per-sample simulated_sensor_sample_metadata
+                              document beside layer files from (b) a
+                              campaign-level manifest.jsonl that indexes
+                              completed clips/runs.
+    alias:                    []
+    related_to:
+      - campaign
+      - layer
+      - sidecar
+      - simulated_sensor_sample_metadata
+    status:                   accepted
+
+  - id_term:                  protocol_version
+    term:                     Protocol version
+    definition:               |
+                              Currently 4. v3 made capture write files instead
+                              of streaming pixels; v4 replaced spawn's
+                              archetype with platform + mesh and
+                              list_archetypes with describe_catalogue.
+    alias:                    []
+    related_to:
+      - catalogue
+      - command
+      - wire_protocol
+    status:                   accepted
+
+  - id_term:                  sidecar
+    term:                     Sidecar
+    definition:               |
+                              A companion file stored next to primary
+                              artefacts (e.g. layer images) that carries
+                              associated data not embedded in those files.
+                              For simulated sensor outputs, the sidecar is a
+                              simulated_sensor_sample_metadata document
+                              (YAML or JSON) describing one sensor sample.
+    alias:                    []
+    related_to:
+      - layer
+      - manifest
+      - simulated_sensor_sample_metadata
+    status:                   accepted
+
+  - id_term:                  simulated_sensor_sample_metadata
+    term:                     Simulated sensor sample metadata
+    definition:               |
+                              Contract for metadata beside one simulated
+                              sensor sample (one sensor at one t_sim_s):
+                              ego/sensor pose, labelled objects with modal
+                              and amodal boxes, layer file refs, and
+                              provenance. Schema:
+                              simulated_sensor_sample_metadata.schema.yaml.
+                              Join multi-rate sensors by t_sim_s, not by a
+                              shared frame index. Cite coordinate_frame
+                              ids (e.g. local_ned, fpa_readout_rc) for
+                              quantity frames.
+    alias:
+      - sample_metadata
+      - sensor_sample_metadata
+    related_to:
+      - layer
+      - sidecar
+      - manifest
+      - strict_puppeting
+      - geometry_oracle
+    status:                   accepted
+
+  - id_term:                  strict_puppeting
+    term:                     Strict puppeting
+    definition:               |
+                              The hard constraint that nothing in the scene
+                              moves, changes or renders without a command. No
+                              clock, no physics, no interpolation. Viewports
+                              sit at UPDATE_DISABLED and are bumped to
+                              UPDATE_ONCE per state-mutating command. Even
+                              rotor spin is externally commanded.
+    alias:                    []
+    related_to:
+      - backend
+      - command
+      - geometry_oracle
+      - render_on_demand
+    status:                   accepted
+
+  - id_term:                  wire_protocol
+    term:                     Wire protocol
+    definition:               |
+                              4-byte big-endian uint32 length prefix followed
+                              by that many bytes of UTF-8 JSON, both
+                              directions. It is the module boundary — there is
+                              no shared code and no separate interface control
+                              document.
+    alias:                    []
+    related_to:
+      - backend
+      - client
+      - command
+      - protocol_version
+      - round_trip_latency
+    status:                   accepted
+
+  - id_term:                  platform
+    term:                     Platform
+    definition:               |
+                              What the object is (shahed_136, mavic_2_pro).
+                              Drives class_id; the label a classifier predicts.
+                              Named platform rather than class because the
+                              latter is a Python keyword.
+    alias:                    []
+    related_to:
+      - appearance
+      - catalogue
+      - category
+      - class_id
+      - instance
+      - mesh
+    note:                     |
+                              One of four deliberately independent identity axes (platform, mesh, appearance, instance) so domain randomisation can vary appearance without changing the label.
+    status:                   accepted
+
+  - id_term:                  mesh
+    term:                     Mesh
+    definition:               |
+                              Which geometry represents a platform. Several per
+                              platform is desirable: varying the mesh is
+                              randomisation that must not change the label, so
+                              meshes of one platform share a class_id. Ids are
+                              deliberately opaque (a, b, …), never derived from
+                              the source — an asset had already been named for
+                              a claim about it that proved false.
+    alias:                    []
+    related_to:
+      - catalogue
+      - class_id
+      - platform
+    note:                     |
+                              One of four deliberately independent identity axes (platform, mesh, appearance, instance) so domain randomisation can vary appearance without changing the label.
+    status:                   accepted
+
+  - id_term:                  appearance
+    term:                     Appearance
+    definition:               |
+                              Which material set. Reserved; only default
+                              exists.
+    alias:                    []
+    related_to:
+      - platform
+    note:                     |
+                              One of four deliberately independent identity axes (platform, mesh, appearance, instance) so domain randomisation can vary appearance without changing the label.
+    status:                   accepted
+
+  - id_term:                  instance
+    term:                     Instance
+    definition:               |
+                              One spawned entity: the caller's id plus an
+                              assigned instance_id.
+    alias:                    []
+    related_to:
+      - instance_id
+      - platform
+    note:                     |
+                              One of four deliberately independent identity axes (platform, mesh, appearance, instance) so domain randomisation can vary appearance without changing the label.
+    status:                   accepted
+
+  - id_term:                  class_id
+    term:                     class_id
+    definition:               |
+                              Stable per-platform semantic id, append-only. 5
+                              is retired rather than recycled: it briefly
+                              denoted a shahed_131 that turned out not to
+                              exist. An id must never change meaning.
+    alias:                    []
+    related_to:
+      - category
+      - mesh
+      - platform
+    status:                   accepted
+
+  - id_term:                  instance_id
+    term:                     instance_id
+    definition:               |
+                              Monotonic per-entity id, unique within an engine
+                              session. Restarts at 1 on relaunch, so datasets
+                              spanning several launches reuse values.
+    alias:                    []
+    related_to:
+      - instance
+    status:                   accepted
+
+  - id_term:                  category
+    term:                     Category
+    definition:               |
+                              A coarser grouping alongside class_id
+                              (loitering_munition, fixed_wing_recon,
+                              small_quadcopter, interceptor), so a
+                              detection-only or size-banded study can collapse
+                              labels client-side without re-rendering.
+    alias:                    []
+    related_to:
+      - class_id
+      - platform
+    status:                   accepted
+
+  - id_term:                  catalogue
+    term:                     Catalogue
+    definition:               |
+                              src/backend_godot/catalogue.json. Assets
+                              described as data, not code: adding one means
+                              editing that file. Read by both the engine and
+                              the Python client.
+    alias:
+      - catalog
+    related_to:
+      - client
+      - mesh
+      - platform
+      - protocol_version
+    status:                   accepted
+
+  - id_term:                  scene_referred
+    term:                     Scene-referred
+    definition:               |
+                              Pixel values proportional to physical radiance,
+                              no display transform. What radiance_linear
+                              carries. Usable as input to a radiometric model.
+    alias:                    []
+    related_to:
+      - display_referred
+      - linear_radiance
+      - scene_vs_display_properties
+    status:                   accepted
+
+  - id_term:                  display_referred
+    term:                     Display-referred
+    definition:               |
+                              Values shaped for viewing: tonemapped, glow,
+                              SSAO. What color_display carries. Photometrically
+                              destroyed and useless as sensor-model input —
+                              the pre-v3 output was display-referred, the
+                              nearest thing to a one-way door in the old
+                              design.
+    alias:                    []
+    related_to:
+      - scene_referred
+      - scene_vs_display_properties
+    status:                   accepted
+
+  - id_term:                  scene_vs_display_properties
+    term:                     Scene vs display properties
+    definition:               |
+                              The split that keeps physical layers physical.
+                              Scene properties (sky radiance, sun geometry,
+                              atmospheric extinction) are real and apply to
+                              every layer. Display properties (tonemapping,
+                              glow, SSAO) are viewing conveniences and apply to
+                              color_display only.
+    alias:                    []
+    related_to:
+      - display_referred
+      - scene_referred
+    status:                   accepted
+
+  - id_term:                  linear_radiance
+    term:                     Linear radiance
+    definition:               |
+                              The unit radiance_linear and the stored campaign
+                              clips are in. Relative, not absolute: the
+                              renderer emits arbitrary units, not W/m²/sr,
+                              which is why the sensor model needs an explicit
+                              exposure anchor.
+    alias:
+      - radiance_linear
+    related_to:
+      - exposure_anchor
+      - radiance_raw
+      - realisation
+      - scene_referred
+    status:                   accepted
+
+  - id_term:                  depth
+    term:                     Depth
+    definition:               |
+                              View-space Z in metres: distance along the
+                              optical axis, not slant range. Sky reads the far
+                              plane. Stored via a half-float target, so
+                              relative precision is ~0.05% (≈1.2 m at 2.5 km).
+    alias:                    []
+    related_to:
+      - cull_mask
+      - layer
+      - slant_range
+    status:                   accepted
+
+  - id_term:                  radiance_raw
+    term:                     Radiance raw
+    definition:               |
+                              The same render as radiance_linear, written
+                              uncompressed with a 16-byte self-describing
+                              header instead of EXR. Shares the same viewport;
+                              it is a second encoding, not a second render.
+    alias:
+      - radiance_linear_raw
+    related_to:
+      - linear_radiance
+    status:                   accepted
+
+  - id_term:                  subtense
+    term:                     Subtense
+    definition:               |
+                              The target's angular size expressed in sensor
+                              pixels (target_span_m / range / IFOV). The
+                              primary explanatory variable for detection:
+                              0.53 px at 1425 m, 15 px at 50 m for a Mavic 2
+                              Pro on the current sensor.
+    alias:                    []
+    related_to:
+      - appearance_based_detection
+      - detection_range
+      - difference_render
+      - ifov
+      - point_source_injection
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  ifov
+    term:                     IFOV
+    definition:               |
+                              Instantaneous field of view, the angle subtended
+                              by one pixel. 0.548 mrad for the campaign sensor
+                              (640×480, 20° horizontal FOV).
+    alias:
+      - instantaneous field of view
+    related_to:
+      - fov
+      - subtense
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  psf
+    term:                     PSF
+    definition:               |
+                              Point spread function, the optical blur.
+                              Modelled as a Gaussian with σ ≈ 0.5 pixels. Must
+                              be applied before the pixel aperture, not after:
+                              a pure box downsample concentrates a sub-pixel
+                              target's energy in one pixel, while a real PSF
+                              spreads it over two or three and lowers the peak.
+    alias:
+      - point spread function
+    related_to:
+      - band_collapse
+      - decimating_convolution
+      - pixel_aperture_integration
+      - supersampling
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  pixel_aperture_integration
+    term:                     Pixel aperture integration
+    definition:               |
+                              The box average over an N×N supersample block
+                              that turns supersampled radiance into one sensor
+                              pixel. A mean, not a sum, so the result stays in
+                              radiance units.
+    alias:                    []
+    related_to:
+      - decimating_convolution
+      - psf
+      - supersampling
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  band_collapse
+    term:                     Band collapse
+    definition:               |
+                              Weighting the renderer's RGB radiance into one
+                              monochrome channel. Done before the PSF (the two
+                              commute for an achromatic PSF, and doing it first
+                              makes the convolution 3× cheaper).
+    alias:                    []
+    related_to:
+      - psf
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  exposure_anchor
+    term:                     Exposure anchor
+    definition:               |
+                              The choice that ties arbitrary scene radiance to
+                              electrons: "expose so the median background sits
+                              at this fraction of full well", currently 40%.
+                              It sets the noise floor and therefore every
+                              detection range in the study, so it is recorded
+                              per clip rather than left implicit.
+    alias:                    []
+    related_to:
+      - detection_range
+      - linear_radiance
+      - link_8_bit
+      - realisation
+      - shot_noise
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  shot_noise
+    term:                     Shot noise
+    definition:               |
+                              Poisson noise on collected photoelectrons.
+                              Redrawn every frame, so background stabilisation
+                              cannot cancel it.
+    alias:                    []
+    related_to:
+      - background_stabilisation
+      - exposure_anchor
+      - prnu
+      - realisation
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  prnu
+    term:                     PRNU
+    definition:               |
+                              Photo-response non-uniformity, a fixed per-pixel
+                              gain pattern (0.5%). Stationary in the image, so
+                              a background-stabilised detector does cancel it.
+                              The shot/PRNU ratio moves a motion-vs-appearance
+                              comparison more than most of the sampled
+                              geometry, which is why PRNU is seeded per sensor,
+                              not per frame or per realisation.
+    alias:
+      - FPN
+      - photo-response non-uniformity
+      - fixed pattern noise
+    related_to:
+      - background_stabilisation
+      - realisation
+      - shot_noise
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  realisation
+    term:                     Realisation
+    definition:               |
+                              One draw of noise (and optionally compression)
+                              from a stored clip. The architectural point of
+                              storing linear radiance: one expensive render
+                              supports many cheap realisations, and estimating
+                              a detection probability requires repeats at fixed
+                              geometry.
+    alias:
+      - realization
+    related_to:
+      - clip
+      - exposure_anchor
+      - linear_radiance
+      - prnu
+      - shot_noise
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  link_8_bit
+    term:                     Link 8-bit
+    definition:               |
+                              The transfer from 12-bit detector counts to the
+                              8 bits a video link carries. Not plumbing: one
+                              8-bit LSB is 1/255 of full scale, so against a
+                              40%-well background a sub-1% target sits below
+                              one LSB. It survives only because sensor noise
+                              dithers it — which is exactly why a temporally
+                              integrating detector recovers it and a
+                              single-frame one cannot.
+    alias:                    []
+    related_to:
+      - codec_round_trip
+      - exposure_anchor
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  codec_round_trip
+    term:                     Codec round-trip
+    definition:               |
+                              Encoding 8-bit mono frames and decoding them
+                              back, to model what a video link does to the
+                              signal. Belongs inside the detection loop whenever
+                              the detector sits downstream of a transmission
+                              link.
+    alias:                    []
+    related_to:
+      - link_8_bit
+    note:                     |
+                              Sensor-model vocabulary lives outside the engine, in axair_geoengine.sensor.
+    status:                   accepted
+
+  - id_term:                  campaign
+    term:                     Campaign
+    definition:               |
+                              One rendered dataset: N clips over a
+                              quasi-random spread of conditions, plus a
+                              manifest and per-frame truth.
+    alias:                    []
+    related_to:
+      - clip
+      - condition
+      - covariate
+      - manifest
+      - resumable
+      - sobol_sequence
+    status:                   accepted
+
+  - id_term:                  clip
+    term:                     Clip
+    definition:               |
+                              One 2-second, 60-frame sequence at fixed sampled
+                              geometry, stored as (60, 480, 640) float32 linear
+                              radiance.
+    alias:                    []
+    related_to:
+      - campaign
+      - condition
+      - covariate
+      - drift
+      - realisation
+      - resumable
+    status:                   accepted
+
+  - id_term:                  condition
+    term:                     Condition
+    definition:               |
+                              One point in the sampled space: the covariates
+                              plus the per-frame poses that realise them.
+    alias:                    []
+    related_to:
+      - campaign
+      - clip
+      - covariate
+    status:                   accepted
+
+  - id_term:                  covariate
+    term:                     Covariate
+    definition:               |
+                              A recorded parameter of a clip, whether or not it
+                              was deliberately varied. Everything in
+                              manifest.jsonl.
+    alias:                    []
+    related_to:
+      - campaign
+      - clip
+      - condition
+      - nuisance_parameter
+    status:                   accepted
+
+  - id_term:                  nuisance_parameter
+    term:                     Nuisance parameter
+    definition:               |
+                              A covariate varied to be marginalised over rather
+                              than resolved (sun azimuth, terrain seed, look
+                              azimuth), as opposed to explanatory ones (range,
+                              nadir angle, subtense).
+    alias:                    []
+    related_to:
+      - covariate
+    status:                   accepted
+
+  - id_term:                  sobol_sequence
+    term:                     Sobol sequence
+    definition:               |
+                              The low-discrepancy quasi-random sequence used to
+                              place samples. Nested: 64 points extend to 128
+                              and 256 without discarding the earlier block or
+                              losing balance.
+    alias:                    []
+    related_to:
+      - campaign
+      - constructive_geometry
+      - owen_scrambling
+    status:                   accepted
+
+  - id_term:                  owen_scrambling
+    term:                     Owen scrambling
+    definition:               |
+                              Randomisation applied to Sobol points that
+                              restores unbiased marginals while keeping low
+                              discrepancy. Resolves the tension between
+                              "approximately IID" and "quasi-random, evenly
+                              spaced".
+    alias:                    []
+    related_to:
+      - sobol_sequence
+    status:                   accepted
+
+  - id_term:                  constructive_geometry
+    term:                     Constructive geometry
+    definition:               |
+                              Building the scene so constraints are satisfied
+                              by construction rather than by rejection. The
+                              off-boresight position is a sampled coordinate
+                              and the camera is pointed to satisfy it, so the
+                              target is always in frame and no sample is
+                              discarded — rejection would destroy the
+                              low-discrepancy property.
+    alias:                    []
+    related_to:
+      - off_boresight
+      - sobol_sequence
+    status:                   accepted
+
+  - id_term:                  nadir_angle
+    term:                     Nadir angle
+    definition:               |
+                              The angle from straight-down at the target to the
+                              sensor. 0° means the sensor is directly below;
+                              ~85° means nearly level. Sampled equal-area
+                              (uniform in cos θ), since uniform in θ would
+                              cluster at the pole. Also determines background
+                              type: near-nadir looks at sky, near-horizontal at
+                              terrain.
+    alias:                    []
+    related_to:
+      - aspect
+      - off_boresight
+    status:                   accepted
+
+  - id_term:                  off_boresight
+    term:                     Off-boresight
+    definition:               |
+                              Where the target sits in the frame, as a fraction
+                              of the half-FOV. Sampled, not accidental.
+    alias:                    []
+    related_to:
+      - constructive_geometry
+      - fov
+      - nadir_angle
+    status:                   accepted
+
+  - id_term:                  aspect
+    term:                     Aspect
+    definition:               |
+                              The target's heading relative to the line of
+                              sight.
+    alias:                    []
+    related_to:
+      - nadir_angle
+    status:                   accepted
+
+  - id_term:                  drift
+    term:                     Drift
+    definition:               |
+                              How far the target moves across the frame during
+                              a clip (px). Genuine relative image motion is
+                              what a motion detector needs; a target pinned to
+                              one pixel for 60 frames would have none.
+    alias:                    []
+    related_to:
+      - clip
+      - motion_based_detection
+    status:                   accepted
+
+  - id_term:                  difference_render
+    term:                     Difference render
+    definition:               |
+                              Rendering a frame with the target visible and
+                              hidden and differencing, to isolate its exact
+                              pixels and true contribution. The only reliable
+                              way to measure a sub-pixel target; two earlier
+                              attempts at dark-pixel thresholding produced
+                              garbage.
+    alias:                    []
+    related_to:
+      - subtense
+      - target_absent_clip
+    status:                   accepted
+
+  - id_term:                  target_absent_clip
+    term:                     Target-absent clip
+    definition:               |
+                              A clip rendered with the target hidden,
+                              frame-matched to a target-present one. Needed for
+                              false-alarm calibration and for measuring signal
+                              through the processing chain. Not yet generated —
+                              the current campaign has difference frames only
+                              every 5th frame and no absent clips.
+    alias:                    []
+    related_to:
+      - detection_range
+      - difference_render
+      - far
+    note:                     Not yet generated in the current campaign.
+    status:                   accepted
+
+  - id_term:                  motion_based_detection
+    term:                     Motion-based detection
+    definition:               |
+                              Finds targets by residual motion after background
+                              stabilisation. Can work below one pixel by
+                              integrating over time. Limited by stabilisation
+                              residual (parallax), target angular rate, and
+                              temporally uncorrelated noise.
+    alias:                    []
+    related_to:
+      - appearance_based_detection
+      - background_stabilisation
+      - drift
+      - overlap_region
+      - parallax
+    status:                   accepted
+
+  - id_term:                  appearance_based_detection
+    term:                     Appearance-based detection
+    definition:               |
+                              Finds targets by their look in a single frame.
+                              Fails below a few pixels on target. Used here for
+                              confirmation at close range rather than blind
+                              search.
+    alias:                    []
+    related_to:
+      - motion_based_detection
+      - overlap_region
+      - subtense
+    status:                   accepted
+
+  - id_term:                  background_stabilisation
+    term:                     Background stabilisation
+    definition:               |
+                              Registering consecutive frames to cancel camera
+                              motion so that residual motion is the target.
+                              Exact for pure camera rotation; defeated by
+                              translation over a 3D scene, which produces
+                              parallax.
+    alias:
+      - background stabilization
+    related_to:
+      - motion_based_detection
+      - parallax
+      - prnu
+      - shot_noise
+    status:                   accepted
+
+  - id_term:                  parallax
+    term:                     Parallax
+    definition:               |
+                              Apparent relative motion of scene features caused
+                              by camera translation over varying depth. The
+                              thing background stabilisation cannot remove, and
+                              therefore what makes a moving-platform comparison
+                              honest — a static camera hands the motion
+                              algorithm an unearned win.
+    alias:                    []
+    related_to:
+      - background_stabilisation
+      - motion_based_detection
+    status:                   accepted
+
+  - id_term:                  detection_range
+    term:                     Detection range
+    definition:               |
+                              The range at which a detector achieves some P_d
+                              at a fixed false-alarm rate. Meaningless without
+                              the FAR qualifier, which is why target-absent
+                              data is required before the two systems can be
+                              compared.
+    alias:                    []
+    related_to:
+      - exposure_anchor
+      - far
+      - overlap_region
+      - subtense
+      - target_absent_clip
+    status:                   accepted
+
+  - id_term:                  far
+    term:                     FAR
+    definition:               |
+                              False alarm rate. Needs target-absent data per
+                              background condition to calibrate.
+    alias:
+      - false alarm rate
+    related_to:
+      - detection_range
+      - target_absent_clip
+    status:                   accepted
+
+  - id_term:                  overlap_region
+    term:                     Overlap region
+    definition:               |
+                              The range band where both detectors work, the
+                              handover between long-range motion detection and
+                              close-range appearance confirmation. The
+                              principal output of the current study.
+    alias:                    []
+    related_to:
+      - appearance_based_detection
+      - detection_range
+      - motion_based_detection
+    status:                   accepted
+
+  - id_term:                  supersampling
+    term:                     Supersampling
+    definition:               |
+                              Rendering at N× linear resolution and reducing to
+                              sensor resolution. Currently 16×
+                              (10240×7680 → 640×480). The factor only has to
+                              resolve the PSF, not the target — but see
+                              rasterization dropout.
+    alias:                    []
+    related_to:
+      - decimating_convolution
+      - pixel_aperture_integration
+      - point_source_injection
+      - psf
+      - rasterization_dropout
+      - tmpfs_scratch
+    status:                   accepted
+
+  - id_term:                  rasterization_dropout
+    term:                     Rasterization dropout
+    definition:               |
+                              A dense mesh whose solid cross-section approaches
+                              one supersample cell registers or not depending
+                              on sub-pixel alignment. Erratic, not a falloff:
+                              at 8× the Mavic was absent at 1500 m and 3000 m
+                              but present at 1200 m and 2000 m. Rule of thumb —
+                              reliable while the solid body spans ≳4
+                              supersample cells: 8× good to ~800 m, 16× to
+                              ~1.6 km. Not caused by Godot's mesh LOD
+                              (disabling it changed nothing). This is what caps
+                              the current range band.
+    alias:                    []
+    related_to:
+      - point_source_injection
+      - supersampling
+    status:                   accepted
+
+  - id_term:                  point_source_injection
+    term:                     Point-source injection
+    definition:               |
+                              The principled fix for rasterization dropout:
+                              past ~2–3 px subtense a target physically is a
+                              point source, so inject it analytically into a
+                              background-only render instead of rasterizing it.
+                              Would remove the range ceiling, make ground truth
+                              exact, and let the background render at much
+                              lower supersampling. Not yet built.
+    alias:                    []
+    related_to:
+      - rasterization_dropout
+      - subtense
+      - supersampling
+    note:                     Not yet built.
+    status:                   accepted
+
+  - id_term:                  decimating_convolution
+    term:                     Decimating convolution
+    definition:               |
+                              Evaluating the PSF-plus-box convolution only at
+                              output positions rather than everywhere and
+                              discarding 1-in-N². Exactly equivalent, and
+                              necessary: the naive form costs O(N³) in the
+                              supersample factor because N grows both the pixel
+                              count and the kernel radius.
+    alias:                    []
+    related_to:
+      - pixel_aperture_integration
+      - psf
+      - supersampling
+    status:                   accepted
+
+  - id_term:                  render_on_demand
+    term:                     Render-on-demand
+    definition:               |
+                              Viewports render only when explicitly marked
+                              UPDATE_ONCE. Between captures the engine draws
+                              nothing.
+    alias:                    []
+    related_to:
+      - cull_mask
+      - strict_puppeting
+    status:                   accepted
+
+  - id_term:                  cull_mask
+    term:                     Cull mask
+    definition:               |
+                              How the depth pass's full-screen quad is kept out
+                              of every other layer: it sits on a dedicated
+                              visual layer (bit 19) that only the depth
+                              camera's cull mask includes.
+    alias:
+      - visual layer
+    related_to:
+      - depth
+      - layer
+      - render_on_demand
+    status:                   accepted
+
+  - id_term:                  enu
+    term:                     ENU
+    definition:               |
+                              The aerospace frame external data arrives in:
+                              x=East, y=North, z=Up, compass yaw from North,
+                              pitch as elevation, roll positive right-wing-down.
+    alias:
+      - East-North-Up
+    related_to:
+      - frame_conversion
+      - godot_frame
+    status:                   accepted
+
+  - id_term:                  godot_frame
+    term:                     Godot frame
+    definition:               |
+                              The renderer's frame: +X right, +Y up, −Z
+                              forward, rotations as [pitch, yaw, roll] in YXZ
+                              euler order.
+    alias:                    []
+    related_to:
+      - enu
+      - frame_conversion
+    status:                   accepted
+
+  - id_term:                  frame_conversion
+    term:                     Frame conversion
+    definition:               |
+                              ENU→renderer, kept deliberately client-side
+                              (axair_geoengine.frames) so no aerospace
+                              convention leaks into the engine. Position
+                              (east, up, −north), attitude
+                              (pitch, −yaw, −roll).
+    alias:                    []
+    related_to:
+      - basis_matrix
+      - client
+      - enu
+      - godot_frame
+    status:                   accepted
+
+  - id_term:                  basis_matrix
+    term:                     Basis matrix
+    definition:               |
+                              The camera's orientation recorded in capture
+                              metadata alongside the euler angles, because
+                              euler triples are convention-dependent and easy
+                              to misread downstream.
+    alias:                    []
+    related_to:
+      - frame_conversion
+    status:                   accepted
+
+  - id_term:                  fov
+    term:                     FOV
+    definition:               |
+                              Godot's Camera3D.fov is the vertical field of
+                              view, because keep_aspect defaults to
+                              KEEP_HEIGHT. Horizontal FOV must be converted.
+    alias:
+      - field of view
+    related_to:
+      - ifov
+      - off_boresight
+    status:                   accepted
+
+  - id_term:                  slant_range
+    term:                     Slant range
+    definition:               |
+                              Straight-line distance to the target. Distinct
+                              from depth, which is view-space Z; convert using
+                              the recorded intrinsics.
+    alias:                    []
+    related_to:
+      - depth
+    status:                   accepted
+
+  - id_term:                  pixi
+    term:                     pixi
+    definition:               |
+                              The environment and task manager. pixi run test,
+                              pixi run engine, pixi run intercept.
+    alias:                    []
+    related_to:               []
+    status:                   accepted
+
+  - id_term:                  round_trip_latency
+    term:                     Round-trip latency
+    definition:               |
+                              ~66 ms per command (two 30 Hz frames), i.e. ~15
+                              commands/second, set by Engine.max_fps = 30
+                              gating the socket poll. Dominant at low
+                              resolution, only 3% at 16× supersampling.
+    alias:                    []
+    related_to:
+      - command
+      - wire_protocol
+    status:                   accepted
+
+  - id_term:                  tmpfs_scratch
+    term:                     tmpfs scratch
+    definition:               |
+                              /dev/shm, used for transient supersampled frames
+                              so a 629 MB-per-frame pipeline never touches the
+                              SSD.
+    alias:                    []
+    related_to:
+      - supersampling
+    status:                   accepted
+
+  - id_term:                  resumable
+    term:                     Resumable
+    definition:               |
+                              The campaign runner skips clips whose output
+                              already exists and appends the manifest per clip,
+                              so an interrupted multi-hour run continues
+                              without losing or repeating work.
+    alias:                    []
+    related_to:
+      - campaign
+      - clip
+    status:                   accepted
+
+  - id_term:                  xvfb_fallback
+    term:                     xvfb fallback
+    definition:               |
+                              Godot's --headless uses a dummy renderer and
+                              cannot capture, so launch_engine() wraps the
+                              process in xvfb-run when no display is present.
+    alias:                    []
+    related_to:
+      - backend
+    status:                   accepted

@@ -1,0 +1,567 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/interface_control_document.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons interface control document schema
+
+description:                  |
+                              Schema for an interface control document (ICD)
+                              data item.
+
+                              Granularity: one ICD data item documents one
+                              directed edge in a dataflow (or analogous)
+                              architecture — normally carrying a structured
+                              record or message, not a bare scalar. It is the
+                              contract between a producing functional block
+                              and a consuming functional block.
+
+                              An ICD is intentionally not:
+
+                                * a functional_block_specification (what one
+                                  block does)
+                                * a full port sheet for all I/O of one block
+                                  (compose that view from relations)
+                                * a standalone reusable type library (prefer
+                                  citing an external schema or a future
+                                  message_definition item from payload)
+
+                              Payload shape is normally a data structure
+                              (fields, nested records, arrays). Binding /
+                              transport is a property of this edge, not the
+                              identity of the ICD: the same logical contract
+                              might later move from a socket protocol to
+                              shared memory or a file drop without renaming
+                              the architectural edge.
+
+                              Companion types:
+
+                                functional_block_specification
+                                  Behaviour and acceptance for one
+                                  functional block; lists provides/requires
+                                  ICD edges.
+
+                                architecture (planned)
+                                  Multi-block topology for a pipeline or
+                                  iteration scope.
+
+                              Recommended relation vocabulary:
+
+                                from_block
+                                  ICD → functional_block_specification
+                                  Producer of this edge.
+
+                                to_block
+                                  ICD → functional_block_specification
+                                  Consumer of this edge.
+
+                                uses_schema
+                                  ICD → message_definition | schema | glossary
+                                  Payload or type authority when modelled as
+                                  its own item.
+
+                                supersedes
+                                  ICD → ICD
+                                  Successor contract for the same edge;
+                                  superseded ICD SHOULD move to status
+                                  ``superseded``.
+
+                                documents_for
+                                  ICD → project | system | architecture
+                                  Optional scope owner.
+
+                              id_from / id_to hold the human-readable block
+                              identifiers (typically the target item's
+                              id_item) so authors can draft ICDs before
+                              block items exist; when block items exist,
+                              also emit from_block / to_block relations
+                              using guid_item.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                id_from
+          role:                 badge
+        - field:                id_to
+          role:                 badge
+        - field:                binding
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                id_from
+          role:                 body
+          label:                From block
+        - field:                id_to
+          role:                 body
+          label:                To block
+        - field:                binding
+          role:                 body
+          label:                Binding
+        - field:                interaction
+          role:                 body
+          label:                Interaction
+        - field:                payload
+          role:                 body
+          label:                Payload
+        - field:                quality_of_service
+          role:                 body
+          label:                Quality of service
+        - field:                error_model
+          role:                 body
+          label:                Error model
+        - field:                compatibility
+          role:                 body
+          label:                Compatibility
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - id_from
+      - id_to
+      - direction
+      - binding
+      - interaction
+      - payload
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                interface_control_document
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      id_from:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Human-readable identifier of the producing
+                              functional block (typically that block's
+                              id_item, for example ``scene_scripting`` or
+                              ``geoengine_client``).
+
+
+      id_to:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Human-readable identifier of the consuming
+                              functional block.
+
+
+      port_from:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Optional producer port / channel name when a
+                              block has multiple outbound ports (for example
+                              ``commands`` vs ``telemetry``).
+
+
+      port_to:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Optional consumer port / channel name.
+
+
+      direction:
+        type:                 string
+        const:                directed
+        description:          |
+                              ICDs are directed edges from id_from to id_to.
+                              Bidirectional protocols MUST be modelled as two
+                              ICD items (or a pair linked by relation), not
+                              one undirected document.
+
+
+      binding:
+        $ref:                 "#/$defs/binding_kind"
+        description:          |
+                              How this edge is realised at run time. Logical
+                              payload and architectural edge identity are
+                              independent of binding.
+
+
+      binding_detail:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Binding-specific parameters in prose or compact
+                              structured text: socket address pattern,
+                              topic name, MIME type, HTTP method/path sketch,
+                              shared-memory layout name, file path pattern,
+                              etc. Prefer stable names over environment-
+                              specific hosts.
+
+
+      interaction:
+        $ref:                 "#/$defs/interaction_kind"
+        description:          |
+                              Conversation pattern on this edge.
+
+
+      icd_version:
+        type:                 string
+        minLength:            1
+        maxLength:            64
+        description:          |
+                              Version of this interface contract as evolved
+                              by its owners (for example ``1.0``, ``2026.03``).
+                              Distinct from ver_schema (the CC item schema
+                              version).
+
+
+      payload:
+        $ref:                 "#/$defs/payload_contract"
+        description:          |
+                              Structured payload carried on this edge.
+                              Scalars alone are discouraged; prefer a named
+                              record even when it wraps a single value.
+
+
+      quality_of_service:
+        $ref:                 "#/$defs/quality_of_service"
+        description:          |
+                              Optional timing, ordering, and reliability
+                              expectations for this edge.
+
+
+      error_model:
+        type:                 string
+        minLength:            1
+        description:          |
+                              How invalid or failed exchanges are signalled
+                              and handled (reject with clear error, drop,
+                              retry, NACK, degrade). Align with system
+                              glossary terms when they exist.
+
+
+      compatibility:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Forward/backward compatibility rules for
+                              icd_version bumps: what consumers must tolerate,
+                              when a break requires a new ICD id_item.
+
+
+      status:
+        $ref:                 "#/$defs/icd_status"
+
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Short plain-language summary of the edge
+                              contract for matching and LLM context (who
+                              talks to whom, what structured thing moves,
+                              over what binding).
+
+
+$defs:
+
+  binding_kind:
+    type:                     string
+    enum:
+      - in_process
+      - length_prefixed_json_socket
+      - stream_socket
+      - shared_memory
+      - file_exchange
+      - message_queue
+      - http
+      - grpc
+      - other
+    description:              |
+                              Realisation mechanism for the edge.
+
+                                in_process — direct call / in-memory handoff
+                                  inside one process.
+
+                                length_prefixed_json_socket — 4-byte length
+                                  prefix + UTF-8 JSON (geoengine wire
+                                  protocol style).
+
+                                stream_socket — continuous byte/framed stream
+                                  without the JSON-command pattern.
+
+                                shared_memory — ring buffer / mapped region.
+
+                                file_exchange — drop directory, artefact
+                                  path, or object store key pattern.
+
+                                message_queue — brokered queue/topic.
+
+                                http — request/response web API.
+
+                                grpc — gRPC / protobuf RPC.
+
+                                other — describe in binding_detail.
+
+
+  interaction_kind:
+    type:                     string
+    enum:
+      - push
+      - pull
+      - request_reply
+      - stream
+    description:              |
+                              push — producer emits without a per-item request.
+                              pull — consumer requests each unit.
+                              request_reply — correlated request and response
+                                on this edge (or paired with a reverse ICD).
+                              stream — continuous or long-lived sequence.
+
+
+  payload_kind:
+    type:                     string
+    enum:
+      - record
+      - message
+      - envelope
+      - stream_unit
+      - other
+    description:              |
+                              record — structured fields (typical ICD unit).
+                              message — discrete protocol message / command.
+                              envelope — header + opaque or typed body.
+                              stream_unit — one element of a stream (frame,
+                                sample, chunk).
+                              other — explain in synopsis.
+
+
+  icd_status:
+    type:                     string
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+    description:              |
+                              Lifecycle of this ICD relative to review and use.
+
+
+  payload_field:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - id_field
+      - label
+      - required
+    properties:
+
+      id_field:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Stable field name within this payload (snake_case).
+
+
+      label:
+        type:                 string
+        minLength:            1
+        maxLength:            200
+        description:          |
+                              Human display name for the field.
+
+
+      type_name:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Logical type name (for example ``string``,
+                              ``uint32``, ``json_object``, ``image_ref``,
+                              ``float64_array``). Not necessarily a
+                              programming-language type.
+
+
+      required:
+        type:                 boolean
+        description:          |
+                              True when a conforming payload MUST include
+                              this field.
+
+
+      description:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Meaning, units, allowed values, and constraints.
+
+
+  payload_contract:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - kind
+      - synopsis
+    properties:
+
+      kind:
+        $ref:                 "#/$defs/payload_kind"
+
+
+      name:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Optional local name for this payload type
+                              (for example ``RenderCommand``,
+                              ``FramePackage``).
+
+
+      synopsis:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What structured information moves on this edge,
+                              in one short paragraph. Enough for an LLM or
+                              integrator to know the unit of exchange.
+
+
+      field:
+        type:                 array
+        description:          |
+                              Optional explicit field list for the record /
+                              message. Prefer this for LLM implementation
+                              when no external schema_uri is cited. Use an
+                              empty array when the shape lives only in
+                              schema_uri or schema_inline.
+        items:
+          $ref:               "#/$defs/payload_field"
+
+
+      schema_uri:
+        type:                 string
+        format:               uri
+        minLength:            1
+        description:          |
+                              Optional URI of an authoritative payload schema
+                              (JSON Schema, protobuf descriptor URL, OpenAPI
+                              component, etc.).
+
+
+      schema_inline:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional embedded schema text when a URI is
+                              impractical. Prefer schema_uri for large or
+                              shared types.
+
+
+      content_type:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              Optional media / encoding label (for example
+                              ``application/json``, ``application/x-ndjson``,
+                              ``image/png``).
+
+
+      note:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional caveats (compression, chunking,
+                              encryption, partial updates).
+
+
+  quality_of_service:
+    type:                     object
+    additionalProperties:     false
+    properties:
+
+      delivery:
+        type:                 string
+        enum:
+          - best_effort
+          - at_least_once
+          - exactly_once
+          - unknown
+        description:          |
+                              Reliability expectation when applicable.
+
+
+      ordering:
+        type:                 string
+        enum:
+          - unordered
+          - fifo
+          - causal
+          - unknown
+        description:          |
+                              Ordering guarantee on this edge.
+
+
+      max_latency:
+        type:                 string
+        minLength:            1
+        maxLength:            64
+        description:          |
+                              Soft or hard latency budget as a readable
+                              quantity (for example ``50ms``, ``1s``,
+                              ``next_frame``).
+
+
+      rate:
+        type:                 string
+        minLength:            1
+        maxLength:            64
+        description:          |
+                              Expected or maximum rate (for example ``30Hz``,
+                              ``on_demand``, ``burst_ok``).
+
+
+      note:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Further QoS context (backpressure, buffering,
+                              drop policy).

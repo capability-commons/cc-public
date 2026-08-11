@@ -1,0 +1,65 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    0c81d218-79d3-4dd4-81f7-3a17fc0c0a35
+id_item:                      sensor_package_body
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        Sensor-package body (boresight-aligned)
+brief:                        Metres at the design optical centre; +Z boresight, +X along increasing FPA column, +Y completing right-handed.
+description:                  |
+                              Sensor-package-centric, package-aligned frame.
+                              Origin at the nominal as-designed optical centre
+                              (focal point). Axes rotate with the sensor
+                              package and align with the optical axis and the
+                              nominal row/column directions of the focal-plane
+                              array (design, pre-calibration).
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         cartesian
+dimension:                    3
+unit:                         metre
+
+origin:
+  policy:                     sensor_instance
+  statement:                  |
+                              Same design optical centre as sensor_package_ned;
+                              orientation follows the sensor package.
+
+axis:
+  - id_axis:                  x
+    label:                    X
+    sense:                    |
+                              Parallel to the focal-plane array in the
+                              direction of increasing column index (readout
+                              column); positive toward increasing col.
+  - id_axis:                  y
+    label:                    Y
+    sense:                    |
+                              Completes a right-handed triad with X and Z.
+                              With +Z toward the scene and +X along increasing
+                              column, +Y is opposite the direction of
+                              increasing row index on the FPA (i.e. toward
+                              the "top" of the array when looking along +Z
+                              into the scene).
+  - id_axis:                  z
+    label:                    Z (boresight)
+    sense:                    |
+                              Primary optical axis; positive out of the lens
+                              toward the scene.
+
+handedness:                   right
+
+status:                       draft
+
+statement:                    |
+                              Per-sensor body frame at the design optical
+                              centre: +Z boresight toward scene, +X along
+                              increasing FPA column, +Y right-handed (toward
+                              FPA top when looking along +Z).

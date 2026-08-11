@@ -1,0 +1,57 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    44583c91-491b-43e8-a76b-224c54a642c1
+id_item:                      sensor_package_ned
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        Sensor-package NED (world-aligned)
+brief:                        NED metres with origin at the sensor design optical centre; axes world-aligned north-east-down.
+description:                  |
+                              Sensor-package-centric but world-aligned frame.
+                              Origin at the nominal as-designed optical centre
+                              (focal point) of the camera optics for that
+                              sensor instance. Axes remain North-East-Down as
+                              the platform moves (origin rides with the
+                              sensor; axes do not rotate with boresight).
+                              Distinct from local_ned (shared run anchor) and
+                              from sensor_package_body (boresight-aligned).
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         cartesian
+dimension:                    3
+unit:                         metre
+
+origin:
+  policy:                     sensor_instance
+  statement:                  |
+                              Nominal as-designed optical centre (entrance /
+                              projection centre used as design focal point)
+                              of this sensor. Pre-calibration; measured
+                              boresight frames may be added later.
+
+axis:
+  - id_axis:                  north
+    label:                    North
+    sense:                    Local geodetic north at the sensor origin.
+  - id_axis:                  east
+    label:                    East
+    sense:                    Local geodetic east at the sensor origin.
+  - id_axis:                  down
+    label:                    Down
+    sense:                    Local vertical positive down at the sensor origin.
+
+handedness:                   right
+
+status:                       draft
+
+statement:                    |
+                              Per-sensor NED frame: origin at design optical
+                              centre, axes north-east-down, for world-aligned
+                              quantities at the sensor package.

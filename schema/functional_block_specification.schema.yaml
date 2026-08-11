@@ -1,0 +1,213 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/functional_block_specification.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons functional block specification schema
+
+description:                  |
+                              Schema for a functional block specification —
+                              one data item describes exactly one functional
+                              block.
+
+                              The specification body is an ordered set of
+                              functional requirement entries (``requirement``),
+                              plus ICD references, out-of-scope notes, and
+                              acceptance checks. Together with ICDs, this
+                              should be enough for a human or LLM to
+                              implement the block.
+
+                              Pipeline topology belongs in architecture;
+                              edge contracts belong in ICDs.
+
+                              Recommended relations:
+
+                                provides_icd
+                                  functional_block_specification → ICD
+                                requires_icd
+                                  functional_block_specification → ICD
+                                supersedes
+                                  functional_block_specification →
+                                  functional_block_specification
+                                documents_for
+                                  functional_block_specification → project
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                id_block
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                id_block
+          role:                 body
+          label:                Block id
+        - field:                label
+          role:                 body
+          label:                Label
+        - field:                requirement
+          role:                 body
+          label:                Requirements
+        - field:                provides_icd
+          role:                 body
+          label:                Provides ICDs
+        - field:                requires_icd
+          role:                 body
+          label:                Requires ICDs
+        - field:                out_of_scope
+          role:                 body
+          label:                Out of scope
+        - field:                acceptance
+          role:                 body
+          label:                Acceptance
+        - field:                status
+          role:                 body
+          label:                Status
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - id_block
+      - label
+      - requirement
+      - provides_icd
+      - requires_icd
+      - out_of_scope
+      - acceptance
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                functional_block_specification
+
+      ver_schema:
+        const:                0.1.0
+
+      id_block:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Stable block id (matches ICD id_from / id_to).
+
+      label:
+        type:                 string
+        minLength:            1
+        maxLength:            200
+        description:          Human display name for the block.
+
+      requirement:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Functional requirements for this block. Each
+                              entry conforms to functional_requirement.schema.
+        items:
+          $ref:               https://capability-commons.org/schema/functional_requirement.schema.yaml
+
+      provides_icd:
+        type:                 array
+        description:          |
+                              ICD id_item values for outbound edges this
+                              block produces. Empty array when none yet.
+        items:
+          $ref:               https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+      requires_icd:
+        type:                 array
+        description:          |
+                              ICD id_item values for inbound edges this
+                              block consumes. Empty array when none yet.
+        items:
+          $ref:               https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+      out_of_scope:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Explicit non-goals — responsibilities that
+                              belong to other blocks.
+
+      constraints:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional block-level implementation or
+                              operational limits.
+
+      acceptance:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Testable done-when checks for the block as a
+                              whole. Individual requirements MAY cite these
+                              via requirement.verifies.
+        items:
+          $ref:               "#/$defs/acceptance_check"
+
+      status:
+        $ref:                 "#/$defs/spec_status"
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: block role and principal ICDs.
+
+
+$defs:
+
+  spec_status:
+    type:                     string
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+
+  acceptance_check:
+    type:                     object
+    additionalProperties:     false
+    required:
+      - id_check
+      - statement
+    properties:
+      id_check:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+      statement:
+        type:                 string
+        minLength:            1
+      example:
+        type:                 string
+        minLength:            1

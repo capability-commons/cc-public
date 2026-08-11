@@ -1,0 +1,58 @@
+id_schema:                    coordinate_frame
+ver_schema:                   0.1.0
+
+guid_item:                    9673de62-9fde-4b92-82fe-81d4a01761ff
+id_item:                      fpa_readout_rc
+
+protective_mark:              public
+copyright:                    Copyright holders of the axair-geoengine project
+license:                      License-Ref-TBD
+
+title:                        FPA readout (row, column)
+brief:                        Image sample indices with origin at readout (0,0); +row and +col increase with array indices.
+description:                  |
+                              Focal-plane-readout-centric, FPA-aligned index
+                              frame. Origin at the (0,0) readout sample.
+                              On many sensors that corner is bottom-right in
+                              physical package space but appears as the
+                              top-left of the delivered image; this frame
+                              follows the delivered image / readout indices,
+                              not package silkscreen. Capture metadata
+                              com_px, bounding boxes, and layer pixel grids
+                              use this frame.
+
+relation:                     []
+
+workflow:                     {}
+
+kind:                         image_index
+dimension:                    2
+unit:                         pixel
+
+origin:
+  policy:                     readout_fixed
+  statement:                  |
+                              Sample index (row=0, col=0) of the delivered
+                              focal-plane readout / image raster for this
+                              capture.
+
+axis:
+  - id_axis:                  row
+    label:                    Row
+    sense:                    |
+                              Positive as row index increases (normally
+                              downward in the delivered image).
+  - id_axis:                  col
+    label:                    Column
+    sense:                    |
+                              Positive as column index increases (normally
+                              rightward in the delivered image).
+
+handedness:                   not_applicable
+
+status:                       draft
+
+statement:                    |
+                              FPA readout index frame (row, col) with origin
+                              at delivered (0,0); used for capture metadata
+                              pixel quantities and image layers.

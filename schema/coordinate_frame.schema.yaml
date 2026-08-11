@@ -1,0 +1,249 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/coordinate_frame.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons coordinate frame schema
+
+description:                  |
+                              Schema for a coordinate frame data item.
+
+                              A coordinate frame is a named, reusable definition
+                              of an origin convention, axis triad (or 2D pair),
+                              units, and handedness. Other artefacts (capture
+                              metadata, ICDs, functional specifications) cite a
+                              frame by id_item / guid_item so quantities are
+                              unambiguous.
+
+                              A coordinate_frame item defines the *type* of
+                              frame. When the origin is instance-specific
+                              (sensor optical centre, run-local NED anchor),
+                              runtime data supplies the origin pose; this item
+                              still owns axis sense and units.
+
+                              A coordinate_frame is intentionally not a pose,
+                              a transform instance, or a calibration. Transforms
+                              between frames are stated where used (or in a
+                              later transform type); calibration introduces
+                              additional measured frames rather than silently
+                              mutating these nominal ones.
+
+                              Recommended relation vocabulary:
+
+                                cites
+                                  coordinate_frame → standard | glossary
+                                  External authority (e.g. WGS84).
+
+                                related_to
+                                  coordinate_frame → coordinate_frame
+                                  Companion frame in a common chain.
+
+                                supersedes
+                                  coordinate_frame → coordinate_frame
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                kind
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                kind
+          role:                 body
+          label:                Kind
+        - field:                dimension
+          role:                 body
+          label:                Dimension
+        - field:                unit
+          role:                 body
+          label:                Unit
+        - field:                origin
+          role:                 body
+          label:                Origin
+        - field:                axis
+          role:                 body
+          label:                Axes
+        - field:                handedness
+          role:                 body
+          label:                Handedness
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - kind
+      - dimension
+      - unit
+      - origin
+      - axis
+      - handedness
+      - status
+      - statement
+
+    properties:
+
+      id_schema:
+        const:                coordinate_frame
+
+
+      ver_schema:
+        const:                0.1.0
+
+
+      kind:
+        type:                 string
+        enum:
+          - geodetic
+          - cartesian
+          - image_index
+        description:          |
+                              geodetic — ellipsoidal angular + height.
+                              cartesian — Euclidean 2D or 3D axes.
+                              image_index — discrete or continuous pixel
+                              sample indices (row/column).
+
+
+      dimension:
+        type:                 integer
+        enum:                 [2, 3]
+
+
+      unit:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Primary quantity unit for axis coordinates
+                              (for example ``metre``, ``degree``, ``pixel``).
+                              Geodetic frames MAY use compound units described
+                              under axis.
+
+
+      origin:
+        type:                 object
+        additionalProperties: false
+        required:
+          - policy
+          - statement
+        properties:
+          policy:
+            type:             string
+            enum:
+              - earth_fixed
+              - run_instance
+              - sensor_instance
+              - target_instance
+              - optics_nominal
+              - readout_fixed
+            description:      |
+                              earth_fixed — defined by the Earth model
+                              (WGS84 / ECEF).
+                              run_instance — origin pose supplied once per
+                              run/campaign (e.g. local NED anchor).
+                              sensor_instance — origin at that sensor's
+                              reference point for each sample.
+                              target_instance — origin at a named target's
+                              centre of mass for each sample; may also
+                              depend on a nominated ego sensor.
+                              optics_nominal — design optical centre /
+                              principal-point pierce (pre-calibration).
+                              readout_fixed — FPA readout (0,0) index.
+          statement:
+            type:             string
+            minLength:        1
+
+
+      axis:
+        type:                 array
+        minItems:             2
+        maxItems:             3
+        description:          |
+                              Ordered axis definitions. Length MUST equal
+                              dimension. For image_index frames, names are
+                              typically row and col.
+        items:
+          type:               object
+          additionalProperties: false
+          required:
+            - id_axis
+            - label
+            - sense
+          properties:
+            id_axis:
+              $ref:           https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+            label:
+              type:           string
+              minLength:      1
+              maxLength:      80
+            sense:
+              type:           string
+              minLength:      1
+              description:    |
+                              What positive direction means.
+            unit:
+              type:           string
+              minLength:      1
+              description:    |
+                              Optional per-axis unit override (geodetic).
+
+
+      handedness:
+        type:                 string
+        enum:
+          - right
+          - left
+          - not_applicable
+        description:          |
+                              Right/left for Cartesian 3D (and 2D when
+                              embedded in a right-handed 3D chain).
+                              not_applicable for pure index conventions
+                              where handedness is stated via axis sense.
+
+
+      status:
+        type:                 string
+        enum:
+          - draft
+          - under_review
+          - accepted
+          - superseded
+          - withdrawn
+
+
+      statement:
+        type:                 string
+        minLength:            1
