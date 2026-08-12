@@ -131,9 +131,18 @@ allOf:
         minItems:             1
         description:          |
                               Functional requirements for this block. Each
-                              entry conforms to functional_requirement.schema.
+                              entry conforms to functional_requirement.schema's
+                              embedded shape (id_requirement, obligation,
+                              activity_type, actor, process, object,
+                              condition, rationale, verification_method,
+                              verifies, statement) — see that schema for
+                              elicitation and generation guidance drawn from
+                              the INCOSE Guide to Writing Requirements and the
+                              SOPHIST requirements template. Entries carry no
+                              guid_item or relation of their own; this item's
+                              identity and traceability stand in for the set.
         items:
-          $ref:               https://capability-commons.org/schema/functional_requirement.schema.yaml
+          $ref:               https://capability-commons.org/schema/functional_requirement.schema.yaml#/$defs/requirement_fields
 
       provides_icd:
         type:                 array

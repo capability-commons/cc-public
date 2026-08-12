@@ -3,57 +3,630 @@ $id:                          https://capability-commons.org/schema/functional_r
 
 ver_schema:                   0.1.0
 
-title:                        Functional requirement (entry)
+title:                        Functional requirement
 
 description:                  |
-                              Schema for one functional requirement entry.
+                              Schema for one functional requirement: a
+                              testable, unambiguous, solution-free statement
+                              of what a system, block, or interface must do
+                              or guarantee.
 
-                              Requirements are normally embedded in a
-                              functional_block_specification data item
-                              (``requirement[]``), not stored as separate
-                              guid_item items. Each entry is nevertheless a
-                              distinct, addressable requirement with stable
-                              ``id_requirement`` for traceability to
-                              acceptance checks and ICDs.
+                              Dual use — embedded or standalone.
 
-                              Prefer one block specification with many
-                              requirement entries over one data item per
-                              requirement.
+                              Most functional requirements should live
+                              embedded inside an owning item's requirement
+                              array, most commonly
+                              functional_block_specification.requirement[].
+                              For that case, reference $defs/requirement_fields
+                              directly. It carries no guid_item, relation, or
+                              workflow of its own — the owning item supplies
+                              identity, traceability, and lifecycle for the
+                              whole set, and id_requirement gives each entry a
+                              stable, addressable id for citation from
+                              acceptance checks, ICDs, and (if later promoted)
+                              relation edges.
+
+                              Promote a requirement to a standalone,
+                              first-class data item — using the top-level
+                              schema below, which extends base.schema.yaml and
+                              merges in requirement_fields — only when it
+                              genuinely needs independent identity that the
+                              owning item cannot express on its behalf: for
+                              example a requirement shared verbatim across
+                              several block specifications, or one that needs
+                              its own relation edge straight to a need or
+                              parent requirement rather than tracing through
+                              its block spec. Prefer embedding; treat
+                              standalone promotion as the exception.
+
+                              Recommended relation vocabulary (standalone use
+                              only — embedded requirements trace through their
+                              owning item instead):
+
+                                satisfies
+                                  functional_requirement → need | framing |
+                                  functional_requirement
+                                  This requirement realises, in whole or in
+                                  part, the named upstream item.
+
+                                supersedes
+                                  functional_requirement → functional_requirement
+                                  This requirement replaces an earlier
+                                  standalone requirement.
+
+                              Elicitation and generation guidance.
+
+                              The field descriptions below combine two
+                              complementary methods for constructing and
+                              judging the statement:
+
+                                SOPHIST (Rupp, "The Requirements Template —
+                                The Assembly Plan of a Requirement"; the
+                                SOPHIST REgelwerk / RE-Primer) gives a
+                                step-by-step assembly plan: pick a process
+                                word, pick one of three sentence patterns
+                                depending on who does the work, pick a legal
+                                obligation keyword, add the object and its
+                                detail, prefix a condition if one applies,
+                                then run a linguistic-defect checklist.
+                                obligation, activity_type, actor, process,
+                                object, and condition below are that assembly
+                                plan, split into fields.
+
+                                INCOSE (Guide to Writing Requirements v3 /
+                                v3.1) gives the characteristics a finished
+                                statement and a finished set must have —
+                                necessary, appropriate, unambiguous, complete,
+                                singular, feasible, verifiable, correct,
+                                conforming (C1-C9) — and forty-one concrete
+                                rules (R1-R41) for getting there. Field
+                                descriptions cite the relevant rules inline;
+                                statement carries the full checklist.
+
+                              Quick self-check before accepting a statement:
+
+                                * Singular — one testable thought (C5,
+                                  R18-R19).
+                                * Active, actor-first: "the <system> shall
+                                  ..." never "... shall be done" (R2).
+                                * Matches its declared activity_type pattern
+                                  exactly — autonomous, user_interaction, or
+                                  interface.
+                                * Free of vague terms, escape clauses,
+                                  open-ended clauses, and stray pronouns
+                                  (R7-R9, R24).
+                                * Solution-free — states what and how well,
+                                  not which technology, unless the constraint
+                                  is a genuine external one (R31).
+                                * Verifiable without opening this item — a
+                                  reader could sketch a test, inspection, or
+                                  analysis from the words alone (C7).
 
 
-type:                         object
-additionalProperties:         false
+display:
+  default_view:               outline
 
-required:
-  - id_requirement
-  - statement
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                obligation
+          role:                 badge
+        - field:                activity_type
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
 
-properties:
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                id_requirement
+          role:                 body
+          label:                Requirement id
+        - field:                obligation
+          role:                 body
+          label:                Obligation
+        - field:                activity_type
+          role:                 body
+          label:                Activity type
+        - field:                actor
+          role:                 body
+          label:                Actor
+        - field:                process
+          role:                 body
+          label:                Process
+        - field:                object
+          role:                 body
+          label:                Object
+        - field:                condition
+          role:                 body
+          label:                Condition
+        - field:                rationale
+          role:                 body
+          label:                Rationale
+        - field:                verification_method
+          role:                 body
+          label:                Verification method
+        - field:                verifies
+          role:                 body
+          label:                Verifies
+        - field:                description
+          role:                 body
+          label:                Description
 
-  id_requirement:
-    $ref:                     https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
-    description:              |
-                              Stable id within this block specification
-                              (snake_case).
 
-  statement:
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+    properties:
+      id_schema:
+        const:                functional_requirement
+      ver_schema:
+        const:                0.1.0
+
+  - $ref:                     "#/$defs/requirement_fields"
+
+
+$defs:
+
+
+  obligation:
     type:                     string
-    minLength:                1
-    description:              |
-                              The requirement — testable, unambiguous,
-                              functional (what the block must do or guarantee,
-                              not how to implement it).
+    enum:
+      - shall
+      - should
+      - will
+    description:               |
+                              Legal obligation / modal verb for this
+                              requirement — SOPHIST's "Schritt 3: Determine
+                              legal obligation", and part of how INCOSE
+                              statements express necessity and priority.
 
-  note:
+                              Use:
+
+                                shall — binding. The requirement is
+                                  mandatory; the implementation MUST satisfy
+                                  it, and acceptance MAY be withheld if it
+                                  does not.
+
+                                should — preferred but not mandatory. Use for
+                                  genuinely optional or negotiable behaviour,
+                                  not as a hedge for a requirement you have
+                                  not finished analysing.
+
+                                will — future / statement of intent. Use only
+                                  for behaviour that is agreed but
+                                  deliberately deferred to a later increment;
+                                  a will-requirement becomes binding once its
+                                  increment arrives.
+
+                              Avoid mixing modal verbs inside one statement,
+                              and avoid "must", "is required to", or bare
+                              present tense as substitutes — pick one of the
+                              three keywords above and use it consistently
+                              (INCOSE R39; SOPHIST 8.4.1 semantic
+                              definitions).
+
+
+  activity_type:
     type:                     string
-    minLength:                1
-    description:              Optional rationale, context, or edge cases.
+    enum:
+      - autonomous
+      - user_interaction
+      - interface
+    description:               |
+                              Which of SOPHIST's three sentence patterns this
+                              requirement uses, chosen by who performs the
+                              process (SOPHIST "Schritt 2: Characterising the
+                              activity of the system"). The pattern fixes how
+                              statement must read once obligation, process,
+                              and object are filled in:
 
-  verifies:
-    type:                     array
-    description:              |
-                              Optional id_check values from this block
-                              spec's acceptance[] that demonstrate this
-                              requirement.
-    items:
-      $ref:                   https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+                                autonomous — the system executes the process
+                                  on its own; no user is involved.
+                                    <condition,> the <system> <obligation>
+                                    <process> <object>.
+                                  e.g. "The system shall log the timestamp of
+                                  every failed login attempt."
+
+                                user_interaction — the system offers a user
+                                  the ability to perform the process; name
+                                  the user in actor.
+                                    <condition,> the <system> <obligation>
+                                    PROVIDE <actor> WITH THE ABILITY TO
+                                    <process> <object>.
+                                  e.g. "The system shall provide the
+                                  receptionist with the ability to print a
+                                  bill on the network printer."
+
+                                interface — the system can only execute the
+                                  process because a third party (another
+                                  system) supplies the triggering data; the
+                                  system is passive until that happens.
+                                    <condition,> the <system> <obligation> BE
+                                    ABLE TO <process> <object>.
+                                  e.g. "The system shall be able to receive
+                                  confirmation data from the bank system."
+
+                              Choosing the wrong pattern is a common source
+                              of ambiguity: if a human decides when the
+                              process happens, this is user_interaction, not
+                              autonomous; if another system decides, this is
+                              interface, not user_interaction.
+
+
+  verification_method:
+    type:                     string
+    enum:
+      - inspection
+      - analysis
+      - demonstration
+      - test
+    description:               |
+                              How this requirement's satisfaction will be
+                              confirmed (INCOSE attribute A8, supporting
+                              characteristic C7 Verifiable).
+
+                              Use:
+
+                                inspection — visual or manual examination of
+                                  the delivered item or its documentation.
+
+                                analysis — calculation, modelling, or
+                                  simulation rather than operating the
+                                  system.
+
+                                demonstration — operating the system and
+                                  observing qualitative behaviour without
+                                  instrumented measurement.
+
+                                test — operating the system under
+                                  controlled, repeatable conditions with
+                                  instrumented, quantitative measurement
+                                  against the requirement's stated criteria.
+
+                              Choose the cheapest method that still gives the
+                              approving authority confidence (INCOSE C7); do
+                              not default every requirement to test.
+
+
+  requirement_fields:
+    type:                     object
+    required:
+      - id_requirement
+      - obligation
+      - activity_type
+      - process
+      - object
+      - statement
+
+    properties:
+
+      id_requirement:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Stable id for this requirement, unique within
+                              the owning item (snake_case). Keep it stable
+                              across statement edits so acceptance[].verifies,
+                              ICDs, and (if promoted) relation edges keep
+                              pointing at the same requirement.
+
+      obligation:
+        $ref:                 "#/$defs/obligation"
+
+      activity_type:
+        $ref:                 "#/$defs/activity_type"
+
+      actor:
+        type:                 string
+        minLength:            1
+        maxLength:             120
+        description:          |
+                              The user, role, or operator given the ability
+                              to perform process — required in practice
+                              whenever activity_type is user_interaction.
+                              SOPHIST: "The 'whom?' part can only be seen as
+                              optional if it is unambiguous to whom the
+                              system is to provide the ability... we have
+                              not denoted it as optional because an omission
+                              would be a deletion error." Name the role
+                              explicitly even when every user qualifies —
+                              "any authenticated operator" rather than
+                              silence.
+
+                              Leave unset for autonomous and interface
+                              requirements; no user is party to those.
+
+      process:
+        type:                 string
+        minLength:            1
+        maxLength:             80
+        description:          |
+                              The single process word: the verb, in
+                              infinitive form, that this requirement is
+                              about (SOPHIST "Schritt 1: At the beginning,
+                              there is the process").
+
+                              Pick one word per distinct function and reuse
+                              the same word everywhere that function recurs
+                              across this item's requirements; do not vary
+                              between near-synonyms such as enter/input/
+                              insert, or generate/create/produce, for the
+                              same underlying action (SOPHIST 8.4.1
+                              process-word dictionary discipline; INCOSE
+                              R36-R37 uniformity of language).
+
+                              Avoid nominalisations standing in for the verb
+                              ("the return of the item" instead of "return
+                              the item") and light-verb constructions that
+                              hide the real process ("make available",
+                              "carry out a check of" instead of "provide" /
+                              "check") — SOPHIST REgelwerk rules 2-4. Avoid
+                              vague verbs that do not commit to an observable
+                              action — "handle", "support", "manage",
+                              "process" — unless this item's glossary defines
+                              exactly what they mean here.
+
+      object:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What the process acts on, plus the detail
+                              needed to make it unambiguous and complete
+                              (SOPHIST "Schritt 4: Fine tuning", and
+                              REgelwerk rule 6: ask who, what, when, where,
+                              how often about the process and fold the
+                              answers in here).
+
+                              Prefer:
+
+                                * a bill on the network printer
+                                * the three most recently viewed dishes,
+                                  ordered by recency
+                                * confirmation data from the bank system,
+                                  within 2 seconds of receipt
+
+                              Avoid:
+
+                                * bare objects missing a qualifier that
+                                  matters ("a bill" when which printer
+                                  matters)
+                                * vague quantifiers — "some", "several",
+                                  "many", "a few", "about", "approximately"
+                                  (INCOSE R7); write "each" rather than
+                                  "all"/"any"/"both" when you mean every
+                                  member of a set (INCOSE R32)
+                                * unachievable absolutes — "100% accurate",
+                                  "never fails", "always available" (INCOSE
+                                  R26)
+                                * numbers without units, or units without a
+                                  stated tolerance where one applies (INCOSE
+                                  R6, R33-R34)
+
+      condition:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Logical or temporal condition that this
+                              requirement's obligation is contingent on,
+                              phrased as a subordinate clause prefixed to the
+                              statement (SOPHIST "Schritt 5"). Omit for
+                              requirements that always apply.
+
+                              Use exactly one of SOPHIST's three
+                              connectives, chosen by what kind of condition
+                              it is, and keep the meaning of each fixed
+                              across every requirement in this item (SOPHIST
+                              8.4.2):
+
+                                IF <logical expression> — a state that
+                                  either holds or does not at the moment
+                                  obligation is evaluated.
+                                  e.g. "IF the customer already exists in
+                                  the library system"
+
+                                WHEN / AS SOON AS <event> — a discrete
+                                  trigger: the instant something happens,
+                                  not a duration.
+                                  e.g. "AS SOON AS the librarian has
+                                  selected register new customer"
+
+                                WHILE / AS LONG AS <state persists> — a
+                                  duration: the obligation holds only for as
+                                  long as the state is true.
+                                  e.g. "WHILE the library system is
+                                  connected to the network"
+
+                              Combine multiple conditions with explicit AND
+                              / XOR / IOR and parentheses rather than
+                              natural-language "and"/"or", which is
+                              reliably ambiguous about inclusivity and scope
+                              (SOPHIST 8.4.2; INCOSE R15). If a requirement
+                              needs more than two or three combined
+                              conditions to stay readable, prefer splitting
+                              it into several single-condition requirements
+                              instead (INCOSE R11, R28).
+
+      rationale:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Why this requirement is necessary (INCOSE
+                              attribute A1, supporting characteristic C1
+                              Necessary): the need, framing, parent
+                              requirement, standard, or constraint it traces
+                              to.
+
+                              This is the one place a reader finds that
+                              trace when the requirement is embedded and
+                              therefore has no relation edges of its own —
+                              name the source explicitly rather than
+                              assuming the owning item's context makes it
+                              obvious.
+
+                              Prefer:
+
+                                * Traces to need "reliable coordination with
+                                  receiving medical units" — this is the
+                                  detect-and-notify half of that outcome.
+                                * Required by the logistics_resilience
+                                  framing's decomposition_intent: warn
+                                  function.
+
+                              Avoid:
+
+                                * Because it's needed
+                                * Restating the statement in different words
+
+      verification_method:
+        $ref:                 "#/$defs/verification_method"
+
+      verifies:
+        type:                 array
+        description:          |
+                              Optional id_check values from the owning
+                              item's acceptance[] (for example
+                              functional_block_specification.acceptance[])
+                              that demonstrate this requirement. Use an
+                              empty array — or omit the field — when no
+                              acceptance check yet covers it; that is a gap
+                              to close, not a reason to invent a check
+                              prematurely.
+        items:
+          $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical requirement sentence, synthesised
+                              from condition, obligation, activity_type,
+                              actor, process, and object above. This is the
+                              field implementations, tests, and reviewers
+                              actually read; the structured fields exist to
+                              make this sentence easy to assemble correctly
+                              and easy to check.
+
+                              Assemble it in this order:
+
+                                [IF|WHEN|AS SOON AS|WHILE|AS LONG AS
+                                <condition>,] the <system> <obligation>
+                                [PROVIDE <actor> WITH THE ABILITY TO |
+                                BE ABLE TO] <process> <object>.
+
+                              Worked examples, one per activity_type:
+
+                                autonomous, no condition:
+                                  "The system shall log the timestamp of
+                                  every failed login attempt."
+
+                                user_interaction, with condition:
+                                  "IF the option 'Bill required' has been
+                                  selected on the mobile device, the system
+                                  shall provide the receptionist with the
+                                  ability to print a bill on the network
+                                  printer."
+
+                                interface, with condition:
+                                  "IF the guest wants to have the billable
+                                  amount debited from their bank account,
+                                  the system shall be able to receive
+                                  confirmation data from the bank system."
+
+                              Before accepting a statement, check it against
+                              both traditions this schema draws on.
+
+                              INCOSE characteristics (C1-C9) — the statement
+                              should be:
+
+                                * Necessary — defines an essential
+                                  capability the source (see rationale)
+                                  actually requires.
+                                * Appropriate — matches the level of the
+                                  block or system it belongs to; not a
+                                  system-level concern smuggled into a
+                                  component, or vice versa.
+                                * Unambiguous — only one reading is possible
+                                  by every intended reader.
+                                * Complete — understandable without needing
+                                  other requirements to fill gaps.
+                                * Singular — one capability per statement
+                                  (INCOSE R18); split anything joined by
+                                  "and", "or", "then", "unless", "as well
+                                  as", "however", "whereas" (INCOSE R19)
+                                  into separate requirement entries.
+                                * Feasible — realisable within known cost,
+                                  schedule, and technical constraints.
+                                * Verifiable — matches verification_method;
+                                  a reader could write the check from the
+                                  words alone.
+                                * Correct — an accurate transformation of
+                                  its source, not an embellishment of it.
+                                * Conforming — follows this template; do not
+                                  freelance the sentence shape.
+
+                              SOPHIST REgelwerk defects to rule out —
+                              signal words are what to search for, not
+                              words that are always wrong:
+
+                                * Passive voice hiding the actor — "is
+                                  logged", "will be displayed" instead of
+                                  "the system logs" / "shall display"
+                                  (rule 1).
+                                * Vague or undefined verbs — "provide",
+                                  "ensure", "handle" — used as the process
+                                  word itself rather than in the
+                                  user_interaction / interface pattern
+                                  (rule 2).
+                                * Nominalisations hiding a verb — "the
+                                  return", "the archiving", "the entry of"
+                                  (rule 3).
+                                * Unmeasurable properties — "fast",
+                                  "effective", "performant", "better",
+                                  "intuitive" — without a stated metric
+                                  (rule 8).
+                                * Unresolved universal or vague quantifiers —
+                                  "all", "any", "always", "never" left
+                                  unqualified; "some", "several", "many"
+                                  left uncounted (rules 10-11).
+                                * Vague nouns — "the user", "the message",
+                                  "the function" — where a specific actor,
+                                  message, or function is meant (rule 12).
+                                * "must be possible" / "must not be
+                                  possible" standing in for a stated,
+                                  attributable behaviour (rule 13).
+                                * Purpose or reason clauses folded into the
+                                  requirement — "...because...", "...so
+                                  that..."; move the reason to rationale,
+                                  not the statement (rule 14; INCOSE R20).
+                                * Filler phrases that add no testable
+                                  content — "for the case that", "as
+                                  appropriate", "as required", "where
+                                  possible" (rule 15; INCOSE R8 escape
+                                  clauses).
+                                * An exception to normal behaviour that is
+                                  implied but not written down as its own
+                                  requirement (rules 16-18).
+
+                              Also avoid, per INCOSE: "including but not
+                              limited to", "etc.", "and so on" (R9 open-
+                              ended clauses); "if possible", "as far as
+                              practicable" (R8 escape clauses); pronouns
+                              with no unambiguous referent (R24); and the
+                              oblique "/" symbol outside of units (R17).
