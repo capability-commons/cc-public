@@ -309,6 +309,7 @@ $defs:
   requirement_fields:
     type:                     object
     required:
+      - guid_item
       - id_requirement
       - obligation
       - activity_type
@@ -318,14 +319,32 @@ $defs:
 
     properties:
 
+      guid_item:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+        description:          |
+                              Globally-unique, immutable identity for this
+                              requirement entry, present whether it's
+                              embedded here or (rarely) promoted to a
+                              standalone item — identity is decoupled from
+                              storage location. Assigned once and preserved
+                              across every later edit, including promotion;
+                              see CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md. This, not id_requirement, is
+                              what a relation edge from outside the owning
+                              item (an ICD, a critique, a future
+                              functional_chain_specification citing this
+                              exact requirement) should target.
+
       id_requirement:
         $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
         description:          |
-                              Stable id for this requirement, unique within
-                              the owning item (snake_case). Keep it stable
-                              across statement edits so acceptance[].verifies,
-                              ICDs, and (if promoted) relation edges keep
-                              pointing at the same requirement.
+                              Stable, readable id for this requirement,
+                              unique within the owning item (snake_case).
+                              Keep it stable across statement edits so
+                              acceptance[].verifies and any other
+                              same-document reference keep resolving.
+                              Readable local key, distinct from guid_item's
+                              role as the globally-resolvable identity.
 
       obligation:
         $ref:                 "#/$defs/obligation"
@@ -500,16 +519,20 @@ $defs:
       verifies:
         type:                 array
         description:          |
-                              Optional id_check values from the owning
+                              Optional guid_item values from the owning
                               item's acceptance[] (for example
                               functional_block_specification.acceptance[])
-                              that demonstrate this requirement. Use an
-                              empty array — or omit the field — when no
-                              acceptance check yet covers it; that is a gap
-                              to close, not a reason to invent a check
-                              prematurely.
+                              that demonstrate this requirement. guid_item
+                              rather than id_check so the reference survives
+                              this requirement being promoted to a
+                              standalone item later — see
+                              CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md. Use an empty array — or omit
+                              the field — when no acceptance check yet
+                              covers it; that is a gap to close, not a
+                              reason to invent a check prematurely.
         items:
-          $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+          $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
 
       statement:
         type:                 string

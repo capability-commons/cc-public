@@ -1,0 +1,227 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/workflow_step_run.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons workflow step run schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for a workflow_step_run: the record of
+                              one concrete execution of a workflow_step_type
+                              — which specific data items went in, which
+                              specific data items came out, what tool calls
+                              were made along the way, and whether it
+                              succeeded.
+
+                              Deliberately thin. Input and output are NOT
+                              separate bespoke fields — they reuse base's
+                              own `relation` array, with id_rel "consumed"
+                              and "produced" against the specific guid_item
+                              values involved. This keeps the graph model
+                              uniform: a workflow_step_run node sits in the
+                              same traceability graph as everything else,
+                              and tooling that already walks `relation`
+                              edges needs no special case to walk
+                              data-flow. Which step type this run
+                              instantiates is likewise a relation
+                              (id_rel "instantiates" → workflow_step_type),
+                              not a parallel field.
+
+                              Generalises pass_run.schema.yaml, which is
+                              retired in favour of this schema (see
+                              pass_run.schema.yaml for the retirement
+                              note) — pass_run's bespoke pass_name/
+                              deliverable enums are replaced by the
+                              "instantiates" relation to a
+                              workflow_step_type instance, and its single
+                              deliverable reference is replaced by
+                              "produced" relation entries (which also
+                              allows more than one, and allows consumed
+                              inputs to be recorded, which pass_run never
+                              captured).
+
+                              Recommended relation vocabulary:
+
+                                instantiates
+                                  workflow_step_run → workflow_step_type
+                                  Required exactly once. Which step
+                                  definition this is a run of.
+                                consumed
+                                  workflow_step_run → (any data item)
+                                  One entry per input data item actually
+                                  used. SHOULD be consistent with the
+                                  cited workflow_step_type's consumes list,
+                                  but this is not schema-enforced (a run
+                                  may consume fewer items than the type
+                                  allows, or a type may be revised after
+                                  the run).
+                                produced
+                                  workflow_step_run → (any data item)
+                                  One entry per output data item actually
+                                  created or updated by this run.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                run_status
+          role:                 status
+        - field:                timestamp
+          role:                 summary
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                model
+          role:                 body
+          label:                Model
+        - field:                timestamp
+          role:                 body
+          label:                Timestamp
+        - field:                tool_call
+          role:                 body
+          label:                Tool calls
+        - field:                independence
+          role:                 body
+          label:                Independence
+        - field:                run_status
+          role:                 body
+          label:                Run status
+        - field:                run_note
+          role:                 body
+          label:                Notes
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - model
+      - timestamp
+      - tool_call
+      - run_status
+      - statement
+
+    properties:
+      id_schema:
+        const:                workflow_step_run
+      ver_schema:
+        const:                0.1.0
+
+      model:
+        type:                 string
+        minLength:             1
+        description:          |
+                              Which model/agent/prompt-version executed
+                              this step (free text — e.g. "claude-opus-5,
+                              drafting-prompt v3"). Load-bearing for
+                              independence checks: see independence below.
+
+      timestamp:
+        type:                 string
+        format:                date-time
+        description:          When this run completed (or failed).
+
+      tool_call:
+        type:                 array
+        description:          |
+                              Search and tool-use provenance for this run.
+                              Empty array when the step made no tool
+                              calls. Entries are ephemeral log records, not
+                              independently-traceable data items — no
+                              guid_item (see CC_SCHEMA_DESIGN_NOTES_
+                              IDENTITY_AND_TRACEABILITY.md: this is the
+                              "local schema/type-definition content"
+                              exception, same reasoning as
+                              interface_control_document.payload_field).
+                              If a specific tool call's result needs to be
+                              independently cited or traced later, promote
+                              its result to a proper data item (e.g. a
+                              source_item) and reference that instead.
+        items:
+          type:                object
+          additionalProperties: false
+          required:
+            - tool_name
+          properties:
+            tool_name:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+            parameters:
+              type:            string
+              minLength:       1
+              description:     Free-text summary of what was asked
+                               (params vary too widely across tools for a
+                               structured shape to be worth it here).
+            result_summary:
+              type:            string
+              minLength:       1
+            timestamp:
+              type:            string
+              format:          date-time
+
+      independence:
+        type:                 object
+        description:          |
+                              Optional. Populate when the cited
+                              workflow_step_type carries an
+                              independence_note — records how independence
+                              was actually satisfied for this run (e.g. a
+                              different model, a different prompt lineage,
+                              a different day/session from the run being
+                              checked against).
+        additionalProperties: false
+        properties:
+          independent_of:
+            type:               array
+            description:        guid_item values of the workflow_step_run
+                                entries this run was kept independent from.
+            items:
+              $ref:              https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+          basis:
+            type:                string
+            minLength:           1
+            description:         How independence was achieved.
+
+      run_status:
+        type:                 string
+        enum:
+          - succeeded
+          - failed
+          - partial
+
+      run_note:
+        type:                 string
+        minLength:             1
+        description:          Optional free-text note — failure reason,
+                              caveat, or anything not captured by the
+                              structured fields.
+
+      statement:
+        type:                 string
+        minLength:             1
+        description:          |
+                              One-line summary: what this run did and
+                              its outcome.

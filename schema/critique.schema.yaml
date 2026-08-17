@@ -1,0 +1,202 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/critique.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons critique schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final. No
+                              CC v1 equivalent exists on the requirements
+                              side (only need_assessment, further upstream
+                              in the need/framing chain).
+
+                              Schema for a critique: the Critique pass's
+                              output — ambiguity, conflict, duplication,
+                              and omission findings against one or more
+                              expanded_items, produced independently of
+                              whoever drafted or expanded the content.
+
+                              Independence is structural, not incidental:
+                              a critique MUST be produced by a different
+                              pass invocation than the one that drafted or
+                              expanded the content being critiqued —
+                              ideally a different model, or a deterministic
+                              rule-check, but at minimum a different prompt
+                              over the same content. independence below
+                              records how that separation was achieved, so
+                              a reviewer doesn't have to take it on faith.
+                              Self-review by the same generative call that
+                              produced the content is a documented weak
+                              point: it tends to optimise for passing its
+                              own rubric rather than for engineering
+                              correctness.
+
+                              The same discipline extends to evals built
+                              from this design (deliverable #3/#4): where
+                              any judgment call is delegated to an LLM, it
+                              should be a differently-sourced judgment —
+                              never the same model grading its own
+                              homework. Note also that subjective,
+                              Likert-style judgment is a hard, low-
+                              agreement task for any rater, human or model
+                              — this schema deliberately favours discrete,
+                              checkable finding categories over an overall
+                              quality score.
+
+                              Recommended relation vocabulary:
+
+                                critiques
+                                  critique → expanded_item
+                                  Required, one or more. What this
+                                  critique is against.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                independence
+          role:                 body
+          label:                Independence
+        - field:                finding
+          role:                 body
+          label:                Findings
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - independence
+      - finding
+      - status
+      - statement
+
+    properties:
+      id_schema:
+        const:                critique
+      ver_schema:
+        const:                0.1.0
+
+      independence:
+        type:                 string
+        minLength:            1
+        description:          |
+                              How independence from the drafting/expansion
+                              pass was achieved for this critique — a
+                              different model, a different prompt over
+                              the same content, or a deterministic
+                              rule-check. State it explicitly rather than
+                              assuming; a critique without a credible
+                              independence note should not be trusted the
+                              same way as one with.
+
+      finding:
+        type:                 array
+        description:          |
+                              Individual findings. Empty array is valid
+                              and meaningful — it's an explicit statement
+                              that critique found nothing to flag, not the
+                              absence of a critique having been done.
+        items:
+          type:                object
+          required:
+            - guid_item
+            - id_item
+            - category
+            - description
+            - severity
+          additionalProperties: false
+          properties:
+            guid_item:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+              description:     |
+                               Globally-unique, immutable identity for this
+                               finding, independent of it being embedded
+                               rather than a standalone item — see
+                               CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                               TRACEABILITY.md. This is what
+                               open_question_log.entry[].source_ref points
+                               at when a finding is left unresolved.
+            id_item:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+              description:     Readable, rarely-changing name for this
+                               finding, unique within the critique.
+            category:
+              type:            string
+              enum:
+                - ambiguity
+                - conflict
+                - duplication
+                - omission
+            description:
+              type:            string
+              minLength:       1
+            severity:
+              type:            string
+              enum:
+                - low
+                - medium
+                - high
+            affected_item:
+              type:            array
+              description:     guid_item values of the specific
+                               expanded_items this finding concerns, when
+                               the critique spans more than one. guid_item
+                               rather than id_item, per
+                               CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                               TRACEABILITY.md — a stable identity
+                               reference, not a display name.
+              items:
+                $ref:          https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+
+      status:
+        type:                 string
+        enum:
+          - draft
+          - under_review
+          - accepted
+          - superseded
+          - withdrawn
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: what was critiqued and
+                              the headline finding, if any.

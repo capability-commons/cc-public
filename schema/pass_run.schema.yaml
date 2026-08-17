@@ -1,0 +1,33 @@
+RETIRED — this file is no longer an active JSON Schema.
+
+pass_run.schema.yaml was an exploratory, explicitly-not-load-bearing draft
+(see its own former description: "Fine to drop if it doesn't earn its
+keep once the other ten types are in use."). It has been generalised and
+superseded by two schemas:
+
+  workflow_step_type.schema.yaml
+    The reusable definition of a kind of step (consumes/produces/
+    tool_capability/pre-postconditions). Six instances for this design's
+    own pass vocabulary (grounding, discovery, drafting,
+    checklist_expansion, critique, consolidation) live in
+    workflow_step_type/.
+
+  workflow_step_run.schema.yaml
+    The execution record. Where pass_run had bespoke pass_name/
+    deliverable enum fields and a single implicit output, a
+    workflow_step_run instead uses base's own `relation` array
+    throughout: "instantiates" → the workflow_step_type it's a run of,
+    "consumed" → each specific input data item, "produced" → each
+    specific output data item. This is more general (not tied to this
+    process's six passes; usable for any pipeline, e.g. the sensor-
+    simulation work), and more complete (pass_run never recorded which
+    specific inputs were consumed, only which pass ran).
+
+Kept as a stub rather than deleted (file deletion is not available in
+this environment) so nothing resolves to a missing file. Do not
+reference id_schema "pass_run" in new work — use "workflow_step_run".
+
+See also: CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_TRACEABILITY.md, and
+SYNTHESIS - SOPHIST methodology distilled for LLM prompts.md (§10, §14)
+in the requirements-engineering reference library, for the wider design
+context this generalisation sits inside.

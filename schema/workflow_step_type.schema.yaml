@@ -1,0 +1,251 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/workflow_step_type.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons workflow step type schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for a workflow_step_type: the reusable
+                              *definition* of one kind of processing step —
+                              what data item types it takes as input, what
+                              types it produces as output, what tools or
+                              capabilities it may need (search, code
+                              execution, a specific renderer/model), and
+                              what must hold before and after it runs.
+
+                              Split deliberately from workflow_step_run
+                              (one concrete execution): the same relationship
+                              as a schema to a data item, or as
+                              coverage_checklist (the taxonomy) to
+                              per-session coverage state. A step type is
+                              authored once and versioned; a step run cites
+                              it and records what actually happened one
+                              specific time.
+
+                              Generalises this design's own six-pass
+                              vocabulary (Grounding, Discovery, Drafting,
+                              Checklist expansion, Critique, Consolidation —
+                              "SYNTHESIS - SOPHIST methodology distilled
+                              for LLM prompts.md" §10.0, in the
+                              requirements-engineering reference library)
+                              into something not specific to that process:
+                              a sensor-simulation pipeline step (render one
+                              frame, run the algorithm-under-test, score a
+                              result) is exactly the same shape. Six
+                              instances for the RE-process's own pass
+                              vocabulary are filed in
+                              `workflow_step_type/`.
+
+                              consumes/produces name data item *types*
+                              (id_schema values), not specific items — a
+                              workflow_step_run is what records specific
+                              guid_item inputs and outputs for one
+                              execution.
+
+                              Recommended relation vocabulary:
+
+                                supersedes
+                                  workflow_step_type → workflow_step_type
+                                  Successor definition for the same step;
+                                  superseded type SHOULD move to status
+                                  superseded.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                consumes
+          role:                 body
+          label:                Consumes
+        - field:                produces
+          role:                 body
+          label:                Produces
+        - field:                tool_capability
+          role:                 body
+          label:                Tool capabilities
+        - field:                precondition
+          role:                 body
+          label:                Preconditions
+        - field:                postcondition
+          role:                 body
+          label:                Postconditions
+        - field:                independence_note
+          role:                 body
+          label:                Independence
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - consumes
+      - produces
+      - tool_capability
+      - precondition
+      - postcondition
+      - status
+      - statement
+
+    properties:
+      id_schema:
+        const:                workflow_step_type
+      ver_schema:
+        const:                0.1.0
+
+      consumes:
+        type:                 array
+        description:          |
+                              Data item types this step takes as input.
+                              Empty array only for a step with no data
+                              input (rare — most steps consume at least
+                              one type).
+        items:
+          type:                object
+          required:
+            - id_schema
+          additionalProperties: false
+          properties:
+            id_schema:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+              description:     Which type (e.g. source_item,
+                               extraction_note, expanded_item).
+            cardinality:
+              type:            string
+              enum:
+                - one
+                - one_or_more
+                - zero_or_one
+                - zero_or_more
+              description:     Optional. How many instances of this type
+                               a single run typically consumes.
+            note:
+              type:            string
+              minLength:       1
+
+      produces:
+        type:                 array
+        minItems:             1
+        description:          Data item types this step produces as
+                              output. At least one — a step that produces
+                              nothing isn't a processing step.
+        items:
+          type:                object
+          required:
+            - id_schema
+          additionalProperties: false
+          properties:
+            id_schema:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+            cardinality:
+              type:            string
+              enum:
+                - one
+                - one_or_more
+                - zero_or_one
+                - zero_or_more
+            note:
+              type:            string
+              minLength:       1
+
+      tool_capability:
+        type:                 array
+        description:          |
+                              Declared tools or capabilities this step may
+                              need (e.g. web_search, code_execution,
+                              renderer:godot). Open vocabulary; empty array
+                              when the step is pure transformation over its
+                              consumed inputs with no external capability
+                              needed.
+        items:
+          $ref:                https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+      precondition:
+        type:                 array
+        description:          |
+                              What must hold before this step runs, as a
+                              structured list rather than free prose
+                              (compare the "Workflow intent: Preconditions"
+                              prose blocks on framing/need_assessment —
+                              same idea, made checkable). Empty array when
+                              none beyond consumes being satisfied.
+        items:
+          type:                string
+          minLength:           1
+
+      postcondition:
+        type:                 array
+        minItems:             1
+        description:          What must hold after this step completes
+                              successfully — at minimum, that produces was
+                              satisfied.
+        items:
+          type:                string
+          minLength:           1
+
+      independence_note:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Optional. For step types where independence
+                              from an upstream step matters (a Critique
+                              step must not be the same model/prompt as
+                              the Drafting step it critiques — see
+                              CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md and the source design doc's
+                              §10.4), state the requirement here so a
+                              workflow_step_run's own independence field
+                              has something concrete to satisfy.
+
+      status:
+        type:                 string
+        enum:
+          - draft
+          - under_review
+          - accepted
+          - superseded
+          - withdrawn
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: what this step does, in
+                              terms of its consumes/produces.

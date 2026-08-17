@@ -1,0 +1,74 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    68ab33cb-2840-43af-9183-53021bde34e6
+id_item:                      discovery
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Discovery
+brief:                        Identify candidate requirement-bearing statements in source material, using grounded vocabulary.
+description:                  |
+                              Second of the six-pass requirements-engineering
+                              process (SYNTHESIS - SOPHIST methodology
+                              distilled for LLM prompts.md §10.0). Reads
+                              source_item and elicitation_session material
+                              against the glossary produced by Grounding,
+                              and surfaces candidate requirement-bearing
+                              statements with their evidence span and
+                              tentative category, without yet writing them
+                              up in RUBRIC-conformant form (that is
+                              Drafting's job). The most novel of the six
+                              document types produced — no direct CC v1
+                              precedent — because candidate extraction with
+                              evidence spans has no equivalent in the
+                              existing schema set.
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 source_item
+    cardinality:                one_or_more
+  - id_schema:                 elicitation_session
+    cardinality:                zero_or_more
+  - id_schema:                 glossary
+    cardinality:                one
+    note:                       Grounding's output; used to recognise
+                                relevant terms in the source text and to
+                                avoid re-litigating definitions.
+
+produces:
+  - id_schema:                 extraction_note
+    cardinality:                one
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Ambiguous or contradictory statements
+                                encountered during extraction that need a
+                                human call.
+
+tool_capability:              []
+
+precondition:
+  - An accepted glossary (or the current draft from the same Grounding
+    run) is available.
+  - Source material for this pass has not already been fully covered by
+    an existing extraction_note for the same scope (avoid duplicate
+    extraction).
+
+postcondition:
+  - Every candidate in the produced extraction_note carries an evidence
+    span pointing back into a specific consumed source_item or
+    elicitation_session.
+  - Statements too ambiguous to categorise are logged to
+    open_question_log rather than silently dropped or force-categorised.
+
+status:                       draft
+
+statement:                    |
+                              Extracts candidate requirement-bearing
+                              statements, with evidence, from source
+                              material and elicitation transcripts.

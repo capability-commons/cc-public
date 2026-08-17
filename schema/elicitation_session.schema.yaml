@@ -1,0 +1,204 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/elicitation_session.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons elicitation session schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for an elicitation_session: one live
+                              or recorded requirements-elicitation
+                              conversation — deliverable #2's raw material,
+                              playing the combined role of source_item and
+                              Discovery-pass output that a document plays
+                              for deliverable #1 (see extraction_note's
+                              description).
+
+                              Kept as its own type rather than reused as a
+                              source_item, because a session is
+                              evolving/in-progress (checklist coverage
+                              accumulates turn by turn) in a way a fixed
+                              document isn't. Kept separate from
+                              coverage_checklist specifically because
+                              different stakeholder types may need
+                              different checklist variants — only one
+                              variant exists today, but the type boundary
+                              is set up to support more without a redesign.
+
+                              The elicitation scaffold this session tracks
+                              coverage against: the LLM keeps full freedom
+                              in how it conducts the conversation
+                              (question phrasing, ordering, follow-up
+                              depth, tone) — the checklist only guarantees
+                              every relevant category gets asked about
+                              before the conversation is considered
+                              complete. "The conversation feels complete"
+                              and "the checklist is covered" are two
+                              separate, both-required stopping conditions.
+
+                              Recommended relation vocabulary:
+
+                                scoped_by
+                                  elicitation_session → coverage_checklist
+                                  Required, one or more. Which checklist
+                                  variant(s) this session is scoped
+                                  against, chosen by stakeholder type.
+
+                                drafted_into
+                                  elicitation_session → draft_item
+                                  Optional reciprocal edge once a Drafting
+                                  pass has produced draft_items from this
+                                  session.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                stakeholder_type
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                stakeholder_type
+          role:                 body
+          label:                Stakeholder type
+        - field:                participant
+          role:                 body
+          label:                Participants
+        - field:                session_date
+          role:                 body
+          label:                Session date
+        - field:                transcript_ref
+          role:                 body
+          label:                Transcript reference
+        - field:                coverage
+          role:                 body
+          label:                Checklist coverage
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - stakeholder_type
+      - participant
+      - session_date
+      - transcript_ref
+      - coverage
+      - status
+      - statement
+
+    properties:
+      id_schema:
+        const:                elicitation_session
+      ver_schema:
+        const:                0.1.0
+
+      stakeholder_type:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Identifies which kind of stakeholder this
+                              session elicits from (e.g. operator,
+                              maintainer, regulator). Selects which
+                              coverage_checklist variant(s) apply via
+                              scoped_by.
+
+      participant:
+        type:                 array
+        minItems:             1
+        description:          Roles or names of everyone in the
+                              conversation.
+        items:
+          type:                string
+          minLength:           1
+
+      session_date:
+        type:                 string
+        minLength:            1
+        description:          Date (or date range) the session took
+                              place.
+
+      transcript_ref:
+        type:                 string
+        minLength:            1
+        description:          Pointer to where the transcript or
+                              recording lives. Content is never embedded
+                              in this item.
+
+      coverage:
+        type:                 array
+        description:          |
+                              Which checklist categories have been
+                              touched on so far, tracked as explicit
+                              conversation state — the mechanism that lets
+                              "checklist covered" be checked independently
+                              of "conversation feels complete".
+        items:
+          type:                object
+          required:
+            - id_category
+            - addressed
+          additionalProperties: false
+          properties:
+            id_category:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+              description:     Category id, matching an entry in the
+                               scoped_by coverage_checklist.
+            addressed:
+              type:            boolean
+            note:
+              type:            string
+              minLength:       1
+
+      status:
+        type:                 string
+        enum:
+          - in_progress
+          - complete
+          - abandoned
+        description:          |
+                              Lifecycle of the conversation itself
+                              (distinct from base.workflow, which tracks
+                              downstream processing of this item once
+                              captured).
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: who was elicited from and
+                              what the session was about.

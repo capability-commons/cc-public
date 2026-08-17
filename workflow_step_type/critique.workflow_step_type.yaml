@@ -1,0 +1,78 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    fb0a55ca-e4c3-4581-b184-e88ce464b60f
+id_item:                      critique
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Critique
+brief:                        Independently review expanded requirements against RUBRIC and INCOSE quality rules.
+description:                  |
+                              Fifth of the six-pass requirements-engineering
+                              process (SYNTHESIS - SOPHIST methodology
+                              distilled for LLM prompts.md §10.0). Reviews
+                              expanded_item entries against SOPHIST's
+                              RUBRIC checks and the INCOSE Guide to Writing
+                              Requirements characteristics (necessary,
+                              appropriate, unambiguous, complete, singular,
+                              feasible, verifiable, correct, conforming),
+                              recording findings rather than editing in
+                              place. Independence from the Drafting/
+                              Checklist-expansion runs that produced the
+                              material under review is the whole point of
+                              this being a separate step type — see
+                              independence_note below and this schema's
+                              own workflow_step_run.independence field.
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 expanded_item
+    cardinality:                one_or_more
+
+produces:
+  - id_schema:                 critique
+    cardinality:                one
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Findings the reviewer cannot resolve alone
+                                (e.g. a genuine requirements conflict, not
+                                just a wording defect).
+
+tool_capability:              []
+
+independence_note:            |
+                              The workflow_step_run instantiating this type
+                              MUST NOT share model instance, prompt
+                              lineage, or session with the
+                              workflow_step_run(s) that produced the
+                              expanded_item(s) under review (Drafting and/or
+                              Checklist expansion). Record how independence
+                              was achieved in the run's own
+                              independence.basis field. This carries
+                              forward the same discipline used for
+                              value_provenance/critique independence
+                              tracking elsewhere in the design (see the
+                              source design doc §10.4).
+
+precondition:
+  - Every expanded_item under review has status accepted.
+  - The reviewing run is independent per independence_note above.
+
+postcondition:
+  - Every finding in the produced critique cites at least one affected
+    expanded_item via guid_item.
+  - Findings are categorised (e.g. defect type / severity) rather than
+    left as free text only.
+
+status:                       draft
+
+statement:                    |
+                              Independently reviews expanded requirements
+                              against RUBRIC and INCOSE quality checks and
+                              records findings.

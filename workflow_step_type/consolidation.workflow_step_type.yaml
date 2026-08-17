@@ -1,0 +1,72 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    cedc329b-c60a-44c0-b093-dec4f45042ca
+id_item:                      consolidation
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Consolidation
+brief:                        Fold critique findings back in and produce the final, auditable set of requirement entries.
+description:                  |
+                              Sixth and last of the six-pass requirements-
+                              engineering process (SYNTHESIS - SOPHIST
+                              methodology distilled for LLM prompts.md
+                              §10.0). Takes expanded_item entries together
+                              with the critique findings against them,
+                              resolves what can be resolved automatically
+                              (applying an accepted correction), defers what
+                              cannot to open_question_log, and produces
+                              item_set — the final staged set of entries
+                              this design's own process is accountable for.
+                              item_set is deliberately kept distinct from
+                              any downstream systems-engineering container
+                              (e.g. a future functional_chain_specification)
+                              it may feed via the promotes_into relation —
+                              see item_set.schema.yaml and
+                              CC_SCHEMA_DESIGN_NOTES_SENSOR_SIM.md for that
+                              boundary.
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 expanded_item
+    cardinality:                one_or_more
+  - id_schema:                 critique
+    cardinality:                one_or_more
+
+produces:
+  - id_schema:                 item_set
+    cardinality:                one
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Findings not resolved during consolidation
+                                are deferred here rather than silently
+                                dropped or overridden without a human call.
+
+tool_capability:              []
+
+precondition:
+  - Every consumed critique has status accepted (the independent review
+    itself is finished, not merely in progress).
+  - Every expanded_item under consolidation has at least one critique
+    finding recorded against it, or an explicit note that none applied.
+
+postcondition:
+  - Every entry in the produced item_set traces back (via
+    value_provenance / relation) to the expanded_item and, where
+    applicable, the critique finding that shaped its final form.
+  - Every critique finding against material in scope is either reflected
+    in the item_set entry it applies to, or has a corresponding
+    open_question_log entry recording why it was not applied.
+
+status:                       draft
+
+statement:                    |
+                              Folds critique findings back into expanded
+                              requirements and produces the final,
+                              auditable item_set.

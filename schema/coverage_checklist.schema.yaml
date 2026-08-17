@@ -1,0 +1,179 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/coverage_checklist.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons coverage checklist schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for a coverage_checklist: a fixed
+                              taxonomy of categories to be systematically
+                              walked, shared machinery between two use
+                              sites — deliverable #1's Checklist-expansion
+                              pass (walked against a draft_item to produce
+                              an expanded_item) and deliverable #2's
+                              elicitation scaffold (walked, as tracked
+                              conversation state, by an
+                              elicitation_session).
+
+                              Explicitly supports more than one variant:
+                              different stakeholder types may need
+                              different checklists (an operator-facing
+                              elicitation session doesn't need the same
+                              categories as a maintainer-facing one). Only
+                              one variant need exist to start with, but
+                              scope/applies_to below exist so a second
+                              variant can be added without redesigning the
+                              type.
+
+                              A coverage_checklist is the taxonomy
+                              definition itself — static content. Per-item
+                              or per-session progress against it (which
+                              categories have been addressed) is recorded
+                              on the consuming item (expanded_item.coverage,
+                              elicitation_session.coverage), not here.
+
+                              Recommended relation vocabulary:
+
+                                supersedes
+                                  coverage_checklist → coverage_checklist
+                                  Successor overlay for the same scope;
+                                  superseded checklist SHOULD move to
+                                  status superseded.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                applies_to
+          role:                 badge
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                scope
+          role:                 body
+          label:                Scope
+        - field:                applies_to
+          role:                 body
+          label:                Applies to
+        - field:                category
+          role:                 body
+          label:                Categories
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - scope
+      - applies_to
+      - category
+      - status
+      - statement
+
+    properties:
+      id_schema:
+        const:                coverage_checklist
+      ver_schema:
+        const:                0.1.0
+
+      scope:
+        type:                 string
+        minLength:            1
+        description:          What this checklist variant is for, and
+                              what distinguishes it from any sibling
+                              variant.
+
+      applies_to:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Which use site(s) and stakeholder type(s)
+                              this variant applies to (e.g.
+                              "deliverable_1_document", "elicitation_
+                              operator", "elicitation_maintainer"). Open
+                              vocabulary; a controlled register may be
+                              defined later.
+        items:
+          $ref:                https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+      category:
+        type:                 array
+        minItems:             1
+        description:          The checklist entries themselves.
+        items:
+          type:                object
+          required:
+            - id_category
+            - label
+            - description
+          additionalProperties: false
+          properties:
+            id_category:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+            label:
+              type:            string
+              minLength:       1
+            description:
+              type:            string
+              minLength:       1
+              description:     What this category covers and what
+                               "addressed" should mean when checked
+                               against it.
+            example:
+              type:            string
+              minLength:       1
+              description:     Optional worked example of a
+                               category-specific gap this is meant to
+                               catch.
+
+      status:
+        type:                 string
+        enum:
+          - draft
+          - under_review
+          - accepted
+          - superseded
+          - withdrawn
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: what this checklist
+                              variant is for and how many categories it
+                              has.

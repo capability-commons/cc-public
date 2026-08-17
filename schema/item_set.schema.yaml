@@ -1,0 +1,246 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/item_set.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons item set schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+                              Rhymes in purpose with an existing CC v1
+                              type (functional_block_specification.schema.
+                              yaml); shape here is reconsidered
+                              independently rather than inherited.
+
+                              Schema for an item_set: the Consolidation
+                              pass's output — the de-duplicated, conflict-
+                              resolved final set of requirements or needs,
+                              each entry carrying the full output shape
+                              this design specifies: statement,
+                              source_evidence, stakeholder, rationale,
+                              assumptions, open_questions, verification
+                              method, relations to sources/parents, and
+                              value_provenance.
+
+                              Entries reuse the requirement_content fields
+                              from draft_item.schema.yaml (obligation,
+                              activity_type, actor, process, object,
+                              condition, statement, rationale,
+                              verification_method, value_provenance,
+                              open_questions) plus the additional fields
+                              below that only matter once an item is
+                              considered final: stakeholder attribution,
+                              explicit assumptions, and a resolved trace
+                              back to the expanded_item(s) it was
+                              consolidated from.
+
+                              Human resolution is the standing exit
+                              condition for this whole process, not a
+                              step that happens before an item_set is
+                              created: anything an entry's open_questions
+                              still carries stays open until a person
+                              decides, tracked in aggregate by
+                              open_question_log. status below should not
+                              move past under_review while any entry still
+                              carries unresolved open_questions.
+
+                              Recommended relation vocabulary:
+
+                                consolidates
+                                  item_set → expanded_item
+                                  Required, one or more. Which
+                                  expanded_items this set was consolidated
+                                  from.
+
+                                satisfies
+                                  item_set entry → need | framing |
+                                  item_set entry
+                                  Optional, entry-level: this entry
+                                  realises the named upstream item.
+
+                                promotes_into
+                                  item_set entry → functional_requirement
+                                  (embedded, cited by containing item's
+                                  guid_item) | future
+                                  functional_chain_specification /
+                                  system_functional_specification entry
+                                  Optional, entry-level: once an item_set
+                                  reaches status accepted, its entries are
+                                  the natural feed into whichever systems-
+                                  engineering container the sensor-sim
+                                  schema work already uses or is planning
+                                  (functional_block_specification today;
+                                  functional_chain_specification /
+                                  system_functional_specification once
+                                  built — see CC_SCHEMA_DESIGN_NOTES_
+                                  SENSOR_SIM.md §3, §9). item_set stays the
+                                  RE-process's own auditable staging
+                                  artefact (why something was consolidated
+                                  this way); promotes_into records the
+                                  hand-off without collapsing the two
+                                  artefacts into one type.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                status
+          role:                 status
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                item
+          role:                 body
+          label:                Items
+        - field:                resolved_duplicates
+          role:                 body
+          label:                Resolved duplicates
+        - field:                resolved_conflicts
+          role:                 body
+          label:                Resolved conflicts
+        - field:                status
+          role:                 body
+          label:                Status
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - item
+      - resolved_duplicates
+      - resolved_conflicts
+      - status
+      - statement
+
+    properties:
+      id_schema:
+        const:                item_set
+      ver_schema:
+        const:                0.1.0
+
+      item:
+        type:                 array
+        minItems:             1
+        description:          The final, consolidated entries.
+        items:
+          allOf:
+            - $ref:            https://capability-commons.org/schema/draft_item.schema.yaml#/$defs/requirement_content
+            - type:            object
+              required:
+                - guid_item
+                - id_item
+                - source_evidence
+                - stakeholder
+              properties:
+                guid_item:
+                  $ref:        https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+                  description: |
+                               Globally-unique, immutable identity for this
+                               entry, independent of the fact that it's
+                               stored embedded in an array rather than as
+                               its own file. This is what any relation edge
+                               pointing at exactly this entry (from a
+                               critique, a workflow_step_run, a future
+                               functional_chain_specification citing it,
+                               or anything else) targets. Assigned once
+                               and preserved across every later edit to
+                               this entry, including if it's later promoted
+                               to a standalone item — see
+                               CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                               TRACEABILITY.md.
+                id_item:
+                  $ref:        https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+                  description: Readable, rarely-changing name for this
+                               entry, unique within the item_set.
+                source_evidence:
+                  type:        string
+                  minLength:   1
+                  description: Exact source span this entry traces to —
+                               document/location or transcript turn,
+                               resolved from the expanded_item's own
+                               lineage back through extraction_note or
+                               elicitation_session to a source_item.
+                stakeholder:
+                  type:        string
+                  minLength:   1
+                  description: Who this entry's need or requirement is
+                               attributed to.
+                assumption:
+                  type:        array
+                  description: Assumptions this entry depends on, made
+                               explicit rather than left implicit.
+                  items:
+                    type:      string
+                    minLength: 1
+                consolidation_note:
+                  type:        string
+                  minLength:   1
+                  description: How this entry relates to the
+                               expanded_item(s) it was consolidated from
+                               — unchanged, merged with a near-duplicate,
+                               or revised to resolve a conflict.
+
+      resolved_duplicates:
+        type:                 array
+        description:          Notes on what was merged or removed during
+                              consolidation. Empty array when none found.
+        items:
+          type:                string
+          minLength:           1
+
+      resolved_conflicts:
+        type:                 array
+        description:          Notes on what conflicts were found and how
+                              they were resolved. Empty array when none
+                              found.
+        items:
+          type:                string
+          minLength:           1
+
+      status:
+        type:                 string
+        enum:
+          - draft
+          - under_review
+          - accepted
+          - superseded
+          - withdrawn
+        description:          |
+                              Should not advance past under_review while
+                              any entry still carries unresolved
+                              open_questions — see open_question_log.
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: scope of this set and
+                              item count.

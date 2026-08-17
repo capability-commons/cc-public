@@ -1,0 +1,171 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/extraction_note.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons extraction note schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+                              No existing CC v1 type covers this: CC's
+                              existing types assume either an
+                              already-synthesised, stakeholder-scoped need
+                              or an already-drafted, template-conformant
+                              requirement — nothing represents the raw,
+                              evidence-anchored extraction in between.
+
+                              Schema for an extraction_note: the Discovery
+                              pass's output, one per source_item —
+                              candidate facts or needs pulled from that
+                              document, each tied to an evidence span, with
+                              surrounding context (nearby exceptions,
+                              definitions) preserved alongside the matching
+                              text rather than just the matching sentence
+                              alone.
+
+                              Discovery is the pass most exposed to
+                              retrieval failure: pulling a fact without its
+                              surrounding exceptions and definitions can
+                              leave a confident-sounding answer grounded in
+                              the wrong passage. candidate[].context below
+                              exists specifically to make that risk visible
+                              and reviewable rather than silently baked
+                              into extraction.
+
+                              Intentionally not deliverable #1's Drafting
+                              output — an extraction_note's candidates are
+                              not yet cast into the generation grammar, may
+                              be redundant with each other, and are not yet
+                              vetted for whether they're genuinely
+                              requirements-relevant. Deliverable #2 does
+                              not produce a separate extraction_note: an
+                              elicitation_session's own transcript plays
+                              the combined Grounding+Discovery role for
+                              that deliverable.
+
+                              Recommended relation vocabulary:
+
+                                extracted_from
+                                  extraction_note → source_item
+                                  Required. The document this was
+                                  extracted from.
+
+                                uses_glossary
+                                  extraction_note → glossary
+                                  Optional. The glossary this extraction
+                                  was written using (Grounding's output —
+                                  reuses CC's existing glossary type, see
+                                  CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                                  TRACEABILITY.md).
+
+                                drafted_into
+                                  extraction_note → draft_item
+                                  Optional reciprocal edge once a Drafting
+                                  pass has produced draft_items from this
+                                  note.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                candidate
+          role:                 body
+          label:                Candidates
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - candidate
+      - statement
+
+    properties:
+      id_schema:
+        const:                extraction_note
+      ver_schema:
+        const:                0.1.0
+
+      candidate:
+        type:                 array
+        minItems:             1
+        description:          Candidate facts or needs pulled from the
+                              source document, in reading order.
+        items:
+          type:                object
+          required:
+            - id_candidate
+            - text
+            - evidence_span
+          additionalProperties: false
+          properties:
+            id_candidate:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+
+            text:
+              type:            string
+              minLength:       1
+              description:     The candidate fact or need, close to the
+                               source wording — not yet cast into the
+                               generation grammar.
+
+            evidence_span:
+              type:            string
+              minLength:       1
+              description:     Where in the source_item this came from
+                               (section/clause/page reference or similar),
+                               precise enough that source_evidence
+                               downstream can resolve back to it.
+
+            context:
+              type:            string
+              minLength:       1
+              description:     Nearby exceptions, definitions, or
+                               qualifying text pulled alongside the
+                               matching passage — the retrieval-failure
+                               mitigation this type exists to carry.
+
+            tentative_category:
+              type:            string
+              minLength:       1
+              description:     Optional, low-confidence classification
+                               (functional/non-functional/etc.) — a
+                               hint for Drafting, not a commitment.
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: which document this
+                              covers and roughly how many candidates were
+                              found.

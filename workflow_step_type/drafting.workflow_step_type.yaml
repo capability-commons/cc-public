@@ -1,0 +1,71 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    f88a74bf-29f9-44f3-809d-978c6145aa62
+id_item:                      drafting
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Drafting
+brief:                        Write extraction candidates up as RUBRIC-conformant requirement statements.
+description:                  |
+                              Third of the six-pass requirements-engineering
+                              process (SYNTHESIS - SOPHIST methodology
+                              distilled for LLM prompts.md §10.0). Takes
+                              each candidate in an extraction_note and
+                              writes it up against the shared
+                              requirement_content shape (obligation,
+                              activity_type, actor, process, object,
+                              condition, rationale, verification_method —
+                              draft_item.schema.yaml #/$defs/
+                              requirement_content, reused by
+                              expanded_item and item_set), applying
+                              SOPHIST's RUBRIC quality rules and the
+                              glossary's controlled vocabulary. Candidates
+                              judged out of scope or not requirement-bearing
+                              are not carried forward, with that judgement
+                              itself traceable back to the extraction_note
+                              entry.
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 extraction_note
+    cardinality:                one_or_more
+  - id_schema:                 glossary
+    cardinality:                one
+    note:                       Controlled vocabulary that draft statements
+                                must use consistently (SOPHIST restricted-
+                                natural-language discipline).
+
+produces:
+  - id_schema:                 draft_item
+    cardinality:                one_or_more
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Candidates that cannot be drafted without a
+                                human decision (e.g. conflicting source
+                                statements) are logged rather than guessed.
+
+tool_capability:              []
+
+precondition:
+  - The consumed extraction_note has status accepted (candidates have
+    been through, at minimum, a sanity check before drafting begins).
+
+postcondition:
+  - Every produced draft_item's value_provenance traces each populated
+    field back to the extraction_note candidate(s) it was drawn from.
+  - Every term used in a draft statement exists in the consumed glossary;
+    terms not yet grounded are raised to open_question_log rather than
+    coined ad hoc during drafting.
+
+status:                       draft
+
+statement:                    |
+                              Writes extraction candidates up as RUBRIC-
+                              conformant draft requirement statements.

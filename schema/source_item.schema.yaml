@@ -1,0 +1,217 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/source_item.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons source item schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for a source_item: one external
+                              document entering deliverable #1's pipeline
+                              (a specification, contract, standard,
+                              regulation, or similar). Carries provenance
+                              only, plus a pointer to where the document's
+                              actual content lives — never the content
+                              itself.
+
+                              A cheap eligibility gate belongs ahead of
+                              any Grounding or Discovery pass over a
+                              source_item: does it carry a title, an
+                              author, a version and date, and a stable
+                              storage location? A document missing this
+                              provenance can't be traced back to reliably,
+                              can't have its version tracked against later
+                              changes, and produces downstream items with
+                              no honest source_evidence to point at.
+                              eligibility_status below records the outcome
+                              of that check.
+
+                              Not to be confused with elicitation_session,
+                              which plays the equivalent role for
+                              deliverable #2's live-conversation input —
+                              kept as a separate type because a session is
+                              evolving/in-progress in a way a fixed
+                              document isn't.
+
+                              Recommended relation vocabulary:
+
+                                grounds
+                                  source_item → glossary
+                                  Optional reciprocal edge once a
+                                  Grounding pass has produced (or updated) a
+                                  glossary covering this source. The
+                                  Grounding pass's output reuses CC's
+                                  existing glossary type rather than a
+                                  separate vocabulary type — see
+                                  CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                                  TRACEABILITY.md's sibling cross-check
+                                  note.
+
+                                extracted_into
+                                  source_item → extraction_note
+                                  Optional reciprocal edge once a
+                                  Discovery pass has produced an
+                                  extraction_note from this source.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                eligibility_status
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                author
+          role:                 body
+          label:                Author
+        - field:                doc_version
+          role:                 body
+          label:                Document version
+        - field:                date_version
+          role:                 body
+          label:                Date
+        - field:                storage_location
+          role:                 body
+          label:                Storage location
+        - field:                content_ref
+          role:                 body
+          label:                Content reference
+        - field:                change_history
+          role:                 body
+          label:                Change history
+        - field:                page_count
+          role:                 body
+          label:                Page count
+        - field:                eligibility_status
+          role:                 body
+          label:                Eligibility status
+        - field:                eligibility_note
+          role:                 body
+          label:                Eligibility note
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - author
+      - doc_version
+      - date_version
+      - storage_location
+      - content_ref
+      - eligibility_status
+      - statement
+
+    properties:
+      id_schema:
+        const:                source_item
+      ver_schema:
+        const:                0.1.0
+
+      author:
+        type:                 string
+        minLength:            1
+        description:          Author or issuing organisation of the
+                              source document.
+
+      doc_version:
+        type:                 string
+        minLength:            1
+        description:          The document's own version label (distinct
+                              from ver_schema, which versions this
+                              schema).
+
+      date_version:
+        type:                 string
+        minLength:            1
+        description:          Publication or version date of the
+                              document, as stated on the document itself.
+
+      storage_location:
+        type:                 string
+        minLength:            1
+        description:          Stable location the document can be found
+                              at (path or URI). Should not change once
+                              set; supersede with a new source_item and a
+                              supersedes relation if the document moves.
+
+      content_ref:
+        type:                 string
+        minLength:            1
+        description:          Pointer to where the document's actual
+                              content lives for retrieval by a Grounding
+                              or Discovery pass. Content is never embedded
+                              in this item.
+
+      change_history:
+        type:                 string
+        minLength:            1
+        description:          Summary of the document's own revision
+                              history, where available. Absence is itself
+                              informative for eligibility_status.
+
+      page_count:
+        type:                 integer
+        minimum:              1
+        description:          Optional page count, where meaningful.
+
+      eligibility_status:
+        type:                 string
+        enum:
+          - eligible
+          - flagged
+          - rejected
+        description:          |
+                              Outcome of the provenance eligibility gate.
+                              eligible — carries enough provenance
+                                (author, version/date, stable location) to
+                                be traced back to reliably.
+                              flagged — some provenance missing or
+                                uncertain; usable with caution, note why in
+                                eligibility_note.
+                              rejected — provenance too thin to trust as a
+                                traceable source; should not feed Grounding
+                                or Discovery until resolved.
+
+      eligibility_note:
+        type:                 string
+        minLength:            1
+        description:          Rationale for eligibility_status when it is
+                              flagged or rejected.
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: what the document is and
+                              why it's in scope for this pipeline.

@@ -1,0 +1,364 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/draft_item.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons draft item schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final. Written
+                              to inform the next iteration of Capability
+                              Commons schema development, not to be treated as
+                              an accepted type yet.
+
+                              Schema for a draft_item: one candidate
+                              requirement or need, cast into the generation
+                              grammar by the Drafting pass, before any
+                              systematic checklist-expansion or critique has
+                              been applied.
+
+                              draft_item is deliberately upstream of and
+                              separate from expanded_item (the
+                              checklist-expansion pass's output) and from
+                              item_set (the consolidation pass's output),
+                              rather than one type carrying a status field
+                              through all three stages. The separate-type
+                              design is a deliberate choice: it keeps the
+                              data-flow graph for the whole multi-pass
+                              process easy to reason about (one node per
+                              pass, edges between them), at the cost of more
+                              types. Fields common across draft_item,
+                              expanded_item, and item_set's embedded entries
+                              are factored into $defs/requirement_content
+                              below and reused by reference, so the shared
+                              shape only needs to be defined once.
+
+                              Sourcing. The field descriptions below draw on
+                              two complementary methods: SOPHIST (Rupp, "The
+                              Requirements Template") gives a step-by-step
+                              assembly plan — process word, sentence pattern,
+                              legal-obligation keyword, object detail,
+                              optional condition — reflected in
+                              obligation/activity_type/actor/process/object/
+                              condition. INCOSE (Guide to Writing
+                              Requirements v3.1) gives the characteristics a
+                              finished statement should have (C1-C9) and
+                              concrete rules (R1-R41) for getting there,
+                              cited inline in statement's description.
+
+                              Recommended relation vocabulary:
+
+                                drafted_from
+                                  draft_item → extraction_note |
+                                  elicitation_session
+                                  The Discovery-pass artifact (or, for
+                                  deliverable #2, the elicitation_session
+                                  itself) this item was drafted from.
+
+                                expanded_by
+                                  draft_item → expanded_item
+                                  Optional reciprocal edge once a
+                                  checklist-expansion pass has produced an
+                                  expanded_item from this draft.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                obligation
+          role:                 badge
+        - field:                activity_type
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                obligation
+          role:                 body
+          label:                Obligation
+        - field:                activity_type
+          role:                 body
+          label:                Activity type
+        - field:                actor
+          role:                 body
+          label:                Actor
+        - field:                process
+          role:                 body
+          label:                Process
+        - field:                object
+          role:                 body
+          label:                Object
+        - field:                condition
+          role:                 body
+          label:                Condition
+        - field:                rationale
+          role:                 body
+          label:                Rationale
+        - field:                verification_method
+          role:                 body
+          label:                Verification method
+        - field:                value_provenance
+          role:                 body
+          label:                Value provenance
+        - field:                open_questions
+          role:                 body
+          label:                Open questions
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+    properties:
+      id_schema:
+        const:                draft_item
+      ver_schema:
+        const:                0.1.0
+
+  - $ref:                     "#/$defs/requirement_content"
+
+
+$defs:
+
+  obligation:
+    type:                     string
+    enum:
+      - shall
+      - should
+      - will
+    description:              |
+                              Legal obligation / modal verb (SOPHIST's
+                              legal-obligation step). shall = binding.
+                              should = preferred, not mandatory. will =
+                              deferred to a later increment, becomes
+                              binding once that increment arrives. Do not
+                              mix modal verbs within one statement.
+
+
+  activity_type:
+    type:                     string
+    enum:
+      - autonomous
+      - user_interaction
+      - interface
+    description:              |
+                              Which of SOPHIST's three sentence patterns
+                              this item uses, chosen by who performs the
+                              process:
+
+                                autonomous — the system executes the
+                                  process on its own.
+                                    <condition,> the <system> <obligation>
+                                    <process> <object>.
+
+                                user_interaction — the system offers a
+                                  named actor the ability to perform the
+                                  process.
+                                    <condition,> the <system> <obligation>
+                                    PROVIDE <actor> WITH THE ABILITY TO
+                                    <process> <object>.
+
+                                interface — a third-party system supplies
+                                  the triggering data; the system is
+                                  passive until that happens.
+                                    <condition,> the <system> <obligation>
+                                    BE ABLE TO <process> <object>.
+
+                              Choosing wrongly is a common source of
+                              ambiguity: if a human decides when the
+                              process happens, it's user_interaction, not
+                              autonomous; if another system decides, it's
+                              interface, not user_interaction.
+
+
+  verification_method:
+    type:                     string
+    enum:
+      - inspection
+      - analysis
+      - demonstration
+      - test
+    description:              |
+                              How this item's satisfaction will eventually
+                              be confirmed (INCOSE A8 / C7 Verifiable).
+                              A first guess at Drafting time; may be
+                              revised during checklist-expansion or
+                              critique.
+
+
+  value_provenance:
+    type:                     string
+    enum:
+      - evidence_backed
+      - stakeholder_provided
+      - engineering_estimate
+      - model_suggestion
+      - unknown_requires_decision
+    description:              |
+                              Tag for how any quantitative value in this
+                              item's statement was arrived at. Only
+                              evidence_backed and stakeholder_provided
+                              should be treated as safe to carry into a
+                              controlled baseline without further sign-off.
+                              This is the concrete mechanism behind the
+                              "ask or search, don't fabricate" rule — an
+                              LLM working alone on an ambiguous or
+                              incomplete item is prone to inventing a
+                              plausible-sounding value rather than flagging
+                              it as open; this field makes that
+                              distinguishable rather than silently baked
+                              into the statement.
+
+
+  requirement_content:
+    type:                     object
+    required:
+      - obligation
+      - activity_type
+      - process
+      - object
+      - statement
+      - rationale
+
+    properties:
+
+      obligation:
+        $ref:                 "#/$defs/obligation"
+
+      activity_type:
+        $ref:                 "#/$defs/activity_type"
+
+      actor:
+        type:                 string
+        minLength:            1
+        maxLength:            120
+        description:          |
+                              The user, role, or operator given the
+                              ability to perform process — required in
+                              practice whenever activity_type is
+                              user_interaction. Name the role explicitly
+                              even when every user qualifies ("any
+                              authenticated operator" rather than
+                              silence). Leave unset for autonomous and
+                              interface items.
+
+      process:
+        type:                 string
+        minLength:            1
+        maxLength:             80
+        description:          |
+                              The single process word — the verb, in
+                              infinitive form. Pick one word per distinct
+                              function and reuse it everywhere that
+                              function recurs across this item's owning
+                              set; do not vary between near-synonyms for
+                              the same underlying action. Avoid
+                              nominalisations ("the return of the item")
+                              and vague verbs ("handle", "support",
+                              "manage") that don't commit to an
+                              observable action.
+
+      object:
+        type:                 string
+        minLength:            1
+        description:          |
+                              What the process acts on, plus the detail
+                              needed to make it unambiguous and complete.
+                              Avoid vague quantifiers ("some", "several",
+                              "about"), unachievable absolutes ("100%
+                              accurate", "never fails"), and bare numbers
+                              without units or stated tolerance.
+
+      condition:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Logical or temporal condition this item's
+                              obligation is contingent on, prefixed as a
+                              subordinate clause. Omit for items that
+                              always apply. Use exactly one connective per
+                              condition type: IF <state> for a
+                              logical condition, WHEN/AS SOON AS <event>
+                              for a discrete trigger, WHILE/AS LONG AS
+                              <state persists> for a duration. Combine
+                              multiple conditions with explicit AND/OR/XOR,
+                              not natural-language "and"/"or".
+
+      rationale:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Why this item is necessary: the source,
+                              parent, framing, or constraint it traces to
+                              (INCOSE A1 / C1 Necessary). This is the one
+                              place a reader finds that trace when the item
+                              has no relation edges of its own yet — name
+                              the source explicitly.
+
+      verification_method:
+        $ref:                 "#/$defs/verification_method"
+
+      value_provenance:
+        $ref:                 "#/$defs/value_provenance"
+
+      open_questions:
+        type:                 array
+        description:          |
+                              Unresolved gaps flagged rather than closed
+                              with a guess — a missing value, an
+                              unconfirmed actor, an unverified constraint.
+                              Empty array (or omit) when nothing is open.
+        items:
+          type:                string
+          minLength:           1
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              The canonical sentence, synthesised from
+                              condition, obligation, activity_type, actor,
+                              process, and object above.
+
+                              Assemble in this order:
+                                [IF|WHEN|AS SOON AS|WHILE|AS LONG AS
+                                <condition>,] the <system> <obligation>
+                                [PROVIDE <actor> WITH THE ABILITY TO |
+                                BE ABLE TO] <process> <object>.
+
+                              Before accepting a statement, check it
+                              against INCOSE's C1-C9 (Necessary,
+                              Appropriate, Unambiguous, Complete, Singular,
+                              Feasible, Verifiable, Correct, Conforming)
+                              and rule out SOPHIST's classic defects:
+                              passive voice hiding the actor, vague or
+                              undefined verbs, nominalisations, unmeasurable
+                              properties, unresolved quantifiers, vague
+                              nouns, purpose/reason clauses folded into the
+                              statement (move to rationale instead), and
+                              filler escape clauses ("as appropriate", "as
+                              required").

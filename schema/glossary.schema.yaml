@@ -81,12 +81,19 @@ description:                  |
                               data item per term, so the project vocabulary
                               remains a single reviewable artefact.
 
-                              Cross-term traceability is expressed inside
-                              ``term`` via ``related_to`` and ``prefers``
-                              (references are id_term values in this glossary
-                              or, after overlay, in the effective map). Terms
-                              are not separate data items, so base ``relation``
-                              edges cannot target an individual term.
+                              Cross-term traceability within one glossary is
+                              expressed inside ``term`` via ``related_to``
+                              and ``prefers`` (references are id_term values
+                              in this glossary or, after overlay, in the
+                              effective map) — a deliberate local-key
+                              exception to guid_item addressing, since these
+                              always resolve within the same document (see
+                              CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md). Terms are not standalone
+                              top-level items, but each does carry its own
+                              guid_item, so something outside this glossary
+                              can still target an individual term with a
+                              base ``relation`` edge when that's needed.
 
 
 display:
@@ -347,11 +354,30 @@ $defs:
     type:                     object
     additionalProperties:     false
     required:
+      - guid_item
       - id_term
       - term
       - definition
       - status
     properties:
+
+      guid_item:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+        description:          |
+                              Globally-unique identity for this term,
+                              independent of it being embedded here rather
+                              than a standalone item — see
+                              CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md. Lets something outside this
+                              glossary (a requirement's rationale, an ICD's
+                              note) cite exactly this term via a relation
+                              edge, once that becomes a structured citation
+                              rather than free text. related_to and prefers
+                              below keep using id_term, not guid_item — a
+                              deliberate exception: they're always resolved
+                              within this same glossary document, so the
+                              lighter local key is enough and stays more
+                              readable than a UUID.
 
       id_term:
         $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier

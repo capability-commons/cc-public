@@ -1,0 +1,71 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    f9d6832a-24d9-4fac-9809-c15b702089f4
+id_item:                      checklist_expansion
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Checklist expansion
+brief:                        Check draft requirements against a coverage taxonomy and add anything the taxonomy shows is missing.
+description:                  |
+                              Fourth of the six-pass requirements-engineering
+                              process (SYNTHESIS - SOPHIST methodology
+                              distilled for LLM prompts.md §10.0). Works a
+                              coverage_checklist (ISO/IEC 25010 quality
+                              characteristics, or a stakeholder-specific
+                              variant) against a set of draft_item entries,
+                              recording which categories are addressed and
+                              which are not, and drafting new candidate
+                              statements for genuine coverage gaps rather
+                              than merely flagging them. Output is
+                              expanded_item, which extends draft_item's
+                              shared requirement_content and adds the
+                              coverage record itself
+                              (expanded_item.schema.yaml).
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 draft_item
+    cardinality:                one_or_more
+  - id_schema:                 coverage_checklist
+    cardinality:                one
+    note:                       Which checklist variant depends on
+                                elicitation_session.stakeholder_type for
+                                the material being expanded.
+
+produces:
+  - id_schema:                 expanded_item
+    cardinality:                one_or_more
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Coverage gaps where it is unclear whether
+                                the gap is a real requirement or genuinely
+                                out of scope.
+
+tool_capability:              []
+
+precondition:
+  - The consumed coverage_checklist has status accepted.
+  - Every draft_item to be expanded has status accepted (Drafting is
+    complete for the items in scope).
+
+postcondition:
+  - Every produced expanded_item's coverage array accounts for every
+    category in the consumed coverage_checklist (addressed, not
+    applicable, or gap).
+  - Every category recorded as a gap either has a corresponding new
+    candidate statement added_since_draft, or an open_question_log entry
+    explaining why it is not applicable.
+
+status:                       draft
+
+statement:                    |
+                              Checks draft requirements against a coverage
+                              taxonomy and drafts statements for genuine
+                              gaps found.

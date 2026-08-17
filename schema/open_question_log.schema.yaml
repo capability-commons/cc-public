@@ -1,0 +1,187 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/open_question_log.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons open question log schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+                              Genuinely new territory: nothing in CC v1
+                              aggregates unresolved items this way today —
+                              CC v1 leaves it implicit in each item's own
+                              status field.
+
+                              Schema for an open_question_log: the Human-
+                              resolution pass's own artifact — an
+                              aggregated, reviewable queue of everything
+                              currently flagged unresolved across one or
+                              more critique and item_set items, so a human
+                              works through outstanding decisions as a
+                              list rather than hunting item-by-item
+                              through every open_questions array and every
+                              critique finding individually.
+
+                              Human resolution is the standing exit
+                              condition for the whole multi-pass process,
+                              not a numbered pass with a fixed input/output
+                              shape: nothing flagged as unresolved is
+                              treated as committed until a person decides.
+                              This log is the concrete, queryable surface
+                              for that principle — entry[].status is what
+                              actually gates whether the item_set(s) it
+                              covers can advance past under_review.
+
+                              Recommended relation vocabulary:
+
+                                covers
+                                  open_question_log → item_set | critique
+                                  Required, one or more. What this log's
+                                  entries were drawn from.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                open_count
+          role:                 badge
+          synthetic:            true
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                entry
+          role:                 body
+          label:                Entries
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - entry
+      - statement
+
+    properties:
+      id_schema:
+        const:                open_question_log
+      ver_schema:
+        const:                0.1.0
+
+      entry:
+        type:                 array
+        description:          One entry per unresolved item. Empty array
+                              is valid — nothing currently outstanding.
+        items:
+          type:                object
+          required:
+            - guid_item
+            - id_item
+            - category
+            - description
+            - status
+          additionalProperties: false
+          properties:
+            guid_item:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+              description:     |
+                               Globally-unique, immutable identity for this
+                               log entry, independent of it being embedded
+                               rather than standalone — see
+                               CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                               TRACEABILITY.md.
+            id_item:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+              description:     Readable, rarely-changing name for this
+                               entry, unique within the log.
+
+            category:
+              type:            string
+              enum:
+                - unsupported_value
+                - unconfirmed_actor
+                - unverified_constraint
+                - ambiguous_scope
+                - contradiction
+                - other
+              description:     Categories drawn from the fabrication-
+                               risk and critique-finding vocabulary this
+                               design already uses elsewhere — kept
+                               closed-form rather than free text so the
+                               queue can be triaged by kind.
+
+            description:
+              type:            string
+              minLength:       1
+              description:     What's unresolved and why it needs a
+                               human decision.
+
+            source_ref:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+              description:     |
+                               guid_item of the item_set entry or critique
+                               finding this was raised by, for provenance —
+                               a stable identity reference rather than a
+                               free-text string, now that both carry
+                               guid_item (CC_SCHEMA_DESIGN_NOTES_IDENTITY_
+                               AND_TRACEABILITY.md).
+
+            status:
+              type:            string
+              enum:
+                - open
+                - resolved
+                - deferred
+              description:     deferred is distinct from resolved — used
+                               when a decision is deliberately postponed
+                               rather than made.
+
+            resolution:
+              type:            string
+              minLength:       1
+              description:     What was decided, once status is resolved
+                               or deferred. Required in practice once
+                               status leaves open, though not enforced
+                               structurally here.
+
+            resolved_by:
+              type:            string
+              minLength:       1
+
+            resolved_date:
+              type:            string
+              minLength:       1
+
+      statement:
+        type:                 string
+        minLength:            1
+        description:          |
+                              One-line summary: how many entries are
+                              open vs. resolved, and what they're drawn
+                              from.

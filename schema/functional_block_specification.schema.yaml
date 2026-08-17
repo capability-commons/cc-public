@@ -209,11 +209,23 @@ $defs:
     type:                     object
     additionalProperties:     false
     required:
+      - guid_item
       - id_check
       - statement
     properties:
+      guid_item:
+        $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/uuidv4
+        description:          |
+                              Globally-unique identity for this check,
+                              independent of it being embedded here — see
+                              CC_SCHEMA_DESIGN_NOTES_IDENTITY_AND_
+                              TRACEABILITY.md. requirement[].verifies below
+                              targets this, not id_check.
       id_check:
         $ref:                 https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+        description:          |
+                              Readable, rarely-changing local name for this
+                              check, unique within the block spec.
       statement:
         type:                 string
         minLength:            1

@@ -1,0 +1,73 @@
+id_schema:                    workflow_step_type
+ver_schema:                   0.1.0
+
+guid_item:                    c58f8854-61a2-4c29-ab59-1722ef3e499e
+id_item:                      grounding
+
+protective_mark:              public
+copyright:                    Copyright holders of the capability-commons project
+license:                      License-Ref-TBD
+
+title:                        Grounding
+brief:                        Establish a sourced, agreed vocabulary before any requirement text is drafted.
+description:                  |
+                              First of the six-pass requirements-engineering
+                              process (SYNTHESIS - SOPHIST methodology
+                              distilled for LLM prompts.md §10.0, in the
+                              requirements-engineering reference library).
+                              Reads raw source material (and, where a
+                              stakeholder conversation has already happened,
+                              its transcript) and produces a glossary of
+                              terms actually used or needed, each definition
+                              sourced back to where it came from. Exists
+                              because SOPHIST's restricted-natural-language
+                              method depends on terms being used consistently
+                              from the first draft onward — retrofitting a
+                              glossary after Drafting has already used terms
+                              loosely defeats the point.
+
+relation:                     []
+
+workflow:                     {}
+
+consumes:
+  - id_schema:                 source_item
+    cardinality:                one_or_more
+    note:                       Raw material to ground terminology against.
+  - id_schema:                 elicitation_session
+    cardinality:                zero_or_more
+    note:                       Stakeholder-conversation transcripts, when
+                                available, are a term source too.
+
+produces:
+  - id_schema:                 glossary
+    cardinality:                one
+    note:                       New or updated glossary; existing glossary
+                                terms are amended in place rather than
+                                duplicated.
+  - id_schema:                 open_question_log
+    cardinality:                zero_or_more
+    note:                       Terms with no settled definition in the
+                                source material are logged rather than
+                                guessed.
+
+tool_capability:              []
+
+precondition:
+  - At least one eligible source_item is available (eligibility_status
+    permits use).
+  - Any elicitation_session cited as input has status accepted.
+
+postcondition:
+  - Every term used by a produced or amended glossary entry cites at
+    least one source (a relation edge to the source_item or
+    elicitation_session it was drawn from).
+  - Terms with no source-grounded definition are recorded in
+    open_question_log rather than left undefined.
+
+status:                       draft
+
+statement:                    |
+                              Turns source material into a sourced glossary
+                              of grounded terms, before any requirement is
+                              drafted.

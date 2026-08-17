@@ -1,0 +1,177 @@
+$schema:                      https://json-schema.org/draft/2020-12/schema
+$id:                          https://capability-commons.org/schema/expanded_item.schema.yaml
+
+ver_schema:                   0.1.0
+
+title:                        Capability commons expanded item schema (proposal)
+
+description:                  |
+                              DRAFT PROPOSAL — not reviewed, not final.
+
+                              Schema for an expanded_item: a draft_item
+                              revised by the Checklist-expansion pass —
+                              systematically walked against one or more
+                              coverage_checklist entries to surface gaps a
+                              single drafting pass reliably misses (normal
+                              vs. abnormal operation, misuse, maintenance,
+                              deployment, safety/security/regulatory
+                              constraints, resource/timing/interface
+                              budgets, and so on).
+
+                              expanded_item is a distinct type from
+                              draft_item, not the same item advanced to a
+                              new status — the multi-pass process treats
+                              every pass boundary as a new node in the
+                              data-flow graph. It references the
+                              draft_item it expands rather than replacing
+                              it in place, so the pre-expansion version
+                              stays inspectable and the expansion itself is
+                              auditable (what was added, against which
+                              checklist entries).
+
+                              Recommended relation vocabulary:
+
+                                expands
+                                  expanded_item → draft_item
+                                  Required. The draft_item this expands.
+
+                                checked_against
+                                  expanded_item → coverage_checklist
+                                  Required, one or more. Which checklist
+                                  variant(s) were walked to produce this
+                                  expansion.
+
+                                critiqued_by
+                                  expanded_item → critique
+                                  Optional reciprocal edge once a Critique
+                                  pass has produced findings against this
+                                  item.
+
+
+display:
+  default_view:               outline
+
+  view:
+    outline:
+      slot:
+        - field:                workflow_status
+          role:                 status
+          synthetic:            true
+        - field:                title
+          role:                 title
+        - field:                id_schema
+          role:                 kind
+          synthetic:            true
+        - field:                brief
+          role:                 summary
+        - field:                obligation
+          role:                 badge
+        - field:                relation_count
+          role:                 links
+          synthetic:            true
+
+    detail:
+      slot:
+        - field:                title
+          role:                 title
+        - field:                statement
+          role:                 summary
+          label:                Statement
+        - field:                coverage
+          role:                 body
+          label:                Checklist coverage
+        - field:                added_since_draft
+          role:                 body
+          label:                Added since draft
+        - field:                obligation
+          role:                 body
+          label:                Obligation
+        - field:                activity_type
+          role:                 body
+          label:                Activity type
+        - field:                actor
+          role:                 body
+          label:                Actor
+        - field:                process
+          role:                 body
+          label:                Process
+        - field:                object
+          role:                 body
+          label:                Object
+        - field:                condition
+          role:                 body
+          label:                Condition
+        - field:                rationale
+          role:                 body
+          label:                Rationale
+        - field:                verification_method
+          role:                 body
+          label:                Verification method
+        - field:                value_provenance
+          role:                 body
+          label:                Value provenance
+        - field:                open_questions
+          role:                 body
+          label:                Open questions
+        - field:                description
+          role:                 body
+          label:                Description
+
+
+allOf:
+
+  - $ref:                     https://capability-commons.org/schema/base.schema.yaml
+
+  - type:                     object
+
+    required:
+      - coverage
+      - added_since_draft
+
+    properties:
+      id_schema:
+        const:                expanded_item
+      ver_schema:
+        const:                0.1.0
+
+      coverage:
+        type:                 array
+        minItems:             1
+        description:          |
+                              Which checklist categories were explicitly
+                              considered while producing this expansion,
+                              and the outcome for each — the auditable
+                              record behind checked_against.
+        items:
+          type:                object
+          required:
+            - id_category
+            - addressed
+          additionalProperties: false
+          properties:
+            id_category:
+              $ref:            https://capability-commons.org/schema/base.schema.yaml#/$defs/identifier
+              description:     Category id, matching an entry in the
+                               referenced coverage_checklist.
+            addressed:
+              type:            boolean
+              description:     Whether this category resulted in a
+                               change to the item.
+            note:
+              type:            string
+              minLength:       1
+              description:     What was added or confirmed, or why the
+                               category doesn't apply here.
+
+      added_since_draft:
+        type:                 string
+        minLength:            1
+        description:          |
+                              Plain-language summary of what changed
+                              relative to the draft_item this expands —
+                              new conditions, a tightened object, a
+                              previously-missing exception. Keeps the
+                              expansion reviewable without diffing the
+                              full statement text.
+
+  - $ref:                     https://capability-commons.org/schema/draft_item.schema.yaml#/$defs/requirement_content
