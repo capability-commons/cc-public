@@ -1,0 +1,120 @@
+id_self:                ddr_sch_identity_design_decision
+guid_self:              ddr_47219c063336401dbc083277e047e212
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  |
+                        Design Decision Record for sch_identity:
+                        Defining a Universal Identity Trait
+brief:                  |
+                        This document outlines the decisions made in
+                        defining the sch_identity schema, which
+                        establishes a universal identity trait for
+                        data items. It explains the dual identifier
+                        system consisting of guid_self and id_self,
+                        describing their roles, uniqueness guarantees,
+                        and usage within a federated system.
+context:                |
+                        In developing a robust identity schema for a
+                        federated data environment, it was necessary
+                        to establish a method for uniquely identifying
+                        and referencing items. Items may exist as
+                        standalone files or embedded entries and must
+                        be addressable via identifiers. The system
+                        must address the dual challenges of global
+                        uniqueness within a federated ecosystem and
+                        providing human-friendly, readable
+                        identifiers. The sch_identity schema,
+                        referencing the sch_primitive schema for
+                        string formats, specifies two identifier
+                        fields: guid_self, which provides an
+                        immutable, globally unique identifier, and
+                        id_self, which offers readable identification
+                        without uniqueness or immutability guarantees.
+                        Additional traits such as descriptive and
+                        rights-bearing information are modular and
+                        composed separately. The schema requires both
+                        fields but allows additional properties to be
+                        included.
+decision:               |
+                        The sch_identity schema defines identity by
+                        requiring two identifier fields: (1)
+                        **guid_self**, an opaque, immutable GUID that
+                        includes a type prefix followed by 32
+                        lowercase hexadecimal digits; this serves as
+                        the canonical globally unique identifier
+                        assigned once at creation, and (2)
+                        **id_self**, a human-readable identifier that
+                        shares the same type prefix but does not
+                        guarantee uniqueness or immutability, intended
+                        for readability, tooling, and file naming in
+                        standalone item files. Every data item that
+                        needs to be addressable composes the
+                        sch_identity trait to establish its identity.
+                        Items that are describable or have rights
+                        composition include additional schemas. The
+                        presence of either id_self or guid_self
+                        anywhere in a document declares the identity;
+                        other identifier fields elsewhere refer only
+                        to these declared identities. The schema
+                        explicitly permits additional properties
+                        alongside these identifiers.
+rationale:              |
+                        The two-tier identifier system balances the
+                        need for global uniqueness and immutability
+                        (fulfilled by guid_self) with the practical
+                        advantages of readable, descriptive
+                        identifiers (fulfilled by id_self). Given the
+                        federated nature of the system, guaranteeing
+                        perfect global uniqueness for human-readable
+                        ids is infeasible, so id_self is intentionally
+                        not unique or immutable, though managing it to
+                        reduce collisions is recommended. Emphasizing
+                        that guid_self should never change ensures
+                        stable referencing across edits and
+                        repositories. Representing identity as a trait
+                        (via allOf composition) allows flexible schema
+                        composition depending on item capabilities
+                        such as description and rights. This structure
+                        clarifies the distinction between identity
+                        declaration within items and identity
+                        referencing across documents.
+alternative:            |
+                        Alternatives considered included: (a) Using a
+                        single identifier field that combines
+                        human-readability and global uniqueness, which
+                        proved complex and less practical within a
+                        federated environment; (b) Enforcing
+                        uniqueness of id_self across the federation
+                        via centralized registration, which is
+                        unfeasible; (c) Omitting the human-readable
+                        id_self and relying solely on opaque GUIDs,
+                        which would reduce usability and readability
+                        for authors and tooling; (d) Creating stronger
+                        validation rules for id_self to minimize
+                        collisions, but this was balanced against
+                        practicality and authoring workflows.
+consequence:            |
+                        Implementing this schema establishes a clear
+                        pattern for identity management that supports
+                        federation, referencing, and authoring needs.
+                        It requires implementers to consistently
+                        generate and preserve guid_self and to manage
+                        id_self carefully to avoid collisions within
+                        defined scopes. Tooling can rely on guid_self
+                        as the canonical reference and use id_self for
+                        human interaction and file naming. This
+                        approach may necessitate collision detection
+                        and renaming processes within repositories.
+                        Allowing additional properties ensures
+                        extensibility, while identity references
+                        elsewhere must explicitly link to declared
+                        identities. Overall, the schema facilitates
+                        consistent federated identity management while
+                        acknowledging practical constraints.
+relation:               []
