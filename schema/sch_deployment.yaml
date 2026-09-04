@@ -1,0 +1,91 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_deployment.yaml
+id_self:                sch_deployment
+guid_self:              sch_17ba23d4628842b19533d1ab38fb67c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deployment schema
+brief:                  |
+                        The shape of a deployment: a workflow, a
+                        model, and a budget.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. Names the workflow by an r_deploys
+                        edge, which is required. The model is an
+                        identifier the runner understands. The budget
+                        is the most passes a cycle may take.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - model
+      - budget
+      - relation
+
+    properties:
+
+      model:
+        type:           string
+        minLength:      1
+
+      budget:
+        type:           integer
+        minimum:        1
+
+      judge:
+        type:           string
+
+        enum:
+          - always
+          - guards
+          - never
+
+        description:    |
+                        Which evals run as a node produces. guards
+                        runs only those a guard depends on; always
+                        runs every anchored eval; never runs none, and
+                        a guard that needs a verdict then cannot fire.
+                        Absent means always.
+
+      confirm:
+        type:           integer
+        minimum:        1
+        description:    |
+                        Over how many fresh judgements an adverse
+                        verdict is confirmed. Absent means the
+                        runner's default.
+
+      commit:
+        type:           string
+
+        enum:
+          - run
+          - node
+          - never
+
+        description:    |
+                        When a run commits. run commits once, at the
+                        end, after the checks pass; node commits after
+                        every node; never leaves the tree uncommitted,
+                        which a dry run wants. Absent means run.
+
+      relation:
+        type:           array
+
+        contains:
+          type:         object
+
+          properties:
+
+            id_relation:
+              const:    r_deploys

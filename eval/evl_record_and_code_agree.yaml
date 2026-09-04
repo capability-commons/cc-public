@@ -1,0 +1,99 @@
+id_self:                evl_record_and_code_agree
+guid_self:              evl_789e7c2e17bb443b808764562fddae43
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Record and code agree
+brief:                  |
+                        A design decision record and the code it
+                        decides do the same thing.
+note:                   |
+                        NOT ANCHORED. This eval names no relation, so
+                        it reaches nothing and is never run.
+
+                        It is written because the criterion is worth
+                        stating, and because the gap is worth having
+                        somewhere other than in a record. A code data
+                        item carries prose ABOUT the code and not the
+                        code itself, so a judge shown one can read
+                        what a module claims to do and never what it
+                        does.
+
+                        Measured: of three record and code pairs given
+                        a decision the code plainly contradicted, none
+                        was detected.
+
+                        It gains its anchor when a source item carries
+                        its source. See ddr_eval_reach.
+criterion:              |
+                        You are given a design decision record and the
+                        source of one code item it decides.
+
+                        MET when the code embodies the decision the
+                        record states.
+
+                        UNMET when the two disagree: the code does
+                        something the record rules out, or the record
+                        states something the code does not do.
+
+                        Silence is not disagreement. A record settles
+                        one matter and is entitled to say nothing
+                        about the rest of the code.
+
+                        When UNMET, say which of the two appears to
+                        have moved.
+
+subject:
+
+  include_type:
+    - t_ddr
+    - t_python_package
+    - t_python_module
+    - t_python_class
+    - t_python_function
+
+severity:               advisory
+
+example:
+
+  - input:              |
+                        RECORD ddr_loader_design, decision: "One
+                        module per format, each exposing the same
+                        entry point: from_bytes(data, encoding)." CODE
+                        pym_cc_public.load.yaml: "def from_bytes(data,
+                        encoding = None): ..."
+    verdict:            met
+    feedback:           |
+                        The code exposes the entry point the record
+                        names, with the signature it names.
+
+  - input:              |
+                        RECORD ddr_loader_design, decision: "One
+                        module per format, each exposing the same
+                        entry point: from_bytes(data, encoding)." CODE
+                        pym_cc_public.load.yaml: "class Loader: def
+                        read(self, path): ..."
+    verdict:            unmet
+    feedback:           |
+                        The record names a function and the code
+                        offers a class with a different method. The
+                        code appears to have moved.
+
+  - input:              |
+                        RECORD ddr_check_architecture, decision: "A
+                        check is a module exposing check(context)."
+                        CODE pym_cc_public.check.parse: "def
+                        check(context): ... ID_CHECK = 'parse'"
+    verdict:            met
+    feedback:           |
+                        The module exposes check(context). That it
+                        also carries an ID_CHECK constant is something
+                        the record says nothing about, and silence is
+                        not disagreement.
+
+relation:               []

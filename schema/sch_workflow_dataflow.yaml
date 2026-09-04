@@ -1,0 +1,97 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_workflow_dataflow.yaml
+id_self:                sch_workflow_dataflow
+guid_self:              sch_1eb527db75de470b8cec8605179f3221
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow workflow schema
+brief:                  |
+                        The shape of a dataflow workflow: a keyed
+                        table of nodes, a map of forward edges, and a
+                        map of back edges.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. Nodes are sch_node entries keyed by
+                        local name. Each edge map is keyed by a source
+                        output port path and holds a list of
+                        destinations, each an input port path with an
+                        optional guard. Back edges are held in
+                        edge_back and are set aside when the graph is
+                        ordered.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+      - node
+      - edge
+
+    properties:
+
+      node:
+        minProperties:  1
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_node.yaml
+
+      edge:
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*\.output\.[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          type:         array
+          minItems:     1
+
+          items:
+            $ref:       "#/$defs/destination"
+
+      edge_back:
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*\.output\.[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          type:         array
+          minItems:     1
+
+          items:
+            $ref:       "#/$defs/destination"
+
+$defs:
+
+  destination:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - to
+
+    properties:
+
+      to:
+        type:           string
+        pattern:        '^[a-z][a-z0-9_]*\.input\.[a-z][a-z0-9_]*$'
+
+      guard:
+        type:           string
+
+        enum:
+          - met
+          - unmet

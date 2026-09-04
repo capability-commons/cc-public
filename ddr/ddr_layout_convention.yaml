@@ -1,0 +1,237 @@
+id_self:                ddr_layout_convention
+guid_self:              ddr_6604af5f4b854ba485fbf15b16e39cf1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout convention
+brief:                  |
+                        One layout for every document, produced by a
+                        printer that parses the document and writes it
+                        again. The check is whether a file matches its
+                        own printing.
+context:                |
+                        These files are written partly by hand and
+                        partly by a language model, and the layout
+                        drifted. Values were aligned at four different
+                        columns. One block in sch_relation.yaml used
+                        two alignments at once. Prose ran to 222
+                        columns in one register and stopped at 45 in a
+                        dozen schemas.
+
+                        A first remedy worked on lines: it realigned
+                        the gap after a key and refilled block
+                        scalars, but never decided what a line's
+                        indentation should be, and its companion check
+                        let a deep indent through whenever the gap
+                        after the key happened to be right. Generated
+                        files with relation edges at twenty two
+                        columns passed both. The faults were real,
+                        recurrent, and mechanically avoidable.
+
+                        The YAML held in a python docstring follows
+                        the same convention, and nothing checked it
+                        either.
+decision:               |
+                        A document is laid out by a PRINTER. It is
+                        parsed, and written again from the parse:
+                        structure indented two per level; a value at
+                        column 24, or two past its key where the key
+                        reaches that far; the first key of a sequence
+                        item on the line with its dash; block scalar
+                        bodies at the common column, filled to 70.
+
+                        Only what the author wrote as a block scalar
+                        is prose, and only prose is refilled. A plain
+                        scalar is a datum and stays on its line
+                        however long it runs.
+
+                        Every sequence is written in block form. Flow
+                        form is kept only for the empty list and the
+                        empty mapping.
+
+                        Blank lines are placed by rule and not read
+                        from the source: one separates anything
+                        written on several lines from what is beside
+                        it, and one precedes a comment block. Scalars,
+                        block scalars among them, pack. Inside a
+                        docstring the document sits one blank line
+                        inside its markers.
+
+                        Comments are kept, each before the key it
+                        preceded, at that key's indent. Quoting is
+                        kept as written.
+
+                        The layout check is one comparison: a file
+                        against its own printing, reported at the
+                        first line that differs.
+
+                        A document outside the subset the printer
+                        handles -- anchors, tags, folded scalars, a
+                        sequence directly in a sequence -- is refused
+                        with a reason, not laid out by guesswork.
+
+                        A python file is governed across every
+                        document held in a docstring, found by walking
+                        the syntax tree: the module's, and any class's
+                        or function's. The code is not touched.
+
+                        The printer is run after any edit to a
+                        document. Then the checks.
+rationale:              |
+                        A printer that owns structure makes it
+                        impossible for a generator to produce a badly
+                        laid out file, because everything a generator
+                        writes is printed before it is kept. That
+                        removes a class of error rather than reporting
+                        it afterwards, which is what the line based
+                        remedy could only ever do.
+
+                        Parsing and reprinting is what makes the
+                        printer correct by construction. The parse is
+                        authoritative about what is a key, an item, a
+                        scalar or prose, so no rule has to infer any
+                        of that from indentation. Scalars are rendered
+                        by the YAML library, so the rules for when a
+                        plain scalar would read as something else are
+                        never restated here.
+
+                        Refilling only block scalars, because the
+                        first printer refilled a long plain scalar
+                        too, and broke a regular expression by putting
+                        line breaks in it. A plain scalar with spaces
+                        in it is still a datum. What is prose is what
+                        the author marked as prose.
+
+                        Block sequences always, because lists grow, a
+                        flow list has to become a block list when it
+                        does, and one form everywhere is one fewer
+                        thing to decide.
+
+                        Blank lines by rule, so that the question of
+                        where they go is never asked again. The rule
+                        is the one the hand written registers already
+                        followed. It changes the spacing of the
+                        schemas, which had blank lines between every
+                        top level key, and that was accepted for the
+                        sake of having one rule.
+
+                        The check as a comparison, because a check and
+                        a printer that hold separate rules can
+                        disagree, and did. One implementation cannot
+                        disagree with itself. The check reports the
+                        first differing line, which is enough to say
+                        where, and the fix is always the same command.
+alternative:            |
+                        An off the shelf formatter -- prettier,
+                        yamlfmt. Rejected: they normalise a whole
+                        document, and the gutter that makes these
+                        files scan is exactly the thing they remove.
+                        None of them would look inside a docstring.
+
+                        The line based formatter and rule based check
+                        this replaces. Superseded: each had a blind
+                        spot where it took indentation on trust, and
+                        generated files fell through it repeatedly.
+
+                        Preserving blank lines as written. Considered,
+                        and done for the first application so that its
+                        diff showed only structural faults. Rejected
+                        as the standing rule: it keeps every author's
+                        habits, and the point was to have none.
+
+                        Preserving flow lists as written. Rejected:
+                        two forms for one thing, and one of them stops
+                        working as the list grows.
+
+                        A band of acceptable fill widths, with the
+                        check verifying the band rather than the exact
+                        width. This was the earlier decision here.
+                        Superseded: with the printer as the
+                        convention, the band survives only as the
+                        printer's own behaviour, and an edit to prose
+                        is followed by a print rather than checked by
+                        eye against a range.
+consequence:            |
+                        A file is either laid out or it is not, and
+                        the difference is one command away. Nothing
+                        about layout is a judgement any more.
+
+                        Every edit to a document is followed by a
+                        print. That is a step in the workflow, and it
+                        is recorded in the repository's own guidance
+                        so that a tool editing here knows it.
+
+                        Laying out the repository this way touched
+                        every file with a structural fault and then
+                        every file again for blank lines. Neither pass
+                        is reviewable line by line. What warrants them
+                        is the verification each ran before writing:
+                        every scalar identical, every block scalar
+                        identical in its words, every comment kept,
+                        every file a fixpoint.
+
+                        The first printer damaged one file before that
+                        verification was made strict enough to notice.
+                        It collapsed whitespace in every string when
+                        comparing, so a regex that had gained line
+                        breaks looked unchanged. The verification now
+                        compares plain scalars exactly.
+
+                        The rules live in python and so do not travel.
+                        A federated partner gets the documents and
+                        none of the layout, exactly as with the other
+                        checks.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.layout
+    guid_target:        pym_10b0403d86c748219ef9db9500ea2a2b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.layout
+    guid_target:        pym_c5f42478b5bd426d89b1f15a4be94945
+
+question:
+
+  c94b701c3:
+    id_self:            qst_layout_convention.c94b701c3
+    guid_self:          qst_9985e15fd41a4c63b1e67e93b5123108
+    question:           |
+                        Whether quoting should be systematic rather
+                        than preserved. Most text is unquoted to keep
+                        the noise down, and where a value is quoted it
+                        is usually because its content requires it;
+                        whether the printer should decide that instead
+                        of the author is open.
+    relation:           []
+
+  c89f12031:
+    id_self:            qst_layout_convention.c89f12031
+    guid_self:          qst_6f7763488df648a99b50bf326dac344c
+    question:           |
+                        Whether comments should be systematic rather
+                        than preserved. The preference is for content
+                        that a tool can read over content it cannot,
+                        but a horizontal rule between the fields of a
+                        large document earns its place, and no rule
+                        for that has been written.
+    relation:           []
+
+  cdc180169:
+    id_self:            qst_layout_convention.cdc180169
+    guid_self:          qst_52b73caf4c0b4f7b915bff7b1ff307d5
+    question:           |
+                        Whether the convention should be data rather
+                        than code, which is the question
+                        ddr_loader_design leaves open for encoding
+                        conventions and ddr_check_architecture for
+                        checks generally.
+    relation:           []

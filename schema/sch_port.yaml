@@ -1,0 +1,53 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_port.yaml
+id_self:                sch_port
+guid_self:              sch_e73720cf21904fed82cb7941bfb9cdbe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Port schema
+brief:                  |
+                        What a port is: one place on a component where
+                        one item is consumed or produced.
+description:            |
+                        An entry on a component, under input or under
+                        output. Names the type of the item it carries.
+                        An input may be optional. An output carries
+                        the prompt that produces its item. An eval is
+                        anchored here by an r_is_judged_by edge.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_descriptive.yaml
+
+required:
+  - id_type
+  - guid_type
+
+properties:
+
+  id_type:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+  guid_type:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+  optional:
+    type:               boolean
+
+  prompt:
+    type:               string
+    minLength:          1
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge

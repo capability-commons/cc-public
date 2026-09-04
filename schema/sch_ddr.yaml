@@ -1,0 +1,137 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_ddr.yaml
+id_self:                sch_ddr
+guid_self:              sch_d801523ec4814494be182b54dd62e8e3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Design decision record schema
+brief:                  |
+                        Schema for design decision records.
+description:            |
+                        A design decision record holds the reasoning
+                        behind a decision.
+
+                        The fields are separate channels. Context,
+                        rejected alternatives, accepted consequences
+                        and unresolved questions each have a field of
+                        their own.
+
+                        The scope is design decisions generally. A
+                        decision about a naming convention, or about
+                        accepting a risk, is in scope, as is one about
+                        structure.
+usage:                  |
+                        Selected for a record by the type register,
+                        which maps the ddr prefix to the design
+                        decision record type.
+
+                        A record names what it decides, by an
+                        r_decides edge to each item concerned. The
+                        edge is on the record; the items it names
+                        carry no edge back.
+note:                   |
+                        A record is edited, not versioned. It carries
+                        no number and no lifecycle status. Where a
+                        decision is replaced, the replacement is a new
+                        record, and the two are linked.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - context
+      - decision
+      - rationale
+      - alternative
+      - consequence
+
+    properties:
+
+      context:
+        type:           string
+        minLength:      1
+        description:    |
+                        What prompted this decision, and what was
+                        known at the time.
+
+                        The place for considerations that were raised
+                        and had to be weighed. Recording them here is
+                        what allows the artifacts to omit them.
+
+      decision:
+        type:           string
+        minLength:      1
+        description:    |
+                        What was decided. The smallest complete
+                        statement of it.
+
+                        Not the reasoning, which goes in rationale,
+                        and not what follows, which goes in
+                        consequence.
+
+      rationale:
+        type:           string
+        minLength:      1
+        description:    |
+                        Why this, specifically. The argument that
+                        settled it.
+
+      alternative:
+        type:           string
+        minLength:      1
+        description:    |
+                        What else was considered, and why it was not
+                        chosen.
+
+                        Required even where nothing was, in which case
+                        say so. A rejected option that goes unrecorded
+                        tends to reappear -- either as a question
+                        already answered, or as a comment in an
+                        artifact explaining what the artifact is not.
+
+      consequence:
+        type:           string
+        minLength:      1
+        description:    |
+                        What follows from the decision, including what
+                        it costs.
+
+                        Risks knowingly accepted belong here, together
+                        with any mitigation deliberately deferred. A
+                        cost that is not written down is one nobody
+                        can later judge as still worth paying.
+
+      question:
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_question.yaml
+
+        description:    |
+                        Optional. What this decision does not settle,
+                        as entries with identities of their own, so
+                        that whatever later settles one says so by an
+                        r_answers edge and what is still open is a
+                        query rather than a reading.
+
+                        The place for a doubt that would otherwise
+                        become a TODO comment somewhere it does not
+                        belong. It replaced a prose field,
+                        open_question, which is refused below so that
+                        no record keeps one.
+
+      open_question:    false

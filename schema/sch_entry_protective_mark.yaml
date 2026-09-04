@@ -1,0 +1,74 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_protective_mark.yaml
+id_self:                sch_entry_protective_mark
+guid_self:              sch_749dc2bbaf6c4a238ca4e02044a633fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protective mark entry schema
+brief:                  |
+                        Schema for one entry in the protective mark
+                        register.
+description:            |
+                        What a protective mark carries BEYOND what
+                        every register entry carries: the authority
+                        whose rules govern it, and the level it names
+                        within that authority's scheme.
+
+                        Both are held on the mark. An item referring
+                        to a mark inherits the pair; it restates
+                        neither.
+usage:                  |
+                        Referenced by sch_reg_protective_mark.yaml as
+                        the shape of each entry in the protective mark
+                        register.
+
+                        An item does not carry a level. It carries a
+                        reference to a mark, and the mark carries the
+                        level.
+note:                   |
+                        The description of a mark is where its
+                        handling instruction is written, in plain
+                        words.
+
+                        additionalProperties stays open.
+type:                   object
+additionalProperties:   true
+
+required:
+  - authority
+  - level
+
+properties:
+
+  authority:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    minLength:          1
+    description:        |
+                        The body whose rules govern handling under
+                        this mark, and under whose sanction a
+                        violation falls.
+
+                        A plain identifier for now. When there is more
+                        than one authority worth telling apart, this
+                        becomes a reference to an entry in a register
+                        of authorities.
+
+  level:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    minLength:          1
+    description:        |
+                        The level this mark names within its
+                        authority's scheme.
+
+                        Meaningful only alongside authority. Two marks
+                        may share a level and mean different things,
+                        so nothing may compare levels across
+                        authorities.

@@ -1,0 +1,56 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_component.yaml
+id_self:                sch_component
+guid_self:              sch_f1095fd235ef479085522c2373b9c6c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Component schema
+brief:                  |
+                        The shape of an atomic component: input ports,
+                        output ports, and a prompt or an
+                        implementation.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. Ports are keyed tables of sch_port
+                        entries. At least one output. A component
+                        implemented by code names it by an
+                        r_is_implemented_by edge; a component
+                        implemented by prompts carries one on each
+                        output port.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+      - output
+
+    properties:
+
+      input:
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_port.yaml
+
+      output:
+        minProperties:  1
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_port.yaml

@@ -1,0 +1,155 @@
+id_self:                ddr_prefixed_identifier
+guid_self:              ddr_59f417ed503945f4905159b644db8807
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prefixed identifiers
+brief:                  |
+                        Every identifier carries a short lowercase
+                        type prefix, separated from its body by the
+                        first underscore.
+context:                |
+                        Identifiers appear in structured and
+                        unstructured text alike -- in a YAML field, in
+                        a commit message, in a log line, in prose.
+
+                        Where there is a field name to lean on, a
+                        scanner can tell what an identifier is by
+                        where it sits. In prose there is no field
+                        name, and a bare UUID says nothing at all: not
+                        what it identifies, not what kind of thing it
+                        identifies, and not even whether it belongs to
+                        this system rather than some other one that
+                        happens to use UUIDs.
+
+                        Building a traceability graph over a whole
+                        tree requires finding every participating
+                        identifier wherever it appears, and telling it
+                        apart from every foreign one.
+decision:               |
+                        Every identifier -- opaque and readable alike
+                        -- consists of a type prefix of one to eight
+                        lowercase letters, an underscore, and a body.
+
+                        The prefix contains no underscore, so the
+                        first underscore in an identifier is always
+                        the separator.
+
+                        The prefix names the type, and nothing else.
+                        It does not encode the role an identifier
+                        plays where it appears; that is carried by the
+                        name of the field holding it.
+rationale:              |
+                        The prefix makes an identifier self
+                        identifying with no surrounding context
+                        whatever. One regular expression finds every
+                        participating identifier in a whole tree,
+                        structured and unstructured text alike, with
+                        no false positives from foreign UUIDs:
+
+                          \b([a-z]{1,8})_([0-9a-f]{32})\b
+
+                        This is the requirement that motivates
+                        prefixing at all. The rest follows from it.
+
+                        Secondly, the type of a referent becomes
+                        visible on inspection, by eye or by regular
+                        expression, without resolving the reference.
+
+                        Thirdly, a type can pin the exact form of its
+                        own identifiers, through the regex_id field of
+                        its entry in the type register, which makes
+                        the type at the far end of an edge checkable
+                        without resolving it.
+
+                        Excluding the underscore from the prefix is
+                        what makes prefix and body separable with no
+                        register lookup. Note that this holds however
+                        the prefix vocabulary grows: the delimiter,
+                        not the vocabulary, is what makes the split
+                        unambiguous. Allocating both r and reg is
+                        therefore harmless -- reg_type can only be
+                        read as reg plus type, since prefix r would
+                        require the identifier to begin r underscore.
+                        Prefix-freeness is a property wanted of
+                        delimiterless encodings and is not wanted
+                        here, so prefix length is a free choice made
+                        for legibility alone.
+alternative:            |
+                        Bare UUIDs, with type inferred from the field
+                        name. Rejected: it works only where there is a
+                        field, which excludes prose, commit messages
+                        and logs -- the places where a reference is
+                        most likely to be made informally and most
+                        likely to be lost.
+
+                        A prefix-free code, allocated so that no
+                        prefix is an initial segment of another.
+                        Rejected as solving a problem that does not
+                        arise. Prefix-freeness matters when there is
+                        no delimiter; here there is one.
+
+                        Encoding the type in the body rather than the
+                        prefix, or in a separate field. Rejected: both
+                        require knowing where to look, which is
+                        exactly what an identifier found loose in text
+                        does not provide.
+consequence:            |
+                        A guid is not a bare UUID. Standard UUID
+                        parsers and database UUID column types will
+                        reject one, and anything crossing such a
+                        boundary must split on the first underscore
+                        first.
+
+                        The prefix travels with the identifier
+                        wherever it goes, including across a sharing
+                        boundary. A reference to an item a reader
+                        cannot see still discloses what kind of item
+                        it is. That cost has been weighed and accepted
+                        separately.
+
+                        An identifier quoted as an example in prose is
+                        indistinguishable, to the scanning regular
+                        expression, from one meant as a reference.
+                        Examples are therefore written with obviously
+                        unreal bodies. Tooling that walks loaded
+                        structure rather than raw text avoids the
+                        problem entirely, and the checks do.
+
+                        The body of a readable id may begin with a
+                        digit, since ddr_commit_record. The rule that
+                        it begin with a letter had been meant to keep
+                        an id from looking like a guid, and never did:
+                        a body of thirty two hexadecimal letters was
+                        always legal. The guid form being exact is
+                        what keeps them apart, and a sortable
+                        identifier was worth more than a rule that
+                        guaranteed nothing.
+
+question:
+
+  c09739fd7:
+    id_self:            qst_prefixed_identifier.c09739fd7
+    guid_self:          qst_919d765ae1454f00a223f47d6839b2a0
+    question:           |
+                        The one to eight letter bound on prefix length
+                        is arbitrary. Nothing has yet wanted more than
+                        three.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_primitive
+    guid_target:        sch_b7c5238250bd403cadd8bc0844c23e2d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.identifier
+    guid_target:        pym_84e70c4ba91c4417a0c48448db0911c4

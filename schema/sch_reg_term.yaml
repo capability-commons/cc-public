@@ -1,0 +1,32 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_term.yaml
+id_self:                sch_reg_term
+guid_self:              sch_9c44fa0e85434706a25fb5a892955069
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Term register schema
+brief:                  |
+                        The term register specifically: a register
+                        whose entries are additionally terms.
+description:            |
+                        Composes the general register schema with the
+                        term entry schema, in the pattern
+                        sch_reg_type.yaml uses.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_entry_term.yaml

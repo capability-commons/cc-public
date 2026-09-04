@@ -1,0 +1,280 @@
+id_self:                reg_relation
+guid_self:              reg_512fbf5c51be4efaa4517b52310ddf80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Relation register
+brief:                  |
+                        Register of relations.
+description:            |
+                        The relation register provides a comprehensive
+                        list of relations together with associated
+                        metadata for each.
+usage:                  |
+                        The relation register is used to enable
+                        general purpose processing of networks of
+                        items. Any item with an identifier may
+                        participate in a networks as a node. Any pair
+                        of such items may be connected with a labelled
+                        edge, where the edge label is drawn from this
+                        register. The content of this register defines
+                        the semantics of that edge.
+note:                   |
+                        The relation register gives us a single
+                        mechanism for taking any pair of items that
+                        have identifiers
+relation:               []
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # r_is_specified_by_schema — Is specified by schema relation
+  #
+  r_is_specified_by_schema:
+    id_self:            r_is_specified_by_schema
+    guid_self:          r_d70024bd40444f93b4fc1903379ded81
+    title:              Is specified by schema relation
+    brief:              SUBJ is specified by schema OBJ
+    description:        |
+                        It is intended that the structure of the data
+                        item identified by SUBJ be specified by the
+                        schema data item identified by OBJ.
+
+  # ---------------------------------------------------------------------------
+  # r_is_held_in_registry — Is held in registry relation
+  #
+  r_is_held_in_registry:
+    id_self:            r_is_held_in_registry
+    guid_self:          r_016e74a0abea4a3990cc3259942baf92
+    title:              Is held in registry relation
+    brief:              SUBJ is held in registry OBJ
+    description:        |
+                        It is intended that the metadata of the item
+                        identified by SUBJ be recorded within the
+                        registry data item identified by OBJ.
+
+  # ---------------------------------------------------------------------------
+  # r_evaluates_items_of_type — Evaluates items of type relation
+  #
+  r_evaluates_items_of_type:
+    id_self:            r_evaluates_items_of_type
+    guid_self:          r_18cffd40f764443c89211cfc4854dc08
+    title:              Evaluates items of type relation
+    brief:              SUBJ evaluates items of type OBJ
+    description:        |
+                        It is intended that the eval identified by
+                        SUBJ be applied to every data item whose type
+                        is the type identified by OBJ.
+
+                        The narrowest of the three anchors, and the
+                        one to reach for where a criterion is
+                        genuinely particular to one kind of thing.
+
+  # ---------------------------------------------------------------------------
+  # r_evaluates_items_specified_by_schema — Evaluates items specified by schema
+  #
+  r_evaluates_items_specified_by_schema:
+    id_self:            r_evaluates_items_specified_by_schema
+    guid_self:          r_3096106ed2b84a05a46a9aa8bd0254be
+    title:              Evaluates items specified by schema relation
+    brief:              SUBJ evaluates items specified by schema OBJ
+    description:        |
+                        It is intended that the eval identified by
+                        SUBJ be applied to every data item specified
+                        by the schema identified by OBJ.
+
+                        SPECIFIED BY is transitive, as it already is
+                        in r_is_specified_by_schema: a schema
+                        specifies an item through everything it
+                        composes, which is what validation does. So an
+                        item specified by sch_ddr is equally specified
+                        by sch_base and sch_descriptive, and an eval
+                        anchored on a trait reaches everything
+                        carrying that trait -- including item types
+                        not yet invented -- without being restated for
+                        each.
+
+  # ---------------------------------------------------------------------------
+  # r_evaluates_items_joined_by_relation — Evaluates items joined by relation
+  #
+  r_evaluates_items_joined_by_relation:
+    id_self:            r_evaluates_items_joined_by_relation
+    guid_self:          r_c7a437a455054da6bbedbced7c4bf32d
+    title:              Evaluates items joined by relation relation
+    brief:              SUBJ evaluates items joined by relation OBJ
+    description:        |
+                        It is intended that the eval identified by
+                        SUBJ be applied to every PAIR of data items
+                        joined by an edge labelled with the relation
+                        identified by OBJ.
+
+                        For a criterion that is not about an item at
+                        all but about the fit between two of them --
+                        whether a decision record and the thing it
+                        decides actually agree, say. Such a criterion
+                        has no single item to anchor to.
+
+  # ---------------------------------------------------------------------------
+  # r_decides — Decides relation
+  #
+  r_decides:
+    id_self:            r_decides
+    guid_self:          r_4aefda84f8894e02aede8729ced91732
+    title:              Decides relation
+    brief:              SUBJ decides OBJ
+    description:        |
+                        It is intended that the design of the item
+                        identified by OBJ be settled by the design
+                        decision record identified by SUBJ.
+
+                        Recorded on the record rather than on the
+                        item, so that an item need not point back at
+                        the reasoning behind it. A reader of the item
+                        finds that reasoning by looking for what
+                        decides it.
+
+  r_instantiates:
+    id_self:            r_instantiates
+    guid_self:          r_335c008f9bea4580ba63e4d6def980d3
+    title:              Instantiates relation
+    brief:              SUBJ instantiates OBJ
+    description:        |
+                        The node identified by SUBJ is an instance,
+                        within one workflow, of the component
+                        identified by OBJ. The node supplies
+                        configuration; the component supplies ports,
+                        prompts and evals.
+
+  r_is_judged_by:
+    id_self:            r_is_judged_by
+    guid_self:          r_2ad95cd22e3e45beb317f3e082386a96
+    title:              Is judged by relation
+    brief:              SUBJ is judged by OBJ
+    description:        |
+                        The item on the port identified by SUBJ is
+                        judged by the eval identified by OBJ. Where
+                        SUBJ is a component rather than a port, the
+                        eval judges an input and an output of that
+                        component together.
+
+                        This is how an eval is anchored to a port. The
+                        eval keeps its own criterion and examples; the
+                        edge says only where it applies.
+
+  r_is_implemented_by:
+    id_self:            r_is_implemented_by
+    guid_self:          r_f9975465bdd64371ba4d59ed5563477e
+    title:              Is implemented by relation
+    brief:              SUBJ is implemented by OBJ
+    description:        |
+                        The component identified by SUBJ is carried
+                        out by the source item identified by OBJ,
+                        rather than by a prompt. A component names one
+                        or the other.
+
+  r_is_a_form_of:
+    id_self:            r_is_a_form_of
+    guid_self:          r_20f5b5423123410cb63b0ef9cffc906f
+    title:              Is a form of relation
+    brief:              SUBJ is a form of OBJ
+    description:        |
+                        The type identified by SUBJ shares the
+                        interface of the type identified by OBJ. Used
+                        from a composite component type to the atomic
+                        component type, so that the component forms
+                        can be enumerated and a policy binding all of
+                        them can be checked.
+
+  r_deploys:
+    id_self:            r_deploys
+    guid_self:          r_c9dc371d2bf747068e9ea29b3f320ecd
+    title:              Deploys relation
+    brief:              SUBJ deploys OBJ
+    description:        |
+                        The deployment identified by SUBJ supplies the
+                        machinery under which the workflow identified
+                        by OBJ is run: which model, what budget, and
+                        whatever else the definition must not say.
+
+  r_ran_under:
+    id_self:            r_ran_under
+    guid_self:          r_acbf8f7c3dea40249e7b9aa27ad6cdc3
+    title:              Ran under relation
+    brief:              SUBJ ran under OBJ
+    description:        |
+                        The execution identified by SUBJ was run under
+                        the deployment identified by OBJ. The workflow
+                        that ran is reached through the deployment,
+                        and machinery is recorded nowhere else.
+
+  r_binds:
+    id_self:            r_binds
+    guid_self:          r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+    title:              Binds relation
+    brief:              SUBJ binds OBJ
+    description:        |
+                        The binding identified by SUBJ names the item
+                        identified by OBJ as the one that filled a
+                        port on one pass of an execution. The port and
+                        the node are named on the binding itself.
+
+  r_measures:
+    id_self:            r_measures
+    guid_self:          r_5e895eb6d5e9433e94a9db3f24b498bb
+    title:              Measures relation
+    brief:              |
+                        SUBJ measures OBJ
+    description:        |
+                        The control set identified by SUBJ holds cases
+                        with known verdicts against which the eval
+                        identified by OBJ is measured. Several sets
+                        may measure one eval, and a partner brings
+                        their own.
+    relation:           []
+
+  r_is_snapshot_of:
+    id_self:            r_is_snapshot_of
+    guid_self:          r_b4a1513442114ceca64daf2d1090c5fb
+    title:              Is snapshot of relation
+    brief:              |
+                        SUBJ is snapshot of OBJ
+    description:        |
+                        The control case identified by SUBJ holds, as
+                        its subject, the text the item identified by
+                        OBJ rendered to when the case was made.
+                        Informational: what suppresses a finding is
+                        the text matching, not this edge.
+    relation:           []
+
+  r_answers:
+    id_self:            r_answers
+    guid_self:          r_4f5ab9aea04e4732919518c4b4ab7f18
+    title:              Answers relation
+    brief:              |
+                        SUBJ answers OBJ
+    description:        |
+                        The item identified by SUBJ settles the
+                        question identified by OBJ. A question with no
+                        incoming edge of this relation is still open,
+                        which is what makes what is open a query
+                        rather than a reading.
+    relation:           []
+
+  r_results_from:
+    id_self:            r_results_from
+    guid_self:          r_af933c79f56a4abcb4a8783a75cb10c8
+    title:              Results from relation
+    brief:              |
+                        SUBJ results from OBJ
+    description:        |
+                        The commit identified by SUBJ holds what the
+                        execution identified by OBJ produced or
+                        revised. A commit with no such edge was made
+                        by a person.
+    relation:           []

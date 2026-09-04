@@ -1,0 +1,89 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_commit.yaml
+id_self:                sch_commit
+guid_self:              sch_46065f16926a43b586804bdacca29cd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit record schema
+brief:                  |
+                        The shape of a commit record: what a commit
+                        was for, the state of the checks, and what it
+                        changed.
+description:            |
+                        Composes identity only. A commit carries no
+                        rights of its own, since its rights are those
+                        of what it contains. Title, brief and
+                        description are required; the title is also
+                        the commit's first line. What the commit
+                        changed is not recorded here, because the diff
+                        says it exactly. The relation list is for what
+                        a commit relates to on purpose: the execution
+                        it results from, a decision it carries out.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - brief
+      - description
+      - status
+      - check
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+
+      brief:
+        type:           string
+        minLength:      1
+
+      description:
+        type:           string
+        minLength:      1
+
+      status:
+        type:           string
+
+        enum:
+          - clean
+          - checkpoint
+
+      check:
+        type:           object
+        additionalProperties:  false
+
+        required:
+          - count
+          - critical
+          - advisory
+
+        properties:
+
+          count:
+            type:       integer
+            minimum:    0
+
+          critical:
+            type:       integer
+            minimum:    0
+
+          advisory:
+            type:       integer
+            minimum:    0
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge

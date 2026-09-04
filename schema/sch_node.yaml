@@ -1,0 +1,49 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_node.yaml
+id_self:                sch_node
+guid_self:              sch_0f84c11a0f2d40b28013b09af549a8e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node schema
+brief:                  |
+                        What a node is: one instance of a component
+                        within a workflow.
+description:            |
+                        An entry on a workflow under node. Names the
+                        component it instantiates by an r_instantiates
+                        edge, which is required, and carries
+                        configuration for this instance.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_descriptive.yaml
+
+required:
+  - relation
+
+properties:
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+    contains:
+      type:             object
+
+      properties:
+
+        id_relation:
+          const:        r_instantiates
+
+  config:
+    type:               object

@@ -1,0 +1,184 @@
+id_self:                ddr_identity_field_naming
+guid_self:              ddr_8e90c9cbc6a045b0b5321d9948ed4437
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Identity field naming
+brief:                  |
+                        A _self field declares an identity; every
+                        other identifier field refers to one, and
+                        names its role as it does so.
+context:                |
+                        An identifier appearing in a document is doing
+                        one of two things: declaring the identity of
+                        the thing it sits in, or referring to a thing
+                        declared elsewhere. Almost every question
+                        asked of the data depends on telling those
+                        apart. Uniqueness applies to declarations
+                        only. Resolution applies to references only.
+
+                        The field names did not distinguish them.
+                        Declarations were id_item and guid_item;
+                        references in an edge were id_obj and
+                        guid_obj, with the relation type named by
+                        id_rel -- and the schema for edges specified
+                        guid_item for the reference, so the same name
+                        meant opposite things depending on where it
+                        sat.
+
+                        The distinction was therefore made
+                        positionally: a guid_item at the top of a
+                        document, or directly beneath a table key, was
+                        a declaration; a guid_item anywhere else was a
+                        reference.
+
+                        That rule works, and it has two faults. It
+                        must be extended every time a new kind of
+                        container appears, since it enumerates the
+                        places a declaration may sit. And it is a
+                        specification that every tool must implement
+                        identically -- including tools written by
+                        other parties in the federation, over slices
+                        of data they did not author.
+decision:               |
+                        A field named id_self or guid_self DECLARES an
+                        identity, wherever in a document it appears
+                        and at whatever depth.
+
+                        Every other identifier field REFERS to an
+                        identity declared elsewhere, and names its
+                        role as it does so: id_target and guid_target
+                        for the far end of an edge, id_relation and
+                        guid_relation for the relation type labelling
+                        it.
+
+                        The value types in sch_primitive are named id
+                        and guid, carrying no role, since a role is a
+                        property of the field and not of the string.
+rationale:              |
+                        A suffix is self evident where a position rule
+                        is not. This is the same argument that
+                        justifies the type prefix on identifiers: make
+                        the meaning legible with no surrounding
+                        context and no specification to consult. A
+                        position rule can be implemented wrongly; a
+                        name cannot be misread.
+
+                        The asymmetry between the two halves is
+                        principled rather than convenient. There is
+                        exactly one self in a mapping -- a thing
+                        declares its own identity once -- so self
+                        needs no qualifier and can be universal. There
+                        may be many references from one mapping, each
+                        playing a different part, so a reference must
+                        say which part it plays.
+
+                        Target rather than object, for the far end of
+                        an edge. Object is correct in the vocabulary
+                        of triples, where it means only the third
+                        position. It is misleading as a mnemonic here,
+                        because every relation so far is a passive
+                        construction in which the thing labelled
+                        object is the agent: in SUBJ is specified by
+                        schema OBJ, the active form is OBJ specifies
+                        SUBJ. Target is also the right register --
+                        this is a graph of labelled edges, by its own
+                        description, and directed graphs have targets.
+alternative:            |
+                        Keep the positional rule and change nothing.
+                        Rejected for the two faults above, of which
+                        the second is the serious one: a rule that
+                        must be implemented identically by parties who
+                        did not write it is a poor foundation for a
+                        federation.
+
+                        Name every reference id_reference and
+                        guid_reference, mirroring _self. Rejected on
+                        contact with the data: an edge holds TWO
+                        references, one to the relation type and one
+                        to the target, and a mapping cannot hold two
+                        fields of the same name. The attempt is what
+                        showed that references need roles and
+                        declarations do not.
+
+                        id_other and guid_other for the far end.
+                        Rejected: it discards the directionality that
+                        the relation register depends on, and other is
+                        relative to something the field does not name.
+
+                        Keep id_item and guid_item as the generic,
+                        role agnostic form. Rejected, though it was a
+                        close thing. Item is a noun that could
+                        describe either end of an edge, which is
+                        precisely the ambiguity being removed.
+consequence:            |
+                        The tooling lost a rule rather than gaining
+                        one. Collecting declarations was a walk that
+                        enumerated the two places one could sit; it is
+                        now every guid_self at any depth, and needs to
+                        know nothing about the shape of what it walks.
+
+                        Declarations and references now differ
+                        lexically as well as positionally, so a human
+                        reading a diff, or a quick script that
+                        implements no rule at all, gets the
+                        distinction right anyway.
+
+                        The migration touched everything: seven
+                        schemas, two registers and three modules of
+                        tooling. Doing it later would have cost more,
+                        and doing it after publication would have cost
+                        far more, since a field name is part of the
+                        contract a federation shares.
+
+                        A schema declaring properties named id_self
+                        and guid_self holds those names as keys whose
+                        values are subschemas rather than identifiers.
+                        Anything scanning for declarations must
+                        therefore test that the value is a string, not
+                        merely that the key matches.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_identity
+    guid_target:        sch_2bad9002fef7435b90cd20c19b8e6ab7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_relation
+    guid_target:        sch_74e6e0e2abdc4d839c2f297618e73541
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_primitive
+    guid_target:        sch_b7c5238250bd403cadd8bc0844c23e2d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_register
+    guid_target:        sch_a4620d79fab546b3be6c756f0325e069
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.identity
+    guid_target:        pym_0c19a62a6e204b63959346552671cd27
+
+question:
+
+  c2d539b51:
+    id_self:            qst_identity_field_naming.c2d539b51
+    guid_self:          qst_ab0a18a4614d430bbb62f2d06859271f
+    question:           |
+                        Whether a mapping will ever want two selves --
+                        an item that is somehow two things at once.
+                        The convention assumes not, and nothing so far
+                        suggests otherwise, but the assumption is load
+                        bearing and unstated elsewhere.
+    relation:           []

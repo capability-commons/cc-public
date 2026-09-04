@@ -1,0 +1,232 @@
+id_self:                ddr_protective_marking
+guid_self:              ddr_fb57601c5cb2444c8dc5a6c5bb41a0ed
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protective marking
+brief:                  |
+                        An item names one or more marks from a
+                        register, each pairing an authority with a
+                        level, and several marks apply at once.
+context:                |
+                        This system is meant to federate across bodies
+                        with incompatible rules: open source projects,
+                        startups, defence contractors, and government
+                        bodies in several states, some holding data
+                        under statutory protection regimes. Deciding
+                        what may be disclosed, to whom, is the point
+                        of the exercise rather than a detail of it.
+
+                        An earlier attempt marked items with a single
+                        free string, dtu_internal. That string is
+                        already an authority and a level joined by an
+                        underscore, which is the shape wanted, but as
+                        free text it could not be validated, compared,
+                        or reasoned about by anything.
+
+                        A level alone will not do. CONFIDENTIAL means
+                        different things under NATO, under United
+                        States executive order, and in a commercial
+                        non disclosure agreement. AMBER means nothing
+                        without knowing it is Traffic Light Protocol.
+                        Whose scheme it is cannot be dropped.
+decision:               |
+                        A protective mark is an entry in
+                        reg_protective_mark, carrying the authority
+                        whose rules govern it and the level it names
+                        within that authority's scheme.
+
+                        An item names one or more marks by reference,
+                        in a required protective_mark array of at
+                        least one element.
+
+                        Several marks are CONJUNCTIVE. Every
+                        constraint implied by every mark applies at
+                        once, and the most restrictive governs.
+                        Violating any one of them exposes the violator
+                        to sanction under that mark's authority.
+
+                        There is no permissive default. An item that
+                        may be disclosed to anyone says so, by naming
+                        mark_public.
+
+                        A mark lives in the public register by
+                        default, and in an authority specific register
+                        only where the existence of the mark is itself
+                        protected.
+rationale:              |
+                        The pair belongs on the mark and not at each
+                        use. A level is not independently meaningful,
+                        so splitting it from its authority at every
+                        marked item would put a join in each of them
+                        and validate neither half. Held once on the
+                        mark, both become fields of a register entry
+                        and are checked like any other.
+
+                        Referencing rather than restating also gets
+                        the rest of the register machinery for
+                        nothing: a guid that survives a rename, a
+                        description in which the handling instruction
+                        can be written in plain words, and a new
+                        scheme added by adding entries rather than by
+                        changing a schema.
+
+                        Conjunctive because no other reading is safe.
+                        If several marks could ever mean a choice
+                        between them, the failure mode is disclosure
+                        rather than inconvenience, and the cost of
+                        being wrong is not borne by whoever made the
+                        mistake.
+
+                        Marking made mandatory, and public made
+                        affirmative, because some of this material is
+                        sensitive enough to be worth the friction. An
+                        author obliged to name a mark has to think
+                        about who may see the thing. An author allowed
+                        to omit one does not.
+alternative:            |
+                        An array of free strings. Rejected: it cannot
+                        be validated, compared, or resolved, and it
+                        loses the authority, which is what makes a
+                        level mean anything.
+
+                        An array of authority and level pairs written
+                        at each item. Rejected: the halves are not
+                        independently meaningful, so this validates
+                        nothing that a single string does not, and
+                        repeats the pair in every item that bears it.
+
+                        A relation edge rather than a field, reusing
+                        the traceability machinery. Rejected, though
+                        it is tempting. A mark is a governing property
+                        rather than incidental metadata, and burying
+                        it among an item's other edges makes it
+                        something every tool must filter for rather
+                        than read. JSON Schema can also require a
+                        field but cannot require an edge of a
+                        particular relation to be present, and marking
+                        has to be mandatory.
+
+                        A single mark rather than an array. Rejected:
+                        orthogonal schemes coexist routinely -- a
+                        Traffic Light Protocol marking and a national
+                        classification say different things about the
+                        same item, and neither replaces the other.
+consequence:            |
+                        Every item must name a mark, including every
+                        item that is simply public. That is friction,
+                        and it is intended.
+
+                        A mark arriving from a federated partner may
+                        name an entry held in a register this
+                        repository cannot see. Such a reference is
+                        reported as advisory, since an unresolved
+                        reference is ordinary in a federated slice --
+                        but an unresolvable MARK is not ordinary in
+                        the same way, and must be treated as more
+                        restrictive than anything resolvable rather
+                        than as absent. Tooling that assumes otherwise
+                        would leak by default.
+
+                        Most marks can be held publicly, so most
+                        partners can resolve most marks. That is worth
+                        having: a mark nobody can resolve is a mark
+                        nobody can act on correctly, and the default
+                        should not be secrecy where secrecy is not
+                        required.
+
+                        An item bearing a mark held outside this
+                        register does disclose, to anyone it reaches,
+                        that it bears a mark they cannot resolve --
+                        which is itself a signal about the item. That
+                        is unavoidable rather than acceptable: an item
+                        cannot be shared without saying how it may be
+                        handled. The answer is not to conceal the mark
+                        but to withhold the item from anyone unable to
+                        resolve it.
+
+                        Nothing enforces that a mark is honoured. The
+                        register says what a mark means and the schema
+                        says an item must bear one; whether an item is
+                        actually disclosed only where its mark permits
+                        is beyond anything checkable here.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_protective_mark
+    guid_target:        reg_0653174dda274015aa95754a37073797
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_protective_mark
+    guid_target:        sch_749dc2bbaf6c4a238ca4e02044a633fa
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_protective_mark
+    guid_target:        sch_7743b9d4144d40e1bc4da68dff82b1df
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_rights
+    guid_target:        sch_f6ab4a480aa64f57b2d7378f023b0d5e
+
+question:
+
+  c6accd419:
+    id_self:            qst_protective_marking.c6accd419
+    guid_self:          qst_876f606f86de4c8788ccd98033e32099
+    question:           |
+                        Caveats and releasability have no
+                        representation. Real markings carry them --
+                        SECRET//REL TO GBR, USA qualifies a level with
+                        a list of parties it may go to -- and neither
+                        the register nor the reference has anywhere to
+                        put one. Adding them means either an explosion
+                        of marks, one per combination, or a further
+                        field naming a register of parties. Deferred
+                        until there is a case to be right about.
+    relation:           []
+
+  ce752f836:
+    id_self:            qst_protective_marking.ce752f836
+    guid_self:          qst_550409b64180416ea1ff6c3e945e6eb1
+    question:           |
+                        The authority is a plain string and should
+                        eventually be a reference to an entry in a
+                        register of authorities, for the same reasons
+                        the mark itself is one. Deferred while there
+                        is only one authority, since a register with a
+                        single entry settles nothing and constrains
+                        the design of the register that eventually
+                        matters.
+    relation:           []
+
+  cec1b108c:
+    id_self:            qst_protective_marking.cec1b108c
+    guid_self:          qst_08e86953c17647f6be252f23fa5400dd
+    question:           |
+                        Where an authority specific mark register
+                        lives and what it is called. A second register
+                        also called reg_protective_mark, in another
+                        repository, would collide by readable id
+                        though not by guid. Deferred until there is a
+                        mark that must be held apart.
+    relation:           []
+
+  c23866364:
+    id_self:            qst_protective_marking.c23866364
+    guid_self:          qst_cf3dac8ecbb544efb06c042f5aea291c
+    question:           |
+                        Whether cc is the right authority for
+                        mark_public. A public mark is scheme
+                        independent in effect, and naming an authority
+                        for it says only who declared it.
+    relation:           []

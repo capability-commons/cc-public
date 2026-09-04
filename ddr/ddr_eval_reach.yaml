@@ -1,0 +1,181 @@
+id_self:                ddr_eval_reach
+guid_self:              ddr_ccdb0de9af6f492faeebea72b888141e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What an eval can be asked
+brief:                  |
+                        An eval names the types of item it applies to,
+                        because an anchor reaches further than a
+                        criterion can answer.
+context:                |
+                        evl_record_and_item_agree is anchored on
+                        r_decides and holds a record against an item
+                        it decides. It had never been run. Its
+                        subjects ran from 3.3k to 13.4k characters,
+                        and the suspicion was that they were too large
+                        to judge reliably.
+
+                        It was measured against nine pairs, each
+                        judged as it stands and again with one clause
+                        of the record's decision replaced by something
+                        the item plainly contradicts. Size was not the
+                        problem. The three largest pairs, to 13.4k,
+                        discriminated five out of five both ways.
+
+                        What separated the cases was whether the
+                        item's document holds the substance the record
+                        decides about. A register holds its table. A
+                        schema holds its properties. A code item holds
+                        five lines of prose about code kept in a file
+                        the judge is never shown.
+
+                        Of three record and code pairs, none was
+                        detected. One returned unmet unmutated,
+                        reading the code item's silence as
+                        disagreement though the criterion forbids
+                        exactly that. Half of the 58 pairs the eval
+                        reached were code.
+decision:               |
+                        An eval may name the types of the items it
+                        applies to, in subject.include_type. Every
+                        item shown to a judge must be of a named type,
+                        both ends of a join included. An eval naming
+                        none applies to everything its anchor reaches.
+
+                        Coverage is named. Exclusions are not.
+
+                        evl_record_and_item_agree names t_ddr,
+                        t_register and t_schema, and reaches 29 pairs
+                        where it reached 58.
+
+                        evl_record_and_code_agree holds the criterion
+                        for the other half. It names no relation, so
+                        it reaches nothing and never runs. It gains an
+                        anchor when a source item carries its source.
+rationale:              |
+                        An anchor is a relation, and a relation is not
+                        obliged to join one kind of thing. r_decides
+                        ends at whatever a decision can settle, which
+                        ddr_relation_register already observes is
+                        everything. So an eval anchored on a relation
+                        reaches further than its criterion can answer,
+                        and until now nothing let it say so.
+
+                        Coverage is named rather than exclusions
+                        because the two fail differently. A type added
+                        later falls outside an eval that names
+                        coverage, which leaves a gap. It would fall
+                        inside an eval that names exclusions, which
+                        produces findings that are wrong. A gap is
+                        cheaper than a falsehood, and
+                        ddr_judge_subject already records that a
+                        silent gap is the standing cost of this
+                        design.
+
+                        Two evals rather than one criterion covering
+                        both, because the two differ in what the judge
+                        must be shown. One reads a document. The other
+                        must read source. That is not a detail of
+                        scope; it is what makes the second impossible
+                        today.
+alternative:            |
+                        Narrowing by scope, as evl_prose_describes was
+                        narrowed. Not available. The substance is both
+                        what makes a subject large and what the
+                        criterion needs, and for a code item it is not
+                        in the document at any size.
+
+                        Giving code items their source, so the eval
+                        could judge them. Deferred rather than
+                        rejected. It is what evl_record_and_code_agree
+                        waits on, and it changes what a source data
+                        item is.
+
+                        Naming excluded types instead of included
+                        ones. Rejected above.
+
+                        Leaving the eval as it stood. Rejected: half
+                        of what it reached was unjudgeable, and since
+                        it had never been run nobody would have found
+                        out from using it.
+consequence:            |
+                        Source addressability made code addressable
+                        and not examinable. ddr_source_addressability
+                        was taken partly on the ground that it would
+                        let evals judge code. It does not, and cannot
+                        until a source item carries more than
+                        metadata. That is recorded here rather than
+                        left standing as a claim nobody checked.
+
+                        Composition hides substance the same way, at
+                        one remove. sch_register inherits id_self
+                        through a $ref and never declares it, so a
+                        claim about those fields meets nothing in the
+                        document. Sixteen of the nineteen schemas this
+                        eval judges compose by $ref, so the blind spot
+                        is present wherever a record's claim concerns
+                        a composed field rather than a declared one.
+                        One of the nine control pairs failed for this
+                        reason and not for the code one.
+
+                        An eval naming a type no item carries reaches
+                        nothing, and says nothing about it.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_record_and_item_agree
+    guid_target:        evl_fa903260ecc8458b9e5adbed8da8bc2c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_record_and_code_agree
+    guid_target:        evl_789e7c2e17bb443b808764562fddae43
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_eval
+    guid_target:        sch_a7edf040404f4294bcbcc2294955775f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+question:
+
+  ce02bc8cf:
+    id_self:            qst_eval_reach.ce02bc8cf
+    guid_self:          qst_d4035c9848634ad5880a196ce17c2da2
+    question:           |
+                        Whether a source data item should carry its
+                        source. That is what the deferred eval waits
+                        on, and what would make the claim in
+                        ddr_source_addressability true.
+    relation:           []
+
+  cd5d569ce:
+    id_self:            qst_eval_reach.cd5d569ce
+    guid_self:          qst_4d50fac5a48c4c10bd0c35e5ebeac39a
+    question:           |
+                        Whether an eval should be able to ask for an
+                        item with its $ref composition resolved, so
+                        that a criterion concerning composed shape has
+                        something to meet.
+    relation:           []
+
+  cbcc092a9:
+    id_self:            qst_eval_reach.cbcc092a9
+    guid_self:          qst_b4a9135d3c884302b32b235b9a6df74b
+    question:           |
+                        Whether include_type should be able to name a
+                        family -- every python type at once -- rather
+                        than listing four of them.
+    relation:           []

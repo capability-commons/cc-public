@@ -1,0 +1,230 @@
+id_self:                ddr_cost_of_checking
+guid_self:              ddr_78e1ec9796d04deab60ee57ca9998d07
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Quality and the cost of checking
+brief:                  |
+                        What to check, and how hard, is the allocation
+                        of a budget rather than a standard to be met.
+                        A check earns its place by what it changes,
+                        priced against what it costs.
+context:                |
+                        The repository holds two kinds of check. Six
+                        structural checks are cheap, deterministic and
+                        exact. Four evals are expensive, non
+                        deterministic, and wrong perhaps one time in
+                        ten.
+
+                        Both were treated the same way, as things that
+                        ought to pass. That is right for the first
+                        kind and incoherent for the second, where a
+                        clean run may mean the corpus is clean or may
+                        mean the judge missed something, and where a
+                        finding may be a defect or may be a
+                        fabrication.
+
+                        A quality is something someone cares about.
+                        How much they care is a function of what it
+                        affects and of what it costs to find out.
+decision:               |
+                        How far a check is enforced is set by its
+                        marginal value against its marginal cost, and
+                        not by the importance of what it checks.
+
+                        A cheap and exact check is run always and
+                        expected to pass entirely, whatever it
+                        examines. Layout is enforced at a hundred
+                        percent -- not because layout matters much,
+                        but because it costs almost nothing, so almost
+                        any value clears the bar.
+
+                        An expensive and fallible check is an
+                        investment and is placed where it pays. It is
+                        not expected to pass entirely, and a finding
+                        is not presumed correct.
+
+                        The two errors of a fallible check are priced
+                        separately. A false positive costs
+                        investigation, and is paid on every sweep. A
+                        false negative costs escape, and is paid later
+                        and usually more.
+
+                        A fallible check is run where the chance of a
+                        defect is high, which means after a change
+                        rather than on a schedule.
+
+                        A verdict is screened once, and confirmed
+                        several times only where it came back adverse.
+
+                        What a finding is worth is its severity
+                        together with the confidence of the check that
+                        raised it. A check whose discrimination has
+                        never been measured has no confidence, and its
+                        findings carry none.
+rationale:              |
+                        The two regimes are one rule with a degenerate
+                        case. As cost approaches zero, any value at
+                        all justifies enforcement, which is why the
+                        layout check is absolute and the prose eval is
+                        advisory. Saying it once keeps the two from
+                        being argued about as though they were
+                        different in kind.
+
+                        The value of running a fallible check is the
+                        chance a defect is present, times the chance
+                        the check finds it, times what that defect
+                        costs if it escapes -- less the chance of a
+                        false alarm times the cost of chasing it, less
+                        the cost of the run.
+
+                        The first term vanishes on a clean corpus.
+                        Running a fallible check across material that
+                        is already right has negative expected value:
+                        there is nothing to find, and the false alarm
+                        rate is not zero. This is not hypothetical.
+                        evl_record_and_item_agree was run over thirty
+                        pairs, raised one finding, and that finding
+                        was a fabrication -- a claim that sch_rights
+                        declares an empty properties block, which it
+                        does not. The run cost more than it returned.
+
+                        Screening and then confirming is nearly free
+                        wherever the corpus is mostly clean. It costs
+                        one call for each subject, plus further calls
+                        on the findings alone, and findings are few.
+                        Sampling everything to the same depth costs
+                        five times as much for the same answer. On the
+                        run above the difference is thirty four calls
+                        against a hundred and fifty.
+
+                        Sampling removes variance and does nothing
+                        about bias. Both were seen here in one
+                        afternoon. One item flipped one time in five,
+                        and a majority would settle it. Another was
+                        judged the same wrong way five times out of
+                        five, and no number of repeats would have
+                        moved it. A stably wrong finding can only be
+                        answered by recording the judgement that it is
+                        wrong, which makes suppression an economic
+                        necessity rather than a convenience: without
+                        it that finding costs an investigation on
+                        every sweep forever, and with it, once.
+alternative:            |
+                        Treating every check as a standard to be met.
+                        Rejected: it obliges a fallible check to be
+                        either believed or switched off, and neither
+                        is right.
+
+                        Netting the two error rates into one accuracy
+                        figure. Rejected: they are paid by different
+                        people at different times, and a number that
+                        hides which is being traded decides the trade
+                        by accident.
+
+                        Modelling this as a stochastic network. Not
+                        taken yet. Three narrower formalisms earn
+                        their place first. Value of information
+                        decides which checks to run at all, since a
+                        check whose result would change no action is
+                        worth nothing however accurate it is.
+                        Sequential analysis decides how many samples a
+                        verdict needs, and is the general form of
+                        screening and confirming. Signal detection
+                        theory supplies the point that a judge has a
+                        sensitivity AND a movable criterion, and that
+                        the criterion belongs where the two error
+                        costs balance. A network model earns its place
+                        when check outcomes are shown to be dependent,
+                        which is likely and is not yet measured.
+
+                        Guessing the error rates in order to get
+                        started. Rejected explicitly. A model with
+                        invented parameters is worse than no model,
+                        because it launders a guess into a figure that
+                        others then act on.
+consequence:            |
+                        The eval subsystem could not be run this way
+                        until its error rates were known.
+                        ddr_eval_measurement is what makes them
+                        knowable: control sets measure an eval, and
+                        cctool measure records what it finds onto the
+                        eval as confidence.
+
+                        An eval will have to carry what has been
+                        measured about it: the control set, how many
+                        samples, the observed rates. A criterion
+                        without such a record can still be run, but
+                        its findings cannot be weighed against
+                        anything.
+
+                        Severity gains the partner it has lacked.
+                        ddr_severity separates what must be fixed from
+                        what must be known, and says nothing about how
+                        sure the system is. What to do about a finding
+                        is severity and confidence together.
+
+                        Sweeping the repository stops being the
+                        default way to use an eval, and gating a
+                        change becomes it. The workflow design reaches
+                        the same conclusion from the other direction,
+                        where an eval gates a node rather than a
+                        corpus.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.eval
+    guid_target:        pym_f7d96b0d7bf84b16b05cb018b140590f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.runner
+    guid_target:        pym_83b8eb7c9d3f4aa1980016e9231297e6
+
+question:
+
+  c976ba88a:
+    id_self:            qst_cost_of_checking.c976ba88a
+    guid_self:          qst_1f41755a19dc4276ba0d73265fe63929
+    question:           |
+                        What confidence is, as something an eval can
+                        carry. A pair of rates, one figure, or an
+                        interval.
+    relation:           []
+
+  c2b840136:
+    id_self:            qst_cost_of_checking.c2b840136
+    guid_self:          qst_5a844531b18844efa11dac215ce6d91b
+    question:           |
+                        Whether the cost side can be observed rather
+                        than declared. The tool knows what a run cost
+                        in calls and in time. It does not know what an
+                        investigation cost, and that is the term the
+                        false alarm side turns on.
+    relation:           []
+
+  cd477aad2:
+    id_self:            qst_cost_of_checking.cd477aad2
+    guid_self:          qst_19bb42ea06ce4043a83c355961c94450
+    question:           |
+                        Whether the prior -- the chance that a given
+                        item is wrong -- can be estimated from
+                        anything at all. Recency of change is the
+                        obvious proxy and it is still a guess.
+    relation:           []
+
+  c084cdd16:
+    id_self:            qst_cost_of_checking.c084cdd16
+    guid_self:          qst_7b2c4551cd3147be8b360519bc5011b2
+    question:           |
+                        Whether a check that has never yet found
+                        anything true should be retired, and what
+                        evidence would justify retiring it.
+    relation:           []

@@ -1,0 +1,273 @@
+id_self:                ddr_eval_measurement
+guid_self:              ddr_cda141ef5e214144a4650109f3312edd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Eval measurement
+brief:                  |
+                        An eval is measured against control cases with
+                        known verdicts, held apart from its examples.
+                        A finding a person has judged is such a case,
+                        and its text answers the finding when it
+                        recurs.
+context:                |
+                        Every eval question of the preceding days was
+                        settled by measurement, and every instrument
+                        that did the measuring was a scratch file
+                        outside the repository. The repository could
+                        prove its printer and its edit commands; it
+                        could not say what an eval's error rates were.
+
+                        ddr_cost_of_checking had already concluded
+                        that an eval must carry what has been measured
+                        about it, or its findings cannot be weighed.
+                        ddr_eval_design had left open how a finding a
+                        person judges wrong could be marked, and three
+                        stable findings were being re-raised, and
+                        re-read, on every sweep.
+
+                        The instruments that had worked were four:
+                        cases with known verdicts; mutation, which
+                        takes a real subject and breaks one thing to
+                        make a known unmet with certainty; repeated
+                        fresh judgement of one case; and judging
+                        exactly the text the runner sends, which is
+                        what found the renderer fault.
+decision:               |
+                        A CONTROL SET is an item that names the eval
+                        it measures by an r_measures edge and holds
+                        cases. Several sets may measure one eval.
+
+                        A CONTROL CASE is an entry on a set: the
+                        subject exactly as the judge would be shown
+                        it, the verdict a person holds it to, a note
+                        saying why, and an ORIGIN, one of written,
+                        mutated, suppressed or confirmed. A case may
+                        carry an r_is_snapshot_of edge to the item it
+                        was taken from. Cases are never shown to the
+                        judge.
+
+                        A person's judgement of a live finding is a
+                        case. cctool case renders the item for the
+                        eval exactly as a sweep does and holds that
+                        text as the subject; a verdict of met makes a
+                        suppressed case and unmet a confirmed one. The
+                        subject is the whole render, the item's header
+                        included.
+
+                        A sweep matches the normalised words of what
+                        it rendered against the cases for the eval. A
+                        met case answers the finding, which is
+                        reported as a note naming the case. An unmet
+                        case confirms it, and the finding says so.
+
+                        cctool measure judges every case several
+                        times, fresh, through the same path a sweep
+                        uses, and reports the false positive rate over
+                        the met cases, the false negative rate over
+                        the unmet ones, and the share of cases
+                        answered the same way every time -- per
+                        origin, and pooled. With --record the rows are
+                        written onto the eval as its confidence,
+                        latest per judge model.
+
+                        A case's local name is a letter and a prefix
+                        of the digest of its normalised subject, so
+                        that the same text is the same case.
+rationale:              |
+                        Cases apart from examples, because examples
+                        are shown to the judge and a case that had
+                        been would be a question the judge had already
+                        seen answered. Apart also because a set of
+                        twenty cases would dwarf the criterion it
+                        measures, and because a partner can then bring
+                        their own cases for a criterion they did not
+                        write.
+
+                        A suppression as a case, because the two are
+                        one thing seen from two sides: an eval, a
+                        subject, a verdict a person holds, a reason.
+                        Recording the judgement once serves both the
+                        sweep that must not re-raise it and the
+                        measurement that wants to know whether the
+                        judge still gets it wrong.
+
+                        Origin recorded on every case, because cases
+                        from different origins answer different
+                        questions and pooling them would answer none.
+                        A suppressed case is by construction one the
+                        judge got wrong, so the suppressed stratum has
+                        a false positive rate of one at the moment of
+                        entry, and mixing it into an estimate says
+                        only how many findings have been overridden. A
+                        mutated case is by construction unmet and
+                        blatant, and estimates sensitivity to
+                        contradiction alone. A written case sits where
+                        its author put it. The four strata are
+                        reported apart, and pooled only with their
+                        proportions stated.
+
+                        Matching by content rather than by item,
+                        because an item edited and edited back is the
+                        same text and should meet the same judgement,
+                        and a judgement about text that no longer
+                        exists should silence nothing. Matching by
+                        words rather than by characters, because the
+                        printer refills prose and a change to where a
+                        line breaks is not a change to what was
+                        judged.
+
+                        The whole render as the subject, header
+                        included, because that is what the judge saw
+                        and the verdict was about all of it. It
+                        follows that identical prose in two items is
+                        two judgements. That is the conservative
+                        reading, and it is one line to reverse.
+
+                        The two error rates held apart, for the reason
+                        ddr_cost_of_checking gives: they are paid by
+                        different people at different times.
+
+                        Confidence on the eval, because an eval that
+                        carries its own measured rates is what lets a
+                        finding be weighed as severity together with
+                        confidence, which the severity design lacked a
+                        partner for.
+alternative:            |
+                        Cases held on the eval beside its examples.
+                        Rejected: contamination, size, and a partner's
+                        cases would then be edits to our eval.
+
+                        Suppression as a mechanism of its own, a mark
+                        on the item or on the eval. Rejected: it is
+                        the same data as a case, and holding it twice
+                        would mean two things to keep in step and one
+                        of them unmeasured.
+
+                        Suppression keyed by a reference to the item.
+                        Rejected: it fails the item that is edited and
+                        edited back, and it dangles when the item
+                        goes.
+
+                        Measurements as items of their own, one per
+                        run. Rejected: they would accumulate as
+                        executions do and answer no question that a
+                        confidence block and the repository's history
+                        do not.
+
+                        A runner that sets its own sampling depth from
+                        the recorded rates. Deferred: measure and
+                        record first, and tune when the numbers say
+                        how.
+consequence:            |
+                        An eval can be measured, and a change to a
+                        criterion can be shown to change the numbers
+                        before it is kept. The instruments are in the
+                        tool and its tests rather than in whoever
+                        remembers to run them.
+
+                        The three findings raised on every sweep can
+                        each be answered with a case and a note, and
+                        will then be reported as notes naming the case
+                        rather than as findings.
+
+                        The first sets are the converted harness cases
+                        and the regenerated mutations, so the wild
+                        strata are empty until a person judges a
+                        finding. Nothing is known about how the strata
+                        compare until they are all populated.
+
+                        Confidence goes stale when the judge model
+                        changes and when the criterion does. The
+                        runner does not yet warn when it judges with
+                        an eval that carries no confidence for the
+                        model in use, and how staleness between a
+                        confidence and its eval is expressed is parked
+                        with the workflow architecture, where the same
+                        question arises for everything derived.
+
+                        Origin is a fact about how a case was made and
+                        not about how good it is. A written case can
+                        be wrong.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_control_set
+    guid_target:        sch_b31d6cf715dc47c28869fd81dd8a65d0
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_control_case
+    guid_target:        sch_6315a0262304416da9dfb1f0fae6ea6a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.measure
+    guid_target:        pym_77bb285571e34b1ea01f58e8d019661f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.control
+    guid_target:        pym_d3c30505c19c48708b12bc12f946f862
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.case
+    guid_target:        pym_526d7635fff54b9181e88a61a869704b
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_eval_design.c0feb290a
+    guid_target:        qst_8d833cb5d7ec4d689741ee8947f684c2
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_judge_subject.c003fd82e
+    guid_target:        qst_fcf5fab8bc9b4fe79899938cdc07f1f2
+
+question:
+
+  cc868630d:
+    id_self:            qst_eval_measurement.cc868630d
+    guid_self:          qst_13a12103977d4e47bb0fbdd77110298d
+    question:           |
+                        Whether the runner should warn, or refuse,
+                        when no confidence exists for the judge in
+                        use, or when the recorded confidence is older
+                        than the criterion.
+    relation:           []
+
+  cdfd3a1f3:
+    id_self:            qst_eval_measurement.cdfd3a1f3
+    guid_self:          qst_439d254f50954ad183d2c8ab8f0de3ff
+    question:           |
+                        Whether identical prose in two items should
+                        share a judgement, which is whether the item's
+                        header belongs in the subject.
+    relation:           []
+
+  ce64a8a24:
+    id_self:            qst_eval_measurement.ce64a8a24
+    guid_self:          qst_577fc08e6f3c45f180259c0c2b63e00b
+    question:           |
+                        How a case is retired when its eval's
+                        criterion changes enough that the verdict a
+                        person gave no longer means what it meant.
+    relation:           []
+
+  cbef147be:
+    id_self:            qst_eval_measurement.cbef147be
+    guid_self:          qst_c37af300e57349e8917c64cc50a8b74a
+    question:           |
+                        Whether unanimity should be reported per case
+                        rather than as a share of cases, since a case
+                        the judge answers two ways is the case worth
+                        reading.
+    relation:           []

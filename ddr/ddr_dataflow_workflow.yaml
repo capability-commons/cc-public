@@ -1,0 +1,272 @@
+id_self:                ddr_dataflow_workflow
+guid_self:              ddr_31507fbecaf44db09f332d227aa90943
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow workflow
+brief:                  |
+                        A composite component whose nodes instantiate
+                        components and whose edges wire one output
+                        port to one input port. An edge may be guarded
+                        by the verdict of the evals on its source
+                        port, which is how the graph branches,
+                        iterates, and declines to produce.
+context:                |
+                        A graph of transformations over data items is
+                        the form worth building first. Most repetitive
+                        engineering work has that shape, and the
+                        things carried between steps are what this
+                        repository already holds.
+
+                        An earlier draft of this record had a node
+                        iterate internally against a budget, and then
+                        a second draft had a back edge carry the
+                        verdict of an eval. The second was an error: a
+                        port carries exactly one data item, and a
+                        verdict is not one. This third draft
+                        supersedes both.
+
+                        Reading stableflow settled the shape. Nodes
+                        keyed, edges derived from their endpoints,
+                        back edges declared so that a cyclic graph can
+                        still be ordered, and the graph kept apart
+                        from what runs it.
+decision:               |
+                        A dataflow workflow is one data item holding a
+                        graph. It is a composite component, and its
+                        ports are the unbound ports of its nodes.
+
+                        A NODE instantiates a component, by an
+                        r_instantiates edge, and carries whatever
+                        configuration that instance needs. Nodes are
+                        held in a keyed table and each carries an
+                        identity of its own.
+
+                        An EDGE connects one output port to one input
+                        port, each named by a dot path through the
+                        node: node.output.name and node.input.name.
+                        Edges carry no identity. They are held in a
+                        map from source port to a list of
+                        destinations, so that what a port feeds is
+                        read in one place.
+
+                        A BACK EDGE is an edge whose destination
+                        precedes its source. Back edges are held in a
+                        second map of the same shape, and are set
+                        aside when the graph is ordered. They are a
+                        kind, not a flag on a forward edge.
+
+                        A destination may carry a GUARD naming a
+                        verdict, met or unmet. A guarded edge fires
+                        only when the evals anchored to its source
+                        port reach that verdict: met when all of them
+                        are met, unmet when any is. An unguarded edge
+                        fires always.
+
+                        The item that travels an edge is the item on
+                        its source port, whatever the guard. A verdict
+                        never travels.
+
+                        Iteration is a back edge guarded unmet,
+                        ordinarily into an optional input of the node
+                        it came from, alongside a forward edge guarded
+                        met. Branching is two forward edges with
+                        complementary guards. An output that may go
+                        unproduced is an edge that may not fire.
+
+                        The graph names no model and no budget. See
+                        ddr_workflow_deployment.
+rationale:              |
+                        A guard on the edge is where a verdict has to
+                        go, because a verdict is not an item and so
+                        cannot occupy a port. Consumed at the edge, it
+                        decides whether the item on the port travels
+                        and never has to be anything more than that.
+                        Iteration, branching and optional output are
+                        then one mechanism rather than three, and each
+                        is the consequence of taking one item per port
+                        seriously.
+
+                        The artifact on the back edge rather than the
+                        verdict, because what a revising node needs is
+                        the thing to revise. The verdict told the edge
+                        to fire; the draft is what arrives.
+
+                        Edges as a map from source rather than a flat
+                        list, for two reasons stableflow's list does
+                        not give. Fan out is explicit and read in one
+                        place. And two people adding edges from
+                        different ports on different branches never
+                        conflict, where appending to one list
+                        conflicts every time.
+
+                        Back edges as a separate map rather than a
+                        direction flag, for the reason
+                        ddr_relation_register gives about inverses: a
+                        kind is a kind and not a flag on its opposite.
+                        It also puts every cycle in the file in one
+                        place, which is worth having in a system whose
+                        founding concern is that generated material be
+                        reviewable.
+
+                        Declared back edges are how a cyclic graph
+                        stays orderable. Without the declaration the
+                        ordering cannot be computed and the failure
+                        appears at run time. With it, the ordering
+                        ignores the back edges, and an optional input
+                        takes the place of stableflow's priming.
+
+                        Nodes with identity and edges without,
+                        following stableflow's asymmetry and for the
+                        reason it encodes: a node has a name that
+                        people use and that things point at, and an
+                        edge is fully determined by what it connects.
+
+                        A node carrying only a reference and its
+                        configuration is the split stableflow draws
+                        between a node and its functionality, and is
+                        what lets one component serve many graphs.
+alternative:            |
+                        A node iterating internally against a budget.
+                        The first decision here, superseded. It hides
+                        the loop, and nothing in the definition says
+                        it exists or what stops it.
+
+                        A back edge carrying the verdict. The second
+                        decision here, superseded. A verdict is not an
+                        item and a port carries only items.
+
+                        Guards on the source port rather than on the
+                        edge. Rejected: a port has one verdict and may
+                        feed several edges that want different ones.
+
+                        A flat list of edges, as stableflow holds
+                        them. Rejected for the merge and fan out
+                        reasons above.
+
+                        A direction flag on an edge. Rejected above.
+
+                        Edges as relation edges between ports, so that
+                        the traceability graph and the dataflow graph
+                        were one graph. Considered seriously. Rejected
+                        because an edge connects port INSTANCES, which
+                        are locations within the graph and not items,
+                        and because the four fields of a relation edge
+                        leave no room for a guard. See
+                        ddr_qualified_reference for the general form
+                        of that problem.
+
+                        Forbidding cycles. Rejected: iteration is a
+                        cycle, and it is the shape most of this work
+                        takes.
+
+                        Treating this as a Kahn process network.
+                        Rejected as a model, though not as a way of
+                        drawing it. In a process network the edges are
+                        streams and determinism comes from blocking
+                        reads. Here the items already exist and are
+                        revised in place, and one item is frequently
+                        both an input and an output of a step. The
+                        execution semantics are a build system's --
+                        dependency, staleness, incremental rebuild --
+                        and not a network's.
+
+                        Carrying an owner on each edge, as stableflow
+                        does. Rejected: it names which node creates
+                        the queue, a resource concern for a running
+                        system with real inter process communication.
+                        Nothing here needs it.
+consequence:            |
+                        The graph is an item, so it is addressable,
+                        checkable, and subject to evals of its own.
+                        Its nodes and its ports are addressable; its
+                        edges are not.
+
+                        A structural check runs before anything does,
+                        in pym _cc_public.check.workflow: that every
+                        port an edge names exists on the component its
+                        node instantiates and lies on the right side
+                        of it; that the graph without its back edges
+                        is orderable; that a guard has an eval on its
+                        source port to consult; that a back edge does
+                        not feed a required input, since the first
+                        pass could not then run; that a port's type
+                        agrees with the types its eval names; and that
+                        a node instantiating a component with no evals
+                        is reported as a note. Each rule was made to
+                        fire on a deliberately broken graph before it
+                        was trusted.
+
+                        A cycle with no guard on its back edge runs
+                        until its budget is spent. Nothing yet reports
+                        that.
+
+                        Iteration terminates on verdicts that are not
+                        perfectly reliable. A false unmet spins a
+                        cycle on work already right; a false met
+                        carries something wrong forward. The budget,
+                        which lives with the deployment, bounds the
+                        first. Nothing bounds the second, and at the
+                        residual error measured here a step gated by
+                        five evals gets a wrong verdict in about two
+                        runs of five.
+
+                        Fan out is representable two ways: several
+                        destinations from one output port, or several
+                        output ports on the component. They mean
+                        different things -- one item to many
+                        consumers, or many items -- and nothing
+                        prevents a graph from using the wrong one.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_workflow_dataflow
+    guid_target:        sch_1eb527db75de470b8cec8605179f3221
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_node
+    guid_target:        sch_0f84c11a0f2d40b28013b09af549a8e9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.workflow
+    guid_target:        pym_a1cd2896606a40538114a119b7a38bef
+
+question:
+
+  c1ca1a752:
+    id_self:            qst_dataflow_workflow.c1ca1a752
+    guid_self:          qst_88c64bdc14f3423b9c8e814c889d333b
+    question:           |
+                        Whether a guard may name a particular eval on
+                        the port rather than all of them, which
+                        becomes wanted the moment a port carries two
+                        evals that a graph wants to branch on
+                        separately.
+    relation:           []
+
+  c3cb52fdd:
+    id_self:            qst_dataflow_workflow.c3cb52fdd
+    guid_self:          qst_f8adc9ed8caa4753941e63e817d3863c
+    question:           |
+                        What happens when a budget is exhausted mid
+                        cycle. Whether what was produced is kept,
+                        discarded, or kept and marked.
+    relation:           []
+
+  cbe6e669f:
+    id_self:            qst_dataflow_workflow.cbe6e669f
+    guid_self:          qst_7fe26a082b0b41c3b8ccc2c1369648e0
+    question:           |
+                        What the item on a forward edge is when the
+                        node has produced nothing on that port, which
+                        the optional output case makes possible.
+    relation:           []

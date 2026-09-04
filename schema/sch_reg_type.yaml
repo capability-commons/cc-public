@@ -1,0 +1,51 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_type.yaml
+id_self:                sch_reg_type
+guid_self:              sch_8fe14a82efa7444383ba95a9ca55b4c5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type register schema
+brief:                  |
+                        Schema for the type register.
+description:            |
+                        The type register specifically, as opposed to
+                        registers in general. It says only how the two
+                        halves fit together: a register, as described
+                        by sch_register.yaml, whose table entries are
+                        additionally type entries as described by
+                        sch_entry_type.yaml.
+usage:                  |
+                        Named by the type register itself, through an
+                        r_is_specified_by_schema edge on the register
+                        rather than on its type. A schema named by an
+                        item takes precedence over the schema named by
+                        that item's type.
+note:                   |
+                        allOf is an intersection, applied at each
+                        location in the instance. So an entry must
+                        satisfy the generic register entry shape AND
+                        the type entry shape, and a failure of either
+                        is reported against the entry that caused it.
+
+                        The pattern for a register whose entries carry
+                        subject specific fields.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_entry_type.yaml

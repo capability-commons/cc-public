@@ -1,0 +1,31 @@
+[project]
+authors         = [{name = "William Payne", email = "wtpayne@gmail.com"}]
+name            = "cc-public"
+version         = "0.1.0"
+requires-python = ">= 3.14"
+dependencies    = ["ruamel-yaml>=0.19.1,<0.20",
+                   "click>=8.5.0,<9", "defusedxml>=0.7.1,<0.8", "jstyleson>=0.0.2,<0.0.3", "xmltodict>=1.0.4,<2", "jsonschema>=4.26.0,<5", "rich>=15.0.0,<16", "dspy==3.3.1", "python-dotenv>=1.2.3,<2", "pytest>=9.1.1,<10"]
+
+[project.scripts]
+cctool          = "cc_public.cli.command:main"
+
+[build-system]
+build-backend   = "hatchling.build"
+requires        = ["hatchling"]
+
+[tool.pixi.workspace]
+channels        = ["conda-forge"]
+platforms       = ["osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+cc_public       = { path = ".", editable = true }
+
+[tool.cctool.new]
+copyright       = "Copyright 2026 William Payne"
+license         = "Apache-2.0"
+id_mark         = "mark_public"
+
+[tool.pixi.tasks]
+check           = "cctool check"
+format          = "cctool format"
+test            = "pytest -q test"

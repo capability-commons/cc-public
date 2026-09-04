@@ -1,0 +1,229 @@
+id_self:                ddr_edit_commands
+guid_self:              ddr_de3223c651d0447682b2f501a5dc44bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edit commands
+brief:                  |
+                        An item is made, a field set, or two items
+                        linked by naming the items and not the files
+                        that hold them, and every write goes out
+                        through the printer.
+context:                |
+                        Every reading path in the tool was mechanised
+                        and every writing path was improvised. Fields
+                        were replaced by a script outside the
+                        repository, edges were appended as raw text,
+                        identities were minted by hand into whatever
+                        script was nearest, and items were made by one
+                        off generators. Every layout fault of the last
+                        two days came from one of those.
+
+                        An item lives at the top of a file or embedded
+                        in another item, as a register entry, a port,
+                        a node or a binding does. A command that took
+                        a file and a path would need one form for
+                        each.
+decision:               |
+                        Four commands. new makes an item of a type, as
+                        a file. insert puts a new item into a
+                        collection held by another item. set sets one
+                        field of an item. link adds a relation edge
+                        from one item to another.
+
+                        An item is named by its readable id or its
+                        guid, wherever it lives. A field within it is
+                        named by a dot path. The tool finds the file.
+
+                        Every write goes out through the printer.
+
+                        new mints the identity, and writes every field
+                        the type's schema requires with an empty value
+                        of the right kind, so that the item fails its
+                        checks until every such field is written.
+                        Rights come from the tool's own configuration.
+
+                        new makes a python package or module as well:
+                        a file holding nothing but the document in its
+                        docstring, which is a valid file. The dotted
+                        identifier says where it goes -- the last
+                        segment is the name, and what precedes it is
+                        the package that holds it, which must already
+                        exist. A class or a function is refused, since
+                        it lives inside a module and is written there.
+
+                        insert makes an embedded item: a register
+                        entry, a port, a node, a binding. An embedded
+                        item has no schema of its own, so its shape is
+                        read from the container's schema at the
+                        collection it goes into -- every subschema
+                        that mentions that collection, since a
+                        register entry is constrained by the general
+                        register schema and by the register's own
+                        together. The key and the readable id follow
+                        the container's convention: in a register the
+                        key is the id; elsewhere the key is a local
+                        name and the id is qualified by the container.
+                        A collection that is a plain list is appended
+                        to rather than refused.
+
+                        set reads its value as YAML, so a number is a
+                        number and an empty list is a list. Prose is
+                        given separately, from a stream, and is stored
+                        as a block scalar.
+
+                        link looks both guids up, refuses a relation
+                        not in the register, refuses an edge already
+                        present, and creates the relation list where
+                        absent.
+
+                        The path module gains write beside select.
+rationale:              |
+                        Items by name rather than files by path,
+                        because an embedded item then needs no second
+                        form. The resolver already exists in the
+                        identity check, which finds every declaration
+                        at every depth.
+
+                        insert as a command of its own rather than a
+                        mode of new, because the two read different
+                        things and write to different places: new
+                        reads a type's schema and writes a file,
+                        insert reads a container's schema and writes
+                        into it. One command would have carried two
+                        sets of options that could not be used
+                        together, which is the usual sign of two
+                        commands. Stableflow draws the same line
+                        between making a configuration and adding a
+                        node to one.
+
+                        The printer on every write, because a command
+                        that wrote text the printer would change would
+                        leave the tree unlaid out between the two
+                        steps, and because it makes a badly laid out
+                        file impossible to produce by any path that
+                        goes through the tool.
+
+                        Required fields empty rather than filled with
+                        placeholders, because a placeholder passes the
+                        check and reads as finished. An empty field
+                        fails and says so. Nothing generated can be
+                        mistaken for something written.
+
+                        Prose marked explicitly, because only what the
+                        author marks as prose is prose. A long plain
+                        value with spaces in it is still a datum, and
+                        the regex the first printer broke is why that
+                        distinction is not left to a heuristic.
+
+                        write beside select, because the transform
+                        record already said the path module needed
+                        one, and an edit command is a transform of a
+                        document.
+alternative:            |
+                        Commands taking a file and a path. Rejected:
+                        two forms, one for top level items and one for
+                        embedded ones, and the caller has to know
+                        which file holds what.
+
+                        new with an --into option instead of insert.
+                        Rejected above.
+
+                        insert refusing a collection that is a plain
+                        list. Rejected: insert puts something into a
+                        collection whatever the collection is, and set
+                        with an index can do the same for now.
+
+                        Placeholder text in required fields. Rejected:
+                        it passes the check.
+
+                        A general YAML editing tool. Rejected: it
+                        knows nothing of identity, of the relation
+                        register, or of the printer, and each of those
+                        is what makes a write correct here.
+
+                        Leaving writes to scripts, which was the state
+                        before this record. Rejected by the defects it
+                        produced.
+consequence:            |
+                        A write is one command. The scratch script,
+                        the raw appends, the hand minted identities
+                        and the one off generators retire. A new
+                        package or module carries its identity from
+                        the moment it exists, and so does a new entry
+                        in a register or a port on a component.
+
+                        Tests exist, run by pixi run test, and the
+                        printer's content preservation is proved there
+                        over every file rather than in a script that
+                        happened to be run.
+
+                        new cannot make a class or a function item,
+                        and set on a python file reaches the module
+                        document only. Neither limit is a decision;
+                        both are the state of the loader.
+
+                        A readable id that names more than one item in
+                        the tree is refused, which the identity check
+                        makes rare.
+
+                        The edit package depends on the check package
+                        for the tree and the printer for the write. It
+                        is the first part of the tool that writes, and
+                        the checks stay the authority on what it
+                        wrote.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.edit
+    guid_target:        pyp_c5dd90e4509841e9b094d896b0cf1e71
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.path
+    guid_target:        pym_e24ddb2009814f23aef8b97317e013d5
+
+question:
+
+  c5dafdb68:
+    id_self:            qst_edit_commands.c5dafdb68
+    guid_self:          qst_10adcb70dae2486582815e76c6ebc21d
+    question:           |
+                        Whether an edge can be removed, and a field
+                        unset, by the same means.
+    relation:           []
+
+  c0f3a020c:
+    id_self:            qst_edit_commands.c0f3a020c
+    guid_self:          qst_1a686eff549c4bf6a1cab7977a377f66
+    question:           |
+                        Whether new should take field values as
+                        options, so that an item can be made complete
+                        in one command and never exist in the failing
+                        state.
+    relation:           []
+
+  c35a6bfef:
+    id_self:            qst_edit_commands.c35a6bfef
+    guid_self:          qst_f61a268166b74710b91029a9be7c6ac6
+    question:           |
+                        Whether the defaults a new item is given
+                        should be an item in the tree rather than
+                        configuration in pyproject.toml, so that they
+                        travel.
+    relation:           []
+
+  c9810d4e5:
+    id_self:            qst_edit_commands.c9810d4e5
+    guid_self:          qst_8ffb651fbbb74c8a8a6e3830691f9146
+    question:           |
+                        What set does to a document held in a class or
+                        function docstring, once those are items.
+    relation:           []

@@ -1,0 +1,109 @@
+id_self:                ddr_schema_is_an_item
+guid_self:              ddr_42a38c0da57d49a7a267e1a89283f860
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schemas are items
+brief:                  |
+                        A schema is a data item like any other, and is
+                        validated by a schema.
+context:                |
+                        Schemas validated everything except
+                        themselves. Five schema files were reported as
+                        not examined on every run, because the schema
+                        type named no schema, and a defect in one of
+                        them would have been found only by whatever
+                        failed next.
+
+                        A schema is also two things at once. It is a
+                        JSON Schema, answerable to that specification,
+                        and it is a data item in this system, carrying
+                        an identity and a documentation envelope like
+                        anything else.
+decision:               |
+                        A schema is a data item, carrying identity,
+                        rights and prose as any item does, and is
+                        validated by sch_schema.
+
+                        sch_schema asserts both halves by composition:
+                        the draft meta schema for the JSON Schema
+                        half, and the base trait for the data item
+                        half.
+
+                        The dialect is pinned. A schema declares the
+                        2020-12 draft and no other.
+
+                        sch_schema validates itself.
+rationale:              |
+                        Composing the draft meta schema rather than
+                        restating parts of it means a malformed schema
+                        is reported as malformed, rather than passing
+                        here and failing obscurely later when
+                        something tries to validate against it.
+
+                        The dialect is pinned because a schema written
+                        against a different draft would be validated
+                        by rules other than the ones its author had in
+                        mind, and the difference would show up as a
+                        constraint quietly not applying.
+
+                        Self validation is not a curiosity. A meta
+                        schema that could not describe its own shape
+                        would be describing something other than what
+                        it claims to.
+
+                        Nothing is said about which JSON Schema
+                        keywords a schema must use, because a trait
+                        declares properties, a library declares only
+                        definitions, and a composite declares only
+                        allOf. All three are schemas.
+alternative:            |
+                        Leaving schemas unvalidated, as they were.
+                        Rejected: the files that describe everything
+                        else were the only files nothing described.
+
+                        Asserting the JSON Schema half by restating
+                        the parts of the specification that matter.
+                        Rejected: it would be a partial copy of a
+                        specification maintained elsewhere, and would
+                        drift.
+
+                        Permitting more than one dialect. Rejected
+                        while there is no reason to want a second.
+consequence:            |
+                        Every schema now carries identity, rights and
+                        prose, which is a fair amount of envelope on a
+                        file that is mostly constraints.
+
+                        A schema's identifier and its $id say the same
+                        thing twice, in different forms, and nothing
+                        checks that they agree. The pattern on $id
+                        asserts the shape of the URI and not that its
+                        last segment matches the identifier.
+
+                        Pinning the dialect means moving to a later
+                        draft is a change in one place and a
+                        revalidation of everything.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_schema
+    guid_target:        sch_19b746511dc84ae1b822a98afa81a196
+
+question:
+
+  cb954c9d3:
+    id_self:            qst_schema_is_an_item.cb954c9d3
+    guid_self:          qst_2686946e3792492389e93f33730f1f8d
+    question:           |
+                        Whether $id should be derived rather than
+                        written, since it is the identifier in another
+                        form and the two can disagree.
+    relation:           []

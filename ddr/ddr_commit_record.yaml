@@ -1,0 +1,220 @@
+id_self:                ddr_commit_record
+guid_self:              ddr_ba74e917b48842d0a3fd33711f0fa932
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit records
+brief:                  |
+                        Every commit carries a commit record in its
+                        message: a plain first line, then a data item
+                        between the markers a docstring uses, saying
+                        what the commit was for, what state the checks
+                        were in, and which items it changed.
+context:                |
+                        Workflows will revise items in place rather
+                        than only make new ones. What changed and when
+                        is then a question for the repository's
+                        history, and the history was being written as
+                        uninformative checkpoint lines.
+
+                        Nothing in the data says when anything was
+                        written. Staleness -- whether an input changed
+                        after an execution bound it, whether a
+                        question has been open for long -- had been
+                        parked for want of a content identifier.
+
+                        The executor needed a failure model. A run
+                        that stops three quarters through leaves a
+                        working tree in a state nobody chose.
+decision:               |
+                        A commit record is a data item that lives in
+                        the message of the commit it describes, and
+                        nowhere else. The first line of the message is
+                        plain text, for tools that read only the first
+                        line; a blank line follows; then the record
+                        between a line of three dashes and a line of
+                        three full stops.
+
+                        The record composes identity and nothing else
+                        of the envelope. It carries title, brief,
+                        description, a status of clean or checkpoint,
+                        the counts the checks reported, and edges for
+                        what the commit relates to on purpose: an
+                        r_results_from edge to the execution where a
+                        workflow made it, and whatever else is linked
+                        when it is made. What the commit changed is
+                        not in the record.
+
+                        The title appears twice, on the first line and
+                        in the record.
+
+                        The readable id sorts by time: the prefix, a
+                        UTC timestamp to the second, and six
+                        characters of the guid. The identifier grammar
+                        was widened to allow a digit to begin an id's
+                        body for it, and an execution's id takes the
+                        same form.
+
+                        cctool commit runs the checks, refuses on a
+                        critical finding unless a checkpoint is asked
+                        for, names the changed items, mints the
+                        record, validates it, stages what changed and
+                        commits. cctool log reads the records back and
+                        validates them again.
+
+                        A commit record is never referred to by
+                        anything in the tree. It is validated when
+                        made and on demand, and never loaded to
+                        resolve anything.
+
+                        When a workflow commits is machinery, held on
+                        the deployment: once at the end of a run,
+                        after every node, or never.
+rationale:              |
+                        In the message rather than in a file, because
+                        history belongs in git: nothing accumulates in
+                        the tree, a record cannot be edited after the
+                        fact, and it travels with every clone to a
+                        partner who can read it with our tooling or
+                        their own.
+
+                        A leaf rather than a node of the graph,
+                        because git already knows which commit holds
+                        any file. An execution need not point at its
+                        commit; git log on the execution's file says
+                        which one. So a record's edges point in and
+                        nothing points out, and it can be validated
+                        once and forgotten.
+
+                        What changed is left to the diff, because the
+                        diff already says it exactly and for nothing,
+                        and a first draft of this record that named
+                        every changed item by edge produced fifty four
+                        edges for one commit -- more record than
+                        change, and a copy of what git holds. The
+                        record is for what the diff cannot say: why,
+                        in what state, and what the commit was for.
+
+                        No rights on the record, because a commit's
+                        rights are those of what it contains, and a
+                        licence line in every message would say
+                        nothing.
+
+                        The title twice, because the first line serves
+                        tools that cannot read YAML and the record
+                        must be a valid item on its own. cctool log
+                        reports the two disagreeing.
+
+                        A sortable identifier, because history is
+                        ordered and an id that sorts the same way is a
+                        name that says when. The grammar was widened
+                        for it rather than a letter prefixed, since
+                        the letter rule never delivered what it was
+                        meant to: an id body of thirty two hexadecimal
+                        letters was always legal and always
+                        indistinguishable from a guid by shape. What
+                        keeps the two apart is the guid form being
+                        exact, and that survives.
+
+                        Staleness becomes a git query. Whether an
+                        input changed after an execution bound it is
+                        whether its last changing commit is later than
+                        the execution's. The content identifier leaves
+                        the critical path.
+
+                        A run commits at its end, so a failed run has
+                        a trivial recovery: the tree is restored to
+                        the commit before it began. That failure model
+                        exists only if a run's boundary is a commit.
+alternative:            |
+                        A commit record as a file in the tree,
+                        committed inside the commit it describes.
+                        Rejected: it accumulates one file per commit
+                        forever, and a file can be edited after the
+                        fact.
+
+                        Structured fields in git trailers rather than
+                        a document. Rejected: trailers hold one line
+                        each, and an item is not one line.
+
+                        An execution pointing at its commit. Rejected:
+                        the record cannot hold its own hash, and git
+                        already answers the question.
+
+                        Every changed item named by an r_changes edge,
+                        and every other changed file by path. The
+                        first draft here. Superseded: voluminous, and
+                        a duplicate of the diff.
+
+                        Checks run before every commit with no way
+                        past them. Rejected: a half done state is a
+                        fact worth recording, and a checkpoint records
+                        it as such.
+consequence:            |
+                        Every commit made through the tool says what
+                        it was for and what state the checks were in,
+                        and the log can be validated like anything
+                        else.
+
+                        A rebase or an amend orphans records. Accepted
+                        as the price of not fighting git.
+
+                        The checks run on every commit. A commit takes
+                        the second or so they take.
+
+                        What a commit touched is read from the diff,
+                        and the mapping from files to items is the
+                        tree's to make.
+
+                        Executions gain the same sortable identifier
+                        before any exist.
+
+question:
+
+  retire:
+    id_self:            qst_commit_record.retire
+    guid_self:          qst_a6ef65ff56e34a7190d9d0f5571e9342
+    question:           |
+                        What a commit record should say when a schema
+                        it was validated against has since changed,
+                        and whether cctool log should report a record
+                        that was valid when made and is not now as a
+                        fault or as history.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_commit
+    guid_target:        sch_46065f16926a43b586804bdacca29cd2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_commit
+    guid_target:        t_ffa64d0aef394e38af2acfc4cf2f6c5f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_results_from
+    guid_target:        r_af933c79f56a4abcb4a8783a75cb10c8
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.commit
+    guid_target:        pym_d1a0197b9dd444b4a74a5a294a070a0d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.git
+    guid_target:        pym_7dcf1d243d8d4c3facdd4b5527f4cd24
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_question.age
+    guid_target:        qst_be5feeaeb79d431c86679385a77c4c67

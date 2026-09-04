@@ -1,0 +1,303 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_eval.yaml
+id_self:                sch_eval
+guid_self:              sch_a7edf040404f4294bcbcc2294955775f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Eval schema
+brief:                  |
+                        Schema for eval data items.
+description:            |
+                        An eval holds one criterion to be judged by a
+                        language model, the examples that calibrate
+                        it, and the severity of failing it.
+
+                        One criterion per eval, answered MET or UNMET.
+                        An eval covering several criteria at once, or
+                        answering with a graded score, is outside this
+                        shape.
+usage:                  |
+                        Selected for an eval by the type register,
+                        which maps the evl prefix to the eval type.
+
+                        An eval names what it applies to by an edge:
+                        r_evaluates_items_of_type,
+                        r_evaluates_items_specified_by_schema, or
+                        r_evaluates_items_joined_by_relation. The edge
+                        is on the eval, so nothing it judges carries a
+                        reference to it.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - criterion
+      - severity
+      - example
+
+    properties:
+
+      criterion:
+        type:           string
+        minLength:      1
+        description:    |
+                        The instruction given to the judge, stating
+                        what MET means and what UNMET means, and what
+                        the judge should say when UNMET.
+
+                        One criterion only. Two criteria in one
+                        instruction are judged in one call, where a
+                        verdict on either colours the verdict on the
+                        other.
+
+      scope:
+        type:           object
+        additionalProperties:  false
+        description:    |
+                        What the judge is given of each subject.
+
+                        Two lists of paths, in which a step may be a
+                        star matching any one step, or a double star
+                        matching any number. A path read from a report
+                        can be pasted into either without translation.
+
+                        include names what is given. Absent or empty
+                        gives the whole subject.
+
+                        exclude removes places from what include gave,
+                        and is applied afterwards, so a narrow removal
+                        can be written against a broad inclusion.
+
+                        Giving a judge more than the criterion asks
+                        about is not merely wasteful. A criterion that
+                        answers reliably on the passage it concerns
+                        answers unreliably on a whole document
+                        containing it, since the verdict then rests on
+                        weighing everything present.
+
+        properties:
+
+          include:
+            type:       array
+
+            items:
+              type:     string
+              minLength:  1
+
+          exclude:
+            type:       array
+
+            items:
+              type:     string
+              minLength:  1
+
+      subject:
+        type:           object
+        additionalProperties:  false
+        description:    |
+                        Which items this eval applies to, named by
+                        type.
+
+                        An eval anchored on a relation reaches
+                        whatever that relation joins, and a relation
+                        is not obliged to join one kind of thing.
+                        Where a criterion can only be answered for
+                        some of what it reaches, this says which.
+
+                        include_type names the types whose items are
+                        judged. Absent, every item the anchor reaches
+                        is judged.
+
+                        Naming what is covered rather than what is not
+                        is deliberate. A type added later falls
+                        outside an eval until someone says otherwise,
+                        which leaves a gap in coverage; naming
+                        exclusions instead would let a new type fall
+                        INTO an eval that cannot answer for it, which
+                        produces findings that are wrong.
+
+        properties:
+
+          include_type:
+            type:       array
+            minItems:   1
+
+            items:
+              type:     string
+              $ref:     https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      confidence:
+        type:           array
+        description:    |
+                        What has been measured about this eval, one
+                        row per judge model and origin of case, as
+                        cctool measure records it. The two error rates
+                        are held apart because they are paid for
+                        differently: a false positive costs an
+                        investigation, a false negative costs an
+                        escape. Absent where nothing has been
+                        measured, in which case a finding carries no
+                        confidence.
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - model
+            - date
+            - origin
+            - cases
+            - samples
+            - false_positive
+            - false_negative
+            - unanimous
+
+          properties:
+
+            model:
+              type:     string
+              minLength:  1
+
+            date:
+              type:     string
+              pattern:  '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+
+            origin:
+              type:     string
+
+              enum:
+                - written
+                - mutated
+                - suppressed
+                - confirmed
+                - all
+
+            cases:
+              type:     integer
+              minimum:  0
+
+            samples:
+              type:     integer
+              minimum:  1
+
+            false_positive:
+
+              type:
+                - number
+                - 'null'
+
+            false_negative:
+
+              type:
+                - number
+                - 'null'
+
+            unanimous:
+              type:     number
+
+      severity:
+
+        enum:
+          - critical
+          - advisory
+
+        description:    |
+                        What follows from a verdict of UNMET.
+
+                        The same two values the structural checks use,
+                        carrying the same two meanings: critical must
+                        be fixed, advisory must be known about but
+                        need not be acted on.
+
+                        A statement about consequence, not about how
+                        sure the judge is. A criterion a judge answers
+                        unreliably is a calibration fault in the eval,
+                        to be fixed with examples rather than recorded
+                        in this field.
+
+      example:
+        type:           array
+        minItems:       2
+        description:    |
+                        Worked cases calibrating the criterion, given
+                        to the judge as demonstrations.
+
+                        At least one MET and at least one UNMET are
+                        required. A judge shown only what passes tends
+                        to accept, and one shown only what fails tends
+                        to reject.
+
+        allOf:
+
+          - contains:
+              type:     object
+
+              properties:
+
+                verdict:
+                  const:  met
+
+              required:
+                - verdict
+
+          - contains:
+              type:     object
+
+              properties:
+
+                verdict:
+                  const:  unmet
+
+              required:
+                - verdict
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - input
+            - verdict
+            - feedback
+
+          properties:
+
+            input:
+              type:     string
+              minLength:  1
+              description:  |
+                        What the judge is given, rendered as it would
+                        read to the judge. A passage, a whole item, or
+                        a pair of items, according to what the eval is
+                        anchored on.
+
+            verdict:
+
+              enum:
+                - met
+                - unmet
+
+              description:  |
+                        The verdict this input should receive.
+
+            feedback:
+              type:     string
+              minLength:  1
+              description:  |
+                        What the judge should say about this input.
+
+                        Required for MET as well as UNMET. A
+                        demonstration of what passing looks like, and
+                        why, teaches as much as one of what fails.

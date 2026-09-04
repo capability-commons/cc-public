@@ -1,0 +1,55 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_execution.yaml
+id_self:                sch_execution
+guid_self:              sch_1030485e4a494715ba5afaf52c44779b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Execution schema
+brief:                  |
+                        The shape of an execution: a deployment it ran
+                        under, and a table of bindings.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. Names the deployment by an
+                        r_ran_under edge, which is required. Bindings
+                        are sch_binding entries keyed by local name,
+                        one per port per pass.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - binding
+      - relation
+
+    properties:
+
+      binding:
+        minProperties:  1
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_binding.yaml
+
+      relation:
+        type:           array
+
+        contains:
+          type:         object
+
+          properties:
+
+            id_relation:
+              const:    r_ran_under

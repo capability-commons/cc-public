@@ -1,0 +1,66 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_binding.yaml
+id_self:                sch_binding
+guid_self:              sch_d4aa7fdd1ce24d258dea4252bf4e504c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Binding schema
+brief:                  |
+                        What a binding is: which item filled which
+                        port of which node, on which pass.
+description:            |
+                        An entry on an execution under binding. A
+                        reified reference: names the node and port by
+                        both identifiers, the pass by number, and the
+                        item by an r_binds edge, which is required.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+required:
+  - id_node
+  - guid_node
+  - id_port
+  - guid_port
+  - pass
+  - relation
+
+properties:
+
+  id_node:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+  guid_node:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+  id_port:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+  guid_port:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+  pass:
+    type:               integer
+    minimum:            1
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+    contains:
+      type:             object
+
+      properties:
+
+        id_relation:
+          const:        r_binds

@@ -1,0 +1,177 @@
+id_self:                ddr_workflow
+guid_self:              ddr_fb0c42281df94344ab622c6b1ea4dcd8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workflow
+brief:                  |
+                        A workflow is a composite component: an item
+                        of a declared type that has ports because its
+                        nodes do. The family is the component, and a
+                        partner brings a form of it the way they bring
+                        any type.
+context:                |
+                        The system says what must hold of an item and
+                        nothing about how an item comes to exist.
+                        Evals are postconditions with no production
+                        half.
+
+                        Workflows take many forms. A graph of
+                        transformations, a review cycle, a checklist,
+                        a rule that fires on a change. This repository
+                        will implement one or two of them, and a
+                        partner will want others.
+
+                        The founding constraint has not changed. A
+                        mechanism that produces items automatically is
+                        the mechanism by which a repository fills with
+                        material nobody reviewed.
+decision:               |
+                        A workflow is a data item. It carries an
+                        identity, a type, and whatever its type
+                        requires.
+
+                        A workflow is a COMPOSITE COMPONENT. The
+                        family it belongs to is the component, of
+                        which the atomic component in ddr_component is
+                        the base form. A type that is a form of
+                        component says so by an r_is_a_form_of edge
+                        from its type register entry to the atomic
+                        component type.
+
+                        No SCHEMA is asserted in common across the
+                        family beyond what every item already carries.
+                        There is no base workflow schema. What the
+                        forms share is an interface -- ports -- and
+                        for a composite that interface is derived from
+                        its parts rather than declared.
+
+                        A POLICY may still hold across the family.
+                        That a definition does not name the machinery
+                        running it, recorded in
+                        ddr_workflow_deployment, is one such. It is
+                        checked against every type carrying the
+                        r_is_a_form_of edge.
+
+                        A workflow item is meaningful to a reader who
+                        cannot execute it.
+
+                        One composite form is recorded so far: the
+                        dataflow workflow, in ddr_dataflow_workflow,
+                        with its runs in ddr_workflow_execution and
+                        its variants in ddr_workflow_transform.
+rationale:              |
+                        The federation question answers itself. A
+                        partner brings a workflow type the way they
+                        bring any type: an entry in a type register
+                        and a schema, plus one edge saying it is a
+                        form of component. The register is an open
+                        vocabulary and a schema is chosen per type, so
+                        two forms coexist without either knowing the
+                        other exists.
+
+                        The edge is what makes the family findable.
+                        Without it, nothing could enumerate the forms
+                        of component, and a policy meant to bind all
+                        of them would bind whichever forms happened to
+                        remember it. With it, the policy is one check
+                        over one query, and the check is the same for
+                        a form written here and a form written
+                        elsewhere.
+
+                        No common schema, because the forms share
+                        little beyond having ports, and for a
+                        composite even the ports are derived. A graph
+                        has nodes. A checklist has steps in order. A
+                        rule has a condition. An abstraction over
+                        those would either say nothing or oblige each
+                        form to pretend to a shape it does not have,
+                        and trait composition already provides what
+                        they genuinely share.
+
+                        Meaningful without being executable is what
+                        keeps a federation from fragmenting. A partner
+                        receiving a workflow they cannot run can still
+                        see what it is, and can still record that an
+                        item came from it. That holds only where
+                        provenance is data rather than something an
+                        engine knows internally.
+alternative:            |
+                        One workflow type general enough for every
+                        form. Rejected: it becomes the union of
+                        everything anyone wanted, and every
+                        implementation supports a different subset of
+                        it.
+
+                        A base workflow schema composed by every form.
+                        Rejected: what the forms share is being an
+                        item with ports, and sch_base says the first
+                        while the second is derived for a composite.
+
+                        A family with no way to enumerate its members,
+                        which was the decision here before
+                        r_is_a_form_of. Rejected: it made a family
+                        policy a hope. ddr_type_is_immutable says
+                        there is no grouping coarser than a type, and
+                        this respects that: the edge is a fact about a
+                        type, not a supertype.
+
+                        Workflows as code rather than as data.
+                        Rejected: code does not travel, as
+                        ddr_check_architecture records for checks. A
+                        workflow that is data can be read, checked,
+                        judged and referred to by a partner who cannot
+                        run it.
+consequence:            |
+                        Adding a form of workflow is an entry, an edge
+                        and a schema. It is not a change to anything
+                        already here.
+
+                        The component forms are a query over the type
+                        register. A partner's tool can find them
+                        without knowing their names.
+
+                        A family policy is enforced by one check over
+                        that query. A form that omits the edge escapes
+                        the policy and also escapes being found, which
+                        is the same omission with one consequence
+                        rather than two.
+
+                        Nothing prevents two partners defining near
+                        identical forms under different names. The
+                        federation has no mechanism for reconciling
+                        that, and had none before.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_a_form_of
+    guid_target:        r_20f5b5423123410cb63b0ef9cffc906f
+
+question:
+
+  cda6f5f9b:
+    id_self:            qst_workflow.cda6f5f9b
+    guid_self:          qst_5cfc0aa69e3c4684af7a4f05092f73b5
+    question:           |
+                        Whether a workflow is versioned, and what
+                        superseding one means for the items produced
+                        by the older.
+    relation:           []
+
+  cb4394f3d:
+    id_self:            qst_workflow.cb4394f3d
+    guid_self:          qst_3b5e4f967eb94e578fcfb348543cb67b
+    question:           |
+                        Whether a form of component that is not a
+                        workflow -- a single prompt, say -- should be
+                        findable separately from the composites, or
+                        whether the distinction matters to anyone but
+                        a tool drawing a picture.
+    relation:           []

@@ -1,0 +1,149 @@
+id_self:                ddr_per_register_entry_schema
+guid_self:              ddr_aaf034540f6a431f98dc12d23950dc9a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per register entry schemas
+brief:                  |
+                        A register whose entries carry subject
+                        specific fields names a schema of its own,
+                        composed from the general one and an entry
+                        one.
+context:                |
+                        Every register has the same shape and its
+                        entries do not. A type entry carries a prefix
+                        and an identifier pattern; a relation entry
+                        carries neither; a protective mark entry
+                        carries an authority and a level.
+
+                        The general register schema left entries open,
+                        so nothing checked that a type entry had a
+                        prefix at all -- and the prefix is what schema
+                        selection runs on. The schema's own note
+                        anticipated this, and proposed a companion
+                        validator written in code.
+
+                        Selection stood in the way of anything better.
+                        A schema was chosen for an item by its type,
+                        and both registers are of the same type, so
+                        the two could not be told apart however their
+                        entries differed.
+decision:               |
+                        A register whose entries carry subject
+                        specific fields names a schema particular to
+                        that register, which composes the general
+                        register schema with a schema for its entries.
+
+                        The composing schema asserts nothing of its
+                        own. It says only that the entries of the
+                        table are additionally of the entry shape.
+
+                        An item may name its own schema, by an
+                        r_is_specified_by_schema edge on the item, and
+                        that takes precedence over the schema named by
+                        the item's type.
+
+                        A register whose entries carry nothing
+                        particular names no schema and is validated by
+                        the general one.
+rationale:              |
+                        Composition rather than a companion validator,
+                        because a validator written in code does not
+                        travel. A federated partner running their own
+                        tooling receives the schemas and not the
+                        checks, so a rule expressed as a schema
+                        reaches them and a rule expressed in python
+                        does not.
+
+                        allOf is an intersection applied at each place
+                        in the instance, so an entry must satisfy both
+                        the general entry shape and the particular
+                        one, and a failure of either is reported
+                        against the entry that caused it. Nothing had
+                        to be built for that; it is what the keyword
+                        already means.
+
+                        Selection by item rather than only by type
+                        because two items of one type may want
+                        different schemas, and nothing else could
+                        express that. The edge sits on the item
+                        because the item is the thing that differs.
+
+                        The entry schema must leave
+                        additionalProperties open, as must any half of
+                        a composition: a half that closed it would
+                        reject every field contributed by the other.
+alternative:            |
+                        A companion validator in code, as the register
+                        schema originally proposed. Rejected on the
+                        federation argument above. The proposal was
+                        written before that argument was clear.
+
+                        One register schema per register, restating
+                        the whole shape. Rejected: the general shape
+                        would then have as many copies as there are
+                        registers.
+
+                        Giving each register its own type, so that
+                        selection by type would suffice. Rejected: a
+                        prefix names exactly one type, and all
+                        registers share the reg prefix. Splitting them
+                        would mean splitting the prefix.
+
+                        Naming the entry schema from the register, by
+                        a relation saying that entries are specified
+                        by it. Rejected: it needs a rule in tooling to
+                        apply a schema to table values, where
+                        composition needs none, and a foreign tool
+                        would have to implement that rule to get the
+                        same answer.
+consequence:            |
+                        The type register is validated against a
+                        schema the relation register is not, though
+                        both are registers, and each gets what its
+                        entries actually need.
+
+                        Any item may now override the schema chosen
+                        for it, which is more power than registers
+                        needed. Nothing prevents an item naming a
+                        schema that has nothing to do with it.
+
+                        A register gaining subject specific entry
+                        fields later needs two new files, not one: the
+                        entry shape and the composition. The second is
+                        small enough that this is a fair price.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_type
+    guid_target:        sch_4a17e1ea6a1143c59c0a634b38f902bc
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_type
+    guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.schema
+    guid_target:        pym_dc70a7fa709c4eaaab6b18f0eadd5fb0
+
+question:
+
+  cbba08ad3:
+    id_self:            qst_per_register_entry_schema.cbba08ad3
+    guid_self:          qst_b44c5915e76944759f086c003214c95e
+    question:           |
+                        Whether an item naming its own schema should
+                        be obliged to name one that composes the
+                        schema its type names. Nothing checks that
+                        today, so an item can escape its type's shape
+                        entirely rather than narrow it.
+    relation:           []

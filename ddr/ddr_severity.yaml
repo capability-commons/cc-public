@@ -1,0 +1,152 @@
+id_self:                ddr_severity
+guid_self:              ddr_07bdf1fc22a842f7930f3e6bc2a10f30
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Severity
+brief:                  |
+                        Severity names what follows from a finding,
+                        and two values suffice for every check and
+                        every eval.
+context:                |
+                        The checks produce findings, and different
+                        callers want different things done with them.
+                        A continuous integration gate wants to be
+                        stopped. An agentic loop wants to read the
+                        report and act on it, and being stopped would
+                        be a nuisance. A developer in a tight loop
+                        wants to be told about the first thing that
+                        matters and nothing else.
+
+                        Findings also differ among themselves. A guid
+                        declared twice is unambiguously wrong. A
+                        reference that does not resolve may be a typo
+                        or may be an item held behind a sharing
+                        boundary, and only the caller knows which.
+
+                        Evals produce findings too, and it was not
+                        obvious that a judgement and a structural
+                        fault should share a vocabulary at all.
+decision:               |
+                        Two values. Critical means the finding must be
+                        fixed. Advisory means it must be known about
+                        but need not be acted on.
+
+                        Severity names the CONSEQUENCE of a finding.
+                        Not its cause, not how certain it is, and not
+                        whether it was reached deterministically or by
+                        judgement.
+
+                        An eval uses the same two values, saying what
+                        follows from a verdict of UNMET.
+
+                        Where the consequence genuinely changes with
+                        something the caller asserts, the severity
+                        changes with it. A caller asserting that the
+                        paths given are complete turns an unresolved
+                        reference from advisory into critical.
+rationale:              |
+                        Consequence is what a consumer needs to know.
+                        A gate needs to know whether to stop; a loop
+                        needs to know whether to act. Neither needs to
+                        know how the finding was arrived at, and a
+                        consumer that does want to know can read which
+                        check reported it.
+
+                        That the value names consequence rather than
+                        cause is demonstrable rather than asserted.
+                        Two findings are advisory for unrelated
+                        reasons: a reference that does not resolve,
+                        because the target may lie outside the scope;
+                        and a reference whose readable id has gone
+                        stale, because sch_relation declares a stale
+                        copy harmless. Different causes, one
+                        consequence, and it is the consequence the
+                        value names.
+
+                        Evals need no vocabulary of their own because
+                        how sure a judge is was never a severity
+                        question. A criterion a judge answers
+                        unreliably is a calibration fault in the eval,
+                        to be fixed with better examples.
+
+                        A completeness assertion changes the severity
+                        rather than overriding the gate, because in a
+                        complete scope the consequence genuinely is
+                        that the finding must be fixed. Leaving it
+                        advisory and having the gate refuse it anyway
+                        would put a report saying "need not be acted
+                        on" beside an exit status saying otherwise.
+alternative:            |
+                        A third value between the two. Rejected: five
+                        distinct ways of running the check are served
+                        by two, and no sixth appeared that wanted a
+                        third.
+
+                        A confidence figure on findings from evals.
+                        Rejected: a binary verdict is binary, and a
+                        judge that is unsure has a criterion that
+                        needs work rather than a field that needs
+                        filling.
+
+                        A flag promoting advisories to blocking at the
+                        gate. Rejected in favour of the completeness
+                        assertion, which changes what a finding MEANS
+                        rather than what the gate does with it.
+
+                        Defining advisory as a finding whose verdict
+                        depends on context outside the data.
+                        Considered, and false: the stale readable id
+                        refutes it, being advisory although nothing is
+                        missing.
+consequence:            |
+                        An advisory finding never affects the exit
+                        status. A caller wanting to be stopped by one
+                        asserts a complete scope instead, which is a
+                        claim about the invocation rather than a
+                        preference about strictness.
+
+                        An eval declares its severity in data, and it
+                        applies wherever that eval is anchored. The
+                        same criterion cannot be advisory on one
+                        anchor and critical on another.
+
+                        The distinction between a deterministic
+                        finding and a judged one is carried by which
+                        check reported it, and nowhere else. A
+                        consumer that wants to treat them differently
+                        has to look there.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_eval
+    guid_target:        sch_a7edf040404f4294bcbcc2294955775f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.result
+    guid_target:        pym_268d7956e68d4669a7737fdc7335b8b3
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.reference
+    guid_target:        pym_f0ea5d1c3db94638af39fb9fce1c7a6f
+
+question:
+
+  cca06f6af:
+    id_self:            qst_severity.cca06f6af
+    guid_self:          qst_1fafddce782e413cb64858c5e1d50252
+    question:           |
+                        Whether severity belongs on an eval or on the
+                        edge anchoring it, which is the same question
+                        the eval design leaves open and would answer
+                        both.
+    relation:           []

@@ -1,0 +1,129 @@
+id_self:                ddr_relation_register
+guid_self:              ddr_fb502d040900482ea90e06219308ba6b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation register
+brief:                  |
+                        Edge meanings are held in a register, so a new
+                        kind of edge needs no change to any schema or
+                        any tool.
+context:                |
+                        Traceability is one mechanism: an edge from
+                        one item to another, labelled. What labels are
+                        permitted, and what each means, had to live
+                        somewhere.
+
+                        Putting them in a schema as an enumeration
+                        would mean a schema change for every new kind
+                        of edge, and would put the meaning of an edge
+                        in a file that cannot hold prose about it.
+decision:               |
+                        Relation types are entries in a register.
+
+                        A relation type is an item with an identity of
+                        its own, and an edge names it by guid as well
+                        as by readable id, for the same reason it
+                        names its target by both.
+
+                        A relation is directional. Where an inverse is
+                        wanted it is a separate relation, not a
+                        direction flag.
+
+                        The vocabulary is open. Recording a new kind
+                        of edge is an entry in the register and
+                        nothing else.
+rationale:              |
+                        A register because this is a controlled
+                        vocabulary, which is what registers are for,
+                        and because an entry can carry prose saying
+                        what the edge means. An enumeration in a
+                        schema can carry a list of permitted strings
+                        and nothing more.
+
+                        Relation types are addressable because they
+                        are items, and an edge that named its label
+                        only by readable id would be resolving across
+                        a federation by the one form that is not
+                        guaranteed to resolve.
+
+                        Directional, with inverses as separate
+                        relations, because an inverse usually reads
+                        differently rather than merely backwards, and
+                        deserves its own description.
+alternative:            |
+                        An enumeration in the relation trait schema.
+                        Rejected: a schema change for every new kind
+                        of edge, and nowhere to say what one means.
+
+                        Relation types as labels rather than items,
+                        carrying a readable id and no guid. That was
+                        the original position, and the schema still
+                        said so after the register had begun giving
+                        them guids. Rejected once the contradiction
+                        was noticed: a label that has to resolve
+                        across a federation is an item whether or not
+                        it is called one.
+
+                        A single relation with a direction flag.
+                        Rejected: it halves the vocabulary and doubles
+                        the reading effort.
+consequence:            |
+                        An edge carries four fields where two would
+                        identify it, because both ends are named
+                        twice. That is the cost of the readable half
+                        being advisory everywhere.
+
+                        Nothing infers an inverse. Tooling that wants
+                        one has to be told, and the register does not
+                        yet say which relations have inverses or what
+                        they are.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_relation
+    guid_target:        reg_512fbf5c51be4efaa4517b52310ddf80
+
+question:
+
+  c15717d90:
+    id_self:            qst_relation_register.c15717d90
+    guid_self:          qst_cde65fc4c7774236a5468c71eaa1ab23
+    question:           |
+                        Whether a relation entry should name its
+                        inverse, so that a graph can be walked in
+                        either direction without a second edge.
+    relation:           []
+
+  c47c19f26:
+    id_self:            qst_relation_register.c47c19f26
+    guid_self:          qst_b9b402132fad433aad5bdf3545cbcac6
+    question:           |
+                        Whether a relation should constrain the types
+                        of its ends. Nothing prevents an edge saying
+                        that a schema is held in a registry.
+    relation:           []
+
+  c9f58ac59:
+    id_self:            qst_relation_register.c9f58ac59
+    guid_self:          qst_477d676fa8534d75be4f348bf273e477
+    question:           |
+                        Note that the answer is unlikely to be the
+                        same for every relation.
+                        r_is_specified_by_schema plainly ends at a
+                        schema and could say so. r_decides ends at
+                        anything a decision can settle, which is
+                        everything, and constraining it would assert a
+                        boundary that does not exist. So the
+                        constraint would have to be optional, and a
+                        relation declining to constrain its ends would
+                        have to be read as saying nothing rather than
+                        as permitting nothing.
+    relation:           []

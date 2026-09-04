@@ -1,0 +1,251 @@
+id_self:                ddr_source_anchor
+guid_self:              ddr_0ea374655c22436c9d77f05382ef622c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Anchors in source
+brief:                  |
+                        Metadata borne in a comment as well as in a
+                        docstring, so that an address can be attached
+                        to any point in a source file and not only to
+                        a named definition.
+context:                |
+                        ddr_source_addressability made four things
+                        addressable: a package, a module, a class and
+                        a function. Each is a named definition, and
+                        each carries its metadata in its own
+                        docstring.
+
+                        That leaves most of a file unaddressable. A
+                        guard clause, a run of setup, the two
+                        statements that actually implement a decision
+                        -- none of them is a definition, so none can
+                        be the end of a traceability edge.
+
+                        The idea comes from the design factory, where
+                        read_python_metadata reads a YAML document out
+                        of a docstring and the intent was always to
+                        read them from comments too, decorating
+                        arbitrary points of the syntax tree.
+
+                        Separately, evl_record_and_code_agree was
+                        deferred because a code data item carries
+                        prose ABOUT code the judge never sees, and
+                        giving a module item its whole file would
+                        produce subjects of ten to twenty thousand
+                        characters. See ddr_eval_reach.
+decision:               |
+                        Metadata may be carried in a comment as well
+                        as in a docstring. A commented document is a
+                        contiguous run of comment lines which, with
+                        the comment character removed, is a YAML
+                        document opened by three dashes and closed by
+                        three full stops.
+
+                        A commented document labels the contiguous run
+                        of statements that follows it.
+
+                        The delimiter is matched EXACTLY, against a
+                        stripped line, and never as a substring. The
+                        separator comment used throughout this source
+                        is a row of dashes, and a substring test reads
+                        it as an opening marker.
+
+                        A block is a fifth kind of source item, with a
+                        prefix of its own. Like a class and unlike a
+                        module, it is written only where something
+                        needs to name it.
+
+                        An item's extent is its OWN source. What lies
+                        beneath it -- the modules of a package, the
+                        methods of a class -- is a projection an eval
+                        asks for, and is no part of the item's
+                        identity.
+
+                        What an anchor covers is reportable. The tool
+                        can say which lines each one takes in, so that
+                        an extent fixed by position can be seen rather
+                        than inferred.
+
+                        Nothing is implemented. Where a labelled run
+                        ends is not settled, and is the first open
+                        question below.
+rationale:              |
+                        Addressability is what lets an edge point
+                        somewhere. Four definitions are a coarse grid,
+                        and what a decision record actually settles is
+                        often smaller than a function and larger than
+                        nothing.
+
+                        The mechanism was measured rather than
+                        assumed. Comments come from tokenize,
+                        statements and their line extents from ast,
+                        and the two join by line number. On a sample
+                        carrying two commented documents inside one
+                        function, the anchors resolved to runs of four
+                        lines and two lines. Nothing is imported,
+                        which keeps the rule ddr_source_addressability
+                        set.
+
+                        The exact delimiter is not a detail. The first
+                        run of that probe treated a 79 character
+                        separator comment as an opening marker and
+                        labelled an entire function with it. The
+                        failure is silent: it yields an anchor over
+                        the wrong extent rather than an error.
+
+                        Own source rather than transitive, because the
+                        difference is enormous and the choice is
+                        otherwise made by accident. The root package's
+                        own source is 649 characters and everything
+                        beneath it is 150 thousand, a spread of two
+                        hundred to one. Read as own source, a package
+                        is the SMALLEST item in the system rather than
+                        the largest.
+
+                        Size is not the obstacle it appeared to be. A
+                        module's own source runs from ten to seventeen
+                        thousand characters, and the join eval
+                        discriminated five out of five at thirteen
+                        thousand four hundred. Module scale source is
+                        where that eval already demonstrably works.
+                        The case for a finer grain is precision and
+                        cost, not feasibility.
+
+                        Every source anchor moves as the code moves. A
+                        module gains functions and a class gains
+                        methods, and nobody finds that alarming,
+                        because naming living code means naming
+                        something that changes. A block anchor differs
+                        not in kind but in visibility: a module's
+                        extent can be seen by opening the file and a
+                        block's cannot. Reporting what an anchor
+                        covers is what closes that gap, and it is
+                        cheaper than a firmer boundary rule.
+alternative:            |
+                        Giving the existing four types their source
+                        and going no further. Deferred rather than
+                        rejected, and probably the first thing to do:
+                        module scale source is within what a judge
+                        handles. What it does not give is precision,
+                        since a claim about two statements is then met
+                        with a whole file.
+
+                        Metadata in a decorator rather than a comment.
+                        Rejected: a decorator is code, it runs, and it
+                        cannot decorate a run of statements in the
+                        middle of a function.
+
+                        A sidecar file naming line ranges. Rejected
+                        for the reason ddr_source_addressability
+                        rejected sidecars generally -- two files to
+                        keep in step -- and worse here, since a line
+                        range goes stale on any edit above it.
+
+                        Choosing now which structure a projection
+                        derives from: call graph closure, control flow
+                        region, or a backward slice. Not taken.
+                        Identity and projection are separate concerns,
+                        so the anchor can be settled without settling
+                        that.
+consequence:            |
+                        An anchor on a block is POSITIONAL where an
+                        anchor on a definition is nominal. A block
+                        silently grows when a statement is inserted
+                        into it, so an edge pointing at it still
+                        resolves and comes to mean something nobody
+                        chose. Accepted: what drifts is how much
+                        source an eval is shown, not what the program
+                        does. Reporting an anchor's extent is the
+                        mitigation.
+
+                        Comments are not in the syntax tree, so
+                        extraction needs tokenize alongside ast,
+                        joined by line number. That is a second reader
+                        of the same file.
+
+                        The four existing types are only half built.
+                        The loader now locates every document in every
+                        docstring by walking the syntax tree, and the
+                        printer lays each one out, but only the
+                        module's becomes an item, so no class item and
+                        no function item exists today. A block anchor
+                        is the third unbuilt thing rather than the
+                        first.
+
+                        Anchoring and projection can now move
+                        separately. A block anchor may be fixed by
+                        position while an eval asks for a semantically
+                        derived neighbourhood around it, and neither
+                        choice waits on the other.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.python
+    guid_target:        pym_db9a9fb33495409c9a6615cb3d58d00d
+
+question:
+
+  c6e5ff1bc:
+    id_self:            qst_source_anchor.c6e5ff1bc
+    guid_self:          qst_61c9820156cc4826b51987931547cb5f
+    question:           |
+                        Where a labelled run ends. To the next
+                        commented document, to the end of the
+                        enclosing suite, to the next blank line, or to
+                        an extent stated in the metadata itself. The
+                        choice decides what happens when a statement
+                        is inserted.
+    relation:           []
+
+  c9274a735:
+    id_self:            qst_source_anchor.c9274a735
+    guid_self:          qst_f6b84ea08780405d838c60ccba8726ce
+    question:           |
+                        Whether an item's source includes the source
+                        of contained items that carry anchors of their
+                        own. Subtracting them leaves a module's text
+                        full of holes, which may read badly to a
+                        judge. Not subtracting them repeats every
+                        nested body inside its parent, so the total
+                        source a sweep carries is a multiple of the
+                        repository rather than the size of it.
+    relation:           []
+
+  ce9ed41af:
+    id_self:            qst_source_anchor.ce9ed41af
+    guid_self:          qst_11b0b7ad6d8d44f3b473408998854376
+    question:           |
+                        Which structure a projection should derive
+                        from. A call graph closure is tractable for
+                        code with no metaprogramming in it. A backward
+                        slice is the principled answer to how much
+                        context a claim needs, and sound slicing of
+                        python is hard enough that no tool here is
+                        trusted to do it.
+    relation:           []
+
+  c8bddc7ab:
+    id_self:            qst_source_anchor.c8bddc7ab
+    guid_self:          qst_3a036c317d4042288fb44efc007ae00f
+    question:           |
+                        What a block is called, and whether its
+                        identifier names the function containing it.
+    relation:           []
+
+  ca8042f3e:
+    id_self:            qst_source_anchor.ca8042f3e
+    guid_self:          qst_21aed1f66285496f97435d7878450873
+    question:           |
+                        Whether an anchor can be checked at all.
+                        Nothing would notice a commented document
+                        whose statements had been deleted, leaving it
+                        labelling whatever happened to follow.
+    relation:           []

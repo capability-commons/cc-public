@@ -1,0 +1,115 @@
+id_self:                ddr_judge_subject
+guid_self:              ddr_84f0e12b5ae841fca59ccafc1ad01ff0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What the judge is shown
+brief:                  |
+                        Prose is given to a judge as prose, and an
+                        item carrying none of the fields a scope names
+                        is not judged at all.
+context:                |
+                        evl_prose_describes was returning verdicts
+                        that did not reproduce. Rewriting the
+                        criterion did not help, and neither did adding
+                        examples: a control set of cases with known
+                        answers scored nineteen out of nineteen,
+                        stable, while the same criterion run across
+                        the repository produced findings that vanished
+                        when run again.
+
+                        The control harness and the runner were not
+                        showing the judge the same text. The harness
+                        passed the paragraph. The runner passed a YAML
+                        dump of the selected fields, in which ruamel
+                        renders a multi line string double quoted,
+                        with its line breaks as escape sequences and
+                        folds inserted to fit the width.
+
+                        Separately, a decision record carries none of
+                        description, usage or note. The scope selected
+                        nothing from it, and the judge was handed a
+                        header with no body beneath it.
+decision:               |
+                        A string field is rendered as itself, beneath
+                        its name. Anything else keeps its structure
+                        and is dumped as YAML, with multi line strings
+                        in literal block style.
+
+                        An item for which the scope selects nothing
+                        yields no task. The eval does not apply to it.
+rationale:              |
+                        The rendering was measured, not reasoned
+                        about. One description, judged ten times each
+                        way: as the runner rendered it, five met and
+                        five unmet; as the paragraph itself, ten met
+                        and none unmet. One rendering carries the
+                        criterion and the other is a coin toss.
+
+                        An empty subject is worse than a hard one.
+                        Asked whether a bare header argues for a
+                        design, a judge has nothing to weigh and
+                        answers unmet, which reads as a finding rather
+                        than as the absence of one. Thirteen of the
+                        eighteen findings in one sweep were decision
+                        records with no body.
+alternative:            |
+                        Naming decision records in a selector, so that
+                        the eval skips them. This was the first plan.
+                        It became unnecessary: a record carries none
+                        of the fields the scope names, so it falls
+                        outside the eval by the same rule that governs
+                        every other item, with nothing naming it
+                        specifically.
+
+                        Reporting an empty subject as a note rather
+                        than dropping the task. Rejected: a note says
+                        that something could not be examined, and
+                        there is nothing here that examination was
+                        owed to.
+
+                        Rendering everything as prose, with no YAML at
+                        all. Rejected: an eval whose criterion
+                        concerns structure needs the structure.
+consequence:            |
+                        A sweep is smaller and cheaper. Forty five
+                        items are judged where sixty two were before,
+                        the difference being items the eval never had
+                        anything to say about.
+
+                        An eval naming a scope that no item satisfies
+                        now applies to nothing, and says nothing about
+                        it. Nothing reports that an eval is idle.
+
+                        Verdicts still vary, at perhaps one item in
+                        ten across a sweep. The question this left
+                        open -- whether to sample and take a majority
+                        -- was answered by ddr_cost_of_checking: an
+                        adverse verdict is confirmed over several
+                        fresh judgements and only a majority stands.
+                        That removes the variance. It does not touch a
+                        verdict that is stably wrong, which is what
+                        suppression is for.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+question:
+
+  c003fd82e:
+    id_self:            qst_judge_subject.c003fd82e
+    guid_self:          qst_fcf5fab8bc9b4fe79899938cdc07f1f2
+    question:           |
+                        Whether the runner should report more than the
+                        majority: the tally itself, or a confidence,
+                        now that it samples.
+    relation:           []

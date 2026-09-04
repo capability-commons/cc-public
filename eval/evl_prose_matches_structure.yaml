@@ -1,0 +1,106 @@
+id_self:                evl_prose_matches_structure
+guid_self:              evl_243e02e2af83439c93c24b394ed89803
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prose matches structure
+brief:                  |
+                        What an item says about itself agrees with
+                        what the item carries.
+criterion:              |
+                        MET when nothing the prose says about THIS
+                        item is contradicted by the fields shown
+                        beside it.
+
+                        UNMET when a passage states something about
+                        this item -- what it names, how many things it
+                        names, what it does not have -- that the
+                        fields present show to be false.
+
+                        Only claims about this item count. A claim
+                        about another item, about a type, or about the
+                        system in general is out of scope and cannot
+                        make this UNMET.
+
+                        When UNMET, quote the passage and name the
+                        field that contradicts it.
+
+scope:
+
+  include:
+    - relation
+    - description
+    - usage
+    - note
+    - context
+    - decision
+    - rationale
+    - alternative
+    - consequence
+    - open_question
+
+severity:               advisory
+
+example:
+
+  - input:              |
+                        relation:
+                          - id_relation: r_decides
+                            id_target: pym_cc_public.check.result
+                        open_question: |
+                          This record names no item, because r_decides
+                          needs a target with an identity and a python
+                          module has none.
+    verdict:            unmet
+    feedback:           |
+                        The passage says the record names no item, and
+                        a relation beside it names one. True when
+                        written, and the structure changed underneath
+                        it.
+
+  - input:              |
+                        relation:
+                          - id_relation: r_decides
+                            id_target: sch_descriptive
+                        decision: |
+                          Three traits, composed by allOf. sch_base does
+                          NOT compose sch_relation.
+    verdict:            met
+    feedback:           |
+                        Nothing said about this item is contradicted
+                        by it. What sch_base composes is a claim about
+                        another item, which is out of scope.
+
+  - input:              |
+                        relation:
+                          - id_relation: r_decides
+                            id_target: sch_descriptive
+                          - id_relation: r_decides
+                            id_target: sch_rights
+                        consequence: |
+                          This record settles one schema, named below.
+    verdict:            unmet
+    feedback:           |
+                        Says one schema is settled. Two are named.
+
+  - input:              |
+                        relation: [] note: |
+                          Most registers carry outgoing edges. This one
+                          carries none yet.
+    verdict:            met
+    feedback:           |
+                        The claim about this item, that it carries no
+                        edges, matches the empty array. What most
+                        registers do is not a claim about this item.
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_descriptive
+    guid_target:        sch_02a7f7d40e0c42fe8e82b170c4d15eaf

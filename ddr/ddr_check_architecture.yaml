@@ -1,0 +1,137 @@
+id_self:                ddr_check_architecture
+guid_self:              ddr_6c001cbf780c4555a6f87a25ae71606b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check architecture
+brief:                  |
+                        Three kinds of outcome, one loading pass, and
+                        a check is a module with one function.
+context:                |
+                        The checks answer questions no schema can, for
+                        the plain reason that a schema sees one
+                        document at a time and these questions span
+                        several: whether identifiers are distinct,
+                        whether references resolve, whether two types
+                        claim one prefix.
+
+                        They are also consumed by unlike callers. A
+                        gate wants to be stopped. An agent wants to
+                        read and act. Both need to tell three
+                        different things apart, and conflating any two
+                        of them makes the report untrustworthy: the
+                        data being wrong, the tool being broken, and
+                        the tool not having looked.
+decision:               |
+                        Three kinds of outcome, kept apart throughout.
+
+                        An ERROR is the analysis failing -- a path
+                        that does not exist, a register that cannot be
+                        found, a defect in a check.
+
+                        A NONCONFORMITY is the data failing a rule. It
+                        carries a severity.
+
+                        A NOTE is something a check wants reported
+                        that is not a fault, and is used to make
+                        coverage visible.
+
+                        Files are discovered from the union of the
+                        paths given and loaded ONCE into a shared
+                        context, which every check reads.
+
+                        A check is a module exposing check(context)
+                        and three constants naming it. A check that
+                        raises is caught, recorded as an error, and
+                        the remaining checks still run.
+rationale:              |
+                        The note exists because a check that silently
+                        examined nothing must not be mistaken for one
+                        that passed. Reporting five files as not
+                        examined is the difference between a clean run
+                        and a vacuous one, and the distinction is
+                        invisible without somewhere to say it.
+
+                        Errors are separated from nonconformities
+                        because they want different treatment
+                        everywhere: a different exit status, a
+                        different stream, and a different response
+                        from whoever reads them. A tool that reports
+                        its own failure as a finding about the data is
+                        lying.
+
+                        One loading pass because three checks reading
+                        the same tree three times is waste, and
+                        because a file that failed to load should be
+                        reported once rather than three times.
+
+                        A raising check is caught so that a defect in
+                        one check cannot hide the findings of the
+                        others. The defect is reported as what it is.
+alternative:            |
+                        Checks as classes. Rejected: the interface is
+                        one function and a module is the smaller thing
+                        that provides it.
+
+                        One flat list of findings, without the three
+                        kinds. Rejected: it conflates the data being
+                        wrong with the tool being broken, which is the
+                        distinction a caller most needs.
+
+                        Each check discovering and loading what it
+                        needs. Rejected for the repeated work, and
+                        because load failures would then be reported
+                        by whichever checks happened to touch the
+                        file.
+
+                        Letting a raising check abort the run.
+                        Rejected: the findings already gathered are
+                        worth having.
+consequence:            |
+                        Adding a check is one module and one line in
+                        the list that names them.
+
+                        The context is loosely typed where it carries
+                        eval configuration, because the eval package
+                        depends on the checks and naming its types
+                        would close an import cycle.
+
+                        These rules live in Python and therefore do
+                        NOT travel. A federated partner running their
+                        own tooling over a slice of this repository
+                        gets the schemas and the evals, which are
+                        data, and none of the checks. That is an
+                        argument for putting as much judgement as
+                        possible into evals rather than here.
+
+                        This record names the package and the modules
+                        it decides. It could not when it was written,
+                        and ddr_source_addressability is what changed
+                        that.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.check
+    guid_target:        pyp_0dcce7d7c1084e04b20e99e52400d2b7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.result
+    guid_target:        pym_268d7956e68d4669a7737fdc7335b8b3
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.parse
+    guid_target:        pym_31509ffe5b17441a895f33a43a19f929
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.register
+    guid_target:        pym_b2e7cf718cea4a3caa05b09313530dde

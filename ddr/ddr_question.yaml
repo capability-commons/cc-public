@@ -1,0 +1,164 @@
+id_self:                ddr_question
+guid_self:              ddr_caa0d0bfef1c4d158462de542c8b0532
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Questions are items
+brief:                  |
+                        What a decision record leaves open is held as
+                        entries with identities, and answered by an
+                        edge from whatever settles it, so that what is
+                        still open is a query and not a reading.
+context:                |
+                        Seventy eight open questions stood across
+                        thirty four records, as prose. Two of them
+                        said in their own text that they had since
+                        been answered, and both sentences had been
+                        written by editing the paragraph. That is the
+                        stale claim pattern in reverse: a fact about
+                        the system recorded where nothing can check
+                        it.
+
+                        Nothing in the data says when a record was
+                        written. The only date anywhere is the one on
+                        an eval's confidence. Whether a question had
+                        ever been revisited could not be asked.
+decision:               |
+                        A question is an entry on its record, under
+                        question, with an identity of its own and its
+                        text. It is made with cctool insert, keyed by
+                        the content of its text as a control case is.
+
+                        A question is answered by an r_answers edge
+                        from the item that settles it, which may be a
+                        later record, a schema, or a module. It is
+                        never answered by editing its text.
+
+                        A question with no incoming r_answers edge is
+                        open. cctool questions lists them, and --open
+                        lists only those.
+
+                        The prose field open_question is refused by
+                        the record schema, so that no record keeps
+                        one.
+
+                        cctool unset removes a field, which the
+                        migration needed and which the edit commands
+                        had left open.
+rationale:              |
+                        The same move that answered suppression:
+                        something that was prose becomes an item, and
+                        what was a sentence becomes an edge. An entry
+                        can be pointed at; a paragraph cannot. Whether
+                        a question is open is then a fact about the
+                        graph, read by a query, and not a judgement
+                        made by reading.
+
+                        An edge from the answerer rather than a mark
+                        on the question, for the reason r_decides goes
+                        on the record and not on the item: the thing
+                        that settles a matter is what changed, and the
+                        question need not be touched to be answered.
+                        It also lets a question be answered from
+                        anywhere, which is how they were being
+                        answered in practice, by records written
+                        later.
+
+                        No date on a question, because nothing here
+                        has one and one field on one type would decide
+                        by accident a question that belongs with
+                        staleness generally. The repository's history
+                        knows when a question was asked.
+
+                        Keyed by content rather than by number, so
+                        that the same question is the same entry and
+                        inserting one does not renumber the rest.
+alternative:            |
+                        Leaving questions as prose and adding an eval
+                        that asks whether each is still open.
+                        Rejected: the answer may be anywhere in the
+                        repository, and an eval's subject is one item
+                        or two.
+
+                        Marking a question answered by editing it, as
+                        was being done. Rejected: it is a claim
+                        nothing checks, and it is exactly what this
+                        repository exists to stop.
+
+                        Migrating gradually, keeping both forms while
+                        records were revisited. Rejected: two forms of
+                        one thing is what the migration was for.
+
+                        A date on each question. Deferred, with the
+                        staleness question generally.
+consequence:            |
+                        What is open is one command. What answered a
+                        question is an edge that the reference check
+                        verifies exists.
+
+                        Seventy eight questions became seventy eight
+                        entries in one migration, reviewable as one
+                        diff. Two carry answers already, from the
+                        record that settled them.
+
+                        An answer that only partly settles a question
+                        has the same edge as one that settles it
+                        entirely. The answerer's own prose is where
+                        the difference is said.
+
+                        Every question carries a guid, and every
+                        record grew by an identity per question.
+
+                        Nothing yet reports a question that has been
+                        open for long, because nothing says how long.
+                        That waits on staleness.
+
+question:
+
+  unlink:
+    id_self:            qst_question.unlink
+    guid_self:          qst_d312e1cf3ce04ced8f2612345d986140
+    question:           |
+                        Whether an edge can be removed, now that a
+                        field can. unset removes a field; nothing
+                        removes an edge except unset on its index in
+                        the list, which names it by position rather
+                        than by what it links.
+    relation:           []
+
+  age:
+    id_self:            qst_question.age
+    guid_self:          qst_be5feeaeb79d431c86679385a77c4c67
+    question:           |
+                        Whether a question should carry when it was
+                        asked, once staleness has a design, so that
+                        one open for long can be found without asking
+                        the repository's history.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_question
+    guid_target:        sch_89a0fb7963d244918e2e697a471ed7cd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_question
+    guid_target:        t_2b6805c1903b47da90a29725affb36f1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_answers
+    guid_target:        r_4f5ab9aea04e4732919518c4b4ab7f18
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.question
+    guid_target:        pym_ca80f34ea27c466bac9fbeb8f921fee0

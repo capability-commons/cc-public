@@ -1,0 +1,124 @@
+id_self:                ddr_cli_contract
+guid_self:              ddr_f968df0d259e4542967f3b3b316914e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Command line contract
+brief:                  |
+                        Findings to stdout, failures to stderr, and an
+                        exit status that tells a gate why it stopped.
+context:                |
+                        One command serves three callers who want
+                        different things. A continuous integration
+                        gate wants to be stopped when the data is
+                        wrong. An agentic process wants the report and
+                        would be obstructed by being stopped. A person
+                        wants something readable.
+
+                        The agentic caller is the one this is mainly
+                        for: a tool an assistant can run to check its
+                        own work, and act on what comes back.
+decision:               |
+                        Exit zero when clean, one when the data does
+                        not conform, two when the analysis itself
+                        failed. Two is returned always; one only when
+                        asked for.
+
+                        Findings go to standard output in every
+                        format. Standard error is reserved for
+                        failures of the analysis.
+
+                        Four serialisations: one for a person, three
+                        for a program.
+
+                        Paths are given by repeated option and taken
+                        as a union. Stopping early stops at the first
+                        CHECK with a critical finding, not the first
+                        finding.
+rationale:              |
+                        A nonconformity does not fail by default
+                        because the ordinary caller reads the report
+                        and acts on it. A tool that exits non zero
+                        every time it finds something is a tool an
+                        agent learns to ignore.
+
+                        Two exit statuses for failure rather than one,
+                        because a gate needs to tell "your data is
+                        wrong" from "I could not check your data". The
+                        second is not a smaller version of the first.
+
+                        Findings on standard output so that they pipe
+                        into something else, and failures on standard
+                        error so that they do not corrupt what is
+                        being piped. A report is the output of this
+                        command; a stack trace is not.
+
+                        Machine readable formats because a language
+                        model is a first class caller here rather than
+                        an afterthought.
+alternative:            |
+                        Failing on any nonconformity by default.
+                        Rejected: the common case is a caller that
+                        wants to read.
+
+                        One exit status for every kind of failure.
+                        Rejected: a gate cannot then distinguish a
+                        finding from an outage.
+
+                        Writing findings to standard error when the
+                        command is going to fail. Rejected: the stream
+                        a finding goes to would then depend on a flag,
+                        and a consumer could not know where to read.
+
+                        Stopping at the first individual finding
+                        rather than the first check. Considered, and
+                        not worth it: loading is shared and already
+                        done by the time any check runs, so the saving
+                        is small and the machinery is not.
+consequence:            |
+                        A report written by this command can be read
+                        back by this system's own loaders, being YAML,
+                        JSON or XML that conforms to nothing in
+                        particular yet.
+
+                        An advisory finding can never change the exit
+                        status. A caller wanting to be stopped by one
+                        asserts a complete scope instead.
+
+                        The command is heavy in options and will get
+                        heavier. That is accepted: it does several
+                        things for several callers, and each of them
+                        is named rather than implied.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.cli
+    guid_target:        pyp_c65c9b9793f644f49ec3531c78153ed5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.command
+    guid_target:        pym_87dddb59e2b44e55960145b2a832cb3d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.report
+    guid_target:        pym_24937d5ee1fa47109752773ea2a636d8
+
+question:
+
+  c90a0e93f:
+    id_self:            qst_cli_contract.c90a0e93f
+    guid_self:          qst_5354ba2e5a9c413a86423c21a7c80c78
+    question:           |
+                        Whether the report should itself be a data
+                        item, with a type and a schema, rather than a
+                        structure this command happens to emit.
+    relation:           []

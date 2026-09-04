@@ -1,0 +1,134 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_relation.yaml
+id_self:                sch_relation
+guid_self:              sch_74e6e0e2abdc4d839c2f297618e73541
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation trait
+brief:                  |
+                        Trait with outgoing traceability edges.
+description:            |
+                        The one traceability mechanism for the whole
+                        repository. An edge is always exactly four
+                        fields: the relation type named twice, and the
+                        target named twice.
+
+                        Each end is named by guid and by readable id.
+                        The guid is what resolves; the readable id is
+                        an advisory copy.
+usage:                  |
+                        Composed via allOf by any item that carries
+                        outgoing edges.
+
+                        The relation register is an open vocabulary. A
+                        new kind of edge is an entry there.
+note:                   |
+                        Neither field naming an end of this edge is a
+                        _self field, because an edge declares nothing.
+                        It refers, twice, and each reference names its
+                        role -- relation, target. See
+                        sch_identity.yaml for the convention.
+
+                        A trait of its own, composed alongside
+                        sch_identity.yaml by an item type that carries
+                        outgoing edges.
+type:                   object
+
+required:
+  - relation
+
+additionalProperties:   true
+
+properties:
+
+  relation:
+    type:               array
+    description:        |
+                        Outgoing traceability edges to other
+                        addressable items. Required wherever this
+                        trait is composed; use an empty array where
+                        there are no outgoing relations (relation:
+                        []).
+
+    items:
+      $ref:             "#/$defs/edge"
+
+$defs:
+
+  edge:
+    description:        |
+                        One traceability edge. Named here rather than
+                        written inline so that any schema needing to
+                        validate edges can reference a stable anchor
+                        instead of pointing into this file's layout.
+    type:               object
+
+    required:
+      - id_relation
+      - guid_relation
+      - id_target
+      - guid_target
+
+    additionalProperties:  false
+
+    properties:
+
+      id_relation:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the relation type labelling
+                        this edge, for example
+                        r_is_specified_by_schema.
+
+                        An edge is single direction. An author records
+                        whichever direction reads naturally, and
+                        tooling infers the inverse from the relation
+                        register.
+
+      guid_relation:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the relation type labelling this edge.
+
+                        A relation type is an item like any other,
+                        held in the relation register with an identity
+                        of its own, so an edge names it by guid for
+                        the same reason it names its target by guid: a
+                        readable id is not reliably resolvable across
+                        a federation.
+
+      id_target:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the item at the far end of this
+                        edge.
+
+                        ADVISORY. Carried so that edges stay legible
+                        in diffs, and so that a grep for an item's
+                        readable id finds its structured references as
+                        well as its prose mentions. Never resolve by
+                        this field: it is a denormalised copy, it is
+                        not globally unique, and it may go stale when
+                        the target is renamed -- harmlessly, since the
+                        guid is the truth. A linter may refresh it
+                        within its own repository but cannot refresh
+                        copies held in foreign ones, so a stale value
+                        must remain non fatal.
+
+      guid_target:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the item at the far end of this edge.
+                        The sole resolvable reference in the edge, and
+                        the only field a resolver ever needs.
+
+                        Targets anything composing sch_identity.yaml,
+                        whether it lives in a file of its own or as
+                        one entry in another item's table. Both are
+                        addressed the same way.

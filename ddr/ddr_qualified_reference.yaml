@@ -1,0 +1,124 @@
+id_self:                ddr_qualified_reference
+guid_self:              ddr_b642be8c694543dc839df692c4e43154
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Qualified references
+brief:                  |
+                        A relation edge is exactly four fields. A link
+                        that needs more is reified: an entry with an
+                        identity of its own, carrying a plain edge
+                        beside whatever qualifies it.
+context:                |
+                        sch_relation fixes an edge at four fields, the
+                        relation named twice and the target named
+                        twice. That is what makes every edge in the
+                        repository checkable by one rule and readable
+                        by one eye.
+
+                        The workflow design produced two links that
+                        want more than a target. A binding in an
+                        execution names an item and also the node and
+                        port it filled. A guard on a dataflow edge
+                        names a verdict. Neither fits in four fields.
+
+                        The tension is between an early decision that
+                        has served well and two new needs that are
+                        real.
+decision:               |
+                        The four field edge is kept. Nothing is added
+                        to it.
+
+                        A link needing qualification is REIFIED. It
+                        becomes an entry in a keyed table, carrying an
+                        identity of its own, and holding a plain
+                        relation edge to its target beside the fields
+                        that qualify it. The entry is a thing; the
+                        edge on it is an edge like any other.
+
+                        A link needing no qualification and no
+                        identity is neither an edge nor an entry, and
+                        is held however reads best. A dataflow edge is
+                        a map from a source port path to destinations.
+rationale:              |
+                        Keeping the edge at four fields keeps every
+                        check that reads edges correct without change,
+                        and keeps the shape of a reference the same
+                        everywhere. Widening the edge for one case
+                        widens it for all.
+
+                        Reifying rather than widening because it uses
+                        two things the system already has. An entry
+                        with identity is what a register holds. An
+                        edge on an entry is what a type entry carries
+                        when it names its schema. Nothing new is
+                        defined, and the reference check, the identity
+                        check and the guid check all apply to a
+                        binding without knowing what a binding is.
+
+                        The binding is the instance that forced the
+                        decision. It names the port by guid and the
+                        item by edge, so that a renamed node does not
+                        break provenance, and it carries the pass
+                        number that says which iteration of a cycle it
+                        belongs to. That is five things, and an edge
+                        holds two.
+
+                        A dataflow edge is not reified because nothing
+                        points at one and nothing needs to. Giving it
+                        an identity would be a guid nobody uses. The
+                        guard it carries is a qualifier on a link that
+                        is not a relation edge at all.
+alternative:            |
+                        Widening the relation edge to admit optional
+                        qualifier fields. Rejected: every reader of
+                        edges would have to know which qualifiers mean
+                        what, and the one rule that makes edges
+                        checkable would become one rule per qualifier.
+
+                        A binding as a bare path and a guid, with no
+                        identity. Rejected: nothing then checks that
+                        the item exists, and a binding cannot itself
+                        be pointed at, which a later record of what
+                        was judged will want.
+
+                        Reifying dataflow edges as well, for
+                        uniformity. Rejected above.
+consequence:            |
+                        A binding is more to write than a path and a
+                        guid. Every one carries its own identity.
+
+                        Two shapes of link now exist beside the
+                        relation edge: the reified entry, and the
+                        plain map. A reader has to know which is
+                        which, and the rule is stated here so that the
+                        choice is not made afresh each time.
+
+                        A reified link is addressable, so a binding
+                        can be the target of an edge. Where a verdict
+                        is eventually written back as an item, it has
+                        somewhere to point.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_binding
+    guid_target:        sch_d4aa7fdd1ce24d258dea4252bf4e504c
+
+question:
+
+  c0a1f67aa:
+    id_self:            qst_qualified_reference.c0a1f67aa
+    guid_self:          qst_59bc5c164b9e4162a9c00e19bd0df1c3
+    question:           |
+                        Whether the guard on a dataflow edge will
+                        eventually want to name an eval, at which
+                        point it is a qualified reference to an eval
+                        and the map form no longer holds it.
+    relation:           []

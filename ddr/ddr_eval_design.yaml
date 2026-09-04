@@ -1,0 +1,280 @@
+id_self:                ddr_eval_design
+guid_self:              ddr_4ab5ed6812744c0eaaf9d1aaa528a3db
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Eval design
+brief:                  |
+                        An eval holds one criterion, answered MET or
+                        UNMET by a language model, anchored by an edge
+                        on the eval itself.
+context:                |
+                        Every check up to this point is structural:
+                        that a file parses, that identifiers are well
+                        formed and distinct, that references resolve,
+                        that a document matches its schema. All of
+                        them are deterministic, cost nothing, and
+                        answer questions about shape.
+
+                        The qualities that matter most in a data item
+                        are not structural, and most of these items
+                        will be written by a language model. Whether a
+                        brief actually states the decision, whether an
+                        alternative names something genuinely
+                        rejected, whether prose has drifted into
+                        argument -- none of that is reachable by a
+                        schema.
+
+                        A type and a relation for evals existed as
+                        vocabulary from the outset with nothing behind
+                        them.
+
+                        The first attempt at an eval was rubric
+                        shaped: a graded score from zero to one, a
+                        threshold, and prose explaining what the
+                        endpoints meant. It ran to 103 lines to
+                        express twelve lines of criterion, and roughly
+                        half of it was prose arguing for its own shape
+                        -- the very fault it was written to detect.
+decision:               |
+                        One eval holds one criterion, answered MET or
+                        UNMET. Not a score, not a grade, and not
+                        several criteria at once.
+
+                        An eval carries examples, at least one MET and
+                        at least one UNMET, each being an input, the
+                        verdict it should receive, and the feedback a
+                        judge should give.
+
+                        An eval names what it applies to by an edge on
+                        ITSELF, through one of three anchors: items of
+                        a type, items a schema specifies, or pairs of
+                        items joined by a relation. The schema anchor
+                        is transitive through composition.
+
+                        An eval declares a severity, drawn from the
+                        same two values the structural checks use.
+
+                        An eval declares what it is given of each
+                        subject, as paths to include and paths to
+                        exclude. A judge sees that and nothing else.
+
+                        Evals do not run unless asked for. Selecting
+                        what would be judged is separated from judging
+                        it.
+rationale:              |
+                        Binary rather than graded, on the evidence.
+                        Reducing a criterion to a minimal proposition,
+                        so that the judge answers whether rather than
+                        how much, yields the highest agreement between
+                        judges. A single opaque score across several
+                        criteria is the least reliable arrangement
+                        available.
+
+                        One criterion per eval, and so one per call,
+                        because a verdict reached on one criterion
+                        colours a verdict reached on another in the
+                        same call.
+
+                        Both a MET and an UNMET example are required
+                        because a judge shown only what passes tends
+                        to accept, and one shown only what fails tends
+                        to reject.
+
+                        The edge sits on the eval for the reason it
+                        sits on a decision record: adding an eval is
+                        then one new file rather than an edit to
+                        everything it judges, and nothing carries a
+                        reference to the machinery that judges it.
+
+                        The schema anchor is transitive because
+                        specification already is. An eval anchored on
+                        a trait reaches every item carrying that
+                        trait, including item types not yet invented,
+                        without being restated for each.
+
+                        Feedback rather than a number, because a
+                        reflective optimiser consumes textual
+                        feedback, and because a developer reading a
+                        report wants the critique rather than the
+                        score.
+
+                        An eval says what it is given because a judge
+                        given more than the criterion concerns answers
+                        unreliably. Measured: on four near identical
+                        schemas, a judge given whole items disagreed
+                        with itself on two of the four across repeated
+                        calls at temperature zero, while the same
+                        criterion on the same subjects narrowed to
+                        their prose was correct and stable on fifteen
+                        cases of known answer over ten runs each. The
+                        verdict had been resting on weighing
+                        everything present rather than on the passage
+                        in question.
+
+                        Off by default because a command that
+                        sometimes costs nothing and sometimes costs
+                        money and a minute is a command people stop
+                        running.
+
+                        Selection separated from running because
+                        selection is useful alone: it answers what
+                        would be judged and at what cost, with no
+                        model, credentials or network, and it is the
+                        same step that hands an optimiser its dataset.
+alternative:            |
+                        A graded score with a threshold, which was the
+                        first design. Rejected on the evidence: the
+                        graded score is the less reliable primitive,
+                        and an optimiser wants feedback text rather
+                        than a scalar in any case. The threshold and
+                        the prose explaining the scale both
+                        disappeared with it.
+
+                        Several criteria in one eval. Rejected for the
+                        halo effect.
+
+                        Pairwise comparison of two candidate items.
+                        Not so much rejected as inapplicable: pairwise
+                        is the primitive for relative quality, and
+                        these are absolute gates.
+
+                        Anchoring evals on types alone. Rejected: a
+                        criterion about prose applies to everything
+                        with prose, and binding it to a type would
+                        mean restating it for each type and letting
+                        the copies drift.
+
+                        The edge on the item being evaluated, which is
+                        what the original r_is_evaluated_by_eval
+                        assumed. Rejected, and that relation removed.
+
+                        A scope field declaring what the judge is
+                        given. Rejected: the criterion already says
+                        so, in words the judge reads, and a second
+                        statement of it is a second thing to keep in
+                        step.
+consequence:            |
+                        The eval is the objective function. What gets
+                        optimised is the generator, or the item under
+                        evaluation, and never the criterion -- which
+                        is hand written and stays so.
+
+                        Judging costs real money and real time. Two
+                        evals over twenty four items is thirty four
+                        judgements and some fifty thousand tokens of
+                        input.
+
+                        Much of that is because a judge is given whole
+                        items rather than the fields a criterion cares
+                        about. That is the price of having no scope
+                        field, it is known, and it is the first thing
+                        to narrow when the cost is felt.
+
+                        The judge must not be the same model family as
+                        the generator, which means model configuration
+                        belongs outside the eval and the verdict has
+                        to record which model reached it.
+
+                        Nothing checks that an eval is well
+                        calibrated. A badly written criterion produces
+                        confident nonsense, and only its examples
+                        stand between it and that.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_eval
+    guid_target:        sch_a7edf040404f4294bcbcc2294955775f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_prose_describes
+    guid_target:        evl_6e91e1a0e8224b30905294ff178b4036
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_record_and_item_agree
+    guid_target:        evl_fa903260ecc8458b9e5adbed8da8bc2c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_evaluates_items_of_type
+    guid_target:        r_18cffd40f764443c89211cfc4854dc08
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_evaluates_items_specified_by_schema
+    guid_target:        r_3096106ed2b84a05a46a9aa8bd0254be
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_evaluates_items_joined_by_relation
+    guid_target:        r_c7a437a455054da6bbedbced7c4bf32d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.eval
+    guid_target:        pyp_8734deea77784404a33fdb63d698556b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.runner
+    guid_target:        pym_83b8eb7c9d3f4aa1980016e9231297e6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.eval
+    guid_target:        pym_f7d96b0d7bf84b16b05cb018b140590f
+
+question:
+
+  caeb644db:
+    id_self:            qst_eval_design.caeb644db
+    guid_self:          qst_1cbbddb3fab648f8b3d74ac9c9524ad5
+    question:           |
+                        Whether the report should hold one eval check
+                        or one per eval. One for now.
+    relation:           []
+
+  cd706ffd4:
+    id_self:            qst_eval_design.cd706ffd4
+    guid_self:          qst_0f6cb56b26aa465fb98cd7f29e1e3837
+    question:           |
+                        Whether a verdict is ever written back as a
+                        data item. It would need a type, a schema, and
+                        a way to tell a stale verdict from a current
+                        one -- which wants a content identifier that
+                        does not yet exist.
+    relation:           []
+
+  cf850323a:
+    id_self:            qst_eval_design.cf850323a
+    guid_self:          qst_ff42c000be034c08b66f45c80f316338
+    question:           |
+                        Whether severity belongs on the eval or on the
+                        anchor edge. The same criterion might
+                        reasonably be advisory where it is anchored on
+                        a trait and critical where it is anchored on
+                        one type.
+    relation:           []
+
+  c0feb290a:
+    id_self:            qst_eval_design.c0feb290a
+    guid_self:          qst_8d833cb5d7ec4d689741ee8947f684c2
+    question:           |
+                        Whether a finding can be marked as judged
+                        acceptable on closer inspection, the way a
+                        linter is silenced at one line.
+    relation:           []

@@ -1,0 +1,104 @@
+id_self:                ddr_register_entries_are_keyed
+guid_self:              ddr_1c85014313d543a086c9f9db6c71f925
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register entries are keyed
+brief:                  |
+                        Register entries are held in a mapping keyed
+                        by readable id, so that uniqueness is a
+                        property of the data model and not of a check.
+context:                |
+                        A register is the source of truth for the join
+                        keys used across every other item. A type
+                        entry's id is what schema selection runs on; a
+                        relation entry's id is what an edge names. A
+                        register holding the same id twice would make
+                        those joins ambiguous, and would do so
+                        silently.
+
+                        Two shapes were available. A list of entries,
+                        each carrying its own id field, is the more
+                        obvious rendering and the one most schemas
+                        reach for. A mapping keyed by id is the other.
+decision:               |
+                        The table field of a register is a mapping,
+                        keyed by each entry's readable id.
+
+                        Each entry additionally carries id_self, whose
+                        value must equal the key it sits under.
+rationale:              |
+                        Keying makes uniqueness structural. Under the
+                        safe YAML loader a repeated mapping key is a
+                        parse error, so a register with a duplicated
+                        id does not load at all. The property is
+                        enforced by the format, before any check of
+                        ours runs, and cannot be forgotten.
+
+                        A list would have made uniqueness a validated
+                        property instead: something a check must look
+                        for, holding only as well as that check is
+                        written and only where it is run. Uniqueness
+                        is the whole purpose of a join key, so it is
+                        worth having it hold by construction.
+
+                        The entry repeats its id so that an entry
+                        lifted out of its table still says what it is,
+                        and can be quoted in a diff, a message or a
+                        bug report without its surrounding register.
+alternative:            |
+                        A list of entries, with a check for duplicate
+                        ids. Rejected: it puts the guarantee in
+                        tooling that a federated partner may not run.
+
+                        Keying without repeating the id in the entry.
+                        Rejected: an entry then means nothing away
+                        from its table, and every quotation of one has
+                        to carry the key separately.
+
+                        Repeating the id without requiring agreement.
+                        Rejected: two names for one thing that are
+                        allowed to differ will differ.
+consequence:            |
+                        Duplicate ids in a YAML register are
+                        impossible rather than merely unlikely.
+
+                        The guarantee belongs to the encoding and does
+                        not travel with the design. JSON takes the
+                        last of two duplicate keys silently, so a
+                        register expressed in JSON would lose it, and
+                        would need the check that YAML makes
+                        unnecessary. Every register is YAML today, and
+                        nothing requires that to continue.
+
+                        The key and the id field can still disagree.
+                        JSON Schema cannot compare a value against the
+                        key it sits under, so that agreement is left
+                        to a companion check. It is the one place
+                        where this shape needs tooling that the list
+                        shape would not have needed.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_register
+    guid_target:        sch_a4620d79fab546b3be6c756f0325e069
+
+question:
+
+  ce6495a7a:
+    id_self:            qst_register_entries_are_keyed.ce6495a7a
+    guid_self:          qst_10a7d81218af421cb33701da422b3ca7
+    question:           |
+                        Whether a register expressed in a format
+                        without the duplicate key guarantee should be
+                        permitted at all, or whether the register type
+                        should be constrained to encodings that
+                        provide it.
+    relation:           []

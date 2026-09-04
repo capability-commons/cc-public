@@ -1,0 +1,64 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_control_case.yaml
+id_self:                sch_control_case
+guid_self:              sch_6315a0262304416da9dfb1f0fae6ea6a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control case schema
+brief:                  |
+                        What a control case is: a subject, the verdict
+                        a person holds it to, why, and where it came
+                        from.
+description:            |
+                        An entry on a control set. The subject is the
+                        text exactly as the judge would be shown it.
+                        Origin is one of four, and says which question
+                        the case answers when the eval is measured.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+required:
+  - verdict
+  - subject
+  - origin
+
+properties:
+
+  verdict:
+    type:               string
+
+    enum:
+      - met
+      - unmet
+
+  subject:
+    type:               string
+    minLength:          1
+
+  origin:
+    type:               string
+
+    enum:
+      - written
+      - mutated
+      - suppressed
+      - confirmed
+
+  note:
+    type:               string
+    minLength:          1
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge

@@ -1,0 +1,45 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_protective_mark.yaml
+id_self:                sch_reg_protective_mark
+guid_self:              sch_7743b9d4144d40e1bc4da68dff82b1df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protective mark register schema
+brief:                  |
+                        Schema for the protective mark register.
+description:            |
+                        The protective mark register specifically: a
+                        register, as described by sch_register.yaml,
+                        whose entries are additionally protective
+                        marks as described by
+                        sch_entry_protective_mark.yaml.
+usage:                  |
+                        Named by the protective mark register itself,
+                        through an r_is_specified_by_schema edge on
+                        the register rather than on its type.
+note:                   |
+                        The same composition pattern as
+                        sch_reg_type.yaml. A register whose entries
+                        carry subject specific fields names a schema
+                        of its own; one whose entries carry none is
+                        validated by sch_register.yaml directly.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_entry_protective_mark.yaml

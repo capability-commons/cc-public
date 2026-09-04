@@ -1,0 +1,808 @@
+id_self:                reg_type
+guid_self:              reg_c377bd8e87ec4b1ca2bd398488392a3d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Type register
+brief:                  |
+                        Register of types.
+description:            |
+                        The type register provides a comprehensive
+                        list of types together with associated
+                        metadata for each type.
+usage:                  |
+                        The type register is used to enable
+                        type-specific system functions such as
+                        automated data item validation.
+note:                   |
+                        Types are analogous to programming language
+                        types, and describe the kinds of things that
+                        the system can handle. The system is primarily
+                        intended to process data items. Data items can
+                        be any sort of digital asset, but most
+                        typically consist of an engineering document
+                        such as a requirements specification or a test
+                        report, encoded in a defined structure,
+                        serialized as a YAML string and stored in a
+                        file system as a text file. A requirements
+                        specification is the canonical example of a
+                        data item, and the requirements specification
+                        type defines the metadata common to all
+                        requirements specification data items.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_type
+    guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # t_type — Type type
+  #
+  t_type:
+    id_self:            t_type
+    guid_self:          t_2a196326eaf84759b37d43d5b1f0b118
+    title:              Type type
+    brief:              |
+                        Type of type data items
+    description:        |
+                        Each type data item describes one type of
+                        thing that can be held and processed by the
+                        system.
+    usage:              |
+                        Type data items are used to hold type-specific
+                        metadata, such as a list of schemas that may
+                        be used to validate data items of that type.
+    note:               |
+                        Each entry in this register is a type data
+                        item. Most types are data item types, but
+                        other specialised types can also exist.
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_type
+        guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d
+
+    status:             proposed
+    alias:              []
+    prefix:             t
+    regex_id:           ^t_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_schema - Schema type
+  #
+  t_schema:
+    id_self:            t_schema
+    guid_self:          t_a4fb6d3ae5ff4452a45804e2f57b06a2
+    title:              Schema type
+    brief:              |
+                        Type of schema data items
+    description:        |
+                        Each schema data item defines the structure of
+                        a data item type, either in part of in whole.
+    usage:              |
+                        Schema data items are used to validate the
+                        structure of data items, improving the
+                        reliability of data item generation.
+    note:               |
+                        A number of trait schemas exist to hold common
+                        elements such as data primitives. This means
+                        that there is not a simple one-to-one
+                        relationship between data item types and
+                        schema, but none-the-less most data item types
+                        are expected to have at least one
+                        corresponding schema, and most schema data
+                        items are expected to validate at most one
+                        data item type. The schema for a data item
+                        type can be inferred either from the schema
+                        filename or by looking it up in the type
+                        register (this document).
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_schema
+        guid_target:    sch_19b746511dc84ae1b822a98afa81a196
+
+    status:             proposed
+    alias:              []
+    prefix:             sch
+    regex_id:           ^sch_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_eval - Eval type
+  #
+  t_eval:
+    id_self:            t_eval
+    guid_self:          t_33c451d43a2748ddba39060ecc7c013e
+    title:              Eval type
+    brief:              |
+                        Type of eval data items
+    description:        |
+                        Each eval data item defines how a data item
+                        type should be evaluated by a language model.
+    usage:              |
+                        Eval data items are used to evaluate the
+                        content of data items, improving the quality
+                        of data item generation.
+    note:               |
+                        Not every data item will have a corresponding
+                        eval, but some may have more than one.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_eval
+        guid_target:    sch_a7edf040404f4294bcbcc2294955775f
+
+    status:             proposed
+    alias:              []
+    prefix:             evl
+    regex_id:           ^evl_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_register — Register type
+  #
+  t_register:
+    id_self:            t_register
+    guid_self:          t_dcd4c5f697c945829094914ff868a43b
+    title:              Register type
+    brief:              |
+                        Type of register data items
+    description:        |
+                        Each register data item provides a controlled
+                        list of register-entry data items.
+    usage:              |
+                        Register data items are used whenever a
+                        controlled set of identifiers is needed by an
+                        automated process.
+    note:               |
+                        This document as a whole is an instance of a
+                        register data item, and it provides a
+                        controlled set of data item types as well as a
+                        means of looking up metadata associated with
+                        each type.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_register
+        guid_target:    sch_a4620d79fab546b3be6c756f0325e069
+
+    status:             proposed
+    alias:              []
+    prefix:             reg
+    regex_id:           ^reg_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_relation — Relation type
+  #
+  t_relation:
+    id_self:            t_relation
+    guid_self:          t_250febd9728346e98029ef9b587304f1
+    title:              Relation type
+    brief:              |
+                        Type of relation data items
+    description:        |
+                        Each relation data item defines a formal
+                        meaning for a set of directed edges between
+                        identifiable items.
+    usage:              |
+                        Relation data items are used to control the
+                        way that edges are interpreted. Labelling
+                        edges with different relation ids results in
+                        them being treated differently.
+    note:               |
+                        Relations are directional. Where a relation is
+                        invertible, the inverse is considered to be a
+                        distinct relation.
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_relation
+        guid_target:    reg_512fbf5c51be4efaa4517b52310ddf80
+
+    status:             proposed
+    alias:              []
+    prefix:             r
+    regex_id:           ^r_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_ddr — Design decision record type
+  #
+  t_ddr:
+    id_self:            t_ddr
+    guid_self:          t_5751ab6c7b0c44e8b4ed8f6c882192d8
+    title:              Design decision record type
+    brief:              |
+                        Type of design decision record data items
+    description:        |
+                        Each design decision record data item holds
+                        the reasoning behind one design decision.
+    usage:              |
+                        Design decision record data items are used to
+                        hold the reasoning that produced an artifact,
+                        so that the artifact itself need not carry it.
+    note:               |
+                        One record per decision, where a decision is
+                        one thing that could later be revised on its
+                        own. Records live in ddr/ rather than beside
+                        what they decide, since a decision commonly
+                        settles matters across several directories at
+                        once.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_ddr
+        guid_target:    sch_d801523ec4814494be182b54dd62e8e3
+
+    status:             proposed
+    alias:              []
+    prefix:             ddr
+    regex_id:           ^ddr_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_protective_mark — Protective mark type
+  #
+  t_protective_mark:
+    id_self:            t_protective_mark
+    guid_self:          t_d0fe8b855eb4467fb00f238fe180225b
+    title:              Protective mark type
+    brief:              |
+                        Type of protective mark data items
+    description:        |
+                        Each protective mark data item names an
+                        authority and a level, and states what may be
+                        done with an item bearing it.
+    usage:              |
+                        Protective mark data items are used to decide
+                        what may be disclosed, to whom, and under
+                        whose rules.
+    note:               |
+                        Marks exist only as entries in the protective
+                        mark register, never as documents of their
+                        own, so this type names no schema. The
+                        register names one, and that schema governs
+                        its entries.
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_protective_mark
+        guid_target:    reg_0653174dda274015aa95754a37073797
+
+    status:             proposed
+    alias:              []
+    prefix:             mark
+    regex_id:           ^mark_[a-z][a-z0-9_]*$
+
+  # ---------------------------------------------------------------------------
+  # t_python_package — Python package type
+  #
+  t_python_package:
+    id_self:            t_python_package
+    guid_self:          t_8d37421f029f4e13a7d99ee80028d6fb
+    title:              Python package type
+    brief:              |
+                        Type of python package data items
+    description:        |
+                        Each python package data item names a python
+                        package, which is a directory of modules and
+                        holds its metadata in the docstring of its
+                        __init__.py.
+    usage:              |
+                        Required of every package.
+    note:               |
+                        The identifier carries the fully qualified
+                        name, so that the thing it names can be found
+                        by that name -- imported for introspection, or
+                        located by walking the source tree.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_package
+        guid_target:    sch_87d9bd39240144e88ed06cc43b680bff
+
+    status:             proposed
+    alias:              []
+    prefix:             pyp
+    regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  # ---------------------------------------------------------------------------
+  # t_python_module — Python module type
+  #
+  t_python_module:
+    id_self:            t_python_module
+    guid_self:          t_186408f897d541588a1bb9c495fcec71
+    title:              Python module type
+    brief:              |
+                        Type of python module data items
+    description:        |
+                        Each python module data item names a python
+                        module, which is one source file and holds its
+                        metadata in its own module docstring.
+    usage:              |
+                        Required of every module.
+    note:               |
+                        The identifier carries the fully qualified
+                        name, so that the thing it names can be found
+                        by that name -- imported for introspection, or
+                        located by walking the source tree.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_module
+        guid_target:    sch_a20d9cb1c7b547019069e2277d375500
+
+    status:             proposed
+    alias:              []
+    prefix:             pym
+    regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  # ---------------------------------------------------------------------------
+  # t_python_class — Python class type
+  #
+  t_python_class:
+    id_self:            t_python_class
+    guid_self:          t_47a7dfb0248642d589333f5d5298bdf2
+    title:              Python class type
+    brief:              |
+                        Type of python class data items
+    description:        |
+                        Each python class data item names a python
+                        class, which holds its metadata in its own
+                        docstring.
+    usage:              |
+                        Optional. Written only where something needs
+                        to name the class -- a decision record
+                        deciding it, or an eval judging it. Requiring
+                        one of every class would cost more in header
+                        than the code is worth.
+    note:               |
+                        The identifier carries the fully qualified
+                        name, so that the thing it names can be found
+                        by that name -- imported for introspection, or
+                        located by walking the source tree.
+
+                        Lowercased, though a python class name is not.
+                        Resolving the identifier back to the class
+                        needs a case insensitive lookup, which nothing
+                        provides yet because nothing needs it.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_class
+        guid_target:    sch_d77b33d22fd84c70bbf797b2abc49517
+
+    status:             proposed
+    alias:              []
+    prefix:             pyc
+    regex_id:           ^pyc_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  # ---------------------------------------------------------------------------
+  # t_python_function — Python function type
+  #
+  t_python_function:
+    id_self:            t_python_function
+    guid_self:          t_92b7b832d3c7419f9252f7eb3339f94b
+    title:              Python function type
+    brief:              |
+                        Type of python function data items
+    description:        |
+                        Each python function data item names a python
+                        function, method or generator, which holds its
+                        metadata in its own docstring.
+    usage:              |
+                        Optional, on the same terms as a python class.
+    note:               |
+                        The identifier carries the fully qualified
+                        name, so that the thing it names can be found
+                        by that name -- imported for introspection, or
+                        located by walking the source tree.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_function
+        guid_target:    sch_cea99c1b69374a8baf2fc9909b058e78
+
+    status:             proposed
+    alias:              []
+    prefix:             pyf
+    regex_id:           ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  t_component:
+    id_self:            t_component
+    guid_self:          t_f4187ed188c44f199786b7b46edc9720
+    title:              Component type
+    brief:              |
+                        Type of component data items
+    description:        |
+                        Each component data item is one unit of
+                        transformation: named input and output ports,
+                        and either a prompt on each output or a source
+                        item that implements it.
+    usage:              |
+                        A component is what a node in a workflow
+                        instantiates. The same component may be
+                        instantiated by many nodes in many workflows.
+    note:               |
+                        The atomic form of component. Composite forms
+                        -- workflows -- say they are component forms
+                        by r_is_a_form_of, and their ports are derived
+                        from their nodes.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_component
+        guid_target:    sch_f1095fd235ef479085522c2373b9c6c6
+
+    status:             proposed
+    alias:              []
+    prefix:             cmp
+    regex_id:           ^cmp_[a-z][a-z0-9_]*$
+
+  t_port:
+    id_self:            t_port
+    guid_self:          t_7780d8581bef435bb6fbd70c87d00091
+    title:              Port type
+    brief:              |
+                        Type of port data items
+    description:        |
+                        Each port data item is one place on a
+                        component where exactly one item is consumed
+                        or produced. A port names the type of the item
+                        it carries.
+    usage:              |
+                        Ports are entries held on a component under
+                        input and output, keyed by a short local name.
+                        Edges in a workflow name them by path through
+                        the node.
+    note:               |
+                        Held in a component rather than standing
+                        alone, and validated by the schema of the
+                        component holding it. The identifier carries
+                        the component name and the port name, so that
+                        two components may each have a port with the
+                        same local name.
+    relation:           []
+    status:             proposed
+    alias:              []
+    prefix:             prt
+    regex_id:           ^prt_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  t_workflow_dataflow:
+    id_self:            t_workflow_dataflow
+    guid_self:          t_ac29e6ddbcca4c339d3cf592b9da4ba1
+    title:              Dataflow workflow type
+    brief:              |
+                        Type of dataflow workflow data items
+    description:        |
+                        Each dataflow workflow data item holds a
+                        graph: nodes instantiating components, and
+                        edges wiring one output port to one input
+                        port, with back edges held apart and guards on
+                        destinations.
+    usage:              |
+                        A dataflow workflow is run under a deployment,
+                        and every run leaves an execution.
+    note:               |
+                        A composite form of component. Its ports are
+                        the unbound ports of its nodes: inputs with no
+                        incoming forward edge and outputs with no
+                        outgoing forward edge. Back edges do not bind
+                        a port.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_workflow_dataflow
+        guid_target:    sch_1eb527db75de470b8cec8605179f3221
+
+      - id_relation:    r_is_a_form_of
+        guid_relation:  r_20f5b5423123410cb63b0ef9cffc906f
+        id_target:      t_component
+        guid_target:    t_f4187ed188c44f199786b7b46edc9720
+
+    status:             proposed
+    alias:              []
+    prefix:             wf
+    regex_id:           ^wf_[a-z][a-z0-9_]*$
+
+  t_node:
+    id_self:            t_node
+    guid_self:          t_ee3244960dcf435ea9f7c46d70626ab9
+    title:              Node type
+    brief:              |
+                        Type of node data items
+    description:        |
+                        Each node data item is one instance of a
+                        component within one workflow, carrying
+                        whatever configuration that instance needs.
+    usage:              |
+                        Nodes are entries held on a workflow under
+                        node, keyed by a short local name. Edge paths
+                        begin with that name.
+    note:               |
+                        Held in a workflow rather than standing alone,
+                        and validated by the schema of the workflow
+                        holding it.
+    relation:           []
+    status:             proposed
+    alias:              []
+    prefix:             node
+    regex_id:           ^node_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  t_deployment:
+    id_self:            t_deployment
+    guid_self:          t_c94163a5cf8a4a2986f94b696065b8f6
+    title:              Deployment type
+    brief:              |
+                        Type of deployment data items
+    description:        |
+                        Each deployment data item names a workflow and
+                        the machinery it is run under: which model,
+                        what budget of passes a cycle may take, and
+                        whatever else a run needs that the definition
+                        must not say.
+    usage:              |
+                        An execution names exactly one deployment, and
+                        reads its machinery from there.
+    note:               |
+                        Reusable. A hundred runs under one
+                        configuration are a hundred edges to one
+                        deployment.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_deployment
+        guid_target:    sch_17ba23d4628842b19533d1ab38fb67c0
+
+    status:             proposed
+    alias:              []
+    prefix:             dep
+    regex_id:           ^dep_[a-z][a-z0-9_]*$
+
+  t_execution:
+    id_self:            t_execution
+    guid_self:          t_ccc73856470a4003bb7b899c2139cd8c
+    title:              Execution type
+    brief:              |
+                        Type of execution data items
+    description:        |
+                        Each execution data item records one run of a
+                        workflow under one deployment, as a table of
+                        bindings: which item filled which port on
+                        which pass.
+    usage:              |
+                        An execution is written once and not edited.
+                        Where an item came from is read from the
+                        bindings that name it.
+    note:               |
+                        The derivation record. Everything an item owes
+                        to a workflow is here and nowhere else. The
+                        identifier sorts by time, as a commit record's
+                        does: the prefix, a UTC timestamp, and six
+                        characters of the guid.
+    status:             proposed
+    alias:              []
+    prefix:             exe
+    regex_id:           ^exe_[0-9]{14}_[0-9a-f]{6}$
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_execution
+        guid_target:    sch_1030485e4a494715ba5afaf52c44779b
+
+  t_binding:
+    id_self:            t_binding
+    guid_self:          t_77bea970bdfb407d9ad740aa7ad2ee1b
+    title:              Binding type
+    brief:              |
+                        Type of binding data items
+    description:        |
+                        Each binding data item names the node and port
+                        that were filled, the pass on which they were
+                        filled, and by an edge the item that filled
+                        them.
+    usage:              |
+                        Bindings are entries held on an execution
+                        under binding, keyed by a short local name.
+    note:               |
+                        A reified reference, per
+                        ddr_qualified_reference: a relation edge is
+                        four fields and a binding needs more, so the
+                        binding is a thing that carries an edge.
+    relation:           []
+    status:             proposed
+    alias:              []
+    prefix:             bnd
+    regex_id:           ^bnd_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+  t_term:
+    id_self:            t_term
+    guid_self:          t_e0d624b5a7a6406581eda544e5213cb1
+    title:              Term type
+    brief:              |
+                        Type of term data items
+    description:        |
+                        Each term data item defines one word the
+                        repository uses for one of its concepts, with
+                        the forms it is also known by and any forms to
+                        be avoided.
+    usage:              |
+                        Term data items are used to keep vocabulary
+                        consistent, and to judge prose against the
+                        glossary.
+    note:               |
+                        Terms exist only as entries in a term
+                        register, never as documents of their own, so
+                        this type names no schema. The register names
+                        one, and that schema governs its entries.
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_term
+        guid_target:    reg_bcba1ab65d824ac2b2f7af2ded66835a
+
+    status:             proposed
+    alias:              []
+    prefix:             term
+    regex_id:           ^term_[a-z][a-z0-9_]*$
+
+  t_control_set:
+    id_self:            t_control_set
+    guid_self:          t_7d1ac066f3e049f383b100340374a80a
+    title:              Control set type
+    brief:              |
+                        Type of control set data items
+    description:        |
+                        Each control set data item holds cases with
+                        known verdicts for one eval, so that the eval
+                        can be measured and a finding it raises can be
+                        answered.
+    prefix:             ctl
+    regex_id:           ^ctl_[a-z][a-z0-9_]*$
+    usage:              |
+                        A control set names the eval it measures by an
+                        r_measures edge. cctool measure judges its
+                        cases; cctool case adds one from a live
+                        finding.
+    note:               |
+                        Cases are never shown to the judge. They are
+                        held apart from an eval's examples so that an
+                        eval cannot be measured against its own
+                        prompt.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_control_set
+        guid_target:    sch_b31d6cf715dc47c28869fd81dd8a65d0
+
+  t_control_case:
+    id_self:            t_control_case
+    guid_self:          t_dba50c07f45d4beabb4d94123c9241f2
+    title:              Control case type
+    brief:              |
+                        Type of control case data items
+    description:        |
+                        Each control case data item is one subject
+                        with a known verdict: the text as the judge
+                        would see it, the verdict a person holds it
+                        to, why, and where the case came from.
+    prefix:             case
+    regex_id:           ^case_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    usage:              |
+                        Cases are entries held on a control set. A
+                        case whose text matches an item's rendering,
+                        with a verdict of met, answers a finding on
+                        that item.
+    note:               |
+                        Held in a control set rather than standing
+                        alone, and validated by the set's schema.
+                        Origin says where a case came from, because
+                        cases from different origins answer different
+                        questions and must not be pooled without
+                        saying so.
+    status:             proposed
+    relation:           []
+
+  t_question:
+    id_self:            t_question
+    guid_self:          t_2b6805c1903b47da90a29725affb36f1
+    title:              Question type
+    brief:              |
+                        Type of question data items
+    description:        |
+                        Each question data item is one thing a
+                        decision record does not settle, held on that
+                        record with an identity of its own so that
+                        whatever later settles it can say so.
+    prefix:             qst
+    regex_id:           ^qst_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    usage:              |
+                        Questions are entries held on a decision
+                        record under question. A record or item
+                        answers one by an r_answers edge. cctool
+                        questions lists them, open or answered.
+    note:               |
+                        Held in a record rather than standing alone,
+                        and validated by the record's schema. A
+                        question has no date, because nothing here
+                        has; when it was asked is known to the
+                        repository's history.
+    status:             proposed
+    relation:           []
+
+  t_commit:
+    id_self:            t_commit
+    guid_self:          t_ffa64d0aef394e38af2acfc4cf2f6c5f
+    title:              Commit type
+    brief:              |
+                        Type of commit record data items
+    description:        |
+                        Each commit record data item describes one
+                        commit to the repository: what it was for,
+                        what state the checks were in, and which items
+                        it changed.
+    prefix:             cmt
+    regex_id:           ^cmt_[0-9]{14}_[0-9a-f]{6}$
+    usage:              |
+                        A commit record lives in the message of the
+                        commit it describes, after a plain first line,
+                        inside the same markers a docstring uses.
+                        cctool commit writes one; cctool log reads
+                        them back.
+    note:               |
+                        Never a file in the tree. Validated once, when
+                        made, and again on demand from history.
+                        Nothing in the tree refers to a commit record,
+                        so it need not be loaded to resolve anything.
+                        The identifier sorts by time: the prefix, a
+                        UTC timestamp, and six characters of the guid.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_commit
+        guid_target:    sch_46065f16926a43b586804bdacca29cd2

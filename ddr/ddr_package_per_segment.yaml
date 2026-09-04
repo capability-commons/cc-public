@@ -1,0 +1,127 @@
+id_self:                ddr_package_per_segment
+guid_self:              ddr_470be45901dc4c5a8b01ce12494d0a56
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A package per segment
+brief:                  |
+                        Each segment of the federation carries its own
+                        tooling, in a package named for it.
+context:                |
+                        The federation is divided into segments, each
+                        with its own repository and its own rules
+                        about what may leave it. This repository is
+                        the public one. Others hold material that is
+                        not.
+
+                        Tooling has to run over these repositories,
+                        and much of what it does is common to all of
+                        them: loading, identity, references, schemas.
+                        Some of what it will do is not. A segment with
+                        its own protective markings, its own item
+                        types or its own obligations wants checks that
+                        encode them, and those checks describe the
+                        segment.
+decision:               |
+                        Each segment carries its own python package,
+                        named for the segment. This repository holds
+                        cc_public. The repository for Defense Tech for
+                        Ukraine will hold cc_dtu.
+
+                        A package lives in the repository whose data
+                        it serves, rather than beside the others or
+                        apart from all of them.
+
+                        cc_public holds what is common. A segment
+                        package holds what is particular to that
+                        segment.
+rationale:              |
+                        A repository is a sharing boundary, and code
+                        describes what it operates on. A check written
+                        for a segment's item types says what those
+                        types are, and a check written for a segment's
+                        markings says what those markings are. Holding
+                        such a check in the public repository would
+                        disclose the segment through its tooling,
+                        having taken care not to disclose it through
+                        its data.
+
+                        Naming the package for the segment means that
+                        an import says which segment it serves, with
+                        no configuration to consult.
+
+                        Tooling in the repository whose data it serves
+                        because it is part of that engineering system
+                        rather than something applied to it from
+                        outside. It is versioned with the data it
+                        checks, it is checked by the same checks, and
+                        the decisions behind it are recorded in the
+                        same way -- which is why every module here is
+                        a data item.
+alternative:            |
+                        One package serving every segment, with
+                        segment specific behaviour selected by
+                        configuration. Rejected: the public repository
+                        would then carry code describing segments its
+                        readers cannot see, which discloses through
+                        the tooling what the data withholds.
+
+                        Tooling as a separate installable, belonging
+                        to no repository and operating on any of them.
+                        Rejected, though it is the conventional shape.
+                        It would put the tooling outside the system it
+                        serves -- unchecked by its own checks, and
+                        with its decisions recorded somewhere else or
+                        not at all.
+
+                        No package boundary at all, with scripts
+                        beside the data. Rejected: nothing would then
+                        be importable by a segment that wanted the
+                        common machinery.
+consequence:            |
+                        cc_public is two things: the tooling for this
+                        repository, and the library a segment package
+                        depends on for the common machinery. Anything
+                        added here is added to both.
+
+                        The package boundary is also a licence
+                        boundary. This package is Apache-2.0; a
+                        segment package need not be, and its licence
+                        is that segment's to choose.
+
+                        A segment may reimplement something rather
+                        than depend on it, and nothing here would
+                        notice.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public
+    guid_target:        pyp_3fcd42f620d34ba485dd91c55b6c390f
+
+question:
+
+  ce846240b:
+    id_self:            qst_package_per_segment.ce846240b
+    guid_self:          qst_cd7165a4cb204412b2fc406090657e34
+    question:           |
+                        Whether a segment package depends on cc_public
+                        as a library or vendors what it needs.
+                        Depending is cleaner and couples release
+                        cycles across a sharing boundary; vendoring
+                        decouples them and lets the copies drift.
+    relation:           []
+
+  c2f8687cd:
+    id_self:            qst_package_per_segment.c2f8687cd
+    guid_self:          qst_6cd578a1db4c426d975328e7420cbf38
+    question:           |
+                        Where a check common to several segments but
+                        not fit for the public one would live.
+    relation:           []

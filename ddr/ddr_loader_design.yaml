@@ -1,0 +1,164 @@
+id_self:                ddr_loader_design
+guid_self:              ddr_e5b1223cb09749088f29a1095edd5392
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loader design
+brief:                  |
+                        Each format is loaded from bytes by its own
+                        module, and a null encoding means apply that
+                        format's own convention.
+context:                |
+                        Data items are YAML today, but the system is
+                        meant to hold whatever an engineering process
+                        produces, and JSON and XML are already
+                        recognised.
+
+                        The three formats disagree about encoding, and
+                        each disagreement is written into its own
+                        specification. XML declares its encoding in
+                        the document. YAML 1.2 announces it with a
+                        byte order mark and is UTF-8 without one. JSON
+                        is required to be UTF-8 by RFC 8259 and makes
+                        no allowance for a mark at all, though editors
+                        emit one anyway.
+
+                        Reading everything as text in one assumed
+                        encoding discards what each format knows about
+                        itself.
+decision:               |
+                        One module per format, each exposing the same
+                        entry point: from_bytes(data, encoding).
+
+                        Bytes rather than decoded text, so that a
+                        document able to declare its own encoding
+                        still can.
+
+                        A null encoding means apply the format's own
+                        convention. XML reads its declaration and
+                        REFUSES an explicit encoding outright. YAML
+                        resolves one from the byte order mark, falling
+                        back to UTF-8. JSON assumes UTF-8 and
+                        tolerates a mark.
+
+                        Selection by suffix through a table rather
+                        than a branch, which the uniform signature
+                        allows.
+
+                        An XML document must be shaped like a tree.
+                        Mixed content is refused.
+
+                        Each loader declares the exceptions it can
+                        raise, and the package composes them.
+rationale:              |
+                        A uniform signature makes dispatch a lookup
+                        and makes adding a format one line in one
+                        table.
+
+                        Bytes preserve self description. Decoding
+                        before the parser sees the document throws
+                        away the encoding declaration, and there is no
+                        way to get it back.
+
+                        XML refuses an explicit encoding rather than
+                        ignoring one because the parser's encoding
+                        parameter OVERRIDES the declaration rather
+                        than supplying a default. Honouring a caller's
+                        default would silently corrupt exactly the
+                        documents it appears to help.
+
+                        Mixed content is refused because every XML to
+                        dictionary conversion loses it silently. An
+                        element holding both text and children has no
+                        faithful mapping, and the conversion produces
+                        a plausible result rather than an error.
+alternative:            |
+                        A text interface taking an open file object.
+                        Written, and then withdrawn: it cost XML its
+                        self description, since the caller had to
+                        choose an encoding before the parser could
+                        read the declaration.
+
+                        One encoding for everything, configured once.
+                        Rejected: it makes two of the three formats
+                        wrong, and silently.
+
+                        Accepting mixed content and losing the
+                        position of the text. Rejected: a lossy
+                        conversion that reports success is worse than
+                        a refusal.
+
+                        A hand written comment stripper for JSONC.
+                        Written first, then replaced by a library
+                        after a survey of five candidates: only one
+                        was correct on all of comments, trailing
+                        commas, and the JSON5 syntax that JSONC does
+                        not permit.
+consequence:            |
+                        A byte order mark fails a .json file, which is
+                        what RFC 8259 requires and what a Windows
+                        editor will produce. The error names the
+                        cause.
+
+                        The JSONC library is at version 0.0.2 and was
+                        last released years ago. That is the price of
+                        choosing correctness over maintenance; it is a
+                        single file with no dependencies, and
+                        vendoring it is a copy if it ever breaks.
+
+                        XML is parsed twice, once as a security gate
+                        that refuses document type definitions and
+                        entity declarations, and once to convert. The
+                        second parser permits an external doctype that
+                        the first does not.
+
+                        Whole files are read into memory. Nothing
+                        streams, which is fine for data items and
+                        would not be for anything large.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.load
+    guid_target:        pyp_e9da464cc94247b491df4d838daecb98
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.json
+    guid_target:        pym_d43f7598db784c5ba9e564cf1ed5ecce
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.jsonc
+    guid_target:        pym_d22f4d547ce7426aa6ae4eeccb1c9250
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.xml
+    guid_target:        pym_121cd4e627c145d285792c8d5a2bf4cb
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.yaml
+    guid_target:        pym_8291ddb364c14a15942c07c03b38ac97
+
+question:
+
+  c56ca5b96:
+    id_self:            qst_loader_design.c56ca5b96
+    guid_self:          qst_bbe3ada902f5414f9d5cceaf9bb0a7fb
+    question:           |
+                        Whether the encoding conventions should
+                        themselves be data rather than code. They are
+                        facts about formats, which is the kind of
+                        thing this system holds in registers, and
+                        holding them in Python means a federated
+                        partner running their own tooling does not get
+                        them.
+    relation:           []

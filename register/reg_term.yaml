@@ -1,0 +1,1267 @@
+id_self:                reg_term
+guid_self:              reg_bcba1ab65d824ac2b2f7af2ded66835a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Term register
+brief:                  |
+                        Register of the terms used in the cc-public
+                        repository: the glossary.
+description:            |
+                        The term register provides a controlled list
+                        of the words this repository uses for its own
+                        concepts, each with a definition, the forms it
+                        is also known by, and any forms that are not
+                        to be used for it.
+usage:                  |
+                        The term register is used to keep the
+                        vocabulary of the repository consistent. A
+                        record introducing a concept enters its term
+                        here. Prose is judged against it: a defined
+                        term is used in its defined sense, and a form
+                        listed under avoid is not used for it.
+
+                        A partner may hold a glossary of their own, as
+                        a register of the same type. A term arriving
+                        from a partner names an entry there and not
+                        here.
+note:                   |
+                        A term is a word for a concept, whether or not
+                        the concept is an item. Anchor, scope and
+                        guard have entries; so do component and port.
+                        What has a type is a subset of what has a
+                        name.
+
+                        Two words are defined here because they would
+                        otherwise be one. A relation edge links items
+                        and is always four fields. A dataflow edge
+                        wires ports inside a workflow and has no
+                        identity. Bare edge is ambiguous, and prose
+                        should say which.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_term
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+
+table:
+
+  term_item:
+    id_self:            term_item
+    guid_self:          term_8713eb9216bb43f19c946a9bfa9edbdc
+    title:              Item
+    brief:              |
+                        An addressable unit of data: anything that
+                        carries an identity.
+    description:        |
+                        The thing this system holds. A standalone
+                        document, or an entry embedded in one, that
+                        carries a guid and a readable id and can
+                        therefore be the target of a relation edge.
+    term:               item
+
+    also:
+      - data item
+
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_identity:
+    id_self:            term_identity
+    guid_self:          term_9be684086ca54f1599177ebd2fe2ffcc
+    title:              Identity
+    brief:              |
+                        The pair of identifiers an item declares:
+                        guid_self and id_self.
+    description:        |
+                        Declared by the two fields named with self.
+                        Every other identifier field refers to an
+                        identity declared elsewhere.
+    term:               identity
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_guid:
+    id_self:            term_guid
+    guid_self:          term_5c5250503e5744a6b74fa13db46f2a80
+    title:              Guid
+    brief:              |
+                        The opaque identifier of an item: its type
+                        prefix and thirty two hexadecimal digits.
+    description:        |
+                        Minted once and never changed. What resolves a
+                        reference, and what tells two items apart when
+                        their readable ids collide.
+    term:               guid
+    alias:              []
+
+    avoid:
+      - uuid
+
+    status:             proposed
+    relation:           []
+
+  term_readable_id:
+    id_self:            term_readable_id
+    guid_self:          term_e1e3898ecab2446bab3305f971b78bf7
+    title:              Readable id
+    brief:              |
+                        The human readable identifier of an item,
+                        carrying its type prefix.
+    description:        |
+                        Chosen by an author rather than minted. An
+                        advisory copy travels beside every guid so
+                        that a reference stays legible in a diff.
+    term:               readable id
+
+    also:
+      - id
+
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_prefix:
+    id_self:            term_prefix
+    guid_self:          term_d1eecee9353f40a8b5d50ce9490f0171
+    title:              Prefix
+    brief:              |
+                        The one to eight lowercase letters before the
+                        first underscore of an identifier, naming its
+                        type.
+    description:        |
+                        A prefix identifies exactly one type. It is
+                        the single thing a federation must coordinate.
+    term:               prefix
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_type:
+    id_self:            term_type
+    guid_self:          term_0d0e04ed926841818a9ef3a06243a4fa
+    title:              Type
+    brief:              |
+                        A kind of item, declared as an entry in the
+                        type register and owning one prefix.
+    description:        |
+                        A type names the schema its items are
+                        validated against. An item is never retyped.
+    term:               type
+    alias:              []
+
+    avoid:
+      - kind
+      - class
+
+    status:             proposed
+    relation:           []
+
+  term_register:
+    id_self:            term_register
+    guid_self:          term_374dca1dc078449f89c61caae71611e1
+    title:              Register
+    brief:              |
+                        An item holding a keyed table of entries, and
+                        the source of truth for a vocabulary.
+    description:        |
+                        Entries are keyed by readable id, so
+                        duplicates are structurally impossible. A
+                        register may name a schema of its own for its
+                        entries.
+    term:               register
+    alias:              []
+
+    avoid:
+      - registry
+      - list
+      - table
+
+    status:             proposed
+    relation:           []
+
+  term_entry:
+    id_self:            term_entry
+    guid_self:          term_b51daaeae7054f529e34ae0a53b84efd
+    title:              Entry
+    brief:              |
+                        A keyed, addressable member of a table held on
+                        an item.
+    description:        |
+                        An entry carries an identity of its own.
+                        Register entries are the first case; ports,
+                        nodes and bindings are others.
+    term:               entry
+    alias:              []
+
+    avoid:
+      - row
+      - record
+
+    status:             proposed
+    relation:           []
+
+  term_schema:
+    id_self:            term_schema
+    guid_self:          term_3ce8de2f2d6f422fb6b31309884e798d
+    title:              Schema
+    brief:              |
+                        A JSON Schema, held as an item, against which
+                        items of a type are validated.
+    description:        |
+                        A schema is itself an item with an identity,
+                        and validates itself.
+    term:               schema
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_trait:
+    id_self:            term_trait
+    guid_self:          term_e896210c139149b8bbbf100f27f80e47
+    title:              Trait
+    brief:              |
+                        A schema composed into others by allOf,
+                        declaring one property every composer shares.
+    description:        |
+                        Identity, the prose envelope and rights are
+                        the three. A composer requires whatever it
+                        needs beyond what the trait requires.
+    term:               trait
+    alias:              []
+
+    avoid:
+      - mixin
+      - base class
+
+    status:             proposed
+    relation:           []
+
+  term_relation:
+    id_self:            term_relation
+    guid_self:          term_58ca7869cf9443168d8d96d8d70b972c
+    title:              Relation
+    brief:              |
+                        A kind of directed edge between items,
+                        declared as an entry in the relation register.
+    description:        |
+                        Directional. Where an inverse is wanted it is
+                        a separate relation. The vocabulary is open.
+    term:               relation
+
+    also:
+      - relation type
+
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_relation_edge:
+    id_self:            term_relation_edge
+    guid_self:          term_d862079f22e04991bc6d15cf53c98a2b
+    title:              Relation edge
+    brief:              |
+                        One directed link from an item to another,
+                        naming its relation and its target by guid and
+                        by readable id.
+    description:        |
+                        Always exactly four fields. Held in an item's
+                        relation array. Not to be confused with a
+                        dataflow edge, which wires ports inside a
+                        workflow.
+    term:               relation edge
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  term_decision_record:
+    id_self:            term_decision_record
+    guid_self:          term_f05757bd13f84c77adfda058c67b0eb5
+    title:              Decision record
+    brief:              |
+                        An item holding the reasoning behind one
+                        design decision, so that the artifact need
+                        not.
+    description:        |
+                        Context, decision, rationale, alternative,
+                        consequence, and what is left open. A record
+                        decides items by r_decides edges.
+    term:               decision record
+
+    also:
+      - design decision record
+      - DDR
+
+    alias:              []
+
+    avoid:
+      - ADR
+
+    status:             proposed
+    relation:           []
+
+  term_eval:
+    id_self:            term_eval
+    guid_self:          term_e98ae195f05e4f678ad8e3995b56cbf0
+    title:              Eval
+    brief:              |
+                        An item holding one criterion that a language
+                        model judges an item against.
+    description:        |
+                        Anchored to what it applies to, scoped to what
+                        the judge is shown, and given examples with
+                        feedback. A verdict is met or unmet.
+    term:               eval
+    alias:              []
+
+    avoid:
+      - evaluation
+      - test
+
+    status:             proposed
+    relation:           []
+
+  term_criterion:
+    id_self:            term_criterion
+    guid_self:          term_dbba9370f3254c66acbba6b34fb05d27
+    title:              Criterion
+    brief:              |
+                        The question an eval puts to a judge, with
+                        what met and unmet mean.
+    description:        |
+                        Atomic and binary: one thing, answered yes or
+                        no. Written by a person and not optimised by a
+                        machine.
+    term:               criterion
+    alias:              []
+
+    avoid:
+      - rubric
+      - prompt
+
+    status:             proposed
+    relation:           []
+
+  term_judge:
+    id_self:            term_judge
+    guid_self:          term_83c2dbba03c34b42925b178cd3deb922
+    title:              Judge
+    brief:              |
+                        The language model that answers a criterion.
+    description:        |
+                        Named at run time, never in an eval. Should
+                        not be of the same family as the model that
+                        wrote the item being judged.
+    term:               judge
+    alias:              []
+
+    avoid:
+      - evaluator
+      - grader
+
+    status:             proposed
+    relation:           []
+
+  term_verdict:
+    id_self:            term_verdict
+    guid_self:          term_a9521c74cb544a35a79af1bf6a241f2d
+    title:              Verdict
+    brief:              |
+                        What a judge returns: met, unmet, or unknown
+                        where nothing judged.
+    description:        |
+                        Not an item. A verdict is consumed where it is
+                        reached and never travels on a port.
+    term:               verdict
+    alias:              []
+
+    avoid:
+      - score
+      - grade
+
+    status:             proposed
+    relation:           []
+
+  term_anchor:
+    id_self:            term_anchor
+    guid_self:          term_a458046c786a4349a5b0327098fc7078
+    title:              Anchor
+    brief:              |
+                        What an eval applies to: a type, a schema, a
+                        relation, or a port.
+    description:        |
+                        Expressed by a relation edge, from the eval
+                        for types, schemas and relations, and from the
+                        port for ports. Distinct from scope, which
+                        says what the judge is shown.
+    term:               anchor
+    alias:              []
+
+    avoid:
+      - target
+
+    status:             proposed
+    relation:           []
+
+  term_scope:
+    id_self:            term_scope
+    guid_self:          term_7a8c0dff42a7444bbeefdd460e5b736d
+    title:              Scope
+    brief:              |
+                        Which parts of a subject a judge is shown, as
+                        include and exclude lists of dot paths.
+    description:        |
+                        A judge shown more than the criterion asks
+                        about answers less reliably. Distinct from
+                        anchor, which says what the eval applies to.
+    term:               scope
+    alias:              []
+
+    avoid:
+      - filter
+      - view
+
+    status:             proposed
+    relation:           []
+
+  term_subject:
+    id_self:            term_subject
+    guid_self:          term_0b8ab0f21ba54ff687f73c5901a96e9a
+    title:              Subject
+    brief:              |
+                        The text a judge is given: the scoped parts of
+                        one item, or of two joined by a relation.
+    description:        |
+                        Rendered as prose where the fields are prose.
+                        An item with nothing in scope is not judged.
+    term:               subject
+    alias:              []
+
+    avoid:
+      - input
+      - sample
+
+    status:             proposed
+    relation:           []
+
+  term_severity:
+    id_self:            term_severity
+    guid_self:          term_3699a451d7564bcba0fa4d4476a4e67a
+    title:              Severity
+    brief:              |
+                        What a finding demands: critical must be
+                        fixed, advisory must be known.
+    description:        |
+                        Names consequence, not cause and not
+                        certainty. The confidence of the check that
+                        raised a finding is a separate matter.
+    term:               severity
+    alias:              []
+
+    avoid:
+      - priority
+      - level
+
+    status:             proposed
+    relation:           []
+
+  term_finding:
+    id_self:            term_finding
+    guid_self:          term_7136f27377c54b0cacbaaf5c719de1f3
+    title:              Finding
+    brief:              |
+                        A way in which an item fails a rule, reported
+                        with a severity.
+    description:        |
+                        One of three outcomes a check produces. The
+                        others are an error, where the analysis
+                        failed, and a note.
+    term:               finding
+
+    also:
+      - nonconformity
+
+    alias:              []
+
+    avoid:
+      - error
+      - bug
+      - issue
+
+    status:             proposed
+    relation:           []
+
+  term_note:
+    id_self:            term_note
+    guid_self:          term_3ba50c77ee464736bd3ae3a5884da036
+    title:              Note
+    brief:              |
+                        Something a check reports that is not a fault:
+                        coverage made visible.
+    description:        |
+                        A check that examined nothing must not be
+                        mistaken for one that passed. A node with no
+                        evals is reported this way.
+    term:               note
+    alias:              []
+
+    avoid:
+      - warning
+
+    status:             proposed
+    relation:           []
+
+  term_check:
+    id_self:            term_check
+    guid_self:          term_661ab7ef95ea47b58357d7977ef96595
+    title:              Check
+    brief:              |
+                        A mechanical rule run by cctool, deterministic
+                        and exact.
+    description:        |
+                        Contrast an eval, which is judged and
+                        fallible. A check is code and does not travel
+                        across the federation; an eval is data and
+                        does.
+    term:               check
+    alias:              []
+
+    avoid:
+      - lint
+      - validator
+      - test
+
+    status:             proposed
+    relation:           []
+
+  term_protective_mark:
+    id_self:            term_protective_mark
+    guid_self:          term_547c4fe6a53547e98ed177520f3f6968
+    title:              Protective mark
+    brief:              |
+                        An entry in the mark register that says how an
+                        item may be handled and with whom it may be
+                        shared.
+    description:        |
+                        An item names one or more marks by reference.
+                        Several are conjunctive: the most restrictive
+                        governs.
+    term:               protective mark
+
+    also:
+      - mark
+
+    alias:              []
+
+    avoid:
+      - classification
+      - label
+
+    status:             proposed
+    relation:           []
+
+  term_layout:
+    id_self:            term_layout
+    guid_self:          term_28dc3f2bf2d044b5835982efbebaec86
+    title:              Layout
+    brief:              |
+                        The convention every YAML document and
+                        docstring metadata block is written to.
+    description:        |
+                        Values at column 24, prose filled to seventy.
+                        Enforced by a check and produced by cctool
+                        format.
+    term:               layout
+    alias:              []
+
+    avoid:
+      - format
+      - style
+
+    status:             proposed
+    relation:           []
+
+  term_component:
+    id_self:            term_component
+    guid_self:          term_ef2b95714f5045a4950f10109ceba743
+    title:              Component
+    brief:              |
+                        Anything with ports. The family of which every
+                        form of workflow is a member, and the only
+                        thing a node ever names.
+    description:        |
+                        An atomic component names a prompt or code. A
+                        composite component is a graph of components.
+                        The word is the composite pattern's own, and
+                        stableflow's.
+    term:               component
+    alias:              []
+
+    avoid:
+      - work
+      - functionality
+      - block
+
+    status:             proposed
+    relation:           []
+
+  term_atomic_component:
+    id_self:            term_atomic_component
+    guid_self:          term_684e8b3a067a44b29a1de322f2353c42
+    title:              Atomic component
+    brief:              |
+                        A component that declares its ports and names
+                        a prompt on each output, or code that
+                        implements it.
+    description:        |
+                        The base form. An eval is anchored to one of
+                        its ports, or to the component itself for an
+                        input and an output together.
+    term:               atomic component
+    alias:              []
+
+    avoid:
+      - leaf
+      - task
+      - step
+
+    status:             proposed
+    relation:           []
+
+  term_composite_component:
+    id_self:            term_composite_component
+    guid_self:          term_5b96a8d782474dcf89864be2e0ee25dc
+    title:              Composite component
+    brief:              |
+                        A component whose ports are derived from the
+                        components within it.
+    description:        |
+                        Every form of workflow is one. Its ports are
+                        the unbound ports of its nodes.
+    term:               composite component
+    alias:              []
+
+    avoid:
+      - subgraph
+      - group
+
+    status:             proposed
+    relation:           []
+
+  term_port:
+    id_self:            term_port
+    guid_self:          term_74e84886ebe44148a73cf6328af05ee8
+    title:              Port
+    brief:              |
+                        One place on a component where exactly one
+                        item is consumed or produced.
+    description:        |
+                        An entry with identity, keyed by a short local
+                        name, naming the type it carries. An input may
+                        be optional.
+    term:               port
+    alias:              []
+
+    avoid:
+      - pin
+      - socket
+      - channel
+
+    status:             proposed
+    relation:           []
+
+  term_node:
+    id_self:            term_node
+    guid_self:          term_e469c67fe5d44ecc846f4614ef92e673
+    title:              Node
+    brief:              |
+                        One instance of a component within one
+                        workflow.
+    description:        |
+                        Names the component by an r_instantiates edge
+                        and carries configuration for this instance.
+                        Edge paths begin with the node's local name.
+    term:               node
+    alias:              []
+
+    avoid:
+      - step
+      - stage
+      - task
+
+    status:             proposed
+    relation:           []
+
+  term_dataflow_edge:
+    id_self:            term_dataflow_edge
+    guid_self:          term_f56457546bf04a0fbc1bfcb71dd49ffd
+    title:              Dataflow edge
+    brief:              |
+                        Wiring from one output port to one input port
+                        within a dataflow workflow.
+    description:        |
+                        Carries no identity: it is its endpoints. Held
+                        in a map from source port to destinations. Not
+                        to be confused with a relation edge.
+    term:               dataflow edge
+    alias:              []
+
+    avoid:
+      - link
+      - connection
+      - wire
+
+    status:             proposed
+    relation:           []
+
+  term_back_edge:
+    id_self:            term_back_edge
+    guid_self:          term_c2316f5a6d2f413ab18322c6fe11f85e
+    title:              Back edge
+    brief:              |
+                        A dataflow edge whose destination precedes its
+                        source, declared as such.
+    description:        |
+                        Set aside when the graph is ordered.
+                        Ordinarily feeds an optional input, guarded on
+                        unmet, and is how a cycle revises.
+    term:               back edge
+    alias:              []
+
+    avoid:
+      - feedback
+      - loop
+
+    status:             proposed
+    relation:           []
+
+  term_guard:
+    id_self:            term_guard
+    guid_self:          term_0d9da624d6df41f88a00e0dfd1eaa8af
+    title:              Guard
+    brief:              |
+                        A verdict named on a destination, without
+                        which the edge fires always.
+    description:        |
+                        Consults the evals anchored to the source
+                        port: met when all are met, unmet when any is.
+                        The verdict is consumed here and never
+                        travels.
+    term:               guard
+    alias:              []
+
+    avoid:
+      - condition
+      - gate
+
+    status:             proposed
+    relation:           []
+
+  term_workflow:
+    id_self:            term_workflow
+    guid_self:          term_7e24b23fa3cf46989c3d11325c664319
+    title:              Workflow
+    brief:              |
+                        A composite component of some declared form.
+    description:        |
+                        A family of types rather than one. The
+                        dataflow workflow is the first form. A
+                        workflow item is meaningful to a reader who
+                        cannot execute it.
+    term:               workflow
+    alias:              []
+
+    avoid:
+      - pipeline
+      - process
+
+    status:             proposed
+    relation:           []
+
+  term_execution:
+    id_self:            term_execution
+    guid_self:          term_36b127f301794d37866e735218e0ab38
+    title:              Execution
+    brief:              |
+                        An item recording one run of a workflow under
+                        one deployment, as a table of bindings.
+    description:        |
+                        Written once and never edited. Where an item
+                        came from is read here.
+    term:               execution
+    alias:              []
+
+    avoid:
+      - run
+      - job
+      - instance
+
+    status:             proposed
+    relation:           []
+
+  term_binding:
+    id_self:            term_binding
+    guid_self:          term_1b2812b241404a77a3f516087081c0ff
+    title:              Binding
+    brief:              |
+                        An entry on an execution naming the node and
+                        port that were filled, the pass, and by an
+                        edge the item that filled them.
+    description:        |
+                        A reified reference: a relation edge is four
+                        fields and a binding needs more, so it is a
+                        thing that carries an edge.
+    term:               binding
+    alias:              []
+
+    avoid:
+      - assignment
+      - mapping
+
+    status:             proposed
+    relation:           []
+
+  term_deployment:
+    id_self:            term_deployment
+    guid_self:          term_d0991e776f3942e3b4566ca907296d8b
+    title:              Deployment
+    brief:              |
+                        An item naming a workflow and the machinery it
+                        is run under: the model, the budget, and
+                        whatever else the definition must not say.
+    description:        |
+                        An execution runs under exactly one. A
+                        definition names no machinery of its own.
+    term:               deployment
+    alias:              []
+
+    avoid:
+      - config
+      - environment
+      - profile
+
+    status:             proposed
+    relation:           []
+
+  term_transform:
+    id_self:            term_transform
+    guid_self:          term_079c0cd3faad42be81006fbe1fda9fee
+    title:              Transform
+    brief:              |
+                        A component whose ports carry workflows.
+    description:        |
+                        A derived workflow is materialised as an item,
+                        and the execution that derived it is its
+                        provenance.
+    term:               transform
+    alias:              []
+
+    avoid:
+      - generator
+      - template
+
+    status:             proposed
+    relation:           []
+
+  term_provenance:
+    id_self:            term_provenance
+    guid_self:          term_6b717deb08ec44fa8620407e8218c6ee
+    title:              Provenance
+    brief:              |
+                        Where an item came from: which node, port,
+                        pass and deployment produced it, from what.
+    description:        |
+                        A walk over bindings and relation edges,
+                        needing no engine. Not yet able to say whether
+                        an input has changed since.
+    term:               provenance
+    alias:              []
+
+    avoid:
+      - lineage
+      - history
+
+    status:             proposed
+    relation:           []
+
+  term_printer:
+    id_self:            term_printer
+    guid_self:          term_8fe15da65be94a1aa940559eefdb99e0
+    title:              Printer
+    brief:              |
+                        The tool that parses a document and writes it
+                        again to the layout convention.
+    description:        |
+                        Run by cctool format, and by every edit
+                        command on every write. The layout check is
+                        whether a file matches its own printing.
+    term:               printer
+
+    avoid:
+      - formatter
+      - pretty printer
+
+    status:             proposed
+    relation:           []
+
+  term_pass:
+    id_self:            term_pass
+    guid_self:          term_de5f9c7873bf4b05825285dd5f6697af
+    title:              Pass
+    brief:              |
+                        One traversal of a cycle in a dataflow
+                        workflow.
+    description:        |
+                        A port on a cycle is bound once per pass, and
+                        an execution records each. A deployment's
+                        budget is the most passes a cycle may take.
+    term:               pass
+
+    avoid:
+      - iteration
+      - round
+
+    status:             proposed
+    relation:           []
+
+  term_budget:
+    id_self:            term_budget
+    guid_self:          term_f5b6dfd189684fa5a312f0da39dc45e4
+    title:              Budget
+    brief:              |
+                        The most passes a cycle may take before it
+                        stops, held on the deployment.
+    description:        |
+                        Bounds a cycle spun by a false unmet. Nothing
+                        bounds a false met.
+    term:               budget
+
+    avoid:
+      - limit
+      - timeout
+
+    status:             proposed
+    relation:           []
+
+  term_control_set:
+    id_self:            term_control_set
+    guid_self:          term_c7943c02fb304bec967413e44a2acd64
+    title:              Control set
+    brief:              |
+                        Cases with known verdicts against which an
+                        eval is measured.
+    description:        |
+                        What turns an eval's reliability from an
+                        assertion into a number. Discrimination and
+                        stability are measured over it.
+    term:               control set
+
+    avoid:
+      - test set
+      - gold set
+
+    status:             proposed
+    relation:           []
+
+  term_block_scalar:
+    id_self:            term_block_scalar
+    guid_self:          term_8dfe91a692904935bea065ec2eed34c4
+    title:              Block scalar
+    brief:              |
+                        A YAML string written beneath its key after a
+                        vertical bar, one line per line.
+    description:        |
+                        How prose is written here. The printer refills
+                        it and nothing else: a block scalar is what
+                        the author marked as prose.
+    term:               block scalar
+
+    avoid:
+      - multiline string
+      - text block
+
+    status:             proposed
+    relation:           []
+
+  term_plain_scalar:
+    id_self:            term_plain_scalar
+    guid_self:          term_54344a7f7f064def9974fdf4f2794cf4
+    title:              Plain scalar
+    brief:              |
+                        A YAML value written on the line with its key.
+    description:        |
+                        A datum. The printer never breaks one, however
+                        long: a regex or a URI with spaces in it is
+                        still one value.
+    term:               plain scalar
+    status:             proposed
+    relation:           []
+
+  term_dot_path:
+    id_self:            term_dot_path
+    guid_self:          term_301aab2391f74f479d7d14437e87c526
+    title:              Dot path
+    brief:              |
+                        A location inside a document, as steps joined
+                        by full stops: table.t_eval.brief,
+                        relation.0.guid_target.
+    description:        |
+                        One notation for naming a place and, with glob
+                        wildcards, for matching many. Used by scope,
+                        by set, and by insert.
+    term:               dot path
+
+    also:
+      - path
+
+    avoid:
+      - xpath
+      - pointer
+
+    status:             proposed
+    relation:           []
+
+  term_source_item:
+    id_self:            term_source_item
+    guid_self:          term_0b31b23df3724eae89485ea807b93111
+    title:              Source item
+    brief:              |
+                        An item that lives in the docstring of a
+                        python package, module, class or function.
+    description:        |
+                        Found by walking the syntax tree. Only a
+                        package's and a module's become items of their
+                        own today; a class's and a function's are
+                        located but not yet items.
+    term:               source item
+
+    avoid:
+      - code item
+
+    status:             proposed
+    relation:           []
+
+  term_term:
+    id_self:            term_term
+    guid_self:          term_820f9604e6134b9fbefd5a75146d4c40
+    title:              Term
+    brief:              |
+                        A word the repository uses for one of its
+                        concepts, held as an entry in a term register.
+    description:        |
+                        Carries the surface form, the forms it is also
+                        known by, and any forms not to be used for it.
+                        A concept need not have a type to have a term.
+    term:               term
+
+    avoid:
+      - keyword
+      - tag
+
+    status:             proposed
+    relation:           []
+
+  term_also:
+    id_self:            term_also
+    guid_self:          term_7369ae52624a45d28e0343be1186e0c3
+    title:              Also
+    brief:              |
+                        On a term, the forms the word is also known
+                        by.
+    description:        |
+                        Not alias, which on a register entry is an
+                        alternative identifier rather than a word.
+    term:               also
+
+    avoid:
+      - synonym
+      - alias
+
+    status:             proposed
+    relation:           []
+
+  term_avoid:
+    id_self:            term_avoid
+    guid_self:          term_84020a0b7de3478c9fbaa1c51c11cab3
+    title:              Avoid
+    brief:              |
+                        On a term, the forms not to be used for the
+                        concept.
+    description:        |
+                        Not always wrong words -- work is an ordinary
+                        word -- so judging prose against them is an
+                        eval's job and not a check's.
+    term:               avoid
+
+    avoid:
+      - deprecated
+      - forbidden
+
+    status:             proposed
+    relation:           []
+
+  term_control_case:
+    id_self:            term_control_case
+    guid_self:          term_55af5cf2c12d4a94883248fcc0bcd223
+    title:              Control case
+    brief:              |
+                        One subject with a known verdict, held on a
+                        control set.
+    description:        |
+                        The subject exactly as the judge would be
+                        shown it, the verdict a person holds it to,
+                        why, and an origin. Never shown to the judge,
+                        which is what keeps it apart from an example.
+    term:               control case
+
+    avoid:
+      - test case
+      - example
+
+    status:             proposed
+    relation:           []
+
+  term_origin:
+    id_self:            term_origin
+    guid_self:          term_251feddc5419443caf48c0c25cc7211e
+    title:              Origin
+    brief:              |
+                        Where a control case came from: written,
+                        mutated, suppressed or confirmed.
+    description:        |
+                        Cases from different origins answer different
+                        questions and are measured apart. A suppressed
+                        case is one the judge got wrong by
+                        construction; a mutated one is unmet by
+                        construction.
+    term:               origin
+
+    avoid:
+      - source
+      - provenance
+
+    status:             proposed
+    relation:           []
+
+  term_suppression:
+    id_self:            term_suppression
+    guid_self:          term_04e079c2d00b437eb8aedfc1af457dbe
+    title:              Suppression
+    brief:              |
+                        A person's judgement that a finding is wrong,
+                        held as a control case with a verdict of met.
+    description:        |
+                        Matched by the words of what was judged, so it
+                        answers the finding whenever the same text
+                        recurs and silences nothing else. Reported as
+                        a note naming the case.
+    term:               suppression
+
+    also:
+      - suppressed case
+
+    avoid:
+      - noqa
+      - ignore
+      - whitelist
+      - exception
+
+    status:             proposed
+    relation:           []
+
+  term_confidence:
+    id_self:            term_confidence
+    guid_self:          term_0ec3e5327c1745349538ddd6b2d49609
+    title:              Confidence
+    brief:              |
+                        What has been measured about an eval, recorded
+                        on it: the two error rates and the unanimity,
+                        per origin, for a judge model.
+    description:        |
+                        The partner severity lacked. What to do about
+                        a finding is its severity together with the
+                        confidence of the eval that raised it.
+    term:               confidence
+
+    avoid:
+      - accuracy
+      - score
+
+    status:             proposed
+    relation:           []
+
+  term_snapshot:
+    id_self:            term_snapshot
+    guid_self:          term_ba691d18014d4b5f9bf1562744af6c40
+    title:              Snapshot
+    brief:              |
+                        The text an item rendered to when a control
+                        case was taken from it.
+    description:        |
+                        Held on the case as its subject. Where the
+                        item later renders to the same words, the case
+                        applies; where it does not, it does not.
+    term:               snapshot
+
+    avoid:
+      - copy
+      - cache
+
+    status:             proposed
+    relation:           []
+
+  term_question:
+    id_self:            term_question
+    guid_self:          term_d558794250a74c32a77bd29ae9ef1059
+    title:              Question
+    brief:              |
+                        One thing a decision record does not settle,
+                        held on the record as an entry with an
+                        identity.
+    description:        |
+                        Answered by an r_answers edge from whatever
+                        settles it, never by editing its text. Open
+                        means no such edge. Listed by cctool
+                        questions.
+    term:               question
+
+    avoid:
+      - todo
+      - issue
+      - open point
+
+    status:             proposed
+    relation:           []
+
+  term_commit_record:
+    id_self:            term_commit_record
+    guid_self:          term_9821bcb3e39c4731bcbc0ece24cf5235
+    title:              Commit record
+    brief:              |
+                        The data item held in a commit message,
+                        describing that commit.
+    description:        |
+                        A plain first line, then the record between
+                        the docstring markers: what the commit was
+                        for, the state of the checks, and what it
+                        relates to on purpose. What it changed is the
+                        diff's to say. Made by cctool commit, read by
+                        cctool log, never a file in the tree.
+    term:               commit record
+
+    avoid:
+      - changelog entry
+      - commit message
+
+    status:             proposed
+    relation:           []

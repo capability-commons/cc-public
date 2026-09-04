@@ -1,0 +1,102 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_schema.yaml
+id_self:                sch_schema
+guid_self:              sch_19b746511dc84ae1b822a98afa81a196
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema schema
+brief:                  |
+                        Schema for schema data items.
+description:            |
+                        The shape shared by every schema data item. A
+                        schema is a JSON Schema, and it is also a data
+                        item like any other, carrying an identity and
+                        a documentation envelope.
+
+                        Both halves are asserted by composition. The
+                        JSON Schema half comes from the draft 2020-12
+                        meta schema. The data item half comes from
+                        sch_identity.yaml.
+usage:                  |
+                        Selected for a schema by the type register,
+                        which maps the sch prefix to the schema type
+                        and carries the r_is_specified_by_schema edge
+                        naming this schema.
+
+                        This schema validates itself, being a schema
+                        data item.
+note:                   |
+                        WHAT IS NOT CONSTRAINED
+
+                        Nothing is said about which JSON Schema
+                        keywords a schema must use. A trait declares
+                        properties, a library declares only $defs, and
+                        a composite declares only allOf. All three are
+                        schemas.
+
+                        Nothing pins the sch prefix. The authority on
+                        the prefix of a type is the regex field of its
+                        entry in the type register.
+
+                        Nothing requires status. No schema data item
+                        carries one today, though every register does.
+type:                   object
+additionalProperties:   true
+
+allOf:
+
+  # A schema data item is a JSON Schema. Composing the draft meta
+  # schema means a malformed one is reported as malformed, rather than
+  # passing here and failing obscurely later when something tries to
+  # validate against it.
+  #
+  - $ref:               https://json-schema.org/draft/2020-12/schema
+
+  # A schema data item is a standalone data item, so it carries the
+  # envelope every such item carries.
+  #
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+
+  - type:               object
+
+    required:
+      - $schema
+      - $id
+      - description
+
+    properties:
+
+      $schema:
+        const:          https://json-schema.org/draft/2020-12/schema
+        description:    |
+                        The JSON Schema dialect. Pinned to one draft
+                        across the whole repository -- a schema
+                        written against a different draft would be
+                        validated by rules other than the ones its
+                        author had in mind.
+
+      $id:
+        type:           string
+        pattern:        ^https://capability-commons\.org/schema/sch_[a-z][a-z0-9_]*\.yaml$
+        description:    |
+                        The canonical URI of this schema, and the
+                        target of any $ref naming it.
+
+                        The final segment is the filename, which is
+                        the id_self of the schema it holds. JSON
+                        Schema cannot compare the two, so their
+                        agreement is left to a companion check; the
+                        pattern here asserts only the form.
+
+      description:
+        type:           string
+        minLength:      1
+        description:    |
+                        What this schema describes, and what it leaves
+                        to other schemas.

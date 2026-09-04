@@ -1,0 +1,42 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_question.yaml
+id_self:                sch_question
+guid_self:              sch_89a0fb7963d244918e2e697a471ed7cd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Question schema
+brief:                  |
+                        What a question is: one thing a record does
+                        not settle, with an identity so that an answer
+                        can point at it.
+description:            |
+                        An entry on a decision record under question.
+                        Carries the question as prose and nothing else
+                        it must. Answered by an r_answers edge from
+                        elsewhere, never by editing the question.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+required:
+  - question
+
+properties:
+
+  question:
+    type:               string
+    minLength:          1
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge

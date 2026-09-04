@@ -1,0 +1,271 @@
+id_self:                ddr_component
+guid_self:              ddr_c7a6ab9679684d62a11062679706be0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Component
+brief:                  |
+                        Anything with ports is a component. An atomic
+                        component names a prompt or code; a composite
+                        component is a graph of components. A node
+                        names one without knowing which.
+context:                |
+                        The first sketch put prompts and evals on a
+                        node, scoped against its outbound edges. A
+                        node could not then be described until wired
+                        up, and a transformation wanted in two
+                        workflows had to be written twice.
+
+                        Stableflow separates the two. A node names its
+                        functionality by module path and carries only
+                        its own configuration, so one functionality
+                        appears in many systems. Its edges address
+                        named ports rather than the node as a whole.
+                        The port is the transformation's contract, and
+                        the edge is wiring.
+
+                        Two records then asked the same question from
+                        opposite ends: whether a node may name a
+                        workflow rather than a component, and whether
+                        a workflow can declare what it consumes and
+                        produces independently of its form. The
+                        composite pattern answers both at once, and
+                        this record supersedes its earlier draft to
+                        adopt it.
+decision:               |
+                        A COMPONENT is anything with ports. It is the
+                        family of which every form of workflow is a
+                        member, and the only thing a node ever names.
+
+                        An ATOMIC component is a data item declaring
+                        its ports. It names either a prompt, written
+                        on each output port, or code, by an
+                        r_is_implemented_by edge to a source item.
+
+                        A COMPOSITE component is a form of workflow.
+                        Its ports are the unbound ports of the nodes
+                        within it -- an input with no incoming forward
+                        edge, an output with no outgoing forward edge
+                        -- and are derived rather than declared. A
+                        back edge binds nothing: it returns an item
+                        for another pass and does not deliver it. The
+                        dataflow workflow of ddr_dataflow_workflow is
+                        one composite form. A type that is a composite
+                        component says so by an r_is_a_form_of edge
+                        from its type register entry to the atomic
+                        component type.
+
+                        A PORT is an entry held in a keyed table on an
+                        atomic component, under input or under output,
+                        keyed by a short local name and carrying an
+                        identity of its own exactly as a register
+                        entry does. A port names the type of item it
+                        carries. It carries exactly one item.
+
+                        An input port may be declared optional. A
+                        component runs whether or not an optional
+                        input is bound.
+
+                        An eval is ANCHORED to a port by an
+                        r_is_judged_by edge on that port, and judges
+                        the item there. An eval is anchored to the
+                        component itself by the same edge on the
+                        component, and judges an input and an output
+                        together; that is the join eval the eval
+                        design already provides. Either kind is a
+                        reference to an eval item, never a definition
+                        inline.
+
+                        A component carrying no anchored eval of
+                        either kind is reported, not refused.
+
+                        A component does not name a model, a budget,
+                        or anything else about the machinery that runs
+                        it. See ddr_workflow_deployment.
+rationale:              |
+                        One family, because a node that names a
+                        component can then name a workflow, and
+                        hierarchy costs nothing. A composite's ports
+                        being derived is what makes that true: the
+                        composite has an interface by construction,
+                        not by a second declaration that could
+                        disagree with the first.
+
+                        Ports rather than edges as what an eval is
+                        anchored to, because a transformation's
+                        contract is what it consumes and produces, not
+                        what it happens to be connected to. Anchored
+                        to ports, a component can be written, checked,
+                        judged and reviewed before any graph uses it.
+
+                        Ports with identity, because things point at
+                        them. A binding in an execution names the port
+                        it filled, and an eval is anchored to one.
+                        Both want a guid, for the reason everything
+                        else here has one: a name survives being
+                        renamed only if there is something beneath the
+                        name.
+
+                        One item per port, because an eval anchored to
+                        a port would otherwise be ambiguous about
+                        which item it judged. A component producing
+                        three things says so with three output ports.
+
+                        Anchored rather than scoped, because scope
+                        already means something in the eval design --
+                        the paths within a subject a judge is shown --
+                        and an eval on a port is the other thing an
+                        eval has, its anchor. Using one word for both
+                        would mislead anyone who knows the first.
+
+                        Evals referenced rather than written inline,
+                        because they exist already as items with a
+                        criterion, examples and a measured
+                        reliability, and a second way to define one
+                        would mean two. Prompts are inline for now
+                        because nothing else defines them yet.
+
+                        Optional inputs, because a cycle has to start
+                        somewhere. The first pass through a revising
+                        node has no prior draft to revise, and an
+                        optional input bound on later passes says so
+                        without any value being invented to prime it.
+
+                        A component with no evals is a generator
+                        nobody checks. Refusing it would be wrong,
+                        since a step may be deterministic or trusted
+                        or half built. Leaving it silent would let
+                        ungated generation spread unremarked, which is
+                        the failure this repository exists to avoid.
+                        Reporting is what the note outcome is for.
+alternative:            |
+                        Prompts and evals on the node, scoped against
+                        its outbound edges. The earlier decision here,
+                        superseded. It couples a transformation to its
+                        wiring, so nothing can be said about it until
+                        it is placed in a graph.
+
+                        Two families -- components that a node names
+                        and workflows that a node cannot. Rejected:
+                        hierarchy then needs a mechanism of its own,
+                        and a workflow has no interface until one is
+                        declared for it.
+
+                        Ports without identity, named by path only.
+                        Rejected: an execution binding a port by path
+                        alone dangles when the node is renamed, and
+                        provenance is exactly the record that must
+                        not.
+
+                        Evals written inline in the component.
+                        Rejected: it is a second way to define an
+                        eval, and the first already carries things --
+                        examples, a control set -- that the second
+                        would lack.
+
+                        Priming a back edge with an initial value, as
+                        stableflow does. Rejected: stableflow primes
+                        because a blocking read must find something.
+                        Nothing blocks here, and an absent optional
+                        input is a plainer statement than an invented
+                        one.
+
+                        Requiring at least one eval on every
+                        component. Rejected: a requirement like that
+                        is honoured by writing an eval that passes.
+consequence:            |
+                        A component is reviewable alone. What it
+                        consumes, what it produces, how, and what must
+                        hold of the result are one item with no graph
+                        required.
+
+                        The same component appears in several
+                        workflows without being copied, so a change to
+                        it reaches all of them. That is the intent,
+                        and it is also one edit altering many
+                        workflows at once.
+
+                        A node is small: a reference to a component
+                        and whatever configuration that instance
+                        needs.
+
+                        A prompt component and a code component are
+                        one shape from the graph's side. A
+                        deterministic step and a generated one are
+                        interchangeable.
+
+                        A port's declared type and the include_type of
+                        the eval anchored to it can disagree. The
+                        workflow check says so.
+
+                        Every port carries a guid. A component with
+                        five ports carries six identities, which is
+                        more to mint and more to read.
+
+                        Prompts are text on a port, and nothing judges
+                        a prompt. They are exactly the kind of thing
+                        evals exist for, and making them items would
+                        let them be judged, at the cost of one more
+                        type.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_component
+    guid_target:        sch_f1095fd235ef479085522c2373b9c6c6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_component
+    guid_target:        term_ef2b95714f5045a4950f10109ceba743
+
+question:
+
+  cde5e719e:
+    id_self:            qst_component.cde5e719e
+    guid_self:          qst_f4c4c1a808074df4a9249fe5c0324c27
+    question:           |
+                        Whether a prompt should be an item rather than
+                        inline text, so that it can be referenced,
+                        judged and shared.
+    relation:           []
+
+  ca33c5b5c:
+    id_self:            qst_component.ca33c5b5c
+    guid_self:          qst_bd897fabe9274668a1018e02c6489e1f
+    question:           |
+                        Whether a component may declare that it
+                        produces an unknown number of items of a kind,
+                        which is fan out of a sort that one item per
+                        port cannot express.
+    relation:           []
+
+  cea55b9b3:
+    id_self:            qst_component.cea55b9b3
+    guid_self:          qst_900542d4689e43f68f55eb3aa3383781
+    question:           |
+                        Whether a component should declare what it
+                        costs, in calls or in tokens, so the
+                        allocation described in ddr_cost_of_checking
+                        applies to production as well as to checking.
+    relation:           []
+
+  cae3be04b:
+    id_self:            qst_component.cae3be04b
+    guid_self:          qst_a2331aaddc2f42a88cfbfa326cc53c79
+    question:           |
+                        What the ports of a composite are when two of
+                        its nodes leave an input of the same name
+                        unbound.
+    relation:           []

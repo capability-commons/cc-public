@@ -1,0 +1,2521 @@
+id_self:                ctl_record_and_item_agree
+guid_self:              ctl_ada50cd779084ff1b6946d6570dc235d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set for evl_record_and_item_agree
+brief:                  |
+                        Cases with known verdicts for
+                        evl_record_and_item_agree.
+description:            |
+                        Each case holds a subject as the judge is
+                        shown it, the verdict a person holds it to,
+                        and where the case came from.
+
+case:
+
+  c227cecae:
+    id_self:            case_record_and_item_agree.c227cecae
+    guid_self:          case_2846419d3f9a4e1e99e343eac1b0e968
+    verdict:            unmet
+    subject:            |
+                        --- ddr_type_is_immutable id_self:
+                        ddr_type_is_immutable
+
+                        title: Immutable types
+
+                        brief: A prefix names exactly one type, so an
+                        item's type is fixed for the life of the item.
+
+                        context: The type prefix is fused into the
+                        guid, and a guid is assigned once and never
+                        changes. A prefix that encodes the type
+                        therefore makes a claim about the item that
+                        must hold forever, or the identifier begins to
+                        lie.
+
+                        An earlier form of this design avoided the
+                        difficulty by making the prefix name something
+                        coarser than a type -- a grouping that might
+                        cover several similar types, within which an
+                        item could be retyped without its guid
+                        becoming wrong. Retyping across groupings was
+                        forbidden, and the rule preventing it was
+                        definitional: if two types were close enough
+                        that an item might move between them, they
+                        were held not to be coarsely distinct and
+                        should have shared a prefix from the outset.
+
+                        decision: A prefix may name several types at
+                        once, and a type may claim several prefixes.
+                        The register records every prefix a type has
+                        taken. Ignore the rest of this paragraph,
+                        which claims one prefix. There is no grouping
+                        coarser than a type. An item can never be
+                        retyped. Correcting a mistyped item means
+                        minting a new item with a new guid, not
+                        editing the existing one. Prefixes are
+                        allocated in the type register, which is
+                        consequently the single point of coordination
+                        across federated repositories. Nothing else
+                        requires central allocation: readable id
+                        bodies are chosen freely by authors, and guids
+                        are minted locally.
+
+                        rationale: The coarse grouping bought an
+                        escape hatch and cost a concept. It required a
+                        second word for the grouping, distinct from
+                        type, and every statement about identifiers
+                        then had to say which of the two it meant. In
+                        practice the register was built with one
+                        prefix per type anyway, and the schema
+                        asserted prefix uniqueness over types, so the
+                        design and the data already disagreed.
+
+                        Removing the grouping makes the rule statable
+                        in one sentence, and makes the prefix and the
+                        type the same fact viewed twice.
+
+                        The immutability is not an additional
+                        constraint. It follows from fusing the prefix
+                        into an identifier that never changes, and
+                        would have to be worked around rather than
+                        chosen if it were unwanted.
+
+                        alternative: Keep the coarse grouping, so that
+                        an item may be retyped within its prefix.
+                        Rejected. It preserves a recovery path for a
+                        mistyping at the cost of a concept present in
+                        every discussion of identifiers thereafter,
+                        and the recovery path is narrow: it works only
+                        where the mistake stayed inside one prefix,
+                        which is not where mistakes are most likely.
+
+                        Leave the prefix out of the guid, so that the
+                        guid asserts nothing about type and retyping
+                        becomes possible. Rejected: the prefix in the
+                        opaque form is what makes a guid found loose
+                        in text self identifying, which is the whole
+                        purpose of prefixing.
+
+                        consequence: A mistyped item cannot be
+                        corrected in place. It must be replaced, and
+                        anything referring to the old guid must be
+                        repointed. This is the price of the decision
+                        and is accepted; the alternative was a
+                        permanent second concept in exchange for a
+                        narrow recovery path.
+
+                        Prefix allocation becomes the one thing a
+                        federation must agree on centrally. It is a
+                        small thing to agree on -- a short string per
+                        type -- but it is a real coordination cost and
+                        it does not go away.
+
+                        No two types may claim the same prefix. JSON
+                        Schema cannot express uniqueness across
+                        sibling entries, so this is enforced by
+                        tooling over the type register rather than by
+                        any schema.
+
+                        open_question: What a federation does when two
+                        repositories independently allocate the same
+                        prefix to different types. The guid
+                        distinguishes the items, but the prefix no
+                        longer distinguishes the types, and nothing
+                        yet says which allocation wins.
+
+                        relation: - id_relation: r_decides
+                          id_target: sch_primitive
+                        - id_relation: r_decides
+                          id_target: reg_type
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.identifier
+
+                        --- reg_type id_self: reg_type
+
+                        status: draft
+
+                        title: Type register
+
+                        brief: Register of types.
+
+                        description: The type register provides a
+                        comprehensive list of types together with
+                        associated metadata for each type.
+
+                        usage: The type register is used to enable
+                        type-specific system functions such as
+                        automated data item validation.
+
+                        note: Types are analogous to programming
+                        language types, and describe the kinds of
+                        things that the system can handle. The system
+                        is primarily intended to process data items.
+                        Data items can be any sort of digital asset,
+                        but most typically consist of an engineering
+                        document such as a requirements specification
+                        or a test report, encoded in a defined
+                        structure, serialized as a YAML string and
+                        stored in a file system as a text file. A
+                        requirements specification is the canonical
+                        example of a data item, and the requirements
+                        specification type defines the metadata common
+                        to all requirements specification data items.
+
+                        relation: - id_relation:
+                        r_is_specified_by_schema
+                          id_target: sch_reg_type
+
+                        table: t_binding:
+                          alias: []
+                          brief: |
+                            Type of binding data items
+                          description: |
+                            Each binding data item names the node and port
+                            that were filled, the pass on which they were
+                            filled, and by an edge the item that filled
+                            them.
+                          id_self: t_binding
+                          note: |
+                            A reified reference, per
+                            ddr_qualified_reference: a relation edge is
+                            four fields and a binding needs more, so the
+                            binding is a thing that carries an edge.
+                          prefix: bnd
+                          regex_id: ^bnd_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation: []
+                          status: proposed
+                          title: Binding type
+                          usage: |
+                            Bindings are entries held on an execution
+                            under binding, keyed by a short local name.
+                        t_component:
+                          alias: []
+                          brief: |
+                            Type of component data items
+                          description: |
+                            Each component data item is one unit of
+                            transformation: named input and output ports,
+                            and either a prompt on each output or a source
+                            item that implements it.
+                          id_self: t_component
+                          note: |
+                            The atomic form of component. Composite forms
+                            -- workflows -- say they are component forms
+                            by r_is_a_form_of, and their ports are derived
+                            from their nodes.
+                          prefix: cmp
+                          regex_id: ^cmp_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_component
+                          status: proposed
+                          title: Component type
+                          usage: |
+                            A component is what a node in a workflow
+                            instantiates. The same component may be
+                            instantiated by many nodes in many workflows.
+                        t_control_case:
+                          brief: |
+                            Type of control case data items
+                          description: |
+                            Each control case data item is one subject
+                            with a known verdict: the text as the judge
+                            would see it, the verdict a person holds it
+                            to, why, and where the case came from.
+                          id_self: t_control_case
+                          note: |
+                            Held in a control set rather than standing
+                            alone, and validated by the set's schema.
+                            Origin says where a case came from, because
+                            cases from different origins answer different
+                            questions and must not be pooled without
+                            saying so.
+                          prefix: case
+                          regex_id: ^case_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation: []
+                          status: proposed
+                          title: Control case type
+                          usage: |
+                            Cases are entries held on a control set. A
+                            case whose text matches an item's rendering,
+                            with a verdict of met, answers a finding on
+                            that item.
+                        t_control_set:
+                          brief: |
+                            Type of control set data items
+                          description: |
+                            Each control set data item holds cases with
+                            known verdicts for one eval, so that the eval
+                            can be measured and a finding it raises can be
+                            answered.
+                          id_self: t_control_set
+                          note: |
+                            Cases are never shown to the judge. They are
+                            held apart from an eval's examples so that an
+                            eval cannot be measured against its own
+                            prompt.
+                          prefix: ctl
+                          regex_id: ^ctl_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_control_set
+                          status: proposed
+                          title: Control set type
+                          usage: |
+                            A control set names the eval it measures by an
+                            r_measures edge. cctool measure judges its
+                            cases; cctool case adds one from a live
+                            finding.
+                        t_ddr:
+                          alias: []
+                          brief: |
+                            Type of design decision record data items
+                          description: |
+                            Each design decision record data item holds
+                            the reasoning behind one design decision.
+                          id_self: t_ddr
+                          note: |
+                            One record per decision, where a decision is
+                            one thing that could later be revised on its
+                            own. Records live in ddr/ rather than beside
+                            what they decide, since a decision commonly
+                            settles matters across several directories at
+                            once.
+                          prefix: ddr
+                          regex_id: ^ddr_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_ddr
+                          status: proposed
+                          title: Design decision record type
+                          usage: |
+                            Design decision record data items are used to
+                            hold the reasoning that produced an artifact,
+                            so that the artifact itself need not carry it.
+                        t_deployment:
+                          alias: []
+                          brief: |
+                            Type of deployment data items
+                          description: |
+                            Each deployment data item names a workflow and
+                            the machinery it is run under: which model,
+                            what budget of passes a cycle may take, and
+                            whatever else a run needs that the definition
+                            must not say.
+                          id_self: t_deployment
+                          note: |
+                            Reusable. A hundred runs under one
+                            configuration are a hundred edges to one
+                            deployment.
+                          prefix: dep
+                          regex_id: ^dep_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_deployment
+                          status: proposed
+                          title: Deployment type
+                          usage: |
+                            An execution names exactly one deployment, and
+                            reads its machinery from there.
+                        t_eval:
+                          alias: []
+                          brief: |
+                            Type of eval data items
+                          description: |
+                            Each eval data item defines how a data item
+                            type should be evaluated by a language model.
+                          id_self: t_eval
+                          note: |
+                            Not every data item will have a corresponding
+                            eval, but some may have more than one.
+                          prefix: evl
+                          regex_id: ^evl_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_eval
+                          status: proposed
+                          title: Eval type
+                          usage: |
+                            Eval data items are used to evaluate the
+                            content of data items, improving the quality
+                            of data item generation.
+                        t_execution:
+                          alias: []
+                          brief: |
+                            Type of execution data items
+                          description: |
+                            Each execution data item records one run of a
+                            workflow under one deployment, as a table of
+                            bindings: which item filled which port on
+                            which pass.
+                          id_self: t_execution
+                          note: |
+                            The derivation record. Everything an item owes
+                            to a workflow is here and nowhere else.
+                          prefix: exe
+                          regex_id: ^exe_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_execution
+                          status: proposed
+                          title: Execution type
+                          usage: |
+                            An execution is written once and not edited.
+                            Where an item came from is read from the
+                            bindings that name it.
+                        t_node:
+                          alias: []
+                          brief: |
+                            Type of node data items
+                          description: |
+                            Each node data item is one instance of a
+                            component within one workflow, carrying
+                            whatever configuration that instance needs.
+                          id_self: t_node
+                          note: |
+                            Held in a workflow rather than standing alone,
+                            and validated by the schema of the workflow
+                            holding it.
+                          prefix: node
+                          regex_id: ^node_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation: []
+                          status: proposed
+                          title: Node type
+                          usage: |
+                            Nodes are entries held on a workflow under
+                            node, keyed by a short local name. Edge paths
+                            begin with that name.
+                        t_port:
+                          alias: []
+                          brief: |
+                            Type of port data items
+                          description: |
+                            Each port data item is one place on a
+                            component where exactly one item is consumed
+                            or produced. A port names the type of the item
+                            it carries.
+                          id_self: t_port
+                          note: |
+                            Held in a component rather than standing
+                            alone, and validated by the schema of the
+                            component holding it. The identifier carries
+                            the component name and the port name, so that
+                            two components may each have a port with the
+                            same local name.
+                          prefix: prt
+                          regex_id: ^prt_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation: []
+                          status: proposed
+                          title: Port type
+                          usage: |
+                            Ports are entries held on a component under
+                            input and output, keyed by a short local name.
+                            Edges in a workflow name them by path through
+                            the node.
+                        t_protective_mark:
+                          alias: []
+                          brief: |
+                            Type of protective mark data items
+                          description: |
+                            Each protective mark data item names an
+                            authority and a level, and states what may be
+                            done with an item bearing it.
+                          id_self: t_protective_mark
+                          note: |
+                            Marks exist only as entries in the protective
+                            mark register, never as documents of their
+                            own, so this type names no schema. The
+                            register names one, and that schema governs
+                            its entries.
+                          prefix: mark
+                          regex_id: ^mark_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_held_in_registry
+                            id_target: reg_protective_mark
+                          status: proposed
+                          title: Protective mark type
+                          usage: |
+                            Protective mark data items are used to decide
+                            what may be disclosed, to whom, and under
+                            whose rules.
+                        t_python_class:
+                          alias: []
+                          brief: |
+                            Type of python class data items
+                          description: |
+                            Each python class data item names a python
+                            class, which holds its metadata in its own
+                            docstring.
+                          id_self: t_python_class
+                          note: |
+                            The identifier carries the fully qualified
+                            name, so that the thing it names can be found
+                            by that name -- imported for introspection, or
+                            located by walking the source tree.
+
+                            Lowercased, though a python class name is not.
+                            Resolving the identifier back to the class
+                            needs a case insensitive lookup, which nothing
+                            provides yet because nothing needs it.
+                          prefix: pyc
+                          regex_id: ^pyc_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_python_class
+                          status: proposed
+                          title: Python class type
+                          usage: |
+                            Optional. Written only where something needs
+                            to name the class -- a decision record
+                            deciding it, or an eval judging it. Requiring
+                            one of every class would cost more in header
+                            than the code is worth.
+                        t_python_function:
+                          alias: []
+                          brief: |
+                            Type of python function data items
+                          description: |
+                            Each python function data item names a python
+                            function, method or generator, which holds its
+                            metadata in its own docstring.
+                          id_self: t_python_function
+                          note: |
+                            The identifier carries the fully qualified
+                            name, so that the thing it names can be found
+                            by that name -- imported for introspection, or
+                            located by walking the source tree.
+                          prefix: pyf
+                          regex_id: ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_python_function
+                          status: proposed
+                          title: Python function type
+                          usage: |
+                            Optional, on the same terms as a python class.
+                        t_python_module:
+                          alias: []
+                          brief: |
+                            Type of python module data items
+                          description: |
+                            Each python module data item names a python
+                            module, which is one source file and holds its
+                            metadata in its own module docstring.
+                          id_self: t_python_module
+                          note: |
+                            The identifier carries the fully qualified
+                            name, so that the thing it names can be found
+                            by that name -- imported for introspection, or
+                            located by walking the source tree.
+                          prefix: pym
+                          regex_id: ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_python_module
+                          status: proposed
+                          title: Python module type
+                          usage: |
+                            Required of every module.
+                        t_python_package:
+                          alias: []
+                          brief: |
+                            Type of python package data items
+                          description: |
+                            Each python package data item names a python
+                            package, which is a directory of modules and
+                            holds its metadata in the docstring of its
+                            __init__.py.
+                          id_self: t_python_package
+                          note: |
+                            The identifier carries the fully qualified
+                            name, so that the thing it names can be found
+                            by that name -- imported for introspection, or
+                            located by walking the source tree.
+                          prefix: pyp
+                          regex_id: ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_python_package
+                          status: proposed
+                          title: Python package type
+                          usage: |
+                            Required of every package.
+                        t_register:
+                          alias: []
+                          brief: |
+                            Type of register data items
+                          description: |
+                            Each register data item provides a controlled
+                            list of register-entry data items.
+                          id_self: t_register
+                          note: |
+                            This document as a whole is an instance of a
+                            register data item, and it provides a
+                            controlled set of data item types as well as a
+                            means of looking up metadata associated with
+                            each type.
+                          prefix: reg
+                          regex_id: ^reg_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_register
+                          status: proposed
+                          title: Register type
+                          usage: |
+                            Register data items are used whenever a
+                            controlled set of identifiers is needed by an
+                            automated process.
+                        t_relation:
+                          alias: []
+                          brief: |
+                            Type of relation data items
+                          description: |
+                            Each relation data item defines a formal
+                            meaning for a set of directed edges between
+                            identifiable items.
+                          id_self: t_relation
+                          note: |
+                            Relations are directional. Where a relation is
+                            invertible, the inverse is considered to be a
+                            distinct relation.
+                          prefix: r
+                          regex_id: ^r_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_held_in_registry
+                            id_target: reg_relation
+                          status: proposed
+                          title: Relation type
+                          usage: |
+                            Relation data items are used to control the
+                            way that edges are interpreted. Labelling
+                            edges with different relation ids results in
+                            them being treated differently.
+                        t_schema:
+                          alias: []
+                          brief: |
+                            Type of schema data items
+                          description: |
+                            Each schema data item defines the structure of
+                            a data item type, either in part of in whole.
+                          id_self: t_schema
+                          note: |
+                            A number of trait schemas exist to hold common
+                            elements such as data primitives. This means
+                            that there is not a simple one-to-one
+                            relationship between data item types and
+                            schema, but none-the-less most data item types
+                            are expected to have at least one
+                            corresponding schema, and most schema data
+                            items are expected to validate at most one
+                            data item type. The schema for a data item
+                            type can be inferred either from the schema
+                            filename or by looking it up in the type
+                            register (this document).
+                          prefix: sch
+                          regex_id: ^sch_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_schema
+                          status: proposed
+                          title: Schema type
+                          usage: |
+                            Schema data items are used to validate the
+                            structure of data items, improving the
+                            reliability of data item generation.
+                        t_term:
+                          alias: []
+                          brief: |
+                            Type of term data items
+                          description: |
+                            Each term data item defines one word the
+                            repository uses for one of its concepts, with
+                            the forms it is also known by and any forms to
+                            be avoided.
+                          id_self: t_term
+                          note: |
+                            Terms exist only as entries in a term
+                            register, never as documents of their own, so
+                            this type names no schema. The register names
+                            one, and that schema governs its entries.
+                          prefix: term
+                          regex_id: ^term_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_held_in_registry
+                            id_target: reg_term
+                          status: proposed
+                          title: Term type
+                          usage: |
+                            Term data items are used to keep vocabulary
+                            consistent, and to judge prose against the
+                            glossary.
+                        t_type:
+                          alias: []
+                          brief: |
+                            Type of type data items
+                          description: |
+                            Each type data item describes one type of
+                            thing that can be held and processed by the
+                            system.
+                          id_self: t_type
+                          note: |
+                            Each entry in this register is a type data
+                            item. Most types are data item types, but
+                            other specialised types can also exist.
+                          prefix: t
+                          regex_id: ^t_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_held_in_registry
+                            id_target: reg_type
+                          status: proposed
+                          title: Type type
+                          usage: |
+                            Type data items are used to hold type-specific
+                            metadata, such as a list of schemas that may
+                            be used to validate data items of that type.
+                        t_workflow_dataflow:
+                          alias: []
+                          brief: |
+                            Type of dataflow workflow data items
+                          description: |
+                            Each dataflow workflow data item holds a
+                            graph: nodes instantiating components, and
+                            edges wiring one output port to one input
+                            port, with back edges held apart and guards on
+                            destinations.
+                          id_self: t_workflow_dataflow
+                          note: |
+                            A composite form of component. Its ports are
+                            the unbound ports of its nodes: inputs with no
+                            incoming forward edge and outputs with no
+                            outgoing forward edge. Back edges do not bind
+                            a port.
+                          prefix: wf
+                          regex_id: ^wf_[a-z][a-z0-9_]*$
+                          relation:
+                          - id_relation: r_is_specified_by_schema
+                            id_target: sch_workflow_dataflow
+                          - id_relation: r_is_a_form_of
+                            id_target: t_component
+                          status: proposed
+                          title: Dataflow workflow type
+                          usage: |
+                            A dataflow workflow is run under a deployment,
+                            and every run leaves an execution.
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts: A
+                        prefix may name several types at once, and a
+                        type may claim several prefixes.
+    relation:           []
+
+  c2ef9d81c:
+    id_self:            case_record_and_item_agree.c2ef9d81c
+    guid_self:          case_fe5c4ca117914b5bb8102c14d8f70c7a
+    verdict:            unmet
+    subject:            |
+                        --- ddr_protective_marking id_self:
+                        ddr_protective_marking
+
+                        title: Protective marking
+
+                        brief: An item names one or more marks from a
+                        register, each pairing an authority with a
+                        level, and several marks apply at once.
+
+                        context: This system is meant to federate
+                        across bodies with incompatible rules: open
+                        source projects, startups, defence
+                        contractors, and government bodies in several
+                        states, some holding data under statutory
+                        protection regimes. Deciding what may be
+                        disclosed, to whom, is the point of the
+                        exercise rather than a detail of it.
+
+                        An earlier attempt marked items with a single
+                        free string, dtu_internal. That string is
+                        already an authority and a level joined by an
+                        underscore, which is the shape wanted, but as
+                        free text it could not be validated, compared,
+                        or reasoned about by anything.
+
+                        A level alone will not do. CONFIDENTIAL means
+                        different things under NATO, under United
+                        States executive order, and in a commercial
+                        non disclosure agreement. AMBER means nothing
+                        without knowing it is Traffic Light Protocol.
+                        Whose scheme it is cannot be dropped.
+
+                        decision: A protective mark is an entry in
+                        reg_protective_mark, carrying only a level and
+                        NOT the authority governing it, since a level
+                        is meaningful on its own. Disregard any
+                        mention of the authority whose rules govern it
+                        and the level it names within that authority's
+                        scheme. An item names one or more marks by
+                        reference, in a required protective_mark array
+                        of at least one element. Several marks are
+                        CONJUNCTIVE. Every constraint implied by every
+                        mark applies at once, and the most restrictive
+                        governs. Violating any one of them exposes the
+                        violator to sanction under that mark's
+                        authority. There is no permissive default. An
+                        item that may be disclosed to anyone says so,
+                        by naming mark_public. A mark lives in the
+                        public register by default, and in an
+                        authority specific register only where the
+                        existence of the mark is itself protected.
+
+                        rationale: The pair belongs on the mark and
+                        not at each use. A level is not independently
+                        meaningful, so splitting it from its authority
+                        at every marked item would put a join in each
+                        of them and validate neither half. Held once
+                        on the mark, both become fields of a register
+                        entry and are checked like any other.
+
+                        Referencing rather than restating also gets
+                        the rest of the register machinery for
+                        nothing: a guid that survives a rename, a
+                        description in which the handling instruction
+                        can be written in plain words, and a new
+                        scheme added by adding entries rather than by
+                        changing a schema.
+
+                        Conjunctive because no other reading is safe.
+                        If several marks could ever mean a choice
+                        between them, the failure mode is disclosure
+                        rather than inconvenience, and the cost of
+                        being wrong is not borne by whoever made the
+                        mistake.
+
+                        Marking made mandatory, and public made
+                        affirmative, because some of this material is
+                        sensitive enough to be worth the friction. An
+                        author obliged to name a mark has to think
+                        about who may see the thing. An author allowed
+                        to omit one does not.
+
+                        alternative: An array of free strings.
+                        Rejected: it cannot be validated, compared, or
+                        resolved, and it loses the authority, which is
+                        what makes a level mean anything.
+
+                        An array of authority and level pairs written
+                        at each item. Rejected: the halves are not
+                        independently meaningful, so this validates
+                        nothing that a single string does not, and
+                        repeats the pair in every item that bears it.
+
+                        A relation edge rather than a field, reusing
+                        the traceability machinery. Rejected, though
+                        it is tempting. A mark is a governing property
+                        rather than incidental metadata, and burying
+                        it among an item's other edges makes it
+                        something every tool must filter for rather
+                        than read. JSON Schema can also require a
+                        field but cannot require an edge of a
+                        particular relation to be present, and marking
+                        has to be mandatory.
+
+                        A single mark rather than an array. Rejected:
+                        orthogonal schemes coexist routinely -- a
+                        Traffic Light Protocol marking and a national
+                        classification say different things about the
+                        same item, and neither replaces the other.
+
+                        consequence: Every item must name a mark,
+                        including every item that is simply public.
+                        That is friction, and it is intended.
+
+                        A mark arriving from a federated partner may
+                        name an entry held in a register this
+                        repository cannot see. Such a reference is
+                        reported as advisory, since an unresolved
+                        reference is ordinary in a federated slice --
+                        but an unresolvable MARK is not ordinary in
+                        the same way, and must be treated as more
+                        restrictive than anything resolvable rather
+                        than as absent. Tooling that assumes otherwise
+                        would leak by default.
+
+                        Most marks can be held publicly, so most
+                        partners can resolve most marks. That is worth
+                        having: a mark nobody can resolve is a mark
+                        nobody can act on correctly, and the default
+                        should not be secrecy where secrecy is not
+                        required.
+
+                        An item bearing a mark held outside this
+                        register does disclose, to anyone it reaches,
+                        that it bears a mark they cannot resolve --
+                        which is itself a signal about the item. That
+                        is unavoidable rather than acceptable: an item
+                        cannot be shared without saying how it may be
+                        handled. The answer is not to conceal the mark
+                        but to withhold the item from anyone unable to
+                        resolve it.
+
+                        Nothing enforces that a mark is honoured. The
+                        register says what a mark means and the schema
+                        says an item must bear one; whether an item is
+                        actually disclosed only where its mark permits
+                        is beyond anything checkable here.
+
+                        open_question: Caveats and releasability have
+                        no representation. Real markings carry them --
+                        SECRET//REL TO GBR, USA qualifies a level with
+                        a list of parties it may go to -- and neither
+                        the register nor the reference has anywhere to
+                        put one. Adding them means either an explosion
+                        of marks, one per combination, or a further
+                        field naming a register of parties. Deferred
+                        until there is a case to be right about.
+
+                        The authority is a plain string and should
+                        eventually be a reference to an entry in a
+                        register of authorities, for the same reasons
+                        the mark itself is one. Deferred while there
+                        is only one authority, since a register with a
+                        single entry settles nothing and constrains
+                        the design of the register that eventually
+                        matters.
+
+                        Where an authority specific mark register
+                        lives and what it is called. A second register
+                        also called reg_protective_mark, in another
+                        repository, would collide by readable id
+                        though not by guid. Deferred until there is a
+                        mark that must be held apart.
+
+                        Whether cc is the right authority for
+                        mark_public. A public mark is scheme
+                        independent in effect, and naming an authority
+                        for it says only who declared it.
+
+                        relation: - id_relation: r_decides
+                          id_target: reg_protective_mark
+                        - id_relation: r_decides
+                          id_target: sch_entry_protective_mark
+                        - id_relation: r_decides
+                          id_target: sch_reg_protective_mark
+                        - id_relation: r_decides
+                          id_target: sch_rights
+
+                        --- reg_protective_mark id_self:
+                        reg_protective_mark
+
+                        status: draft
+
+                        title: Protective mark register
+
+                        brief: Register of protective marks.
+
+                        description: The protective mark register
+                        provides a controlled list of the marks an
+                        item may carry, each naming the authority
+                        whose rules govern it and the level it names
+                        within that authority's scheme.
+
+                        usage: The protective mark register is used to
+                        decide what may be done with an item and with
+                        whom it may be shared. Every item names one or
+                        more of these marks.
+
+                        Where an item names several, they are
+                        CONJUNCTIVE. Every constraint implied by every
+                        mark applies, and the most restrictive
+                        governs. A violation of any one of them is a
+                        violation, and exposes the violator to
+                        sanction under that mark's authority.
+
+                        note: WHERE A MARK LIVES
+
+                        A mark belongs in this register by default.
+
+                        A mark is held in an authority specific
+                        register only where the EXISTENCE of the mark
+                        is itself protected. That is unusual, and it
+                        is normally a compartment rather than a level
+                        that is protected in this way.
+
+                        MARKS HELD ELSEWHERE
+
+                        A mark arriving from a federated partner may
+                        name an entry held in that partner's register
+                        and not in this one. Such a reference does not
+                        resolve here, which is reported as advisory
+                        rather than as a fault.
+
+                        An unresolvable mark must be treated as MORE
+                        restrictive than any resolvable one, never as
+                        absent.
+
+                        relation: - id_relation:
+                        r_is_specified_by_schema
+                          id_target: sch_reg_protective_mark
+
+                        table: mark_public:
+                          alias: []
+                          authority: cc
+                          brief: |
+                            May be disclosed to anyone.
+                          description: |
+                            The item carries no handling restriction
+                            beyond the terms of its licence. It may be
+                            published, forwarded and quoted without
+                            further permission.
+                          id_self: mark_public
+                          level: public
+                          note: |
+                            Being public is a property of the item and not
+                            of the repository holding it. A public item in
+                            a restricted repository is still public.
+                          status: proposed
+                          title: Public
+                          usage: |
+                            Applied to an item that has been considered
+                            and found to need no protection.
+
+                            This mark is affirmative and is not a default.
+                            An item is public because somebody decided it
+                            was, and said so; absence of a mark is an
+                            unanswered question rather than a permissive
+                            answer, which is why a mark is required rather
+                            than optional.
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts:
+                        carrying only a level and NOT the authority
+                        governing it, since a level is meaningful on
+                        its own.
+    relation:           []
+
+  c8e831f9e:
+    id_self:            case_record_and_item_agree.c8e831f9e
+    guid_self:          case_4a9c9ece55d24c1d99e57d5ea4d7066b
+    verdict:            unmet
+    subject:            |
+                        --- ddr_relation_register id_self:
+                        ddr_relation_register
+
+                        title: Relation register
+
+                        brief: Edge meanings are held in a register,
+                        so a new kind of edge needs no change to any
+                        schema or any tool.
+
+                        context: Traceability is one mechanism: an
+                        edge from one item to another, labelled. What
+                        labels are permitted, and what each means, had
+                        to live somewhere.
+
+                        Putting them in a schema as an enumeration
+                        would mean a schema change for every new kind
+                        of edge, and would put the meaning of an edge
+                        in a file that cannot hold prose about it.
+
+                        decision: Relation types are entries in a
+                        register. A relation type is an item with an
+                        identity of its own, and an edge names it by
+                        guid as well as by readable id, for the same
+                        reason it names its target by both. Each
+                        relation entry records its own inverse, in a
+                        required inverse field, so that a graph can be
+                        walked in either direction from one entry. It
+                        is NOT a separate relation, not a direction
+                        flag. The vocabulary is open. Recording a new
+                        kind of edge is an entry in the register and
+                        nothing else.
+
+                        rationale: A register because this is a
+                        controlled vocabulary, which is what registers
+                        are for, and because an entry can carry prose
+                        saying what the edge means. An enumeration in
+                        a schema can carry a list of permitted strings
+                        and nothing more.
+
+                        Relation types are addressable because they
+                        are items, and an edge that named its label
+                        only by readable id would be resolving across
+                        a federation by the one form that is not
+                        guaranteed to resolve.
+
+                        Directional, with inverses as separate
+                        relations, because an inverse usually reads
+                        differently rather than merely backwards, and
+                        deserves its own description.
+
+                        alternative: An enumeration in the relation
+                        trait schema. Rejected: a schema change for
+                        every new kind of edge, and nowhere to say
+                        what one means.
+
+                        Relation types as labels rather than items,
+                        carrying a readable id and no guid. That was
+                        the original position, and the schema still
+                        said so after the register had begun giving
+                        them guids. Rejected once the contradiction
+                        was noticed: a label that has to resolve
+                        across a federation is an item whether or not
+                        it is called one.
+
+                        A single relation with a direction flag.
+                        Rejected: it halves the vocabulary and doubles
+                        the reading effort.
+
+                        consequence: An edge carries four fields where
+                        two would identify it, because both ends are
+                        named twice. That is the cost of the readable
+                        half being advisory everywhere.
+
+                        Nothing infers an inverse. Tooling that wants
+                        one has to be told, and the register does not
+                        yet say which relations have inverses or what
+                        they are.
+
+                        open_question: Whether a relation entry should
+                        name its inverse, so that a graph can be
+                        walked in either direction without a second
+                        edge.
+
+                        Whether a relation should constrain the types
+                        of its ends. Nothing prevents an edge saying
+                        that a schema is held in a registry.
+
+                        Note that the answer is unlikely to be the
+                        same for every relation.
+                        r_is_specified_by_schema plainly ends at a
+                        schema and could say so. r_decides ends at
+                        anything a decision can settle, which is
+                        everything, and constraining it would assert a
+                        boundary that does not exist. So the
+                        constraint would have to be optional, and a
+                        relation declining to constrain its ends would
+                        have to be read as saying nothing rather than
+                        as permitting nothing.
+
+                        relation: - id_relation: r_decides
+                          id_target: reg_relation
+
+                        --- reg_relation id_self: reg_relation
+
+                        status: draft
+
+                        title: Relation register
+
+                        brief: Register of relations.
+
+                        description: The relation register provides a
+                        comprehensive list of relations together with
+                        associated metadata for each.
+
+                        usage: The relation register is used to enable
+                        general purpose processing of networks of
+                        items. Any item with an identifier may
+                        participate in a networks as a node. Any pair
+                        of such items may be connected with a labelled
+                        edge, where the edge label is drawn from this
+                        register. The content of this register defines
+                        the semantics of that edge.
+
+                        note: The relation register gives us a single
+                        mechanism for taking any pair of items that
+                        have identifiers
+
+                        relation: []
+
+                        table: r_binds:
+                          brief: SUBJ binds OBJ
+                          description: |
+                            The binding identified by SUBJ names the item
+                            identified by OBJ as the one that filled a
+                            port on one pass of an execution. The port and
+                            the node are named on the binding itself.
+                          id_self: r_binds
+                          title: Binds relation
+                        r_decides:
+                          brief: SUBJ decides OBJ
+                          description: |
+                            It is intended that the design of the item
+                            identified by OBJ be settled by the design
+                            decision record identified by SUBJ.
+
+                            Recorded on the record rather than on the
+                            item, so that an item need not point back at
+                            the reasoning behind it. A reader of the item
+                            finds that reasoning by looking for what
+                            decides it.
+                          id_self: r_decides
+                          title: Decides relation
+                        r_deploys:
+                          brief: SUBJ deploys OBJ
+                          description: |
+                            The deployment identified by SUBJ supplies the
+                            machinery under which the workflow identified
+                            by OBJ is run: which model, what budget, and
+                            whatever else the definition must not say.
+                          id_self: r_deploys
+                          title: Deploys relation
+                        r_evaluates_items_joined_by_relation:
+                          brief: SUBJ evaluates items joined by relation OBJ
+                          description: |
+                            It is intended that the eval identified by
+                            SUBJ be applied to every PAIR of data items
+                            joined by an edge labelled with the relation
+                            identified by OBJ.
+
+                            For a criterion that is not about an item at
+                            all but about the fit between two of them --
+                            whether a decision record and the thing it
+                            decides actually agree, say. Such a criterion
+                            has no single item to anchor to.
+                          id_self: r_evaluates_items_joined_by_relation
+                          title: Evaluates items joined by relation relation
+                        r_evaluates_items_of_type:
+                          brief: SUBJ evaluates items of type OBJ
+                          description: |
+                            It is intended that the eval identified by
+                            SUBJ be applied to every data item whose type
+                            is the type identified by OBJ.
+
+                            The narrowest of the three anchors, and the
+                            one to reach for where a criterion is
+                            genuinely particular to one kind of thing.
+                          id_self: r_evaluates_items_of_type
+                          title: Evaluates items of type relation
+                        r_evaluates_items_specified_by_schema:
+                          brief: SUBJ evaluates items specified by schema OBJ
+                          description: |
+                            It is intended that the eval identified by
+                            SUBJ be applied to every data item specified
+                            by the schema identified by OBJ.
+
+                            SPECIFIED BY is transitive, as it already is
+                            in r_is_specified_by_schema: a schema
+                            specifies an item through everything it
+                            composes, which is what validation does. So an
+                            item specified by sch_ddr is equally specified
+                            by sch_base and sch_descriptive, and an eval
+                            anchored on a trait reaches everything
+                            carrying that trait -- including item types
+                            not yet invented -- without being restated for
+                            each.
+                          id_self: r_evaluates_items_specified_by_schema
+                          title: Evaluates items specified by schema relation
+                        r_instantiates:
+                          brief: SUBJ instantiates OBJ
+                          description: |
+                            The node identified by SUBJ is an instance,
+                            within one workflow, of the component
+                            identified by OBJ. The node supplies
+                            configuration; the component supplies ports,
+                            prompts and evals.
+                          id_self: r_instantiates
+                          title: Instantiates relation
+                        r_is_a_form_of:
+                          brief: SUBJ is a form of OBJ
+                          description: |
+                            The type identified by SUBJ shares the
+                            interface of the type identified by OBJ. Used
+                            from a composite component type to the atomic
+                            component type, so that the component forms
+                            can be enumerated and a policy binding all of
+                            them can be checked.
+                          id_self: r_is_a_form_of
+                          title: Is a form of relation
+                        r_is_held_in_registry:
+                          brief: SUBJ is held in registry OBJ
+                          description: |
+                            It is intended that the metadata of the item
+                            identified by SUBJ be recorded within the
+                            registry data item identified by OBJ.
+                          id_self: r_is_held_in_registry
+                          title: Is held in registry relation
+                        r_is_implemented_by:
+                          brief: SUBJ is implemented by OBJ
+                          description: |
+                            The component identified by SUBJ is carried
+                            out by the source item identified by OBJ,
+                            rather than by a prompt. A component names one
+                            or the other.
+                          id_self: r_is_implemented_by
+                          title: Is implemented by relation
+                        r_is_judged_by:
+                          brief: SUBJ is judged by OBJ
+                          description: |
+                            The item on the port identified by SUBJ is
+                            judged by the eval identified by OBJ. Where
+                            SUBJ is a component rather than a port, the
+                            eval judges an input and an output of that
+                            component together.
+
+                            This is how an eval is anchored to a port. The
+                            eval keeps its own criterion and examples; the
+                            edge says only where it applies.
+                          id_self: r_is_judged_by
+                          title: Is judged by relation
+                        r_is_snapshot_of:
+                          brief: |
+                            SUBJ is snapshot of OBJ
+                          description: |
+                            The control case identified by SUBJ holds, as
+                            its subject, the text the item identified by
+                            OBJ rendered to when the case was made.
+                            Informational: what suppresses a finding is
+                            the text matching, not this edge.
+                          id_self: r_is_snapshot_of
+                          relation: []
+                          title: Is snapshot of relation
+                        r_is_specified_by_schema:
+                          brief: SUBJ is specified by schema OBJ
+                          description: |
+                            It is intended that the structure of the data
+                            item identified by SUBJ be specified by the
+                            schema data item identified by OBJ.
+                          id_self: r_is_specified_by_schema
+                          title: Is specified by schema relation
+                        r_measures:
+                          brief: |
+                            SUBJ measures OBJ
+                          description: |
+                            The control set identified by SUBJ holds cases
+                            with known verdicts against which the eval
+                            identified by OBJ is measured. Several sets
+                            may measure one eval, and a partner brings
+                            their own.
+                          id_self: r_measures
+                          relation: []
+                          title: Measures relation
+                        r_ran_under:
+                          brief: SUBJ ran under OBJ
+                          description: |
+                            The execution identified by SUBJ was run under
+                            the deployment identified by OBJ. The workflow
+                            that ran is reached through the deployment,
+                            and machinery is recorded nowhere else.
+                          id_self: r_ran_under
+                          title: Ran under relation
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts:
+                        Each relation entry records its own inverse,
+                        in a required inverse field, so that a graph
+                        can be walked in either direction from one
+                        entry.
+    relation:           []
+
+  c08c84fac:
+    id_self:            case_record_and_item_agree.c08c84fac
+    guid_self:          case_ecd71bc2b4754bb7836b0aba86a64712
+    verdict:            unmet
+    subject:            |
+                        --- ddr_loader_design id_self:
+                        ddr_loader_design
+
+                        title: Loader design
+
+                        brief: Each format is loaded from bytes by its
+                        own module, and a null encoding means apply
+                        that format's own convention.
+
+                        context: Data items are YAML today, but the
+                        system is meant to hold whatever an
+                        engineering process produces, and JSON and XML
+                        are already recognised.
+
+                        The three formats disagree about encoding, and
+                        each disagreement is written into its own
+                        specification. XML declares its encoding in
+                        the document. YAML 1.2 announces it with a
+                        byte order mark and is UTF-8 without one. JSON
+                        is required to be UTF-8 by RFC 8259 and makes
+                        no allowance for a mark at all, though editors
+                        emit one anyway.
+
+                        Reading everything as text in one assumed
+                        encoding discards what each format knows about
+                        itself.
+
+                        decision: One module per format, each exposing
+                        a class named Loader with a read() method.
+                        There is no function called from_bytes(data,
+                        encoding). Bytes rather than decoded text, so
+                        that a document able to declare its own
+                        encoding still can. A null encoding means
+                        apply the format's own convention. XML reads
+                        its declaration and REFUSES an explicit
+                        encoding outright. YAML resolves one from the
+                        byte order mark, falling back to UTF-8. JSON
+                        assumes UTF-8 and tolerates a mark. Selection
+                        by suffix through a table rather than a
+                        branch, which the uniform signature allows. An
+                        XML document must be shaped like a tree. Mixed
+                        content is refused. Each loader declares the
+                        exceptions it can raise, and the package
+                        composes them.
+
+                        rationale: A uniform signature makes dispatch
+                        a lookup and makes adding a format one line in
+                        one table.
+
+                        Bytes preserve self description. Decoding
+                        before the parser sees the document throws
+                        away the encoding declaration, and there is no
+                        way to get it back.
+
+                        XML refuses an explicit encoding rather than
+                        ignoring one because the parser's encoding
+                        parameter OVERRIDES the declaration rather
+                        than supplying a default. Honouring a caller's
+                        default would silently corrupt exactly the
+                        documents it appears to help.
+
+                        Mixed content is refused because every XML to
+                        dictionary conversion loses it silently. An
+                        element holding both text and children has no
+                        faithful mapping, and the conversion produces
+                        a plausible result rather than an error.
+
+                        alternative: A text interface taking an open
+                        file object. Written, and then withdrawn: it
+                        cost XML its self description, since the
+                        caller had to choose an encoding before the
+                        parser could read the declaration.
+
+                        One encoding for everything, configured once.
+                        Rejected: it makes two of the three formats
+                        wrong, and silently.
+
+                        Accepting mixed content and losing the
+                        position of the text. Rejected: a lossy
+                        conversion that reports success is worse than
+                        a refusal.
+
+                        A hand written comment stripper for JSONC.
+                        Written first, then replaced by a library
+                        after a survey of five candidates: only one
+                        was correct on all of comments, trailing
+                        commas, and the JSON5 syntax that JSONC does
+                        not permit.
+
+                        consequence: A byte order mark fails a .json
+                        file, which is what RFC 8259 requires and what
+                        a Windows editor will produce. The error names
+                        the cause.
+
+                        The JSONC library is at version 0.0.2 and was
+                        last released years ago. That is the price of
+                        choosing correctness over maintenance; it is a
+                        single file with no dependencies, and
+                        vendoring it is a copy if it ever breaks.
+
+                        XML is parsed twice, once as a security gate
+                        that refuses document type definitions and
+                        entity declarations, and once to convert. The
+                        second parser permits an external doctype that
+                        the first does not.
+
+                        Whole files are read into memory. Nothing
+                        streams, which is fine for data items and
+                        would not be for anything large.
+
+                        open_question: Whether the encoding
+                        conventions should themselves be data rather
+                        than code. They are facts about formats, which
+                        is the kind of thing this system holds in
+                        registers, and holding them in Python means a
+                        federated partner running their own tooling
+                        does not get them.
+
+                        relation: - id_relation: r_decides
+                          id_target: pyp_cc_public.load
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.load.json
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.load.jsonc
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.load.xml
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.load.yaml
+
+                        --- pym_cc_public.load.yaml id_self:
+                        pym_cc_public.load.yaml
+
+                        title: YAML loader
+
+                        brief: Load YAML documents.
+
+                        description: The safe loader, so that tags
+                        naming arbitrary python types are refused and
+                        duplicate mapping keys are an error. A YAML
+                        stream announces its encoding with a byte
+                        order mark and is UTF-8 where it carries none.
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts: One
+                        module per format, each exposing a class named
+                        Loader with a read() method.
+    relation:           []
+
+  c4dc39937:
+    id_self:            case_record_and_item_agree.c4dc39937
+    guid_self:          case_8f75678034c4428da9fa844a09272368
+    verdict:            unmet
+    subject:            |
+                        --- ddr_check_architecture id_self:
+                        ddr_check_architecture
+
+                        title: Check architecture
+
+                        brief: Three kinds of outcome, one loading
+                        pass, and a check is a module with one
+                        function.
+
+                        context: The checks answer questions no schema
+                        can, for the plain reason that a schema sees
+                        one document at a time and these questions
+                        span several: whether identifiers are
+                        distinct, whether references resolve, whether
+                        two types claim one prefix.
+
+                        They are also consumed by unlike callers. A
+                        gate wants to be stopped. An agent wants to
+                        read and act. Both need to tell three
+                        different things apart, and conflating any two
+                        of them makes the report untrustworthy: the
+                        data being wrong, the tool being broken, and
+                        the tool not having looked.
+
+                        decision: A check is a CLASS exposing run(),
+                        constructed with the context. There is no
+                        module level check function anywhere. An ERROR
+                        is the analysis failing -- a path that does
+                        not exist, a register that cannot be found, a
+                        defect in a check. A NONCONFORMITY is the data
+                        failing a rule. It carries a severity. A NOTE
+                        is something a check wants reported that is
+                        not a fault, and is used to make coverage
+                        visible. Files are discovered from the union
+                        of the paths given and loaded ONCE into a
+                        shared context, which every check reads. A
+                        check is a module exposing check(context) and
+                        three constants naming it. A check that raises
+                        is caught, recorded as an error, and the
+                        remaining checks still run.
+
+                        rationale: The note exists because a check
+                        that silently examined nothing must not be
+                        mistaken for one that passed. Reporting five
+                        files as not examined is the difference
+                        between a clean run and a vacuous one, and the
+                        distinction is invisible without somewhere to
+                        say it.
+
+                        Errors are separated from nonconformities
+                        because they want different treatment
+                        everywhere: a different exit status, a
+                        different stream, and a different response
+                        from whoever reads them. A tool that reports
+                        its own failure as a finding about the data is
+                        lying.
+
+                        One loading pass because three checks reading
+                        the same tree three times is waste, and
+                        because a file that failed to load should be
+                        reported once rather than three times.
+
+                        A raising check is caught so that a defect in
+                        one check cannot hide the findings of the
+                        others. The defect is reported as what it is.
+
+                        alternative: Checks as classes. Rejected: the
+                        interface is one function and a module is the
+                        smaller thing that provides it.
+
+                        One flat list of findings, without the three
+                        kinds. Rejected: it conflates the data being
+                        wrong with the tool being broken, which is the
+                        distinction a caller most needs.
+
+                        Each check discovering and loading what it
+                        needs. Rejected for the repeated work, and
+                        because load failures would then be reported
+                        by whichever checks happened to touch the
+                        file.
+
+                        Letting a raising check abort the run.
+                        Rejected: the findings already gathered are
+                        worth having.
+
+                        consequence: Adding a check is one module and
+                        one line in the list that names them.
+
+                        The context is loosely typed where it carries
+                        eval configuration, because the eval package
+                        depends on the checks and naming its types
+                        would close an import cycle.
+
+                        These rules live in Python and therefore do
+                        NOT travel. A federated partner running their
+                        own tooling over a slice of this repository
+                        gets the schemas and the evals, which are
+                        data, and none of the checks. That is an
+                        argument for putting as much judgement as
+                        possible into evals rather than here.
+
+                        This record names the package and the modules
+                        it decides. It could not when it was written,
+                        and ddr_source_addressability is what changed
+                        that.
+
+                        relation: - id_relation: r_decides
+                          id_target: pyp_cc_public.check
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.result
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.parse
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.register
+
+                        --- pym_cc_public.check.parse id_self:
+                        pym_cc_public.check.parse
+
+                        title: Parse check
+
+                        brief: Check that structured data files load.
+
+                        description: Reports the files the driver
+                        could not load. The loading itself is done
+                        once by the driver, so this check reports what
+                        was found rather than reading anything again.
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts: A
+                        check is a CLASS exposing run(), constructed
+                        with the context.
+    relation:           []
+
+  cd06bd158:
+    id_self:            case_record_and_item_agree.cd06bd158
+    guid_self:          case_2cfe9c84caf3403295eee8363bc615bf
+    verdict:            unmet
+    subject:            |
+                        --- ddr_cli_contract id_self: ddr_cli_contract
+
+                        title: Command line contract
+
+                        brief: Findings to stdout, failures to stderr,
+                        and an exit status that tells a gate why it
+                        stopped.
+
+                        context: One command serves three callers who
+                        want different things. A continuous
+                        integration gate wants to be stopped when the
+                        data is wrong. An agentic process wants the
+                        report and would be obstructed by being
+                        stopped. A person wants something readable.
+
+                        The agentic caller is the one this is mainly
+                        for: a tool an assistant can run to check its
+                        own work, and act on what comes back.
+
+                        decision: There is exactly ONE exit status,
+                        zero, returned however the run went. Nothing
+                        distinguishes clean from not. Ignore claims
+                        that the analysis itself failed. Two is
+                        returned always; one only when asked for.
+                        Findings go to standard output in every
+                        format. Standard error is reserved for
+                        failures of the analysis. Four serialisations:
+                        one for a person, three for a program. Paths
+                        are given by repeated option and taken as a
+                        union. Stopping early stops at the first CHECK
+                        with a critical finding, not the first
+                        finding.
+
+                        rationale: A nonconformity does not fail by
+                        default because the ordinary caller reads the
+                        report and acts on it. A tool that exits non
+                        zero every time it finds something is a tool
+                        an agent learns to ignore.
+
+                        Two exit statuses for failure rather than one,
+                        because a gate needs to tell "your data is
+                        wrong" from "I could not check your data". The
+                        second is not a smaller version of the first.
+
+                        Findings on standard output so that they pipe
+                        into something else, and failures on standard
+                        error so that they do not corrupt what is
+                        being piped. A report is the output of this
+                        command; a stack trace is not.
+
+                        Machine readable formats because a language
+                        model is a first class caller here rather than
+                        an afterthought.
+
+                        alternative: Failing on any nonconformity by
+                        default. Rejected: the common case is a caller
+                        that wants to read.
+
+                        One exit status for every kind of failure.
+                        Rejected: a gate cannot then distinguish a
+                        finding from an outage.
+
+                        Writing findings to standard error when the
+                        command is going to fail. Rejected: the stream
+                        a finding goes to would then depend on a flag,
+                        and a consumer could not know where to read.
+
+                        Stopping at the first individual finding
+                        rather than the first check. Considered, and
+                        not worth it: loading is shared and already
+                        done by the time any check runs, so the saving
+                        is small and the machinery is not.
+
+                        consequence: A report written by this command
+                        can be read back by this system's own loaders,
+                        being YAML, JSON or XML that conforms to
+                        nothing in particular yet.
+
+                        An advisory finding can never change the exit
+                        status. A caller wanting to be stopped by one
+                        asserts a complete scope instead.
+
+                        The command is heavy in options and will get
+                        heavier. That is accepted: it does several
+                        things for several callers, and each of them
+                        is named rather than implied.
+
+                        open_question: Whether the report should
+                        itself be a data item, with a type and a
+                        schema, rather than a structure this command
+                        happens to emit.
+
+                        relation: - id_relation: r_decides
+                          id_target: pyp_cc_public.cli
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.cli.command
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.cli.report
+
+                        --- pym_cc_public.cli.command id_self:
+                        pym_cc_public.cli.command
+
+                        title: Command definitions
+
+                        brief: The commands the tool offers.
+
+                        description: Declares the options, invokes the
+                        checks, and turns the resulting report into an
+                        exit status. Holds no knowledge of what checks
+                        exist or what they look for.
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts:
+                        There is exactly ONE exit status, zero,
+                        returned however the run went.
+    relation:           []
+
+  c741a213b:
+    id_self:            case_record_and_item_agree.c741a213b
+    guid_self:          case_a4c318769ccc4e5ea9f7b0aa1697ab35
+    verdict:            unmet
+    subject:            |
+                        --- ddr_type_is_immutable id_self:
+                        ddr_type_is_immutable
+
+                        title: Immutable types
+
+                        brief: A prefix names exactly one type, so an
+                        item's type is fixed for the life of the item.
+
+                        context: The type prefix is fused into the
+                        guid, and a guid is assigned once and never
+                        changes. A prefix that encodes the type
+                        therefore makes a claim about the item that
+                        must hold forever, or the identifier begins to
+                        lie.
+
+                        An earlier form of this design avoided the
+                        difficulty by making the prefix name something
+                        coarser than a type -- a grouping that might
+                        cover several similar types, within which an
+                        item could be retyped without its guid
+                        becoming wrong. Retyping across groupings was
+                        forbidden, and the rule preventing it was
+                        definitional: if two types were close enough
+                        that an item might move between them, they
+                        were held not to be coarsely distinct and
+                        should have shared a prefix from the outset.
+
+                        decision: A prefix is any run of characters at
+                        all, digits and underscores included, and
+                        nothing constrains its shape. It is NOT true
+                        that a prefix identifies exactly one type, and
+                        each type claims exactly one prefix. There is
+                        no grouping coarser than a type. An item can
+                        never be retyped. Correcting a mistyped item
+                        means minting a new item with a new guid, not
+                        editing the existing one. Prefixes are
+                        allocated in the type register, which is
+                        consequently the single point of coordination
+                        across federated repositories. Nothing else
+                        requires central allocation: readable id
+                        bodies are chosen freely by authors, and guids
+                        are minted locally.
+
+                        rationale: The coarse grouping bought an
+                        escape hatch and cost a concept. It required a
+                        second word for the grouping, distinct from
+                        type, and every statement about identifiers
+                        then had to say which of the two it meant. In
+                        practice the register was built with one
+                        prefix per type anyway, and the schema
+                        asserted prefix uniqueness over types, so the
+                        design and the data already disagreed.
+
+                        Removing the grouping makes the rule statable
+                        in one sentence, and makes the prefix and the
+                        type the same fact viewed twice.
+
+                        The immutability is not an additional
+                        constraint. It follows from fusing the prefix
+                        into an identifier that never changes, and
+                        would have to be worked around rather than
+                        chosen if it were unwanted.
+
+                        alternative: Keep the coarse grouping, so that
+                        an item may be retyped within its prefix.
+                        Rejected. It preserves a recovery path for a
+                        mistyping at the cost of a concept present in
+                        every discussion of identifiers thereafter,
+                        and the recovery path is narrow: it works only
+                        where the mistake stayed inside one prefix,
+                        which is not where mistakes are most likely.
+
+                        Leave the prefix out of the guid, so that the
+                        guid asserts nothing about type and retyping
+                        becomes possible. Rejected: the prefix in the
+                        opaque form is what makes a guid found loose
+                        in text self identifying, which is the whole
+                        purpose of prefixing.
+
+                        consequence: A mistyped item cannot be
+                        corrected in place. It must be replaced, and
+                        anything referring to the old guid must be
+                        repointed. This is the price of the decision
+                        and is accepted; the alternative was a
+                        permanent second concept in exchange for a
+                        narrow recovery path.
+
+                        Prefix allocation becomes the one thing a
+                        federation must agree on centrally. It is a
+                        small thing to agree on -- a short string per
+                        type -- but it is a real coordination cost and
+                        it does not go away.
+
+                        No two types may claim the same prefix. JSON
+                        Schema cannot express uniqueness across
+                        sibling entries, so this is enforced by
+                        tooling over the type register rather than by
+                        any schema.
+
+                        open_question: What a federation does when two
+                        repositories independently allocate the same
+                        prefix to different types. The guid
+                        distinguishes the items, but the prefix no
+                        longer distinguishes the types, and nothing
+                        yet says which allocation wins.
+
+                        relation: - id_relation: r_decides
+                          id_target: sch_primitive
+                        - id_relation: r_decides
+                          id_target: reg_type
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.identifier
+
+                        --- sch_primitive $schema:
+                        https://json-schema.org/draft/2020-12/schema
+
+                        $id:
+                        https://capability-commons.org/schema/sch_primitive.yaml
+
+                        id_self: sch_primitive
+
+                        title: Primitive value types
+
+                        brief: Library of shared value types.
+
+                        description: Shared value-type definitions
+                        with no object shape of their own. This file
+                        is a $defs library only — it has no
+                        type/properties/ required and is never
+                        referenced directly via allOf.
+
+                        Kept separate from sch_identity.yaml and the
+                        other trait schemas so that a value type (what
+                        a guid or a readable id looks like) can be
+                        reused without pulling in any object-shape
+                        trait (what it means for something to be
+                        addressable, traceable, etc).
+
+                        usage: Other schemas $ref individual $defs
+                        entries by full URL fragment, e.g.
+                          https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+                        note: These defs say what an identifier looks
+                        like and nothing about what an occurrence of
+                        one means. Meaning is carried by the name of
+                        the field holding it -- a _self field declares
+                        an identity, and any other identifier field
+                        refers to one, naming its role as it does so.
+                        See sch_identity.yaml. So no role appears in
+                        these names.
+
+                        $defs: guid:
+                          description: |
+                            Opaque, immutable, globally unique identifier
+                            for a thing: a type prefix, an underscore,
+                            then a lowercase 32 character GUID (for
+                            example t_01234567890abcdef0123456789abcde).
+
+                            Assigned once, on first creation, and
+                            preserved unchanged across every later edit —
+                            including promotion from an embedded entry to
+                            a standalone file, which changes the
+                            surrounding envelope but never the guid. The
+                            canonical, and sole, target of a relation
+                            edge.
+
+                            Note that this is not a bare UUID and standard
+                            UUID parsers and database UUID column types
+                            will reject it. Split on the first underscore
+                            at any such boundary.
+                          pattern: ^[a-z]{1,8}_[0-9a-f]{32}$
+                          type: string
+                        id:
+                          description: |
+                            Readable, prefixed identifier for a thing — a
+                            type prefix, an underscore, then a lowercase
+                            snake_case body (for example t_schema,
+                            reg_relation, r_is_specified_by_schema). The
+                            body may itself contain underscores; the FIRST
+                            underscore is the prefix separator.
+
+                            The body may also be several segments
+                            separated by full stops, so that a type whose
+                            things are already named hierarchically can
+                            say so: pym_cc_public.check.identity names a
+                            python module by the name it is imported
+                            under. A segment after the first may begin
+                            with an underscore, since a python module may.
+
+                            This is the widest form an identifier may
+                            take. What a given type permits is narrower,
+                            and is stated by the regex_id of its entry in
+                            the type register.
+
+                            Readable ids are chosen by authors and are NOT
+                            guaranteed to be globally unique across a
+                            federation. The guid is intended to enable
+                            conflicting id values to be detected and
+                            renamed.
+                          pattern: ^[a-z]{1,8}_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+                          type: string
+                        prefix:
+                          description: |
+                            Type prefix: one to eight lowercase letters,
+                            no digits and no underscore.
+
+                            Because the prefix contains no underscore, the
+                            first underscore in a prefixed identifier is
+                            always the separator, so prefix and body split
+                            deterministically without consulting any
+                            register.
+
+                            The one constraint on the prefix vocabulary
+                            that JSON Schema cannot express is plain
+                            uniqueness: no two types may claim the same
+                            prefix. Tooling enforces that over the type
+                            register; see register/reg_type.yaml.
+                          pattern: ^[a-z]{1,8}$
+                          type: string
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts: A
+                        prefix is any run of characters at all, digits
+                        and underscores included, and nothing
+                        constrains its shape.
+    relation:           []
+
+  c8d26ac94:
+    id_self:            case_record_and_item_agree.c8d26ac94
+    guid_self:          case_9da4d1594a944392a4f22a54d5e5bfad
+    verdict:            unmet
+    subject:            |
+                        --- ddr_identity_field_naming id_self:
+                        ddr_identity_field_naming
+
+                        title: Identity field naming
+
+                        brief: A _self field declares an identity;
+                        every other identifier field refers to one,
+                        and names its role as it does so.
+
+                        context: An identifier appearing in a document
+                        is doing one of two things: declaring the
+                        identity of the thing it sits in, or referring
+                        to a thing declared elsewhere. Almost every
+                        question asked of the data depends on telling
+                        those apart. Uniqueness applies to
+                        declarations only. Resolution applies to
+                        references only.
+
+                        The field names did not distinguish them.
+                        Declarations were id_item and guid_item;
+                        references in an edge were id_obj and
+                        guid_obj, with the relation type named by
+                        id_rel -- and the schema for edges specified
+                        guid_item for the reference, so the same name
+                        meant opposite things depending on where it
+                        sat.
+
+                        The distinction was therefore made
+                        positionally: a guid_item at the top of a
+                        document, or directly beneath a table key, was
+                        a declaration; a guid_item anywhere else was a
+                        reference.
+
+                        That rule works, and it has two faults. It
+                        must be extended every time a new kind of
+                        container appears, since it enumerates the
+                        places a declaration may sit. And it is a
+                        specification that every tool must implement
+                        identically -- including tools written by
+                        other parties in the federation, over slices
+                        of data they did not author.
+
+                        decision: Identity is declared by fields named
+                        id_item and guid_item. There are no fields
+                        called id_self or guid_self anywhere, wherever
+                        in a document it appears and at whatever
+                        depth. Every other identifier field REFERS to
+                        an identity declared elsewhere, and names its
+                        role as it does so: id_target and guid_target
+                        for the far end of an edge, id_relation and
+                        guid_relation for the relation type labelling
+                        it. The value types in sch_primitive are named
+                        id and guid, carrying no role, since a role is
+                        a property of the field and not of the string.
+
+                        rationale: A suffix is self evident where a
+                        position rule is not. This is the same
+                        argument that justifies the type prefix on
+                        identifiers: make the meaning legible with no
+                        surrounding context and no specification to
+                        consult. A position rule can be implemented
+                        wrongly; a name cannot be misread.
+
+                        The asymmetry between the two halves is
+                        principled rather than convenient. There is
+                        exactly one self in a mapping -- a thing
+                        declares its own identity once -- so self
+                        needs no qualifier and can be universal. There
+                        may be many references from one mapping, each
+                        playing a different part, so a reference must
+                        say which part it plays.
+
+                        Target rather than object, for the far end of
+                        an edge. Object is correct in the vocabulary
+                        of triples, where it means only the third
+                        position. It is misleading as a mnemonic here,
+                        because every relation so far is a passive
+                        construction in which the thing labelled
+                        object is the agent: in SUBJ is specified by
+                        schema OBJ, the active form is OBJ specifies
+                        SUBJ. Target is also the right register --
+                        this is a graph of labelled edges, by its own
+                        description, and directed graphs have targets.
+
+                        alternative: Keep the positional rule and
+                        change nothing. Rejected for the two faults
+                        above, of which the second is the serious one:
+                        a rule that must be implemented identically by
+                        parties who did not write it is a poor
+                        foundation for a federation.
+
+                        Name every reference id_reference and
+                        guid_reference, mirroring _self. Rejected on
+                        contact with the data: an edge holds TWO
+                        references, one to the relation type and one
+                        to the target, and a mapping cannot hold two
+                        fields of the same name. The attempt is what
+                        showed that references need roles and
+                        declarations do not.
+
+                        id_other and guid_other for the far end.
+                        Rejected: it discards the directionality that
+                        the relation register depends on, and other is
+                        relative to something the field does not name.
+
+                        Keep id_item and guid_item as the generic,
+                        role agnostic form. Rejected, though it was a
+                        close thing. Item is a noun that could
+                        describe either end of an edge, which is
+                        precisely the ambiguity being removed.
+
+                        consequence: The tooling lost a rule rather
+                        than gaining one. Collecting declarations was
+                        a walk that enumerated the two places one
+                        could sit; it is now every guid_self at any
+                        depth, and needs to know nothing about the
+                        shape of what it walks.
+
+                        Declarations and references now differ
+                        lexically as well as positionally, so a human
+                        reading a diff, or a quick script that
+                        implements no rule at all, gets the
+                        distinction right anyway.
+
+                        The migration touched everything: seven
+                        schemas, two registers and three modules of
+                        tooling. Doing it later would have cost more,
+                        and doing it after publication would have cost
+                        far more, since a field name is part of the
+                        contract a federation shares.
+
+                        A schema declaring properties named id_self
+                        and guid_self holds those names as keys whose
+                        values are subschemas rather than identifiers.
+                        Anything scanning for declarations must
+                        therefore test that the value is a string, not
+                        merely that the key matches.
+
+                        open_question: Whether a mapping will ever
+                        want two selves -- an item that is somehow two
+                        things at once. The convention assumes not,
+                        and nothing so far suggests otherwise, but the
+                        assumption is load bearing and unstated
+                        elsewhere.
+
+                        relation: - id_relation: r_decides
+                          id_target: sch_identity
+                        - id_relation: r_decides
+                          id_target: sch_relation
+                        - id_relation: r_decides
+                          id_target: sch_primitive
+                        - id_relation: r_decides
+                          id_target: sch_register
+                        - id_relation: r_decides
+                          id_target: pym_cc_public.check.identity
+
+                        --- sch_register $schema:
+                        https://json-schema.org/draft/2020-12/schema
+
+                        $id:
+                        https://capability-commons.org/schema/sch_register.yaml
+
+                        id_self: sch_register
+
+                        title: Register schema
+
+                        brief: Schema for register data items.
+
+                        description: The shape shared by every
+                        register. Registers differ in what their
+                        entries say, not in how they are structured.
+                        Each concrete register is a data item
+                        conforming to this schema.
+
+                        A register is a first class data item. It has
+                        identity, it can be the endpoint of relation
+                        edges, and it can be superseded by a successor
+                        register. Its entries are a controlled
+                        vocabulary, and the source of truth for the
+                        stable join keys used across other items.
+
+                        usage: Selected for a register by the type
+                        register, which maps the reg prefix to the
+                        register type and carries the
+                        r_is_specified_by_schema edge naming this
+                        schema.
+
+                        note: ENTRIES ARE KEYED, NOT LISTED
+
+                        The table is a map keyed by each entry's
+                        readable id, rather than an array of entries.
+
+                        Entries nonetheless repeat their id as a
+                        field, so that an entry lifted out of its
+                        table still says what it is. The key and the
+                        id field must agree; a companion check
+                        enforces that.
+
+                        ENTRY SHAPE IS OPEN
+
+                        This schema fixes only the fields that every
+                        entry in every register carries, and leaves
+                        the rest open so that each register may add
+                        its own. The type register adds prefix and
+                        regex.
+
+                        type: object
+
+                        additionalProperties: true ...
+
+                        allOf: - $ref:
+                        https://capability-commons.org/schema/sch_base.yaml
+                        - $ref:
+                        https://capability-commons.org/schema/sch_relation.yaml
+                        - properties:
+                            status:
+                              $ref: '#/$defs/register_status'
+                              description: |
+                                Lifecycle status of this register as a whole.
+                                Distinct from the status of any individual
+                                entry -- a register may be accepted while some
+                                of its entries are still proposed.
+                            table:
+                              additionalProperties:
+                                $ref: '#/$defs/register_entry'
+                              description: |
+                                The controlled entries, keyed by readable id.
+                                Keys carry the type prefix of whatever the
+                                register controls, so the entries of a given
+                                register share one prefix.
+                              minProperties: 1
+                              propertyNames:
+                                $ref: https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+                              type: object
+                          required:
+                          - status
+                          - description
+                          - usage
+                          - note
+                          - table
+                          type: object
+
+                        $defs: entry_status:
+                          description: |
+                            Lifecycle status of an individual entry.
+                            Deprecated entries remain resolvable for
+                            historical data; new writes should prefer any
+                            replacement named in note.
+                          enum:
+                          - proposed
+                          - accepted
+                          - deprecated
+                          type: string
+                        register_entry:
+                          additionalProperties: true
+                          allOf:
+                          - $ref: https://capability-commons.org/schema/sch_identity.yaml
+                          - $ref: https://capability-commons.org/schema/sch_descriptive.yaml
+                          description: |
+                            Fields carried by every register entry.
+                            Deliberately open -- concrete registers add
+                            their own subject specific fields alongside
+                            these.
+
+                            An entry is addressable and describable but is
+                            not a standalone item, so it composes those
+                            two traits rather than sch_base.yaml. It has
+                            no rights of its own; it is covered by the
+                            rights of the register holding it.
+                          properties:
+                            alias:
+                              description: |
+                                Optional. Alternate keys that MUST resolve to
+                                this entry -- historical spellings this entry
+                                has been renamed away from, and legacy strings
+                                appearing in imported data.
+
+                                This is how rename safety is had without
+                                fusing an allocated number into the
+                                identifier: a retired key moves here and
+                                stored data keeps resolving. Aliases occupy
+                                the same key namespace as live entries.
+
+                                Use an empty array when there are none.
+                              items:
+                                $ref: https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+                              type: array
+                            description:
+                              description: |
+                                Full statement of what this entry means.
+                              minLength: 1
+                              type: string
+                            relation:
+                              description: |
+                                Optional. Outgoing traceability edges from
+                                this entry.
+
+                                Optional rather than required because an entry
+                                that points at nothing has nothing to say
+                                here, and requiring an empty array of every
+                                such entry buys no safety. Where it is
+                                present, each edge is the same shape as an
+                                edge anywhere else -- the definition is
+                                referenced from sch_relation.yaml rather than
+                                restated, so the two cannot drift.
+
+                                Note that this property alone does NOT compose
+                                sch_relation.yaml, which would make relation
+                                required on every entry in every register.
+                              items:
+                                $ref:
+                                  https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+                              type: array
+                            status:
+                              $ref: '#/$defs/entry_status'
+                              description: |
+                                Optional. Lifecycle status of this entry.
+                          required:
+                          - description
+                          type: object
+                        register_status:
+                          description: |
+                            Lifecycle status of a register relative to
+                            review and use.
+                          enum:
+                          - draft
+                          - under_review
+                          - accepted
+                          - superseded
+                          - withdrawn
+                          type: string
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts:
+                        Identity is declared by fields named id_item
+                        and guid_item.
+    relation:           []
+
+  caeeebabd:
+    id_self:            case_record_and_item_agree.caeeebabd
+    guid_self:          case_8477fec3a5bf4d1482ae1aa67505f9a8
+    verdict:            unmet
+    subject:            |
+                        --- ddr_trait_composition id_self:
+                        ddr_trait_composition
+
+                        title: Trait composition
+
+                        brief: The envelope every item carries is
+                        declared once as traits, and composed, rather
+                        than restated by each item type.
+
+                        context: Every data item carries the same
+                        three things: an identity, a prose envelope,
+                        and rights. Only identity was a trait. The
+                        prose envelope was declared four separate
+                        times -- at the top of sch_schema, at the top
+                        of sch_register, again for register entries
+                        inside it, and again in sch_ddr -- and rights
+                        were declared nowhere.
+
+                        Trait schemas for the other two were written
+                        early and then withdrawn. sch_identity has
+                        referred to sch_descriptive, sch_rights and
+                        sch_base since the beginning, and those
+                        references dangled for as long as the trait
+                        schemas did not exist.
+
+                        Withdrawing them was right at the time. A
+                        trait schema has to say what it is for, and
+                        with nowhere else for that prose to go it
+                        accreted in the schemas themselves, where it
+                        made a small file hard to read. There was
+                        enough churn in settling the fundamentals
+                        without adding more of it.
+
+                        What changed is that design decision records
+                        now exist. The prose that made traits
+                        expensive has somewhere to live that is not a
+                        schema.
+
+                        decision: Three traits, composed by allOf.
+                        sch_descriptive holds title, brief,
+                        description, usage and note, and requires ALL
+                        FIVE of those fields of every composer, not
+                        only title and brief. sch_rights holds
+                        copyright, licence and protective mark.
+                        sch_base composes identity, descriptive and
+                        rights, and is what a standalone data item
+                        carries. sch_base does NOT compose
+                        sch_relation. A register entry composes
+                        identity and descriptive, not sch_base. A
+                        composer requires whatever it needs beyond
+                        what the trait requires.
+
+                        rationale: A trait requiring only the
+                        universal minimum, with the composer requiring
+                        more, is what lets one definition serve unlike
+                        consumers. allOf is an intersection, so a
+                        register can demand all five prose fields
+                        while a decision record, whose own channels do
+                        that work, demands none of description, usage
+                        or note. A trait that required all five would
+                        have forced the record to carry three empty
+                        fields; one that required none would have let
+                        a register omit them silently.
+
+                        sch_base leaves out sch_relation because only
+                        three of the schemas have outgoing edges.
+                        Requiring an empty array of the others would
+                        assert a shape most items do not have, to save
+                        one line in three files.
+
+                        A register entry is addressable and
+                        describable but is not a standalone item, and
+                        has no rights of its own -- it is covered by
+                        the rights of the register holding it.
+                        Composing sch_base would have obliged every
+                        entry to carry a licence.
+
+                        alternative: Leave the envelope declared per
+                        item type, as it was. Rejected now, though it
+                        was the right answer before decision records
+                        existed. The cost of a trait is the prose
+                        explaining it, and that cost has moved.
+
+                        sch_base composing sch_relation, so that base
+                        means the whole envelope. Rejected: five of
+                        eight schemas would have needed relation: []
+                        added for no benefit.
+
+                        Register entries composing sch_base. Rejected:
+                        an entry would then need its own copyright,
+                        licence and mark, which says something untrue
+                        about what an entry is.
+
+                        A single trait holding identity, prose and
+                        rights together, with no separate three.
+                        Rejected: being addressable, being describable
+                        and having rights are different properties,
+                        and a register entry has two of the three.
+
+                        consequence: The prose envelope has one
+                        declaration where it had four, and the
+                        composing schemas are 116 lines shorter
+                        between them.
+
+                        A reader of sch_schema no longer finds title
+                        declared there and must follow the composition
+                        to see where it comes from. That is the price
+                        of not repeating it, and it is paid by every
+                        reader rather than by whoever would otherwise
+                        keep four copies in step.
+
+                        A fourth trait later is one edit in sch_base
+                        rather than one per item type.
+
+                        The three long standing dangling references in
+                        sch_identity now resolve. They were written in
+                        anticipation of exactly these files, with
+                        these names and these fields, so no wording
+                        had to change; they simply became true.
+
+                        open_question: Whether a register entry should
+                        be able to carry rights of its own. It cannot
+                        now, on the ground that the register covers it
+                        -- but an entry lifted out of its register and
+                        shared alone would carry none, and nothing
+                        prevents that.
+
+                        relation: - id_relation: r_decides
+                          id_target: sch_descriptive
+                        - id_relation: r_decides
+                          id_target: sch_rights
+                        - id_relation: r_decides
+                          id_target: sch_base
+
+                        --- sch_descriptive $schema:
+                        https://json-schema.org/draft/2020-12/schema
+
+                        $id:
+                        https://capability-commons.org/schema/sch_descriptive.yaml
+
+                        id_self: sch_descriptive
+
+                        title: Descriptive trait
+
+                        brief: Trait with the prose envelope.
+
+                        description: The fields in which an item says
+                        what it is: title, brief, description, usage
+                        and note.
+
+                        Only title and brief are required here. A
+                        composer requires whichever of the remaining
+                        three it needs.
+
+                        usage: Composed via allOf by anything carrying
+                        prose.
+
+                        type: object
+
+                        additionalProperties: true ...
+
+                        required: - title - brief
+
+                        properties: brief:
+                          description: |
+                            One line statement of what this is. A reader
+                            who reads nothing else should still know.
+                          minLength: 1
+                          type: string
+                        description:
+                          description: |
+                            What this is, and what it is not.
+                          minLength: 1
+                          type: string
+                        note:
+                          description: |
+                            Scope caveats, and guidance on choosing
+                            between this and a neighbour. Not the place
+                            for the reasoning that produced it -- that
+                            belongs in a design decision record.
+                          minLength: 1
+                          type: string
+                        title:
+                          description: |
+                            Human facing name. A noun phrase, not a
+                            sentence.
+                          minLength: 1
+                          type: string
+                        usage:
+                          description: |
+                            What this is used for, and by what.
+                          minLength: 1
+                          type: string
+    origin:             mutated
+    note:               |
+                        One clause of the record's decision replaced
+                        by something the item plainly contradicts: and
+                        requires ALL FIVE of those fields of every
+                        composer, not only title and.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_measures
+    guid_relation:      r_5e895eb6d5e9433e94a9db3f24b498bb
+    id_target:          evl_record_and_item_agree
+    guid_target:        evl_fa903260ecc8458b9e5adbed8da8bc2c

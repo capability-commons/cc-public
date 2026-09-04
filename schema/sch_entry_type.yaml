@@ -1,0 +1,103 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_type.yaml
+id_self:                sch_entry_type
+guid_self:              sch_4a17e1ea6a1143c59c0a634b38f902bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type entry schema
+brief:                  |
+                        Schema for one entry in the type register.
+description:            |
+                        What a type entry carries BEYOND what every
+                        register entry carries. The common fields --
+                        identity, title, brief, description and the
+                        rest -- are asserted by sch_register.yaml and
+                        are not repeated here.
+
+                        This schema is therefore only half of a shape.
+                        It is composed with sch_register.yaml by
+                        sch_reg_type.yaml, which is what the type
+                        register is validated against.
+usage:                  |
+                        Referenced by sch_reg_type.yaml as the shape
+                        of each value in the type register's table.
+                        Not selected for any document directly -- an
+                        entry is not a document.
+note:                   |
+                        additionalProperties stays open here.
+type:                   object
+additionalProperties:   true
+
+required:
+  - prefix
+  - regex_id
+
+properties:
+
+  prefix:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/prefix
+    description:        |
+                        The type prefix borne by every identifier of
+                        this type. The single point of coordination
+                        across the federation, and the key by which a
+                        schema is selected for a document.
+
+                        No two types may claim the same prefix. JSON
+                        Schema cannot express uniqueness across
+                        sibling entries, so that is left to a
+                        companion check.
+
+  regex_id:
+    type:               string
+    format:             regex
+    minLength:          1
+    description:        |
+                        The form taken by the READABLE identifier of
+                        an item of this type, as an anchored regular
+                        expression.
+
+                        Required, because this is the half that
+                        varies. A readable id is chosen by an author,
+                        and a type may want more of it than the
+                        general form allows -- a sprint id carrying a
+                        date, say, or a part number carrying a series.
+                        The pattern here is what that type actually
+                        permits, and must be at least as strict as the
+                        general readable id form in
+                        sch_primitive.yaml.
+
+                        Must agree with prefix, which JSON Schema
+                        cannot check, since it cannot compare one
+                        field against another.
+
+  regex_guid:
+    type:               string
+    format:             regex
+    minLength:          1
+    description:        |
+                        The form taken by the OPAQUE identifier of an
+                        item of this type, as an anchored regular
+                        expression.
+
+                        Optional, because this is the half that does
+                        not vary. A guid is minted rather than chosen,
+                        so its form is the prefix, an underscore, and
+                        thirty two hexadecimal digits, for every type
+                        there is or will be. A tool needing the
+                        pattern can derive it from prefix:
+
+                          ^<prefix>_[0-9a-f]{32}$
+
+                        The field is defined so that the two halves of
+                        an identifier have named forms rather than one
+                        being nameless, and so that a type which one
+                        day does constrain its guids has somewhere to
+                        say so. Populate it only in that case; a copy
+                        of the derivable form would be one more thing
+                        able to go stale.

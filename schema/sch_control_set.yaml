@@ -1,0 +1,54 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_control_set.yaml
+id_self:                sch_control_set
+guid_self:              sch_b31d6cf715dc47c28869fd81dd8a65d0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set schema
+brief:                  |
+                        The shape of a control set: the eval it
+                        measures, and a keyed table of cases.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. Names the eval by an r_measures
+                        edge, which is required. Cases are
+                        sch_control_case entries keyed by local name.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+      - case
+      - relation
+
+    properties:
+
+      case:
+        type:           object
+
+        propertyNames:
+          pattern:      '^[a-z][a-z0-9_]*$'
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_control_case.yaml
+
+      relation:
+        type:           array
+
+        contains:
+          type:         object
+
+          properties:
+
+            id_relation:
+              const:    r_measures

@@ -1,0 +1,133 @@
+id_self:                ddr_type_is_immutable
+guid_self:              ddr_ed17a7d769f14e1689487adaa98193c2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Immutable types
+brief:                  |
+                        A prefix names exactly one type, so an item's
+                        type is fixed for the life of the item.
+context:                |
+                        The type prefix is fused into the guid, and a
+                        guid is assigned once and never changes. A
+                        prefix that encodes the type therefore makes a
+                        claim about the item that must hold forever,
+                        or the identifier begins to lie.
+
+                        An earlier form of this design avoided the
+                        difficulty by making the prefix name something
+                        coarser than a type -- a grouping that might
+                        cover several similar types, within which an
+                        item could be retyped without its guid
+                        becoming wrong. Retyping across groupings was
+                        forbidden, and the rule preventing it was
+                        definitional: if two types were close enough
+                        that an item might move between them, they
+                        were held not to be coarsely distinct and
+                        should have shared a prefix from the outset.
+decision:               |
+                        A prefix identifies exactly one type, and each
+                        type claims exactly one prefix. There is no
+                        grouping coarser than a type.
+
+                        An item can never be retyped. Correcting a
+                        mistyped item means minting a new item with a
+                        new guid, not editing the existing one.
+
+                        Prefixes are allocated in the type register,
+                        which is consequently the single point of
+                        coordination across federated repositories.
+                        Nothing else requires central allocation:
+                        readable id bodies are chosen freely by
+                        authors, and guids are minted locally.
+rationale:              |
+                        The coarse grouping bought an escape hatch and
+                        cost a concept. It required a second word for
+                        the grouping, distinct from type, and every
+                        statement about identifiers then had to say
+                        which of the two it meant. In practice the
+                        register was built with one prefix per type
+                        anyway, and the schema asserted prefix
+                        uniqueness over types, so the design and the
+                        data already disagreed.
+
+                        Removing the grouping makes the rule statable
+                        in one sentence, and makes the prefix and the
+                        type the same fact viewed twice.
+
+                        The immutability is not an additional
+                        constraint. It follows from fusing the prefix
+                        into an identifier that never changes, and
+                        would have to be worked around rather than
+                        chosen if it were unwanted.
+alternative:            |
+                        Keep the coarse grouping, so that an item may
+                        be retyped within its prefix. Rejected. It
+                        preserves a recovery path for a mistyping at
+                        the cost of a concept present in every
+                        discussion of identifiers thereafter, and the
+                        recovery path is narrow: it works only where
+                        the mistake stayed inside one prefix, which is
+                        not where mistakes are most likely.
+
+                        Leave the prefix out of the guid, so that the
+                        guid asserts nothing about type and retyping
+                        becomes possible. Rejected: the prefix in the
+                        opaque form is what makes a guid found loose
+                        in text self identifying, which is the whole
+                        purpose of prefixing.
+consequence:            |
+                        A mistyped item cannot be corrected in place.
+                        It must be replaced, and anything referring to
+                        the old guid must be repointed. This is the
+                        price of the decision and is accepted; the
+                        alternative was a permanent second concept in
+                        exchange for a narrow recovery path.
+
+                        Prefix allocation becomes the one thing a
+                        federation must agree on centrally. It is a
+                        small thing to agree on -- a short string per
+                        type -- but it is a real coordination cost and
+                        it does not go away.
+
+                        No two types may claim the same prefix. JSON
+                        Schema cannot express uniqueness across
+                        sibling entries, so this is enforced by
+                        tooling over the type register rather than by
+                        any schema.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_primitive
+    guid_target:        sch_b7c5238250bd403cadd8bc0844c23e2d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_type
+    guid_target:        reg_c377bd8e87ec4b1ca2bd398488392a3d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.identifier
+    guid_target:        pym_84e70c4ba91c4417a0c48448db0911c4
+
+question:
+
+  cbb3d4e12:
+    id_self:            qst_type_is_immutable.cbb3d4e12
+    guid_self:          qst_2726f3458c104d588ae2bf59c19cb54a
+    question:           |
+                        What a federation does when two repositories
+                        independently allocate the same prefix to
+                        different types. The guid distinguishes the
+                        items, but the prefix no longer distinguishes
+                        the types, and nothing yet says which
+                        allocation wins.
+    relation:           []

@@ -1,0 +1,163 @@
+id_self:                ddr_trait_composition
+guid_self:              ddr_142619ba858344afb2e949217eeec9ff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trait composition
+brief:                  |
+                        The envelope every item carries is declared
+                        once as traits, and composed, rather than
+                        restated by each item type.
+context:                |
+                        Every data item carries the same three things:
+                        an identity, a prose envelope, and rights.
+                        Only identity was a trait. The prose envelope
+                        was declared four separate times -- at the top
+                        of sch_schema, at the top of sch_register,
+                        again for register entries inside it, and
+                        again in sch_ddr -- and rights were declared
+                        nowhere.
+
+                        Trait schemas for the other two were written
+                        early and then withdrawn. sch_identity has
+                        referred to sch_descriptive, sch_rights and
+                        sch_base since the beginning, and those
+                        references dangled for as long as the trait
+                        schemas did not exist.
+
+                        Withdrawing them was right at the time. A
+                        trait schema has to say what it is for, and
+                        with nowhere else for that prose to go it
+                        accreted in the schemas themselves, where it
+                        made a small file hard to read. There was
+                        enough churn in settling the fundamentals
+                        without adding more of it.
+
+                        What changed is that design decision records
+                        now exist. The prose that made traits
+                        expensive has somewhere to live that is not a
+                        schema.
+decision:               |
+                        Three traits, composed by allOf.
+
+                        sch_descriptive holds title, brief,
+                        description, usage and note, and requires only
+                        title and brief.
+
+                        sch_rights holds copyright, licence and
+                        protective mark.
+
+                        sch_base composes identity, descriptive and
+                        rights, and is what a standalone data item
+                        carries.
+
+                        sch_base does NOT compose sch_relation.
+
+                        A register entry composes identity and
+                        descriptive, not sch_base.
+
+                        A composer requires whatever it needs beyond
+                        what the trait requires.
+rationale:              |
+                        A trait requiring only the universal minimum,
+                        with the composer requiring more, is what lets
+                        one definition serve unlike consumers. allOf
+                        is an intersection, so a register can demand
+                        all five prose fields while a decision record,
+                        whose own channels do that work, demands none
+                        of description, usage or note. A trait that
+                        required all five would have forced the record
+                        to carry three empty fields; one that required
+                        none would have let a register omit them
+                        silently.
+
+                        sch_base leaves out sch_relation because only
+                        three of the schemas have outgoing edges.
+                        Requiring an empty array of the others would
+                        assert a shape most items do not have, to save
+                        one line in three files.
+
+                        A register entry is addressable and
+                        describable but is not a standalone item, and
+                        has no rights of its own -- it is covered by
+                        the rights of the register holding it.
+                        Composing sch_base would have obliged every
+                        entry to carry a licence.
+alternative:            |
+                        Leave the envelope declared per item type, as
+                        it was. Rejected now, though it was the right
+                        answer before decision records existed. The
+                        cost of a trait is the prose explaining it,
+                        and that cost has moved.
+
+                        sch_base composing sch_relation, so that base
+                        means the whole envelope. Rejected: five of
+                        eight schemas would have needed relation: []
+                        added for no benefit.
+
+                        Register entries composing sch_base. Rejected:
+                        an entry would then need its own copyright,
+                        licence and mark, which says something untrue
+                        about what an entry is.
+
+                        A single trait holding identity, prose and
+                        rights together, with no separate three.
+                        Rejected: being addressable, being describable
+                        and having rights are different properties,
+                        and a register entry has two of the three.
+consequence:            |
+                        The prose envelope has one declaration where
+                        it had four, and the composing schemas are 116
+                        lines shorter between them.
+
+                        A reader of sch_schema no longer finds title
+                        declared there and must follow the composition
+                        to see where it comes from. That is the price
+                        of not repeating it, and it is paid by every
+                        reader rather than by whoever would otherwise
+                        keep four copies in step.
+
+                        A fourth trait later is one edit in sch_base
+                        rather than one per item type.
+
+                        The three long standing dangling references in
+                        sch_identity now resolve. They were written in
+                        anticipation of exactly these files, with
+                        these names and these fields, so no wording
+                        had to change; they simply became true.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_descriptive
+    guid_target:        sch_02a7f7d40e0c42fe8e82b170c4d15eaf
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_rights
+    guid_target:        sch_f6ab4a480aa64f57b2d7378f023b0d5e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_base
+    guid_target:        sch_5d99a2001bc440308bbe122f2e4cc9b8
+
+question:
+
+  c59898dab:
+    id_self:            qst_trait_composition.c59898dab
+    guid_self:          qst_0bb7b52253974de5a9288e6b12dbe075
+    question:           |
+                        Whether a register entry should be able to
+                        carry rights of its own. It cannot now, on the
+                        ground that the register covers it -- but an
+                        entry lifted out of its register and shared
+                        alone would carry none, and nothing prevents
+                        that.
+    relation:           []

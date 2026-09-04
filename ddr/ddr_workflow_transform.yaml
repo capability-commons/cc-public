@@ -1,0 +1,174 @@
+id_self:                ddr_workflow_transform
+guid_self:              ddr_8abf6ef5c20c4b4b9bb95be7a79f3656
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workflow transforms
+brief:                  |
+                        A transform is a component whose ports carry
+                        workflows. A derived workflow is an item, and
+                        its provenance is the execution that derived
+                        it.
+context:                |
+                        Stableflow's model configuration is a source
+                        that transforms act on. Its cfg package offers
+                        add, join, filt, write and override, behind a
+                        fluent interface, so that a base model plus a
+                        chain of transforms yields a variant: a test
+                        variant, a deployment variant, a product line
+                        member. The architecture description calls
+                        this model driven engineering and names it as
+                        the platform's purpose.
+
+                        The workflow records here said nothing about
+                        transforming a definition. Worse, they called
+                        a definition immutable and ran it as-is, so a
+                        transform applied at load time had nowhere to
+                        live, and an execution would have named a
+                        definition that was not what ran.
+
+                        A workflow is a data item. Data items are what
+                        components consume and produce.
+decision:               |
+                        A transform is a component. Its input ports
+                        carry workflow items and its output ports
+                        carry workflow items. Nothing distinguishes it
+                        from any other component except the types on
+                        its ports.
+
+                        A transform is therefore run by a workflow,
+                        and a chain of transforms is a dataflow
+                        workflow whose items are workflows.
+
+                        A derived workflow is materialised as an item.
+                        It is not held in memory and run.
+
+                        The execution that produced a derived workflow
+                        is its provenance, exactly as for any other
+                        item. The derived workflow's binding names the
+                        base workflow it came from and the transform
+                        that made it.
+
+                        The operations stableflow offers are
+                        components naming code: adding a node, joining
+                        two ports, filtering nodes by selector,
+                        writing a value by dot path.
+rationale:              |
+                        A transform as a component, because the
+                        alternative is a second kind of thing that
+                        acts on workflows, with its own way of being
+                        named, checked, shared and recorded. A
+                        component already has all four.
+
+                        Materialised, because provenance is the whole
+                        reason for recording executions, and an
+                        execution naming a definition other than the
+                        one that ran is a false record at the root.
+                        The cost is items. The mitigation is a content
+                        identifier, so that two derivations yielding
+                        the same definition are one item, and that
+                        identifier is already wanted elsewhere.
+
+                        The stableflow operations as components,
+                        because they are deterministic functions of a
+                        document, code is addressable, and a component
+                        may name code. Filtering by selector is the
+                        selector the eval design already provides.
+                        Writing by dot path is the path notation
+                        already provided, wanting only a write to go
+                        with its select.
+
+                        Dynamic adaptation follows without a mechanism
+                        for it. A workflow that adapts to its
+                        situation is a transform that reads the
+                        situation and writes the variant, run before
+                        the variant runs. The adaptation is in the
+                        graph and the record of it is in the
+                        execution.
+alternative:            |
+                        Transforms applied at load time and never
+                        recorded, as stableflow does. Rejected: the
+                        definition that ran is then unrecoverable from
+                        what was recorded.
+
+                        Transforms as a distinct kind of item.
+                        Rejected: a second kind of thing to name,
+                        check, share and record, where a component
+                        does all four.
+
+                        A derived workflow held in memory, with the
+                        execution recording the base and the transform
+                        chain instead. Considered. Rejected because it
+                        makes provenance a computation rather than a
+                        walk, and because a partner reading the
+                        execution would have to rerun the chain to
+                        know what ran.
+
+                        A workflow carrying a list of overrides inside
+                        itself, applied when it runs. Rejected: it is
+                        a transform hidden in the definition, with the
+                        same unrecorded outcome.
+consequence:            |
+                        Variant generation is a workflow, and so is
+                        everything stableflow's transform module does.
+                        No engine has to know what a transform is.
+
+                        A repository that generates variants
+                        accumulates workflow items. Without a content
+                        identifier every run of a transform yields a
+                        new one, identical or not.
+
+                        The path module has a write operation beside
+                        select. It was added for the edit commands,
+                        and a transform that writes a value by dot
+                        path uses the same one.
+
+                        A transform is judged like any component. An
+                        eval anchored to its output port judges the
+                        workflow it produced, and the structural check
+                        for dataflow workflows is exactly such a
+                        judgement, mechanically. The output of a
+                        transform can be gated on being a valid graph.
+
+                        A transform's provenance is recursive. A
+                        derived workflow came from a base and a
+                        transform; the transform is a component; the
+                        base may itself be derived. The chain is
+                        walkable and has no bound.
+relation:               []
+
+question:
+
+  c1e5cc548:
+    id_self:            qst_workflow_transform.c1e5cc548
+    guid_self:          qst_987faa4d51f24510befc810f3706909d
+    question:           |
+                        Whether a derived workflow should name the
+                        base it came from directly, by a relation of
+                        its own, or only through the execution that
+                        derived it. The second is sufficient and the
+                        first is faster to read.
+    relation:           []
+
+  c8912a6bd:
+    id_self:            qst_workflow_transform.c8912a6bd
+    guid_self:          qst_65528e94a72e47aab6ef4f68f27f8762
+    question:           |
+                        Whether a transform may take parameters other
+                        than through a port, since a filter wants a
+                        selector and a write wants a path and a value,
+                        and neither is naturally an item.
+    relation:           []
+
+  c364a6cc6:
+    id_self:            qst_workflow_transform.c364a6cc6
+    guid_self:          qst_a340d68733b84742b64e907a7ae93b18
+    question:           |
+                        Whether a derived workflow that is never
+                        executed should be kept.
+    relation:           []

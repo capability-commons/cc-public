@@ -1,0 +1,123 @@
+id_self:                evl_record_and_item_agree
+guid_self:              evl_fa903260ecc8458b9e5adbed8da8bc2c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Record and item agree
+brief:                  |
+                        A decision record and the item it decides say
+                        the same thing.
+criterion:              |
+                        You are given a design decision record and one
+                        item it decides.
+
+                        MET when the item embodies the decision the
+                        record states.
+
+                        UNMET when the two disagree: the item does
+                        something the record rules out, or the record
+                        states something the item does not do.
+
+                        Silence is not disagreement. A record settles
+                        one matter and is entitled to say nothing
+                        about the rest of the item.
+
+                        When UNMET, say which of the two appears to
+                        have moved.
+
+subject:
+
+  include_type:
+    - t_ddr
+    - t_register
+    - t_schema
+
+scope:
+
+  exclude:
+    - '**.guid_self'
+    - '**.guid_target'
+    - '**.guid_relation'
+    - '**.guid_mark'
+    - '**.copyright'
+    - '**.license'
+    - '**.protective_mark'
+
+severity:               advisory
+
+example:
+
+  - input:              |
+                        RECORD ddr_type_is_immutable, decision: "A
+                        prefix identifies exactly one type, and each
+                        type claims exactly one prefix."
+
+                        ITEM reg_type, entry prefixes: t, sch, evl,
+                        reg, r, ddr, mark
+    verdict:            met
+    feedback:           |
+                        Seven types, seven distinct prefixes. The item
+                        does what the record decided.
+
+  - input:              |
+                        RECORD ddr_identity_field_naming, decision:
+                        "Every other identifier field REFERS to an
+                        identity declared elsewhere, and names its
+                        role as it does so: id_target and guid_target
+                        [...] id_relation and guid_relation."
+
+                        ITEM sch_relation, edge fields: id_rel,
+                        guid_item
+    verdict:            unmet
+    feedback:           |
+                        The edge names its target guid_item, which the
+                        record reserves for declaring an identity, and
+                        abbreviates the relation to id_rel. The item
+                        has not been brought up to the record.
+
+  - input:              |
+                        RECORD ddr_prefixed_identifier, decision:
+                        "Every identifier consists of a type prefix of
+                        one to eight lowercase letters, an underscore,
+                        and a body."
+
+                        ITEM sch_primitive, $defs/id: pattern
+                        ^[a-z]{1,8}_[a-z][a-z0-9_]*$
+    verdict:            met
+    feedback:           |
+                        The prefix and separator are as decided. That
+                        the body is snake_case is a further constraint
+                        the record does not speak to, which is silence
+                        rather than disagreement.
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             mutated
+    cases:              9
+    samples:            5
+    false_positive:     null
+    false_negative:     0.333
+    unanimous:          0.889
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             all
+    cases:              9
+    samples:            5
+    false_positive:     null
+    false_negative:     0.333
+    unanimous:          0.889
+
+relation:
+
+  - id_relation:        r_evaluates_items_joined_by_relation
+    guid_relation:      r_c7a437a455054da6bbedbced7c4bf32d
+    id_target:          r_decides
+    guid_target:        r_4aefda84f8894e02aede8729ced91732

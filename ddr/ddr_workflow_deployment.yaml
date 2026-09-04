@@ -1,0 +1,191 @@
+id_self:                ddr_workflow_deployment
+guid_self:              ddr_51ab96b9a95049d3969ab13c1bfa8dd9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workflow deployment
+brief:                  |
+                        A workflow definition says what is to be done.
+                        A deployment, an item of its own, says what
+                        machinery does it. An execution runs under
+                        exactly one deployment and records nothing
+                        about machinery itself.
+context:                |
+                        Stableflow keeps these apart. Its node and
+                        edge sections describe a computation. Its
+                        host, process, req_host_cfg and role sections
+                        describe where that computation runs and on
+                        what. One system configuration is deployed to
+                        a laptop or to a cluster without the
+                        computation changing.
+
+                        The same separation is available here and the
+                        temptation to ignore it is stronger, because a
+                        model identifier looks like part of a prompt
+                        in a way that a hostname never looks like part
+                        of a computation.
+
+                        A workflow shared across a federation is
+                        shared with people whose budgets, credentials
+                        and available models are not ours.
+decision:               |
+                        A workflow definition names ports,
+                        transformations and their wiring. It does not
+                        name a model, a temperature, a credential, an
+                        iteration budget, a concurrency limit, or a
+                        host.
+
+                        A DEPLOYMENT is a data item. It names the
+                        workflow it deploys, by an r_deploys edge, and
+                        carries the machinery: which model, what
+                        budget of passes a cycle may take, which evals
+                        run as a node produces (judge: always, guards
+                        or never), over how many fresh judgements an
+                        adverse verdict is confirmed, and when a run
+                        commits (commit: run, node or never). Whatever
+                        else a run needs that the definition must not
+                        say goes here too.
+
+                        An execution runs under exactly one
+                        deployment, named by an r_ran_under edge. What
+                        machinery was used is read from the deployment
+                        and is not repeated in the execution. An ad
+                        hoc run creates a deployment for itself.
+
+                        The policy that a definition names no
+                        machinery binds every form of component, and
+                        is checked against every type carrying
+                        r_is_a_form_of.
+rationale:              |
+                        A workflow naming its model means a different
+                        thing for every person who runs it, which is
+                        the opposite of what sharing a definition is
+                        for. A partner with no access to that model
+                        cannot run the workflow, and a partner who
+                        substitutes one silently produces results not
+                        comparable with anyone else's.
+
+                        The same argument has already been settled
+                        once here, in a smaller place. An eval does
+                        not name its judge; cctool takes one from an
+                        option or the environment. Evals are shared
+                        across the federation and judges are not.
+
+                        A deployment as an item rather than as options
+                        and environment, because then a run is two
+                        items joined by an edge -- this workflow,
+                        deployed thus -- and both halves travel.
+                        Stableflow keeps host and process inside the
+                        model file and so can describe a deployed
+                        system in one artifact; moving them out for
+                        portability lost that, and an addressable
+                        deployment gets it back without giving up the
+                        portability.
+
+                        Machinery in exactly one place, because an
+                        execution that repeated it would be two
+                        records of one fact that could disagree. The
+                        deployment is that place. Reusable across
+                        executions, so that a hundred runs under one
+                        configuration are a hundred edges to one item.
+
+                        A budget is machinery and not intent. How many
+                        passes are affordable depends on who is
+                        paying, and a definition that fixed it would
+                        be one only its author could afford to run.
+alternative:            |
+                        A model named in the workflow definition.
+                        Rejected above.
+
+                        A model named in the component rather than the
+                        workflow. Rejected for the same reasons, one
+                        level down.
+
+                        A default model in the definition, overridable
+                        at execution. Rejected: a default is a value
+                        that gets used, so it has the same effects as
+                        naming one, and it additionally hides that a
+                        substitution occurred.
+
+                        Machinery held only as environment and
+                        options, outside the repository, which was the
+                        decision here before this draft. Rejected: it
+                        is not addressable, so an execution can only
+                        copy it, and two copies of one fact are one
+                        more than can be kept in step.
+
+                        Machinery recorded inline on each execution.
+                        Rejected for the same reason: a hundred
+                        executions under one configuration are a
+                        hundred copies of it.
+consequence:            |
+                        A workflow definition is portable. Someone
+                        with different machinery writes their own
+                        deployment, runs the same definition, and the
+                        two executions are comparable because each
+                        names what it ran under.
+
+                        Two executions of one definition may reach
+                        different results for no reason visible in the
+                        definition. That is true, and the deployment
+                        each names is where the reason is.
+
+                        One more item type, and a deployment for every
+                        distinct machinery configuration ever used. Ad
+                        hoc runs mint one each.
+
+                        A budget lives with the deployment, so an
+                        iteration limit is a property of how a
+                        workflow is run and not of the graph. Two
+                        deployments of one workflow may stop in
+                        different places.
+
+                        A model identifier names something that
+                        changes underneath it. A deployment naming a
+                        model says which was asked for, not exactly
+                        what answered.
+
+question:
+
+  c8dddb5d2:
+    id_self:            qst_workflow_deployment.c8dddb5d2
+    guid_self:          qst_c964ce1edb1347e0a7b4b1348af33a21
+    question:           |
+                        Whether a deployment should record enough
+                        about the model to reproduce a run, given the
+                        point above, and whether that is possible at
+                        all for a model served remotely.
+    relation:           []
+
+  cf409ed2c:
+    id_self:            qst_workflow_deployment.cf409ed2c
+    guid_self:          qst_bd1061fa17624c319b0f35285c114039
+    question:           |
+                        Whether a workflow may state requirements on
+                        its deployment without naming one -- a minimum
+                        capability, a maximum cost -- so that a
+                        definition can decline to run rather than run
+                        badly.
+    relation:           []
+
+  c9cdc06ee:
+    id_self:            qst_workflow_deployment.c9cdc06ee
+    guid_self:          qst_cf5b0a8110f34dbdac32b86bc61df53f
+    question:           |
+                        Whether a deployment may carry credentials, or
+                        only name where they are found. The latter,
+                        presumably, and the record should say so once
+                        the former has been wanted and refused.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_deployment
+    guid_target:        sch_17ba23d4628842b19533d1ab38fb67c0

@@ -1,0 +1,67 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_descriptive.yaml
+id_self:                sch_descriptive
+guid_self:              sch_02a7f7d40e0c42fe8e82b170c4d15eaf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Descriptive trait
+brief:                  |
+                        Trait with the prose envelope.
+description:            |
+                        The fields in which an item says what it is:
+                        title, brief, description, usage and note.
+
+                        Only title and brief are required here. A
+                        composer requires whichever of the remaining
+                        three it needs.
+usage:                  |
+                        Composed via allOf by anything carrying prose.
+type:                   object
+additionalProperties:   true
+
+required:
+  - title
+  - brief
+
+properties:
+
+  title:
+    type:               string
+    minLength:          1
+    description:        |
+                        Human facing name. A noun phrase, not a
+                        sentence.
+
+  brief:
+    type:               string
+    minLength:          1
+    description:        |
+                        One line statement of what this is. A reader
+                        who reads nothing else should still know.
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this is, and what it is not.
+
+  usage:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this is used for, and by what.
+
+  note:
+    type:               string
+    minLength:          1
+    description:        |
+                        Scope caveats, and guidance on choosing
+                        between this and a neighbour. Not the place
+                        for the reasoning that produced it -- that
+                        belongs in a design decision record.

@@ -1,0 +1,122 @@
+id_self:                evl_prose_describes
+guid_self:              evl_6e91e1a0e8224b30905294ff178b4036
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prose describes
+brief:                  |
+                        An item's prose describes the item; it does
+                        not argue for it.
+criterion:              |
+                        MET when every passage of prose says what the
+                        item is or how it is used.
+
+                        UNMET when any passage argues FOR the design:
+                        alternatives weighed, costs accepted, history,
+                        or a case made for a choice.
+
+                        Saying why a constraint takes the form it
+                        does, beside that constraint, is description
+                        and is MET. The test is whether a reader of
+                        THIS item needs the passage.
+
+                        When UNMET, quote the passage.
+
+scope:
+
+  include:
+    - description
+    - usage
+    - note
+
+severity:               advisory
+
+example:
+
+  - input:              |
+                        These defs say what an identifier looks like
+                        and nothing about what an occurrence of one
+                        means. Meaning is carried by the name of the
+                        field holding it.
+    verdict:            met
+    feedback:           |
+                        Describes what the defs hold, and points at
+                        where the rest is said. No case is made for
+                        the design.
+
+  - input:              |
+                        The prefix serves three purposes, in order of
+                        importance: 1. It makes an identifier
+                        self-identifying with zero surrounding context
+                        [...] This is the requirement that motivates
+                        prefixing at all.
+    verdict:            unmet
+    feedback:           |
+                        Argues for the design. A reader using $defs/id
+                        does not need it. Belongs in the rationale
+                        channel of a decision record.
+
+  - input:              |
+                        Type prefix: one to eight lowercase letters,
+                        no digits and no underscore. Because the
+                        prefix contains no underscore, the first
+                        underscore in a prefixed identifier is always
+                        the separator.
+    verdict:            met
+    feedback:           |
+                        Says why the constraint takes the form it
+                        does, beside that constraint. A reader of this
+                        field needs it, so it is description rather
+                        than argument.
+
+  - input:              |
+                        The docstring is read without importing
+                        anything: importing would run the code being
+                        examined, which is a poor bargain for a tool
+                        whose job is to examine it.
+    verdict:            unmet
+    feedback:           |
+                        Justifies the choice rather than describing
+                        it. That the docstring is read without
+                        importing is description. Why that is the
+                        better bargain argues for it, by naming the
+                        alternative it avoids, and belongs in the
+                        rationale channel of a decision record.
+
+                        Compare the passage above about the prefix
+                        separator, which is MET. That one DERIVES a
+                        property a reader needs in order to use the
+                        field. This one JUSTIFIES a choice a reader
+                        does not need at all.
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             written
+    cases:              15
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             all
+    cases:              15
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_descriptive
+    guid_target:        sch_02a7f7d40e0c42fe8e82b170c4d15eaf

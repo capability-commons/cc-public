@@ -1,0 +1,212 @@
+id_self:                ddr_design_decision_record
+guid_self:              ddr_6febce2a1f9d4771866ef1cf6bffd03c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Design decision records
+brief:                  |
+                        Reasoning is recorded in design decision
+                        records, so that the artifacts it produced do
+                        not have to carry it.
+context:                |
+                        Documents written with a language model
+                        accrete explanatory prose. A consideration
+                        raised while working tends to acquire a
+                        textual representation in what is produced,
+                        whether or not the product needs it --
+                        omitting it looks, statistically, like having
+                        forgotten it.
+
+                        The condition is present in this repository
+                        and can be measured. sch_primitive.yaml is 52
+                        per cent prose, 78 lines of it in a single
+                        note field: an essay on prefixed identifiers,
+                        the rule that a type is fixed for the life of
+                        an item, and an argument about delimiters. All
+                        of it is reasoning about why the schema is as
+                        it is. None of it is needed to validate
+                        anything.
+
+                        An earlier attempt at this system was
+                        abandoned largely because generated material
+                        of that kind made review impractical.
+
+                        Prior experience with weaker models is
+                        suggestive. Adding a comment field to a
+                        required JSON output improved the reliability
+                        with which those models produced well formed
+                        JSON at all -- surplus material had somewhere
+                        legal to go, and stopped breaking the
+                        structure it would otherwise have leaked into.
+                        Structured output is no longer fragile in that
+                        way, but the underlying tendency has not gone
+                        anywhere.
+decision:               |
+                        Introduce a design decision record: a data
+                        item holding the reasoning behind one
+                        decision.
+
+                        One record per decision, where a decision is
+                        one thing that could later be revised on its
+                        own. Records live in ddr/ and are named for
+                        their subject.
+
+                        A record carries six channels -- context,
+                        decision, rationale, alternative, consequence
+                        and open question -- of which all but the last
+                        are required.
+
+                        A record names what it decides, by an
+                        r_decides edge from the record to each item
+                        concerned.
+
+                        Artifacts express mechanism. Records express
+                        reasoning. Reasoning is not duplicated into an
+                        artifact unless it is needed to understand
+                        that artifact locally.
+rationale:              |
+                        Separate named channels rather than one prose
+                        field, because the categories differ and an
+                        undifferentiated space fills unevenly. A
+                        rejected alternative, an accepted cost and an
+                        unresolved doubt each want somewhere specific,
+                        and a field that could hold any of them tends
+                        to hold whichever the writer thought of first.
+
+                        alternative and consequence are required
+                        because they are the two most likely to leak.
+                        A rejected option that goes unrecorded
+                        reappears -- as a question already answered,
+                        or as a comment in an artifact explaining what
+                        the artifact is not.
+
+                        The edge is on the record because an artifact
+                        obliged to point back at the reasoning behind
+                        it would not be free of that reasoning, which
+                        is the whole object of the exercise.
+
+                        A record must be easier to write than a
+                        comment, or it relieves nothing. Hence few
+                        fields, plain prose, and no ceremony: a shape
+                        elaborate enough to be a chore would send the
+                        writer back to writing comments.
+alternative:            |
+                        An architectural decision record in the usual
+                        form -- numbered, dated, status tracked.
+                        Rejected. Its scope is architecture, whereas
+                        the decisions taken here include naming
+                        conventions and knowingly accepted risks,
+                        which are design decisions and not
+                        architectural ones. Its numbering and its
+                        dating both suit a minute of a meeting rather
+                        than a live account that is edited as
+                        understanding improves.
+
+                        One record per directory, with the decisions
+                        in a keyed table. Rejected. A decision
+                        commonly settles matters across several
+                        directories at once -- the decision on
+                        identity field naming touched seven schemas,
+                        two registers and three modules -- so a
+                        location gives no answer to where such a
+                        record belongs. Appending to a shared table
+                        also requires reading the whole of it first,
+                        which reintroduces at the storage layer the
+                        very pressure this type exists to relieve.
+
+                        Leaving reasoning in schema note fields, as
+                        now. Rejected: that is the condition being
+                        treated.
+
+                        A lifecycle status on records. Deferred rather
+                        than rejected; see open question.
+
+                        Numbered identifiers. Rejected, consistently
+                        with the system's refusal elsewhere to fuse an
+                        allocated number into an identifier.
+consequence:            |
+                        Schema and register files should now shed
+                        their reasoning. sch_primitive.yaml is the
+                        largest case; the rest are smaller but the
+                        same shape.
+
+                        A reader of an artifact no longer finds the
+                        reasoning beside it, and must look for what
+                        decides that artifact instead. This is an
+                        accepted cost. The indirection is real, and it
+                        is worth paying for artifacts that are closed
+                        under the decisions that produced them.
+
+                        The constraint that reasoning is not
+                        duplicated into an artifact cannot be checked
+                        mechanically. It holds only for as long as a
+                        record remains easier to write than a comment,
+                        which is a property of the shape rather than
+                        of any rule.
+
+                        Records accumulate and are not indexed.
+                        Discovery is by reading ddr/, or by asking the
+                        tooling what decides a given item.
+
+                        There is no r_supersedes relation, so a
+                        decision genuinely replaced rather than
+                        refined has no way to name its replacement.
+                        This is tolerable while records are few.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_ddr
+    guid_target:        sch_d801523ec4814494be182b54dd62e8e3
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_ddr
+    guid_target:        t_5751ab6c7b0c44e8b4ed8f6c882192d8
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_decides
+    guid_target:        r_4aefda84f8894e02aede8729ced91732
+
+question:
+
+  c890ad56f:
+    id_self:            qst_design_decision_record.c890ad56f
+    guid_self:          qst_7468ad462dc6413585bc4e4114bd02de
+    question:           |
+                        Lifecycle. A record carries no status, because
+                        the obvious vocabulary -- proposed, accepted,
+                        deprecated -- presumes a review process that
+                        does not exist here. What a status should mean
+                        under a development cycle in which a language
+                        model does most of the writing wants
+                        deliberate design, and borrowing a vocabulary
+                        in the meantime would settle the question by
+                        accident.
+    relation:           []
+
+  ca70a5dde:
+    id_self:            qst_design_decision_record.ca70a5dde
+    guid_self:          qst_50d42117dde44722ae7db424b6abddc5
+    question:           |
+                        Whether these are the right six channels. They
+                        are a first guess, tested against one record
+                        -- this one.
+    relation:           []
+
+  c993413e6:
+    id_self:            qst_design_decision_record.c993413e6
+    guid_self:          qst_24f7bf31a741445b98d4255cad63fd6c
+    question:           |
+                        Whether one decision per record survives
+                        contact with practice, or whether the rule
+                        proves too fine or too coarse once there are
+                        enough records to tell.
+    relation:           []

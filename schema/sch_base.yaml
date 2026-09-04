@@ -1,0 +1,39 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_base.yaml
+id_self:                sch_base
+guid_self:              sch_5d99a2001bc440308bbe122f2e4cc9b8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Base trait
+brief:                  |
+                        Trait carried by every standalone data item.
+description:            |
+                        The envelope common to every data item held in
+                        a file of its own: an identity, a prose
+                        envelope, and rights. Composing this is what
+                        distinguishes a standalone item from a
+                        fragment of one.
+
+                        Nothing is asserted here that the composed
+                        traits do not assert.
+usage:                  |
+                        Composed via allOf by each concrete item type,
+                        which then adds whatever else that type
+                        requires.
+note:                   |
+                        sch_relation.yaml is not composed here. A type
+                        whose items carry outgoing edges composes that
+                        trait alongside this one.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_descriptive.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml

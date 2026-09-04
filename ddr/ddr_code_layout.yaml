@@ -1,0 +1,135 @@
+id_self:                ddr_code_layout
+guid_self:              ddr_b6dee4863fb24313bf2365dd942af0e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Code layout
+brief:                  |
+                        The python source has a layout convention of
+                        its own. It is written down here and left to
+                        hand and eye, because mechanising it needs
+                        judgement a formatter does not have.
+context:                |
+                        The layout check governs YAML documents, and
+                        the metadata document held in a python
+                        docstring. The code beneath that docstring is
+                        not examined.
+
+                        ddr_layout_convention left open whether it
+                        should be, and phrased the question as though
+                        governing code meant carrying the YAML
+                        convention further down the file. It does not.
+                        Values at column 24 and prose filled to 70 say
+                        nothing about python.
+
+                        Governing code means a second convention, and
+                        the source already has one. It is simply
+                        unwritten.
+decision:               |
+                        Code layout stays a matter of hand and eye.
+                        Nothing checks it and nothing formats it.
+
+                        The convention is recorded here rather than
+                        enforced, so that it exists somewhere other
+                        than in the files themselves, and so that a
+                        formatter written later has something to be
+                        held against.
+
+                        Things that belong together are grouped, and
+                        the assignment signs within a group line up
+                        vertically.
+
+                        An expression split over several lines is set
+                        from its last line backwards. The last line
+                        moves as far right as it will go, and the
+                        lines before it are spread so that each steps
+                        back visibly from the one that follows.
+
+                        A separator comment of exactly 79 characters
+                        precedes each definition. All 124 in the
+                        source are that length already.
+rationale:              |
+                        What makes the style worth having is what
+                        makes it hard to mechanise.
+
+                        Which assignments are meaningfully related is
+                        a question about what the code means, not
+                        about how it parses. A formatter would have to
+                        group by adjacency, and would align things
+                        that merely sit next to each other.
+
+                        How far a continuation steps back is an
+                        aesthetic judgement about what reads as
+                        structure. There is a right answer for each
+                        expression and no rule that produces it.
+
+                        The work is a few days rather than an
+                        afternoon, and doing it badly is worse than
+                        leaving it. A formatter that runs across the
+                        source and leaves every file slightly wrong is
+                        expensive to undo, and erodes the thing it was
+                        meant to keep.
+alternative:            |
+                        Checking only the unambiguous parts now: line
+                        width, trailing whitespace, separator comment
+                        length, blank lines between definitions. Not
+                        taken. It is a small fraction of the
+                        convention, and a check passing would say the
+                        code conforms when almost nothing about its
+                        layout had been looked at.
+
+                        Adopting black or ruff format. Rejected. They
+                        normalise away the alignment this style is
+                        built on, so adopting one would not enforce
+                        the convention but replace it.
+
+                        Writing the formatter now. Deferred on effort,
+                        not rejected.
+consequence:            |
+                        Code layout drifts where it drifts and nothing
+                        reports it. That is accepted here rather than
+                        overlooked.
+
+                        The source as it stands is the reference for
+                        what the style is. A formatter written later
+                        has a corpus to be tested against, which is
+                        worth more than a specification written in
+                        advance of one.
+
+                        The question ddr_layout_convention left open
+                        is answered, though not the way it was asked:
+                        not by extending that convention, which does
+                        not reach code, but by a convention of its own
+                        that is for now unenforced.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public
+    guid_target:        pyp_3fcd42f620d34ba485dd91c55b6c390f
+
+question:
+
+  ce3edef87:
+    id_self:            qst_code_layout.ce3edef87
+    guid_self:          qst_5a82f159d2e442e694545530174a67c8
+    question:           |
+                        Whether a formatter can infer an alignment
+                        group from the code, or whether the writer has
+                        to mark where one begins and ends.
+    relation:           []
+
+  c519701b6:
+    id_self:            qst_code_layout.c519701b6
+    guid_self:          qst_08dc545b516b442a90f56cbb1d5104bd
+    question:           |
+                        What the step back between continuation lines
+                        should be, stated as a rule rather than
+                        settled by eye each time.
+    relation:           []

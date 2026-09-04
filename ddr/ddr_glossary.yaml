@@ -1,0 +1,167 @@
+id_self:                ddr_glossary
+guid_self:              ddr_52a6615a99714b17bbc1e839ebdba531
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Glossary
+brief:                  |
+                        A glossary is a register of terms. The
+                        cc-public glossary is reg_term, and a
+                        partner's is a register of the same type.
+context:                |
+                        ddr_terminology decides that concepts take
+                        standard names and that departures are
+                        recorded. That needs somewhere for the names
+                        to live, findable and checkable, or it is a
+                        hope.
+
+                        The repository already has a mechanism for a
+                        controlled vocabulary with addressable
+                        entries: the register.
+
+                        This is a federated system. Different
+                        repositories will want different glossaries,
+                        and a term arriving from a partner will name
+                        an entry held there.
+decision:               |
+                        A glossary is a register whose entries are
+                        terms. The type t_term, held in a term
+                        register, carries the surface form of the
+                        term, the forms it is also known by, and the
+                        forms that are not to be used for it.
+
+                        reg_term is the glossary of the cc-public
+                        repository. It holds a term for each concept
+                        the repository names, whether or not that
+                        concept has a type of its own.
+
+                        A record that introduces or settles a concept
+                        decides its term, by an r_decides edge to the
+                        entry.
+
+                        A term register is validated by sch_reg_term,
+                        which composes the general register schema
+                        with the term entry schema in the pattern the
+                        type register uses.
+rationale:              |
+                        A register rather than a new mechanism,
+                        because a register is exactly a keyed table of
+                        addressable entries that is the source of
+                        truth for a vocabulary, which is what a
+                        glossary is. Keying makes duplicate terms
+                        impossible. Identity makes a term something an
+                        item can point at. Per register entry schemas
+                        make a term entry shape cheap to declare.
+                        Supersession and status come for nothing.
+
+                        The federation story is the register's own. A
+                        partner brings a glossary the way they bring
+                        any register, and two glossaries coexist
+                        without either knowing the other exists.
+
+                        A term for every concept and not only for
+                        every type, because most of what needs a
+                        consistent name has no type: anchor, scope,
+                        guard, trait. What has a type is a subset of
+                        what has a name.
+
+                        Forms to avoid recorded on the entry, because
+                        that is what would have caught the word this
+                        record exists to answer for. A form to avoid
+                        is not always wrong -- work is an ordinary
+                        word -- so the judgement is an eval's and not
+                        a check's.
+alternative:            |
+                        A glossary as a document of its own, with a
+                        type and schema unlike a register. Rejected:
+                        it would reinvent keyed entries, identity,
+                        status and supersession, and its terms could
+                        not be pointed at without further work.
+
+                        A glossary as a section of each decision
+                        record, defining the terms that record
+                        introduces. Rejected: terms would be
+                        scattered, and a reader looking one up would
+                        have to know which record introduced it.
+
+                        Terms only for things that have types, read
+                        from the type register. Rejected: it leaves
+                        the concepts most in need of a stable name
+                        without one.
+consequence:            |
+                        Readable ids of terms collide across a
+                        federation -- term_component in two glossaries
+                        -- while guids do not. That is the issue
+                        ddr_protective_marking already records for
+                        marks, and is not new.
+
+                        An eval can be written that judges prose
+                        against the glossary: that a defined term is
+                        used in its defined sense, and that a form
+                        under avoid is not used for it. That eval does
+                        not yet exist.
+
+                        A term entry has to be written for each
+                        concept, which is a cost paid once and read
+                        many times.
+
+                        Two words that were one -- relation edge and
+                        dataflow edge -- now have entries, and prose
+                        that says bare edge is ambiguous.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_term
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_term
+    guid_target:        sch_62e63ec5ebe24650856fe2d275be3b4b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_term
+    guid_target:        reg_bcba1ab65d824ac2b2f7af2ded66835a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_term
+    guid_target:        t_e0d624b5a7a6406581eda544e5213cb1
+
+question:
+
+  c6549a807:
+    id_self:            qst_glossary.c6549a807
+    guid_self:          qst_f7dc50b2c8124f43b7de2d557746429e
+    question:           |
+                        Whether a term should name the type or record
+                        it stands for by a relation of its own, so
+                        that a reader can walk from the word to the
+                        thing.
+    relation:           []
+
+  c5a2e0752:
+    id_self:            qst_glossary.c5a2e0752
+    guid_self:          qst_54745ed231094476bc4808d35496294c
+    question:           |
+                        Whether an eval judging prose against the
+                        glossary should be anchored to
+                        sch_descriptive, reaching everything with
+                        prose, or narrowed.
+    relation:           []
+
+  cd8d52fad:
+    id_self:            qst_glossary.cd8d52fad
+    guid_self:          qst_eaa46055dc914a2dbd2dbede66dd9bd4
+    question:           |
+                        Whether a term may be marked deprecated, and
+                        what that means for prose that still uses it.
+    relation:           []

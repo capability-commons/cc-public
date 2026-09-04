@@ -1,0 +1,153 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_rights.yaml
+id_self:                sch_rights
+guid_self:              sch_f6ab4a480aa64f57b2d7378f023b0d5e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rights trait
+brief:                  |
+                        Trait with handling and ownership.
+description:            |
+                        The fields governing what may be done with an
+                        item and by whom: a protective marking, a
+                        copyright statement and a licence.
+
+                        copyright and license are required. Between
+                        them they say who owns an item and on what
+                        terms it may be used.
+
+                        protective_mark is required too, and names one
+                        or more entries in the protective mark
+                        register. Where it names several they are
+                        CONJUNCTIVE: every constraint implied by every
+                        mark applies, and the most restrictive
+                        governs.
+usage:                  |
+                        Composed via allOf by anything that may be
+                        shared.
+note:                   |
+                        A licence is named rather than quoted.
+
+                        A mark is referenced, not spelled out. The
+                        authority whose rules govern it and the level
+                        it names are held once, in the register.
+
+                        An item that may be disclosed to anyone says
+                        so, by naming mark_public.
+type:                   object
+additionalProperties:   true
+
+required:
+  - copyright
+  - license
+  - protective_mark
+
+properties:
+
+  protective_mark:
+    type:               array
+    minItems:           1
+    description:        |
+                        How this item may be handled and with whom it
+                        may be shared, as one or more references to
+                        entries in the protective mark register.
+
+                        CONJUNCTIVE where there is more than one. All
+                        apply at once and the most restrictive
+                        governs; a violation of any one of them is a
+                        violation, under that mark's authority.
+                        Nothing here may be read as a choice between
+                        marks.
+
+                        A reference that does not resolve names a mark
+                        held in a register this repository cannot see.
+                        It is binding nonetheless, and must be treated
+                        as more restrictive than anything resolvable,
+                        never as absent.
+
+    items:
+      type:             object
+      additionalProperties:  false
+
+      required:
+        - id_mark
+        - guid_mark
+
+      properties:
+
+        id_mark:
+          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+          description:  |
+                        Readable id of the mark. Advisory, as every
+                        readable id in a reference is.
+
+        guid_mark:
+          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+          description:  |
+                        Guid of the mark. The resolvable reference.
+
+  copyright:
+    type:               string
+    minLength:          1
+    pattern:            ^(Copyright( \((c|C)\)| ©)?|\((c|C)\)|©) [0-9]{4}([-–][0-9]{4})?(, ?[0-9]{4}([-–][0-9]{4})?)*
+    description:        |
+                        Who owns this item, as a complete copyright
+                        notice rather than a bare name: the word
+                        Copyright, the year of first publication, and
+                        the owner.
+
+                        Written whole so that it can be lifted into a
+                        NOTICE file or a source header verbatim. A
+                        field holding only a name would have to be
+                        assembled into a notice by whoever needed one,
+                        and assembled the same way every time.
+
+                        The pattern admits the conventional markers --
+                        Copyright, optionally followed by (c), (C) or
+                        the copyright sign, and those three used alone
+                        -- then one or more four digit years, and then
+                        a non empty owner. Years may be a single year,
+                        a range, or a list of either.
+
+                        It asserts the SHAPE of a notice and nothing
+                        about its truth. That a year is four digits is
+                        checkable; that it is the right year is not.
+
+                        Marker case is not forgiving: Copyright is
+                        accepted and copyright is not. One canonical
+                        spelling is worth more here than tolerance,
+                        since this field is written by tooling at
+                        least as often as by hand.
+
+  license:
+    type:               string
+    minLength:          1
+    pattern:            ^[A-Za-z0-9.+-]+( (AND|OR|WITH) [A-Za-z0-9.+-]+)*$
+    description:        |
+                        Under what terms this item may be used, as an
+                        SPDX licence expression.
+
+                        A bare identifier from the SPDX licence list
+                        is the usual case -- Apache-2.0, MIT. The
+                        expression grammar also allows a choice (MIT
+                        OR Apache-2.0) and an exception (Apache-2.0
+                        WITH LLVM-exception).
+
+                        A licence not on the SPDX list is named with a
+                        LicenseRef- prefix, so that terms particular
+                        to one contributor can be stated without
+                        admitting free prose into this field.
+                        NOASSERTION means the terms are not known,
+                        which is a thing worth being able to say
+                        plainly rather than by omission.
+
+                        The pattern here checks the shape of an
+                        expression and not the validity of what it
+                        names. SPDX is maintained elsewhere and is the
+                        authority on that.

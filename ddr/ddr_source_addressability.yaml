@@ -1,0 +1,248 @@
+id_self:                ddr_source_addressability
+guid_self:              ddr_cc072026565745aba125de768694c4b6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Source addressability
+brief:                  |
+                        A python package or module is a data item,
+                        carrying its metadata in its own docstring.
+context:                |
+                        The loaders, the checks and the command line
+                        were code, and code sat outside the system
+                        entirely. Nothing could name a module, so
+                        three decision records -- on the loaders, on
+                        the check architecture, and on the command
+                        line contract -- decided things and pointed at
+                        nothing.
+
+                        The sharper problem was not the missing
+                        anchors. Module docstrings already carried
+                        design reasoning that records also carried.
+                        The docstring of the identity check restated
+                        the argument of ddr_identity_field_naming in
+                        nearly the same words. The duplication that
+                        decision records exist to prevent was already
+                        present in the repository, and invisible,
+                        because the files holding it were outside the
+                        system.
+
+                        A previous project solved the mechanical part
+                        by embedding a YAML document in the file
+                        header: in the docstring for python, in a
+                        comment block for configuration files, opened
+                        by three hyphens and closed by three full
+                        stops. Two hundred and forty seven python
+                        files carried one.
+decision:               |
+                        Four types, each with its own prefix: python
+                        package, python module, python class and
+                        python function, the last covering methods and
+                        generators.
+
+                        The identifier of a source item carries the
+                        fully qualified dotted name of the thing it
+                        names, so the identifier form widens to permit
+                        segments separated by full stops.
+
+                        Metadata lives in the docstring of the thing
+                        it names, as a YAML document, and is read by
+                        walking the abstract syntax tree rather than
+                        by importing.
+
+                        Every package and every module MUST carry one.
+                        A missing one is a critical nonconformity.
+
+                        A class or function MAY carry one, written
+                        only where something needs to name it.
+
+                        Containment stays implicit in the dotted name.
+
+                        An identifier is lowercase throughout, python
+                        class names notwithstanding. Resolving a
+                        lowercase identifier back to a capitalised
+                        class is left to whatever eventually needs to.
+
+                        Where a module is split, the identifier passes
+                        to whichever successor deserves the continuous
+                        history. Which one is a judgement for whoever
+                        splits it.
+rationale:              |
+                        Four types rather than one because a prefix
+                        names exactly one type, and a package is not a
+                        module. The price is that a package turned
+                        into a module, or the reverse, loses its
+                        continuous identity. That is rare, and cheaper
+                        than a type that means four things.
+
+                        The dotted name because the language has
+                        already named these things hierarchically, and
+                        repeating that name is what lets the thing be
+                        found again -- imported for introspection, or
+                        located by walking the tree.
+
+                        The docstring rather than a comment because
+                        python has one and it survives into the
+                        running program. A language without a
+                        docstring uses a comment block, and the
+                        extraction differs only in stripping a prefix.
+
+                        Read statically because importing runs the
+                        code being examined, which is a poor bargain
+                        for a tool whose purpose is to examine it.
+
+                        Required of packages and modules and optional
+                        of classes and functions, on the arithmetic.
+                        Headers on twenty one files come to two
+                        hundred and thirty one lines against two
+                        thousand nine hundred, about seven per cent.
+                        Extending them to twelve classes and seventy
+                        five functions would come to eleven hundred
+                        and eighty eight lines, about forty per cent.
+                        At that ratio the file is mostly header, and
+                        readability -- which is what the metadata is
+                        meant to serve -- suffers.
+
+                        Lowercase identifiers even for python classes,
+                        whose names are capitalised. Permitting
+                        capitals would weaken the general form of an
+                        identifier for one type of thing, and
+                        identifiers are read far more often than
+                        classes are resolved from them. Enough has
+                        been conceded to python already in admitting
+                        full stops.
+
+                        Containment left implicit because the dotted
+                        name already carries it, and an edge for every
+                        module would be redundancy to keep in step.
+                        Tooling can add containment while building the
+                        graph.
+alternative:            |
+                        Leaving code outside the system. Rejected: the
+                        duplication was already there and could not be
+                        seen.
+
+                        A single source type. Rejected: a prefix names
+                        one type, and the four are not one kind of
+                        thing.
+
+                        Metadata in a sidecar file beside each module.
+                        Rejected: two files to keep in step, and the
+                        metadata would not be where the thing is.
+
+                        A comment block rather than a docstring for
+                        python. Rejected where a docstring exists,
+                        since a docstring needs no prefix stripping
+                        and is available at runtime.
+
+                        Importing the module to read its metadata.
+                        Rejected for the side effects, and because a
+                        file that cannot be imported can still be
+                        read.
+
+                        Requiring a header of every class and
+                        function. Rejected on the arithmetic above.
+
+                        Numbered identifiers, as the previous project
+                        used. Rejected consistently with the rest of
+                        this system.
+consequence:            |
+                        Twenty one files gained a header, and the
+                        design reasoning in those docstrings was
+                        dropped rather than carried across, being
+                        already held in records. That is a real loss,
+                        accepted because the repository is small
+                        enough that it is cheap now and would not be
+                        later.
+
+                        The three records that pointed at nothing can
+                        now name what they decide.
+
+                        Evals reach source. A module composes the
+                        descriptive trait through the source trait and
+                        the base trait, so an eval anchored on that
+                        trait now judges every module as well as every
+                        other item.
+
+                        A python file with no metadata fails the
+                        check. Adding a file to this repository is
+                        therefore adding a data item, which is the
+                        intended pressure.
+
+                        Resolving a class identifier back to the class
+                        will need a case insensitive lookup, or a map
+                        built while walking the tree. Nothing needs it
+                        yet, and nothing provides it.
+
+                        The document is closed by three full stops, so
+                        a description containing an ellipsis would
+                        truncate the block. Nothing does, and nothing
+                        checks that nothing does.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_source
+    guid_target:        sch_d004e66e0f834c9c9a599d8eb1f0de5a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_package
+    guid_target:        sch_87d9bd39240144e88ed06cc43b680bff
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_module
+    guid_target:        sch_a20d9cb1c7b547019069e2277d375500
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_class
+    guid_target:        sch_d77b33d22fd84c70bbf797b2abc49517
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_function
+    guid_target:        sch_cea99c1b69374a8baf2fc9909b058e78
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.python
+    guid_target:        pym_db9a9fb33495409c9a6615cb3d58d00d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_primitive
+    guid_target:        sch_b7c5238250bd403cadd8bc0844c23e2d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_identity
+    guid_target:        sch_2bad9002fef7435b90cd20c19b8e6ab7
+
+question:
+
+  ca670b6a7:
+    id_self:            qst_source_addressability.ca670b6a7
+    guid_self:          qst_335082bf9f84426c9bbd6e391d7bb1f8
+    question:           |
+                        Whether the extraction rule for each language
+                        should be data rather than code, which is the
+                        question ddr_loader_design leaves open one
+                        level down.
+    relation:           []
+
+  c88da1a8d:
+    id_self:            qst_source_addressability.c88da1a8d
+    guid_self:          qst_82ac5587fb184f2dbc056382006a35af
+    question:           |
+                        What a nested function is called, and whether
+                        a method identifier should name its enclosing
+                        class.
+    relation:           []

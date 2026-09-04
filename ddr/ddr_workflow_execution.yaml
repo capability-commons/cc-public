@@ -1,0 +1,219 @@
+id_self:                ddr_workflow_execution
+guid_self:              ddr_7ea6ae3bc178494582007d3422bfd7a3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Definition and execution
+brief:                  |
+                        A workflow definition names ports and does not
+                        change. An execution runs it under one
+                        deployment and binds each port, on each pass,
+                        to the item that filled it. The bindings are
+                        where an item's provenance is read.
+context:                |
+                        A graph whose ports name particular items can
+                        be run once. Running it again means editing
+                        it, and a definition edited for every run is
+                        not a definition.
+
+                        Separately, nothing in the system records
+                        where an item came from. r_decides says which
+                        record settles an item. Nothing says which
+                        process produced it, or from what.
+
+                        ddr_eval_design leaves open how a stale
+                        verdict is told from a current one, and
+                        observes that it wants a content identifier
+                        that does not yet exist. Staleness of anything
+                        derived wants the same thing.
+
+                        An earlier draft bound ports by dot path
+                        alone. A path is not stable under rename, and
+                        a renamed node would have broken the
+                        provenance of everything it ever produced.
+                        This draft supersedes it.
+decision:               |
+                        A workflow definition names PORTS. A port says
+                        what kind of item belongs there, not which
+                        item.
+
+                        An EXECUTION is a data item. It names the
+                        deployment it ran under, by an r_ran_under
+                        edge, and through that deployment the
+                        definition. It records nothing about machinery
+                        itself.
+
+                        A BINDING is a reified reference, per
+                        ddr_qualified_reference: an entry with an
+                        identity of its own, naming the node and the
+                        port by guid and readable id, carrying the
+                        pass number, and holding an r_binds edge to
+                        the item that filled the port. Bindings are
+                        held in a keyed table on the execution.
+
+                        A port bound on several passes of a cycle has
+                        several bindings, one per pass. The last is
+                        what the run settled on. The bindings are the
+                        derivation record. Where an item came from is
+                        read from the bindings that name it on an
+                        output port.
+
+                        An execution records what happened and is not
+                        edited afterwards.
+rationale:              |
+                        Ports rather than items is what makes a
+                        definition reusable, which is the whole reason
+                        for writing one down.
+
+                        A binding as a reified entry rather than a
+                        path and a guid, because provenance is the one
+                        record that must not dangle. The node and the
+                        port are named by guid, so a rename changes
+                        nothing that the binding depends on. The item
+                        is named by an edge, so the reference check
+                        confirms it exists and the walk from item to
+                        execution is a walk over edges like any other.
+                        That costs an identity per binding, and
+                        ddr_qualified_reference records why that is
+                        the right price.
+
+                        One binding per pass rather than one per port,
+                        because a record of the last pass explains
+                        nothing about how it was reached, and a
+                        cycle's whole purpose is the passes. The
+                        growth is bounded by the deployment's budget,
+                        so it cannot run away.
+
+                        Machinery read from the deployment rather than
+                        repeated, because one fact in two places is
+                        one more than can be kept in step. An
+                        execution that runs under a deployment has
+                        said everything about machinery that there is
+                        to say.
+
+                        Making an execution an item rather than engine
+                        state is what lets provenance cross the
+                        federation. A partner who cannot run a
+                        workflow type can still read that an item was
+                        produced at a named port of a named node, on a
+                        named pass, from named inputs, under a named
+                        deployment, and can hold that against their
+                        own records.
+
+                        Provenance is also what incremental work
+                        needs. An item is stale when something it
+                        derives from has changed, and derivation is
+                        exactly what a binding records. That the
+                        change itself cannot yet be detected, for want
+                        of a content identifier, is a gap somewhere
+                        else and not a reason to leave derivation
+                        unrecorded.
+
+                        Not edited afterwards, because an execution is
+                        a claim about the past. A record of what
+                        happened that can be revised afterwards is a
+                        record of nothing.
+alternative:            |
+                        Definitions naming items directly. Rejected:
+                        the definition is then good for one run.
+
+                        Bindings by dot path alone, which was the
+                        decision here before this draft. Rejected: it
+                        dangles on rename, and nothing checks that the
+                        item exists.
+
+                        Binding edges rather than ports. Rejected: an
+                        edge carries no identity, by
+                        ddr_dataflow_workflow, so there is nothing to
+                        bind against.
+
+                        One binding per port recording the final item
+                        only. Rejected: it discards the passes, which
+                        are what a cycle is.
+
+                        Machinery recorded on the execution as well as
+                        on the deployment. Rejected: two records of
+                        one fact.
+
+                        Execution held as engine state rather than as
+                        an item. Rejected: provenance would not travel
+                        and could not be checked.
+
+                        An execution amended as a cycle iterates.
+                        Rejected: iteration is not a change to what
+                        happened, and a record rewritten in place
+                        cannot be trusted about anything.
+consequence:            |
+                        Three item types where a naive design has one
+                        -- definition, deployment, execution -- and
+                        every run leaves a record. A repository that
+                        runs workflows accumulates executions faster
+                        than it accumulates anything else, and each
+                        execution carries a binding per port per pass.
+
+                        Provenance is queryable without an engine.
+                        What produced this, at which port, on which
+                        pass, from what, under what deployment, is a
+                        walk over items and edges, and every step of
+                        it is checked by the reference check.
+
+                        Whether an input has changed since a binding
+                        named it is a question for the history: the
+                        input's last changing commit against the
+                        commit that holds the execution, as
+                        ddr_commit_record records. Nothing yet asks
+                        it.
+
+                        A binding is addressable. Where a verdict is
+                        eventually written back as an item, the
+                        binding it judged is something it can point
+                        at.
+
+question:
+
+  c3ed4716b:
+    id_self:            qst_workflow_execution.c3ed4716b
+    guid_self:          qst_f1441798e1994a538673179b7fc62488
+    question:           |
+                        Whether a failed execution is recorded. A run
+                        that exhausted its budget is a fact about the
+                        workflow worth having, and is also the kind of
+                        record that accumulates fastest.
+    relation:           []
+
+  cf062d06b:
+    id_self:            qst_workflow_execution.cf062d06b
+    guid_self:          qst_ecda6a638006405984fcf1629a4b2ec5
+    question:           |
+                        Whether an execution is where the verdicts
+                        reached by evals belong, which is the question
+                        ddr_eval_design leaves open about writing a
+                        verdict back. A binding per pass gives each
+                        verdict something to attach to.
+    relation:           []
+
+  c8f1e6d0d:
+    id_self:            qst_workflow_execution.c8f1e6d0d
+    guid_self:          qst_7edf23171c6646deb69cf8a697a82d1c
+    question:           |
+                        Whether an execution should record the order
+                        in which nodes ran, or whether that is
+                        derivable from the graph and need not be said.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_execution
+    guid_target:        sch_1030485e4a494715ba5afaf52c44779b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_binding
+    guid_target:        sch_d4aa7fdd1ce24d258dea4252bf4e504c
