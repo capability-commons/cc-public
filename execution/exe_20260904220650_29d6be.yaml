@@ -1,0 +1,947 @@
+id_self:                exe_20260904220650_29d6be
+guid_self:              exe_29d6be1d332e4be8a12a58231cba5f03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run of wf_design_decision_from_schema
+brief:                  |
+                        Under dep_design_decision_from_schema_local.
+
+binding:
+
+  draft_input_subject_1:
+    id_self:            bnd_20260904220650_29d6be.draft_input_subject_1
+    guid_self:          bnd_f7009c7334b34b39970ac1ae6d6be991
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.subject
+    guid_port:          prt_3487d4e416e64437a153bbca5f9c082b
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      sch_port
+        guid_target:    sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  draft_input_guide_1:
+    id_self:            bnd_20260904220650_29d6be.draft_input_guide_1
+    guid_self:          bnd_4e06d82e185e41cd8f90b160111b0d76
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.guide
+    guid_port:          prt_1f1b108a083b411a82ec0b16a4587bb7
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  draft_output_decision_1:
+    id_self:            bnd_20260904220650_29d6be.draft_output_decision_1
+    guid_self:          bnd_337efc55e7a64be390405e9a04c17ac4
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.decision
+    guid_port:          prt_abdfbd81030744be839042c7bd79719d
+    pass:               1
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose about this item (the
+                        decision record ddr_draft_cec929) is
+                        contradicted by the fields shown. The only
+                        structured field is a single `relation` entry
+                        with `id_relation: r_decides` and `id_target:
+                        sch_port`, which is consistent with the text’s
+                        description that “The schema supports relating
+                        ports via decides” and that this decision is
+                        about a schema for ports. No claims are made
+                        about the number or absence of relations that
+                        would conflict with the presence of this one
+                        relation.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names such as guid_type and
+                        id_type written as declared. There are no
+                        headings, list markers, emphasis marks,
+                        backticks, tables, or markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        The subject does contain descriptive
+                        restatement of the schema (“The schema defines
+                        a port as a single entry on a component… It
+                        requires identity fields for the type,
+                        including both guid_type and id_type. Optional
+                        input ports are marked with a boolean
+                        optional. Output ports include a mandatory
+                        prompt string…”), but it also clearly names
+                        choices that could have gone another way and
+                        explains why those alternatives were not
+                        taken. The alternative section offers: -
+                        merging input and output ports into a single
+                        undifferentiated port with flags, rejected
+                        “because it would complicate validation and
+                        semantics”; - excluding the decides field and
+                        relying on external relations, rejected for
+                        “losing important intrinsic connections”; -
+                        omitting the prompt field, rejected “due to
+                        the need to represent production prompts
+                        clearly in the schema.” These are real
+                        alternatives that a reader could disagree
+                        with, and the text states why the chosen
+                        design was preferred over them. That satisfies
+                        the criterion for MET.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Most of the
+                        passage specifies the schema’s shape and
+                        fields, which is acceptable. But the last two
+                        sentences argue for choices by giving reasons
+                        (“to ensure…”), which makes it UNMET. Quoted
+                        passages that argue: “Additional properties
+                        are allowed to ensure extensibility.” “The
+                        schema uses allOf to include identity and
+                        descriptive traits to ensure consistent
+                        identity and metadata.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Multiple sentences
+                        report on what “the schema” does, using it as
+                        the subject and verbs like defines, requires,
+                        supports, are captured, are allowed, uses.
+                        These are after-the-fact summaries, not acts
+                        of deciding. Examples: - “The schema defines a
+                        port as a single entry on a component, either
+                        input or output, that specifies one type of
+                        item it carries.” - “It requires identity
+                        fields for the type, including both guid_type
+                        and id_type.” - “The schema supports relating
+                        ports via decides, linking outputs to the
+                        input port whose item they determine.” -
+                        “Edges representing evaluations anchored on
+                        the port are captured in a relation array.” -
+                        “Additional properties are allowed to ensure
+                        extensibility.” - “The schema uses allOf to
+                        include identity and descriptive traits to
+                        ensure consistent identity and metadata.”
+                        These sentences would not be written before
+                        the artefact exists; they describe what the
+                        schema “defines”, “requires”, “supports”,
+                        etc., rather than directly stating what is
+                        decided.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_draft_1:
+    id_self:            bnd_20260904220650_29d6be.review_input_draft_1
+    guid_self:          bnd_d6e4998ad05a4a4183dab85f02f35532
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.draft
+    guid_port:          prt_15b63328afb9475c85450e9056198618
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_guide_1:
+    id_self:            bnd_20260904220650_29d6be.review_input_guide_1
+    guid_self:          bnd_3aa821185b91414c9bbbf6ffe947deab
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.guide
+    guid_port:          prt_66949e902786486ca6399ee1e9acc5a1
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  review_output_decision_1:
+    id_self:            bnd_20260904220650_29d6be.review_output_decision_1
+    guid_self:          bnd_5b659105568b4bea80f421a07f552743
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.decision
+    guid_port:          prt_1a414b79d6534b739e35741950a7af22
+    pass:               1
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose about this item (the
+                        relation record) is contradicted by the fields
+                        shown. The only explicit claim about this item
+                        is that “The schema includes a decides
+                        relation linking outputs to the input port
+                        whose item they determine,” which is
+                        consistent with the presence of a single
+                        `r_decides` relation targeting `sch_port`.
+                        Other statements concern the schema’s internal
+                        structure or general behaviour, which are out
+                        of scope.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names such as guid_type and
+                        id_type written as declared. There are no
+                        headings, list markers, emphasis marks,
+                        backticks, tables, or markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        The subject does describe many aspects of the
+                        schema, but it also clearly names choices that
+                        could have gone another way, and the
+                        alternative text gives real options and
+                        reasons for rejecting them. For example, it
+                        contrasts “a port as a single input or output
+                        point” with “unify input and output ports into
+                        a single port with flags for each role; this
+                        was rejected due to increased complexity in
+                        validation and semantics,” and similarly
+                        considers omitting the `decides` field and the
+                        prompt field and explains why those options
+                        were not taken. That satisfies the requirement
+                        of a decision plus substantive alternatives
+                        and reasons.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. All but the last
+                        sentence state what the schema is and what it
+                        holds, so they are decisions. The final
+                        sentence argues for a choice by giving a
+                        reason rather than just the shape: “The schema
+                        uses allOf to inherit identity and descriptive
+                        traits to maintain consistent identity and
+                        metadata.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. This is written as
+                        a report on the artefact. The schema is the
+                        subject and the verbs describe what it
+                        defines, requires, includes, allows, or uses,
+                        as a reader’s summary would. Reporting
+                        sentences include: - "The schema defines a
+                        port as a single input or output point on a
+                        component carrying exactly one item type." -
+                        "It requires identity fields for the carried
+                        type, including both guid_type and id_type." -
+                        "Input ports may be marked as optional with a
+                        boolean field." - "Output ports must include a
+                        prompt string indicating the production
+                        message." - "The schema includes a decides
+                        relation linking outputs to the input port
+                        whose item they determine, and an array
+                        relation for edges representing evaluations
+                        anchored on the port." - "Additional
+                        properties are allowed for extensibility." -
+                        "The schema uses allOf to inherit identity and
+                        descriptive traits to maintain consistent
+                        identity and metadata." These sentences would
+                        not be written before the schema existed; they
+                        describe what the schema does rather than
+                        stating decisions directly.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  draft_input_subject_2:
+    id_self:            bnd_20260904220650_29d6be.draft_input_subject_2
+    guid_self:          bnd_e3e7c6d4e4e24ffab3b7b66fcc8fa316
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.subject
+    guid_port:          prt_3487d4e416e64437a153bbca5f9c082b
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      sch_port
+        guid_target:    sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  draft_input_prior_2:
+    id_self:            bnd_20260904220650_29d6be.draft_input_prior_2
+    guid_self:          bnd_d7c32e0a74b746418d8165fbb2d3e933
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.prior
+    guid_port:          prt_37bc5736c7f542ee9d0eb665449ada3c
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  draft_input_guide_2:
+    id_self:            bnd_20260904220650_29d6be.draft_input_guide_2
+    guid_self:          bnd_226d51800b7649f59b732c07c8ead150
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.guide
+    guid_port:          prt_1f1b108a083b411a82ec0b16a4587bb7
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  draft_input_judgement_2:
+    id_self:            bnd_20260904220650_29d6be.draft_input_judgement_2
+    guid_self:          bnd_61b469c4eec84fa98038ed7869128d7e
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.judgement
+    guid_port:          prt_077f4b3fda174cdc95fd740c919c8bff
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      bnd_20260904220650_29d6be.review_output_decision_1
+        guid_target:    bnd_5b659105568b4bea80f421a07f552743
+
+  draft_output_decision_2:
+    id_self:            bnd_20260904220650_29d6be.draft_output_decision_2
+    guid_self:          bnd_7cac1a8398b14fe184bbfa670cc9a839
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.decision
+    guid_port:          prt_abdfbd81030744be839042c7bd79719d
+    pass:               2
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose about this item
+                        (ddr_draft_cec929) is contradicted by the
+                        shown fields. The only explicit field content
+                        beyond the prose is a single `relation` entry
+                        with `id_relation: r_decides` and `id_target:
+                        sch_port`, and the text does not make any
+                        claim about how many relations there are, what
+                        targets they have, or that there are none.
+                        Therefore the criterion is satisfied.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, tables, or markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        The subject names several concrete choices
+                        that could have gone another way and explains
+                        why those alternatives were not taken. It
+                        chooses: - distinct input vs output ports (vs
+                        a merged, flagged port) and rejects the
+                        alternative “due to the increased complexity
+                        in validation and ambiguity in semantics.” -
+                        including a dedicated `decides` field (vs
+                        relying only on relations) and rejects that
+                        alternative because “it reduces clarity and
+                        breaks the intrinsic connection between
+                        outputs and the inputs they determine.” -
+                        requiring a prompt on outputs (vs making it
+                        optional) and rejects that because “it would
+                        obscure the production semantics fundamental
+                        to output ports.” These are real design
+                        choices with plausible alternatives and stated
+                        reasons, not just a description of the
+                        artefact.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. The passage ends
+                        by arguing for the choice instead of only
+                        stating it. Argumentative sentence: “This
+                        structure ensures clear differentiation
+                        between input and output semantics, supports
+                        traceability, and keeps the schema
+                        maintainable and extensible.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Several sentences
+                        report on what the artefact (the port) “is” or
+                        “must” do, as a reader’s summary would, rather
+                        than stating decisions as acts. They describe
+                        definitions, requirements, inclusions, and
+                        allowances of the schema: Quote: “A port is
+                        defined as exactly one input or output point
+                        on a component that carries one identified
+                        item type.” Quote: “The port must specify both
+                        a globally unique identifier and a
+                        human-readable identifier for the item type it
+                        handles.” Quote: “Input ports include an
+                        optional boolean field to indicate if they are
+                        optional.” Quote: “Output ports are required
+                        to have a prompt string representing the
+                        production message.” Quote: “The design
+                        incorporates a 'decides' field linking output
+                        ports to the specific input port item they
+                        determine, enabling explicit decision
+                        tracking.” Quote: “Additionally, a relation
+                        array supports anchoring evaluations on the
+                        port.” Quote: “The port inherits identity and
+                        descriptive traits to maintain uniform
+                        metadata conventions.” Quote: “Additional
+                        properties are allowed for future extensions.”
+                        Quote: “This structure ensures clear
+                        differentiation between input and output
+                        semantics, supports traceability, and keeps
+                        the schema maintainable and extensible.” These
+                        are written as reports on the artefact’s
+                        behaviour and properties, not as decisions
+                        that would read the same before the schema
+                        existed.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_draft_2:
+    id_self:            bnd_20260904220650_29d6be.review_input_draft_2
+    guid_self:          bnd_a9cbe6db5d3942cd8c33bf3b0d4410d2
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.draft
+    guid_port:          prt_15b63328afb9475c85450e9056198618
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_guide_2:
+    id_self:            bnd_20260904220650_29d6be.review_input_guide_2
+    guid_self:          bnd_9e5e0344932f4a06b5f5796fb3ec13a3
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.guide
+    guid_port:          prt_66949e902786486ca6399ee1e9acc5a1
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  review_output_decision_2:
+    id_self:            bnd_20260904220650_29d6be.review_output_decision_2
+    guid_self:          bnd_21d13d8c6e1f454aac8de66c70ea05d1
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.decision
+    guid_port:          prt_1a414b79d6534b739e35741950a7af22
+    pass:               2
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose about this item (the
+                        relation record linking to `sch_port`) is
+                        contradicted by the fields shown. The context,
+                        decision, rationale, alternative, and
+                        consequence sections describe the intended
+                        schema and behavior of ports in general, not
+                        specific, checkable facts about this
+                        particular relation entry. The single relation
+                        present is consistent with the description
+                        that ports include relations for decision
+                        tracking and evaluation anchoring.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, tables, or markdown-form
+                        links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        The subject names concrete choices that could
+                        have gone another way (separate input vs
+                        output ports; having a 'decides' field;
+                        requiring a prompt on output ports) and, in
+                        the alternative, explicitly lists other ways
+                        it could have gone and why those were not
+                        taken (“increases validation complexity and
+                        introduces semantic ambiguity”, “reduces
+                        clarity and weakens the direct connection”,
+                        “would obscure the fundamental production
+                        semantics of output ports”). This matches the
+                        criterion for MET.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Most of the
+                        passage specifies what a port is and what
+                        fields it carries, which is in line with the
+                        criterion. The final sentence argues for the
+                        choice instead of stating terms. Quote: “This
+                        design clearly distinguishes input and output
+                        semantics, enables traceability, and maintains
+                        schema clarity and extensibility.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Several sentences
+                        report on the artefact rather than state
+                        decisions. Reporting sentences (artefact as
+                        subject, defining/requiring/etc.): - "Each
+                        port must include a globally unique identifier
+                        and a human-readable identifier for the item
+                        type it handles." - "Input ports also have an
+                        optional boolean flag indicating if the input
+                        is optional." - "Output ports require a prompt
+                        string that represents the production
+                        message." - "The design includes a 'decides'
+                        field linking output ports to the specific
+                        input port item they determine to enable
+                        explicit decision tracking." - "Additionally,
+                        ports have an array of relations to support
+                        attaching evaluations." - "The port inherits
+                        identity and descriptive traits to ensure
+                        uniform metadata conventions." - "The schema
+                        allows additional properties to support future
+                        extensions." - "This design clearly
+                        distinguishes input and output semantics,
+                        enables traceability, and maintains schema
+                        clarity and extensibility." These read as a
+                        description of what the schema/design does and
+                        requires, as a reader’s summary would, rather
+                        than as bare decisions stated in the act of
+                        deciding.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  draft_input_subject_3:
+    id_self:            bnd_20260904220650_29d6be.draft_input_subject_3
+    guid_self:          bnd_4e99206bea16489d88ac4b6b5b9957e4
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.subject
+    guid_port:          prt_3487d4e416e64437a153bbca5f9c082b
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      sch_port
+        guid_target:    sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  draft_input_prior_3:
+    id_self:            bnd_20260904220650_29d6be.draft_input_prior_3
+    guid_self:          bnd_7e1630b7831f46cea7aa4d13d098d027
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.prior
+    guid_port:          prt_37bc5736c7f542ee9d0eb665449ada3c
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  draft_input_guide_3:
+    id_self:            bnd_20260904220650_29d6be.draft_input_guide_3
+    guid_self:          bnd_06f741073c1040a288a0a069d6a5375b
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.guide
+    guid_port:          prt_1f1b108a083b411a82ec0b16a4587bb7
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  draft_input_judgement_3:
+    id_self:            bnd_20260904220650_29d6be.draft_input_judgement_3
+    guid_self:          bnd_af6fb96ec9e0453f837bcbdd68e9f907
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.judgement
+    guid_port:          prt_077f4b3fda174cdc95fd740c919c8bff
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      bnd_20260904220650_29d6be.review_output_decision_2
+        guid_target:    bnd_21d13d8c6e1f454aac8de66c70ea05d1
+
+  draft_output_decision_3:
+    id_self:            bnd_20260904220650_29d6be.draft_output_decision_3
+    guid_self:          bnd_c2e668f90c0843969d32abd9e52d1f62
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.decision
+    guid_port:          prt_abdfbd81030744be839042c7bd79719d
+    pass:               3
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose about this item (the
+                        decision record ddr_draft_cec929) is
+                        contradicted by the fields shown beside it.
+                        The only structured field is a single relation
+                        entry targeting `sch_port`, and the text does
+                        not make any claim about how many targets this
+                        record has, what specific schema(s) it names,
+                        or what relations are or are not present. All
+                        other statements concern the intended design
+                        of the port schema and system behavior in
+                        general, which are out of scope for
+                        contradiction by the given fields.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, code fences, tables, or
+                        markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        The subject names concrete choices that could
+                        have gone another way and explains why the
+                        alternatives were not taken. The decision
+                        chooses to distinguish input and output ports
+                        with different fields and behaviors (“We
+                        decide to design the port schema to clearly
+                        distinguish input ports and output ports based
+                        on their roles and properties… Input ports
+                        will include… Output ports must include…
+                        output ports will have an optional ‘decides’
+                        field…”). The alternative text then presents
+                        real options that were open and rejected with
+                        reasons: - “merging input and output ports
+                        into a single entity using flags to denote
+                        role(s). This was rejected due to increased
+                        validation complexity and semantic ambiguity…”
+                        - “omit the ‘decides’ field and handle
+                        decision links purely through separate
+                        relation edges. This was declined because it
+                        weakens the explicit and direct connection…” -
+                        “relaxing the requirement for prompts on
+                        output ports, but doing so would hide
+                        essential production semantics…” These are
+                        substantive alternatives that a reader could
+                        reasonably have chosen, and the text explains
+                        why they were not. The decision does describe
+                        fields, but it also clearly states why these
+                        particular design choices were made instead of
+                        the listed alternatives, satisfying the
+                        criterion.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. Most of the
+                        passage specifies the schema’s structure and
+                        fields, which is acceptable. The final
+                        sentence argues for the design. Quote: “This
+                        approach enhances clarity, validation, and
+                        traceability by modeling ports according to
+                        their distinct functional roles and supporting
+                        decision tracking directly within the schema.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        met
+        reason:         |
+                        The sentences are written as acts of deciding
+                        what is kept, named, and held, not as reports
+                        on an existing artefact. They would still make
+                        sense if the schema did not yet exist: “We
+                        decide to design…”, “Each port will
+                        represent…”, “Input ports will include…”,
+                        “Output ports must include…”, “output ports
+                        will have…”, “ports will contain…”, “The port
+                        schema inherits…”, “The design will allow…”.
+                        These state choices rather than summarising
+                        what the schema defines or permits.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_draft_3:
+    id_self:            bnd_20260904220650_29d6be.review_input_draft_3
+    guid_self:          bnd_02000b9588f14834ab23461087160958
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.draft
+    guid_port:          prt_15b63328afb9475c85450e9056198618
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+  review_input_guide_3:
+    id_self:            bnd_20260904220650_29d6be.review_input_guide_3
+    guid_self:          bnd_52b46284a4ac4ab7a337738ec46b9993
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.guide
+    guid_port:          prt_66949e902786486ca6399ee1e9acc5a1
+    pass:               3
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  review_output_decision_3:
+    id_self:            bnd_20260904220650_29d6be.review_output_decision_3
+    guid_self:          bnd_970b10894fd641c38f775ba789cf7f14
+    id_node:            node_design_decision_from_schema.review
+    guid_node:          node_9c5b0ef1f02d41bea0f10c113d7affd0
+    id_port:            prt_review_design_decision.decision
+    guid_port:          prt_1a414b79d6534b739e35741950a7af22
+    pass:               3
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        reason:         |
+                        Nothing in the prose makes a factual claim
+                        about this specific record (ddr_draft_cec929)
+                        that is contradicted by the shown fields. The
+                        only structured field is a single `relation`
+                        entry pointing to `sch_port`, which is
+                        consistent with the text’s general design
+                        description and does not contradict any
+                        statement about this item.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names (including guid_self and
+                        id_self) written as declared. There are no
+                        headings, list markers, emphasis marks,
+                        backticks, tables, or markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        reason:         |
+                        Names concrete choices that could have gone
+                        another way (separate input/output port types;
+                        include a `decides` field; require prompts on
+                        outputs) and, in the alternative, explicitly
+                        lists other ways it could have gone and why
+                        they were not taken (“merge input and output
+                        ports into a single type with role flags…
+                        complicate validation, create semantic
+                        ambiguity, and reduce clarity”; “omit the
+                        ‘decides’ field… weakens the directness and
+                        explicitness of provenance tracking”;
+                        “relaxing the requirement for prompts… would
+                        hide critical production semantics and
+                        diminish… expressive power”). This matches the
+                        criterion for MET.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        reason:         |
+                        Unmet on 5 of 5 judgements. The final sentence
+                        argues for the choice instead of stating its
+                        terms. Quote: “This design improves clarity,
+                        validation, and traceability by modeling ports
+                        distinctly and supporting direct decision
+                        linkage within the schema.”
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        met
+        reason:         |
+                        The sentences are written as acts of deciding
+                        what is kept, required, or allowed, not as a
+                        report on an existing artefact. They would
+                        still make sense if the schema did not yet
+                        exist: “We decide to design…”, “Each port will
+                        handle…”, “Input ports include…”, “Output
+                        ports require…”, “Output ports may include…”,
+                        “All ports will have…”, “The schema
+                        inherits…”, “additional properties are
+                        allowed…”. These state choices rather than
+                        summarising what the schema already defines or
+                        permits.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_draft_cec929
+        guid_target:    ddr_cec9291fcc6f4fddb42dc68af38b7912
+
+description:            |
+                        draft, pass 1: made ddr_draft_cec929; revised
+                        nothing; fired review.input.draft; declined
+                        nothing.
+
+                        review, pass 1: made nothing; revised
+                        ddr_draft_cec929; fired draft.input.prior,
+                        draft.input.judgement; declined nothing.
+
+                        draft, pass 2: made nothing; revised
+                        ddr_draft_cec929; fired review.input.draft;
+                        declined nothing.
+
+                        review, pass 2: made nothing; revised
+                        ddr_draft_cec929; fired draft.input.prior,
+                        draft.input.judgement; declined nothing.
+
+                        draft, pass 3: made nothing; revised
+                        ddr_draft_cec929; fired review.input.draft;
+                        declined nothing.
+
+                        review, pass 3: made nothing; revised
+                        ddr_draft_cec929; fired nothing; declined
+                        nothing.
+
+relation:
+
+  - id_relation:        r_ran_under
+    guid_relation:      r_acbf8f7c3dea40249e7b9aa27ad6cdc3
+    id_target:          dep_design_decision_from_schema_local
+    guid_target:        dep_50b725e75b9f459b85ee4f186051c46a

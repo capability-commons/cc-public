@@ -1,0 +1,123 @@
+id_self:                ddr_draft_cec929
+guid_self:              ddr_cec9291fcc6f4fddb42dc68af38b7912
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Structure port schema to distinctly model input and output roles with decision
+brief:                  |
+                        The port schema is defined to represent ports
+                        explicitly as input or output points on
+                        components that handle a single identified
+                        item type. Inputs may be marked optional,
+                        outputs include prompts, and outputs can link
+                        directly to input ports they influence.
+                        Relations support attaching evaluations. The
+                        schema inherits consistent identity and
+                        descriptive traits.
+context:                |
+                        Component-based systems use ports as
+                        interaction points enabling item flow into and
+                        out of components. Proper modeling requires
+                        capturing each port’s unique role and the type
+                        of item it handles, along with metadata for
+                        system analysis. Input ports can be optional,
+                        reflecting flexible configurations. Output
+                        ports generate items via prompts,
+                        encapsulating execution behavior. Capturing
+                        decision provenance needs direct links from
+                        outputs to the inputs they influence.
+                        Consistent metadata and extensibility are
+                        necessary for robust and future-proof schema
+                        design.
+decision:               |
+                        We decide to design the port schema to clearly
+                        distinguish input and output ports by role and
+                        associated properties. Each port will handle
+                        exactly one identified item type, identified
+                        by both a globally unique identifier
+                        (guid_self) and a human-readable identifier
+                        (id_self) for the item type. Input ports
+                        include an optional boolean flag to denote
+                        optional inputs. Output ports require a prompt
+                        string specifying the message that produces
+                        the output item. Output ports may include an
+                        optional ‘decides’ field referencing the input
+                        port whose item they decide. All ports will
+                        have an array of relations to attach
+                        evaluations or other links. The schema
+                        inherits identity and descriptive traits for
+                        consistent metadata, and additional properties
+                        are allowed for extensibility. This design
+                        improves clarity, validation, and traceability
+                        by modeling ports distinctly and supporting
+                        direct decision linkage within the schema.
+rationale:              |
+                        This approach models ports as distinct, typed
+                        interaction points reflecting their system
+                        semantics. Requiring both a GUID and an ID for
+                        the item type ensures clear, unambiguous
+                        identification and enables validation. The
+                        optional flag for input ports captures
+                        real-world variations where inputs may not
+                        always be required. Mandating prompts on
+                        output ports captures essential execution
+                        semantics of item production. Including the
+                        ‘decides’ field on outputs creates an
+                        explicit, direct link to the input port
+                        influenced by that output, which supports
+                        provenance and traceability of decisions.
+                        Having an array of relations on ports enables
+                        associating evaluations and metadata without
+                        external indirection. Inheriting identity and
+                        descriptive traits maintains uniform metadata
+                        conventions and simplifies tooling. Allowing
+                        additional properties ensures flexibility for
+                        future extensions. Together, these elements
+                        offer a robust, clear, and extensible modeling
+                        foundation for component ports.
+alternative:            |
+                        One alternative was to merge input and output
+                        ports into a single type with role flags. This
+                        was rejected because it would complicate
+                        validation, create semantic ambiguity, and
+                        reduce clarity for tooling. Another option was
+                        to omit the ‘decides’ field and express
+                        decision links only through separate relation
+                        edges; however, this weakens the directness
+                        and explicitness of provenance tracking.
+                        Relaxing the requirement for prompts on
+                        outputs was considered but rejected as it
+                        would hide critical production semantics and
+                        diminish the schema’s expressive power in
+                        execution contexts.
+consequence:            |
+                        This design produces a schema that explicitly
+                        models ports by their distinct input or output
+                        roles with comprehensive metadata and direct
+                        decision linkage. It enables strong validation
+                        and simplifies interpretation of component
+                        communication and decision provenance. The
+                        schema supports evaluation attachments and
+                        tracing decision flows natively. Implementers
+                        must ensure ports include required
+                        identifiers, apply the optional flag properly
+                        for inputs, provide prompts on outputs, and
+                        maintain correct ‘decides’ links to preserve
+                        clear provenance. The allowance for additional
+                        properties supports evolving requirements.
+                        While improving clarity and tooling, this
+                        approach requires careful discipline to
+                        maintain consistency of prompts and decision
+                        information for completeness and correctness.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
