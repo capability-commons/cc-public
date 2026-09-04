@@ -1,0 +1,95 @@
+id_self:                ddr_draft_080f20
+guid_self:              ddr_080f201cfbb4444bbe04af0f6652479c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Define port schema with precise identity, optional inputs, prompts, and
+brief:                  |
+                        The port is a JSON object that identifies the
+                        type of item it carries, indicates if inputs
+                        are optional, includes output prompts, may
+                        reference an input port it influences, and
+                        relates to evaluations through edges.
+context:                |
+                        Ports serve as points on a component where
+                        items are consumed or produced. Inputs can be
+                        optional to allow flexibility. Outputs provide
+                        prompts to trigger item production. Each port
+                        must be clearly identified by the type of item
+                        it carries, using both id and guid for
+                        unambiguous typing. Output ports can specify
+                        which input port their output influences via a
+                        deciding relation. Evaluations are linked to
+                        ports through edges, adhering to JSON Schema
+                        conventions and allowing for extensibility
+                        with additional properties.
+decision:               |
+                        Define the port as a JSON object requiring
+                        id_type and guid_type fields to uniquely
+                        identify the item type. Include an optional
+                        boolean field named optional to mark input
+                        ports as optional. For output ports, include a
+                        prompt string field specifying the action to
+                        produce the item. Add an optional decides
+                        field that references the id of an input port
+                        whose item the output port's item determines.
+                        Incorporate a relation field as an array of
+                        edges linking the port to related evaluations.
+                        Permit additional unspecified properties to
+                        support future extension.
+rationale:              |
+                        Requiring id_type and guid_type ensures each
+                        port’s item type is unambiguously identified.
+                        The optional boolean flag allows input ports
+                        to be marked as optional without complicating
+                        the schema. A prompt field on output ports
+                        explicitly defines how items are produced. The
+                        decides field provides a direct semantic link
+                        between output and input ports crucial for
+                        execution logic dependency tracking. Using a
+                        relation array of edges enables flexible
+                        anchoring of evaluations without embedding
+                        evaluation-specific details within the port.
+                        Allowing additional properties preserves
+                        extensibility without compromising clarity or
+                        current structure.
+alternative:            |
+                        One alternative is to omit the decides and
+                        relation fields, managing these relations
+                        outside the port schema to simplify it.
+                        Another option is to restrict additional
+                        properties to enhance schema simplicity,
+                        though this would reduce future extensibility.
+                        Embedding richer typing or other structural
+                        constraints within item types instead of
+                        separate id_type and guid_type fields was
+                        considered but rejected to maintain consistent
+                        and unambiguous typing.
+consequence:            |
+                        Implementations must provide valid id_type and
+                        guid_type values for every port. Input ports
+                        may include the optional flag where
+                        appropriate. Output ports require prompt
+                        strings to guide production actions. The
+                        decides field supports the tracking of
+                        dependencies between outputs and their
+                        influencing inputs. Evaluation links via
+                        relation edges can be maintained without
+                        altering the core port attributes. Consumers
+                        and tools must accept additional properties
+                        gracefully, enabling future schema extensions.
+                        This design balances clarity, function, and
+                        extensibility without adding unnecessary
+                        complexity.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
