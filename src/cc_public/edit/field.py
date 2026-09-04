@@ -57,7 +57,7 @@ def set_field(tree, name, path, value = None, prose = None):
     item     = tree.resolve(name)
     document = tree.document(item)
 
-    cc_public.path.write(document, cc_public.path.join(item.path, path),
+    cc_public.path.write(document, cc_public.path.concat(item.path, path),
                          content)
 
     _relation_last(document, item.path, path)
@@ -106,7 +106,7 @@ def unset_field(tree, name, path):
 
     item      = tree.resolve(name)
     document  = tree.document(item)
-    list_step = cc_public.path.split(cc_public.path.join(item.path, path))
+    list_step = cc_public.path.split(cc_public.path.concat(item.path, path))
 
     if not list_step:
         raise KeyError('An empty path names the whole item.')

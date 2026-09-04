@@ -34,6 +34,14 @@ decision:               |
                         stops. A step names a mapping key or, for a
                         sequence, an index: relation.0.guid_target.
 
+                        A step wrapped in double quotes is one step
+                        whatever it contains, so that a key holding
+                        full stops -- an edge keyed by its source
+                        port, draft.output.record -- can still be
+                        named: edge."draft.output.record".0.guard.
+                        join quotes such a step; split honours the
+                        quotes.
+
                         A pattern is written in the same notation. A
                         step of one asterisk matches any single step.
                         A step of two matches any run of steps,
@@ -93,13 +101,6 @@ consequence:            |
                         so a path into a list stops meaning what it
                         meant when the list is reordered.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.path
-    guid_target:        pym_e24ddb2009814f23aef8b97317e013d5
-
 question:
 
   c68924c38:
@@ -111,3 +112,10 @@ question:
                         than by index, so that a path into a list
                         survives the list being reordered.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.path
+    guid_target:        pym_e24ddb2009814f23aef8b97317e013d5

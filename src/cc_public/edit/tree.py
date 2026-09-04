@@ -91,6 +91,8 @@ class Tree:
 
     def __init__(self, list_root):
 
+        self.root = pathlib.Path(list_root[0]).resolve()
+
         (self.context, list_error) = cc_public.check._context(
                                             [pathlib.Path(p) for p in list_root])
 

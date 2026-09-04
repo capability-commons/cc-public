@@ -47,6 +47,9 @@ import cc_public.eval.select
 import cc_public.layout
 import cc_public.load.git
 import cc_public.question
+import cc_public.workflow.generate
+import cc_public.workflow.graph
+import cc_public.workflow.run
 
 
 EXIT_OK            = 0
@@ -668,6 +671,101 @@ def log(count, root):
                         adv    = (c.document.get('check') or {}).get('advisory', '?'),
                         state  = state,
                         title  = c.title))
+
+
+# -----------------------------------------------------------------------------
+@main.command(name = 'run')
+@click.argument('id_workflow')
+@click.option('--deployment', 'id_deployment', required = True,
+              help = 'The deployment to run under: model, budget, what to '
+                     'judge, when to commit.')
+@click.option('--bind', 'list_bind', multiple = True, metavar = 'PORT=ITEM',
+              help = 'Bind one of the workflow\'s own inputs, node.input.port, '
+                     'to an item by readable id. May be given more than once.')
+@click.option('--dry-run', 'is_dry', is_flag = True,
+              help = 'Show the order and what each node would do. Writes '
+                     'nothing and calls no model.')
+@click.option('--judge-model', 'id_model_judge', default = None,
+              envvar = cc_public.eval.runner.NAME_ENV_MODEL, show_envvar = True,
+              help = 'The model that judges what the run produces. Needed '
+                     'unless the deployment judges nothing.')
+@click.option('--trailer', 'list_trailer', multiple = True,
+              help = 'A trailer line for any commit the run makes.')
+@click.option('--format', 'id_format', default = 'text',
+              type = click.Choice(['text', 'json']), show_default = True)
+@click.option('--root', 'root', default = pathlib.Path('.'),
+              type = click.Path(path_type = pathlib.Path))
+def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
+         list_trailer, id_format, root):
+    """
+    Run a dataflow workflow once under a deployment.
+
+    """
+
+    import json
+
+    map_bind = {}
+    for pair in list_bind:
+        if '=' not in pair:
+            _fail('--bind takes node.input.port=ITEM')
+        (k, v) = pair.split('=', 1)
+        map_bind[k.strip()] = v.strip()
+
+    tree = _tree([root])
+
+    try:
+        dep       = tree.context.map_document[tree.resolve(id_deployment).filepath]
+        generator = (cc_public.workflow.generate.NullGenerator() if is_dry
+                     else cc_public.workflow.generate.build(dep.get('model')))
+        runner    = None
+        if not is_dry and dep.get('judge', 'always') != 'never' and id_model_judge:
+            runner = cc_public.eval.runner.build(id_model_judge)
+        report = cc_public.workflow.run.run(root, id_workflow, id_deployment,
+                                            map_bind, generator, runner,
+                                            is_dry, list_trailer)
+    except (cc_public.workflow.run.Stop, cc_public.workflow.graph.ErrorGraph,
+            cc_public.edit.tree.ErrorItem, cc_public.commit.ErrorCommit) as err:
+        _fail(err)
+
+    if id_format == 'json':
+        click.echo(json.dumps(report, indent = 2, default = str))
+    else:
+        _write_run(report)
+
+    raise SystemExit(EXIT_NONCONFORMITY if report['stopped'] else EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+def _write_run(report):
+    """
+    Print a run report for a person.
+
+    """
+
+    click.echo('{wf} under {dep}  judge={j} confirm={c} commit={k}'.format(
+                    wf = report['workflow'], dep = report['deployment'],
+                    j = report['policy']['judge'], c = report['policy']['confirm'],
+                    k = report['policy']['commit']))
+    for (port, item) in (report.get('bound') or {}).items():
+        click.echo('  bound  {port} = {item}'.format(port = port, item = item))
+    for e in report['node']:
+        if 'input' in e:                                     # dry run
+            click.echo('  {node}: {out}'.format(
+                            node = e['node'],
+                            out  = '; '.join(f'{p} {what}' for (p, what) in e['output'].items())))
+            continue
+        click.echo('  {node}'.format(node = e['node']))
+        for i in e['made']:    click.echo('    made     {i}'.format(i = i))
+        for i in e['revised']: click.echo('    revised  {i}'.format(i = i))
+        for (port, vs) in e['verdict'].items():
+            for (ev, v) in vs:
+                click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
+        for t in e['fired']:    click.echo('    fired    -> {t}'.format(t = t))
+        for t in e['declined']: click.echo('    declined -> {t}'.format(t = t))
+        if e.get('commit'):     click.echo('    commit   {h}'.format(h = e['commit'][:10]))
+    if report['execution']: click.echo('  execution {e}'.format(e = report['execution']))
+    if report['commit']:    click.echo('  commit    {h}'.format(h = report['commit'][:10]))
+    if report['stopped']:   click.echo('  STOPPED   {r}'.format(r = report['stopped']))
 
 
 # -----------------------------------------------------------------------------

@@ -50,26 +50,68 @@ DROP       = object()
 # -----------------------------------------------------------------------------
 def join(path, step):
     """
-    Return path extended by one step, which may be a name or an index.
+    Return path with step appended.
+
+    A step that itself contains the delimiter -- a key such as
+    draft.output.record -- is wrapped in double quotes, so that the
+    path it appears in still splits back into the same steps.
 
     """
 
-    if path == '':
-        return str(step)
+    step = str(step)
 
-    return '{path}{delim}{step}'.format(path  = path,
-                                        delim = DELIM_PATH,
-                                        step  = step)
+    if DELIM_PATH in step:
+        step = '"' + step + '"'
+
+    return step if not path else path + DELIM_PATH + step
+
+
+# -----------------------------------------------------------------------------
+def concat(path, other):
+    """
+    Return path followed by other, both of them paths.
+
+    join appends one step; this appends every step of another path,
+    so that a path into an item and a path within it make one path.
+
+    """
+
+    out = path
+
+    for step in split(other):
+        out = join(out, step)
+
+    return out
 
 
 # -----------------------------------------------------------------------------
 def split(path):
     """
-    Return the steps of path, the empty path giving no steps.
+    Return the steps of path.
+
+    A step wrapped in double quotes is one step whatever it contains.
 
     """
 
-    return [step for step in path.split(DELIM_PATH) if step]
+    if not path:
+        return []
+
+    list_step = []
+    step      = ''
+    is_quoted = False
+
+    for char in path:
+        if char == '"':
+            is_quoted = not is_quoted
+        elif char == DELIM_PATH and not is_quoted:
+            list_step.append(step)
+            step = ''
+        else:
+            step += char
+
+    list_step.append(step)
+
+    return list_step
 
 
 # -----------------------------------------------------------------------------

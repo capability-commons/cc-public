@@ -91,7 +91,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                     'with --at.'.format(name = container.id_self))
         path_collection = KEY_TABLE
 
-    path_full  = cc_public.path.join(container.path, path_collection)
+    path_full  = cc_public.path.concat(container.path, path_collection)
     collection = _walk(document, path_full, is_create = True)
 
     if not isinstance(collection, (dict, list)):

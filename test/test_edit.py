@@ -260,3 +260,12 @@ def test_insert_creates_an_absent_collection(tree, tmp_path):
     assert made == 'qst_' + id_record.split('_', 1)[1] + '.first'
     doc = cc_public.load.from_file(tree.resolve(id_record).filepath)
     assert list(doc['question']) == ['first']
+
+
+def test_path_quotes_a_step_containing_the_delimiter():
+    assert cc_public.path.join('edge', 'draft.output.record') == 'edge."draft.output.record"'
+    assert cc_public.path.split('edge."draft.output.record".0.guard') == \
+           ['edge', 'draft.output.record', '0', 'guard']
+    node = {'edge': {'draft.output.record': [{'to': 'x'}]}}
+    cc_public.path.write(node, 'edge."draft.output.record".0.guard', 'met')
+    assert node['edge']['draft.output.record'][0]['guard'] == 'met'

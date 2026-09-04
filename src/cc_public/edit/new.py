@@ -82,12 +82,13 @@ EMPTY = {'string':  '',
 
 
 # -----------------------------------------------------------------------------
-def new(tree, id_type, id_self, defaults, dirpath_out = None):
+def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
     """
     Make the item and write it. Return its filepath.
 
     defaults holds copyright, license and id_mark. The directory is
-    given, or is where items of this type already live.
+    given, or is where items of this type already live. guid is minted
+    here unless the caller minted one to build the id from.
 
     """
 
@@ -130,7 +131,7 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None):
 
     document = ruamel.yaml.comments.CommentedMap()
     document['id_self']   = id_self
-    document['guid_self'] = prefix + '_' + uuid.uuid4().hex
+    document['guid_self'] = guid or (prefix + '_' + uuid.uuid4().hex)
     document['copyright'] = defaults['copyright']
     document['license']   = defaults['license']
 

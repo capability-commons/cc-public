@@ -61,6 +61,7 @@ KEY_RELATION    = 'relation'
 KEY_ID_REL      = 'id_relation'
 KEY_GUID_TARGET = 'guid_target'
 KEY_ID_TYPE     = 'id_type'
+KEY_REVISES     = 'revises'
 KEY_SUBJECT     = 'subject'
 KEY_INCL_TYPE   = 'include_type'
 
@@ -136,6 +137,7 @@ def _inspect(filepath, document, map_by_guid):
 
         map_component[name] = component
         list_bad.extend(_type_agreement(filepath, name, component, map_by_guid))
+        list_bad.extend(_revises(filepath, name, component))
 
         if not _has_eval(component):
             list_note.append(cc_public.check.result.Note(
@@ -271,6 +273,42 @@ def _type_agreement(filepath, name, component, map_by_guid):
                             'names only {include}.'.format(
                                     id_type = id_type,
                                     include = ', '.join(include))))
+
+    return list_bad
+
+
+# -----------------------------------------------------------------------------
+def _revises(filepath, name, component):
+    """
+    Return a fault for each output port revising an input it cannot.
+
+    A port that revises names an input port of the same component, and
+    the two carry the same type, since the item that leaves is the item
+    that arrived.
+
+    """
+
+    list_bad = []
+    inputs   = component.get(KEY_INPUT) or {}
+
+    for (local, port) in (component.get(KEY_OUTPUT) or {}).items():
+
+        target = port.get(KEY_REVISES) if isinstance(port, dict) else None
+
+        if target is None:
+            continue
+
+        if target not in inputs:
+            list_bad.append(_fault(filepath, f'node.{name}.output.{local}',
+                    'Revises {target}, and the component has no input port '
+                    'of that name.'.format(target = target)))
+        elif inputs[target].get(KEY_ID_TYPE) != port.get(KEY_ID_TYPE):
+            list_bad.append(_fault(filepath, f'node.{name}.output.{local}',
+                    'Revises {target}, which carries {t_in} where this port '
+                    'carries {t_out}. A revision keeps the item and so keeps '
+                    'its type.'.format(target = target,
+                                       t_in  = inputs[target].get(KEY_ID_TYPE),
+                                       t_out = port.get(KEY_ID_TYPE))))
 
     return list_bad
 
