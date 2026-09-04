@@ -60,8 +60,8 @@ def repo(tmp_path):
 
 def test_commit_carries_a_valid_record(repo):
     tree = cc_public.edit.tree.Tree([repo])
-    cc_public.edit.field.set_field(tree, 'dep_record_from_schema_local',
-                                   'budget', value = '4')
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'budget', value = 4)
     (hash, id_self) = cc_public.commit.commit(
                 repo, 'Raise the budget', brief = 'Four passes.',
                 description = 'Three was not enough.',
@@ -84,8 +84,8 @@ def test_commit_carries_a_valid_record(repo):
 
 def test_commit_refuses_failing_checks_unless_checkpoint(repo):
     tree = cc_public.edit.tree.Tree([repo])
-    cc_public.edit.field.set_field(tree, 'dep_record_from_schema_local',
-                                   'budget', value = '0')      # minimum is 1
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'budget', value = 0)      # minimum is 1
     with pytest.raises(cc_public.commit.ErrorCommit):
         cc_public.commit.commit(repo, 'Break it')
 
@@ -117,8 +117,8 @@ def test_link_records_intent_and_refuses_unknown_relation(repo):
 def test_records_sort_by_time(repo):
     tree = cc_public.edit.tree.Tree([repo])
     ids = []
-    for n in ('5', '6'):
-        cc_public.edit.field.set_field(tree, 'dep_record_from_schema_local',
+    for n in (5, 6):
+        cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
                                        'budget', value = n)
-        ids.append(cc_public.commit.commit(repo, 'Budget ' + n)[1])
+        ids.append(cc_public.commit.commit(repo, 'Budget %d' % n)[1])
     assert ids == sorted(ids)

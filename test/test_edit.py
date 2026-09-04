@@ -70,8 +70,8 @@ def test_path_write_sets_and_appends_and_refuses_missing_parent():
 
 
 def test_resolve_top_level_and_embedded(tree):
-    assert tree.resolve('wf_record_from_schema').path == ''
-    node = tree.resolve('node_record_from_schema.draft')
+    assert tree.resolve('wf_design_decision_from_schema').path == ''
+    node = tree.resolve('node_design_decision_from_schema.draft')
     assert node.path == 'node.draft'
     assert tree.resolve(node.guid_self).id_self == node.id_self
     with pytest.raises(cc_public.edit.tree.ErrorItem):
@@ -79,17 +79,17 @@ def test_resolve_top_level_and_embedded(tree):
 
 
 def test_set_scalar_prose_and_embedded(tree, tmp_path):
-    cc_public.edit.field.set_field(tree, 'dep_record_from_schema_local',
-                                   'budget', value = '7')
-    cc_public.edit.field.set_field(tree, 'node_record_from_schema.draft',
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'budget', value = 7)
+    cc_public.edit.field.set_field(tree, 'node_design_decision_from_schema.draft',
                                    'brief', prose = 'Drafts it, twice.')
     dep = cc_public.load.from_file(tmp_path / 'workflow'
-                                   / 'dep_record_from_schema_local.yaml')
+                                   / 'dep_design_decision_from_schema_local.yaml')
     wf  = cc_public.load.from_file(tmp_path / 'workflow'
-                                   / 'wf_record_from_schema.yaml')
+                                   / 'wf_design_decision_from_schema.yaml')
     assert dep['budget'] == 7
     assert wf['node']['draft']['brief'] == 'Drafts it, twice.\n'
-    text = (tmp_path / 'workflow' / 'wf_record_from_schema.yaml').read_text()
+    text = (tmp_path / 'workflow' / 'wf_design_decision_from_schema.yaml').read_text()
     assert '    brief:              |\n' in text
     assert clean(tmp_path) == []
 
@@ -105,21 +105,21 @@ def test_set_on_a_python_docstring(tree, tmp_path):
 
 def test_link_top_level_and_embedded_and_refusals(tree, tmp_path):
     cc_public.edit.link.link(tree, 'ddr_component', 'r_decides',
-                             'node_record_from_schema.draft')
+                             'node_design_decision_from_schema.draft')
     doc = cc_public.load.from_file(tmp_path / 'ddr' / 'ddr_component.yaml')
-    assert doc['relation'][-1]['id_target'] == 'node_record_from_schema.draft'
+    assert doc['relation'][-1]['id_target'] == 'node_design_decision_from_schema.draft'
     assert doc['relation'][-1]['guid_target'].startswith('node_')
 
-    cc_public.edit.link.link(tree, 'node_record_from_schema.draft',
+    cc_public.edit.link.link(tree, 'node_design_decision_from_schema.draft',
                              'r_is_judged_by', 'evl_prose_describes')
     wf = cc_public.load.from_file(tmp_path / 'workflow'
-                                  / 'wf_record_from_schema.yaml')
+                                  / 'wf_design_decision_from_schema.yaml')
     assert any(e['id_relation'] == 'r_is_judged_by'
                for e in wf['node']['draft']['relation'])
 
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.edit.link.link(tree, 'ddr_component', 'r_decides',
-                                 'node_record_from_schema.draft')   # again
+                                 'node_design_decision_from_schema.draft')   # again
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.edit.link.link(tree, 'ddr_component', 'r_nonsense',
                                  'sch_port')
@@ -146,10 +146,10 @@ def test_new_makes_a_skeleton_that_fails_until_written(tree, tmp_path):
 
 
 def test_set_keeps_relation_last(tree, tmp_path):
-    cc_public.edit.field.set_field(tree, 'dep_record_from_schema_local',
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
                                    'note', prose = 'A note added late.')
     doc = cc_public.load.from_file(tmp_path / 'workflow'
-                                   / 'dep_record_from_schema_local.yaml')
+                                   / 'dep_design_decision_from_schema_local.yaml')
     assert list(doc)[-1] == 'relation'
     assert clean(tmp_path) == []
 
@@ -184,23 +184,23 @@ def test_new_source_package_then_module(tree, tmp_path):
 
 def test_insert_port_term_node_and_refusals(tree, tmp_path):
     ins = cc_public.edit.insert.insert
-    assert ins(tree, 't_port', 'context', 'cmp_draft_record', 'input') == \
-           ('context', 'prt_draft_record.context')
+    assert ins(tree, 't_port', 'context', 'cmp_draft_design_decision', 'input') == \
+           ('context', 'prt_draft_design_decision.context')
     assert ins(tree, 't_term', 'widget', 'reg_term') == \
            ('term_widget', 'term_widget')
-    assert ins(tree, 't_node', 'index', 'wf_record_from_schema', 'node') == \
-           ('index', 'node_record_from_schema.index')
+    assert ins(tree, 't_node', 'index', 'wf_design_decision_from_schema', 'node') == \
+           ('index', 'node_design_decision_from_schema.index')
 
-    port = tree.resolve('prt_draft_record.context')
+    port = tree.resolve('prt_draft_design_decision.context')
     assert port.path == 'input.context'
     term = cc_public.load.from_file(tmp_path / 'register' / 'reg_term.yaml')
     assert term['table']['term_widget']['id_self'] == 'term_widget'
     assert term['table']['term_widget']['term'] == ''
     wf = cc_public.load.from_file(tmp_path / 'workflow'
-                                  / 'wf_record_from_schema.yaml')
+                                  / 'wf_design_decision_from_schema.yaml')
     assert wf['node']['index']['relation'] == []
 
-    cc_public.edit.field.set_field(tree, 'prt_draft_record.context',
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.context',
                                    'title', value = 'Context')
     # Empty fields fail their schema, and an empty node names no
     # component, which the workflow check rightly reports too.
@@ -208,32 +208,32 @@ def test_insert_port_term_node_and_refusals(tree, tmp_path):
     assert faults and {c for (c, _) in faults} <= {'schema', 'workflow'}
 
     with pytest.raises(cc_public.edit.tree.ErrorItem):     # key taken
-        ins(tree, 't_port', 'subject', 'cmp_draft_record', 'input')
+        ins(tree, 't_port', 'subject', 'cmp_draft_design_decision', 'input')
     with pytest.raises(cc_public.edit.tree.ErrorItem):     # --at needed
-        ins(tree, 't_port', 'x', 'cmp_draft_record')
+        ins(tree, 't_port', 'x', 'cmp_draft_design_decision')
     with pytest.raises(cc_public.edit.tree.ErrorItem):     # not a collection
-        ins(tree, 't_port', 'x', 'cmp_draft_record', 'title')
+        ins(tree, 't_port', 'x', 'cmp_draft_design_decision', 'title')
 
 
 def test_insert_appends_to_a_list(tree, tmp_path):
     (key, made) = cc_public.edit.insert.insert(
                     tree, 't_protective_mark', 'second',
-                    'dep_record_from_schema_local', 'protective_mark')
+                    'dep_design_decision_from_schema_local', 'protective_mark')
     assert made is None                                     # no identity in a reference
     doc = cc_public.load.from_file(tmp_path / 'workflow'
-                                   / 'dep_record_from_schema_local.yaml')
+                                   / 'dep_design_decision_from_schema_local.yaml')
     assert len(doc['protective_mark']) == 2
     assert set(doc['protective_mark'][1]) == {'id_mark', 'guid_mark'}
 
 
 def test_unset_removes_a_field_and_refuses_a_missing_one(tree, tmp_path):
-    cc_public.edit.field.unset_field(tree, 'dep_record_from_schema_local',
+    cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local',
                                      'description')
     doc = cc_public.load.from_file(tmp_path / 'workflow'
-                                   / 'dep_record_from_schema_local.yaml')
+                                   / 'dep_design_decision_from_schema_local.yaml')
     assert 'description' not in doc
     with pytest.raises(KeyError):
-        cc_public.edit.field.unset_field(tree, 'dep_record_from_schema_local',
+        cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local',
                                          'nothing')
 
 
@@ -262,10 +262,57 @@ def test_insert_creates_an_absent_collection(tree, tmp_path):
     assert list(doc['question']) == ['first']
 
 
-def test_path_quotes_a_step_containing_the_delimiter():
-    assert cc_public.path.join('edge', 'draft.output.record') == 'edge."draft.output.record"'
-    assert cc_public.path.split('edge."draft.output.record".0.guard') == \
-           ['edge', 'draft.output.record', '0', 'guard']
-    node = {'edge': {'draft.output.record': [{'to': 'x'}]}}
-    cc_public.path.write(node, 'edge."draft.output.record".0.guard', 'met')
-    assert node['edge']['draft.output.record'][0]['guard'] == 'met'
+def test_path_steps_are_plain():
+    assert cc_public.path.join('edge', 'draft_to_review') == 'edge.draft_to_review'
+    assert cc_public.path.split('edge.draft_to_review.guard') == \
+           ['edge', 'draft_to_review', 'guard']
+    node = {'edge': {'draft_to_review': {'to': 'x'}}}
+    cc_public.path.write(node, 'edge.draft_to_review.guard', 'met')
+    assert node['edge']['draft_to_review']['guard'] == 'met'
+
+
+def test_unset_last_key_leaves_an_empty_mapping(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'extra', value = {'only': 1})
+    cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local',
+                                     'extra.only')
+    doc = cc_public.load.from_file(tmp_path / 'workflow'
+                                   / 'dep_design_decision_from_schema_local.yaml')
+    assert doc['extra'] == {}
+    cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local', 'extra')
+
+
+def test_rename_carries_to_qualified_items_references_and_file(tree, tmp_path):
+    import cc_public.edit.rename
+    report = cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision',
+                                          'cmp_draft_thing')
+    assert report.map_rename['prt_draft_design_decision.decision'] == 'prt_draft_thing.decision'
+    assert not (tmp_path / 'workflow' / 'cmp_draft_design_decision.yaml').exists()
+    doc = cc_public.load.from_file(tmp_path / 'workflow' / 'cmp_draft_thing.yaml')
+    assert doc['id_self'] == 'cmp_draft_thing'
+    assert doc['output']['decision']['id_self'] == 'prt_draft_thing.decision'
+    wf = cc_public.load.from_file(tmp_path / 'workflow' / 'wf_design_decision_from_schema.yaml')
+    edge = next(e for e in wf['node']['draft']['relation']
+                if e['id_relation'] == 'r_instantiates')
+    assert edge['id_target'] == 'cmp_draft_thing'
+    assert clean(tmp_path) == []
+    with pytest.raises(cc_public.edit.tree.ErrorItem):
+        cc_public.edit.rename.rename(tree, 'prt_draft_thing.decision', 'prt_x.y')
+    cc_public.edit.rename.rename(tree, 'prt_draft_thing.decision',
+                                 'prt_draft_thing.made')
+    doc = cc_public.load.from_file(tmp_path / 'workflow' / 'cmp_draft_thing.yaml')
+    assert list(doc['output']) == ['made']
+    assert doc['output']['made']['id_self'] == 'prt_draft_thing.made'
+    with pytest.raises(cc_public.edit.tree.ErrorItem):
+        cc_public.edit.rename.rename(tree, 'cmp_draft_thing', 'zzz_draft')
+
+
+def test_rename_register_entry_rekeys_in_place(tree, tmp_path):
+    import cc_public.edit.rename
+    doc  = cc_public.load.from_file(tmp_path / 'register' / 'reg_term.yaml')
+    keys = list(doc['table'])
+    cc_public.edit.rename.rename(tree, keys[1], 'term_renamed')
+    doc  = cc_public.load.from_file(tmp_path / 'register' / 'reg_term.yaml')
+    assert list(doc['table'])[1] == 'term_renamed'
+    assert doc['table']['term_renamed']['id_self'] == 'term_renamed'
+    assert clean(tmp_path) == []

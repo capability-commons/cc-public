@@ -30,6 +30,7 @@ import sys
 import click
 
 import dotenv
+import ruamel.yaml
 
 import cc_public.check
 import cc_public.check.schema
@@ -39,6 +40,7 @@ import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
 import cc_public.edit.new
+import cc_public.edit.rename
 import cc_public.edit.tree
 import cc_public.cli.report
 import cc_public.eval.measure
@@ -371,7 +373,8 @@ def set_(name, path, value, is_prose, list_root):
     try:
         item = cc_public.edit.field.set_field(
                     _tree(list_root), name, path,
-                    value = value,
+                    value = (ruamel.yaml.YAML(typ = 'safe').load(value)
+                             if value is not None else None),
                     prose = sys.stdin.read() if is_prose else None)
     except (cc_public.edit.tree.ErrorItem, KeyError) as err:
         _fail(err)
@@ -562,12 +565,40 @@ def unset(name, path, list_root):
 
 # -----------------------------------------------------------------------------
 @main.command()
+@click.argument('name')
+@click.argument('id_new')
+@OPTION_ROOT
+def rename(name, id_new, list_root):
+    """
+    Rename the item called NAME to ID_NEW.
+
+    The guid stays. The readable id changes where it is declared, in
+    the file name, in every embedded item it qualifies, and in every
+    reference. Prose mentioning the old id is listed and left alone.
+
+    """
+
+    try:
+        report = cc_public.edit.rename.rename(_tree(list_root), name, id_new)
+    except cc_public.edit.tree.ErrorItem as err:
+        _fail(err)
+
+    for (old, new) in report.map_rename.items():
+        click.echo('{old}  ->  {new}'.format(old = old, new = new))
+    for filepath in report.list_filepath:
+        click.echo(str(filepath))
+    for (filepath, path) in report.list_mention:
+        click.echo('mention  {file}  {path}'.format(file = filepath, path = path))
+
+
+# -----------------------------------------------------------------------------
+@main.command()
 @click.option('--open', 'is_open_only', is_flag = True,
               help = 'Only the questions nothing has answered.')
 @OPTION_ROOT
 def questions(is_open_only, list_root):
     """
-    List what the decision records leave open, and what answered it.
+    List what the design decisions leave open, and what answered it.
 
     """
 

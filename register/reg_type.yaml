@@ -224,21 +224,21 @@ table:
     regex_id:           ^r_[a-z][a-z0-9_]*$
 
   # ---------------------------------------------------------------------------
-  # t_ddr — Design decision record type
+  # t_ddr — Design decision type
   #
   t_ddr:
     id_self:            t_ddr
     guid_self:          t_5751ab6c7b0c44e8b4ed8f6c882192d8
-    title:              Design decision record type
+    title:              Design decision type
     brief:              |
-                        Type of design decision record data items
+                        Type of design decision data items
     description:        |
-                        Each design decision record data item holds
-                        the reasoning behind one design decision.
+                        Each design decision data item holds the
+                        reasoning behind one design decision.
     usage:              |
-                        Design decision record data items are used to
-                        hold the reasoning that produced an artifact,
-                        so that the artifact itself need not carry it.
+                        Design decision data items are used to hold
+                        the reasoning that produced an artifact, so
+                        that the artifact itself need not carry it.
     note:               |
                         One record per decision, where a decision is
                         one thing that could later be revised on its
@@ -377,7 +377,7 @@ table:
                         docstring.
     usage:              |
                         Optional. Written only where something needs
-                        to name the class -- a decision record
+                        to name the class -- a design decision
                         deciding it, or an eval judging it. Requiring
                         one of every class would cost more in header
                         than the code is worth.
@@ -752,10 +752,10 @@ table:
     brief:              |
                         Type of question data items
     description:        |
-                        Each question data item is one thing a
-                        decision record does not settle, held on that
-                        record with an identity of its own so that
-                        whatever later settles it can say so.
+                        Each question data item is one thing a design
+                        decision does not settle, held on that record
+                        with an identity of its own so that whatever
+                        later settles it can say so.
     prefix:             qst
     regex_id:           ^qst_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
     usage:              |
@@ -806,3 +806,36 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_commit
         guid_target:    sch_46065f16926a43b586804bdacca29cd2
+
+  t_writing_style_rule:
+    id_self:            t_writing_style_rule
+    guid_self:          t_854481855e61404ab53d2766077cb2f9
+    title:              Writing style rule type
+    brief:              |
+                        Type of writing style rule data items
+    description:        |
+                        Each writing style rule data item states one
+                        rule that prose in the repository follows,
+                        with its reasoning and an example sentence
+                        each way.
+    prefix:             style
+    regex_id:           ^style_[a-z][a-z0-9_]*$
+    usage:              |
+                        Writing style rule data items are bound into
+                        writing prompts as context, and cited by the
+                        evals that judge prose.
+    note:               |
+                        Writing style rules exist only as entries in a
+                        writing style rule register, never as
+                        documents of their own, so this type names no
+                        schema. The register names one, and that
+                        schema governs its entries.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee

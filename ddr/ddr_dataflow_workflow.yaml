@@ -50,10 +50,12 @@ decision:               |
                         An EDGE connects one output port to one input
                         port, each named by a dot path through the
                         node: node.output.name and node.input.name.
-                        Edges carry no identity. They are held in a
-                        map from source port to a list of
-                        destinations, so that what a port feeds is
-                        read in one place.
+                        Edges are held in a keyed table under a short
+                        local name, as ports and nodes are, and each
+                        carries its two endpoints as fields. An edge
+                        carries no identity: it is its endpoints,
+                        whatever it is called, and two edges joining
+                        the same ports are a fault.
 
                         A BACK EDGE is an edge whose destination
                         precedes its source. Back edges are held in a
@@ -131,6 +133,16 @@ rationale:              |
                         configuration is the split stableflow draws
                         between a node and its functionality, and is
                         what lets one component serve many graphs.
+
+                        Edges are named, as stableflow's are not,
+                        because a name is what a path can cross. The
+                        guard on an edge is then
+                        edge.review_to_draft.guard, one step per
+                        level, where a table keyed by the source port
+                        put a full stop inside a key and needed
+                        quoting to be reached. Names were once a
+                        maintenance cost; a model writing the graph
+                        pays it for nothing.
 alternative:            |
                         A node iterating internally against a budget.
                         The first decision here, superseded. It hides
@@ -223,23 +235,6 @@ consequence:            |
                         consumers, or many items -- and nothing
                         prevents a graph from using the wrong one.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_workflow_dataflow
-    guid_target:        sch_1eb527db75de470b8cec8605179f3221
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_node
-    guid_target:        sch_0f84c11a0f2d40b28013b09af549a8e9
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.check.workflow
-    guid_target:        pym_a1cd2896606a40538114a119b7a38bef
-
 question:
 
   c1ca1a752:
@@ -270,3 +265,20 @@ question:
                         node has produced nothing on that port, which
                         the optional output case makes possible.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_workflow_dataflow
+    guid_target:        sch_1eb527db75de470b8cec8605179f3221
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_node
+    guid_target:        sch_0f84c11a0f2d40b28013b09af549a8e9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.workflow
+    guid_target:        pym_a1cd2896606a40538114a119b7a38bef

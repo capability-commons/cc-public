@@ -133,34 +133,4 @@ def record(tree, id_eval, rows, id_model):
     fresh    = [dict(model = id_model, date = date, **r) for r in rows]
 
     cc_public.edit.field.set_field(tree, id_eval, 'confidence',
-                                   value = _yaml(kept + fresh))
-
-
-# -----------------------------------------------------------------------------
-def _yaml(value):
-    """
-    Return value as YAML text, for the field setter to read back.
-
-    """
-
-    import io
-    import ruamel.yaml
-    import ruamel.yaml.comments
-
-    # The round trip dumper keeps keys in the order they were given, so
-    # that a row reads model, date, origin and then its numbers.
-    #
-    def keep(node):
-        if isinstance(node, dict):
-            out = ruamel.yaml.comments.CommentedMap()
-            for (k, v) in node.items():
-                out[k] = keep(v)
-            return out
-        if isinstance(node, list):
-            return [keep(v) for v in node]
-        return node
-
-    stream = io.StringIO()
-    ruamel.yaml.YAML(typ = 'rt').dump(keep(value), stream)
-
-    return stream.getvalue()
+                                   value = kept + fresh)

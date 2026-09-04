@@ -36,6 +36,7 @@ import cc_public.path
 KEY_NODE      = 'node'
 KEY_EDGE      = 'edge'
 KEY_EDGE_BACK = 'edge_back'
+KEY_FROM      = 'from'
 KEY_TO        = 'to'
 KEY_GUARD     = 'guard'
 KEY_INPUT     = 'input'
@@ -94,10 +95,9 @@ class Graph:
 
         map_in = collections.defaultdict(set)
 
-        for (src, list_dst) in self.edge.items():
-            node_src = src.split(DELIM, 1)[0]
-            for dst in list_dst or []:
-                map_in[dst[KEY_TO].split(DELIM, 1)[0]].add(node_src)
+        for edge in self.edge.values():
+            map_in[edge[KEY_TO].split(DELIM, 1)[0]].add(
+                                        edge[KEY_FROM].split(DELIM, 1)[0])
 
         placed = []
         ready  = sorted(n for n in self.node if not map_in[n])
@@ -131,9 +131,10 @@ class Graph:
 
         out = []
 
-        for dst in self.edge.get(f'{local}.output.{port}') or []:
-            (node_dst, _, port_dst) = dst[KEY_TO].split(DELIM)
-            out.append((node_dst, port_dst, dst.get(KEY_GUARD)))
+        for edge in self.edge.values():
+            if edge[KEY_FROM] == f'{local}.output.{port}':
+                (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
+                out.append((node_dst, port_dst, edge.get(KEY_GUARD)))
 
         return out
 
@@ -146,11 +147,10 @@ class Graph:
 
         out = []
 
-        for (src, list_dst) in self.edge.items():
-            for dst in list_dst or []:
-                if dst[KEY_TO] == f'{local}.input.{port}':
-                    (node_src, _, port_src) = src.split(DELIM)
-                    out.append((node_src, port_src, dst.get(KEY_GUARD)))
+        for edge in self.edge.values():
+            if edge[KEY_TO] == f'{local}.input.{port}':
+                (node_src, _, port_src) = edge[KEY_FROM].split(DELIM)
+                out.append((node_src, port_src, edge.get(KEY_GUARD)))
 
         return out
 

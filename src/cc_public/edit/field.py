@@ -40,7 +40,8 @@ def set_field(tree, name, path, value = None, prose = None):
     """
     Set path within the item called name, and write the file back.
 
-    Exactly one of value and prose is given. value is YAML text. prose
+    Exactly one of value and prose is given. value is stored as it is,
+    a string as a string; a caller with YAML text reads it first. prose
     is text stored as a block scalar, given a final newline.
 
     """
@@ -52,7 +53,7 @@ def set_field(tree, name, path, value = None, prose = None):
         content = ruamel.yaml.scalarstring.LiteralScalarString(
                                                     prose.rstrip('\n') + '\n')
     else:
-        content = ruamel.yaml.YAML(typ = 'safe').load(value)
+        content = value
 
     item     = tree.resolve(name)
     document = tree.document(item)
@@ -112,8 +113,10 @@ def unset_field(tree, name, path):
         raise KeyError('An empty path names the whole item.')
 
     parent = document
+    above  = None                     # the parent's own parent and step
 
     for step in list_step[:-1]:
+        above  = (parent, step)
         parent = parent[int(step)] if isinstance(parent, list) else parent[step]
 
     last = list_step[-1]
@@ -126,6 +129,17 @@ def unset_field(tree, name, path):
     except (KeyError, IndexError, ValueError):
         raise KeyError('No {step} at {path}.'.format(step = last,
                                                     path = path)) from None
+
+    # A mapping emptied of its last key keeps the comment tokens of
+    # what it held, and the dumper then writes it badly. A fresh empty
+    # mapping in its place carries nothing.
+    #
+    if above is not None and isinstance(parent, dict) and not parent:
+        (grand, step) = above
+        if isinstance(grand, list):
+            grand[int(step)] = {}
+        else:
+            grand[step] = {}
 
     cc_public.edit.tree.save(item.filepath, document)
     tree.refresh(item.filepath)

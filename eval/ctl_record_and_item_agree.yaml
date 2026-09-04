@@ -276,9 +276,9 @@ case:
                         t_ddr:
                           alias: []
                           brief: |
-                            Type of design decision record data items
+                            Type of design decision data items
                           description: |
-                            Each design decision record data item holds
+                            Each design decision data item holds
                             the reasoning behind one design decision.
                           id_self: t_ddr
                           note: |
@@ -294,9 +294,9 @@ case:
                           - id_relation: r_is_specified_by_schema
                             id_target: sch_ddr
                           status: proposed
-                          title: Design decision record type
+                          title: Design decision type
                           usage: |
-                            Design decision record data items are used to
+                            Design decision data items are used to
                             hold the reasoning that produced an artifact,
                             so that the artifact itself need not carry it.
                         t_deployment:
@@ -473,7 +473,7 @@ case:
                           title: Python class type
                           usage: |
                             Optional. Written only where something needs
-                            to name the class -- a decision record
+                            to name the class -- a design decision
                             deciding it, or an eval judging it. Requiring
                             one of every class would cost more in header
                             than the code is worth.
@@ -1147,7 +1147,7 @@ case:
                           description: |
                             It is intended that the design of the item
                             identified by OBJ be settled by the design
-                            decision record identified by SUBJ.
+                            design decision identified by SUBJ.
 
                             Recorded on the record rather than on the
                             item, so that an item need not point back at
@@ -1175,7 +1175,7 @@ case:
 
                             For a criterion that is not about an item at
                             all but about the fit between two of them --
-                            whether a decision record and the thing it
+                            whether a design decision and the thing it
                             decides actually agree, say. Such a criterion
                             has no single item to anchor to.
                           id_self: r_evaluates_items_joined_by_relation
@@ -2345,10 +2345,9 @@ case:
                         enough churn in settling the fundamentals
                         without adding more of it.
 
-                        What changed is that design decision records
-                        now exist. The prose that made traits
-                        expensive has somewhere to live that is not a
-                        schema.
+                        What changed is that design decisions now
+                        exist. The prose that made traits expensive
+                        has somewhere to live that is not a schema.
 
                         decision: Three traits, composed by allOf.
                         sch_descriptive holds title, brief,
@@ -2369,7 +2368,7 @@ case:
                         more, is what lets one definition serve unlike
                         consumers. allOf is an intersection, so a
                         register can demand all five prose fields
-                        while a decision record, whose own channels do
+                        while a design decision, whose own channels do
                         that work, demands none of description, usage
                         or note. A trait that required all five would
                         have forced the record to carry three empty
@@ -2391,7 +2390,7 @@ case:
 
                         alternative: Leave the envelope declared per
                         item type, as it was. Rejected now, though it
-                        was the right answer before decision records
+                        was the right answer before design decisions
                         existed. The cost of a trait is the prose
                         explaining it, and that cost has moved.
 
@@ -2491,7 +2490,7 @@ case:
                             Scope caveats, and guidance on choosing
                             between this and a neighbour. Not the place
                             for the reasoning that produced it -- that
-                            belongs in a design decision record.
+                            belongs in a design decision.
                           minLength: 1
                           type: string
                         title:

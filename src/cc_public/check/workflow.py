@@ -52,6 +52,7 @@ KEY_GUID_SELF   = 'guid_self'
 KEY_NODE        = 'node'
 KEY_EDGE        = 'edge'
 KEY_EDGE_BACK   = 'edge_back'
+KEY_FROM        = 'from'
 KEY_TO          = 'to'
 KEY_GUARD       = 'guard'
 KEY_INPUT       = 'input'
@@ -148,10 +149,18 @@ def _inspect(filepath, document, map_by_guid):
                                'produces.'.format(name = name,
                                                   component = component[KEY_ID_SELF])))
 
+    seen = {}
     for (key, is_back) in ((KEY_EDGE, False), (KEY_EDGE_BACK, True)):
-        for (src, list_dst) in (document.get(key) or {}).items():
-            list_bad.extend(_edges(filepath, key, src, list_dst, is_back,
-                                   map_component))
+        for (name, edge) in (document.get(key) or {}).items():
+            list_bad.extend(_edge(filepath, f'{key}.{name}', edge, is_back,
+                                  map_component))
+            ends = (edge.get(KEY_FROM), edge.get(KEY_TO))
+            if ends in seen:
+                list_bad.append(_fault(filepath, f'{key}.{name}',
+                        'Joins the same two ports as {other}. An edge is '
+                        'its endpoints, whatever it is called.'.format(
+                                                        other = seen[ends])))
+            seen.setdefault(ends, f'{key}.{name}')
 
     list_bad.extend(_orderable(filepath, document, map_component))
 
@@ -159,41 +168,38 @@ def _inspect(filepath, document, map_by_guid):
 
 
 # -----------------------------------------------------------------------------
-def _edges(filepath, key, src, list_dst, is_back, map_component):
+def _edge(filepath, where, edge, is_back, map_component):
     """
-    Return the faults in one source port's destinations.
+    Return the faults in one edge.
 
     """
 
     list_bad = []
-    port_src = _port(src, SIDE_OUTPUT, map_component)
+    port_src = _port(edge.get(KEY_FROM, ''), SIDE_OUTPUT, map_component)
+    port_dst = _port(edge.get(KEY_TO, ''), SIDE_INPUT, map_component)
 
     if port_src is None:
-        list_bad.append(_fault(filepath, f'{key}.{src}',
+        list_bad.append(_fault(filepath, where,
                 'Names an output port that does not exist on the component '
                 'its node instantiates.'))
+
+    if port_dst is None:
+        list_bad.append(_fault(filepath, where,
+                'Names an input port that does not exist on the component '
+                'its node instantiates.'))
+
+    if port_src is None or port_dst is None:
         return list_bad
 
-    for (idx, dst) in enumerate(list_dst or []):
+    if KEY_GUARD in edge and not _judged(port_src):
+        list_bad.append(_fault(filepath, where,
+                'Carries a guard, and its source port has no eval '
+                'anchored to it, so there is no verdict to consult.'))
 
-        where    = f'{key}.{src}.{idx}'
-        port_dst = _port(dst.get(KEY_TO, ''), SIDE_INPUT, map_component)
-
-        if port_dst is None:
-            list_bad.append(_fault(filepath, where,
-                    'Names an input port that does not exist on the component '
-                    'its node instantiates.'))
-            continue
-
-        if KEY_GUARD in dst and not _judged(port_src):
-            list_bad.append(_fault(filepath, where,
-                    'Carries a guard, and its source port has no eval '
-                    'anchored to it, so there is no verdict to consult.'))
-
-        if is_back and not port_dst.get(KEY_OPTIONAL, False):
-            list_bad.append(_fault(filepath, where,
-                    'Feeds a required input from a back edge. The first '
-                    'pass then has nothing there and cannot run.'))
+    if is_back and not port_dst.get(KEY_OPTIONAL, False):
+        list_bad.append(_fault(filepath, where,
+                'Feeds a required input from a back edge. The first '
+                'pass then has nothing there and cannot run.'))
 
     return list_bad
 
@@ -211,12 +217,11 @@ def _orderable(filepath, document, map_component):
 
     map_in = collections.defaultdict(set)
 
-    for (src, list_dst) in (document.get(KEY_EDGE) or {}).items():
-        node_src = src.split(DELIM, 1)[0]
-        for dst in list_dst or []:
-            node_dst = dst.get(KEY_TO, '').split(DELIM, 1)[0]
-            if node_src in map_component and node_dst in map_component:
-                map_in[node_dst].add(node_src)
+    for edge in (document.get(KEY_EDGE) or {}).values():
+        node_src = edge.get(KEY_FROM, '').split(DELIM, 1)[0]
+        node_dst = edge.get(KEY_TO, '').split(DELIM, 1)[0]
+        if node_src in map_component and node_dst in map_component:
+            map_in[node_dst].add(node_src)
 
     placed = set()
     ready  = [n for n in map_component if not map_in[n]]

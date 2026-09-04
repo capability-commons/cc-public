@@ -91,12 +91,7 @@ class DspyGenerator:
         list_output = list(list_field) + ([FIELD_SLUG] if want_slug else [])
         text        = ', '.join(list_input) + ' -> ' + ', '.join(list_output)
 
-        signature = dspy.Signature(text, prompt + (
-            '\n\nAnswer each output field with plain prose for that field '
-            'alone. ' +
-            ('slug is a short lowercase name of letters, digits and '
-             'underscores for the item as a whole, beginning with a letter.'
-             if want_slug else '')))
+        signature = dspy.Signature(text, instruction(prompt, want_slug))
 
         kwargs = dict(map_input) or {INPUT_NONE: prompt}
 
@@ -105,6 +100,30 @@ class DspyGenerator:
 
         return {field: str(getattr(answer, field, '') or '')
                 for field in list_output}
+
+
+# -----------------------------------------------------------------------------
+def instruction(prompt, want_slug):
+    """
+    Return what the model is told, beyond the prompt itself.
+
+    The fields are prose and nothing else: no markup of any kind, since
+    a field is read as text and a heading or an emphasis mark in it is
+    noise the reader has to strip.
+
+    """
+
+    text = (prompt + '\n\nAnswer each output field with plain prose for that '
+            'field alone. Plain text only: no markdown, no headings, no bullet '
+            'or numbered lists, no bold or italic marks, no code fences. A '
+            'field that is a title is one line.')
+
+    if want_slug:
+        text += (' slug is a short lowercase name of letters, digits and '
+                 'underscores for the item as a whole, beginning with a '
+                 'letter.')
+
+    return text
 
 
 # -----------------------------------------------------------------------------

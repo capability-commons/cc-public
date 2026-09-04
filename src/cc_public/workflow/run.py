@@ -79,6 +79,7 @@ DIR_EXECUTION  = 'execution'
 FORMAT_STAMP   = '%Y%m%d%H%M%S'
 LENGTH_TAG     = 6
 WIDTH_VALUE    = 50
+WIDTH_LINE     = 80
 
 # Envelope fields the tool fills; never asked of the generator.
 #
@@ -261,9 +262,10 @@ def _execution(tree, ledger, id_workflow, id_deployment):
                                   dirpath_out = root / DIR_EXECUTION, guid = guid)
     ledger.note_create(path)
 
-    title = 'Run of {wf} under {dep}'.format(wf = id_workflow, dep = id_deployment)
-    cc_public.edit.field.set_field(tree, id_exe, 'title', value = title)
-    cc_public.edit.field.set_field(tree, id_exe, 'brief', prose = title + '.')
+    cc_public.edit.field.set_field(tree, id_exe, 'title',
+                                   value = 'Run of ' + id_workflow)
+    cc_public.edit.field.set_field(tree, id_exe, 'brief',
+                                   prose = 'Under {dep}.'.format(dep = id_deployment))
     cc_public.edit.field.set_field(tree, id_exe, 'description',
                                    prose = 'Started, and not yet finished.')
     cc_public.edit.link.link(tree, id_exe, REL_RAN_UNDER, id_deployment)
@@ -394,12 +396,16 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
         text = str(answer.get(field, '') or '')
         if not text.strip():
             continue                      # left empty: the checks will say so
-        # One short line is a value; anything longer, or with a break in
-        # it, is prose and goes in as a block scalar. The same line the
-        # printer draws.
+        # A field the schema bounds to a line is one line whatever the
+        # model returned, so its whitespace is collapsed. Otherwise one
+        # short line is a value and anything longer is prose, the same
+        # line the printer draws.
         #
-        sub = properties.get(field) or {}
-        if 'enum' in sub or 'pattern' in sub or (
+        sub     = properties.get(field) or {}
+        is_line = 'maxLength' in sub and sub['maxLength'] <= WIDTH_LINE
+        if is_line:
+            text = ' '.join(text.split())
+        if is_line or 'enum' in sub or 'pattern' in sub or (
                 '\n' not in text.strip() and len(text.strip()) <= WIDTH_VALUE):
             cc_public.edit.field.set_field(tree, id_item, field, value = text.strip())
         else:
@@ -431,7 +437,7 @@ def _bind(tree, graph, local, bound, id_exe):
                                  ('guid_node', node['guid_self']),
                                  ('id_port',   spec['id_self']),
                                  ('guid_port', spec['guid_self']),
-                                 ('pass',      '1')):
+                                 ('pass',      1)):
                 cc_public.edit.field.set_field(tree, id_bnd, key, value = value)
             cc_public.edit.link.link(tree, id_bnd, REL_BINDS, item.id_self)
 

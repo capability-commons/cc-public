@@ -13,7 +13,7 @@ protective_mark:
 
 title:                  Questions
 brief:                  |
-                        What the decision records leave open, and what
+                        What the design decisions leave open, and what
                         has since been answered.
 description:            |
                         Walks every record for its questions and every

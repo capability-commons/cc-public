@@ -284,27 +284,33 @@ table:
     status:             proposed
     relation:           []
 
-  term_decision_record:
-    id_self:            term_decision_record
+  term_design_decision:
+    id_self:            term_design_decision
     guid_self:          term_f05757bd13f84c77adfda058c67b0eb5
-    title:              Decision record
+    title:              Design decision
     brief:              |
                         An item holding the reasoning behind one
                         design decision, so that the artifact need
                         not.
     description:        |
                         Context, decision, rationale, alternative,
-                        consequence, and what is left open. A record
-                        decides items by r_decides edges.
-    term:               decision record
+                        consequence, and what is left open. A design
+                        decision decides items by r_decides edges. Its
+                        type prefix, ddr, is an identifier and stays;
+                        the word record is dropped from the name
+                        because every item is a record of something,
+                        and the phrase said nothing the shorter one
+                        does not.
+    term:               design decision
 
     also:
-      - design decision record
       - DDR
 
     alias:              []
 
     avoid:
+      - design decision record
+      - decision record
       - ADR
 
     status:             proposed
@@ -710,9 +716,11 @@ table:
                         Wiring from one output port to one input port
                         within a dataflow workflow.
     description:        |
-                        Carries no identity: it is its endpoints. Held
-                        in a map from source port to destinations. Not
-                        to be confused with a relation edge.
+                        Named by a short local key, like a port or a
+                        node, and carrying its two endpoints as
+                        fields. Has no identity: it is its endpoints,
+                        whatever it is called. Not to be confused with
+                        a relation edge.
     term:               dataflow edge
     alias:              []
 
@@ -1225,7 +1233,7 @@ table:
     guid_self:          term_d558794250a74c32a77bd29ae9ef1059
     title:              Question
     brief:              |
-                        One thing a decision record does not settle,
+                        One thing a design decision does not settle,
                         held on the record as an entry with an
                         identity.
     description:        |
@@ -1262,6 +1270,48 @@ table:
     avoid:
       - changelog entry
       - commit message
+
+    status:             proposed
+    relation:           []
+
+  term_writing_style_rule:
+    id_self:            term_writing_style_rule
+    guid_self:          term_4c23b1dfc6974fadb122852cdbe5093c
+    title:              Writing style rule
+    brief:              |
+                        One rule that prose in the repository follows,
+                        stated in a sentence with its reasoning and an
+                        example each way.
+    description:        |
+                        An entry in a writing style rule register. A
+                        prompt binds the register; an eval cites the
+                        rule.
+    term:               writing style rule
+    alias:              []
+
+    also:
+      - style rule
+
+    status:             proposed
+    relation:           []
+
+  term_writing_style_guide:
+    id_self:            term_writing_style_guide
+    guid_self:          term_c33d44c0c98d49c58ae4a3dab80bc7e1
+    title:              Writing style guide
+    brief:              |
+                        A register of writing style rules. The
+                        cc-public guide is reg_writing_style_rule.
+    description:        |
+                        The one source both a writing prompt and a
+                        prose eval draw on. House style is the
+                        publishing word for the same thing.
+    term:               writing style guide
+    alias:              []
+
+    also:
+      - style guide
+      - house style
 
     status:             proposed
     relation:           []

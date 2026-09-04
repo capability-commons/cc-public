@@ -13,17 +13,16 @@ protective_mark:
 title:                  Dataflow workflow schema
 brief:                  |
                         The shape of a dataflow workflow: a keyed
-                        table of nodes, a map of forward edges, and a
-                        map of back edges.
+                        table of nodes, a table of forward edges, and
+                        a table of back edges.
 description:            |
                         Composes the base envelope and outgoing
                         relations. Nodes are sch_node entries keyed by
-                        local name. Each edge map is keyed by a source
-                        output port path and holds a list of
-                        destinations, each an input port path with an
-                        optional guard. Back edges are held in
-                        edge_back and are set aside when the graph is
-                        ordered.
+                        local name. Edges are keyed by a local name
+                        too, and each names its source output port,
+                        its destination input port, and an optional
+                        guard. Back edges are held in edge_back and
+                        are set aside when the graph is ordered.
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_base.yaml
@@ -43,7 +42,7 @@ allOf:
         type:           object
 
         propertyNames:
-          pattern:      '^[a-z][a-z0-9_]*$'
+          pattern:      ^[a-z][a-z0-9_]*$
 
         additionalProperties:
           $ref:         https://capability-commons.org/schema/sch_node.yaml
@@ -52,42 +51,39 @@ allOf:
         type:           object
 
         propertyNames:
-          pattern:      '^[a-z][a-z0-9_]*\.output\.[a-z][a-z0-9_]*$'
+          pattern:      ^[a-z][a-z0-9_]*$
 
         additionalProperties:
-          type:         array
-          minItems:     1
-
-          items:
-            $ref:       "#/$defs/destination"
+          $ref:         '#/$defs/edge'
 
       edge_back:
         type:           object
 
         propertyNames:
-          pattern:      '^[a-z][a-z0-9_]*\.output\.[a-z][a-z0-9_]*$'
+          pattern:      ^[a-z][a-z0-9_]*$
 
         additionalProperties:
-          type:         array
-          minItems:     1
-
-          items:
-            $ref:       "#/$defs/destination"
+          $ref:         '#/$defs/edge'
 
 $defs:
 
-  destination:
+  edge:
     type:               object
     additionalProperties:  false
 
     required:
+      - from
       - to
 
     properties:
 
+      from:
+        type:           string
+        pattern:        ^[a-z][a-z0-9_]*\.output\.[a-z][a-z0-9_]*$
+
       to:
         type:           string
-        pattern:        '^[a-z][a-z0-9_]*\.input\.[a-z][a-z0-9_]*$'
+        pattern:        ^[a-z][a-z0-9_]*\.input\.[a-z][a-z0-9_]*$
 
       guard:
         type:           string

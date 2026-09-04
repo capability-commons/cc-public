@@ -52,16 +52,11 @@ def join(path, step):
     """
     Return path with step appended.
 
-    A step that itself contains the delimiter -- a key such as
-    draft.output.record -- is wrapped in double quotes, so that the
-    path it appears in still splits back into the same steps.
+    A key a path crosses holds no full stop, so nothing is escaped.
 
     """
 
     step = str(step)
-
-    if DELIM_PATH in step:
-        step = '"' + step + '"'
 
     return step if not path else path + DELIM_PATH + step
 
@@ -89,29 +84,9 @@ def split(path):
     """
     Return the steps of path.
 
-    A step wrapped in double quotes is one step whatever it contains.
-
     """
 
-    if not path:
-        return []
-
-    list_step = []
-    step      = ''
-    is_quoted = False
-
-    for char in path:
-        if char == '"':
-            is_quoted = not is_quoted
-        elif char == DELIM_PATH and not is_quoted:
-            list_step.append(step)
-            step = ''
-        else:
-            step += char
-
-    list_step.append(step)
-
-    return list_step
+    return path.split(DELIM_PATH) if path else []
 
 
 # -----------------------------------------------------------------------------

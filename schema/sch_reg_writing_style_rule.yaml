@@ -1,0 +1,33 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_writing_style_rule.yaml
+id_self:                sch_reg_writing_style_rule
+guid_self:              sch_8b8088534ec24938b9390e48d20b10e6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Writing style rule register schema
+brief:                  |
+                        The writing style rule register specifically:
+                        a register whose entries are additionally
+                        writing style rules.
+description:            |
+                        Composes the general register schema with the
+                        writing style rule entry schema, in the
+                        pattern sch_reg_type.yaml uses.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_writing_style_rule.yaml

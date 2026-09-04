@@ -1,0 +1,213 @@
+id_self:                reg_writing_style_rule
+guid_self:              reg_6efc4d246c3d4097ac0010bc004b12ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Writing style rule register
+brief:                  |
+                        Register of the rules prose in the cc-public
+                        repository follows: the writing style guide.
+description:            |
+                        The writing style rule register holds one
+                        entry per rule, each with the rule in one
+                        sentence, its reasoning, and a sentence that
+                        follows it beside the same sentence written so
+                        that it breaks it.
+usage:                  |
+                        A prompt that writes prose takes this register
+                        as context through an input port. An eval that
+                        judges prose cites the rules it checks by id,
+                        and the example pair on a rule is the smallest
+                        written control case for that eval.
+
+                        The hand-written records are the register's
+                        evidence. A rule no record follows is a rule
+                        to remove.
+note:                   |
+                        The rules say how a field reads. They do not
+                        say what is true: a claim about the system is
+                        checked against the system, not against a
+                        style.
+
+table:
+
+  style_say_the_thing:
+    id_self:            style_say_the_thing
+    guid_self:          style_bf2ad634fc2d41c0997bd739baa13f3f
+    title:              Say the thing
+    brief:              |
+                        State the claim. Do not announce that a claim
+                        is coming.
+    description:        |
+                        A brief opens with a fact about its subject. A
+                        sentence that says what the document is about,
+                        or what the following outlines, carries
+                        nothing the reader cannot see from the field
+                        name.
+    follows:            |
+                        A relation edge is exactly four fields.
+    breaks:             |
+                        This document outlines the decisions made in
+                        defining the relation edge.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_short_sentences:
+    id_self:            style_short_sentences
+    guid_self:          style_52191bd69cfe417784b665b06b6a86aa
+    title:              Short sentences
+    brief:              |
+                        One idea per sentence, in the present tense.
+    description:        |
+                        A long sentence with numbered clauses inside
+                        it is a list wearing a sentence's clothes.
+                        Break it. The present tense states what is.
+                        The past tense narrates how it came to be,
+                        which is the context field's job.
+    follows:            |
+                        The four field edge is kept. Nothing is added
+                        to it.
+    breaks:             |
+                        It was decided that the four-field edge would
+                        be retained, with (1) no additional fields
+                        being introduced and (2) the following
+                        outlining the reasons.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_plain_text:
+    id_self:            style_plain_text
+    guid_self:          style_860f8abe148947d089a14b9c61dcdca7
+    title:              Plain text
+    brief:              |
+                        No markup in a field: no headings, bullet
+                        marks, emphasis marks or code fences.
+    description:        |
+                        A field is read as text, by people and by
+                        tools. A heading or an asterisk in it is noise
+                        to be stripped. A list is written as
+                        sentences, or as a YAML list in a field of its
+                        own.
+    follows:            |
+                        guid_self is minted once at creation and never
+                        changes.
+    breaks:             |
+                        **guid_self**: minted once at creation;
+                        *never* changes.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_plain_names:
+    id_self:            style_plain_names
+    guid_self:          style_5b8aa528748a4b50a3c3c01c3c9ba42a
+    title:              Plain names
+    brief:              |
+                        Call a thing by its name in the glossary,
+                        written as it is declared.
+    description:        |
+                        A name is written as it appears in its
+                        declaration, without quotation,
+                        capitalisation, or a descriptive phrase
+                        wrapped around it. Repeating the phrase at
+                        every mention buries the name.
+    follows:            |
+                        id_self is readable and may change; guid_self
+                        is neither.
+    breaks:             |
+                        The human-readable identifier field (id_self)
+                        of the identity trait may change, whereas the
+                        GUID field (guid_self) may not.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_record_the_decision:
+    id_self:            style_record_the_decision
+    guid_self:          style_2f9c25951c4d4c00b075ab8d90253824
+    title:              Record the decision
+    brief:              |
+                        A design decision says what was chosen, what
+                        was not, and why. It does not restate what the
+                        artefact already says.
+    description:        |
+                        The schema says what fields it has. The record
+                        says why those and not others. A record that
+                        paraphrases its subject leaves the reader with
+                        two copies of the same information and no
+                        reasoning.
+    follows:            |
+                        A glossary is a register whose entries are
+                        terms. A document of its own was rejected: it
+                        would reinvent keyed entries.
+    breaks:             |
+                        The schema defines identity by requiring two
+                        identifier fields, guid_self and id_self, each
+                        with the roles described below.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_no_filler:
+    id_self:            style_no_filler
+    guid_self:          style_c97c8bb4504b491ea2c12ece825f5aa7
+    title:              No filler
+    brief:              |
+                        Leave out any word that could go without loss.
+    description:        |
+                        Robust, comprehensive, effectively, in order
+                        to, it is necessary to: each can be deleted
+                        from any sentence in this repository without
+                        changing what it says. A hedge is the same,
+                        unless the uncertainty is real, in which case
+                        say what is uncertain.
+    follows:            |
+                        Keying makes duplicate terms impossible.
+    breaks:             |
+                        In order to provide a robust and comprehensive
+                        approach, keying effectively helps to ensure
+                        that duplicate terms are generally avoided.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_explain_not_argue:
+    id_self:            style_explain_not_argue
+    guid_self:          style_bb6e16cc30ee480ca9f9aadb6154d2ce
+    title:              Explain, do not argue
+    brief:              |
+                        Descriptive prose says what a thing is and
+                        does. Argument for it belongs in a rationale.
+    description:        |
+                        A description, brief, usage or note explains
+                        the design as it stands. Why it is right, and
+                        what was rejected, belongs in a decision
+                        record's rationale and alternative fields,
+                        where a reader expects argument and can weigh
+                        it. This is the line evl_prose_describes
+                        draws.
+    follows:            |
+                        Only literal block scalars are refilled. A
+                        plain scalar is data and is never touched.
+    breaks:             |
+                        Refilling only block scalars is clearly the
+                        right choice, because it elegantly avoids
+                        corrupting data.
+    alias:              []
+    status:             proposed
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_writing_style_rule
+    guid_target:        sch_8b8088534ec24938b9390e48d20b10e6

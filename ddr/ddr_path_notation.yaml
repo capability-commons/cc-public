@@ -34,13 +34,11 @@ decision:               |
                         stops. A step names a mapping key or, for a
                         sequence, an index: relation.0.guid_target.
 
-                        A step wrapped in double quotes is one step
-                        whatever it contains, so that a key holding
-                        full stops -- an edge keyed by its source
-                        port, draft.output.record -- can still be
-                        named: edge."draft.output.record".0.guard.
-                        join quotes such a step; split honours the
-                        quotes.
+                        A key a path crosses holds no full stop. A
+                        value may: a port address such as
+                        draft.output.record is a datum, not a key. So
+                        a step is whatever lies between two full
+                        stops, and nothing is quoted or escaped.
 
                         A pattern is written in the same notation. A
                         step of one asterisk matches any single step.
@@ -85,6 +83,13 @@ alternative:            |
                         An include list only. Rejected: an exclusion
                         stated as an enumeration of everything else
                         goes stale as soon as a field is added.
+
+                        A step wrapped in double quotes, so that a key
+                        holding full stops could be named. Adopted for
+                        the one such key, an edge table keyed by
+                        source port, and withdrawn when edges took
+                        names: two grammars in one string, for a key
+                        that need not have had a full stop in it.
 consequence:            |
                         Two asterisks reach a long way. A pattern
                         selecting more than its author expected shows

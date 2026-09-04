@@ -1,0 +1,155 @@
+id_self:                ddr_writing_style
+guid_self:              ddr_0c73da014285401bbe762d25def81add
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Writing style guide
+brief:                  |
+                        The writing style guide is a register of
+                        writing style rules, reg_writing_style_rule. A
+                        prompt binds it as context and an eval cites
+                        the rules it checks.
+context:                |
+                        The first run of wf_record_from_schema
+                        produced a record that passed every check and
+                        read like a language model. It announced
+                        itself, used markdown, ran sentences to eighty
+                        words, and restated the schema instead of
+                        recording a decision.
+
+                        Nothing in the repository said what the
+                        hand-written records do differently. The voice
+                        lived in the records by example and in the
+                        head of whoever reviewed them. A prompt could
+                        not bind to it and an eval could not cite it.
+
+                        The repository already holds a controlled
+                        vocabulary with addressable entries, the
+                        register, and a precedent for a register of
+                        guidance: the glossary, ddr_glossary.
+decision:               |
+                        A writing style guide is a register whose
+                        entries are writing style rules. The type
+                        t_writing_style_rule, held in a writing style
+                        rule register, carries the rule as a one line
+                        brief, its reasoning as a description, and one
+                        sentence that follows the rule beside the same
+                        sentence written so that it breaks it.
+
+                        reg_writing_style_rule is the guide of the
+                        cc-public repository. Its first entries are
+                        the seven rules the produced record broke.
+
+                        A prompt that writes prose takes the guide as
+                        context through an input port, as it takes a
+                        schema. An eval that judges prose cites the
+                        rules it checks by id. The example pair on a
+                        rule is the smallest written control case for
+                        that eval.
+
+                        A writing style rule register is validated by
+                        sch_reg_writing_style_rule, which composes the
+                        general register schema with
+                        sch_writing_style_rule, in the pattern the
+                        type register uses.
+rationale:              |
+                        A register, because a style guide is a list of
+                        rules by nature and a register is a keyed
+                        table of addressable entries. Identity per
+                        rule is what earns the structure: a prompt
+                        binds the register, an eval names a rule, a
+                        control case records which rule it exercises.
+                        Keying makes a duplicated rule impossible.
+
+                        Five fields and no more, because a rule with
+                        fifteen fields is a form, not guidance.
+                        Statement, reasoning and an example each way
+                        is the whole of what a rule needs to be
+                        applied and to be checked.
+
+                        The guide as data flowing into a node rather
+                        than text in a prompt, so that the prompt
+                        cannot go stale against it.
+alternative:            |
+                        A style guide as a prose document of its own.
+                        Rejected: one guid for the whole and nothing
+                        to point at, so an eval would have to quote
+                        it.
+
+                        Rules held in the prompt text of each writing
+                        component. Rejected: every prompt would carry
+                        a copy, and the copies would drift.
+
+                        Rules held only as eval criteria. Rejected: an
+                        eval measures, it does not raise the base
+                        rate. The prompt needs the rules too, and both
+                        need one source.
+consequence:            |
+                        An eval per checkable rule has to be written
+                        and measured. Plain text and record the
+                        decision are the cheapest, since the produced
+                        record ddr_sch_identity_design_decision is an
+                        unmet case for both. The looser rules need a
+                        control set of mutated cases before a judge is
+                        trusted on them.
+
+                        The writing prompts do not yet bind the guide.
+                        cmp_draft_record and cmp_review_record gain a
+                        context port for it.
+
+                        The hand-written records are the guide's
+                        written origin cases, and the guide is only as
+                        honest as they are. A rule no record follows
+                        is a rule to remove.
+
+                        Writing style rule and writing style guide
+                        enter the glossary. House style is the
+                        publishing word and is kept as an also.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_writing_style_rule
+    guid_target:        sch_4895339a23364c1f87462a80ceb3cf24
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_writing_style_rule
+    guid_target:        sch_8b8088534ec24938b9390e48d20b10e6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_writing_style_rule
+    guid_target:        reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_writing_style_rule
+    guid_target:        t_854481855e61404ab53d2766077cb2f9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_writing_style_rule
+    guid_target:        term_4c23b1dfc6974fadb122852cdbe5093c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_writing_style_guide
+    guid_target:        term_c33d44c0c98d49c58ae4a3dab80bc7e1
+
+question:
+
+  code:
+    id_self:            qst_writing_style.code
+    guid_self:          qst_ac67a4b197bd4e1d9cfaa95601c9cc8d
+    question:           |
+                        Whether the rules apply to python docstrings
+                        and commit records as they apply to records,
+                        or whether code has a guide of its own.
+    relation:           []
