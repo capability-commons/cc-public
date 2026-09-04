@@ -40,6 +40,11 @@ NOUN        = 'reference'
 REGEX_GUID  = re.compile(r'^[a-z]{1,8}_[0-9a-f]{32}$')
 
 PREFIX_GUID = 'guid'
+
+# An execution records what happened and is not edited afterwards, so
+# what it names may since have gone. Its stale references are history.
+#
+PREFIX_HISTORY = ('exe',)
 PREFIX_ID   = 'id'
 
 SEPARATOR   = '_'
@@ -63,22 +68,33 @@ def check(context):
                            cc_public.check.result.SEVERITY_ADVISORY)
 
     list_nonconformity = []
+    list_note          = []
     count_reference    = 0
 
     for (filepath, document) in sorted(context.map_document.items()):
+
+        is_history = isinstance(document, dict) and str(
+                document.get('id_self', '')).split(SEPARATOR, 1)[0] in PREFIX_HISTORY
 
         for (path, key, guid, id_advisory) in iter_reference(document):
 
             count_reference += 1
 
-            list_nonconformity.extend(
-                _inspect(filepath, path, guid, id_advisory, map_declaration,
-                         severity_unresolved))
+            for found in _inspect(filepath, path, guid, id_advisory,
+                                  map_declaration, severity_unresolved):
+                if is_history and guid not in map_declaration:
+                    list_note.append(cc_public.check.result.Note(
+                            filepath = str(filepath),
+                            message  = '{path}: {guid} is no longer declared. An '
+                                       'execution is history and keeps naming what '
+                                       'has gone.'.format(path = path, guid = guid)))
+                else:
+                    list_nonconformity.append(found)
 
     return cc_public.check.result.Result(
                             count_item         = count_reference,
                             list_nonconformity = list_nonconformity,
-                            list_note          = [])
+                            list_note          = list_note)
 
 
 # -----------------------------------------------------------------------------

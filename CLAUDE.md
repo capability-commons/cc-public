@@ -68,7 +68,7 @@ are shorthands. Every command has `--help`; the writing commands take
   refuses unknown relations and duplicates. Answer a question with
   `link ANSWERER r_answers qst_…`, never by editing it.
 - Dot paths: `properties.title.maxLength`, `table.t_foo`,
-  `edge.review_to_draft.guard`. A key never contains a dot; an address
+  `edge_back.draft_to_draft.guard`. A key never contains a dot; an address
   such as `draft.output.record` is a value.
 
 For more than a handful of writes use the API under `pixi run python`:

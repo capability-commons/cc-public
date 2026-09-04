@@ -125,8 +125,10 @@ def clean(root):
 
 
 BIND = {'draft.input.subject': 'sch_identity',
-        'draft.input.guide':   'reg_writing_style_rule',
-        'review.input.guide':  'reg_writing_style_rule'}
+        'draft.input.guide':   'reg_writing_style_rule'}
+
+EVALS = ['evl_decision_decides', 'evl_decision_stated', 'evl_plain_text',
+         'evl_prose_matches_structure', 'evl_records_the_decision']
 
 
 def test_dry_run_plans_and_writes_nothing(repo):
@@ -134,33 +136,27 @@ def test_dry_run_plans_and_writes_nothing(repo):
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
                                    None, None, is_dry = True)
-    assert r['order'] == ['draft', 'review']
-    assert r['node'][1]['output'] == {'decision': 'revises draft'}
+    assert r['order'] == ['draft']
+    assert r['node'][0]['output'] == {'decision': 'revises prior'}
     assert r['execution'] is None
     assert git(repo, 'status', '--porcelain') == before
 
 
-def test_run_makes_then_revises_and_commits(repo):
+def test_run_makes_judges_and_commits(repo):
     deploy(repo, judge = 'always', commit = 'run')
     gen = Scripted()
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
                                    gen, Judge('met'))
     assert r['stopped'] is None
-    (draft, review) = r['node']
+    (draft,) = r['node']
     assert draft['made'] == ['ddr_identity_trait'] and draft['revised'] == []
-    assert review['revised'] == ['ddr_identity_trait'] and review['made'] == []
-    assert draft['fired'] == ['review.input.draft']
-    assert sorted(draft['verdict']['decision']) == [('evl_decision_decides', 'met'),
-                                                    ('evl_decision_stated', 'met'),
-                                                    ('evl_plain_text', 'met'),
-                                                    ('evl_prose_matches_structure', 'met'),
-                                                    ('evl_records_the_decision', 'met')]
+    assert sorted(draft['verdict']['decision']) == [(e, 'met') for e in EVALS]
+    assert sorted(draft['declined']) == ['draft.input.judgement', 'draft.input.prior']
 
     # the generator was asked exactly the empty prose fields, with the input by port
     assert gen.calls[0] == (['guide', 'subject'], ['title', 'brief', 'context', 'decision',
                                           'rationale', 'alternative', 'consequence'], True)
-    assert gen.calls[1][0] == ['draft', 'guide'] and gen.calls[1][2] is False
 
     doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
     assert doc['title'] == 'Identity trait'
@@ -169,12 +165,10 @@ def test_run_makes_then_revises_and_commits(repo):
 
     tree = cc_public.edit.tree.Tree([repo])
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
-    assert exe['id_self'].startswith('exe_') and len(exe['binding']) == 6
-    ports = {b['id_port'] for b in exe['binding'].values()}
-    assert 'prt_draft_design_decision.subject' in ports and 'prt_review_design_decision.decision' in ports
-    guids = {b['relation'][0]['guid_target'] for b in exe['binding'].values()
-             if b['id_port'] in ('prt_draft_design_decision.decision', 'prt_review_design_decision.decision')}
-    assert len(guids) == 1                                 # revised in place
+    assert exe['id_self'].startswith('exe_') and len(exe['binding']) == 3
+    assert {b['id_port'] for b in exe['binding'].values()} == {
+        'prt_draft_design_decision.subject', 'prt_draft_design_decision.guide',
+        'prt_draft_design_decision.decision'}
 
     assert clean(repo) == []
     c = next(cc_public.load.git.iter_commit(repo, 1))
@@ -183,28 +177,26 @@ def test_run_makes_then_revises_and_commits(repo):
     assert git(repo, 'status', '--porcelain') == ''
 
 
-def test_guard_declines_and_run_stops_and_restores(repo):
-    deploy(repo, judge = 'guards', commit = 'run')
-    tree = cc_public.edit.tree.Tree([repo])
-    cc_public.edit.field.set_field(tree, 'wf_design_decision_from_schema',
-                                   'edge.draft_to_review.guard', value = 'met')
-    git(repo, 'add', '-A'); git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'guard')
+def test_guards_mode_judges_only_a_gated_port_and_loops_to_the_budget(repo):
+    deploy(repo, judge = 'guards', commit = 'never', budget = 2)
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
                                    Scripted(), Judge('unmet'))
-    assert r['stopped'] and 'review.input.draft' in r['stopped']
-    assert r['node'][0]['declined'] == ['review.input.draft']
-    assert git(repo, 'status', '--porcelain') == ''        # everything put back
-    assert not (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
+    assert r['stopped'] is None
+    assert [(e['node'], e['pass']) for e in r['node']] == [('draft', 1), ('draft', 2)]
+    assert r['node'][0]['back'] == ['draft', 'draft']
+    assert sorted(r['node'][1]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
+    assert (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
 
 
 def test_critical_stops_and_restores(repo):
-    deploy(repo, judge = 'never', commit = 'never')
+    deploy(repo, judge = 'always', commit = 'never')
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
-                                   Scripted({'title': ''}), None)
+                                   Scripted({'title': ''}), Judge('met'))
     assert r['stopped'] and 'critical' in r['stopped']
     assert git(repo, 'status', '--porcelain') == ''
+    assert not (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
 
 
 def test_refuses_dirty_tree_when_committing(repo):
@@ -240,41 +232,39 @@ def test_a_line_field_is_collapsed_and_markup_is_forbidden(repo):
 
 def test_two_edges_joining_the_same_ports_are_a_fault(repo):
     tree = cc_public.edit.tree.Tree([repo])
-    cc_public.edit.field.set_field(tree, 'wf_design_decision_from_schema', 'edge.again',
+    cc_public.edit.field.set_field(tree, 'wf_design_decision_from_schema', 'edge_back.again',
                                    value = {'from': 'draft.output.decision',
-                                            'to':   'review.input.draft'})
+                                            'to':   'draft.input.prior'})
     assert any('same two ports' in m for m in clean(repo))
 
 
 def test_back_edge_fires_and_the_draft_revises_its_prior_in_place(repo):
     deploy(repo, judge = 'always', commit = 'run', budget = 3)
     gen = Scripted()
-    # draft pass 1 met (5 evals), review pass 1 unmet (5 evals), then met
+    # pass 1 unmet on every eval, pass 2 met
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
-                                   gen, Judge(['met'] * 5 + ['unmet'] * 5))
+                                   gen, Judge(['unmet'] * 5))
     assert r['stopped'] is None
-    assert [(e['node'], e['pass']) for e in r['node']] == \
-           [('draft', 1), ('review', 1), ('draft', 2), ('review', 2)]
-    (d1, r1, d2, r2) = r['node']
+    assert [(e['node'], e['pass']) for e in r['node']] == [('draft', 1), ('draft', 2)]
+    (d1, d2) = r['node']
     assert d1['made'] == ['ddr_identity_trait'] and d1['revised'] == []
-    assert r1['back'] == ['draft', 'draft']
+    assert sorted(d1['fired']) == ['draft.input.judgement', 'draft.input.prior']
+    assert d1['back'] == ['draft', 'draft']
     assert d2['made'] == [] and d2['revised'] == ['ddr_identity_trait']
-    assert gen.calls[2][0] == ['guide', 'judgement', 'prior', 'subject'] and gen.calls[2][2] is False
-    assert r1['fired'] == ['draft.input.prior', 'draft.input.judgement'] or \
-           r1['fired'] == ['draft.input.judgement', 'draft.input.prior']
-    assert sorted(r2['declined']) == ['draft.input.judgement', 'draft.input.prior'] and r2['back'] == []
+    assert gen.calls[1][0] == ['guide', 'judgement', 'prior', 'subject'] and gen.calls[1][2] is False
+    assert sorted(d2['declined']) == ['draft.input.judgement', 'draft.input.prior'] and d2['back'] == []
     assert len(list((repo / 'ddr').glob('ddr_identity_trait*.yaml'))) == 1
     tree = cc_public.edit.tree.Tree([repo])
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
     assert sorted({b['pass'] for b in exe['binding'].values()}) == [1, 2]
-    # the review port's judgement is on its binding, and the draft's judgement input binds that binding
-    rev1 = exe['binding']['review_output_decision_1']
-    assert {j['verdict'] for j in rev1['judgement']} == {'unmet'}
-    assert all(j['reason'].strip() == 'scripted' for j in rev1['judgement'])
-    assert all(j['criterion'].strip() for j in rev1['judgement'])   # the rule travels too
+    # the judgement is on the binding it judged, and the next pass's judgement input binds that binding
+    out1 = exe['binding']['draft_output_decision_1']
+    assert {j['verdict'] for j in out1['judgement']} == {'unmet'}
+    assert all(j['reason'].strip() == 'scripted' for j in out1['judgement'])
+    assert all(j['criterion'].strip() for j in out1['judgement'])   # the rule travels too
     jdg2 = exe['binding']['draft_input_judgement_2']
-    assert jdg2['relation'][0]['id_target'] == rev1['id_self']
+    assert jdg2['relation'][0]['id_target'] == out1['id_self']
     assert clean(repo) == []
 
 
@@ -282,11 +272,11 @@ def test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
     deploy(repo, judge = 'always', commit = 'never', budget = 1)
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
-                                   Scripted(), Judge(['met'] * 5 + ['unmet'] * 5))
+                                   Scripted(), Judge(['unmet'] * 5))
     assert r['stopped'] is None
-    assert [e['node'] for e in r['node']] == ['draft', 'review']
-    assert sorted(r['node'][1]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
-    assert r['node'][1]['fired'] == []
+    assert [e['node'] for e in r['node']] == ['draft']
+    assert sorted(r['node'][0]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
+    assert r['node'][0]['fired'] == []
 
 
 def test_a_bounded_field_is_told_its_bound_and_cut_to_it_if_overrun(repo):

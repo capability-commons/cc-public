@@ -62,9 +62,8 @@ decision:               |
                         beside the optional input for the prior item,
                         and its prompt names both. In
                         wf_design_decision_from_schema the draft node
-                        gains an input judgement, and a second back
-                        edge from review.output.decision to
-                        draft.input.judgement carries judgement,
+                        has an input judgement, and a second back edge
+                        from its own output to it carries judgement,
                         guarded unmet like the first.
 
                         The draft node reads the judgement as it reads
@@ -147,6 +146,19 @@ consequence:            |
                         questions on ddr_workflow_execution are
                         answered by this record.
 
+question:
+
+  criterion:
+    id_self:            qst_feedback.criterion
+    guid_self:          qst_8e67445fa2c848d69057ea54cea50723
+    question:           |
+                        Whether a judgement carries the eval's
+                        criterion text as well as the verdict and
+                        reason, so that a node reading it knows the
+                        rule and not only the finding, or whether
+                        naming the eval is enough.
+    relation:           []
+
 relation:
 
   - id_relation:        r_decides
@@ -163,16 +175,3 @@ relation:
     guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
     id_target:          qst_workflow_execution.cf062d06b
     guid_target:        qst_ecda6a638006405984fcf1629a4b2ec5
-
-question:
-
-  criterion:
-    id_self:            qst_feedback.criterion
-    guid_self:          qst_8e67445fa2c848d69057ea54cea50723
-    question:           |
-                        Whether a judgement carries the eval's
-                        criterion text as well as the verdict and
-                        reason, so that a node reading it knows the
-                        rule and not only the finding, or whether
-                        naming the eval is enough.
-    relation:           []

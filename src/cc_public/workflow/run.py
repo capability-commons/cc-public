@@ -206,20 +206,20 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
 
         # The forward order, walked once; a back edge that fires puts
         # the nodes from its target to its source back on the front of
-        # the queue for another pass, while the budget allows.
+        # the queue for another pass, while the target's budget allows.
         #
-        order  = report['order']
-        queue  = list(order)
-        n_pass = 1
+        order    = report['order']
+        queue    = list(order)
+        map_pass = {local: 0 for local in order}      # passes each node has run
 
         while queue:
             local = queue.pop(0)
+            map_pass[local] += 1
             entry = _node(tree, graph, local, bound, generator, runner,
-                          policy, ledger, id_exe, root, n_pass)
+                          policy, ledger, id_exe, root, map_pass)
             report['node'].append(entry)
 
             if entry['back']:
-                n_pass  += 1
                 node_dst = min(entry['back'], key = order.index)
                 queue    = order[order.index(node_dst):order.index(local) + 1] \
                          + queue
@@ -314,7 +314,7 @@ def _root(tree):
 
 # -----------------------------------------------------------------------------
 def _node(tree, graph, local, bound, generator, runner, policy, ledger,
-          id_exe, root, n_pass = 1):
+          id_exe, root, map_pass = None):
     """
     Run one node and return its report entry.
 
@@ -323,6 +323,8 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
     """
 
+    map_pass  = map_pass if map_pass is not None else {local: 1}
+    n_pass    = map_pass[local]
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
                  'exhausted': [], 'note': [], 'commit': None}
@@ -393,14 +395,14 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
                 entry['declined'].append(target)
 
         # A back edge returns the item for another pass. It fires only
-        # while the budget allows; met with no budget left, it is
+        # while its target node has budget left; met with none, it is
         # exhausted and the run goes on without it.
         #
         for (node_dst, port_dst, guard, carries) in back:
             target = f'{node_dst}.input.{port_dst}'
             if not fires(guard):
                 entry['declined'].append(target)
-            elif n_pass >= policy['budget']:
+            elif map_pass.get(node_dst, 0) >= policy['budget']:
                 entry['exhausted'].append(target)
             else:
                 bound[(node_dst, port_dst)] = delivered(carries)

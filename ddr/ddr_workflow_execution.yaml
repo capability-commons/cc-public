@@ -63,20 +63,22 @@ decision:               |
                         read from the bindings that name it on an
                         output port.
 
-                        A PASS is one walk of the nodes in forward
-                        order. A back edge whose guard is met by the
-                        verdicts on its source port binds that item to
-                        its target and puts the nodes from the target
-                        to the source back on the queue; the pass
-                        number rises by one. The budget on the
-                        deployment is the most passes a run may take.
-                        A back edge met with no budget left is
-                        exhausted: the run goes on without it and the
-                        execution says so. An output port that revises
-                        an optional input finds nothing there on the
-                        first pass and makes an item; on later passes
-                        it revises that item in place, so a loop
-                        carries one item round, not one per pass.
+                        A PASS of a node is one run of it. A back edge
+                        whose guard is met by the verdicts on its
+                        source port binds what it carries to its
+                        target and puts the nodes from the target to
+                        the source back on the queue. The budget on
+                        the deployment is the most passes any one node
+                        may take, so each node does its one task as
+                        well as the budget allows before what it made
+                        goes on. A back edge met when its target has
+                        no budget left is exhausted: the run goes on
+                        without it and the execution says so. An
+                        output port that revises an optional input
+                        finds nothing there on the first pass and
+                        makes an item; on later passes it revises that
+                        item in place, so a loop carries one item
+                        round, not one per pass.
 
                         An execution records what happened and is not
                         edited afterwards.
@@ -188,6 +190,14 @@ consequence:            |
                         eventually written back as an item, the
                         binding it judged is something it can point
                         at.
+
+                        Because an execution is not edited afterwards,
+                        what it names may go: a node deleted from its
+                        workflow, a port renamed away. The reference
+                        check reports a reference from an execution
+                        that no longer resolves as a note, not a
+                        nonconformity. History is allowed to name what
+                        has gone.
 
 question:
 

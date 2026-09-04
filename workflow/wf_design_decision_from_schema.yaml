@@ -10,16 +10,18 @@ protective_mark:
 
 title:                  Record from schema
 brief:                  |
-                        Draft a design decision about a schema, review
-                        it, and revise until the review is satisfied.
+                        Draft a design decision about a schema, and
+                        redraft it on its own judgement until every
+                        eval is met or the budget is spent.
 description:            |
-                        Two nodes and one cycle. The draft node writes
-                        a record about the schema on its subject port.
-                        The review node revises it. Where the eval on
-                        the reviewed record is unmet, the back edge
-                        returns it to the draft node's prior port and
-                        the draft is revised; where it is met, the
-                        reviewed record is the workflow's output.
+                        One node. It takes a schema on its subject
+                        port and the writing style guide, makes the
+                        design decision, and is judged. While any eval
+                        is unmet, two back edges return the record and
+                        its judgement to the node's own optional
+                        inputs for another pass, within the
+                        deployment's budget. The record that leaves is
+                        as good as the budget allowed.
 
 node:
 
@@ -39,37 +41,17 @@ node:
 
     config:             {}
 
-  review:
-    id_self:            node_design_decision_from_schema.review
-    guid_self:          node_9c5b0ef1f02d41bea0f10c113d7affd0
-    title:              Review
-    brief:              |
-                        Reviews and revises the draft.
-
-    relation:
-
-      - id_relation:    r_instantiates
-        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
-        id_target:      cmp_review_design_decision
-        guid_target:    cmp_28a45941ac7647f392e2c56ba749edd5
-
-    config:             {}
-
-edge:
-
-  draft_to_review:
-    from:               draft.output.decision
-    to:                 review.input.draft
+edge:                   {}
 
 edge_back:
 
-  review_to_draft:
-    from:               review.output.decision
+  draft_to_draft:
+    from:               draft.output.decision
     to:                 draft.input.prior
     guard:              unmet
 
-  review_to_draft_judgement:
-    from:               review.output.decision
+  draft_to_draft_judgement:
+    from:               draft.output.decision
     to:                 draft.input.judgement
     guard:              unmet
     carries:            judgement

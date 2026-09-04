@@ -44,7 +44,7 @@ ROOT     = pathlib.Path(__file__).resolve().parent.parent
 DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
             'license':   'Apache-2.0',
             'id_mark':   'mark_public'}
-KEEP     = ('ddr', 'schema', 'register', 'eval', 'workflow', 'src')
+KEEP     = ('ddr', 'schema', 'register', 'eval', 'workflow', 'execution', 'src')
 
 
 @pytest.fixture
@@ -327,3 +327,17 @@ def test_set_value_with_a_line_break_becomes_a_block_scalar(tree, tmp_path):
     doc = cc_public.load.from_file(tmp_path / 'workflow' / 'dep_design_decision_from_schema_local.yaml')
     assert doc['extra'][0]['input'] == 'one two\n'    # refilled by the printer
     cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local', 'extra')
+
+
+def test_an_execution_may_name_what_has_gone(tree, tmp_path):
+    import cc_public.check.reference
+    exe = next(p for p in (tmp_path / 'execution').glob('exe_*.yaml'))
+    doc = cc_public.load.from_file(exe)
+    gone = next(b['guid_node'] for b in doc['binding'].values())
+    # take the declaration away by deleting the workflow that holds the node
+    wf = next(p for p in (tmp_path / 'workflow').glob('wf_*.yaml'))
+    wf.unlink()
+    rep = cc_public.check.check(list_path = [tmp_path])['report']
+    ref = next(c for c in rep['check'] if c['id_check'] == 'reference')
+    assert not [n for n in ref['nonconformity'] if gone in n['message']]
+    assert [n for n in ref['note'] if gone in n['message']]
