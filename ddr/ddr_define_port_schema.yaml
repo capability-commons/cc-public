@@ -1,0 +1,104 @@
+id_self:                ddr_define_port_schema
+guid_self:              ddr_718965bc4d17404d84355e97fc97c431
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decide port schema fields to name type, optionality, prompt, decisions
+brief:                  |
+                        Define a port as an object that names the item
+                        type it carries, notes input optionality,
+                        includes output prompt text, optionally links
+                        to an input it decides, and holds evaluation
+                        relations.
+context:                |
+                        Components communicate through ports
+                        representing interface points where items are
+                        consumed or produced. Each port must identify
+                        what type of item it handles for clear
+                        understanding and correct execution. Inputs
+                        can be optional, affecting binding behavior.
+                        Outputs require a prompt describing how their
+                        item is produced. An output may determine
+                        ("decide") what input's item it influences.
+                        Evaluations attach to ports via relations.
+                        Prior attempts inconsistently named fields,
+                        incompletely documented relation edges, and
+                        lacked clarity on optional inputs and decision
+                        links.
+decision:               |
+                        Design the port as an object with required
+                        fields for "id_type" and "guid_type" to
+                        identify the item type precisely. Include an
+                        optional boolean field "optional" to indicate
+                        if an input port is optional. Require a
+                        non-empty string "prompt" field on output
+                        ports to specify the prompt used to produce
+                        items. Add an optional "decides" field naming
+                        the input port whose item is decided by this
+                        output, supporting explicit dependency
+                        connections. Represent evaluation bindings and
+                        other relations as an array "relation" of
+                        edges. Apply identity and descriptive traits
+                        schemas for consistent naming and metadata.
+                        Allow additional properties to support future
+                        expansions.
+rationale:              |
+                        Requiring both type name and GUID uniquely
+                        identifies the item type, ensuring clarity and
+                        avoiding ambiguity. Explicitly marking input
+                        optionality within the port simplifies usage
+                        and comprehension. Including a prompt on
+                        outputs guarantees the means of item
+                        production is always documented, which
+                        supports automation. The "decides" field
+                        provides a formal way to link outputs to the
+                        inputs they govern, making execution
+                        dependencies explicit. Capturing relations as
+                        an array enables multiple links, including
+                        those for evaluations, preserving schema
+                        flexibility. Reusing identity and descriptive
+                        schemas promotes uniformity and reduces
+                        redundancy. Permitting additional properties
+                        enables future schema evolution without
+                        breaking compatibility.
+alternative:            |
+                        Encoding decision links solely as relation
+                        edges without a dedicated "decides" field was
+                        considered but rejected because it obscures
+                        which input is being decided by an output,
+                        reducing clarity. Restricting relations to a
+                        fixed set instead of a flexible array would
+                        limit extensibility, so flexibility was
+                        favored. Omitting the "optional" flag or
+                        managing it externally would complicate
+                        understanding input requirements, hence it is
+                        included directly. Disallowing additional
+                        properties to enforce strict conformance was
+                        rejected to permit necessary future
+                        extensions.
+consequence:            |
+                        Component authors explicitly specify what
+                        items each port consumes or produces, whether
+                        inputs are optional, and the prompts outputs
+                        use for item generation. Evaluators bind
+                        judgments to ports through relations.
+                        Executors can trace decision dependencies by
+                        following "decides" fields. The schema remains
+                        adaptable for future enhancements.
+                        Documentation and tooling benefit from
+                        consistent field naming and required presence
+                        of key properties. Consumers must support
+                        additional unknown properties and handle
+                        relations arrays flexibly.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe

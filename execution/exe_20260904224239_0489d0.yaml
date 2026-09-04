@@ -1,0 +1,578 @@
+id_self:                exe_20260904224239_0489d0
+guid_self:              exe_0489d04465264ea68365bce425444f03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run of wf_design_decision_from_schema
+brief:                  |
+                        Under dep_design_decision_from_schema_local.
+
+binding:
+
+  draft_input_subject_1:
+    id_self:            bnd_20260904224239_0489d0.draft_input_subject_1
+    guid_self:          bnd_f87975b4f4164ffb9d941fe437691b78
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.subject
+    guid_port:          prt_3487d4e416e64437a153bbca5f9c082b
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      sch_port
+        guid_target:    sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  draft_input_guide_1:
+    id_self:            bnd_20260904224239_0489d0.draft_input_guide_1
+    guid_self:          bnd_80c6744aab8448678178396949f1e2b1
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.guide
+    guid_port:          prt_1f1b108a083b411a82ec0b16a4587bb7
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  draft_output_decision_1:
+    id_self:            bnd_20260904224239_0489d0.draft_output_decision_1
+    guid_self:          bnd_6c558e22f52f4f92b634f1b59f79bb3a
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.decision
+    guid_port:          prt_abdfbd81030744be839042c7bd79719d
+    pass:               1
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        criterion:      |
+                        MET when nothing the prose says about THIS
+                        item is contradicted by the fields shown
+                        beside it.
+
+                        UNMET when a passage states something about
+                        this item -- what it names, how many things it
+                        names, what it does not have -- that the
+                        fields present show to be false.
+
+                        Only claims about this item count. A claim
+                        about another item, about a type, or about the
+                        system in general is out of scope and cannot
+                        make this UNMET.
+
+                        When UNMET, quote the passage and name the
+                        field that contradicts it.
+        reason:         |
+                        Nothing in the prose about this item (the
+                        ddr_define_port_schema decision record) is
+                        contradicted by the fields shown beside it.
+                        The single relation entry with `id_relation:
+                        r_decides` and `id_target: sch_port` is
+                        consistent with the text’s claims about
+                        defining a port schema and does not falsify
+                        any specific statement about this record.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        criterion:      |
+                        MET when every passage is plain prose:
+                        sentences and paragraphs, with names written
+                        as they are declared.
+
+                        UNMET when any passage carries markup: a
+                        heading marker, a bullet or numbered list
+                        marker at the start of a line, emphasis marks
+                        such as asterisks or underscores around words,
+                        backticks or a code fence, a table, or a link
+                        written in markdown form.
+
+                        A full stop, a colon, a comma, parentheses or
+                        a numeral inside a sentence are punctuation,
+                        not markup, and are MET. A name containing an
+                        underscore, such as guid_self, is a name and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never markup.
+
+                        When UNMET, quote the marked passage.
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names written as declared
+                        (including names with underscores and in
+                        quotes). There are no headings, list markers,
+                        emphasis marks, backticks, tables, or markdown
+                        links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        criterion:      |
+                        MET when the decision names a choice that
+                        could have gone another way, and the
+                        alternative names at least one other way it
+                        could have gone and why that way was not
+                        taken.
+
+                        UNMET when the decision describes the artefact
+                        instead: lists its fields, restates its
+                        constraints, or paraphrases its structure,
+                        with no choice a reader could disagree with.
+                        UNMET also when the alternative is absent in
+                        substance: none, not applicable, or an option
+                        so weak nobody would have taken it.
+
+                        A decision may name the fields it settles; the
+                        test is whether it says why those and not
+                        others.
+
+                        When UNMET, quote the passage that describes
+                        rather than decides.
+        reason:         |
+                        The decision does more than describe the
+                        artefact: it names several choices that could
+                        have gone another way, and the alternative
+                        text gives real options and reasons for
+                        rejecting them. The key choice is the
+                        inclusion of the `"decides"` field versus
+                        encoding decision links solely as relation
+                        edges, with a stated reason: “rejected due to
+                        reduced clarity about which input is decided
+                        by an output.” Additional choices are also
+                        contrasted with alternatives (fixed set of
+                        relations vs flexible array; implicit/external
+                        vs explicit `"optional"` flag; forbidding vs
+                        allowing additional properties), each with a
+                        rationale. These are all ways the schema
+                        “could have gone” and why they were not taken,
+                        so the criterion is met.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        criterion:      |
+                        MET when the decision states choices and their
+                        terms: what is done, what is named, what shape
+                        a thing takes, what is refused, and what
+                        follows mechanically from a choice.
+
+                        UNMET when a passage argues for a choice: says
+                        what it balances, ensures, enables, clarifies
+                        or avoids; what would be infeasible,
+                        impractical or costly otherwise; what is
+                        recommended; or that the choice is right,
+                        natural or simple. Argument belongs in the
+                        rationale, where a reader expects it.
+
+                        Stating what a thing is, holds, carries or is
+                        validated by is the decision specifying its
+                        artefact, and is MET however detailed. A
+                        reason given as the term of a choice, such as
+                        an id being kept short so that it reads, is
+                        MET; a paragraph weighing the choice is not.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the passage that argues.
+        reason:         |
+                        Unmet on 5 of 5 judgements. Most of the
+                        passage specifies fields and shapes, but
+                        several sentences argue for the choices
+                        instead of just stating them. These argue: -
+                        “The schema defines a port as an object with
+                        required fields for the type identifier and
+                        its GUID, **ensuring unequivocal
+                        identification**.” - “A "decides" field allows
+                        an output port to indicate which input port's
+                        item it decides, **supporting inheritance of
+                        decision logic**.” - “The schema inherits
+                        identity and descriptive traits **to maintain
+                        consistency and reusability across the
+                        model**.” - “Additional properties are
+                        permitted **to support future extensions**.”
+                        Each quoted clause explains what the design
+                        enables or maintains, which is rationale
+                        rather than decision.
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        criterion:      |
+                        MET when the decision is written as the act of
+                        deciding: what is done, kept, named, refused
+                        or held, said directly. The four field edge is
+                        kept. A glossary is a register whose entries
+                        are terms. Edges are held in a keyed table.
+
+                        UNMET when the decision is written as a report
+                        on the artefact: the artefact is the subject
+                        of the sentence and the verb tells what it
+                        defines, requires, includes, permits,
+                        specifies, provides or establishes, as a
+                        reader summarising it would write. The schema
+                        defines identity by requiring two fields. The
+                        schema explicitly permits additional
+                        properties. Such a sentence records nothing:
+                        it says what is there, not what was chosen.
+
+                        A sentence naming an artefact as the thing
+                        that carries or validates something is stated,
+                        not reported: a term register is validated by
+                        sch_reg_term. The test is whether the sentence
+                        would still make sense if the artefact did not
+                        yet exist. A decision is written before its
+                        artefact; a report is written after.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the sentences that report.
+        reason:         |
+                        Unmet on 5 of 5 judgements. This is written as
+                        a report on the artefact, not as the act of
+                        deciding. The schema is the subject and the
+                        verbs describe what it “defines,” “includes,”
+                        “are captured,” “inherits,” and “are
+                        permitted,” as a reader’s summary would.
+                        Reporting sentences include: - “The schema
+                        defines a port as an object with required
+                        fields for the type identifier and its GUID,
+                        ensuring unequivocal identification.” - “It
+                        includes an optional ‘optional’ boolean to
+                        mark input ports as optional.” - “Relations to
+                        evaluations and other edges are captured as an
+                        array in ‘relation.’” - “The schema inherits
+                        identity and descriptive traits to maintain
+                        consistency and reusability across the model.”
+                        - “Additional properties are permitted to
+                        support future extensions.” These state what
+                        the schema does, not what is being done or
+                        held in decision form.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_define_port_schema
+        guid_target:    ddr_718965bc4d17404d84355e97fc97c431
+
+  draft_input_subject_2:
+    id_self:            bnd_20260904224239_0489d0.draft_input_subject_2
+    guid_self:          bnd_507ac0341a304ffea130dc8071886780
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.subject
+    guid_port:          prt_3487d4e416e64437a153bbca5f9c082b
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      sch_port
+        guid_target:    sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  draft_input_prior_2:
+    id_self:            bnd_20260904224239_0489d0.draft_input_prior_2
+    guid_self:          bnd_3b4320c32c924678ba661e80c58f063a
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.prior
+    guid_port:          prt_37bc5736c7f542ee9d0eb665449ada3c
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_define_port_schema
+        guid_target:    ddr_718965bc4d17404d84355e97fc97c431
+
+  draft_input_guide_2:
+    id_self:            bnd_20260904224239_0489d0.draft_input_guide_2
+    guid_self:          bnd_c65273ca898348479525ff9062cfdcf0
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.guide
+    guid_port:          prt_1f1b108a083b411a82ec0b16a4587bb7
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  draft_input_judgement_2:
+    id_self:            bnd_20260904224239_0489d0.draft_input_judgement_2
+    guid_self:          bnd_ad402a63cbef4410a7541bcaa9ac1feb
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.judgement
+    guid_port:          prt_077f4b3fda174cdc95fd740c919c8bff
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      bnd_20260904224239_0489d0.draft_output_decision_1
+        guid_target:    bnd_6c558e22f52f4f92b634f1b59f79bb3a
+
+  draft_output_decision_2:
+    id_self:            bnd_20260904224239_0489d0.draft_output_decision_2
+    guid_self:          bnd_fcb7112016064d7b9028e7fc8b9803cf
+    id_node:            node_design_decision_from_schema.draft
+    guid_node:          node_bdc1f08f93604873ad08b4659269812d
+    id_port:            prt_draft_design_decision.decision
+    guid_port:          prt_abdfbd81030744be839042c7bd79719d
+    pass:               2
+
+    judgement:
+
+      - id_eval:        evl_prose_matches_structure
+        guid_eval:      evl_243e02e2af83439c93c24b394ed89803
+        verdict:        met
+        criterion:      |
+                        MET when nothing the prose says about THIS
+                        item is contradicted by the fields shown
+                        beside it.
+
+                        UNMET when a passage states something about
+                        this item -- what it names, how many things it
+                        names, what it does not have -- that the
+                        fields present show to be false.
+
+                        Only claims about this item count. A claim
+                        about another item, about a type, or about the
+                        system in general is out of scope and cannot
+                        make this UNMET.
+
+                        When UNMET, quote the passage and name the
+                        field that contradicts it.
+        reason:         |
+                        Nothing in the prose about this item (the
+                        relation record) is contradicted by the fields
+                        shown. The only concrete claim about this item
+                        is that “Evaluations attach to ports via
+                        relations” / “Evaluators bind judgments to
+                        ports through relations,” which is consistent
+                        with the presence of a `relation` array
+                        containing an edge; no claim is made about how
+                        many relations this specific record has or
+                        what schemas it targets. Therefore the
+                        criterion is met.
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        criterion:      |
+                        MET when every passage is plain prose:
+                        sentences and paragraphs, with names written
+                        as they are declared.
+
+                        UNMET when any passage carries markup: a
+                        heading marker, a bullet or numbered list
+                        marker at the start of a line, emphasis marks
+                        such as asterisks or underscores around words,
+                        backticks or a code fence, a table, or a link
+                        written in markdown form.
+
+                        A full stop, a colon, a comma, parentheses or
+                        a numeral inside a sentence are punctuation,
+                        not markup, and are MET. A name containing an
+                        underscore, such as guid_self, is a name and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never markup.
+
+                        When UNMET, quote the marked passage.
+        reason:         |
+                        All passages are plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, code fences, tables, or
+                        markdown links.
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        criterion:      |
+                        MET when the decision names a choice that
+                        could have gone another way, and the
+                        alternative names at least one other way it
+                        could have gone and why that way was not
+                        taken.
+
+                        UNMET when the decision describes the artefact
+                        instead: lists its fields, restates its
+                        constraints, or paraphrases its structure,
+                        with no choice a reader could disagree with.
+                        UNMET also when the alternative is absent in
+                        substance: none, not applicable, or an option
+                        so weak nobody would have taken it.
+
+                        A decision may name the fields it settles; the
+                        test is whether it says why those and not
+                        others.
+
+                        When UNMET, quote the passage that describes
+                        rather than decides.
+        reason:         |
+                        The subject names several concrete choices
+                        that could have gone another way, and the
+                        alternative text gives real options and
+                        reasons for rejecting them. For example, the
+                        decision includes: “Add an optional ‘decides’
+                        field naming the input port whose item is
+                        decided by this output,” and the alternative
+                        explicitly contrasts this with “Encoding
+                        decision links solely as relation edges
+                        without a dedicated ‘decides’ field … was
+                        considered but rejected because it obscures
+                        which input is being decided by an output,
+                        reducing clarity.” Similarly, the inclusion of
+                        the `optional` flag, the flexible `relation`
+                        array, and allowing additional properties are
+                        each paired with plausible alternatives and
+                        reasons they were not taken. This satisfies
+                        the criterion that the decision could have
+                        gone another way and explains why it did not.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        met
+        criterion:      |
+                        MET when the decision states choices and their
+                        terms: what is done, what is named, what shape
+                        a thing takes, what is refused, and what
+                        follows mechanically from a choice.
+
+                        UNMET when a passage argues for a choice: says
+                        what it balances, ensures, enables, clarifies
+                        or avoids; what would be infeasible,
+                        impractical or costly otherwise; what is
+                        recommended; or that the choice is right,
+                        natural or simple. Argument belongs in the
+                        rationale, where a reader expects it.
+
+                        Stating what a thing is, holds, carries or is
+                        validated by is the decision specifying its
+                        artefact, and is MET however detailed. A
+                        reason given as the term of a choice, such as
+                        an id being kept short so that it reads, is
+                        MET; a paragraph weighing the choice is not.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the passage that argues.
+        reason:         |
+                        The passage only specifies what the port
+                        schema is and what fields it holds or allows:
+                        required and optional fields, their names and
+                        meanings, the "relation" array, applied trait
+                        schemas, and allowance for additional
+                        properties. These are all terms and shapes of
+                        the artefact, with no separate argument about
+                        why the choices are made.
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        met
+        criterion:      |
+                        MET when the decision is written as the act of
+                        deciding: what is done, kept, named, refused
+                        or held, said directly. The four field edge is
+                        kept. A glossary is a register whose entries
+                        are terms. Edges are held in a keyed table.
+
+                        UNMET when the decision is written as a report
+                        on the artefact: the artefact is the subject
+                        of the sentence and the verb tells what it
+                        defines, requires, includes, permits,
+                        specifies, provides or establishes, as a
+                        reader summarising it would write. The schema
+                        defines identity by requiring two fields. The
+                        schema explicitly permits additional
+                        properties. Such a sentence records nothing:
+                        it says what is there, not what was chosen.
+
+                        A sentence naming an artefact as the thing
+                        that carries or validates something is stated,
+                        not reported: a term register is validated by
+                        sch_reg_term. The test is whether the sentence
+                        would still make sense if the artefact did not
+                        yet exist. A decision is written before its
+                        artefact; a report is written after.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the sentences that report.
+        reason:         |
+                        The sentences state what is to be done and
+                        kept in the design, not what an existing
+                        artefact defines or permits. They would still
+                        make sense if the schema did not yet exist:
+                        “Design the port as an object…”, “Include an
+                        optional boolean field…”, “Require a non-empty
+                        string…”, “Add an optional ‘decides’ field…”,
+                        “Represent evaluation bindings…”, “Apply
+                        identity and descriptive traits schemas…”,
+                        “Allow additional properties…”. None of these
+                        are reports of an artefact’s behaviour; they
+                        are decisions about its shape.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_define_port_schema
+        guid_target:    ddr_718965bc4d17404d84355e97fc97c431
+
+description:            |
+                        draft, pass 1: made ddr_define_port_schema;
+                        revised nothing; fired draft.input.prior,
+                        draft.input.judgement; declined nothing.
+
+                        draft, pass 2: made nothing; revised
+                        ddr_define_port_schema; fired nothing;
+                        declined draft.input.prior,
+                        draft.input.judgement.
+
+relation:
+
+  - id_relation:        r_ran_under
+    guid_relation:      r_acbf8f7c3dea40249e7b9aa27ad6cdc3
+    id_target:          dep_design_decision_from_schema_local
+    guid_target:        dep_50b725e75b9f459b85ee4f186051c46a
