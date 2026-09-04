@@ -1,0 +1,654 @@
+id_self:                ctl_records_the_decision
+guid_self:              ctl_c35ee4abf00741f0bc65587fca290790
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set for evl_records_the_decision
+brief:                  |
+                        Cases with known verdicts for
+                        evl_records_the_decision.
+description:            |
+                        Each case holds a subject as the judge is
+                        shown it, the verdict a person holds it to,
+                        and where the case came from.
+
+case:
+
+  c0946aad2:
+    id_self:            case_records_the_decision.c0946aad2
+    guid_self:          case_12d03d5279374fb69b843cb943bbcafb
+    verdict:            met
+    subject:            |
+                        --- ddr_glossary decision: A glossary is a
+                        register whose entries are terms. The type
+                        t_term, held in a term register, carries the
+                        surface form of the term, the forms it is also
+                        known by, and the forms that are not to be
+                        used for it.
+
+                        reg_term is the glossary of the cc-public
+                        repository. It holds a term for each concept
+                        the repository names, whether or not that
+                        concept has a type of its own.
+
+                        A record that introduces or settles a concept
+                        decides its term, by an r_decides edge to the
+                        entry.
+
+                        A term register is validated by sch_reg_term,
+                        which composes the general register schema
+                        with the term entry schema in the pattern the
+                        type register uses.
+
+                        alternative: A glossary as a document of its
+                        own, with a type and schema unlike a register.
+                        Rejected: it would reinvent keyed entries,
+                        identity, status and supersession, and its
+                        terms could not be pointed at without further
+                        work.
+
+                        A glossary as a section of each decision
+                        record, defining the terms that record
+                        introduces. Rejected: terms would be
+                        scattered, and a reader looking one up would
+                        have to know which record introduced it.
+
+                        Terms only for things that have types, read
+                        from the type register. Rejected: it leaves
+                        the concepts most in need of a stable name
+                        without one.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_glossary
+        guid_target:    ddr_52a6615a99714b17bbc1e839ebdba531
+
+  cd3e66486:
+    id_self:            case_records_the_decision.cd3e66486
+    guid_self:          case_de52d9b673fc4b209d064883e395f511
+    verdict:            met
+    subject:            |
+                        --- ddr_qualified_reference decision: The four
+                        field edge is kept. Nothing is added to it.
+
+                        A link needing qualification is REIFIED. It
+                        becomes an entry in a keyed table, carrying an
+                        identity of its own, and holding a plain
+                        relation edge to its target beside the fields
+                        that qualify it. The entry is a thing; the
+                        edge on it is an edge like any other.
+
+                        A link needing no qualification and no
+                        identity is neither an edge nor an entry, and
+                        is held however reads best. A dataflow edge is
+                        a map from a source port path to destinations.
+
+                        alternative: Widening the relation edge to
+                        admit optional qualifier fields. Rejected:
+                        every reader of edges would have to know which
+                        qualifiers mean what, and the one rule that
+                        makes edges checkable would become one rule
+                        per qualifier.
+
+                        A binding as a bare path and a guid, with no
+                        identity. Rejected: nothing then checks that
+                        the item exists, and a binding cannot itself
+                        be pointed at, which a later record of what
+                        was judged will want.
+
+                        Reifying dataflow edges as well, for
+                        uniformity. Rejected above.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_qualified_reference
+        guid_target:    ddr_b642be8c694543dc839df692c4e43154
+
+  c778ef821:
+    id_self:            case_records_the_decision.c778ef821
+    guid_self:          case_fe75e83b91cc4468b2411518d541f9a1
+    verdict:            met
+    subject:            |
+                        --- ddr_path_notation decision: A path is a
+                        sequence of steps joined by full stops. A step
+                        names a mapping key or, for a sequence, an
+                        index: relation.0.guid_target.
+
+                        A key a path crosses holds no full stop. A
+                        value may: a port address such as
+                        draft.output.record is a datum, not a key. So
+                        a step is whatever lies between two full
+                        stops, and nothing is quoted or escaped.
+
+                        A pattern is written in the same notation. A
+                        step of one asterisk matches any single step.
+                        A step of two matches any run of steps,
+                        including none.
+
+                        A scope carries an include list and an exclude
+                        list, either of which may be empty.
+
+                        alternative: A flat list of field names.
+                        Rejected: it reaches only the top level.
+
+                        Regular expressions over the dotted path.
+                        Rejected for the escaping above, and because a
+                        regex admits far more than any scope has
+                        wanted, which makes a pattern harder to read
+                        and harder to be sure of.
+
+                        An include list only. Rejected: an exclusion
+                        stated as an enumeration of everything else
+                        goes stale as soon as a field is added.
+
+                        A step wrapped in double quotes, so that a key
+                        holding full stops could be named. Adopted for
+                        the one such key, an edge table keyed by
+                        source port, and withdrawn when edges took
+                        names: two grammars in one string, for a key
+                        that need not have had a full stop in it.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_path_notation
+        guid_target:    ddr_901f2778f7cc43389a8eeb10f2384665
+
+  c8349e287:
+    id_self:            case_records_the_decision.c8349e287
+    guid_self:          case_bd0f14e9d6ad4cff8f04d156448c1b43
+    verdict:            met
+    subject:            |
+                        --- ddr_writing_style decision: A writing
+                        style guide is a register whose entries are
+                        writing style rules. The type
+                        t_writing_style_rule, held in a writing style
+                        rule register, carries the rule as a one line
+                        brief, its reasoning as a description, and one
+                        sentence that follows the rule beside the same
+                        sentence written so that it breaks it.
+
+                        reg_writing_style_rule is the guide of the
+                        cc-public repository. Its first entries are
+                        the seven rules the produced record broke.
+
+                        A prompt that writes prose takes the guide as
+                        context through an input port, as it takes a
+                        schema. An eval that judges prose cites the
+                        rules it checks by id. The example pair on a
+                        rule is the smallest written control case for
+                        that eval.
+
+                        A writing style rule register is validated by
+                        sch_reg_writing_style_rule, which composes the
+                        general register schema with
+                        sch_writing_style_rule, in the pattern the
+                        type register uses.
+
+                        alternative: A style guide as a prose document
+                        of its own. Rejected: one guid for the whole
+                        and nothing to point at, so an eval would have
+                        to quote it.
+
+                        Rules held in the prompt text of each writing
+                        component. Rejected: every prompt would carry
+                        a copy, and the copies would drift.
+
+                        Rules held only as eval criteria. Rejected: an
+                        eval measures, it does not raise the base
+                        rate. The prompt needs the rules too, and both
+                        need one source.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_writing_style
+        guid_target:    ddr_0c73da014285401bbe762d25def81add
+
+  ca11123ec:
+    id_self:            case_records_the_decision.ca11123ec
+    guid_self:          case_9ef37143dc6e4466982969d6add23518
+    verdict:            met
+    subject:            |
+                        --- ddr_dataflow_workflow decision: A dataflow
+                        workflow is one data item holding a graph. It
+                        is a composite component, and its ports are
+                        the unbound ports of its nodes.
+
+                        A NODE instantiates a component, by an
+                        r_instantiates edge, and carries whatever
+                        configuration that instance needs. Nodes are
+                        held in a keyed table and each carries an
+                        identity of its own.
+
+                        An EDGE connects one output port to one input
+                        port, each named by a dot path through the
+                        node: node.output.name and node.input.name.
+                        Edges are held in a keyed table under a short
+                        local name, as ports and nodes are, and each
+                        carries its two endpoints as fields. An edge
+                        carries no identity: it is its endpoints,
+                        whatever it is called, and two edges joining
+                        the same ports are a fault.
+
+                        A BACK EDGE is an edge whose destination
+                        precedes its source. Back edges are held in a
+                        second map of the same shape, and are set
+                        aside when the graph is ordered. They are a
+                        kind, not a flag on a forward edge.
+
+                        A destination may carry a GUARD naming a
+                        verdict, met or unmet. A guarded edge fires
+                        only when the evals anchored to its source
+                        port reach that verdict: met when all of them
+                        are met, unmet when any is. An unguarded edge
+                        fires always.
+
+                        The item that travels an edge is the item on
+                        its source port, whatever the guard. A verdict
+                        never travels.
+
+                        Iteration is a back edge guarded unmet,
+                        ordinarily into an optional input of the node
+                        it came from, alongside a forward edge guarded
+                        met. Branching is two forward edges with
+                        complementary guards. An output that may go
+                        unproduced is an edge that may not fire.
+
+                        The graph names no model and no budget. See
+                        ddr_workflow_deployment.
+
+                        alternative: A node iterating internally
+                        against a budget. The first decision here,
+                        superseded. It hides the loop, and nothing in
+                        the definition says it exists or what stops
+                        it.
+
+                        A back edge carrying the verdict. The second
+                        decision here, superseded. A verdict is not an
+                        item and a port carries only items.
+
+                        Guards on the source port rather than on the
+                        edge. Rejected: a port has one verdict and may
+                        feed several edges that want different ones.
+
+                        A flat list of edges, as stableflow holds
+                        them. Rejected for the merge and fan out
+                        reasons above.
+
+                        A direction flag on an edge. Rejected above.
+
+                        Edges as relation edges between ports, so that
+                        the traceability graph and the dataflow graph
+                        were one graph. Considered seriously. Rejected
+                        because an edge connects port INSTANCES, which
+                        are locations within the graph and not items,
+                        and because the four fields of a relation edge
+                        leave no room for a guard. See
+                        ddr_qualified_reference for the general form
+                        of that problem.
+
+                        Forbidding cycles. Rejected: iteration is a
+                        cycle, and it is the shape most of this work
+                        takes.
+
+                        Treating this as a Kahn process network.
+                        Rejected as a model, though not as a way of
+                        drawing it. In a process network the edges are
+                        streams and determinism comes from blocking
+                        reads. Here the items already exist and are
+                        revised in place, and one item is frequently
+                        both an input and an output of a step. The
+                        execution semantics are a build system's --
+                        dependency, staleness, incremental rebuild --
+                        and not a network's.
+
+                        Carrying an owner on each edge, as stableflow
+                        does. Rejected: it names which node creates
+                        the queue, a resource concern for a running
+                        system with real inter process communication.
+                        Nothing here needs it.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_dataflow_workflow
+        guid_target:    ddr_31507fbecaf44db09f332d227aa90943
+
+  ccf17457d:
+    id_self:            case_records_the_decision.ccf17457d
+    guid_self:          case_7871e3a837ab408f990e4005ee421fe7
+    verdict:            met
+    subject:            |
+                        --- ddr_terminology decision: A concept is
+                        named by the term the nearest established
+                        vocabulary already uses for it: the
+                        literature, stableflow, the domain the reader
+                        comes from.
+
+                        A departure from that term needs a reason, and
+                        the reason is recorded in the glossary entry
+                        or in a design decision.
+
+                        A term is entered in the glossary when it is
+                        introduced, together with the forms it
+                        displaces.
+
+                        A name that reads two ways is not chosen,
+                        however apt one of the readings is.
+
+                        alternative: Coining terms for precision, on
+                        the ground that a standard word carries
+                        baggage from its standard meaning. Rejected as
+                        the default: the baggage is usually the point,
+                        since it is what the reader already knows, and
+                        where a standard word genuinely misleads, that
+                        is the recorded reason for departing from it.
+
+                        Letting names emerge and settling them later.
+                        Rejected: the cost of unchoosing a name grows
+                        with every use of it.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_terminology
+        guid_target:    ddr_9513f3fd01d8465ab77ca993f60dd975
+
+  c94609205:
+    id_self:            case_records_the_decision.c94609205
+    guid_self:          case_a2e5bd30acd04cef9142f803e72f77f4
+    verdict:            met
+    subject:            |
+                        --- ddr_register_entries_are_keyed decision:
+                        The table field of a register is a mapping,
+                        keyed by each entry's readable id.
+
+                        Each entry additionally carries id_self, whose
+                        value must equal the key it sits under.
+
+                        alternative: A list of entries, with a check
+                        for duplicate ids. Rejected: it puts the
+                        guarantee in tooling that a federated partner
+                        may not run.
+
+                        Keying without repeating the id in the entry.
+                        Rejected: an entry then means nothing away
+                        from its table, and every quotation of one has
+                        to carry the key separately.
+
+                        Repeating the id without requiring agreement.
+                        Rejected: two names for one thing that are
+                        allowed to differ will differ.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_register_entries_are_keyed
+        guid_target:    ddr_1c85014313d543a086c9f9db6c71f925
+
+  cda1ca529:
+    id_self:            case_records_the_decision.cda1ca529
+    guid_self:          case_7e1a7e50f8bc41f786903669ca02814f
+    verdict:            met
+    subject:            |
+                        --- ddr_commit_record decision: A commit
+                        record is a data item that lives in the
+                        message of the commit it describes, and
+                        nowhere else. The first line of the message is
+                        plain text, for tools that read only the first
+                        line; a blank line follows; then the record
+                        between a line of three dashes and a line of
+                        three full stops.
+
+                        The record composes identity and nothing else
+                        of the envelope. It carries title, brief,
+                        description, a status of clean or checkpoint,
+                        the counts the checks reported, and edges for
+                        what the commit relates to on purpose: an
+                        r_results_from edge to the execution where a
+                        workflow made it, and whatever else is linked
+                        when it is made. What the commit changed is
+                        not in the record.
+
+                        The title appears twice, on the first line and
+                        in the record.
+
+                        The readable id sorts by time: the prefix, a
+                        UTC timestamp to the second, and six
+                        characters of the guid. The identifier grammar
+                        was widened to allow a digit to begin an id's
+                        body for it, and an execution's id takes the
+                        same form.
+
+                        cctool commit runs the checks, refuses on a
+                        critical finding unless a checkpoint is asked
+                        for, names the changed items, mints the
+                        record, validates it, stages what changed and
+                        commits. cctool log reads the records back and
+                        validates them again.
+
+                        A commit record is never referred to by
+                        anything in the tree. It is validated when
+                        made and on demand, and never loaded to
+                        resolve anything.
+
+                        When a workflow commits is machinery, held on
+                        the deployment: once at the end of a run,
+                        after every node, or never.
+
+                        alternative: A commit record as a file in the
+                        tree, committed inside the commit it
+                        describes. Rejected: it accumulates one file
+                        per commit forever, and a file can be edited
+                        after the fact.
+
+                        Structured fields in git trailers rather than
+                        a document. Rejected: trailers hold one line
+                        each, and an item is not one line.
+
+                        An execution pointing at its commit. Rejected:
+                        the record cannot hold its own hash, and git
+                        already answers the question.
+
+                        Every changed item named by an r_changes edge,
+                        and every other changed file by path. The
+                        first draft here. Superseded: voluminous, and
+                        a duplicate of the diff.
+
+                        Checks run before every commit with no way
+                        past them. Rejected: a half done state is a
+                        fact worth recording, and a checkpoint records
+                        it as such.
+    origin:             written
+    note:               |
+                        Hand written: a choice, and what was not
+                        chosen.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_commit_record
+        guid_target:    ddr_ba74e917b48842d0a3fd33711f0fa932
+
+  c176fee25:
+    id_self:            case_records_the_decision.c176fee25
+    guid_self:          case_b902ec4b23cb44f7a341692cc1690cab
+    verdict:            met
+    subject:            |
+                        --- ddr_sch_identity_design_decision decision:
+                        The sch_identity schema defines identity by
+                        requiring two identifier fields: (1)
+                        **guid_self**, an opaque, immutable GUID that
+                        includes a type prefix followed by 32
+                        lowercase hexadecimal digits; this serves as
+                        the canonical globally unique identifier
+                        assigned once at creation, and (2)
+                        **id_self**, a human-readable identifier that
+                        shares the same type prefix but does not
+                        guarantee uniqueness or immutability, intended
+                        for readability, tooling, and file naming in
+                        standalone item files. Every data item that
+                        needs to be addressable composes the
+                        sch_identity trait to establish its identity.
+                        Items that are describable or have rights
+                        composition include additional schemas. The
+                        presence of either id_self or guid_self
+                        anywhere in a document declares the identity;
+                        other identifier fields elsewhere refer only
+                        to these declared identities. The schema
+                        explicitly permits additional properties
+                        alongside these identifiers.
+
+                        alternative: Alternatives considered included:
+                        (a) Using a single identifier field that
+                        combines human-readability and global
+                        uniqueness, which proved complex and less
+                        practical within a federated environment; (b)
+                        Enforcing uniqueness of id_self across the
+                        federation via centralized registration, which
+                        is unfeasible; (c) Omitting the human-readable
+                        id_self and relying solely on opaque GUIDs,
+                        which would reduce usability and readability
+                        for authors and tooling; (d) Creating stronger
+                        validation rules for id_self to minimize
+                        collisions, but this was balanced against
+                        practicality and authoring workflows.
+    origin:             suppressed
+    note:               |
+                        Held unmet at first, from the first workflow
+                        run. On reading, the alternative names four
+                        real options each with a reason, and the
+                        decision does name a choice. What is wrong
+                        with this record is the restatement of the
+                        schema and the rationale folded into the
+                        decision, which this criterion does not reach.
+                        The judge was right; the label was not.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_sch_identity_design_decision
+        guid_target:    ddr_47219c063336401dbc083277e047e212
+
+  cb0750e41:
+    id_self:            case_records_the_decision.cb0750e41
+    guid_self:          case_92955a6386c94de58acba99cfa0ad135
+    verdict:            unmet
+    subject:            |
+                        --- x decision: The register schema requires
+                        status, description, usage, note and table.
+                        The table is a map keyed by readable id, and
+                        each entry carries its id, its guid and a
+                        title.
+
+                        alternative: None. The schema is what it is.
+    origin:             mutated
+    note:               |
+                        A description of the schema in the decision
+                        field, and no alternative.
+    relation:           []
+
+  caf653048:
+    id_self:            case_records_the_decision.caf653048
+    guid_self:          case_a7a1c22970a44938985de2096be2df89
+    verdict:            unmet
+    subject:            |
+                        --- x decision: The path notation uses full
+                        stops between steps, and a step may be a key
+                        or an index. A pattern may contain one or two
+                        asterisks.
+
+                        alternative: Not applicable.
+    origin:             mutated
+    note:               |
+                        Restates the notation; nothing could have gone
+                        another way.
+    relation:           []
+
+  c06f53f03:
+    id_self:            case_records_the_decision.c06f53f03
+    guid_self:          case_af4339028a4643b19a351db6e79c3e8d
+    verdict:            unmet
+    subject:            |
+                        --- x decision: A commit record is a YAML
+                        document in the commit message, between a line
+                        of three hyphens and a line of three full
+                        stops, after the title line and a blank line.
+
+                        alternative: Writing it somewhere else was
+                        considered and rejected.
+    origin:             mutated
+    note:               |
+                        The decision is the format; the alternative
+                        names nothing.
+    relation:           []
+
+  cdb7bb6c4:
+    id_self:            case_records_the_decision.cdb7bb6c4
+    guid_self:          case_a3bc72724f9947559f9e7b9fcfff2146
+    verdict:            unmet
+    subject:            |
+                        --- x decision: A commit record holds a title,
+                        a brief, a description, a status, the check
+                        fields and the relation fields. The title is
+                        one line. The brief is one sentence. The
+                        description is as long as it needs to be.
+                        These fields are used by cctool log to show
+                        the history.
+    origin:             mutated
+    note:               |
+                        Only description: what the fields are and how
+                        they are used, no choice and no alternative.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_measures
+    guid_relation:      r_5e895eb6d5e9433e94a9db3f24b498bb
+    id_target:          evl_records_the_decision
+    guid_target:        evl_d1c939981d7c44eaa252f4f61d212441

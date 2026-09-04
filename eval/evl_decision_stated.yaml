@@ -1,0 +1,136 @@
+id_self:                evl_decision_stated
+guid_self:              evl_59bc0d987435402bb368cff27332a4f4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decision is stated
+brief:                  |
+                        The decision field states what is chosen. It
+                        does not report on the artefact as a thing
+                        already there whose behaviour it describes.
+                        The rule is style_record_the_decision.
+criterion:              |
+                        MET when the decision is written as the act of
+                        deciding: what is done, kept, named, refused
+                        or held, said directly. The four field edge is
+                        kept. A glossary is a register whose entries
+                        are terms. Edges are held in a keyed table.
+
+                        UNMET when the decision is written as a report
+                        on the artefact: the artefact is the subject
+                        of the sentence and the verb tells what it
+                        defines, requires, includes, permits,
+                        specifies, provides or establishes, as a
+                        reader summarising it would write. The schema
+                        defines identity by requiring two fields. The
+                        schema explicitly permits additional
+                        properties. Such a sentence records nothing:
+                        it says what is there, not what was chosen.
+
+                        A sentence naming an artefact as the thing
+                        that carries or validates something is stated,
+                        not reported: a term register is validated by
+                        sch_reg_term. The test is whether the sentence
+                        would still make sense if the artefact did not
+                        yet exist. A decision is written before its
+                        artefact; a report is written after.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the sentences that report.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        decision: The four field edge is kept. Nothing
+                        is added to it. A link needing qualification
+                        is reified: it becomes an entry in a keyed
+                        table, carrying an identity of its own.
+    verdict:            met
+    feedback:           |
+                        Every sentence decides. It would read the same
+                        before the schema existed.
+
+  - input:              |
+                        decision: The sch_relation schema defines an
+                        edge as exactly four fields: id_relation,
+                        guid_relation, id_target and guid_target. It
+                        does not permit additional properties on an
+                        edge. Qualified links are represented by the
+                        schema as entries in a keyed table.
+    verdict:            unmet
+    feedback:           |
+                        Each sentence reports what the schema does, as
+                        a summary of it would. Quote: The sch_relation
+                        schema defines an edge as exactly four fields.
+                        Quote: It does not permit additional
+                        properties on an edge.
+
+  - input:              |
+                        decision: A question is an entry on its
+                        record, under question, with an identity of
+                        its own and its text. A question is answered
+                        by an r_answers edge from the item that
+                        settles it.
+    verdict:            met
+    feedback:           |
+                        States the shape chosen. The artefact is not
+                        the subject reporting on itself.
+
+scope:
+
+  include:
+    - decision
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             mutated
+    cases:              4
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             confirmed
+    cases:              1
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              17
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_ddr
+    guid_target:        sch_d801523ec4814494be182b54dd62e8e3

@@ -1,0 +1,130 @@
+id_self:                evl_records_the_decision
+guid_self:              evl_d1c939981d7c44eaa252f4f61d212441
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Records the decision
+brief:                  |
+                        A design decision says what was chosen and
+                        what was not, and why. It does not restate
+                        what the artefact already says. The rule is
+                        style_record_the_decision.
+criterion:              |
+                        MET when the decision names a choice that
+                        could have gone another way, and the
+                        alternative names at least one other way it
+                        could have gone and why that way was not
+                        taken.
+
+                        UNMET when the decision describes the artefact
+                        instead: lists its fields, restates its
+                        constraints, or paraphrases its structure,
+                        with no choice a reader could disagree with.
+                        UNMET also when the alternative is absent in
+                        substance: none, not applicable, or an option
+                        so weak nobody would have taken it.
+
+                        A decision may name the fields it settles; the
+                        test is whether it says why those and not
+                        others.
+
+                        When UNMET, quote the passage that describes
+                        rather than decides.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        decision: A glossary is a register whose
+                        entries are terms. alternative: A glossary as
+                        a document of its own. Rejected: it would
+                        reinvent keyed entries, identity, status and
+                        supersession.
+    verdict:            met
+    feedback:           |
+                        A choice, an alternative that was open, and
+                        why it was not taken.
+
+  - input:              |
+                        decision: The schema defines identity by
+                        requiring two identifier fields, guid_self and
+                        id_self. guid_self is an opaque GUID with a
+                        type prefix and 32 hexadecimal digits. id_self
+                        is a readable identifier sharing the prefix.
+                        alternative: No alternatives were considered,
+                        as the schema is foundational.
+    verdict:            unmet
+    feedback:           |
+                        Restates what the schema says a reader can
+                        read there, and names no other way it could
+                        have gone. Quote: The schema defines identity
+                        by requiring two identifier fields.
+
+  - input:              |
+                        decision: Every identifier carries a type
+                        prefix, one to eight lowercase letters before
+                        the first underscore. alternative: A bare
+                        identifier with the type held in a field
+                        beside it. Rejected: the identifier then says
+                        nothing on its own, and every reader has to
+                        look.
+    verdict:            met
+    feedback:           |
+                        Names the fields it settles and says why,
+                        against a real alternative.
+
+scope:
+
+  include:
+    - decision
+    - alternative
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             written
+    cases:              8
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             mutated
+    cases:              3
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             suppressed
+    cases:              1
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             all
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_ddr
+    guid_target:        sch_d801523ec4814494be182b54dd62e8e3

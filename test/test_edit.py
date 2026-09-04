@@ -25,6 +25,7 @@ description:            |
 """
 
 import pathlib
+import re
 import shutil
 
 import pytest
@@ -316,3 +317,13 @@ def test_rename_register_entry_rekeys_in_place(tree, tmp_path):
     assert list(doc['table'])[1] == 'term_renamed'
     assert doc['table']['term_renamed']['id_self'] == 'term_renamed'
     assert clean(tmp_path) == []
+
+
+def test_set_value_with_a_line_break_becomes_a_block_scalar(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'extra', value = [{'input': 'one\ntwo', 'n': 1}])
+    text = (tmp_path / 'workflow' / 'dep_design_decision_from_schema_local.yaml').read_text()
+    assert re.search(r'input: +\\|\n', text)
+    doc = cc_public.load.from_file(tmp_path / 'workflow' / 'dep_design_decision_from_schema_local.yaml')
+    assert doc['extra'][0]['input'] == 'one two\n'    # refilled by the printer
+    cc_public.edit.field.unset_field(tree, 'dep_design_decision_from_schema_local', 'extra')

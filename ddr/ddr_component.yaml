@@ -71,6 +71,16 @@ decision:               |
                         component runs whether or not an optional
                         input is bound.
 
+                        An output port may say what its item is to an
+                        input: REVISES names the input whose item it
+                        returns, changed in place, so that the item
+                        that leaves is the item that arrived; DECIDES
+                        names the input whose item the produced item
+                        decides, and the executor adds an r_decides
+                        edge from what it makes to what was bound
+                        there. Both name a port of the same component
+                        by its local name.
+
                         An eval is ANCHORED to a port by an
                         r_is_judged_by edge on that port, and judges
                         the item there. An eval is anchored to the
@@ -213,23 +223,6 @@ consequence:            |
                         let them be judged, at the cost of one more
                         type.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_component
-    guid_target:        sch_f1095fd235ef479085522c2373b9c6c6
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_port
-    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          term_component
-    guid_target:        term_ef2b95714f5045a4950f10109ceba743
-
 question:
 
   cde5e719e:
@@ -269,3 +262,20 @@ question:
                         its nodes leave an input of the same name
                         unbound.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_component
+    guid_target:        sch_f1095fd235ef479085522c2373b9c6c6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_component
+    guid_target:        term_ef2b95714f5045a4950f10109ceba743

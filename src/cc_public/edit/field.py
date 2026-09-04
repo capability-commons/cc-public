@@ -53,7 +53,7 @@ def set_field(tree, name, path, value = None, prose = None):
         content = ruamel.yaml.scalarstring.LiteralScalarString(
                                                     prose.rstrip('\n') + '\n')
     else:
-        content = value
+        content = _blocks(value)
 
     item     = tree.resolve(name)
     document = tree.document(item)
@@ -93,6 +93,31 @@ def _relation_last(document, path_item, path_field):
     if isinstance(node, dict) and KEY_RELATION in node \
                               and list(node)[-1] != KEY_RELATION:
         node[KEY_RELATION] = node.pop(KEY_RELATION)
+
+
+# -----------------------------------------------------------------------------
+def _blocks(value):
+    """
+    Return value with every string holding a line break made a block
+    scalar, however deep it sits, since a line break is what marks
+    prose to the printer and a quoted scalar spanning lines is not
+    something the printer lays out.
+
+    """
+
+    if isinstance(value, str):
+        if '\n' in value:
+            return ruamel.yaml.scalarstring.LiteralScalarString(
+                                                    value.rstrip('\n') + '\n')
+        return value
+
+    if isinstance(value, dict):
+        return {k: _blocks(v) for (k, v) in value.items()}
+
+    if isinstance(value, list):
+        return [_blocks(v) for v in value]
+
+    return value
 
 
 # -----------------------------------------------------------------------------

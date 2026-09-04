@@ -63,6 +63,7 @@ KEY_ID_REL      = 'id_relation'
 KEY_GUID_TARGET = 'guid_target'
 KEY_ID_TYPE     = 'id_type'
 KEY_REVISES     = 'revises'
+KEY_DECIDES     = 'decides'
 KEY_SUBJECT     = 'subject'
 KEY_INCL_TYPE   = 'include_type'
 
@@ -297,6 +298,12 @@ def _revises(filepath, name, component):
     inputs   = component.get(KEY_INPUT) or {}
 
     for (local, port) in (component.get(KEY_OUTPUT) or {}).items():
+
+        decides = port.get(KEY_DECIDES) if isinstance(port, dict) else None
+        if decides is not None and decides not in inputs:
+            list_bad.append(_fault(filepath, f'node.{name}.output.{local}',
+                    'Decides {target}, and the component has no input port '
+                    'of that name.'.format(target = decides)))
 
         target = port.get(KEY_REVISES) if isinstance(port, dict) else None
 

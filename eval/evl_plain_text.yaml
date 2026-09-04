@@ -1,0 +1,136 @@
+id_self:                evl_plain_text
+guid_self:              evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain text
+brief:                  |
+                        Prose in a field is plain text: no markup of
+                        any kind. The rule is style_plain_text.
+criterion:              |
+                        MET when every passage is plain prose:
+                        sentences and paragraphs, with names written
+                        as they are declared.
+
+                        UNMET when any passage carries markup: a
+                        heading marker, a bullet or numbered list
+                        marker at the start of a line, emphasis marks
+                        such as asterisks or underscores around words,
+                        backticks or a code fence, a table, or a link
+                        written in markdown form.
+
+                        A full stop, a colon, a comma, parentheses or
+                        a numeral inside a sentence are punctuation,
+                        not markup, and are MET. A name containing an
+                        underscore, such as guid_self, is a name and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never markup.
+
+                        When UNMET, quote the marked passage.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        guid_self is minted once at creation and never
+                        changes. id_self is readable and may change.
+    verdict:            met
+    feedback:           |
+                        Names written as declared, in sentences. The
+                        underscores are part of the names.
+
+  - input:              |
+                        **guid_self**: minted once at creation;
+                        *never* changes.
+    verdict:            unmet
+    feedback:           |
+                        Asterisks around words are emphasis marks.
+                        Quote: **guid_self** and *never*.
+
+  - input:              |
+                        The register holds three things: the status,
+                        the entries, and the relation edges. Each
+                        entry is keyed by its id.
+    verdict:            met
+    feedback:           |
+                        A list written as a sentence, with a colon and
+                        commas, is prose.
+
+  - input:              |
+                        ## Fields
+
+                        - status - table
+
+                        See `sch_register` for the shape.
+    verdict:            unmet
+    feedback:           |
+                        A heading marker, bullet markers and
+                        backticks. Quote all three.
+
+scope:
+
+  include:
+    - brief
+    - description
+    - usage
+    - note
+    - context
+    - decision
+    - rationale
+    - alternative
+    - consequence
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             written
+    cases:              10
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             mutated
+    cases:              5
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             confirmed
+    cases:              1
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             all
+    cases:              16
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_descriptive
+    guid_target:        sch_02a7f7d40e0c42fe8e82b170c4d15eaf

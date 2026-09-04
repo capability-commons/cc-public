@@ -1,0 +1,138 @@
+id_self:                evl_decision_decides
+guid_self:              evl_095873b6012d43069725006433b2fff3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decision decides
+brief:                  |
+                        The decision field of a design decision says
+                        what was chosen. Why the choice is right
+                        belongs in the rationale. The rule is
+                        style_record_the_decision.
+criterion:              |
+                        MET when the decision states choices and their
+                        terms: what is done, what is named, what shape
+                        a thing takes, what is refused, and what
+                        follows mechanically from a choice.
+
+                        UNMET when a passage argues for a choice: says
+                        what it balances, ensures, enables, clarifies
+                        or avoids; what would be infeasible,
+                        impractical or costly otherwise; what is
+                        recommended; or that the choice is right,
+                        natural or simple. Argument belongs in the
+                        rationale, where a reader expects it.
+
+                        Stating what a thing is, holds, carries or is
+                        validated by is the decision specifying its
+                        artefact, and is MET however detailed. A
+                        reason given as the term of a choice, such as
+                        an id being kept short so that it reads, is
+                        MET; a paragraph weighing the choice is not.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the passage that argues.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        decision: The four field edge is kept. Nothing
+                        is added to it. A link needing qualification
+                        is reified: it becomes an entry in a keyed
+                        table, carrying an identity of its own, and
+                        holding a plain relation edge to its target
+                        beside the fields that qualify it.
+    verdict:            met
+    feedback:           |
+                        Every sentence is a choice or the shape the
+                        choice takes.
+
+  - input:              |
+                        decision: The schema defines identity by
+                        requiring two identifier fields: guid_self, an
+                        opaque GUID with a type prefix and 32
+                        hexadecimal digits, assigned once at creation,
+                        and id_self, a readable identifier sharing the
+                        prefix. The schema permits additional
+                        properties alongside these. The two-tier
+                        system balances global uniqueness with
+                        readability, and ensures stable referencing
+                        across repositories.
+    verdict:            unmet
+    feedback:           |
+                        The first two sentences specify the schema and
+                        are fine. The last argues for it. Quote: The
+                        two-tier system balances global uniqueness
+                        with readability, and ensures stable
+                        referencing across repositories.
+
+  - input:              |
+                        decision: A commit record lives in the commit
+                        message: the title line, a blank line, then
+                        the record as a YAML document between --- and
+                        ... lines, then any trailers. It is never a
+                        file.
+    verdict:            met
+    feedback:           |
+                        Names the shape settled, and what is refused.
+                        Nothing a reader of the message format would
+                        need is argued for.
+
+scope:
+
+  include:
+    - decision
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             written
+    cases:              10
+    samples:            5
+    false_positive:     0.2
+    false_negative:     null
+    unanimous:          0.9
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             mutated
+    cases:              3
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             suppressed
+    cases:              1
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-04'
+    origin:             all
+    cases:              14
+    samples:            5
+    false_positive:     0.154
+    false_negative:     0.0
+    unanimous:          0.929
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_ddr
+    guid_target:        sch_d801523ec4814494be182b54dd62e8e3

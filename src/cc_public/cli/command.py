@@ -43,6 +43,7 @@ import cc_public.edit.new
 import cc_public.edit.rename
 import cc_public.edit.tree
 import cc_public.cli.report
+import cc_public.eval.control
 import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.eval.select
@@ -519,10 +520,15 @@ def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
               type = click.Choice(['met', 'unmet']),
               help = 'What a person holds the subject to. met answers the '
                      'finding; unmet confirms it.')
+@click.option('--origin', 'origin', default = None,
+              type = click.Choice(cc_public.eval.control.ORIGIN_ALL),
+              help = 'Where the case came from. Defaults to suppressed for '
+                     'met and confirmed for unmet; written marks a subject '
+                     'a person wrote and holds to the verdict.')
 @click.option('--note', 'note', default = '',
               help = 'Why. Kept with the case and shown when it answers.')
 @OPTION_ROOT
-def case_(id_eval, name_item, verdict, note, list_root):
+def case_(id_eval, name_item, verdict, origin, note, list_root):
     """
     Turn a finding into a control case.
 
@@ -535,7 +541,8 @@ def case_(id_eval, name_item, verdict, note, list_root):
 
     try:
         (id_set, id_case) = cc_public.edit.case.case(
-                    _tree(list_root), id_eval, name_item, verdict, note)
+                    _tree(list_root), id_eval, name_item, verdict, note,
+                    origin)
     except cc_public.edit.tree.ErrorItem as err:
         _fail(err)
 

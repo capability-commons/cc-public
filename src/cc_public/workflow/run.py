@@ -54,6 +54,8 @@ KEY_REGEX_ID   = 'regex_id'
 KEY_ID_TYPE    = 'id_type'
 KEY_PROMPT     = 'prompt'
 KEY_REVISES    = 'revises'
+KEY_DECIDES    = 'decides'
+REL_DECIDES    = 'r_decides'
 KEY_OPTIONAL   = 'optional'
 KEY_RELATION   = 'relation'
 KEY_ID_REL     = 'id_relation'
@@ -391,6 +393,13 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
         path = cc_public.edit.new.new(tree, id_type, id_item,
                                       cc_public.edit.tree.defaults(), guid = guid)
         ledger.note_create(path)
+        if spec.get(KEY_DECIDES):
+            id_decided = bound.get((local, spec[KEY_DECIDES]))
+            if id_decided is None:
+                raise Stop('{node}.output.{port} decides {src}, which is not '
+                           'bound.'.format(node = local, port = port,
+                                           src = spec[KEY_DECIDES]))
+            cc_public.edit.link.link(tree, id_item, REL_DECIDES, id_decided)
 
     for field in list_field:
         text = str(answer.get(field, '') or '')

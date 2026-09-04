@@ -24,13 +24,16 @@ are shorthands. Every command has `--help`; the writing commands take
 - `case --id-eval X --item Y --verdict met|unmet --note "…"` — turns a finding
   into a control case (met = suppressed, unmet = confirmed). A later sweep
   matching the same words reports a met case as a note, not a finding.
+  `--origin written` holds a hand-written item to a verdict instead; a
+  mutated case is made through the API with its subject text set.
 - `questions [--open]` — what the design decisions leave open, and what
   answered it.
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
   of a dataflow workflow. `--dry-run` shows the order and writes nothing.
   Needs a clean tree. Makes items with `new`, fills fields with `set`,
-  checks after every node, restores on a critical finding, writes an
-  execution record to `execution/`, commits if the deployment says so.
+  links what a port `decides:` to what it makes, checks after every node,
+  restores on a critical finding, writes an execution record to
+  `execution/`, commits if the deployment says so.
 - `commit TITLE [--brief …] [--description …] [--link REL ITEM]` — runs the
   checks, refuses on a critical finding unless `--checkpoint`, writes a
   commit record into the message. `log [-n N]` reads them back.

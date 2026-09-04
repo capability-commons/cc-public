@@ -117,7 +117,9 @@ def clean(root):
             if n['severity'] == 'critical']
 
 
-BIND = {'draft.input.subject': 'sch_identity'}
+BIND = {'draft.input.subject': 'sch_identity',
+        'draft.input.guide':   'reg_writing_style_rule',
+        'review.input.guide':  'reg_writing_style_rule'}
 
 
 def test_dry_run_plans_and_writes_nothing(repo):
@@ -142,19 +144,25 @@ def test_run_makes_then_revises_and_commits(repo):
     assert draft['made'] == ['ddr_identity_trait'] and draft['revised'] == []
     assert review['revised'] == ['ddr_identity_trait'] and review['made'] == []
     assert draft['fired'] == ['review.input.draft']
-    assert draft['verdict']['decision'] == [('evl_prose_matches_structure', 'met')]
+    assert sorted(draft['verdict']['decision']) == [('evl_decision_decides', 'met'),
+                                                    ('evl_decision_stated', 'met'),
+                                                    ('evl_plain_text', 'met'),
+                                                    ('evl_prose_matches_structure', 'met'),
+                                                    ('evl_records_the_decision', 'met')]
 
     # the generator was asked exactly the empty prose fields, with the input by port
-    assert gen.calls[0] == (['subject'], ['title', 'brief', 'context', 'decision',
+    assert gen.calls[0] == (['guide', 'subject'], ['title', 'brief', 'context', 'decision',
                                           'rationale', 'alternative', 'consequence'], True)
-    assert gen.calls[1][0] == ['draft'] and gen.calls[1][2] is False
+    assert gen.calls[1][0] == ['draft', 'guide'] and gen.calls[1][2] is False
 
     doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
-    assert doc['title'] == 'Identity trait' and doc['relation'] == []
+    assert doc['title'] == 'Identity trait'
+    assert [(r['id_relation'], r['id_target']) for r in doc['relation']] == \
+           [('r_decides', 'sch_identity')]                 # the port says decides: subject
 
     tree = cc_public.edit.tree.Tree([repo])
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
-    assert exe['id_self'].startswith('exe_') and len(exe['binding']) == 4
+    assert exe['id_self'].startswith('exe_') and len(exe['binding']) == 6
     ports = {b['id_port'] for b in exe['binding'].values()}
     assert 'prt_draft_design_decision.subject' in ports and 'prt_review_design_decision.decision' in ports
     guids = {b['relation'][0]['guid_target'] for b in exe['binding'].values()

@@ -51,9 +51,13 @@ ORIGIN_UNMET   = 'confirmed'
 
 
 # -----------------------------------------------------------------------------
-def case(tree, id_eval, name_item, verdict, note):
+def case(tree, id_eval, name_item, verdict, note, origin = None):
     """
     Add the case and write it. Return (id_set, id_case).
+
+    origin says where the case came from. Absent, a met verdict is a
+    finding suppressed and an unmet one a finding confirmed; written
+    marks a subject a person wrote and holds to the verdict.
 
     """
 
@@ -84,8 +88,8 @@ def case(tree, id_eval, name_item, verdict, note):
     cc_public.edit.field.set_field(tree, id_case, 'subject', prose = text)
     cc_public.edit.field.set_field(tree, id_case, 'verdict', value = verdict)
     cc_public.edit.field.set_field(tree, id_case, 'origin',
-                                   value = (ORIGIN_MET if verdict == VERDICT_MET
-                                            else ORIGIN_UNMET))
+                                   value = origin or (ORIGIN_MET if verdict == VERDICT_MET
+                                                      else ORIGIN_UNMET))
     if note:
         cc_public.edit.field.set_field(tree, id_case, 'note', prose = note)
 

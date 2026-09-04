@@ -1,0 +1,789 @@
+id_self:                ctl_plain_text
+guid_self:              ctl_79ff34a3931948378d38ac3d445ec83b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set for evl_plain_text
+brief:                  |
+                        Cases with known verdicts for evl_plain_text.
+description:            |
+                        Each case holds a subject as the judge is
+                        shown it, the verdict a person holds it to,
+                        and where the case came from.
+
+case:
+
+  c6358c845:
+    id_self:            case_plain_text.c6358c845
+    guid_self:          case_0d98e18faaa94587ac70083e5128609b
+    verdict:            met
+    subject:            |
+                        --- ddr_glossary brief: A glossary is a
+                        register of terms. The cc-public glossary is
+                        reg_term, and a partner's is a register of the
+                        same type.
+
+                        context: ddr_terminology decides that concepts
+                        take standard names and that departures are
+                        recorded. That needs somewhere for the names
+                        to live, findable and checkable, or it is a
+                        hope.
+
+                        The repository already has a mechanism for a
+                        controlled vocabulary with addressable
+                        entries: the register.
+
+                        This is a federated system. Different
+                        repositories will want different glossaries,
+                        and a term arriving from a partner will name
+                        an entry held there.
+
+                        decision: A glossary is a register whose
+                        entries are terms. The type t_term, held in a
+                        term register, carries the surface form of the
+                        term, the forms it is also known by, and the
+                        forms that are not to be used for it.
+
+                        reg_term is the glossary of the cc-public
+                        repository. It holds a term for each concept
+                        the repository names, whether or not that
+                        concept has a type of its own.
+
+                        A record that introduces or settles a concept
+                        decides its term, by an r_decides edge to the
+                        entry.
+
+                        A term register is validated by sch_reg_term,
+                        which composes the general register schema
+                        with the term entry schema in the pattern the
+                        type register uses.
+
+                        rationale: A register rather than a new
+                        mechanism, because a register is exactly a
+                        keyed table of addressable entries that is the
+                        source of truth for a vocabulary, which is
+                        what a glossary is. Keying makes duplicate
+                        terms impossible. Identity makes a term
+                        something an item can point at. Per register
+                        entry schemas make a term entry shape cheap to
+                        declare. Supersession and status come for
+                        nothing.
+
+                        The federation story is the register's own. A
+                        partner brings a glossary the way they bring
+                        any register, and two glossaries coexist
+                        without either knowing the other exists.
+
+                        A term for every concept and not only for
+                        every type, because most of what needs a
+                        consistent name has no type: anchor, scope,
+                        guard, trait. What has a type is a subset of
+                        what has a name.
+
+                        Forms to avoid recorded on the entry, because
+                        that is what would have caught the word this
+                        record exists to answer for. A form to avoid
+                        is not always wrong -- work is an ordinary
+                        word -- so the judgement is an eval's and not
+                        a check's.
+
+                        alternative: A glossary as a document of its
+                        own, with a type and schema unlike a register.
+                        Rejected: it would reinvent keyed entries,
+                        identity, status and supersession, and its
+                        terms could not be pointed at without further
+                        work.
+
+                        A glossary as a section of each decision
+                        record, defining the terms that record
+                        introduces. Rejected: terms would be
+                        scattered, and a reader looking one up would
+                        have to know which record introduced it.
+
+                        Terms only for things that have types, read
+                        from the type register. Rejected: it leaves
+                        the concepts most in need of a stable name
+                        without one.
+
+                        consequence: Readable ids of terms collide
+                        across a federation -- term_component in two
+                        glossaries -- while guids do not. That is the
+                        issue ddr_protective_marking already records
+                        for marks, and is not new.
+
+                        An eval can be written that judges prose
+                        against the glossary: that a defined term is
+                        used in its defined sense, and that a form
+                        under avoid is not used for it. That eval does
+                        not yet exist.
+
+                        A term entry has to be written for each
+                        concept, which is a cost paid once and read
+                        many times.
+
+                        Two words that were one -- relation edge and
+                        dataflow edge -- now have entries, and prose
+                        that says bare edge is ambiguous.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_glossary
+        guid_target:    ddr_52a6615a99714b17bbc1e839ebdba531
+
+  ca0473640:
+    id_self:            case_plain_text.ca0473640
+    guid_self:          case_e47c09c98cc14938b3a614edd3628870
+    verdict:            met
+    subject:            |
+                        --- ddr_path_notation brief: One notation
+                        names a location inside a document and, with
+                        glob wildcards, a set of them.
+
+                        context: An eval needs to say which parts of
+                        an item its criterion concerns, because a
+                        judge given a whole item where the criterion
+                        concerns a few fields answers unreliably.
+
+                        A flat list of field names was the first idea.
+                        It cannot reach anything nested, and the
+                        fields that wanted excluding -- the guids
+                        scattered through a register's entries -- are
+                        nested by nature.
+
+                        Four shapes were considered: a list of field
+                        names; dotted paths; dotted paths matched by
+                        regular expression; and dotted paths with glob
+                        wildcards.
+
+                        decision: A path is a sequence of steps joined
+                        by full stops. A step names a mapping key or,
+                        for a sequence, an index:
+                        relation.0.guid_target.
+
+                        A key a path crosses holds no full stop. A
+                        value may: a port address such as
+                        draft.output.record is a datum, not a key. So
+                        a step is whatever lies between two full
+                        stops, and nothing is quoted or escaped.
+
+                        A pattern is written in the same notation. A
+                        step of one asterisk matches any single step.
+                        A step of two matches any run of steps,
+                        including none.
+
+                        A scope carries an include list and an exclude
+                        list, either of which may be empty.
+
+                        rationale: The notation that names one
+                        location and the notation that matches many
+                        are the same notation. Someone who can write a
+                        path can read a pattern, and a pattern with no
+                        wildcard in it is a path.
+
+                        A regular expression over the dotted form was
+                        the alternative worth taking seriously, and
+                        the full stop is what settles it. The
+                        separator is a metacharacter, so every path
+                        written as a regex has to escape the very
+                        characters doing the naming, and a rule
+                        meaning what it appears to mean is worth more
+                        here than one able to express more.
+
+                        Two lists rather than one because some scopes
+                        are naturally stated the other way round. The
+                        prose eval names three fields it wants. The
+                        agreement eval wants an entire register except
+                        its guids, which is one exclusion against an
+                        enumeration that would have to be revised
+                        whenever an entry gained a field.
+
+                        alternative: A flat list of field names.
+                        Rejected: it reaches only the top level.
+
+                        Regular expressions over the dotted path.
+                        Rejected for the escaping above, and because a
+                        regex admits far more than any scope has
+                        wanted, which makes a pattern harder to read
+                        and harder to be sure of.
+
+                        An include list only. Rejected: an exclusion
+                        stated as an enumeration of everything else
+                        goes stale as soon as a field is added.
+
+                        A step wrapped in double quotes, so that a key
+                        holding full stops could be named. Adopted for
+                        the one such key, an edge table keyed by
+                        source port, and withdrawn when edges took
+                        names: two grammars in one string, for a key
+                        that need not have had a full stop in it.
+
+                        consequence: Two asterisks reach a long way. A
+                        pattern selecting more than its author
+                        expected shows up as a judge weighing material
+                        the criterion did not ask about, which is
+                        exactly the failure the scope mechanism exists
+                        to prevent.
+
+                        A pattern matching nothing is silent. Nothing
+                        distinguishes a scope naming a field no item
+                        carries from one naming a field every item
+                        carries but this one.
+
+                        A step naming a sequence index is positional,
+                        so a path into a list stops meaning what it
+                        meant when the list is reordered.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_path_notation
+        guid_target:    ddr_901f2778f7cc43389a8eeb10f2384665
+
+  c4f9e3a71:
+    id_self:            case_plain_text.c4f9e3a71
+    guid_self:          case_6dd784cafb724f68af175c848bd066ae
+    verdict:            met
+    subject:            |
+                        --- ddr_terminology brief: A concept is called
+                        by the standard, least surprising name for it
+                        unless there is a recorded reason not to.
+
+                        context: The unit of transformation in a
+                        workflow was called a work. The word came from
+                        a phrase in conversation and was kept because
+                        workflow contains it. It confused the one
+                        reader it had, and it was replaced by
+                        component -- the composite pattern's own name
+                        for that role, and stableflow's.
+
+                        Renaming it touched a hundred and ten places
+                        in prose and seven files by identifier. A word
+                        chosen carelessly is expensive to unchoose.
+
+                        decision: A concept is named by the term the
+                        nearest established vocabulary already uses
+                        for it: the literature, stableflow, the domain
+                        the reader comes from.
+
+                        A departure from that term needs a reason, and
+                        the reason is recorded in the glossary entry
+                        or in a design decision.
+
+                        A term is entered in the glossary when it is
+                        introduced, together with the forms it
+                        displaces.
+
+                        A name that reads two ways is not chosen,
+                        however apt one of the readings is.
+
+                        rationale: A name has one job, which is to be
+                        understood by its reader without explanation.
+                        A standard term is understood by anyone who
+                        knows the standard, and a reader of this
+                        repository is more likely to know the
+                        composite pattern or stableflow than to know a
+                        coinage.
+
+                        A pun is not a reason. That workflow contains
+                        work was pleasing and told the reader nothing.
+
+                        Recording the reason for a departure is what
+                        separates a considered choice from a careless
+                        one, and is what lets a later reader decide
+                        whether the reason still holds.
+
+                        alternative: Coining terms for precision, on
+                        the ground that a standard word carries
+                        baggage from its standard meaning. Rejected as
+                        the default: the baggage is usually the point,
+                        since it is what the reader already knows, and
+                        where a standard word genuinely misleads, that
+                        is the recorded reason for departing from it.
+
+                        Letting names emerge and settling them later.
+                        Rejected: the cost of unchoosing a name grows
+                        with every use of it.
+
+                        consequence: Some terms carry meanings from
+                        their standard use that do not all apply here.
+                        Component in SysML suggests a deployable unit;
+                        here it need not be. The glossary entry is
+                        where the difference is stated.
+
+                        Naming a concept now takes a lookup before a
+                        choice.
+
+                        The glossary, in ddr_glossary, is what makes
+                        the decision checkable rather than
+                        aspirational.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_terminology
+        guid_target:    ddr_9513f3fd01d8465ab77ca993f60dd975
+
+  cee6c5e95:
+    id_self:            case_plain_text.cee6c5e95
+    guid_self:          case_3ce573362f764abb98282661684dfcd3
+    verdict:            met
+    subject:            |
+                        --- sch_register brief: Schema for register
+                        data items.
+
+                        description: The shape shared by every
+                        register. Registers differ in what their
+                        entries say, not in how they are structured.
+                        Each concrete register is a data item
+                        conforming to this schema.
+
+                        A register is a first class data item. It has
+                        identity, it can be the endpoint of relation
+                        edges, and it can be superseded by a successor
+                        register. Its entries are a controlled
+                        vocabulary, and the source of truth for the
+                        stable join keys used across other items.
+
+                        usage: Selected for a register by the type
+                        register, which maps the reg prefix to the
+                        register type and carries the
+                        r_is_specified_by_schema edge naming this
+                        schema.
+
+                        note: ENTRIES ARE KEYED, NOT LISTED
+
+                        The table is a map keyed by each entry's
+                        readable id, rather than an array of entries.
+
+                        Entries nonetheless repeat their id as a
+                        field, so that an entry lifted out of its
+                        table still says what it is. The key and the
+                        id field must agree; a companion check
+                        enforces that.
+
+                        ENTRY SHAPE IS OPEN
+
+                        This schema fixes only the fields that every
+                        entry in every register carries, and leaves
+                        the rest open so that each register may add
+                        its own. The type register adds prefix and
+                        regex.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      sch_register
+        guid_target:    sch_a4620d79fab546b3be6c756f0325e069
+
+  c59e49b97:
+    id_self:            case_plain_text.c59e49b97
+    guid_self:          case_b3764f51cb404d57a2d6920f447d8da5
+    verdict:            met
+    subject:            |
+                        --- sch_descriptive brief: Trait with the
+                        prose envelope.
+
+                        description: The fields in which an item says
+                        what it is: title, brief, description, usage
+                        and note.
+
+                        Only title and brief are required here. A
+                        composer requires whichever of the remaining
+                        three it needs.
+
+                        usage: Composed via allOf by anything carrying
+                        prose.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      sch_descriptive
+        guid_target:    sch_02a7f7d40e0c42fe8e82b170c4d15eaf
+
+  ccc77c3e4:
+    id_self:            case_plain_text.ccc77c3e4
+    guid_self:          case_30294d760c2445d1925e2147f3952aea
+    verdict:            met
+    subject:            |
+                        --- reg_term brief: Register of the terms used
+                        in the cc-public repository: the glossary.
+
+                        description: The term register provides a
+                        controlled list of the words this repository
+                        uses for its own concepts, each with a
+                        definition, the forms it is also known by, and
+                        any forms that are not to be used for it.
+
+                        usage: The term register is used to keep the
+                        vocabulary of the repository consistent. A
+                        record introducing a concept enters its term
+                        here. Prose is judged against it: a defined
+                        term is used in its defined sense, and a form
+                        listed under avoid is not used for it.
+
+                        A partner may hold a glossary of their own, as
+                        a register of the same type. A term arriving
+                        from a partner names an entry there and not
+                        here.
+
+                        note: A term is a word for a concept, whether
+                        or not the concept is an item. Anchor, scope
+                        and guard have entries; so do component and
+                        port. What has a type is a subset of what has
+                        a name.
+
+                        Two words are defined here because they would
+                        otherwise be one. A relation edge links items
+                        and is always four fields. A dataflow edge
+                        wires ports inside a workflow and has no
+                        identity. Bare edge is ambiguous, and prose
+                        should say which.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      reg_term
+        guid_target:    reg_bcba1ab65d824ac2b2f7af2ded66835a
+
+  ceed12919:
+    id_self:            case_plain_text.ceed12919
+    guid_self:          case_1472c12496b34f0098615f22ca50d8d8
+    verdict:            met
+    subject:            |
+                        --- cmp_draft_design_decision brief: Write a
+                        design decision about a schema.
+
+                        description: Given a schema, and where there
+                        is one an earlier draft, produce the design
+                        decision that explains the decisions the
+                        schema embodies.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      cmp_draft_design_decision
+        guid_target:    cmp_ccb3fedf29b74807be9cef5e5b702e63
+
+  c54139a17:
+    id_self:            case_plain_text.c54139a17
+    guid_self:          case_2d2de73e568a4b68b8f9a10085beb5d9
+    verdict:            met
+    subject:            |
+                        --- evl_prose_describes brief: An item's prose
+                        describes the item; it does not argue for it.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      evl_prose_describes
+        guid_target:    evl_6e91e1a0e8224b30905294ff178b4036
+
+  c709f1ecf:
+    id_self:            case_plain_text.c709f1ecf
+    guid_self:          case_311c63359d9a4a8ca42ab9dcf25423e6
+    verdict:            met
+    subject:            |
+                        --- pym_cc_public.edit.rename brief: Give an
+                        item a new readable id, and carry the change
+                        to everything that names it.
+
+                        description: The guid is the truth and never
+                        changes. The readable id changes in its
+                        declaration, in the file name where the item
+                        is a file, in every embedded item whose id is
+                        qualified by it, and in every reference that
+                        pairs the id with the guid. A mention of the
+                        old id in prose is reported and left, since
+                        prose is written, not derived.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pym_cc_public.edit.rename
+        guid_target:    pym_5fc4c54cf6934f2e822a1b3f3a2b664b
+
+  c5472a82b:
+    id_self:            case_plain_text.c5472a82b
+    guid_self:          case_826e2c392bee4934b06e765c8b5f3e58
+    verdict:            met
+    subject:            |
+                        --- wf_design_decision_from_schema brief:
+                        Draft a design decision about a schema, review
+                        it, and revise until the review is satisfied.
+
+                        description: Two nodes and one cycle. The
+                        draft node writes a record about the schema on
+                        its subject port. The review node revises it.
+                        Where the eval on the reviewed record is
+                        unmet, the back edge returns it to the draft
+                        node's prior port and the draft is revised;
+                        where it is met, the reviewed record is the
+                        workflow's output.
+    origin:             written
+    note:               |
+                        Hand written prose, no markup.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      wf_design_decision_from_schema
+        guid_target:    wf_fc81376f8ab4496081e65ca4c8e377b2
+
+  c61e9df61:
+    id_self:            case_plain_text.c61e9df61
+    guid_self:          case_bf96f0df517f487b8534389225cf5a17
+    verdict:            unmet
+    subject:            |
+                        --- ddr_sch_identity_design_decision brief:
+                        This document outlines the decisions made in
+                        defining the sch_identity schema, which
+                        establishes a universal identity trait for
+                        data items. It explains the dual identifier
+                        system consisting of guid_self and id_self,
+                        describing their roles, uniqueness guarantees,
+                        and usage within a federated system.
+
+                        context: In developing a robust identity
+                        schema for a federated data environment, it
+                        was necessary to establish a method for
+                        uniquely identifying and referencing items.
+                        Items may exist as standalone files or
+                        embedded entries and must be addressable via
+                        identifiers. The system must address the dual
+                        challenges of global uniqueness within a
+                        federated ecosystem and providing
+                        human-friendly, readable identifiers. The
+                        sch_identity schema, referencing the
+                        sch_primitive schema for string formats,
+                        specifies two identifier fields: guid_self,
+                        which provides an immutable, globally unique
+                        identifier, and id_self, which offers readable
+                        identification without uniqueness or
+                        immutability guarantees. Additional traits
+                        such as descriptive and rights-bearing
+                        information are modular and composed
+                        separately. The schema requires both fields
+                        but allows additional properties to be
+                        included.
+
+                        decision: The sch_identity schema defines
+                        identity by requiring two identifier fields:
+                        (1) **guid_self**, an opaque, immutable GUID
+                        that includes a type prefix followed by 32
+                        lowercase hexadecimal digits; this serves as
+                        the canonical globally unique identifier
+                        assigned once at creation, and (2)
+                        **id_self**, a human-readable identifier that
+                        shares the same type prefix but does not
+                        guarantee uniqueness or immutability, intended
+                        for readability, tooling, and file naming in
+                        standalone item files. Every data item that
+                        needs to be addressable composes the
+                        sch_identity trait to establish its identity.
+                        Items that are describable or have rights
+                        composition include additional schemas. The
+                        presence of either id_self or guid_self
+                        anywhere in a document declares the identity;
+                        other identifier fields elsewhere refer only
+                        to these declared identities. The schema
+                        explicitly permits additional properties
+                        alongside these identifiers.
+
+                        rationale: The two-tier identifier system
+                        balances the need for global uniqueness and
+                        immutability (fulfilled by guid_self) with the
+                        practical advantages of readable, descriptive
+                        identifiers (fulfilled by id_self). Given the
+                        federated nature of the system, guaranteeing
+                        perfect global uniqueness for human-readable
+                        ids is infeasible, so id_self is intentionally
+                        not unique or immutable, though managing it to
+                        reduce collisions is recommended. Emphasizing
+                        that guid_self should never change ensures
+                        stable referencing across edits and
+                        repositories. Representing identity as a trait
+                        (via allOf composition) allows flexible schema
+                        composition depending on item capabilities
+                        such as description and rights. This structure
+                        clarifies the distinction between identity
+                        declaration within items and identity
+                        referencing across documents.
+
+                        alternative: Alternatives considered included:
+                        (a) Using a single identifier field that
+                        combines human-readability and global
+                        uniqueness, which proved complex and less
+                        practical within a federated environment; (b)
+                        Enforcing uniqueness of id_self across the
+                        federation via centralized registration, which
+                        is unfeasible; (c) Omitting the human-readable
+                        id_self and relying solely on opaque GUIDs,
+                        which would reduce usability and readability
+                        for authors and tooling; (d) Creating stronger
+                        validation rules for id_self to minimize
+                        collisions, but this was balanced against
+                        practicality and authoring workflows.
+
+                        consequence: Implementing this schema
+                        establishes a clear pattern for identity
+                        management that supports federation,
+                        referencing, and authoring needs. It requires
+                        implementers to consistently generate and
+                        preserve guid_self and to manage id_self
+                        carefully to avoid collisions within defined
+                        scopes. Tooling can rely on guid_self as the
+                        canonical reference and use id_self for human
+                        interaction and file naming. This approach may
+                        necessitate collision detection and renaming
+                        processes within repositories. Allowing
+                        additional properties ensures extensibility,
+                        while identity references elsewhere must
+                        explicitly link to declared identities.
+                        Overall, the schema facilitates consistent
+                        federated identity management while
+                        acknowledging practical constraints.
+    origin:             confirmed
+    note:               |
+                        The first workflow run: bold marks around
+                        field names.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      ddr_sch_identity_design_decision
+        guid_target:    ddr_47219c063336401dbc083277e047e212
+
+  cc60130de:
+    id_self:            case_plain_text.cc60130de
+    guid_self:          case_ae415ad2187748bd93401672ea79b701
+    verdict:            unmet
+    subject:            |
+                        --- x brief: A register is a **keyed table**
+                        of entries.
+
+                        description: Each entry has an id, a guid and
+                        a title. The table is the source of truth for
+                        the vocabulary it controls.
+    origin:             mutated
+    note:               |
+                        A met subject with one bold phrase.
+    relation:           []
+
+  cd6b5183e:
+    id_self:            case_plain_text.cd6b5183e
+    guid_self:          case_57a853f5297d4a70ae396c369910ada6
+    verdict:            unmet
+    subject:            |
+                        --- x brief: A register is a keyed table of
+                        entries.
+
+                        description: # Entries
+
+                        Each entry has an id, a guid and a title. The
+                        table is the source of truth for the
+                        vocabulary it controls.
+    origin:             mutated
+    note:               |
+                        A met subject with a heading.
+    relation:           []
+
+  c14a74730:
+    id_self:            case_plain_text.c14a74730
+    guid_self:          case_9bfaeeffa67a4a7a977d0b1f08e36729
+    verdict:            unmet
+    subject:            |
+                        --- x brief: A register is a keyed table of
+                        entries.
+
+                        description: Each entry has three things: - an
+                        id - a guid - a title. The table is the source
+                        of truth for the vocabulary it controls.
+    origin:             mutated
+    note:               |
+                        A met subject with bullet markers.
+    relation:           []
+
+  c132e5fba:
+    id_self:            case_plain_text.c132e5fba
+    guid_self:          case_a82df21275054ebe97c9a98e6cc2a658
+    verdict:            unmet
+    subject:            |
+                        --- x brief: A register is a keyed table of
+                        entries.
+
+                        description: Each entry has an `id`, a `guid`
+                        and a title. The table is the source of truth
+                        for the vocabulary it controls.
+    origin:             mutated
+    note:               |
+                        A met subject with backticks.
+    relation:           []
+
+  cb6c539ed:
+    id_self:            case_plain_text.cb6c539ed
+    guid_self:          case_4c21a8ca8ea64071a59f7e3bf2a0488b
+    verdict:            met
+    subject:            |
+                        --- x brief: A step names a mapping key or,
+                        for a sequence, an index:
+                        relation.0.guid_target.
+
+                        description: The full stop is the separator
+                        (see ddr_path_notation). A key holds no full
+                        stop.
+    origin:             mutated
+    note:               |
+                        Punctuation and parentheses only: met, held to
+                        check the judge does not over-reach.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_measures
+    guid_relation:      r_5e895eb6d5e9433e94a9db3f24b498bb
+    id_target:          evl_plain_text
+    guid_target:        evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
