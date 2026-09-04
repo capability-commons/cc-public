@@ -1,0 +1,105 @@
+id_self:                evl_req_measurable
+guid_self:              evl_1af50fa7345140b2939eb46e9b8299e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Measurable performance
+brief:                  |
+                        Performance is stated as a measurable target
+                        with explicit timing. Rules
+                        rule_r34_measurable_performance,
+                        rule_r35_temporal_dependencies.
+criterion:              |
+                        MET when the performance the statement
+                        requires is a specific quantity or a named
+                        standard a verification can measure against,
+                        and any timing is a stated bound.
+
+                        UNMET when performance is a word instead of a
+                        measure, such as fast, prompt, minimum,
+                        maximum, optimum, user friendly, best
+                        practice, class leading; or when timing is
+                        indefinite, such as eventually, until, before,
+                        after, once, simultaneously, without a bound.
+
+                        A statement whose action has no performance
+                        dimension, such as recording a message, is MET
+                        on this criterion; whether it is complete is
+                        another eval's question.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: The Radio shall consume less than
+                        or equal to 50 watts of mains power.
+    verdict:            met
+    feedback:           |
+                        A measurable target.
+
+  - input:              |
+                        statement: The Radio shall use minimum power.
+    verdict:            unmet
+    feedback:           |
+                        Minimum is not a measure.
+                        rule_r34_measurable_performance.
+
+  - input:              |
+                        statement: Continual operation of the pump
+                        shall eventually result in the tank being
+                        empty.
+    verdict:            unmet
+    feedback:           |
+                        Eventually. rule_r35_temporal_dependencies.
+
+  - input:              |
+                        statement: The Pump shall remove greater than
+                        99 percent of the Fluid from the Tank in less
+                        than 3 days of continuous operation.
+    verdict:            met
+    feedback:           |
+                        A measure and a time bound.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              8
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              8
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

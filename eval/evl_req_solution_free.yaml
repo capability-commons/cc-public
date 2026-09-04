@@ -1,0 +1,119 @@
+id_self:                evl_req_solution_free
+guid_self:              evl_d746390e5ae14bc6b9a55d977bbc3982
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Solution free
+brief:                  |
+                        The statement says what the entity must do or
+                        be, not how, unless the how is itself a
+                        required constraint. Rule
+                        rule_r31_solution_free, toward characteristic
+                        C2.
+criterion:              |
+                        MET when the statement names a capability, a
+                        characteristic, a constraint or a quality of
+                        the entity, at the level of the entity, and
+                        leaves the means to the design.
+
+                        UNMET when the statement names a component,
+                        technology, algorithm or mechanism as the way
+                        the result is to be achieved, where the same
+                        purpose could be met another way. A constraint
+                        the stakeholder genuinely requires, such as a
+                        mandated engine or a standard's template, is
+                        MET; ask for what purpose, and if the answer
+                        is a different requirement, the statement is a
+                        solution.
+
+                        The rationale is shown beside the statement.
+                        Where the statement prescribes a means and the
+                        rationale says why that means is itself
+                        required, by whom or by what the entity must
+                        work with, the constraint is MET. Where the
+                        rationale gives a purpose that another means
+                        could serve, the statement is a solution and
+                        UNMET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: When a Pedestrian signals intent to
+                        cross at the Intersection, the
+                        Traffic_Control_System shall issue a
+                        Traffic_Stop_Signal for
+                        Average_Pedestrian_Crossing_Time.
+    verdict:            met
+    feedback:           |
+                        The result, not the mechanism.
+
+  - input:              |
+                        statement: Traffic lights shall be used to
+                        control traffic at the intersection.
+    verdict:            unmet
+    feedback:           |
+                        Traffic lights are one way.
+                        rule_r31_solution_free.
+
+  - input:              |
+                        statement: The Aircraft shall use the
+                        ACME_9000 engine.
+    verdict:            met
+    feedback:           |
+                        A mandated engine is a constraint the business
+                        requires.
+
+  - input:              |
+                        statement: When a pedestrian presses a button
+                        on the traffic light pillar, the traffic light
+                        shall turn red for the traffic to stop.
+    verdict:            unmet
+    feedback:           |
+                        Button, pillar and light are the design.
+                        rule_r31_solution_free.
+
+scope:
+
+  include:
+    - statement
+    - rationale
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              5
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              5
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

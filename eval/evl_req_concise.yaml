@@ -1,0 +1,106 @@
+id_self:                evl_req_concise
+guid_self:              evl_80a00ff67b60434d9ec8563b9bf76f60
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concise
+brief:                  |
+                        The statement carries the obligation and
+                        nothing else: no superfluous infinitive, no
+                        purpose phrase, no parenthesis. Rules
+                        rule_r10_superfluous_infinitives,
+                        rule_r20_purpose_phrases,
+                        rule_r21_parentheses.
+criterion:              |
+                        MET when every word of the statement is part
+                        of the obligation, its condition or its
+                        performance.
+
+                        UNMET when the verb is padded with be able to,
+                        be capable of, be designed to, provide the
+                        capability to; when a phrase says why, such as
+                        so that, in order to, thus allowing, for the
+                        purpose of; or when parentheses or brackets
+                        hold subordinate text. Square brackets marking
+                        a logical expression are not subordinate text.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: When the Launch_Command is
+                        received, the Weapon_System shall store the
+                        Location of each Ordnance.
+    verdict:            met
+    feedback:           |
+                        Plain verb under a condition.
+
+  - input:              |
+                        statement: The Weapon_System shall be able to
+                        store the location of each Ordnance.
+    verdict:            unmet
+    feedback:           |
+                        Be able to. rule_r10_superfluous_infinitives.
+
+  - input:              |
+                        statement: The Record_Subsystem shall display
+                        the Name of each Line_Item so that the
+                        Operator can confirm that it is the correct
+                        Item.
+    verdict:            unmet
+    feedback:           |
+                        A purpose phrase; it belongs in the rationale.
+                        rule_r20_purpose_phrases.
+
+  - input:              |
+                        statement: When the Water_Temperature exceeds
+                        85 degrees Celsius (usually towards the end of
+                        the boiling cycle), the Control_Unit shall
+                        disconnect power from the Boiler.
+    verdict:            unmet
+    feedback:           |
+                        A parenthesis. rule_r21_parentheses.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              9
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              9
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

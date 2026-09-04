@@ -1,0 +1,114 @@
+id_self:                evl_req_self_contained
+guid_self:              evl_beffa74faa3348a4a31c2945f1396fcd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Self contained
+brief:                  |
+                        The statement can be read alone: terms in
+                        their glossary form, the definite article, no
+                        pronoun, no reliance on a heading. Rules
+                        rule_r04_defined_terms,
+                        rule_r05_definite_articles, rule_r24_pronouns,
+                        rule_r25_headings.
+criterion:              |
+                        MET when every entity, state, item and
+                        quantity the statement names is named in full,
+                        in the form a glossary gives it, such as
+                        Current_Time or Inlet_Valve, with the definite
+                        article, and nothing in the statement points
+                        outside it.
+
+                        UNMET when a pronoun such as it, this, they,
+                        his stands for a noun; when an indefinite
+                        article makes any one of what is meant, such
+                        as a user or a time display; when a term that
+                        needs defining is written as ordinary words,
+                        such as the current time; or when a section
+                        number or heading is needed to know what the
+                        statement is about.
+
+                        An indefinite article is not a fault where
+                        what follows defines the thing: an accuracy of
+                        1 meter, an alert having the characteristics
+                        defined in a named standard, an Audible_Alarm.
+                        The fault is an indefinite article on
+                        something left undefined.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: At least 8 hours before the
+                        Driver_Shift, the Controller shall send the
+                        Driver_Itinerary to the Driver.
+    verdict:            met
+    feedback:           |
+                        Every noun in full, in glossary form.
+
+  - input:              |
+                        statement: The controller shall send the
+                        driver his itinerary. It shall be delivered at
+                        least 8 hours prior to his shift.
+    verdict:            unmet
+    feedback:           |
+                        His and it. rule_r24_pronouns.
+
+  - input:              |
+                        statement: The Aircraft shall provide a time
+                        display.
+    verdict:            unmet
+    feedback:           |
+                        A time display: any one.
+                        rule_r05_definite_articles.
+
+  - input:              |
+                        statement: 4.1 The Aircraft shall sound it for
+                        greater than 20 minutes.
+    verdict:            unmet
+    feedback:           |
+                        It needs the heading. rule_r25_headings.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              9
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.889
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              9
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.889
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

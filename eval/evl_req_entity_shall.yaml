@@ -1,0 +1,112 @@
+id_self:                evl_req_entity_shall
+guid_self:              evl_0fdf21d6c35a47ad91bdcd85eb1c2052
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Entity, shall, active
+brief:                  |
+                        The statement is on the entity: the entity is
+                        the subject, the verb is active and one the
+                        entity performs, and the modal is shall. Rules
+                        rule_r01_structured_statements,
+                        rule_r02_active_voice,
+                        rule_r03_appropriate_subject_verb.
+criterion:              |
+                        MET when the grammatical subject of the main
+                        clause is the entity under specification, the
+                        modal is shall, and the main verb is an action
+                        that entity performs, in the active voice. A
+                        condition clause may precede the subject.
+
+                        UNMET when the statement is passive, shall be
+                        followed by a past participle with the actor
+                        absent or trailing; when the subject is a
+                        user, operator, characteristic or activity
+                        rather than the entity; or when the modal is
+                        will, should, must, may or is absent.
+
+                        UNMET also when the main verb is one no
+                        performance can be verified against: support,
+                        handle, manage, process, track, monitor, flag,
+                        and their like. Such a verb suits a need; a
+                        requirement names the function the entity
+                        performs.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: The Accounting_System shall confirm
+                        the Customer_Identity.
+    verdict:            met
+    feedback:           |
+                        Entity as subject, shall, active verb.
+
+  - input:              |
+                        statement: The Identity of the Customer shall
+                        be confirmed.
+    verdict:            unmet
+    feedback:           |
+                        Passive; the actor is absent.
+                        rule_r02_active_voice.
+
+  - input:              |
+                        statement: While in the Operations_Mode, the
+                        Recorder shall record Audio having the
+                        characteristics defined in ICD xxxx.
+    verdict:            met
+    feedback:           |
+                        A condition clause precedes the entity; the
+                        main clause is active.
+
+  - input:              |
+                        statement: The User shall enter the current
+                        time.
+    verdict:            unmet
+    feedback:           |
+                        The subject is the user, not the entity.
+                        rule_r03_appropriate_subject_verb.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

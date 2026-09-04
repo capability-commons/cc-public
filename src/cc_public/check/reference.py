@@ -75,6 +75,7 @@ def check(context):
 
         is_history = isinstance(document, dict) and str(
                 document.get('id_self', '')).split(SEPARATOR, 1)[0] in PREFIX_HISTORY
+        gone       = []
 
         for (path, key, guid, id_advisory) in iter_reference(document):
 
@@ -83,13 +84,19 @@ def check(context):
             for found in _inspect(filepath, path, guid, id_advisory,
                                   map_declaration, severity_unresolved):
                 if is_history and guid not in map_declaration:
-                    list_note.append(cc_public.check.result.Note(
-                            filepath = str(filepath),
-                            message  = '{path}: {guid} is no longer declared. An '
-                                       'execution is history and keeps naming what '
-                                       'has gone.'.format(path = path, guid = guid)))
+                    if guid not in gone:
+                        gone.append(guid)
                 else:
                     list_nonconformity.append(found)
+
+        # One note per execution, since history is not a fault to fix.
+        #
+        if gone:
+            list_note.append(cc_public.check.result.Note(
+                    filepath = str(filepath),
+                    message  = 'Names {n} item(s) no longer declared, which an '
+                               'execution may, being history: {ids}.'.format(
+                                        n = len(gone), ids = ', '.join(gone))))
 
     return cc_public.check.result.Result(
                             count_item         = count_reference,

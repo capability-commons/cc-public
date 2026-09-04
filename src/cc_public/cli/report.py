@@ -258,7 +258,7 @@ def _write_entry(console, entry):
 
     if entry['note']:
         console.print()
-        console.print('[dim]{id_check}: {count} item(s) not examined[/dim]'
+        console.print('[dim]{id_check}: {count} note(s)[/dim]'
                       .format(id_check = entry['id_check'],
                               count    = len(entry['note'])))
         for note in entry['note']:

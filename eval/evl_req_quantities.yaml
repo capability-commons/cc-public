@@ -1,0 +1,115 @@
+id_self:                evl_req_quantities
+guid_self:              evl_f927cf26f3614a968220e1d738492748
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Quantities with units and ranges
+brief:                  |
+                        Every quantity in the statement carries its
+                        unit and a range or limit, with no
+                        unachievable absolute and one decimal format.
+                        Rules rule_r06_common_units,
+                        rule_r26_absolutes, rule_r33_range_of_values,
+                        rule_r40_decimal_format.
+criterion:              |
+                        MET when each number has a unit of measure
+                        appropriate to what it counts, each
+                        performance quantity is a range, a tolerance
+                        or a bound rather than a single exact point,
+                        no absolute such as 100 percent, always or
+                        never is required, and decimal numbers share
+                        one format. A statement with no quantity is
+                        MET.
+
+                        UNMET when a number has no unit or an
+                        incomplete one; when a quantity is a single
+                        exact value the entity must hold or a
+                        verification cannot measure; when an absolute
+                        is required; or when decimal formats differ.
+
+                        A count of discrete things or repetitions has
+                        its unit in what is counted, such as 4
+                        satellites or 3 times, and may be exact, since
+                        a count is met exactly. A named parameter
+                        standing for such a count, such as
+                        Confirm_Count times, is a defined quantity and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: With power applied, the
+                        Circuit_Board shall stay below a temperature
+                        of 30 degrees Celsius.
+    verdict:            met
+    feedback:           |
+                        A unit and a bound.
+
+  - input:              |
+                        statement: With power applied, the
+                        Circuit_Board shall stay below a temperature
+                        of 30 degrees.
+    verdict:            unmet
+    feedback:           |
+                        Degrees of what. rule_r06_common_units.
+
+  - input:              |
+                        statement: The Aircraft shall have 100 percent
+                        availability.
+    verdict:            unmet
+    feedback:           |
+                        An absolute. rule_r26_absolutes.
+
+  - input:              |
+                        statement: The Pumping_Station shall maintain
+                        the flow of water at 100 liters per second for
+                        30 minutes.
+    verdict:            unmet
+    feedback:           |
+                        Exact point values with no tolerance.
+                        rule_r33_range_of_values.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              11
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.909
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              11
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.909
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

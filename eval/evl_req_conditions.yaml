@@ -1,0 +1,119 @@
+id_self:                evl_req_conditions
+guid_self:              evl_062a9d57a95540229e2ea0a65cc7e060
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Conditions explicit
+brief:                  |
+                        The condition under which the statement
+                        applies is stated in the statement, in its own
+                        clause, and no qualifier comes between the
+                        verb and its object. Rules
+                        rule_r11_separate_clauses,
+                        rule_r27_explicit_conditions.
+criterion:              |
+                        MET when the statement either applies at all
+                        times and says nothing conditional, or states
+                        its trigger, state or condition explicitly in
+                        a clause of its own, with the main verb beside
+                        its object and each performance in its own
+                        clause.
+
+                        UNMET when an action plainly applies only
+                        under a condition that the statement does not
+                        state; or when a performance or condition
+                        phrase is wedged between the verb and its
+                        object so that it is unclear what it
+                        qualifies.
+
+                        The object is the noun the verb acts on,
+                        directly after the verb. A phrase after that
+                        object, whether an indirect object such as to
+                        each Maritime_User, a condition, or a
+                        performance such as at an accuracy of 20
+                        meters or for greater than 30 minutes, is in
+                        its own place and is not wedged. Wedged means
+                        standing between the verb and the noun it acts
+                        on.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: In the event of Fire_Detection, the
+                        Fire_Control_Subsystem shall set the
+                        Free_Access_Mode to ON within 500
+                        milliseconds.
+    verdict:            met
+    feedback:           |
+                        Trigger stated first, action, then
+                        performance.
+
+  - input:              |
+                        statement: The Free_Access_Mode shall be set
+                        to ON within 500 milliseconds.
+    verdict:            unmet
+    feedback:           |
+                        Set when. rule_r27_explicit_conditions.
+
+  - input:              |
+                        statement: The Navigation_Beacon shall provide
+                        Augmentation_Data at an accuracy of less than
+                        or equal to 20 meters to each Maritime_User
+                        during Harbor_Approach.
+    verdict:            unmet
+    feedback:           |
+                        Accuracy wedged between verb and object.
+                        rule_r11_separate_clauses.
+
+  - input:              |
+                        statement: The Operation_Logger shall record
+                        each Warning_Message.
+    verdict:            met
+    feedback:           |
+                        Applies at all times; nothing conditional is
+                        implied.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              7
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.857
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              7
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          0.857
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

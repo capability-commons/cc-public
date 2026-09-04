@@ -1,0 +1,117 @@
+id_self:                evl_req_wording
+guid_self:              evl_8bc9de8f2e3642b29f968f1401604f71
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Wording
+brief:                  |
+                        Grammar, spelling and punctuation are correct,
+                        logical conditions follow the convention, and
+                        there is no unverifiable not and no slash.
+                        Rules rule_r12_correct_grammar,
+                        rule_r13_correct_spelling,
+                        rule_r14_correct_punctuation,
+                        rule_r15_logical_expressions,
+                        rule_r16_use_of_not, rule_r17_oblique_symbol.
+criterion:              |
+                        MET when the sentence is grammatical, every
+                        word is spelled as the word intended,
+                        punctuation attaches each clause to what it
+                        qualifies, any logical condition is written as
+                        [X AND Y], [X OR Y] or NOT [X] with the
+                        operator in capitals, no obligation is stated
+                        as what the entity shall not ever do, and no
+                        slash joins alternatives.
+
+                        UNMET on a grammatical error that changes or
+                        clouds meaning, a wrong word by spelling, a
+                        comma that attaches a performance to the wrong
+                        clause, a lower case and or or over
+                        conditions, and/or, a slash between
+                        alternatives such as open/close, or shall not
+                        with no bound that makes it verifiable. A
+                        slash inside a unit such as km/h is not a
+                        fault.
+
+                        A term written capitalised, or with words
+                        joined by underscores, such as Ordnance,
+                        Current_Time or Approved_Fonts, is a glossary
+                        term written in its defined form, and is not a
+                        spelling or capitalisation fault.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: The Weapon_System shall store the
+                        Location of each Ordnance.
+    verdict:            met
+    feedback:           |
+                        Correct throughout.
+
+  - input:              |
+                        statement: The Weapon_System shall storing the
+                        location of all ordnance.
+    verdict:            unmet
+    feedback:           |
+                        Grammar. rule_r12_correct_grammar.
+
+  - input:              |
+                        statement: The Weapon_System shall store the
+                        location of each ordinance.
+    verdict:            unmet
+    feedback:           |
+                        Ordinance is law. rule_r13_correct_spelling.
+
+  - input:              |
+                        statement: The User_Management_System shall
+                        open/close the User_Account in less than 1
+                        second.
+    verdict:            unmet
+    feedback:           |
+                        A slash between alternatives.
+                        rule_r17_oblique_symbol.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              15
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.25
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              15
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.25
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af

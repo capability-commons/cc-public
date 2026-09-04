@@ -1,0 +1,32 @@
+id_self:                req_committer_writes_record
+guid_self:              req_bda3a23bd191407996dd9708ef42fe42
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Committer writes the record in the message
+statement:              |
+                        When committing, the Commit_Command shall
+                        write the Commit_Record into the
+                        Commit_Message in the Record_Format.
+rationale:              |
+                        The Record_Format is the title line, a blank
+                        line, the record as a YAML document between a
+                        line of three hyphens and a line of three full
+                        stops, then the trailers, as ddr_commit_record
+                        decides. It is required rather than chosen
+                        here: cctool log reads the history back by it,
+                        and git keeps the record with the commit it
+                        describes, where a file would drift.
+category:               fit
+verification:           inspection
+success_criteria:       |
+                        The commit message parses as title line, blank
+                        line, a YAML document between --- and ..., and
+                        trailers.
+status:                 proposed
+relation:               []

@@ -1,0 +1,116 @@
+id_self:                evl_req_definite_words
+guid_self:              evl_834218227830412ea13cd24517b8e070
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Definite words
+brief:                  |
+                        Every word in the statement is definite: no
+                        vague terms, escape clauses, open ended lists,
+                        or all, any and both. Rules
+                        rule_r07_vague_terms, rule_r08_escape_clauses,
+                        rule_r09_open_ended_clauses,
+                        rule_r32_universal_qualification.
+criterion:              |
+                        MET when no word leaves a decision to the
+                        reader.
+
+                        UNMET when the statement holds a vague
+                        quantifier, adjective or adverb, such as some,
+                        several, about, appropriate, sufficient,
+                        adequate, relevant, usually, typically; an
+                        escape clause, such as where possible, as
+                        appropriate, if practicable, as required, to
+                        the extent necessary; an open ended clause,
+                        such as including but not limited to, etc.,
+                        and so on; or all, any or both where each is
+                        meant.
+
+                        A placeholder in angle brackets or a defined
+                        term written with underscores is not vague; it
+                        names something defined elsewhere.
+
+                        All, any and both are UNMET wherever they
+                        quantify a set of things, however small or
+                        well named the set, since they do not say
+                        whether the whole or each member is meant. The
+                        word is each.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the field name
+                        statement. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault and name
+                        the rule.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        statement: The Flight_Information_System shall
+                        display the Tracking_Information of each
+                        Aircraft within 20 kilometers of the Airfield
+                        within 2 seconds of detection.
+    verdict:            met
+    feedback:           |
+                        Each, a bound, a number.
+
+  - input:              |
+                        statement: The Flight_Information_System shall
+                        display the Tracking_Information for relevant
+                        aircraft.
+    verdict:            unmet
+    feedback:           |
+                        Relevant leaves the choice to the reader.
+                        rule_r07_vague_terms.
+
+  - input:              |
+                        statement: The GPS shall, where there is
+                        sufficient space, display the User_Location.
+    verdict:            unmet
+    feedback:           |
+                        An escape clause. rule_r08_escape_clauses.
+
+  - input:              |
+                        statement: The Operation_Logger shall record
+                        each Warning_Message.
+    verdict:            met
+    feedback:           |
+                        Each names every member.
+
+scope:
+
+  include:
+    - statement
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              12
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af
