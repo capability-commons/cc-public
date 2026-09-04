@@ -1,0 +1,92 @@
+id_self:                ddr_design_decision_sch_port
+guid_self:              ddr_33a6950e9e86426880c4819349fbe116
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Design decision for the sch_port schema
+brief:                  |
+                        The sch_port schema defines a port as a
+                        component point where one item is consumed or
+                        produced, describing its identity, type,
+                        optionality, prompt, and relations without
+                        embedding argument or markup.
+context:                |
+                        The sch_port schema models ports as entries on
+                        components, categorized as inputs or outputs.
+                        Each port specifies the type of item it
+                        carries. Inputs may be optional; outputs
+                        include a prompt that produces their item.
+                        Evaluations associate with ports via edges.
+                        The schema records identity fields (id_type,
+                        guid_type), optional relations, and references
+                        to revised or deciding input ports. It must
+                        conform to existing capability commons schemas
+                        and follow prescribed style rules that
+                        emphasize clarity, absence of filler, plain
+                        names, plain text, and avoidance of argument
+                        or markup in descriptive fields.
+decision:               |
+                        The sch_port schema models a port as an object
+                        with identity traits and descriptive
+                        properties. It includes required fields for
+                        type identification (id_type and guid_type),
+                        optionality for inputs, prompts for outputs,
+                        and relations expressed as arrays of edges.
+                        The schema allows additional properties for
+                        unforeseen extensions. All descriptive fields
+                        contain plain text without markup or lists,
+                        adhering to the style rule to explain but not
+                        argue. Fields and references use plain names
+                        consistent with glossary terms. The schema
+                        references existing common schemas to promote
+                        reuse and coherence. This design balances
+                        expressiveness with simplicity and conforms to
+                        the writing style.
+rationale:              |
+                        This design ensures clear identification and
+                        description of ports without clutter or
+                        redundancy. Requiring both id_type and
+                        guid_type supports unambiguous reference and
+                        reuse. Including optionality and prompt fields
+                        handles common port distinctions. Representing
+                        relations as arrays of edges enables flexible
+                        linking to other entities. Following style
+                        rules avoids embedding argument or markup in
+                        schema fields, simplifying human and tool
+                        reading and ensuring consistency. Allowing
+                        additional properties provides future-proofing
+                        without complicating current usage.
+alternative:            |
+                        An alternative would have been to embed more
+                        detailed descriptions or rationale within the
+                        schema's descriptive fields or to structure
+                        prompts and relations with nested objects or
+                        enumerations. Another option would have been
+                        to restrict additional properties strictly or
+                        to require more fields for richer metadata.
+                        These alternatives would add complexity or
+                        diverge from the writing style rules
+                        emphasizing clarity and minimalism.
+consequence:            |
+                        This design yields a clean,
+                        easy-to-understand, and extensible port schema
+                        compatible with other capability commons
+                        schemas. It supports tooling, human readers,
+                        and future enhancements. Adherence to writing
+                        style rules ensures maintainable documentation
+                        and consistent prose. However, argument and
+                        reasoning about design choices are deferred to
+                        external documents rather than embedded
+                        inline.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
