@@ -71,8 +71,13 @@ decision:               |
                         fires always.
 
                         The item that travels an edge is the item on
-                        its source port, whatever the guard. A verdict
-                        never travels.
+                        its source port, whatever the guard. An edge
+                        may instead say that it carries judgement: it
+                        then delivers the binding of its source port
+                        on the current pass, which holds the verdicts
+                        and reasons, to a port typed for a binding. A
+                        verdict travels in no other way. See
+                        ddr_feedback.
 
                         Iteration is a back edge guarded unmet,
                         ordinarily into an optional input of the node

@@ -72,14 +72,19 @@ class Scripted:
 
 
 class Judge:
+    """Answers as told: one verdict for all, or a sequence then met."""
+
     id_model = 'judge'
 
     def __init__(self, verdict = 'met'):
         self.verdict = verdict
+        self.queue   = list(verdict) if isinstance(verdict, list) else None
 
     def run(self, task):
+        verdict = (self.queue.pop(0) if self.queue else 'met') \
+                  if self.queue is not None else self.verdict
         return cc_public.eval.runner.Verdict(task.id_eval, task.id_subject,
-                                             self.verdict, 'scripted', self.id_model)
+                                             verdict, 'scripted', self.id_model)
 
     def confirm(self, task, verdict, count):
         return verdict
@@ -218,11 +223,11 @@ def test_missing_bind_is_refused(repo):
 
 def test_a_line_field_is_collapsed_and_markup_is_forbidden(repo):
     import cc_public.workflow.generate
-    deploy(repo, judge = 'never', commit = 'never')
+    deploy(repo, judge = 'always', commit = 'never')
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,
                                    Scripted({'title': 'A title: it\ncame back\nas three lines'}),
-                                   None)
+                                   Judge('met'))
     assert r['stopped'] is None
     doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
     assert doc['title'] == 'A title: it came back as three lines'
@@ -237,3 +242,45 @@ def test_two_edges_joining_the_same_ports_are_a_fault(repo):
                                    value = {'from': 'draft.output.decision',
                                             'to':   'review.input.draft'})
     assert any('same two ports' in m for m in clean(repo))
+
+
+def test_back_edge_fires_and_the_draft_revises_its_prior_in_place(repo):
+    deploy(repo, judge = 'always', commit = 'run', budget = 3)
+    gen = Scripted()
+    # draft pass 1 met (5 evals), review pass 1 unmet (5 evals), then met
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   gen, Judge(['met'] * 5 + ['unmet'] * 5))
+    assert r['stopped'] is None
+    assert [(e['node'], e['pass']) for e in r['node']] == \
+           [('draft', 1), ('review', 1), ('draft', 2), ('review', 2)]
+    (d1, r1, d2, r2) = r['node']
+    assert d1['made'] == ['ddr_identity_trait'] and d1['revised'] == []
+    assert r1['back'] == ['draft', 'draft']
+    assert d2['made'] == [] and d2['revised'] == ['ddr_identity_trait']
+    assert gen.calls[2][0] == ['guide', 'judgement', 'prior', 'subject'] and gen.calls[2][2] is False
+    assert r1['fired'] == ['draft.input.prior', 'draft.input.judgement'] or \
+           r1['fired'] == ['draft.input.judgement', 'draft.input.prior']
+    assert sorted(r2['declined']) == ['draft.input.judgement', 'draft.input.prior'] and r2['back'] == []
+    assert len(list((repo / 'ddr').glob('ddr_identity_trait*.yaml'))) == 1
+    tree = cc_public.edit.tree.Tree([repo])
+    exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
+    assert sorted({b['pass'] for b in exe['binding'].values()}) == [1, 2]
+    # the review port's judgement is on its binding, and the draft's judgement input binds that binding
+    rev1 = exe['binding']['review_output_decision_1']
+    assert {j['verdict'] for j in rev1['judgement']} == {'unmet'}
+    assert all(j['reason'] == 'scripted' for j in rev1['judgement'])
+    jdg2 = exe['binding']['draft_input_judgement_2']
+    assert jdg2['relation'][0]['id_target'] == rev1['id_self']
+    assert clean(repo) == []
+
+
+def test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
+    deploy(repo, judge = 'always', commit = 'never', budget = 1)
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge(['met'] * 5 + ['unmet'] * 5))
+    assert r['stopped'] is None
+    assert [e['node'] for e in r['node']] == ['draft', 'review']
+    assert sorted(r['node'][1]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
+    assert r['node'][1]['fired'] == []

@@ -45,6 +45,7 @@ import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.eval.runner
 import cc_public.eval.select
+import cc_public.path
 import cc_public.workflow.graph
 
 
@@ -55,6 +56,8 @@ KEY_ID_TYPE    = 'id_type'
 KEY_PROMPT     = 'prompt'
 KEY_REVISES    = 'revises'
 KEY_DECIDES    = 'decides'
+KEY_JUDGEMENT  = 'judgement'
+CARRIES_JUDGE  = 'judgement'
 REL_DECIDES    = 'r_decides'
 KEY_OPTIONAL   = 'optional'
 KEY_RELATION   = 'relation'
@@ -152,7 +155,8 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     dep    = tree.context.map_document[tree.resolve(id_deployment).filepath]
     policy = {'judge':   dep.get('judge', JUDGE_ALWAYS),
               'confirm': dep.get('confirm', cc_public.eval.runner.COUNT_CONFIRM),
-              'commit':  dep.get('commit', COMMIT_RUN)}
+              'commit':  dep.get('commit', COMMIT_RUN),
+              'budget':  dep.get('budget', 1)}
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
               'policy': policy, 'order': graph.order(), 'node': [],
               'execution': None, 'commit': None, 'stopped': None}
@@ -195,10 +199,25 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
         id_exe = _execution(tree, ledger, graph.id_self, id_deployment)
         report['execution'] = id_exe
 
-        for local in report['order']:
+        # The forward order, walked once; a back edge that fires puts
+        # the nodes from its target to its source back on the front of
+        # the queue for another pass, while the budget allows.
+        #
+        order  = report['order']
+        queue  = list(order)
+        n_pass = 1
+
+        while queue:
+            local = queue.pop(0)
             entry = _node(tree, graph, local, bound, generator, runner,
-                          policy, ledger, id_exe, root)
+                          policy, ledger, id_exe, root, n_pass)
             report['node'].append(entry)
+
+            if entry['back']:
+                n_pass  += 1
+                node_dst = min(entry['back'], key = order.index)
+                queue    = order[order.index(node_dst):order.index(local) + 1] \
+                         + queue
 
             if policy['commit'] == COMMIT_NODE:
                 (hash, _) = cc_public.commit.commit(
@@ -287,14 +306,18 @@ def _root(tree):
 
 # -----------------------------------------------------------------------------
 def _node(tree, graph, local, bound, generator, runner, policy, ledger,
-          id_exe, root):
+          id_exe, root, n_pass = 1):
     """
     Run one node and return its report entry.
 
+    back lists the target node of each back edge that fired, and
+    exhausted the back edges whose guard was met with no budget left.
+
     """
 
-    entry     = {'node': local, 'made': [], 'revised': [], 'verdict': {},
-                 'fired': [], 'declined': [], 'commit': None}
+    entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
+                 'verdict': {}, 'fired': [], 'declined': [], 'back': [],
+                 'exhausted': [], 'commit': None}
     map_input = {}
 
     for (port, spec) in graph.inputs(local).items():
@@ -309,9 +332,10 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
         id_item = _produce(tree, graph, local, port, spec, map_input,
                            generator, ledger, bound)
         bound[(local, port)] = id_item
-        entry['revised' if spec.get(KEY_REVISES) else 'made'].append(id_item)
+        was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in bound
+        entry['revised' if was_bound else 'made'].append(id_item)
 
-    _bind(tree, graph, local, bound, id_exe)
+    map_bnd = _bind(tree, graph, local, bound, id_exe, n_pass)
 
     report = cc_public.check.check(list_path = [root])['report']
     faults = [n['message'] for c in report['check'] for n in c['nonconformity']
@@ -324,12 +348,16 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
         id_item  = bound[(local, port)]
         outgoing = graph.outgoing(local, port)
-        is_gated = any(guard for (_, _, guard) in outgoing)
+        back     = graph.outgoing_back(local, port)
+        is_gated = any(guard for (_, _, guard, _) in outgoing + back)
 
         if policy['judge'] == JUDGE_ALWAYS or \
                 (policy['judge'] == JUDGE_GUARDS and is_gated):
-            entry['verdict'][port] = _judge(tree, spec, id_item, runner,
-                                            policy['confirm'])
+            judgement = _judge(tree, spec, id_item, runner, policy['confirm'])
+            entry['verdict'][port] = [(j['id_eval'], j['verdict']) for j in judgement]
+            if judgement:
+                cc_public.edit.field.set_field(tree, map_bnd[('output', port)],
+                                               KEY_JUDGEMENT, value = judgement)
         elif is_gated:
             raise Stop('An edge from {node}.output.{port} carries a guard, '
                        'and the deployment judges nothing.'.format(
@@ -337,16 +365,39 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
         verdicts = [v for (_, v) in entry['verdict'].get(port, [])]
 
-        for (node_dst, port_dst, guard) in outgoing:
-            fires = (guard is None
-                     or (guard == VERDICT_MET and all(v == VERDICT_MET for v in verdicts))
-                     or (guard == VERDICT_UNMET and any(v == VERDICT_UNMET for v in verdicts)))
+        def fires(guard):
+            return (guard is None
+                    or (guard == VERDICT_MET and all(v == VERDICT_MET for v in verdicts))
+                    or (guard == VERDICT_UNMET and any(v == VERDICT_UNMET for v in verdicts)))
+
+        # What an edge delivers: the item, or the judgement of it, which
+        # is the binding of this port on this pass.
+        #
+        def delivered(carries):
+            return map_bnd[('output', port)] if carries == CARRIES_JUDGE else id_item
+
+        for (node_dst, port_dst, guard, carries) in outgoing:
             target = f'{node_dst}.input.{port_dst}'
-            if fires:
-                bound[(node_dst, port_dst)] = id_item
+            if fires(guard):
+                bound[(node_dst, port_dst)] = delivered(carries)
                 entry['fired'].append(target)
             else:
                 entry['declined'].append(target)
+
+        # A back edge returns the item for another pass. It fires only
+        # while the budget allows; met with no budget left, it is
+        # exhausted and the run goes on without it.
+        #
+        for (node_dst, port_dst, guard, carries) in back:
+            target = f'{node_dst}.input.{port_dst}'
+            if not fires(guard):
+                entry['declined'].append(target)
+            elif n_pass >= policy['budget']:
+                entry['exhausted'].append(target)
+            else:
+                bound[(node_dst, port_dst)] = delivered(carries)
+                entry['fired'].append(target)
+                entry['back'].append(node_dst)
 
     return entry
 
@@ -372,12 +423,20 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
                   and (properties.get(f) or {}).get('type', 'string') == 'string']
     prompt     = spec.get(KEY_PROMPT) or ''
 
-    if spec.get(KEY_REVISES):
-        id_item = bound.get((local, spec[KEY_REVISES]))
-        if id_item is None:
-            raise Stop('{node}.output.{port} revises {src}, which is not '
-                       'bound.'.format(node = local, port = port,
-                                       src = spec[KEY_REVISES]))
+    # A port revising an input returns that input's item, changed in
+    # place. Where the input is optional and nothing is bound there, as
+    # on the first pass through a loop, a new item is made instead.
+    #
+    id_item = bound.get((local, spec[KEY_REVISES])) if spec.get(KEY_REVISES) \
+              else None
+
+    if spec.get(KEY_REVISES) and id_item is None \
+            and not graph.inputs(local)[spec[KEY_REVISES]].get(KEY_OPTIONAL):
+        raise Stop('{node}.output.{port} revises {src}, which is not '
+                   'bound.'.format(node = local, port = port,
+                                   src = spec[KEY_REVISES]))
+
+    if id_item is not None:
         answer = generator.produce(prompt, map_input, list_field, False)
         ledger.note_modify(tree.resolve(id_item).filepath)
     else:
@@ -424,13 +483,15 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
 
 
 # -----------------------------------------------------------------------------
-def _bind(tree, graph, local, bound, id_exe):
+def _bind(tree, graph, local, bound, id_exe, n_pass = 1):
     """
     Put a binding on the execution for every bound port of the node.
+    Return {(side, port): id_binding}.
 
     """
 
     node = graph.node[local]
+    out  = {}
 
     for (side, ports) in (('input', graph.inputs(local)),
                           ('output', graph.outputs(local))):
@@ -439,22 +500,26 @@ def _bind(tree, graph, local, bound, id_exe):
             if id_item is None:
                 continue
             (_, id_bnd) = cc_public.edit.insert.insert(
-                                tree, 't_binding', f'{local}_{side}_{port}_1',
+                                tree, 't_binding', f'{local}_{side}_{port}_{n_pass}',
                                 id_exe, 'binding')
             item = tree.resolve(id_item)
             for (key, value) in (('id_node',   node['id_self']),
                                  ('guid_node', node['guid_self']),
                                  ('id_port',   spec['id_self']),
                                  ('guid_port', spec['guid_self']),
-                                 ('pass',      1)):
+                                 ('pass',      n_pass)):
                 cc_public.edit.field.set_field(tree, id_bnd, key, value = value)
             cc_public.edit.link.link(tree, id_bnd, REL_BINDS, item.id_self)
+            out[(side, port)] = id_bnd
+
+    return out
 
 
 # -----------------------------------------------------------------------------
 def _judge(tree, spec, id_item, runner, count_confirm):
     """
-    Return [(id_eval, verdict)] for the evals anchored to a port.
+    Return the judgement of a port: one row per eval anchored to it, with
+    the verdict and the judge's reason.
 
     """
 
@@ -480,7 +545,10 @@ def _judge(tree, spec, id_item, runner, count_confirm):
         verdict = runner.run(task)
         if verdict.verdict == VERDICT_UNMET:
             verdict = runner.confirm(task, verdict, count_confirm)
-        out.append((ev.id_self, verdict.verdict))
+        out.append({'id_eval':   ev.id_self,
+                    'guid_eval': ev.guid_self,
+                    'verdict':   verdict.verdict,
+                    'reason':    ' '.join(str(verdict.feedback or '').split()) or 'No reason given.'})
 
     return out
 
@@ -493,9 +561,12 @@ def _text(tree, id_item):
     """
 
     item = tree.resolve(id_item)
+    node = tree.context.map_document[item.filepath]
 
-    return cc_public.eval.select._render(
-                ((id_item, tree.context.map_document[item.filepath]),), {})
+    for step in cc_public.path.split(item.path):       # an embedded item
+        node = node[int(step)] if isinstance(node, list) else node[step]
+
+    return cc_public.eval.select._render(((id_item, node),), {})
 
 
 # -----------------------------------------------------------------------------
@@ -508,8 +579,8 @@ def _summary(list_entry):
     lines = []
 
     for e in list_entry:
-        lines.append('{node}: made {made}; revised {rev}; fired {f}; declined '
-                     '{d}.'.format(node = e['node'],
+        lines.append('{node}, pass {n}: made {made}; revised {rev}; fired {f}; declined '
+                     '{d}.'.format(node = e['node'], n = e.get('pass', 1),
                                    made = ', '.join(e['made']) or 'nothing',
                                    rev  = ', '.join(e['revised']) or 'nothing',
                                    f    = ', '.join(e['fired']) or 'nothing',

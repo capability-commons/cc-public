@@ -63,6 +63,21 @@ decision:               |
                         read from the bindings that name it on an
                         output port.
 
+                        A PASS is one walk of the nodes in forward
+                        order. A back edge whose guard is met by the
+                        verdicts on its source port binds that item to
+                        its target and puts the nodes from the target
+                        to the source back on the queue; the pass
+                        number rises by one. The budget on the
+                        deployment is the most passes a run may take.
+                        A back edge met with no budget left is
+                        exhausted: the run goes on without it and the
+                        execution says so. An output port that revises
+                        an optional input finds nothing there on the
+                        first pass and makes an item; on later passes
+                        it revises that item in place, so a loop
+                        carries one item round, not one per pass.
+
                         An execution records what happened and is not
                         edited afterwards.
 rationale:              |

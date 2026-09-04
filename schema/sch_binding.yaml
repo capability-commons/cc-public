@@ -51,6 +51,43 @@ properties:
     type:               integer
     minimum:            1
 
+  judgement:
+    type:               array
+    description:        |
+                        Optional. What judging the port produced on
+                        this pass: for each eval anchored there, the
+                        verdict and the judge's reason. Absent where
+                        the port was not judged.
+
+    items:
+      type:             object
+      additionalProperties:  false
+
+      required:
+        - id_eval
+        - guid_eval
+        - verdict
+        - reason
+
+      properties:
+
+        id_eval:
+          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+        guid_eval:
+          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+        verdict:
+          type:         string
+
+          enum:
+            - met
+            - unmet
+
+        reason:
+          type:         string
+          minLength:    1
+
   relation:
     type:               array
 

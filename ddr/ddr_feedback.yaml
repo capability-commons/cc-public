@@ -1,0 +1,178 @@
+id_self:                ddr_feedback
+guid_self:              ddr_34af7c9685aa4a3a80d0f4400a4cc6c4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Feedback along a back edge
+brief:                  |
+                        A judgement is held on the binding it judged.
+                        An edge may carry the judgement of its source
+                        port instead of the item, so that a node sent
+                        round again reads why.
+context:                |
+                        The second run of
+                        wf_design_decision_from_schema, with the loop
+                        built, would send the draft node its own
+                        record as prior and nothing else. The verdicts
+                        that sent it round, with the judge's quoted
+                        sentences, are the most useful thing the run
+                        produced, and the executor threw them away:
+                        only the one word verdict was kept, in the run
+                        report, and the report is not an item.
+
+                        The dataflow decision says the item that
+                        travels an edge is the item on its source
+                        port, and that a verdict never travels. It
+                        said so to keep edges simple and to keep
+                        verdicts out of items. Both reasons hold. A
+                        node that revises needs the judgement all the
+                        same.
+
+                        The execution decision already reifies a
+                        binding per port per pass, and left open
+                        whether a verdict is ever written back as a
+                        data item and whether the execution is where
+                        verdicts belong.
+decision:               |
+                        A JUDGEMENT is what judging a port produces:
+                        for each eval anchored there, the verdict and
+                        the judge's reasons. A judgement is held on
+                        the binding of that port at that pass, as rows
+                        under judgement on the binding entry, each
+                        naming the eval by id and guid and carrying
+                        verdict and reason. A verdict is written
+                        nowhere else. An execution is therefore where
+                        judgements live, and a binding with no
+                        judgement rows was not judged.
+
+                        An edge may say what it CARRIES: item, the
+                        default, or judgement. An edge carrying
+                        judgement delivers the binding of its source
+                        port at the current pass, not the item on it,
+                        and its destination port is typed t_binding.
+                        Guards read the same verdicts either way.
+
+                        A component that revises on a second pass
+                        declares an optional input for the judgement
+                        beside the optional input for the prior item,
+                        and its prompt names both. In
+                        wf_design_decision_from_schema the draft node
+                        gains an input judgement, and a second back
+                        edge from review.output.decision to
+                        draft.input.judgement carries judgement,
+                        guarded unmet like the first.
+
+                        The draft node reads the judgement as it reads
+                        any input: rendered as prose, eval by eval,
+                        verdict then reason.
+rationale:              |
+                        On the binding, because the binding is already
+                        the reified fact of one item on one port on
+                        one pass, which is exactly what a judgement is
+                        about. A judgement item of its own would be a
+                        third kind of thing where the second already
+                        fits, and would need a home, a type and a
+                        relation to the binding it judged.
+
+                        A carries field on the edge rather than a
+                        second kind of edge, because the edge's
+                        endpoints, guard and firing are the same; only
+                        what is delivered differs. A node that wants
+                        both the item and the judgement draws two
+                        edges from the same port, which reads as what
+                        it is.
+
+                        Reasons kept, not only verdicts, because a
+                        verdict alone tells the next pass that
+                        something failed and not what. The judge
+                        already writes the reason and quotes the
+                        sentence; discarding it was the waste.
+
+                        Rendered as prose rather than handed to the
+                        model as structure, because that is how every
+                        input reaches a prompt, and a judgement is
+                        prose by nature.
+alternative:            |
+                        Verdicts written into the item they judged, as
+                        a field on the record. Rejected: an item then
+                        carries a fact about one run of one workflow,
+                        which changes whenever it is judged again, and
+                        a reader of the item does not want it.
+
+                        The executor passing the verdicts to the
+                        prompt implicitly, whenever a node is sent
+                        round. Rejected: a hidden input the workflow
+                        definition does not show, which the check
+                        cannot see and a reader cannot trace.
+
+                        A judgement as a data item in execution/ with
+                        a type of its own. Rejected: it would
+                        duplicate the binding's identity of node, port
+                        and pass, and every judgement would need an
+                        edge back to the binding it judged.
+
+                        The verdicts kept and the reasons dropped, as
+                        now. Rejected: the reason is what a second
+                        pass needs.
+consequence:            |
+                        sch_binding gains an optional judgement table;
+                        sch_workflow_dataflow's edge gains carries;
+                        the workflow check learns that an edge
+                        carrying judgement arrives at a port typed
+                        t_binding, in place of type agreement with the
+                        source. The executor writes reasons it now
+                        discards, and delivers a binding where an edge
+                        asks for one.
+
+                        The execution record grows by the judge's
+                        prose, which is the point: the execution
+                        becomes the place to read why a run went
+                        round, and evl_record_and_item_agree and the
+                        measurement tools can read judgements from
+                        executions later.
+
+                        The draft prompt has a second thing to read on
+                        a second pass, and whether the model uses it
+                        well is a measurement, not an assumption. The
+                        run that shows it is the next run.
+
+                        The word is judgement, entered in the
+                        glossary; feedback is what the prompt asks
+                        for, not what the system holds. Two open
+                        questions on ddr_workflow_execution are
+                        answered by this record.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_judgement
+    guid_target:        term_34135277ccf24e4fabb2f7a5114c2064
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_eval_design.cd706ffd4
+    guid_target:        qst_0f6cb56b26aa465fb98cd7f29e1e3837
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_workflow_execution.cf062d06b
+    guid_target:        qst_ecda6a638006405984fcf1629a4b2ec5
+
+question:
+
+  criterion:
+    id_self:            qst_feedback.criterion
+    guid_self:          qst_8e67445fa2c848d69057ea54cea50723
+    question:           |
+                        Whether a judgement carries the eval's
+                        criterion text as well as the verdict and
+                        reason, so that a node reading it knows the
+                        rule and not only the finding, or whether
+                        naming the eval is enough.
+    relation:           []

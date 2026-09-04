@@ -39,6 +39,8 @@ KEY_EDGE_BACK = 'edge_back'
 KEY_FROM      = 'from'
 KEY_TO        = 'to'
 KEY_GUARD     = 'guard'
+KEY_CARRIES   = 'carries'
+CARRIES_ITEM  = 'item'
 KEY_INPUT     = 'input'
 KEY_OUTPUT    = 'output'
 KEY_OPTIONAL  = 'optional'
@@ -125,7 +127,8 @@ class Graph:
     # -------------------------------------------------------------------------
     def outgoing(self, local, port):
         """
-        Return [(node, port, guard)] for the forward edges leaving a port.
+        Return [(node, port, guard, carries)] for the forward edges leaving
+        a port.
 
         """
 
@@ -134,7 +137,26 @@ class Graph:
         for edge in self.edge.values():
             if edge[KEY_FROM] == f'{local}.output.{port}':
                 (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
-                out.append((node_dst, port_dst, edge.get(KEY_GUARD)))
+                out.append((node_dst, port_dst, edge.get(KEY_GUARD),
+                            edge.get(KEY_CARRIES, CARRIES_ITEM)))
+
+        return out
+
+    # -------------------------------------------------------------------------
+    def outgoing_back(self, local, port):
+        """
+        Return [(node, port, guard, carries)] for the back edges leaving a
+        port.
+
+        """
+
+        out = []
+
+        for edge in self.edge_back.values():
+            if edge[KEY_FROM] == f'{local}.output.{port}':
+                (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
+                out.append((node_dst, port_dst, edge.get(KEY_GUARD),
+                            edge.get(KEY_CARRIES, CARRIES_ITEM)))
 
         return out
 

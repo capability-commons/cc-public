@@ -792,7 +792,9 @@ def _write_run(report):
                             node = e['node'],
                             out  = '; '.join(f'{p} {what}' for (p, what) in e['output'].items())))
             continue
-        click.echo('  {node}'.format(node = e['node']))
+        click.echo('  {node}{n}'.format(node = e['node'],
+                                        n = '' if e.get('pass', 1) == 1 else
+                                            '  pass {n}'.format(n = e['pass'])))
         for i in e['made']:    click.echo('    made     {i}'.format(i = i))
         for i in e['revised']: click.echo('    revised  {i}'.format(i = i))
         for (port, vs) in e['verdict'].items():
@@ -800,6 +802,8 @@ def _write_run(report):
                 click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
         for t in e['fired']:    click.echo('    fired    -> {t}'.format(t = t))
         for t in e['declined']: click.echo('    declined -> {t}'.format(t = t))
+        for t in e.get('exhausted') or []:
+            click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
         if e.get('commit'):     click.echo('    commit   {h}'.format(h = e['commit'][:10]))
     if report['execution']: click.echo('  execution {e}'.format(e = report['execution']))
     if report['commit']:    click.echo('  commit    {h}'.format(h = report['commit'][:10]))

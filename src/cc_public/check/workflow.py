@@ -64,6 +64,9 @@ KEY_GUID_TARGET = 'guid_target'
 KEY_ID_TYPE     = 'id_type'
 KEY_REVISES     = 'revises'
 KEY_DECIDES     = 'decides'
+KEY_CARRIES     = 'carries'
+CARRIES_JUDGE   = 'judgement'
+TYPE_BINDING    = 't_binding'
 KEY_SUBJECT     = 'subject'
 KEY_INCL_TYPE   = 'include_type'
 
@@ -201,6 +204,25 @@ def _edge(filepath, where, edge, is_back, map_component):
         list_bad.append(_fault(filepath, where,
                 'Feeds a required input from a back edge. The first '
                 'pass then has nothing there and cannot run.'))
+
+    # What arrives must be what the port is typed for: the item of the
+    # source port's type, or a binding where the edge carries judgement.
+    #
+    t_dst = port_dst.get(KEY_ID_TYPE)
+    t_src = port_src.get(KEY_ID_TYPE)
+
+    if edge.get(KEY_CARRIES) == CARRIES_JUDGE:
+        if t_dst != TYPE_BINDING:
+            list_bad.append(_fault(filepath, where,
+                    'Carries judgement, which is a binding, into a port typed '
+                    '{t}.'.format(t = t_dst)))
+        if not _judged(port_src):
+            list_bad.append(_fault(filepath, where,
+                    'Carries judgement from a port no eval judges, so there '
+                    'is nothing to carry.'))
+    elif t_src and t_dst and t_src != t_dst:
+        list_bad.append(_fault(filepath, where,
+                'Delivers a {s} to a port typed {d}.'.format(s = t_src, d = t_dst)))
 
     return list_bad
 
