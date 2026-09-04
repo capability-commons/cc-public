@@ -86,6 +86,11 @@ LENGTH_TAG     = 6
 WIDTH_VALUE    = 50
 WIDTH_LINE     = 80
 
+# A cut line does not end on one of these.
+#
+WORDS_DANGLING = {'and', 'or', 'with', 'of', 'for', 'to', 'the', 'a', 'an',
+                  'by', 'in', 'on', 'at', 'from', 'as', 'but', 'nor'}
+
 # Envelope fields the tool fills; never asked of the generator.
 #
 FIELD_OWN      = ('id_self', 'guid_self', 'copyright', 'license',
@@ -320,7 +325,7 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
-                 'exhausted': [], 'commit': None}
+                 'exhausted': [], 'note': [], 'commit': None}
     map_input = {}
 
     for (port, spec) in graph.inputs(local).items():
@@ -333,7 +338,7 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
     for (port, spec) in graph.outputs(local).items():
         id_item = _produce(tree, graph, local, port, spec, map_input,
-                           generator, ledger, bound)
+                           generator, ledger, entry, bound)
         bound[(local, port)] = id_item
         was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in bound
         entry['revised' if was_bound else 'made'].append(id_item)
@@ -406,7 +411,7 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
 
 # -----------------------------------------------------------------------------
-def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
+def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry,
              bound):
     """
     Make or revise the item on one output port. Return its id.
@@ -455,13 +460,22 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
     else:
         answer  = generator.produce(prompt, map_input, list_field, True)
         guid    = entry_type[KEY_PREFIX] + '_' + uuid.uuid4().hex
-        slug    = re.sub(r'[^a-z0-9_]', '_', str(answer.get('slug', '')).lower())
+        tag     = guid.split('_', 1)[1][:LENGTH_TAG]
+        slug    = _slug(answer.get('slug', ''), entry_type[KEY_PREFIX])
         id_item = entry_type[KEY_PREFIX] + '_' + slug
-        if not slug or not re.fullmatch(entry_type[KEY_REGEX_ID], id_item) \
-                or id_item in tree.map_id:
+        if not slug or not re.fullmatch(entry_type[KEY_REGEX_ID], id_item):
             id_item = '{p}_{node}_{tag}'.format(p = entry_type[KEY_PREFIX],
-                                                node = local,
-                                                tag = guid.split('_', 1)[1][:LENGTH_TAG])
+                                                node = local, tag = tag)
+            entry['note'].append('{node}.output.{port}: the slug offered, {s!r}, '
+                                 'was not usable; {id} minted.'.format(
+                                    node = local, port = port,
+                                    s = answer.get('slug', ''), id = id_item))
+        elif id_item in tree.map_id:
+            id_item = id_item + '_' + tag
+            entry['note'].append('{node}.output.{port}: {s} is taken; {id} '
+                                 'minted.'.format(node = local, port = port,
+                                                  s = entry_type[KEY_PREFIX] + '_' + slug,
+                                                  id = id_item))
         path = cc_public.edit.new.new(tree, id_type, id_item,
                                       cc_public.edit.tree.defaults(), guid = guid)
         ledger.note_create(path)
@@ -509,9 +523,31 @@ def _line(text, width):
     if len(text) <= width:
         return text
 
-    cut = text[:width].rsplit(' ', 1)[0].rstrip(' ,;:')
+    words = text[:width].rsplit(' ', 1)[0].split(' ')
+
+    while words and words[-1].rstrip(',;:').lower() in WORDS_DANGLING:
+        words.pop()
+
+    cut = ' '.join(words).rstrip(' ,;:')
 
     return cut if cut else text[:width]
+
+
+# -----------------------------------------------------------------------------
+def _slug(offered, prefix):
+    """
+    Return the slug a model offered as the body of a readable id: lower
+    case, runs of anything else made one underscore, a repeated type
+    prefix dropped, and nothing at either end.
+
+    """
+
+    slug = re.sub(r'[^a-z0-9]+', '_', str(offered or '').lower()).strip('_')
+
+    if slug.startswith(prefix + '_'):
+        slug = slug[len(prefix) + 1:]
+
+    return slug
 
 
 # -----------------------------------------------------------------------------

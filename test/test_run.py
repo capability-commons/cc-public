@@ -299,3 +299,24 @@ def test_a_bounded_field_is_told_its_bound_and_cut_to_it_if_overrun(repo):
     doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
     assert len(doc['title']) <= 80 and doc['title'].endswith('the schema allows')
     assert 'title is one line of at most 80 characters' in gen.prompts[0]
+
+
+def test_a_cut_line_drops_a_dangling_word_and_a_slug_is_normalised():
+    line = cc_public.workflow.run._line
+    assert line('Define port schema with identity, prompts, and relations', 47) == \
+           'Define port schema with identity, prompts'
+    assert line('short', 80) == 'short'
+    slug = cc_public.workflow.run._slug
+    assert slug('Port Schema: Design-Decision!', 'ddr') == 'port_schema_design_decision'
+    assert slug('ddr_port_schema', 'ddr') == 'port_schema'
+    assert slug('', 'ddr') == ''
+
+
+def test_a_taken_slug_keeps_its_name_and_adds_a_tag(repo):
+    deploy(repo, judge = 'always', commit = 'never')
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted({'slug': 'glossary'}), Judge('met'))
+    made = r['node'][0]['made'][0]
+    assert made.startswith('ddr_glossary_') and len(made) == len('ddr_glossary_') + 6
+    assert r['node'][0]['note'] and 'is taken' in r['node'][0]['note'][0]

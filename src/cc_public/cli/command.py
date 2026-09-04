@@ -802,6 +802,8 @@ def _write_run(report):
                 click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
         for t in e['fired']:    click.echo('    fired    -> {t}'.format(t = t))
         for t in e['declined']: click.echo('    declined -> {t}'.format(t = t))
+        for n in e.get('note') or []:
+            click.echo('    note     {n}'.format(n = n))
         for t in e.get('exhausted') or []:
             click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
         if e.get('commit'):     click.echo('    commit   {h}'.format(h = e['commit'][:10]))
