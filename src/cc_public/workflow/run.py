@@ -439,6 +439,16 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
                    'bound.'.format(node = local, port = port,
                                    src = spec[KEY_REVISES]))
 
+    # What the schema bounds, the model is told, so that a title comes
+    # back within its line rather than being cut to it afterwards.
+    #
+    hints = ['{f} is one line of at most {n} characters'.format(f = f, n = properties[f]['maxLength'])
+             for f in list_field
+             if 'maxLength' in (properties.get(f) or {})
+             and properties[f]['maxLength'] <= WIDTH_LINE]
+    if hints:
+        prompt = prompt.rstrip() + '\n\n' + '. '.join(hints) + '.'
+
     if id_item is not None:
         answer = generator.produce(prompt, map_input, list_field, False)
         ledger.note_modify(tree.resolve(id_item).filepath)
@@ -475,7 +485,7 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
         sub     = properties.get(field) or {}
         is_line = 'maxLength' in sub and sub['maxLength'] <= WIDTH_LINE
         if is_line:
-            text = ' '.join(text.split())
+            text = _line(' '.join(text.split()), sub['maxLength'])
         if is_line or 'enum' in sub or 'pattern' in sub or (
                 '\n' not in text.strip() and len(text.strip()) <= WIDTH_VALUE):
             cc_public.edit.field.set_field(tree, id_item, field, value = text.strip())
@@ -483,6 +493,25 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger,
             cc_public.edit.field.set_field(tree, id_item, field, prose = text)
 
     return id_item
+
+
+# -----------------------------------------------------------------------------
+def _line(text, width):
+    """
+    Return text cut to width at a word boundary, where it is longer.
+
+    A model told the bound and overrunning it anyway would otherwise
+    stop the whole run on a title, and the ledger would throw the pass
+    away. A cut title is visible and cheap to mend; a lost pass is not.
+
+    """
+
+    if len(text) <= width:
+        return text
+
+    cut = text[:width].rsplit(' ', 1)[0].rstrip(' ,;:')
+
+    return cut if cut else text[:width]
 
 
 # -----------------------------------------------------------------------------

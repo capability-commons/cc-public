@@ -63,9 +63,11 @@ class Scripted:
     def __init__(self, table = None):
         self.table = table or {}
         self.calls = []
+        self.prompts = []
 
     def produce(self, prompt, map_input, list_field, want_slug):
         self.calls.append((sorted(map_input), list(list_field), want_slug))
+        self.prompts.append(prompt)
         answer = dict(FIELDS)
         answer.update(self.table)
         return {f: answer.get(f, '') for f in list(list_field) + (['slug'] if want_slug else [])}
@@ -284,3 +286,15 @@ def test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
     assert [e['node'] for e in r['node']] == ['draft', 'review']
     assert sorted(r['node'][1]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
     assert r['node'][1]['fired'] == []
+
+
+def test_a_bounded_field_is_told_its_bound_and_cut_to_it_if_overrun(repo):
+    deploy(repo, judge = 'always', commit = 'never')
+    gen = Scripted({'title': 'A title that goes on and on, well past the eighty characters the schema allows for a title'})
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   gen, Judge('met'))
+    assert r['stopped'] is None
+    doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
+    assert len(doc['title']) <= 80 and doc['title'].endswith('the schema allows')
+    assert 'title is one line of at most 80 characters' in gen.prompts[0]
