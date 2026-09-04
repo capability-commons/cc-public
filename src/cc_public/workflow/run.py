@@ -580,6 +580,7 @@ def _judge(tree, spec, id_item, runner, count_confirm):
         out.append({'id_eval':   ev.id_self,
                     'guid_eval': ev.guid_self,
                     'verdict':   verdict.verdict,
+                    'criterion': str(doc_ev.get('criterion', '')).rstrip('\n') + '\n',
                     'reason':    (' '.join(str(verdict.feedback or '').split())
                                   or 'No reason given.') + '\n'})   # prose
 
