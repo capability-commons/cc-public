@@ -244,6 +244,9 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
         report['stopped'] = str(stop)
         if policy['commit'] != COMMIT_NODE:
             report['execution'] = None
+    except Exception:
+        ledger.restore()             # a crash leaves nothing half written
+        raise
 
     return report
 
@@ -548,7 +551,8 @@ def _judge(tree, spec, id_item, runner, count_confirm):
         out.append({'id_eval':   ev.id_self,
                     'guid_eval': ev.guid_self,
                     'verdict':   verdict.verdict,
-                    'reason':    ' '.join(str(verdict.feedback or '').split()) or 'No reason given.'})
+                    'reason':    (' '.join(str(verdict.feedback or '').split())
+                                  or 'No reason given.') + '\n'})   # prose
 
     return out
 

@@ -269,7 +269,7 @@ def test_back_edge_fires_and_the_draft_revises_its_prior_in_place(repo):
     # the review port's judgement is on its binding, and the draft's judgement input binds that binding
     rev1 = exe['binding']['review_output_decision_1']
     assert {j['verdict'] for j in rev1['judgement']} == {'unmet'}
-    assert all(j['reason'] == 'scripted' for j in rev1['judgement'])
+    assert all(j['reason'].strip() == 'scripted' for j in rev1['judgement'])
     jdg2 = exe['binding']['draft_input_judgement_2']
     assert jdg2['relation'][0]['id_target'] == rev1['id_self']
     assert clean(repo) == []

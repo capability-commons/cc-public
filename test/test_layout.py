@@ -128,3 +128,14 @@ def test_nested_docstrings_are_located_and_laid_out():
 def test_marker_inside_a_string_is_not_a_document():
     src = '"""\n---\nid_self: pym_x\n...\n"""\nS = """\n---\n"""\n'
     assert len(list(cc_public.load.python.iter_metadata(src))) == 1
+
+
+def test_a_long_quoted_scalar_is_never_folded_or_truncated(tmp_path):
+    import cc_public.edit.tree
+    long = "Unmet on 5 of 5 judgements: backticks around `id_type`, and a colon: here, " * 4
+    doc  = {'a': [{'reason': long.strip(), 'n': 1}]}
+    path = tmp_path / 'x.yaml'
+    cc_public.edit.tree.save(path, doc)
+    back = cc_public.load.from_file(path)
+    assert back['a'][0]['reason'] == long.strip()
+    assert cc_public.layout.format(path.read_text()) == path.read_text()

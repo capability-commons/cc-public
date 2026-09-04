@@ -62,6 +62,7 @@ SUFFIX_PYTHON = '.py'
 REGEX_COMMENT = re.compile(r'^\s*#')
 
 _YAML         = ruamel.yaml.YAML(typ = 'rt')
+_YAML.width = 10 ** 9              # a scalar is never folded across lines
 _YAML.preserve_quotes = True
 
 Map = ruamel.yaml.comments.CommentedMap
@@ -276,8 +277,21 @@ def _render(value):
 
     stream = io.StringIO()
     _YAML.dump(value, stream)
+    lines = stream.getvalue().splitlines()
 
-    return stream.getvalue().splitlines()[0]
+    if lines and lines[-1] == '...':            # the document end marker
+        lines.pop()
+
+    # A scalar that comes back on more than one line would lose its
+    # tail here, so it is refused rather than truncated. The width set
+    # above means the library never folds; a genuine line break is
+    # prose and belongs in a block scalar.
+    #
+    if len(lines) != 1:
+        raise Unsupported('A scalar that cannot be written on one line: '
+                          '{head}'.format(head = lines[0][:60]))
+
+    return lines[0]
 
 
 # -----------------------------------------------------------------------------
