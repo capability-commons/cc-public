@@ -1,0 +1,132 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_textual_requirement.yaml
+id_self:                sch_textual_requirement
+guid_self:              sch_862714ff65444283903e39f653c067af
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Textual requirement schema
+brief:                  |
+                        Schema for textual requirement data items: a
+                        requirement statement and the attributes that
+                        make it a requirement expression.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations, and adds the statement with the
+                        attributes the INCOSE guide names as those
+                        that aid definition and management. Title is
+                        the unique name. The statement is one sentence
+                        on one entity. Rationale says why, so that the
+                        statement need not. Category classifies for
+                        grouping and for finding gaps. Priority,
+                        verification method and success criteria are
+                        optional until the set is managed. Trace to
+                        what the requirement derives from is an
+                        r_is_derived_from edge.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - statement
+      - rationale
+      - category
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the requirement, one line.
+
+      statement:
+        type:           string
+        minLength:      1
+        description:    |
+                        The requirement statement: one sentence, the
+                        entity as subject, shall, the action and its
+                        object, with any condition and performance in
+                        their own clauses.
+
+      rationale:
+        type:           string
+        minLength:      1
+        description:    |
+                        Why the requirement exists: what it is for,
+                        and anything a reader needs that the statement
+                        must not carry.
+
+      category:
+        type:           string
+
+        enum:
+          - function
+          - fit
+          - form
+          - quality
+          - compliance
+
+        description:    |
+                        The kind of thing the requirement addresses:
+                        function and performance; fit, the
+                        interactions with what is outside; form, the
+                        physical; quality, the ilities; compliance
+                        with a standard or regulation.
+
+      priority:
+        type:           string
+
+        enum:
+          - high
+          - medium
+          - low
+
+        description:    |
+                        Optional. How the requirement ranks when the
+                        set must be cut.
+
+      verification:
+        type:           string
+
+        enum:
+          - test
+          - demonstration
+          - inspection
+          - analysis
+
+        description:    |
+                        Optional. The method by which the entity will
+                        be verified to meet it.
+
+      success_criteria:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What verification must show for the
+                        requirement to be met.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the requirement.

@@ -839,3 +839,108 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_writing_style_rule
         guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  t_textual_requirement:
+    id_self:            t_textual_requirement
+    guid_self:          t_ca3efb2ddd534838844c500aa92c848c
+    title:              Textual requirement type
+    brief:              |
+                        Type of textual requirement data items
+    description:        |
+                        Each textual requirement data item holds one
+                        requirement statement, a shall statement on
+                        one entity, with the attributes that make it a
+                        requirement expression: its rationale, its
+                        category, and where it came from.
+    prefix:             req
+    regex_id:           ^req_[a-z][a-z0-9_]*$
+    usage:              |
+                        Textual requirement data items are written for
+                        an entity under specification, judged by the
+                        evals that implement the INCOSE rules, and
+                        traced to what they derive from.
+    note:               |
+                        Requirements live in requirement/. The type is
+                        textual because a requirement may one day be
+                        held as a model as well; this type holds the
+                        sentence.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_textual_requirement
+        guid_target:    sch_862714ff65444283903e39f653c067af
+
+  t_requirement_rule:
+    id_self:            t_requirement_rule
+    guid_self:          t_e6f6d4afca8348faa1a05dbcbefeb6ac
+    title:              Requirement rule type
+    brief:              |
+                        Type of requirement rule data items
+    description:        |
+                        Each requirement rule data item states one
+                        rule for writing a requirement statement, with
+                        its reasoning and an example that follows it
+                        beside one that breaks it. The rules are those
+                        of the INCOSE guide to writing requirements,
+                        numbered as there.
+    prefix:             rule
+    regex_id:           ^rule_[a-z][a-z0-9_]*$
+    usage:              |
+                        Requirement rules are cited by the evals that
+                        implement them, and their examples are the
+                        first control cases of those evals.
+    note:               |
+                        Requirement rules exist only as entries in a
+                        requirement rule register, never as documents
+                        of their own, so this type names no schema.
+                        The register names one, and that schema
+                        governs its entries; the entry shape is the
+                        writing style rule shape, since a rule for
+                        writing a requirement is a writing rule.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_requirement_rule
+        guid_target:    reg_26928fc355f440bb8c569a701fda4a25
+
+  t_requirement_characteristic:
+    id_self:            t_requirement_characteristic
+    guid_self:          t_4cde0a92d42c42e497cea394ce4df2bf
+    title:              Requirement characteristic type
+    brief:              |
+                        Type of requirement characteristic data items
+    description:        |
+                        Each requirement characteristic data item
+                        names one quality a well formed requirement
+                        statement or set has, as the INCOSE guide
+                        defines them: nine of a statement and six of a
+                        set.
+    prefix:             char
+    regex_id:           ^char_[a-z][a-z0-9_]*$
+    usage:              |
+                        Requirement characteristics are what the rules
+                        contribute to, by r_contributes_to edges, and
+                        what an eval on requirements is ultimately
+                        measuring toward.
+    note:               |
+                        Requirement characteristics exist only as
+                        entries in a requirement characteristic
+                        register, never as documents of their own, so
+                        this type names no schema.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_requirement_characteristic
+        guid_target:    reg_64a1c0971df64615b170905fd3a46b21

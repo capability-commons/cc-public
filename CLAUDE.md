@@ -119,6 +119,6 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Where things are
 
-`ddr/` design decisions · `schema/` schemas · `register/` type, relation, mark and
+`ddr/` design decisions · `requirement/` requirements · `schema/` schemas · `register/` type, relation, mark and
 term registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.
