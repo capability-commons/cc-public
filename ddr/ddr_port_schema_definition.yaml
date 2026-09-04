@@ -1,0 +1,99 @@
+id_self:                ddr_port_schema_definition
+guid_self:              ddr_f42feb2ee41541d883162fad1fa2ea79
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Definition and structure of port schema for component item exchange
+brief:                  |
+                        The port is defined as a unique entry on a
+                        component that represents a single place where
+                        an item is consumed or produced. The schema
+                        includes fields for identity, description,
+                        type identification, optional input marking,
+                        output prompts, and relations to other ports,
+                        supporting comprehensive and clear
+                        specification.
+context:                |
+                        Components in the system communicate through
+                        ports. Inputs consume items and outputs
+                        produce items. It is essential to capture the
+                        identity of each port and the nature of the
+                        items they carry to ensure accurate
+                        representation of interactions. The schema
+                        must support specification of item types,
+                        optional input flags, output prompts, and
+                        relational links that express decisions and
+                        evaluations associated with ports. This design
+                        aims to balance clarity, extensibility, and
+                        effective referencing of related entities.
+decision:               |
+                        The design establishes the port schema as a
+                        JSON object extending identity and descriptive
+                        base schemas to ensure consistent
+                        identification and description. Each port
+                        includes fields for `id_type` and `guid_type`
+                        to specify the item type. Inputs have an
+                        optional boolean flag indicating whether they
+                        are optional. Outputs include a prompt string
+                        to specify production instructions. A
+                        `decides` string field allows output ports to
+                        reference input ports they influence, enabling
+                        representation of executor decisions. The
+                        schema permits additional properties and
+                        includes an array of relational edges to
+                        describe connected relations such as
+                        evaluation judgments.
+rationale:              |
+                        Including type identifiers ensures that each
+                        port explicitly specifies the kind of item it
+                        carries, which is critical for system clarity
+                        and interoperability. Marking inputs with an
+                        optional flag reflects the reality that some
+                        inputs may not be mandatory. Providing a
+                        prompt for outputs facilitates expressing
+                        instructions or conditions for producing
+                        items, aligning with practical use. Linking
+                        output ports to the inputs they decide enables
+                        expressive modeling of decision flows within
+                        components. Allowing an array of relations
+                        preserves flexibility to connect ports with
+                        broader component relationships and
+                        evaluations. Extending identity and
+                        descriptive schemas promotes reuse and
+                        consistency across the system.
+alternative:            |
+                        An alternative considered was to omit explicit
+                        type identifiers or optional flags from the
+                        port schema, relying instead on external or
+                        component-level documentation to indicate
+                        these properties. Another option was to define
+                        separate schemas for input and output ports
+                        rather than a unified schema with optional and
+                        prompt fields. These alternatives were
+                        rejected due to the increased risk of
+                        ambiguity, reduced clarity, and greater
+                        complexity in schema management.
+consequence:            |
+                        This schema provides a clear and extensible
+                        way to model ports in components. It enforces
+                        well-defined types and relevant attributes
+                        while accommodating optional and relational
+                        data. Implementers and users will have a
+                        consistent and predictable structure for
+                        representing inputs and outputs, which
+                        supports automated validation and processing.
+                        The design also enables the system to evolve
+                        its representation of relations and decisions
+                        through the defined fields.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
