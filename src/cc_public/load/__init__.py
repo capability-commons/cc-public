@@ -18,8 +18,11 @@ description:            |
                         One submodule per format, each exposing the
                         same entry point, so that a loader is selected
                         by lookup. Adds the one source of bytes wanted
-                        often enough to be worth naming: a file on
-                        disk.
+                        often enough to be worth naming, a file on
+                        disk, and yields every document a file holds
+                        with its location: the file, and for a python
+                        file each class and function beneath it that
+                        carries a document.
 relation:               []
 
 ...

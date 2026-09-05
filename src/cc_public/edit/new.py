@@ -22,9 +22,14 @@ description:            |
                         composes, is present with an empty value of
                         the right kind, and the item fails its checks
                         until every such field is written. Rights come
-                        from the tool's defaults. A package or a
+                        from the tree's defaults. A package or a
                         module is written as a file holding only its
-                        docstring.
+                        docstring; a class or a function has the
+                        docstring of its definition turned into a
+                        document, the prose it held becoming the
+                        brief, the definition found by the
+                        identifier's lower case names and the prefix's
+                        kind.
 relation:               []
 
 ...

@@ -21,9 +21,13 @@ description:            |
                         file name where the item is a file, in every
                         embedded item whose id is qualified by it, and
                         in every reference that pairs the id with the
-                        guid. A mention of the old id in prose is
+                        guid, every document of every file written
+                        under the ledger so that a failure puts all of
+                        them back. A mention of the old id in prose is
                         reported and left, since prose is written, not
-                        derived.
+                        derived. A python file, class or function is
+                        refused: its name is the code's, and the
+                        document goes where the code goes.
 relation:               []
 
 ...

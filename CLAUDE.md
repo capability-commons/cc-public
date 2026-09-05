@@ -9,16 +9,24 @@ decisions decide.
 
 All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
-`--root DIR` (repeatable), `check` takes `--path`.
+`--root DIR` (repeatable), `check` takes `--path`. The commands live in
+`src/cc_public/cli/` by kind, and are listed here the same way.
+
+Checking
 
 - `check` — the mechanical checks; `check --help` lists them in the order
-  they run, from the driver, so that list is never stale. Must be clean. A finding names its file, and for a class or function item
-  the definition beneath it: `run.py::State::generator_for`. `--fail-fast`, `--closed-world`,
-  `--format json`, `--out FILE`.
+  they run, from the driver, so that list is never stale. Must be clean.
+  A finding names its file, and for a class or function item the
+  definition beneath it: `run.py::State::generator_for`. `--fail-fast`,
+  `--closed-world`, `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
   paste a key into chat). `--confirm N` re-judges an adverse verdict N times,
   uncached (default 5); `--id-eval`/`--id-item`/`--id-type`/`--id-schema`
   narrow (anchored regex); `--judge-model null` dry-runs.
+- `format [--check]` — lays every document out to the convention.
+
+Judging
+
 - `measure --id-eval X [--samples N] [--record]` — judges X's control cases
   fresh and reports false-positive / false-negative / unanimity per origin;
   `--record` writes them onto the eval as `confidence`, stamped with a digest
@@ -32,6 +40,9 @@ are shorthands. Every command has `--help`; the writing commands take
   matching the same words reports a met case as a note, not a finding.
   `--origin written` holds a hand-written item to a verdict instead; a
   mutated case is made through the API with its subject text set.
+
+Assurance
+
 - `questions [--open]` — what the design decisions leave open, and what
   answered it.
 - `trace [--requirement X] [--source Y] [--gaps] [--closed-world] [--format json]`
@@ -55,6 +66,9 @@ are shorthands. Every command has `--help`; the writing commands take
   requirement whose evidence is absent, not a pass, or stale
   (`ddr_verification_evidence`). A test run therefore dirties the tree by
   that one file.
+
+Running and committing
+
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
   of a dataflow workflow. `--dry-run` shows the order and writes nothing.
   Needs a clean tree. Makes items with `new`, fills fields with `set`,
@@ -65,9 +79,13 @@ are shorthands. Every command has `--help`; the writing commands take
   checks and the lint, refuses on a critical or lint finding unless
   `--checkpoint` and on an incomplete analysis always, writes a commit
   record into the message. `log [-n N]` reads them back.
-- `pixi run test` — pytest over `test/`: the printer's content-preservation
-  proof over every file, and the edit commands against a copy of the tree.
-  Holds a coverage floor; `pixi run coverage` shows what is uncovered.
+
+Pixi tasks
+
+- `pixi run test` — pytest over `test/`, in parallel: the printer's
+  content-preservation proof over every file, and the edit commands against
+  a copy of the tree. Holds a coverage floor; `pixi run coverage` shows
+  what is uncovered.
 - `pixi run lint` — ruff over `src` and `test`, configured in `pyproject.toml`
   for the house style, then `lint-imports` holding the seven tiers of
   `ddr_layered_architecture`: a package imports downward only, and an
@@ -116,20 +134,19 @@ are shorthands. Every command has `--help`; the writing commands take
 - `link SOURCE RELATION TARGET` — both items by id or guid; looks up guids,
   refuses unknown relations and duplicates. Answer a question with
   `link ANSWERER r_answers qst_…`, never by editing it. `unlink SOURCE
-  RELATION TARGET` removes an edge by name; never `unset relation.N`.
+  RELATION TARGET` removes an edge by name; never `unset relation.N`. A
+  relation may constrain its ends (`domain`, `range`, `acyclic` on the
+  register entry); the relation check refuses an edge outside them.
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status
-  accepted`. A relation may
-  constrain its ends (`domain`, `range`, `acyclic` on the register entry);
-  the relation check refuses an edge outside them. A test module names the
-  requirement it verifies with `link pym_test.test_x r_verifies req_y`.
+  accepted`.
 - Dot paths: `properties.title.maxLength`, `table.t_foo`,
   `edge_back.draft_to_draft.guard`. A key never contains a dot; an address
   such as `draft.output.record` is a value.
 
 For more than a handful of writes use the API under `pixi run python`:
-`Tree('.')`, then `edit.new.new(tree, type, id, edit.tree.defaults())`,
+`Tree('.')`, then `edit.new.new(tree, type, id, tree.defaults())`,
 `edit.insert.insert(tree, type, name, container, collection)`,
 `edit.field.set_field(tree, item, path, value=obj | prose=text)` (value is
 a Python object, not YAML text), `edit.link.link(tree, source, rel, target)`.
