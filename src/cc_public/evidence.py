@@ -197,9 +197,22 @@ def record(tree, id_item, method, observer, list_row, title):
     item     = tree.resolve(id_item)
     document = tree.context.map_document[item.location]
     table    = dict(document.get(KEY_CASE) or {})
+    is_same  = True
 
+    # A row that says what the row before it said, time aside, is the
+    # same observation again and leaves the item as it was, so that a
+    # run that changes nothing dirties nothing.
+    #
     for one in list_row:
-        table[key_of(one.get('guid_case'), one['guid_requirement'])] = _blocks(one)
+        key = key_of(one.get('guid_case'), one['guid_requirement'])
+        if _observed(table.get(key)) == _observed(one):
+            continue
+        table[key] = _blocks(one)
+        is_same    = False
+
+    if is_same and document.get(KEY_METHOD) == method \
+            and document.get(KEY_OBSERVER) == observer:
+        return item.filepath
 
     (revision, is_dirty) = head(tree.root)
 
@@ -295,6 +308,19 @@ def _guid_of(tree, root, nodeid):
     document  = tree.context.map_document.get(location)
 
     return document.get('guid_self') if isinstance(document, dict) else None
+
+
+# -----------------------------------------------------------------------------
+def _observed(row):
+    """
+    Return what a row observed, which is everything in it but when.
+
+    """
+
+    if not isinstance(row, dict):
+        return None
+
+    return {k: str(v).strip() for (k, v) in row.items() if k != KEY_TIME}
 
 
 # -----------------------------------------------------------------------------

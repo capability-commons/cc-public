@@ -64,8 +64,9 @@ Assurance
   requirement it verifies, stamped with a digest of the requirement, its
   implementation and the test; the evidence check reports an accepted
   requirement whose evidence is absent, not a pass, or stale
-  (`ddr_verification_evidence`). A test run therefore dirties the tree by
-  that one file.
+  (`ddr_verification_evidence`). A run that observes something new
+  rewrites that one file; a run that observes what the last one did
+  leaves it alone.
 
 Running and committing
 
