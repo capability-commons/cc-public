@@ -59,6 +59,30 @@ properties:
                         r_decides edge from what it makes to what was
                         bound there.
 
+  field:
+    type:               array
+    minItems:           1
+
+    items:
+      type:             string
+      pattern:          ^[a-z][a-z0-9_]*$
+
+    description:        |
+                        Optional. The fields the model fills on this
+                        port's item. Absent, every required prose
+                        field that is empty. A table field is filled
+                        from a list the model returns, one entry per
+                        element.
+
+  derives:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    description:        |
+                        Optional. The input port whose item the
+                        produced item derives from. The executor adds
+                        an r_is_derived_from edge from what it makes
+                        to what was bound there.
+
   relation:
     type:               array
 

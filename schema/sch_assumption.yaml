@@ -1,0 +1,55 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_assumption.yaml
+id_self:                sch_assumption
+guid_self:              sch_d6d33c5cef554bb98bf66052e09079e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Assumption schema
+brief:                  |
+                        One claim about the world a decision relies
+                        on, and the evidence for it.
+description:            |
+                        An entry with an identity of its own under
+                        assumption on a design decision. The statement
+                        is the claim; the evidence is what supports
+                        it, described and sourced as a need's evidence
+                        is. A claim with no evidence says so, and says
+                        what would substantiate it.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - statement
+      - evidence
+
+    properties:
+
+      statement:
+        type:           string
+        minLength:      1
+        description:    |
+                        The claim about the world, one sentence.
+
+      evidence:
+        type:           string
+        minLength:      1
+        description:    |
+                        What supports it, with sources named; or that
+                        nothing yet does.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge

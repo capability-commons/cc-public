@@ -135,3 +135,53 @@ allOf:
                         no record keeps one.
 
       open_question:    false
+
+      assumption:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_assumption.yaml
+
+        description:    |
+                        Optional. The claims about the world this
+                        decision relies on, each with its evidence, as
+                        entries with identities of their own. A
+                        decomposition of a need states here what it
+                        takes to be true of the context; the design
+                        choice is the decision, and the two are
+                        checked differently.
+
+      challenge:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The strongest case against the
+                        decision, constructed from a stance
+                        independent of the one that proposed it: a
+                        different model, prompt lineage or person.
+                        Kept, not discarded, as part of the defense.
+
+      resolution:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How the decision answered its
+                        challenge: the position stood, was revised, or
+                        was replaced, and why. Written by the proposer
+                        after the challenge, never by the challenger.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Proposed until a person accepts the
+                        decision; a workflow that makes a decision
+                        leaves it proposed.

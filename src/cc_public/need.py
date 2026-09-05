@@ -33,6 +33,7 @@ KEY_OUTCOME  = 'outcome'
 KEY_PURPOSE  = 'purpose'
 KEY_CONTEXT  = 'context'
 KEY_EVIDENCE = 'evidence'
+KEY_ENTITY   = 'entity'
 KEY_STATEMENT = 'statement'
 KEY_ID_SELF  = 'id_self'
 PREFIX_NEED  = 'need'
@@ -62,9 +63,12 @@ def statement(document):
     def clean(key):
         return ' '.join(str(document[key]).split()).rstrip('.')
 
-    return 'In {context}, {subject} need {outcome}, in order to {purpose}.'.format(
+    entity = ' from the ' + clean(KEY_ENTITY) if document.get(KEY_ENTITY) else ''
+
+    return 'In {context}, {subject} need {outcome}{entity}, in order to {purpose}.'.format(
                 context = clean(KEY_CONTEXT), subject = clean(KEY_SUBJECT),
-                outcome = clean(KEY_OUTCOME), purpose = clean(KEY_PURPOSE))
+                outcome = clean(KEY_OUTCOME), entity = entity,
+                purpose = clean(KEY_PURPOSE))
 
 
 # -----------------------------------------------------------------------------

@@ -79,6 +79,41 @@ allOf:
                         every node; never leaves the tree uncommitted,
                         which a dry run wants. Absent means run.
 
+      model_challenge:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The model a challenging node runs
+                        on. Must differ from model, since a challenge
+                        built by the process that made the claim is
+                        the claim restated. Required where the
+                        workflow has a challenging node.
+
+      budget_by_priority:
+        type:           object
+        additionalProperties:  false
+
+        properties:
+
+          high:
+            type:       integer
+            minimum:    1
+
+          medium:
+            type:       integer
+            minimum:    1
+
+          low:
+            type:       integer
+            minimum:    1
+
+        description:    |
+                        Optional. The budget by the priority of what
+                        is bound: the most passes a node may take when
+                        an input item of that priority is bound.
+                        Absent, or where nothing bound carries a
+                        priority, budget applies.
+
       relation:
         type:           array
 

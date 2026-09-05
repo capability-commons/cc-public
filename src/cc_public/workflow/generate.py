@@ -116,7 +116,8 @@ def instruction(prompt, want_slug):
     text = (prompt + '\n\nAnswer each output field with plain prose for that '
             'field alone. Plain text only: no markdown, no headings, no bullet '
             'or numbered lists, no bold or italic marks, no code fences. A '
-            'field that is a title is one line.')
+            'field that is a title is one line. A field the prompt describes '
+            'as a JSON list is answered with that JSON and nothing else.')
 
     if want_slug:
         text += (' slug is a short lowercase name of letters, digits and '

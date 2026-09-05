@@ -755,12 +755,15 @@ def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
         dep       = tree.context.map_document[tree.resolve(id_deployment).filepath]
         generator = (cc_public.workflow.generate.NullGenerator() if is_dry
                      else cc_public.workflow.generate.build(dep.get('model')))
+        generator_challenge = (None if is_dry or not dep.get('model_challenge')
+                               else cc_public.workflow.generate.build(dep.get('model_challenge')))
         runner    = None
         if not is_dry and dep.get('judge', 'always') != 'never' and id_model_judge:
             runner = cc_public.eval.runner.build(id_model_judge)
         report = cc_public.workflow.run.run(root, id_workflow, id_deployment,
                                             map_bind, generator, runner,
-                                            is_dry, list_trailer)
+                                            is_dry, list_trailer,
+                                            generator_challenge = generator_challenge)
     except (cc_public.workflow.run.Stop, cc_public.workflow.graph.ErrorGraph,
             cc_public.edit.tree.ErrorItem, cc_public.commit.ErrorCommit) as err:
         _fail(err)

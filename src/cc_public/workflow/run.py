@@ -32,6 +32,7 @@ description:            |
 
 
 import datetime
+import json
 import pathlib
 import re
 import uuid
@@ -56,6 +57,13 @@ KEY_ID_TYPE    = 'id_type'
 KEY_PROMPT     = 'prompt'
 KEY_REVISES    = 'revises'
 KEY_DECIDES    = 'decides'
+KEY_DERIVES    = 'derives'
+KEY_FIELD      = 'field'
+KEY_CHALLENGER = 'challenger'
+KEY_PRIORITY   = 'priority'
+KEY_STATUS     = 'status'
+STATUS_PROPOSED = 'proposed'
+REL_DERIVED    = 'r_is_derived_from'
 KEY_JUDGEMENT  = 'judgement'
 CARRIES_JUDGE  = 'judgement'
 REL_DECIDES    = 'r_decides'
@@ -144,13 +152,15 @@ class Ledger:
 
 # -----------------------------------------------------------------------------
 def run(root, id_workflow, id_deployment, map_bind, generator, runner,
-        is_dry = False, list_trailer = ()):
+        is_dry = False, list_trailer = (), generator_challenge = None):
     """
     Run the workflow and return the report.
 
     map_bind maps 'node.input.port' to the readable id of the item
     bound there. runner judges; it may be None where the deployment
-    judges nothing.
+    judges nothing. generator_challenge is what a challenging node
+    runs on; absent, the generator, which a deployment naming two
+    models does not allow.
 
     """
 
@@ -162,6 +172,17 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
               'confirm': dep.get('confirm', cc_public.eval.runner.COUNT_CONFIRM),
               'commit':  dep.get('commit', COMMIT_RUN),
               'budget':  dep.get('budget', 1)}
+
+    # A challenge is built by a process other than the one that made
+    # the claim, or it is the claim restated. A deployment of a graph
+    # with a challenging node names a second model, and it differs.
+    #
+    if any(graph.node[n].get(KEY_CHALLENGER) for n in graph.node):
+        if not dep.get('model_challenge') or dep.get('model_challenge') == dep.get('model'):
+            raise Stop('The workflow has a challenging node, and the deployment '
+                       'names no model_challenge different from its model.')
+    if generator_challenge is None:
+        generator_challenge = generator
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
               'policy': policy, 'order': graph.order(), 'node': [],
               'execution': None, 'commit': None, 'stopped': None}
@@ -186,7 +207,8 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
             raise Stop('{node}.input.{port} is required and nothing binds '
                        'it. Give --bind.'.format(node = node, port = port))
 
-    report['bound'] = {f'{n}.input.{p}': i for ((n, p), i) in bound.items()}
+    report['bound']  = {f'{n}.input.{p}': i for ((n, p), i) in bound.items()}
+    policy['budget'] = _budget(tree, dep, bound.values())
 
     if is_dry:
         for local in report['order']:
@@ -215,8 +237,10 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
         while queue:
             local = queue.pop(0)
             map_pass[local] += 1
-            entry = _node(tree, graph, local, bound, generator, runner,
-                          policy, ledger, id_exe, root, map_pass)
+            entry = _node(tree, graph, local, bound,
+                          generator_challenge if graph.node[local].get(KEY_CHALLENGER)
+                          else generator,
+                          runner, policy, ledger, id_exe, root, map_pass)
             report['node'].append(entry)
 
             if entry['back']:
@@ -254,6 +278,28 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
         raise
 
     return report
+
+
+# -----------------------------------------------------------------------------
+def _budget(tree, dep, list_id_bound):
+    """
+    Return the most passes a node may take: the budget by the highest
+    priority among what is bound, where the deployment gives one, else
+    the budget.
+
+    """
+
+    by_priority = dep.get('budget_by_priority') or {}
+    found       = []
+
+    for id_item in list_id_bound:
+        doc = tree.context.map_document[tree.resolve(id_item).filepath]
+        for step in cc_public.path.split(tree.resolve(id_item).path):
+            doc = doc[int(step)] if isinstance(doc, list) else doc[step]
+        if isinstance(doc, dict) and doc.get(KEY_PRIORITY) in by_priority:
+            found.append(by_priority[doc[KEY_PRIORITY]])
+
+    return max(found) if found else dep.get('budget', 1)
 
 
 # -----------------------------------------------------------------------------
@@ -429,9 +475,22 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry
 
     entry_type = table[id_type]
     (required, properties) = cc_public.edit.new._shape(tree, entry_type)
-    list_field = [f for f in required if f not in FIELD_OWN
-                  and (properties.get(f) or {}).get('type', 'string') == 'string']
+    # The fields the model fills: those the port names, else every
+    # required prose field. A table field, an object of entries, is
+    # filled from a list the model returns.
+    #
+    if spec.get(KEY_FIELD):
+        list_field = [f for f in spec[KEY_FIELD] if f in properties]
+    else:
+        list_field = [f for f in required if f not in FIELD_OWN
+                      and (properties.get(f) or {}).get('type', 'string') == 'string']
+    list_table = [f for f in list_field if _is_table(properties.get(f))]
     prompt     = spec.get(KEY_PROMPT) or ''
+    if list_table:
+        prompt = prompt.rstrip() + '\n\n' + ' '.join(
+            '{f} is a JSON list of objects, each with a key of lowercase letters and '
+            'underscores and the fields the prompt names for it; answer it with the JSON '
+            'and nothing else.'.format(f = f) for f in list_table)
 
     # A port revising an input returns that input's item, changed in
     # place. Where the input is optional and nothing is bound there, as
@@ -488,11 +547,26 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry
                            'bound.'.format(node = local, port = port,
                                            src = spec[KEY_DECIDES]))
             cc_public.edit.link.link(tree, id_item, REL_DECIDES, id_decided)
+        if spec.get(KEY_DERIVES):
+            id_source = bound.get((local, spec[KEY_DERIVES]))
+            if id_source is None:
+                raise Stop('{node}.output.{port} derives from {src}, which is not '
+                           'bound.'.format(node = local, port = port,
+                                           src = spec[KEY_DERIVES]))
+            cc_public.edit.link.link(tree, id_item, REL_DERIVED, id_source)
+        # What a workflow makes is proposed until a person accepts it.
+        #
+        if STATUS_PROPOSED in ((properties.get(KEY_STATUS) or {}).get('enum') or []) \
+                and KEY_STATUS not in list_field:
+            cc_public.edit.field.set_field(tree, id_item, KEY_STATUS, value = STATUS_PROPOSED)
 
     for field in list_field:
         text = str(answer.get(field, '') or '')
         if not text.strip():
             continue                      # left empty: the checks will say so
+        if field in list_table:
+            _fill_table(tree, id_item, field, text, entry)
+            continue
         # A field the schema bounds to a line is one line whatever the
         # model returned, so its whitespace is collapsed. Otherwise one
         # short line is a value and anything longer is prose, the same
@@ -509,6 +583,52 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry
             cc_public.edit.field.set_field(tree, id_item, field, prose = text)
 
     return id_item
+
+
+# -----------------------------------------------------------------------------
+def _is_table(subschema):
+    return isinstance(subschema, dict) and subschema.get('type') == 'object' \
+           and isinstance(subschema.get('additionalProperties'), dict)
+
+
+# -----------------------------------------------------------------------------
+def _fill_table(tree, id_item, field, text, entry):
+    """
+    Insert one entry under field for each object in the JSON list the
+    model returned. The entry's type is the table's name: assumption
+    holds t_assumption, question holds t_question. A list that does
+    not parse is noted and the table left empty.
+
+    """
+
+    start = text.find('[')
+    end   = text.rfind(']')
+    try:
+        list_row = json.loads(text[start:end + 1]) if start >= 0 <= end else None
+    except ValueError:
+        list_row = None
+
+    if not isinstance(list_row, list):
+        entry['note'].append('{item}.{field}: the model did not return a JSON '
+                             'list; left empty.'.format(item = id_item, field = field))
+        return
+
+    for (n, row) in enumerate(list_row):
+        if not isinstance(row, dict):
+            continue
+        name = _slug(row.get('key', ''), '') or 'a{n}'.format(n = n + 1)
+        try:
+            (_, id_entry) = cc_public.edit.insert.insert(tree, 't_' + field, name,
+                                                         id_item, field)
+        except cc_public.edit.tree.ErrorItem as err:
+            entry['note'].append('{item}.{field}: {err}'.format(item = id_item,
+                                                                field = field, err = err))
+            continue
+        for (key, value) in row.items():
+            if key in ('key', 'id_self', 'guid_self') or not isinstance(value, str) \
+                    or not value.strip():
+                continue
+            cc_public.edit.field.set_field(tree, id_entry, key, prose = value)
 
 
 # -----------------------------------------------------------------------------

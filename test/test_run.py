@@ -310,3 +310,54 @@ def test_a_taken_slug_keeps_its_name_and_adds_a_tag(repo):
     made = r['node'][0]['made'][0]
     assert made.startswith('ddr_glossary_') and len(made) == len('ddr_glossary_') + 6
     assert r['node'][0]['note'] and 'is taken' in r['node'][0]['note'][0]
+
+
+def test_a_port_names_its_fields_and_fills_a_table_and_a_record_is_proposed(repo):
+    deploy(repo, judge = 'always', commit = 'never')
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'field',
+        value = ['title', 'brief', 'context', 'decision', 'rationale', 'alternative', 'consequence', 'assumption'])
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'derives', value = 'subject')
+    gen = Scripted({'assumption': '[{"key": "guids_hold", "statement": "A guid is never reused.", '
+                                  '"evidence": "Minted from 128 random bits; ddr_identity_field_naming."}]'})
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND, gen, Judge('met'))
+    assert r['stopped'] is None
+    assert 'assumption is a JSON list' in gen.prompts[0]
+    doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
+    asm = doc['assumption']['guids_hold']
+    assert asm['id_self'] == 'asm_identity_trait.guids_hold' and asm['statement'].startswith('A guid')
+    assert doc['status'] == 'proposed'
+    assert ('r_is_derived_from', 'sch_identity') in [(e['id_relation'], e['id_target']) for e in doc['relation']]
+    assert clean(repo) == []
+
+
+def test_a_challenging_node_needs_a_second_model_and_runs_on_it(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'wf_design_decision_from_schema', 'node.draft.challenger', value = True)
+    deploy(repo, judge = 'always', commit = 'never')
+    with pytest.raises(cc_public.workflow.run.Stop):
+        cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND, Scripted(), Judge('met'))
+    deploy(repo, model_challenge = 'openai/gpt-4.1-mini')
+    with pytest.raises(cc_public.workflow.run.Stop):
+        cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND, Scripted(), Judge('met'))
+    deploy(repo, model_challenge = 'other/model')
+    (a, b) = (Scripted(), Scripted())
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND, a, Judge('met'),
+                                   generator_challenge = b)
+    assert r['stopped'] is None and b.calls and not a.calls
+
+
+def test_budget_follows_the_priority_of_what_is_bound_and_a_need_names_its_entity(repo):
+    import cc_public.need
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'need_runs_bounded', 'priority', value = 'high')
+    cc_public.edit.field.set_field(tree, 'need_runs_bounded', 'entity', value = 'Executor')
+    dep = {'budget': 1, 'budget_by_priority': {'high': 3, 'low': 1}}
+    assert cc_public.workflow.run._budget(tree, dep, ['need_runs_bounded', 'sch_identity']) == 3
+    assert cc_public.workflow.run._budget(tree, {'budget': 2}, ['need_runs_bounded']) == 2
+    doc = cc_public.load.from_file(repo / 'need' / 'need_runs_bounded.yaml')
+    assert 'from the Executor, in order to' in cc_public.need.statement(doc)
