@@ -1,0 +1,232 @@
+id_self:                ddr_layered_architecture
+guid_self:              ddr_3fad4bd9aa024b7d94cac0a73b08a264
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layered architecture of the tool
+brief:                  |
+                        The tool is seven tiers, each importing only
+                        from the tiers below it, with the committer
+                        and the judgement package as independent
+                        siblings. A module's underscore names are its
+                        own. Both rules are enforced by the lint, so a
+                        breach refuses a commit.
+context:                |
+                        A review of the foundation counted ten calls
+                        from one package into another's
+                        underscore-prefixed functions and read them as
+                        a breakdown of separation between functional
+                        units. Measured after the foundation work, six
+                        sites remain, reaching four names: the schema
+                        check's registry and validation, the check
+                        driver's context, and the workflow check's
+                        component resolution. Each is a missing public
+                        function rather than a fault of design, and
+                        the count overstates the problem.
+
+                        The import graph says something the count does
+                        not. Two pairs of packages import each other.
+                        The check package imports the judgement
+                        package to run evals as a check and to build
+                        the judge, and the judgement package imports
+                        the check package for schema selection, the
+                        type register and the context;
+                        ddr_check_architecture noticed this and typed
+                        the context loosely to keep the cycle from
+                        closing at import time. The edit package holds
+                        the case command, which renders a subject
+                        through the judgement package, while the
+                        judgement package writes confidence through
+                        the edit package. Everything else already
+                        forms a strict order.
+
+                        The system is meant to run unmanned, so a
+                        boundary that holds only under review is no
+                        boundary.
+decision:               |
+                        Seven tiers. A module imports only from tiers
+                        below its own, and siblings within a tier do
+                        not import each other.
+
+                        One, foundations: load, path, need and
+                        question, pure functions over bytes and
+                        documents that import nothing else in the
+                        tool. Two, layout: the printer. Three, checks:
+                        the context, the mechanical checks, the report
+                        and the refusal policy, reading only. Four,
+                        edits: the tree, the writing commands, the
+                        ledger and atomic writes. Five, the committer
+                        and the judgement package as independent
+                        siblings: commit runs the checks and writes
+                        history; eval selects and renders subjects,
+                        judges, measures, admits, and holds the case
+                        command and the eval check. Six, workflow: the
+                        graph, the executor and the materialiser.
+                        Seven, the command line, which composes the
+                        rest and holds no logic of its own.
+
+                        Two moves make the graph match. The eval check
+                        and the judge are given to the check driver by
+                        its caller, the command line, rather than
+                        imported by it; the check module moves to the
+                        judgement package. The case command moves from
+                        the edit package to the judgement package,
+                        whose data it makes.
+
+                        A name beginning with an underscore belongs to
+                        its module. Nothing outside the module uses
+                        it; what another module needs is made public
+                        and named for what it does. The four names
+                        reached across today become a validate
+                        function on the schema check that builds its
+                        registry itself, a public context in the check
+                        driver, and a public component resolver in the
+                        workflow check. A test of a module may reach
+                        that module's internals, since a test is white
+                        box by nature.
+
+                        Both rules are lint. Ruff's private member
+                        access rule refuses an underscore name reached
+                        from outside, tests exempted. import-linter
+                        holds the seven tiers as a layers contract in
+                        pyproject.toml, with commit and eval declared
+                        independent, and refuses an upward import.
+                        Both run in the lint task, so the gate and
+                        cctool commit refuse a breach as they refuse
+                        any lint finding.
+rationale:              |
+                        Seven tiers rather than four, because seven is
+                        the order the imports already have once the
+                        two cycles are cut, and grouping them into
+                        fewer would hide the one-way rule inside a
+                        group. The rule is what matters, and it is the
+                        same rule at every tier.
+
+                        The eval check handed in rather than imported,
+                        because a check that costs money and needs a
+                        model is not of a kind with the ten that cost
+                        nothing, and the driver had already been made
+                        to treat it as a plug-in in all but its
+                        import. Inverting the dependency is what lets
+                        the context carry a typed judge instead of
+                        anything at all.
+
+                        The case command in the judgement package,
+                        because it makes control cases, which are
+                        judgement data; that it writes through the
+                        edit package is what any writer does.
+
+                        Enforced by two standard tools rather than a
+                        check of the tool's own, because code checks
+                        do not travel and need not, and both tools do
+                        this one thing well. Tests exempt from the
+                        private rule, because a test that could reach
+                        only the public surface would leave a module's
+                        internals proved by nothing.
+
+                        No API documents and no export lists, because
+                        the underscore convention and the layers
+                        contract together say everything an export
+                        list would, and they are checked on every
+                        commit, which a document is not.
+alternative:            |
+                        Four layers, documents, checks, edits, and
+                        judgement with runs. Rejected: it groups tiers
+                        whose members must still import one way, and
+                        hides the rule it exists to state.
+
+                        Leaving the check and judgement cycle
+                        documented, as ddr_check_architecture did.
+                        Rejected: a documented cycle is a cycle.
+
+                        Export lists in every module. Rejected: they
+                        govern star imports, which nothing here uses,
+                        and say nothing about direction.
+
+                        A check of the tool's own over python items,
+                        walking their imports. Rejected for now:
+                        import-linter is the standard tool for the
+                        contract, and a check of our own earns its
+                        place only if the contract wants something it
+                        cannot say.
+
+                        Promoting the four names and stopping there.
+                        Rejected: it answers the count and not the
+                        cycles.
+consequence:            |
+                        The check driver's signature changes: it takes
+                        the eval check module and the judge from its
+                        caller. The command line is the only caller
+                        that passes them. The case command is imported
+                        from the judgement package.
+
+                        Two dependencies are added, ruff's private
+                        member rule and import-linter, and the lint
+                        task grows a second command. A breach of
+                        either rule refuses a commit unless a
+                        checkpoint is asked for.
+
+                        The context can carry typed judgement
+                        configuration once the judgement package no
+                        longer imports the checks at load time; the
+                        loose typing ddr_check_architecture accepted
+                        becomes unnecessary.
+
+                        What is proposed here is decided and not yet
+                        built. Until it is, the six private accesses
+                        and the two cycles stand, and the lint does
+                        not yet refuse them.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public
+    guid_target:        pyp_3fcd42f620d34ba485dd91c55b6c390f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.check
+    guid_target:        pyp_0dcce7d7c1084e04b20e99e52400d2b7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.edit
+    guid_target:        pyp_c5dd90e4509841e9b094d896b0cf1e71
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.eval
+    guid_target:        pyp_8734deea77784404a33fdb63d698556b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.workflow
+    guid_target:        pyp_3d35b87fc79c44ae9ae60d97e82f0128
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.cli
+    guid_target:        pyp_c65c9b9793f644f49ec3531c78153ed5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.commit
+    guid_target:        pym_d1a0197b9dd444b4a74a5a294a070a0d
+
+question:
+
+  question_module:
+    id_self:            qst_layered_architecture.question_module
+    guid_self:          qst_6681b55f6faa4b1ab5a56ec613eb0f33
+    question:           |
+                        Whether the question module belongs with the
+                        foundations, where its imports put it, or with
+                        the checks, where its purpose does, and
+                        whether the two ever need to disagree.
+    relation:           []
