@@ -168,9 +168,12 @@ consequence:            |
                         Twelve checks. An accepted requirement means:
                         derived, implemented, verified, and observed
                         to pass against the code as it is, or the
-                        check says which of those is missing. None is
-                        accepted yet; each of the seven will be, one
-                        at a time, once its evidence is present.
+                        check says which of those is missing. All
+                        seven are accepted, one at a time under the
+                        closed world check: six on the evidence of the
+                        session that first wrote it, and the committer
+                        requirement on an attestation by the agent
+                        that inspected the log.
 
                         Every pytest session rewrites the evidence
                         item, so the working tree is dirty after a
@@ -187,6 +190,28 @@ consequence:            |
                         Demonstration and analysis have the same
                         representation as inspection and no observer
                         yet but a person.
+
+question:
+
+  gate:
+    id_self:            qst_verification_evidence.gate
+    guid_self:          qst_bad3ccd8fb014546bdd4484a18921ef8
+    question:           |
+                        Whether the merge gate should refuse stale
+                        evidence for an accepted requirement outright,
+                        once the profiles of development, merge and
+                        release are distinct commands.
+    relation:           []
+
+  history:
+    id_self:            qst_verification_evidence.history
+    guid_self:          qst_9ad10df8469d4d9d9027fb71ee1a1d03
+    question:           |
+                        Whether a release should keep the evidence it
+                        shipped with as an item of its own, since the
+                        rewritten item loses the observation the
+                        release rested on to git alone.
+    relation:           []
 
 relation:
 
@@ -214,25 +239,3 @@ relation:
     guid_relation:      r_4aefda84f8894e02aede8729ced91732
     id_target:          pym_test.conftest
     guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
-
-question:
-
-  gate:
-    id_self:            qst_verification_evidence.gate
-    guid_self:          qst_bad3ccd8fb014546bdd4484a18921ef8
-    question:           |
-                        Whether the merge gate should refuse stale
-                        evidence for an accepted requirement outright,
-                        once the profiles of development, merge and
-                        release are distinct commands.
-    relation:           []
-
-  history:
-    id_self:            qst_verification_evidence.history
-    guid_self:          qst_9ad10df8469d4d9d9027fb71ee1a1d03
-    question:           |
-                        Whether a release should keep the evidence it
-                        shipped with as an item of its own, since the
-                        rewritten item loses the observation the
-                        release rested on to git alone.
-    relation:           []
