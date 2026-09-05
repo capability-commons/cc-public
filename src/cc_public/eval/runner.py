@@ -315,8 +315,6 @@ def _signature():
 
     """
 
-    import typing
-
     import dspy
 
     class Judge(dspy.Signature):

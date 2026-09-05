@@ -21,10 +21,12 @@ description:            |
                         commits. What changed is not written into the
                         record; the diff says it. A critical finding
                         refuses the commit unless a checkpoint is
-                        asked for, in which case the record says so.
-                        An analysis that did not complete refuses it
-                        whatever is asked for, since no state of the
-                        checks can then be recorded.
+                        asked for, in which case the record says so,
+                        and so does a lint finding where the tree
+                        configures a linter. An analysis that did not
+                        complete refuses it whatever is asked for,
+                        since no state of the checks can then be
+                        recorded.
 
 ...
 """
@@ -141,6 +143,13 @@ def commit(root, title, brief = None, description = None,
             'with --checkpoint and it will be recorded as such.'
                 if refusal.kind == cc_public.check.STATUS_BAD else ''))
 
+    fault = lint(root)
+
+    if fault is not None and not is_checkpoint:
+        raise ErrorCommit('The lint does not pass, and the code is as much '
+                          'the tree as the data is. Fix it, or ask for a '
+                          'checkpoint. {fault}'.format(fault = fault))
+
     summary = report['report']['summary']
     count   = {'count':    summary['count_check'],
                'critical': summary['count_critical'],
@@ -157,6 +166,45 @@ def commit(root, title, brief = None, description = None,
     _git(root, 'commit', '--quiet', '-F', '-', input = text)
 
     return (_git(root, 'rev-parse', 'HEAD').strip(), document['id_self'])
+
+
+# -----------------------------------------------------------------------------
+def lint(root):
+    """
+    Return what the linter found at root, or None where it found nothing
+    or the tree configures no linter.
+
+    A tree that carries a [tool.ruff] table in its pyproject.toml has
+    asked to be linted, and is, before every commit. One that does not
+    is data alone and is not. A linter asked for and not found is an
+    error, not a pass: the commit is refused with the reason.
+
+    """
+
+    import tomllib
+
+    filepath = root / 'pyproject.toml'
+
+    if not filepath.exists():
+        return None
+
+    with open(filepath, 'rb') as file:
+        if 'ruff' not in tomllib.load(file).get('tool', {}):
+            return None
+
+    try:
+        done = subprocess.run(['ruff', 'check', '--quiet', '--output-format', 'concise', '.'],
+                              cwd = root, capture_output = True, text = True,
+                              check = False)
+    except OSError as err:
+        raise ErrorCommit('The tree configures ruff and ruff could not be '
+                          'run, so the code could not be linted: {err}'.format(
+                                                                err = err)) from err
+
+    if done.returncode == 0:
+        return None
+
+    return (done.stdout.strip() or done.stderr.strip()).splitlines()[0]
 
 
 # -----------------------------------------------------------------------------

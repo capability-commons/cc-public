@@ -32,6 +32,7 @@ import pytest
 
 import cc_public.commit
 import cc_public.edit.field
+import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.load.git
 
@@ -168,3 +169,31 @@ def test_awkward_paths_are_read_exactly_and_committed(repo):
     listed = git(repo, 'ls-files', '-z').split('\0')
     assert 'three more words.txt' in listed and 'new one.txt' in listed
     assert 'two words.txt' not in listed and '-dash.txt' not in listed
+
+
+def test_commit_lints_a_tree_that_configures_a_linter(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    bad  = cc_public.edit.new.new(tree, 't_python_module', 'pym_cc_public.unused',
+                                  tree.defaults())
+    for field in ('title', 'brief', 'description'):
+        cc_public.edit.field.set_field(tree, 'pym_cc_public.unused', field, value = 'Unused')
+    head = bad.read_text()
+    bad.write_text(head + '\nimport os\n')
+    with pytest.raises(cc_public.commit.ErrorCommit) as caught:
+        cc_public.commit.commit(repo, 'Lint fails')
+    assert 'lint' in str(caught.value) and 'F401' in str(caught.value)
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '1'
+
+    cc_public.commit.commit(repo, 'Lint fails, knowingly', is_checkpoint = True)
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '2'
+
+    bad.write_text(head + '\nimport os\n\nprint(os.sep)\n')
+    cc_public.commit.commit(repo, 'Lint passes')
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '3'
+
+    # A tree that configures no linter is data alone and is not linted.
+    text = (repo / 'pyproject.toml').read_text()
+    (repo / 'pyproject.toml').write_text(text.split('[tool.ruff]')[0])
+    bad.write_text(head + '\nimport os\n')
+    cc_public.commit.commit(repo, 'No linter asked for')
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '4'

@@ -23,7 +23,7 @@ requires                = ["hatchling"]
 
 [tool.pixi.workspace]
 channels                = ["conda-forge"]
-platforms               = ["osx-arm64"]
+platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
 cc_public               = { path = ".", editable = true }
@@ -33,24 +33,34 @@ copyright               = "Copyright 2026 William Payne"
 license                 = "Apache-2.0"
 id_mark                 = "mark_public"
 
+# Tasks. check reports and never fails on a finding, which is what an
+# agent reading the report wants; gate is what a pipeline wants, and
+# fails on a critical finding, an unresolved reference, a lint finding,
+# a failing test or coverage below the floor.
+#
 [tool.pixi.tasks]
 check                   = "cctool check"
 format                  = "cctool format"
-test                    = "pytest -q test"
+test                    = "pytest -q test --cov=cc_public --cov-report= --cov-fail-under=81"
+coverage                = "pytest -q test --cov=cc_public --cov-report=term-missing"
 lint                    = "ruff check src test"
+gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
 
 [tool.pixi.dependencies]
 ruff                    = ">=0.16.6,<0.17"
+pytest-cov              = ">=7.1.0,<8"
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it
 # are off. Complexity and size thresholds are the maxima as measured on
-# 2026-09-05, a baseline to ratchet down, not a target.
+# 2026-09-05, a baseline to ratchet down, not a target. The coverage
+# floor in the test task is the coverage as measured the same day, a
+# baseline to ratchet up.
 #
 [tool.ruff]
 line-length             = 100
-target-version          = "py313"
-extend-exclude          = ["execution"]
+target-version          = "py314"
+extend-exclude          = ["execution", ".pixi"]
 
 [tool.ruff.lint]
 select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",

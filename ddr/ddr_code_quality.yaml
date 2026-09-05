@@ -50,11 +50,26 @@ decision:               |
                         as the functions above it are simplified,
                         never raised.
 
-                        The lint passes clean before a commit, as the
-                        checks do. A commit is not refused on lint
-                        yet; that waits until the thresholds have
-                        ratcheted to where a refusal would be about a
-                        new fault and not an old one.
+                        cctool commit runs the linter where the tree
+                        configures one, which this tree does, and
+                        refuses on a finding as it does on a critical
+                        one: unless a checkpoint is asked for. A
+                        configured linter that cannot be run refuses
+                        always. A tree with no linter configured is
+                        data alone and is not linted.
+
+                        Two tasks say what passing means. pixi run
+                        check reports and never fails on a finding,
+                        which is what an agent reading the report
+                        wants. pixi run gate is what a pipeline wants:
+                        the checks with the world closed and failing
+                        on a critical finding, the lint, and the tests
+                        with a coverage floor. The floor is the
+                        coverage as measured when it was set, in
+                        pyproject.toml, and is ratcheted up as the
+                        thresholds are ratcheted down, never lowered.
+                        A workflow on GitHub runs the gate on every
+                        push, on macOS and on Linux.
 rationale:              |
                         One linter rather than several, because ruff
                         carries the rule sets of the others and runs
@@ -65,6 +80,17 @@ rationale:              |
                         Thresholds at the measured maxima, because a
                         gate that fails on day one is switched off; a
                         gate that passes and tightens is kept.
+
+                        The commit refuses on lint now rather than
+                        later, because the thresholds sit at the
+                        measured maxima: every function already
+                        passes, so a refusal today can only be about a
+                        new fault, which is the condition the earlier
+                        draft of this record waited for. Two tasks
+                        rather than one flag, because a command named
+                        as a gate must not return success on a
+                        critical finding, and the report-oriented
+                        default is worth keeping for the agent.
 alternative:            |
                         Reformatting the code with ruff format.
                         Rejected: the house style aligns values in
@@ -91,13 +117,6 @@ consequence:            |
                         the trace check reports a requirement no test
                         verifies.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pyp_cc_public
-    guid_target:        pyp_3fcd42f620d34ba485dd91c55b6c390f
-
 question:
 
   gate:
@@ -118,3 +137,15 @@ question:
                         convention, and whether the trace check or a
                         new check reports the gap.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public
+    guid_target:        pyp_3fcd42f620d34ba485dd91c55b6c390f
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_code_quality.gate
+    guid_target:        qst_731947b2027d4899affc5417d791bf2b

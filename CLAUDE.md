@@ -35,12 +35,17 @@ are shorthands. Every command has `--help`; the writing commands take
   restores on a critical finding, writes an execution record to
   `execution/`, commits if the deployment says so.
 - `commit TITLE [--brief …] [--description …] [--link REL ITEM]` — runs the
-  checks, refuses on a critical finding unless `--checkpoint`, writes a
-  commit record into the message. `log [-n N]` reads them back.
+  checks and the lint, refuses on a critical or lint finding unless
+  `--checkpoint` and on an incomplete analysis always, writes a commit
+  record into the message. `log [-n N]` reads them back.
 - `pixi run test` — pytest over `test/`: the printer's content-preservation
   proof over every file, and the edit commands against a copy of the tree.
+  Holds a coverage floor; `pixi run coverage` shows what is uncovered.
 - `pixi run lint` — ruff over `src` and `test`, configured in `pyproject.toml`
   for the house style; must be clean after any code edit (`ddr_code_quality`).
+  `commit` runs it too and refuses on a finding.
+- `pixi run gate` — what a pipeline runs: check with the world closed and
+  failing on a critical finding, lint, test. `check` alone only reports.
 
 ## Writing items — use the tool, never hand-edit
 

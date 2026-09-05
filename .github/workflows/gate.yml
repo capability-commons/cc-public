@@ -1,0 +1,24 @@
+# The foundation gate, run on every push and pull request: the
+# mechanical checks with the world closed, the linter, the tests with
+# the coverage floor. The same command a developer runs as pixi run
+# gate, so that what passes here is what passes there.
+#
+name: gate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.8.14
+        with:
+          cache: true
+      - run: pixi run gate
