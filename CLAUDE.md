@@ -74,9 +74,11 @@ are shorthands. Every command has `--help`; the writing commands take
 
 ## Writing items — use the tool, never hand-edit
 
-- `new TYPE ID` — mints the identity, writes every required field empty (it
-  fails the checks until written), puts it where its type lives (`--out`
-  otherwise). A python package or module too: `pym_cc_public.demo.thing`
+- `new TYPE ID [--set PATH=VALUE]… [--prose PATH=TEXT]… [--link REL TARGET]…`
+  — mints the identity, writes every required field empty (it fails the
+  checks until written), puts it where its type lives (`--out` otherwise).
+  Give the fields and edges in the same command and it never exists half
+  made; prefer that. A python package or module too: `pym_cc_public.demo.thing`
   becomes `demo/thing.py` beside its parent package, docstring only. A
   class or function too: `new t_python_function pyf_cc_public.path.select`
   turns the docstring of `select` in `path.py` into a document, its prose
@@ -109,7 +111,12 @@ are shorthands. Every command has `--help`; the writing commands take
   yours to `set`.
 - `link SOURCE RELATION TARGET` — both items by id or guid; looks up guids,
   refuses unknown relations and duplicates. Answer a question with
-  `link ANSWERER r_answers qst_…`, never by editing it. A relation may
+  `link ANSWERER r_answers qst_…`, never by editing it. `unlink SOURCE
+  RELATION TARGET` removes an edge by name; never `unset relation.N`.
+- `accept REQUIREMENT` — the only path to `status: accepted`: judged as
+  accepted in a closed world, the trace must show no gap and the evidence
+  check nothing, or it refuses saying what is lacking. Never `set … status
+  accepted`. A relation may
   constrain its ends (`domain`, `range`, `acyclic` on the register entry);
   the relation check refuses an edge outside them. A test module names the
   requirement it verifies with `link pym_test.test_x r_verifies req_y`.

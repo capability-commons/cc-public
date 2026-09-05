@@ -89,3 +89,49 @@ def link(tree, name_source, id_relation, name_target):
     tree.refresh(source.filepath)
 
     return (source, target)
+
+
+# -----------------------------------------------------------------------------
+def unlink(tree, name_source, id_relation, name_target):
+    """
+    Remove the edge from the source item to the target, and write the
+    file back. Refuse where no such edge exists.
+
+    The edge is found by its relation and the target's guid, as link
+    finds a duplicate, so a stale readable id on the edge does not hide
+    it.
+
+    """
+
+    source   = tree.resolve(name_source)
+    target   = tree.resolve(name_target)
+    document = tree.document(source)
+    node     = document
+
+    for step in cc_public.path.split(source.path):
+        node = node[int(step)] if isinstance(node, list) else node[step]
+
+    existing = node.get(KEY_RELATION)
+    found    = [i for (i, other) in enumerate(existing or [])
+                  if isinstance(other, dict)
+                  and other.get('id_relation') == id_relation
+                  and other.get('guid_target') == target.guid_self]
+
+    if not found:
+        raise cc_public.edit.tree.ErrorItem(
+                '{src} does not {rel} {dst}, so there is nothing to '
+                'unlink.'.format(src = source.id_self, rel = id_relation,
+                                 dst = target.id_self))
+
+    del existing[found[0]]
+
+    # A list emptied of its last edge keeps the comment tokens of what
+    # it held; a fresh one carries nothing.
+    #
+    if not existing:
+        node[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
+
+    cc_public.edit.tree.save(source.location, document)
+    tree.refresh(source.filepath)
+
+    return (source, target)

@@ -30,11 +30,14 @@ context:                |
                         a file and a path would need one form for
                         each.
 decision:               |
-                        Four commands. new makes an item of a type, as
-                        a file. insert puts a new item into a
-                        collection held by another item. set sets one
-                        field of an item. link adds a relation edge
-                        from one item to another.
+                        Six commands. new makes an item of a type, as
+                        a file, and takes its fields and edges in the
+                        same command where they are known. insert puts
+                        a new item into a collection held by another
+                        item. set sets one field of an item and unset
+                        removes one. link adds a relation edge from
+                        one item to another and unlink removes it,
+                        found by its relation and the target's guid.
 
                         An item is named by its readable id or its
                         guid, wherever it lives. A field within it is
@@ -178,17 +181,13 @@ consequence:            |
                         the checks stay the authority on what it
                         wrote.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pyp_cc_public.edit
-    guid_target:        pyp_c5dd90e4509841e9b094d896b0cf1e71
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.path
-    guid_target:        pym_e24ddb2009814f23aef8b97317e013d5
+                        An item need never exist in the failing state:
+                        new with --set, --prose and --link writes it
+                        complete, which an unmanned process wants, and
+                        the state remains available for a person
+                        filling an item over several commands. An edge
+                        is removed by naming it, never by its index,
+                        which the tests once got wrong.
 
 question:
 
@@ -227,3 +226,25 @@ question:
                         What set does to a document held in a class or
                         function docstring, once those are items.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.edit
+    guid_target:        pyp_c5dd90e4509841e9b094d896b0cf1e71
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.path
+    guid_target:        pym_e24ddb2009814f23aef8b97317e013d5
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_edit_commands.c5dafdb68
+    guid_target:        qst_10adcb70dae2486582815e76c6ebc21d
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_edit_commands.c0f3a020c
+    guid_target:        qst_1a686eff549c4bf6a1cab7977a377f66

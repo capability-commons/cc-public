@@ -145,7 +145,7 @@ def projection(map_document, is_closed_world = False):
 
     for (guid, edges) in map_edge.items():
         for edge in edges:
-            if edge.get(KEY_ID_REL) == REL_DERIVED and _is_requirement(map_by_guid.get(guid)):
+            if edge.get(KEY_ID_REL) == REL_DERIVED and is_requirement(map_by_guid.get(guid)):
                 map_children.setdefault(edge.get(KEY_GUID_TGT), []).append(guid)
             if edge.get(KEY_ID_REL) == REL_VERIFIES:
                 map_verifier.setdefault(edge.get(KEY_GUID_TGT), []).append(guid)
@@ -154,7 +154,7 @@ def projection(map_document, is_closed_world = False):
 
     for (guid, document) in map_by_guid.items():
 
-        if not _is_requirement(document):
+        if not is_requirement(document):
             continue
 
         unresolved  = []
@@ -305,7 +305,7 @@ def _iter_item(node):
 
 
 # -----------------------------------------------------------------------------
-def _is_requirement(document):
+def is_requirement(document):
     """
     Return whether document is a requirement, by its prefix.
 

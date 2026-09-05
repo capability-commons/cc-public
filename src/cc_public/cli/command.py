@@ -37,6 +37,7 @@ import ruamel.yaml
 import cc_public.check
 import cc_public.check.schema
 import cc_public.commit
+import cc_public.edit.accept
 import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
@@ -352,14 +353,26 @@ OPTION_ROOT = click.option('--root', 'list_root', multiple = True,
               type = click.Path(path_type = pathlib.Path),
               help = 'Where to write the item. Defaults to where items of '
                      'this type already live.')
+@click.option('--set', 'list_set', multiple = True, metavar = 'PATH=VALUE',
+              help = 'A field to write once the item exists, VALUE read as '
+                     'YAML as set reads it. May be given more than once.')
+@click.option('--prose', 'list_prose', multiple = True, metavar = 'PATH=TEXT',
+              help = 'A prose field to write, TEXT held as a block scalar. '
+                     'May be given more than once.')
+@click.option('--link', 'list_link', multiple = True, nargs = 2,
+              metavar = 'RELATION TARGET',
+              help = 'An edge to add from the new item. May be given more '
+                     'than once.')
 @OPTION_ROOT
-def new(id_type, id_self, dirpath_out, list_root):
+def new(id_type, id_self, dirpath_out, list_set, list_prose, list_link, list_root):
     """
     Make a data item of ID_TYPE called ID_SELF.
 
     Its identity is minted and every field its schema requires is
-    present and empty, so it fails the checks until written. Rights
-    come from [tool.cctool.new] in pyproject.toml.
+    present and empty, so it fails the checks until written; --set,
+    --prose and --link write it in the same command, so that it never
+    need exist half made. Rights come from [tool.cctool.new] in
+    pyproject.toml.
 
     """
 
@@ -367,7 +380,15 @@ def new(id_type, id_self, dirpath_out, list_root):
         tree     = _tree(list_root)
         filepath = cc_public.edit.new.new(tree, id_type, id_self,
                                           tree.defaults(), dirpath_out)
-    except (cc_public.edit.tree.ErrorItem, KeyError) as err:
+        for (path, text) in (_split(one) for one in list_set):
+            cc_public.edit.field.set_field(tree, id_self, path,
+                                           value = ruamel.yaml.YAML(typ = 'safe').load(text))
+        for (path, text) in (_split(one) for one in list_prose):
+            cc_public.edit.field.set_field(tree, id_self, path,
+                                           prose = text.rstrip('\n') + '\n')
+        for (id_relation, name_target) in list_link:
+            cc_public.edit.link.link(tree, id_self, id_relation, name_target)
+    except (cc_public.edit.tree.ErrorItem, KeyError, ValueError) as err:
         _fail(err)
 
     click.echo(str(filepath))
@@ -407,6 +428,69 @@ def set_(name, path, value, is_prose, list_root):
     click.echo('{file}  {item}.{path}'.format(file = item.filepath,
                                               item = item.id_self,
                                               path = path))
+
+
+# -----------------------------------------------------------------------------
+def _split(assignment):
+    """
+    Return (path, value) from PATH=VALUE, or raise where there is no =.
+
+    """
+
+    if '=' not in assignment:
+        raise ValueError('{one} is not PATH=VALUE.'.format(one = assignment))
+
+    return tuple(assignment.split('=', 1))
+
+
+# -----------------------------------------------------------------------------
+@main.command()
+@click.argument('name_source')
+@click.argument('id_relation')
+@click.argument('name_target')
+@OPTION_ROOT
+def unlink(name_source, id_relation, name_target, list_root):
+    """
+    Remove the edge from NAME_SOURCE labelled ID_RELATION to NAME_TARGET.
+
+    The edge is found by its relation and the target's guid, so a
+    stale readable id on it does not hide it. An edge that is not
+    there is reported.
+
+    """
+
+    try:
+        (source, target) = cc_public.edit.link.unlink(_tree(list_root), name_source,
+                                                      id_relation, name_target)
+    except cc_public.edit.tree.ErrorItem as err:
+        _fail(err)
+
+    click.echo('{src} no longer {rel} {dst}'.format(src = source.id_self,
+                                                    rel = id_relation,
+                                                    dst = target.id_self))
+
+
+# -----------------------------------------------------------------------------
+@main.command()
+@click.argument('name_requirement')
+@OPTION_ROOT
+def accept(name_requirement, list_root):
+    """
+    Accept a requirement whose assurance is complete: judged as
+    accepted in a closed world, the trace shows no gap and the evidence
+    check finds nothing. Refuses otherwise, saying what it lacks.
+
+    The only path to accepted, so that the status never names a
+    requirement the checks would refuse.
+
+    """
+
+    try:
+        item = cc_public.edit.accept.accept(_tree(list_root), name_requirement)
+    except cc_public.edit.tree.ErrorItem as err:
+        _fail(err)
+
+    click.echo('{req}  accepted'.format(req = item.id_self))
 
 
 # -----------------------------------------------------------------------------
