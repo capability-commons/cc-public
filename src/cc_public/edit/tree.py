@@ -74,18 +74,22 @@ class ErrorItem(Exception):
 # -----------------------------------------------------------------------------
 class Item:
     """
-    One resolved item: the file that holds it and the path to it there.
+    One resolved item: the file that holds it, the location of the
+    document it is in, and the path to it within that document.
 
-    path is empty for a top level item. document is the whole file's
-    document, of which the item is the part at path.
+    path is empty for an item that is a document of its own. location
+    is the file for most, and the file and the definition beneath it
+    for a class or function item, whose document is its docstring.
 
     """
 
-    def __init__(self, filepath, path, id_self, guid_self):
-        self.filepath  = filepath
+    def __init__(self, filepath, path, id_self, guid_self, location = None):
+        self.filepath  = pathlib.Path(filepath)
         self.path      = path
         self.id_self   = id_self
         self.guid_self = guid_self
+        self.location  = location if location is not None \
+                         else cc_public.load.Location(filepath)
 
 
 # -----------------------------------------------------------------------------
@@ -124,10 +128,10 @@ class Tree:
         self.map_guid = {}
         self.dup      = set()
 
-        for (filepath, document) in self.context.map_document.items():
+        for (location, document) in self.context.map_document.items():
             for (path, id_self, guid_self) in \
                     cc_public.check.identifier.iter_identity(document):
-                item = Item(filepath, path, id_self, guid_self)
+                item = Item(location.filepath, path, id_self, guid_self, location)
                 for (key, index) in ((id_self, self.map_id),
                                      (guid_self, self.map_guid)):
                     if key is None:
@@ -166,23 +170,38 @@ class Tree:
     # -------------------------------------------------------------------------
     def refresh(self, filepath):
         """
-        Reload one file's document after a write, so that later work in
-        the same session sees what was written.
+        Reload every document of one file after a write, so that later
+        work in the same session sees what was written.
 
         """
 
-        self.context.map_document[filepath] = cc_public.load.from_file(filepath)
+        filepath = pathlib.Path(filepath)
+
+        for location in [loc for loc in self.context.map_document
+                             if loc.filepath == filepath]:
+            del self.context.map_document[location]
+
+        for (location, document) in cc_public.load.iter_document(filepath):
+            self.context.map_document[location] = document
 
     # -------------------------------------------------------------------------
     def document(self, item):
         """
-        Return the file's document as a round trip mapping, for editing.
+        Return the document holding item as a round trip mapping, for
+        editing.
 
         """
 
-        text = _text_of(item.filepath)
+        return self.document_at(item.location)
 
-        return ruamel.yaml.YAML(typ = 'rt').load(text)
+    # -------------------------------------------------------------------------
+    def document_at(self, location):
+        """
+        Return the document at location as a round trip mapping.
+
+        """
+
+        return ruamel.yaml.YAML(typ = 'rt').load(_text_of(location))
 
     # -------------------------------------------------------------------------
     def type_register(self):
@@ -206,24 +225,30 @@ class Tree:
         for edge in entry.get(KEY_RELATION) or []:
             if edge.get(KEY_ID_REL) == REL_HELD_IN:
                 return self.context.map_document[
-                                    self.resolve(edge[KEY_ID_TARGET]).filepath]
+                                    self.resolve(edge[KEY_ID_TARGET]).location]
 
         raise ErrorItem('The type register does not say where relations '
                         'are held.')
 
 
 # -----------------------------------------------------------------------------
-def save(filepath, document):
+def save(location, document):
     """
-    Write document to filepath through the printer.
+    Write document to its location through the printer.
 
-    A python file has the document spliced into its module docstring,
-    one blank line inside the markers, at the docstring's indent.
+    location is a Location, or a file, which is the file's own
+    document. A python file has the document spliced into the docstring
+    it belongs to, the module's or a definition's, one blank line
+    inside the markers, at the docstring's indent.
 
     """
 
-    stream = io.StringIO()
-    yaml   = ruamel.yaml.YAML(typ = 'rt')
+    if not isinstance(location, cc_public.load.Location):
+        location = cc_public.load.Location(location)
+
+    filepath = location.filepath
+    stream   = io.StringIO()
+    yaml     = ruamel.yaml.YAML(typ = 'rt')
     yaml.dump(document, stream)
 
     text = cc_public.layout.format(stream.getvalue())
@@ -234,8 +259,7 @@ def save(filepath, document):
 
     source    = filepath.read_text(encoding = 'utf-8')
     list_line = source.splitlines()
-    found     = next(m for m in cc_public.load.python.iter_metadata(source)
-                       if m.kind == cc_public.load.python.KIND_MODULE)
+    found     = metadata_at(source, location.anchor)
     pad       = ' ' * found.indent
     body      = [pad + line if line else '' for line in text.splitlines()]
 
@@ -270,19 +294,38 @@ def write_text(filepath, text):
 
 
 # -----------------------------------------------------------------------------
-def _text_of(filepath):
+def _text_of(location):
     """
-    Return the YAML text a file holds: the file, or its module document.
+    Return the YAML text at a location: the file, or the document in
+    the docstring the location names.
 
     """
 
-    source = filepath.read_text(encoding = 'utf-8')
+    source = location.filepath.read_text(encoding = 'utf-8')
 
-    if filepath.suffix != SUFFIX_PYTHON:
+    if location.filepath.suffix != SUFFIX_PYTHON:
         return source
 
-    return next(m for m in cc_public.load.python.iter_metadata(source)
-                  if m.kind == cc_public.load.python.KIND_MODULE).text
+    return metadata_at(source, location.anchor).text
+
+
+# -----------------------------------------------------------------------------
+def metadata_at(source, anchor):
+    """
+    Return the Metadata of the docstring document at anchor in source,
+    or raise where there is none.
+
+    """
+
+    found = next((m for m in cc_public.load.python.iter_metadata(source)
+                    if m.path == tuple(anchor)), None)
+
+    if found is None:
+        raise ErrorItem('No document sits at {anchor} in this file.'.format(
+                            anchor = cc_public.load.SEPARATOR_ANCHOR.join(anchor)
+                                     or 'the module'))
+
+    return found
 
 
 # -----------------------------------------------------------------------------

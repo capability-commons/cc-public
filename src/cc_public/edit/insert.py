@@ -119,7 +119,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
     else:
         collection.append(item)
 
-    cc_public.edit.tree.save(container.filepath, document)
+    cc_public.edit.tree.save(container.location, document)
     tree.refresh(container.filepath)
 
     if id_self is not None:
@@ -128,7 +128,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                     cc_public.path.join(path_full,
                                         key if isinstance(collection, dict)
                                             else len(collection) - 1),
-                    id_self, item[KEY_GUID_SELF])
+                    id_self, item[KEY_GUID_SELF], container.location)
         tree.map_id[id_self]              = made
         tree.map_guid[item[KEY_GUID_SELF]] = made
 
@@ -146,7 +146,7 @@ def _shape_at(tree, container, path_full, is_list):
     map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
     map_prefix = cc_public.check.register.map_prefix(tree.type_register())
     (id_schema, reason) = cc_public.check.schema.select_schema(
-                            tree.context.map_document[container.filepath],
+                            tree.context.map_document[container.location],
                             map_prefix)
 
     if id_schema is None:

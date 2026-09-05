@@ -44,6 +44,7 @@ LOADER     = {'.yaml':  loader_yaml.from_bytes,
               '.py':    loader_python.from_bytes}
 
 SUFFIX_ALL = tuple(LOADER)
+SUFFIX_PYTHON = '.py'
 
 # A null encoding lets each loader apply its own format convention --
 # XML reads its declaration, JSON is UTF-8 by RFC 8259, YAML reads its
@@ -63,6 +64,86 @@ ERROR_LOAD = tuple(dict.fromkeys(loader_yaml.ERROR_LOAD
                                + (loader_python.ErrorMetadataMissing,
                                   loader_python.ErrorEllipsisInProse)
                                + (UnicodeDecodeError, OSError)))
+
+
+# Between a file and the run of definition names beneath it, in the
+# form pytest uses to name a test in a file.
+#
+SEPARATOR_ANCHOR = '::'
+
+
+# -----------------------------------------------------------------------------
+class Location:
+    """
+    Where a document sits: a file, and, for a document held in a
+    docstring beneath the file's own, the run of definition names down
+    to it.
+
+    Two locations are the same where their file and anchor are. kind
+    says what the docstring belongs to, module, class or function, and
+    is carried rather than compared, since the file and anchor fix it.
+
+    """
+
+    __slots__ = ('filepath', 'anchor', 'kind')
+
+    def __init__(self, filepath, anchor = (), kind = None):
+        self.filepath = pathlib.Path(filepath)
+        self.anchor   = tuple(anchor)
+        self.kind     = kind
+
+    def __eq__(self, other):
+        return isinstance(other, Location) \
+               and (self.filepath, self.anchor) == (other.filepath, other.anchor)
+
+    def __hash__(self):
+        return hash((self.filepath, self.anchor))
+
+    def __lt__(self, other):
+        return (self.filepath, self.anchor) < (other.filepath, other.anchor)
+
+    def __str__(self):
+        return str(self.filepath) + ''.join(SEPARATOR_ANCHOR + name
+                                            for name in self.anchor)
+
+    def __repr__(self):
+        return 'Location({loc!r})'.format(loc = str(self))
+
+    @property
+    def is_own(self):
+        """
+        Whether this is the file's own document rather than one beneath it.
+
+        """
+
+        return not self.anchor
+
+
+# -----------------------------------------------------------------------------
+def iter_document(filepath: pathlib.Path,
+                  encoding: str | None = ENCODING):
+    """
+    Yield (Location, document) for every document filepath holds.
+
+    A file of data holds one, at the file itself. A python file holds
+    one in its module docstring and one in the docstring of each class
+    and function that carries a document; each is an item in its own
+    right, at its own location.
+
+    """
+
+    suffix = filepath.suffix.lower()
+
+    if suffix not in LOADER:
+        raise ValueError('Unsupported suffix: {suffix}'.format(suffix = suffix))
+
+    data = filepath.read_bytes()
+
+    if suffix == SUFFIX_PYTHON:
+        for (kind, anchor, document) in loader_python.iter_document(data, encoding):
+            yield (Location(filepath, anchor, kind), document)
+    else:
+        yield (Location(filepath), LOADER[suffix](data, encoding = encoding))
 
 
 # -----------------------------------------------------------------------------

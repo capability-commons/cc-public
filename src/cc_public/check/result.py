@@ -63,7 +63,10 @@ class Context(typing.NamedTuple):
     Files are walked and loaded a single time. A check that needs the
     content of a file reads it from map_document rather than loading it
     again, and a file that failed to load is absent from map_document
-    and present in list_failure_load.
+    and present in list_failure_load. map_document is keyed by
+    Location, since a python file holds a document per class or
+    function that carries one as well as its own; str of a key names
+    the file, and the definition beneath it where there is one.
 
     is_closed_world carries an assertion made by the caller rather than
     anything read from the data, and changes what some findings mean.

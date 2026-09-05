@@ -150,7 +150,7 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     root   = pathlib.Path(root).resolve()
     tree   = cc_public.edit.tree.Tree([root])
     graph  = cc_public.workflow.graph.Graph(tree, id_workflow)
-    dep    = tree.context.map_document[tree.resolve(id_deployment).filepath]
+    dep    = tree.context.map_document[tree.resolve(id_deployment).location]
     state  = State(root, tree, graph, _policy(dep, graph), generator,
                    generator_challenge or generator, runner)
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
@@ -330,7 +330,7 @@ def _budget(tree, dep, list_id_bound):
     found       = []
 
     for id_item in list_id_bound:
-        doc = tree.context.map_document[tree.resolve(id_item).filepath]
+        doc = tree.context.map_document[tree.resolve(id_item).location]
         for step in cc_public.path.split(tree.resolve(id_item).path):
             doc = doc[int(step)] if isinstance(doc, list) else doc[step]
         if isinstance(doc, dict) and doc.get(KEY_PRIORITY) in by_priority:
@@ -555,13 +555,13 @@ def _judge(state, spec, id_item, is_gated):
     tree = state.tree
     out  = []
     item = tree.resolve(id_item)
-    doc  = tree.context.map_document[item.filepath]
+    doc  = tree.context.map_document[item.location]
 
     for edge in spec.get(KEY_RELATION) or []:
         if edge.get(KEY_ID_REL) != REL_JUDGED_BY:
             continue
         ev      = tree.resolve(edge[KEY_GUID_TGT])
-        doc_ev  = tree.context.map_document[ev.filepath]
+        doc_ev  = tree.context.map_document[ev.location]
         if is_gated and not state.policy['admit_unmeasured'] \
                 and not _measured(doc_ev, runner.id_model, tree.context.map_document):
             raise Stop('{ev} guards an edge and carries no current confidence '

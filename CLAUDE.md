@@ -11,8 +11,10 @@ All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
 `--root DIR` (repeatable), `check` takes `--path`.
 
-- `check` — ten mechanical checks (parse, guid, identifier, reference,
-  relation, schema, layout, workflow, trace, confidence). Must be clean. `--fail-fast`, `--closed-world`,
+- `check` — eleven mechanical checks (parse, guid, identifier, source,
+  reference, relation, schema, layout, workflow, trace, confidence). Must
+  be clean. A finding names its file, and for a class or function item
+  the definition beneath it: `run.py::State::generator_for`. `--fail-fast`, `--closed-world`,
   `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
   paste a key into chat). `--confirm N` re-judges an adverse verdict N times,
@@ -56,7 +58,14 @@ are shorthands. Every command has `--help`; the writing commands take
 - `new TYPE ID` — mints the identity, writes every required field empty (it
   fails the checks until written), puts it where its type lives (`--out`
   otherwise). A python package or module too: `pym_cc_public.demo.thing`
-  becomes `demo/thing.py` beside its parent package, docstring only.
+  becomes `demo/thing.py` beside its parent package, docstring only. A
+  class or function too: `new t_python_function pyf_cc_public.path.select`
+  turns the docstring of `select` in `path.py` into a document, its prose
+  becoming the brief; the id is the module's id then the definition names,
+  lower case (`pyf_cc_public.edit.tree.tree.resolve` is `Tree.resolve`).
+  Make one only where something needs to point at it. The source check
+  refuses a document whose id is not where it sits; `rename` refuses
+  source items, since their names are the code's.
 - `insert TYPE NAME --into ITEM [--at COLLECTION]` — a new embedded item
   (register entry, port, node, question…) with its shape read from the
   container's schema. NAME is bare: the tool adds the type prefix, so

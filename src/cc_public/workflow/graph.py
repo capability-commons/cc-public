@@ -69,7 +69,7 @@ class Graph:
 
         item          = tree.resolve(id_workflow)
         self.id_self  = item.id_self
-        self.document = tree.context.map_document[item.filepath]
+        self.document = tree.context.map_document[item.location]
         map_by_guid   = {d['guid_self']: d
                          for d in tree.context.map_document.values()
                          if isinstance(d, dict) and 'guid_self' in d}

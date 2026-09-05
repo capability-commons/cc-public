@@ -31,6 +31,7 @@ relation:               []
 """
 
 
+import ast
 import io
 import pathlib
 import re
@@ -41,6 +42,7 @@ import ruamel.yaml.comments
 
 import cc_public.edit.tree
 import cc_public.layout
+import cc_public.load
 
 
 KEY_TABLE      = 'table'
@@ -60,13 +62,18 @@ SUFFIX         = '.yaml'
 
 # Source items. A package or a module is a file, and a file holding
 # only a docstring is a valid one, so new can make it. A class or a
-# function lives inside a module and is written there.
+# function lives inside a module, and new gives it a document in its
+# docstring, keeping any prose the docstring held as the brief.
 #
-PREFIX_PACKAGE  = 'pyp'
-PREFIX_MODULE   = 'pym'
-PREFIX_EMBEDDED = ('pyc', 'pyf')
-NAME_PACKAGE    = '__init__.py'
-SUFFIX_PYTHON   = '.py'
+PREFIX_PACKAGE    = 'pyp'
+PREFIX_MODULE     = 'pym'
+PREFIX_DEFINITION = {'pyc': 'class', 'pyf': 'function'}
+PREFIX_FILE       = (PREFIX_PACKAGE, PREFIX_MODULE)
+NAME_PACKAGE      = '__init__.py'
+SUFFIX_PYTHON     = '.py'
+MARKER_OPEN       = '---'
+MARKER_CLOSE      = '...'
+QUOTE             = '"""'
 
 # The envelope, in the order every item here writes it.
 #
@@ -95,7 +102,11 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
 
     entry     = _entry(tree, id_type, id_self)
     prefix    = entry[KEY_PREFIX]
-    is_source = prefix in (PREFIX_PACKAGE, PREFIX_MODULE)
+    is_source = prefix in PREFIX_FILE
+
+    if prefix in PREFIX_DEFINITION:
+        return _new_definition(tree, entry, id_self, defaults,
+                               guid or (prefix + '_' + uuid.uuid4().hex))
 
     if is_source:
         filepath = _source_path(tree, prefix, id_self, dirpath_out)
@@ -149,11 +160,6 @@ def _entry(tree, id_type, id_self):
 
     entry = table[id_type]
 
-    if entry[KEY_PREFIX] in PREFIX_EMBEDDED:
-        raise cc_public.edit.tree.ErrorItem(
-                'A {id_type} lives in the docstring of a class or function '
-                'inside a module. Write it there.'.format(id_type = id_type))
-
     if not re.match(entry[KEY_REGEX_ID], id_self):
         raise cc_public.edit.tree.ErrorItem(
                 '{id_self} does not match {regex}, the form of a {id_type} '
@@ -206,6 +212,144 @@ def _skeleton(tree, entry, id_self, guid, defaults):
         document[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
 
     return document
+
+
+# -----------------------------------------------------------------------------
+def _new_definition(tree, entry, id_self, defaults, guid):
+    """
+    Give a class or function a document in its docstring, and return
+    the file. The prose the docstring held becomes the item's brief.
+
+    The identifier says where the definition is: the longest leading
+    part that names a module or package, then the run of names down to
+    the definition, in lower case. The definition must exist, once, and
+    be of the kind the prefix says.
+
+    """
+
+    (item_module, anchor) = _definition_home(tree, id_self)
+    filepath   = item_module.filepath
+    source     = filepath.read_text(encoding = 'utf-8')
+    found      = _definition(source, anchor, PREFIX_DEFINITION[entry[KEY_PREFIX]],
+                             id_self)
+    document   = _skeleton(tree, entry, id_self, guid, defaults)
+    prose      = ast.get_docstring(found.node, clean = True)
+
+    if prose and 'brief' in document:
+        document['brief'] = ruamel.yaml.scalarstring.LiteralScalarString(
+                                _paragraphs(prose) + '\n')
+
+    cc_public.edit.tree.write_text(filepath, cc_public.layout.format_metadata(
+                                        _spliced(source, found.node, document)))
+
+    tree.refresh(filepath)
+    location = cc_public.load.Location(filepath, found.path, found.kind)
+    made     = cc_public.edit.tree.Item(filepath, '', id_self, guid, location)
+    tree.map_id[id_self] = made
+    tree.map_guid[guid]  = made
+
+    return filepath
+
+
+# -----------------------------------------------------------------------------
+def _definition_home(tree, id_self):
+    """
+    Return (the module or package item, the run of lower case names
+    beneath it) that a class or function identifier names.
+
+    """
+
+    list_part = id_self.split('_', 1)[1].split('.')
+
+    for n in range(len(list_part) - 1, 0, -1):
+        for prefix in PREFIX_FILE:
+            id_home = prefix + '_' + '.'.join(list_part[:n])
+            if id_home in tree.map_id:
+                return (tree.map_id[id_home], list_part[n:])
+
+    raise cc_public.edit.tree.ErrorItem(
+            '{id_self} names no module or package this tree holds as its '
+            'home.'.format(id_self = id_self))
+
+
+# -----------------------------------------------------------------------------
+def _definition(source, anchor, kind, id_self):
+    """
+    Return the one Definition in source at anchor, of the kind wanted.
+
+    """
+
+    import cc_public.load.python
+
+    list_named = [d for d in cc_public.load.python.iter_definition(source)
+                    if [name.lower() for name in d.path] == list(anchor)]
+    list_found = [d for d in list_named if d.kind == kind]
+
+    if not list_named:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} names no definition in its module: nothing is '
+                'called {anchor} there.'.format(id_self = id_self,
+                                                anchor  = '.'.join(anchor)))
+
+    # The prefix says what kind of thing is meant, which is what tells
+    # a class from a function of the same name in another case.
+    #
+    if not list_found:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} says {kind}, and {anchor} is a {actual}.'.format(
+                        id_self = id_self, kind = kind,
+                        anchor  = '.'.join(list_named[0].path),
+                        actual  = list_named[0].kind))
+
+    if len(list_found) > 1:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} names more than one {kind}, which differ only in '
+                'case. An identifier is lower case, so they cannot be told '
+                'apart.'.format(id_self = id_self, kind = kind))
+
+    return list_found[0]
+
+
+# -----------------------------------------------------------------------------
+def _paragraphs(prose):
+    """
+    Return prose with each paragraph on one line, paragraphs apart by a
+    blank line, as the printer will refill it.
+
+    """
+
+    return '\n\n'.join(' '.join(paragraph.split())
+                        for paragraph in re.split(r'\n\s*\n', prose.strip())
+                        if paragraph.strip())
+
+
+# -----------------------------------------------------------------------------
+def _spliced(source, node, document):
+    """
+    Return source with document written as node's docstring, in place
+    of the docstring it had or before its first statement.
+
+    """
+
+    stream = io.StringIO()
+    ruamel.yaml.YAML(typ = 'rt').dump(document, stream)
+
+    first     = node.body[0]
+    indent    = ' ' * first.col_offset
+    body      = [indent + line if line else ''
+                 for line in cc_public.layout.format(stream.getvalue()).splitlines()]
+    docstring = ([indent + QUOTE, indent + MARKER_OPEN, '']
+                 + body
+                 + ['', indent + MARKER_CLOSE, indent + QUOTE])
+    list_line = source.splitlines()
+
+    if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) \
+            and isinstance(first.value.value, str):
+        list_line[first.lineno - 1 : first.end_lineno] = docstring
+    else:
+        list_line[first.lineno - 1 : first.lineno - 1] = [*docstring, '']
+
+    return '\n'.join(list_line) + ('\n' if source.endswith('\n') else '')
 
 
 # -----------------------------------------------------------------------------

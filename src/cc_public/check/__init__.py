@@ -45,6 +45,7 @@ from cc_public.check import reference as check_reference
 from cc_public.check import relation  as check_relation
 from cc_public.check import result    as check_result
 from cc_public.check import schema    as check_schema
+from cc_public.check import source    as check_source
 from cc_public.check import trace     as check_trace
 from cc_public.check import workflow  as check_workflow
 
@@ -55,6 +56,7 @@ from cc_public.check import workflow  as check_workflow
 CHECK      = (check_parse,
               check_identity,
               check_identifier,
+              check_source,
               check_reference,
               check_relation,
               check_schema,
@@ -156,17 +158,37 @@ class Refusal(typing.NamedTuple):
 # -----------------------------------------------------------------------------
 def refusal(report, is_checkpoint = False):
     """
-    Return the Refusal a caller acting on this report must stop for, or
-    None where the report may be acted on.
+    ---
 
-    The one place the policy lives, so that the committer, the executor
-    and the gate cannot disagree about it. An analysis that failed to
-    run refuses always: no claim about the data can be made from a
-    report that did not look at all of it, and a checkpoint, which
-    records a known nonconformity, does not cover an unknown one. A
-    critical finding refuses unless a checkpoint is asked for.
-    Advisories never refuse.
+    id_self:                pyf_cc_public.check.refusal
+    guid_self:              pyf_1837aeb3fd5340beb2dbceb63ff0c537
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
 
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Refusal
+    brief:                  |
+                            Return the Refusal a caller acting on this
+                            report must stop for, or None where the report
+                            may be acted on.
+    description:            |
+                            The one place the policy lives, so that the
+                            committer, the executor and the gate cannot
+                            disagree about it. An analysis that failed to
+                            run refuses always: no claim about the data
+                            can be made from a report that did not look at
+                            all of it, and a checkpoint, which records a
+                            known nonconformity, does not cover an unknown
+                            one. A critical finding refuses unless a
+                            checkpoint is asked for. Advisories never
+                            refuse.
+    relation:               []
+
+    ...
     """
 
     inner = report['report']
@@ -300,7 +322,8 @@ def _context(list_dirpath, is_closed_world = False,
 
     for filepath in list_filepath:
         try:
-            map_document[filepath] = cc_public.load.from_file(filepath)
+            for (location, document) in cc_public.load.iter_document(filepath):
+                map_document[location] = document
         except cc_public.load.ERROR_LOAD as err:
             list_failure_load.append((filepath, str(err).strip()))
 

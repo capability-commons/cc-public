@@ -205,6 +205,78 @@ def _dedent(list_line, indent):
 
 
 # -----------------------------------------------------------------------------
+class Definition(typing.NamedTuple):
+    """
+    One class or function in a source file, whether or not its docstring
+    holds a document: what it is, the run of names down to it, and its
+    syntax tree node.
+
+    """
+
+    kind: str
+    path: tuple
+    node: typing.Any
+
+
+# -----------------------------------------------------------------------------
+def iter_definition(text):
+    """
+    Yield a Definition for every class and function in text, outermost
+    first.
+
+    """
+
+    yield from _walk_definition(ast.parse(text), ())
+
+
+# -----------------------------------------------------------------------------
+def _walk_definition(node, path):
+    """
+    Yield the definitions beneath node.
+
+    """
+
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, NODE_DEFINITION):
+            kind = KIND_CLASS if isinstance(child, ast.ClassDef) else KIND_FUNCTION
+            yield Definition(kind, path + (child.name,), child)
+            yield from _walk_definition(child, path + (child.name,))
+        else:
+            yield from _walk_definition(child, path)
+
+
+# -----------------------------------------------------------------------------
+def iter_document(data: bytes, encoding: str | None = None):
+    """
+    Yield (kind, path, document) for every docstring document in a
+    python source file, the module's first.
+
+    The module must carry one. A class or function carries one only
+    where something needs to name it, and each such document is an
+    item of its own.
+
+    """
+
+    if encoding is None:
+        encoding = ENCODING_DEFAULT
+
+    text       = data.decode(encoding)
+    list_found = list(iter_metadata(text))
+
+    if not any(m.kind == KIND_MODULE for m in list_found):
+        raise ErrorMetadataMissing(
+            'The module docstring holds no data item. Every python package '
+            'and module carries one, opened by a line of {open} and closed '
+            'by a line of {close}.'.format(open  = MARKER_OPEN,
+                                           close = MARKER_CLOSE))
+
+    yaml = ruamel.yaml.YAML(typ = 'safe')
+
+    for found in list_found:
+        yield (found.kind, found.path, yaml.load(found.text))
+
+
+# -----------------------------------------------------------------------------
 def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
     """
     Return the data item embedded in a python source file.

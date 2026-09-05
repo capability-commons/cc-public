@@ -85,7 +85,7 @@ def link(tree, name_source, id_relation, name_target):
 
     existing.append(edge)
 
-    cc_public.edit.tree.save(source.filepath, document)
+    cc_public.edit.tree.save(source.location, document)
     tree.refresh(source.filepath)
 
     return (source, target)

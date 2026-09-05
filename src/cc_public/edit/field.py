@@ -63,7 +63,7 @@ def set_field(tree, name, path, value = None, prose = None):
                          content)
 
     _relation_last(document, item.path, path)
-    cc_public.edit.tree.save(item.filepath, document)
+    cc_public.edit.tree.save(item.location, document)
     tree.refresh(item.filepath)
 
     return item
@@ -167,7 +167,7 @@ def unset_field(tree, name, path):
         else:
             grand[step] = {}
 
-    cc_public.edit.tree.save(item.filepath, document)
+    cc_public.edit.tree.save(item.location, document)
     tree.refresh(item.filepath)
 
     return item

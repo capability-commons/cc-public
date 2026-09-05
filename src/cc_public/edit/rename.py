@@ -37,6 +37,7 @@ import cc_public.check.reference
 import cc_public.check.register
 import cc_public.edit.ledger
 import cc_public.edit.tree
+import cc_public.load
 import cc_public.path
 
 
@@ -83,8 +84,8 @@ def rename(tree, name, id_new):
     if target is not None:
         _move_index(tree, item.filepath, target)
 
-    list_filepath = sorted(target if target is not None and f == item.filepath
-                           else f for f in map_document)
+    list_filepath = sorted({target if target is not None and loc.filepath == item.filepath
+                            else loc.filepath for loc in map_document})
 
     for (old, new) in map_rename.items():
         it            = tree.map_id.pop(old)
@@ -111,8 +112,9 @@ def _refuse(tree, item, name, id_new):
 
     if item.filepath.suffix == SUFFIX_PYTHON:
         raise cc_public.edit.tree.ErrorItem(
-                '{name} is a python file, whose name is its place on the '
-                'import path. Move it with the file.'.format(name = name))
+                '{name} names a python file, class or function, and its name '
+                'is the code\'s. Rename the code and its document goes with '
+                'it.'.format(name = name))
 
     if id_new in tree.map_id:
         raise cc_public.edit.tree.ErrorItem(
@@ -136,7 +138,7 @@ def _rewritten(tree, map_rename):
 
     for (old, new) in map_rename.items():
         it  = tree.resolve(old)
-        doc = _document(tree, it.filepath, map_document)
+        doc = _document(tree, it.location, map_document)
         cc_public.path.write(doc, cc_public.path.join(it.path, KEY_ID_SELF), new)
         if it.path:
             parent  = _parent(doc, it.path)
@@ -145,11 +147,10 @@ def _rewritten(tree, map_rename):
             if key_old != key_new:
                 _rekey(parent, key_old, key_new)
 
-    for filepath in list(tree.context.map_document):
-        doc = map_document.get(filepath) or tree.document(
-                        cc_public.edit.tree.Item(filepath, '', None, None))
+    for location in list(tree.context.map_document):
+        doc = map_document.get(location) or tree.document_at(location)
         if _repoint(doc, map_guid):
-            map_document[filepath] = doc
+            map_document[location] = doc
 
     return map_document
 
@@ -169,10 +170,10 @@ def _write(tree, map_document, filepath_old, target):
     ledger = cc_public.edit.ledger.Ledger()
 
     try:
-        for (filepath, doc) in sorted(map_document.items()):
-            ledger.note_modify(filepath)
-            cc_public.edit.tree.save(filepath, doc)
-            tree.refresh(filepath)
+        for (location, doc) in sorted(map_document.items()):
+            ledger.note_modify(location.filepath)
+            cc_public.edit.tree.save(location, doc)
+            tree.refresh(location.filepath)
 
         if target is not None:
             if target.exists():
@@ -182,9 +183,9 @@ def _write(tree, map_document, filepath_old, target):
             filepath_old.rename(target)
     except BaseException:
         ledger.restore()
-        for filepath in map_document:
-            if filepath.exists():
-                tree.refresh(filepath)
+        for location in map_document:
+            if location.filepath.exists():
+                tree.refresh(location.filepath)
         raise
 
 
@@ -195,11 +196,16 @@ def _move_index(tree, filepath_old, target):
 
     """
 
-    tree.context.map_document[target] = tree.context.map_document.pop(filepath_old)
+    for location in [loc for loc in tree.context.map_document
+                         if loc.filepath == filepath_old]:
+        moved = cc_public.load.Location(target, location.anchor, location.kind)
+        tree.context.map_document[moved] = tree.context.map_document.pop(location)
 
     for it in tree.map_guid.values():
         if it.filepath == filepath_old:
             it.filepath = target
+            it.location = cc_public.load.Location(target, it.location.anchor,
+                                                  it.location.kind)
 
 
 # -----------------------------------------------------------------------------
@@ -224,18 +230,17 @@ def _path_new(path, old, new):
 
 
 # -----------------------------------------------------------------------------
-def _document(tree, filepath, map_document):
+def _document(tree, location, map_document):
     """
-    Return the round trip document for filepath, one per file, so that
-    two renames landing in one file land in one document.
+    Return the round trip document at location, one per location, so
+    that two renames landing in one document land in one document.
 
     """
 
-    if filepath not in map_document:
-        map_document[filepath] = tree.document(
-                        cc_public.edit.tree.Item(filepath, '', None, None))
+    if location not in map_document:
+        map_document[location] = tree.document_at(location)
 
-    return map_document[filepath]
+    return map_document[location]
 
 
 # -----------------------------------------------------------------------------

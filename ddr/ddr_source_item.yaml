@@ -1,0 +1,222 @@
+id_self:                ddr_source_item
+guid_self:              ddr_e5f5a31755954c86842277a345bb623a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Classes and functions as items
+brief:                  |
+                        Every docstring document in a python file is
+                        an item in its own right, at a location that
+                        names the file and the definition beneath it.
+                        A class or function becomes an item when
+                        something needs to point at it, and the prose
+                        its docstring held becomes the brief.
+context:                |
+                        ddr_source_addressability made four kinds of
+                        source item and built two. The loader located
+                        every docstring document in a file by walking
+                        the syntax tree, and the printer laid each one
+                        out, but only the module's became an item: a
+                        class or function document was found and
+                        dropped. Nothing indexed it, no check saw it,
+                        the tree could not resolve it and the edit
+                        commands refused it.
+
+                        That kept every edge at module grain. A
+                        decision that settles one function decided a
+                        whole module, and a test that proves one
+                        requirement named its module.
+                        ddr_source_anchor noted the gap and sketched a
+                        fifth, comment-borne kind of anchor beyond it,
+                        with five open questions, most of them about
+                        where a positional anchor ends.
+
+                        The system is meant to run unmanned. For code,
+                        the process control that replaces review is a
+                        decision that decides a function and an eval
+                        that checks the function against it, and
+                        neither is possible while a function cannot be
+                        named.
+decision:               |
+                        A document is located by its file and, beneath
+                        the file's own document, by the run of
+                        definition names down to the docstring that
+                        holds it. The loader yields every document in
+                        a file with its location; the checks, the tree
+                        and the edit commands work over locations; and
+                        a finding names the file and the definition,
+                        in the form pytest uses:
+                        run.py::State::generator_for.
+
+                        A class or function item is made by new, which
+                        turns the docstring of the definition into a
+                        document. The prose the docstring held becomes
+                        the brief, paragraphs kept; the title and the
+                        description are left for writing, as new
+                        leaves every required field. An item is made
+                        only where something needs to point at it. A
+                        definition with no item keeps its prose
+                        docstring as it is.
+
+                        A source item is named by where it sits: its
+                        module's identifier, then the definition names
+                        down to it in lower case, under the prefix of
+                        its kind. A source check reports a document
+                        declaring any other identifier as critical.
+                        rename refuses a source item, since its name
+                        is the code's; renaming the definition moves
+                        the document with it and the check says what
+                        the identifier must become.
+
+                        set, link, unset and insert address a class or
+                        function item as they address any item, by
+                        identifier, and write into its docstring
+                        through the printer.
+
+                        An item's source is the whole text of its
+                        definition, contained definitions included,
+                        whether or not they carry documents of their
+                        own. This answers the source anchor question
+                        on whether contained items are subtracted:
+                        they are not.
+rationale:              |
+                        Each document an item in its own right rather
+                        than an entry embedded in the module's,
+                        because the metadata physically lives in
+                        separate docstrings and an embedded entry
+                        would be a fiction the loader constructed and
+                        every write translated back. Treating a
+                        function as a module is treated costs more in
+                        the loader and the tree, once, and nothing
+                        anywhere else afterwards.
+
+                        The prose becomes the brief rather than
+                        sitting beside the document, so that a
+                        function's description lives once. What the
+                        docstring said may not be a brief the style
+                        guide accepts; the evals that judge prose will
+                        say so, and the item will be rewritten, which
+                        is how quality is meant to arrive here: by
+                        process, after the fact, not by refusing to
+                        start.
+
+                        Named by position rather than carrying an
+                        arbitrary identifier, because an anchor on a
+                        definition is nominal, and the check that the
+                        name agrees with the place is what keeps an
+                        edge pointing at the code it meant. The same
+                        fact makes rename meaningless for a source
+                        item: the code names it.
+
+                        The pytest form for a location, because it is
+                        the convention every python developer already
+                        reads for exactly this: a file, and a
+                        definition within it.
+
+                        Contained definitions not subtracted from an
+                        item's source, because a judge reads code with
+                        its docstrings and a text full of holes reads
+                        worse than a repeat; the cost is paid only
+                        where an eval asks for source, which none does
+                        yet.
+alternative:            |
+                        Nested documents embedded in the module's
+                        document as entries, the way ports sit in a
+                        component. Rejected above.
+
+                        The document beside the prose docstring, both
+                        kept. Rejected: two descriptions of one
+                        function, one of them outside the system.
+
+                        Minting an item for every definition.
+                        Rejected: forty items for a module of forty
+                        functions, each needing a title and a
+                        description nobody wants, where
+                        ddr_source_addressability already said an item
+                        is written only where something needs to name
+                        it.
+
+                        Comment-borne block anchors, as
+                        ddr_source_anchor sketched. Deferred: a
+                        definition is nominal and a block is
+                        positional, and the open questions about where
+                        a block ends and how it is checked do not
+                        arise here. A block can follow when a decision
+                        wants to point at two statements.
+consequence:            |
+                        Eleven checks. A finding, a task and a case
+                        may name a location beneath a file, and
+                        anything that read the finding's file as a
+                        path reads the part before the separator.
+
+                        A decision can decide a function and a test
+                        can name the requirement it verifies at
+                        function grain; the first is done for the
+                        refusal policy, the second waits on moving the
+                        six module edges down.
+
+                        The eval that checks a decision against the
+                        code it decides, deferred by ddr_eval_reach
+                        for want of source at a size a judge handles,
+                        can now be tried at function scale.
+
+                        Every python module and function item composes
+                        the relation trait and carries relation, empty
+                        or not.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.load
+    guid_target:        pyp_e9da464cc94247b491df4d838daecb98
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.python
+    guid_target:        pym_db9a9fb33495409c9a6615cb3d58d00d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.new
+    guid_target:        pym_c2487d64bf424a308262068b32de1ae4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.rename
+    guid_target:        pym_5fc4c54cf6934f2e822a1b3f3a2b664b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.source
+    guid_target:        pym_90a2bc08403b4f308d116976d5ec5244
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_class
+    guid_target:        sch_d77b33d22fd84c70bbf797b2abc49517
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_python_function
+    guid_target:        sch_cea99c1b69374a8baf2fc9909b058e78
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_edit_commands.c9810d4e5
+    guid_target:        qst_8ffb651fbbb74c8a8a6e3830691f9146
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_source_anchor.c9274a735
+    guid_target:        qst_f6b84ea08780405d838c60ccba8726ce

@@ -63,8 +63,8 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
 
     eval_item = tree.resolve(id_eval)
     subj_item = tree.resolve(name_item)
-    doc_eval  = tree.context.map_document[eval_item.filepath]
-    doc_subj  = tree.context.map_document[subj_item.filepath]
+    doc_eval  = tree.context.map_document[eval_item.location]
+    doc_subj  = tree.context.map_document[subj_item.location]
 
     node = doc_subj
     for step in cc_public.path.split(subj_item.path):

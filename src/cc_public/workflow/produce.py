@@ -128,7 +128,7 @@ def render(tree, id_item):
     """
 
     item = tree.resolve(id_item)
-    node = tree.context.map_document[item.filepath]
+    node = tree.context.map_document[item.location]
 
     for step in cc_public.path.split(item.path):       # an embedded item
         node = node[int(step)] if isinstance(node, list) else node[step]
@@ -371,7 +371,7 @@ def _fill_table(tree, id_item, field, text, entry):
                              'list; left empty.'.format(item = id_item, field = field))
         return
 
-    item_doc = tree.context.map_document[tree.resolve(id_item).filepath]
+    item_doc = tree.context.map_document[tree.resolve(id_item).location]
     existing = dict(item_doc.get(field) or {})
     kept     = set()
 

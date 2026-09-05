@@ -502,7 +502,7 @@ def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
     except Exception as err:
         _fail(err)
 
-    document_eval  = tree.context.map_document[item.filepath]
+    document_eval  = tree.context.map_document[item.location]
     (rows, detail) = cc_public.eval.measure.measure(tree.context, document_eval,
                                                     runner, count_sample)
 
@@ -782,7 +782,7 @@ def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
     tree = _tree([root])
 
     try:
-        dep       = tree.context.map_document[tree.resolve(id_deployment).filepath]
+        dep       = tree.context.map_document[tree.resolve(id_deployment).location]
         generator = (cc_public.workflow.generate.NullGenerator() if is_dry
                      else cc_public.workflow.generate.build(dep.get('model')))
         generator_challenge = (None if is_dry or not dep.get('model_challenge')

@@ -131,7 +131,7 @@ def test_measure_rates_per_origin(tree, tmp_path):
         cc_public.edit.case.case(tree, 'evl_prose_matches_structure', item, verdict, note)
 
     tree2 = cc_public.edit.tree.Tree([tmp_path])
-    ev    = tree2.context.map_document[tree2.resolve('evl_prose_matches_structure').filepath]
+    ev    = tree2.context.map_document[tree2.resolve('evl_prose_matches_structure').location]
     cases = list(cc_public.eval.control.iter_case(tree2.context.map_document,
                                                   ev['guid_self']))
     assert len(cases) == 3
@@ -173,7 +173,7 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
             cc_public.eval.runner.check_count(bad, 'The count')
     with pytest.raises(ValueError):
         cc_public.check.check(list_path = [tmp_path], count_confirm = 2)
-    ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').filepath]
+    ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').location]
     with pytest.raises(ValueError):
         cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 2)
 
@@ -187,7 +187,7 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
 
 def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
     ev     = 'evl_prose_matches_structure'
-    doc    = tree.context.map_document[tree.resolve(ev).filepath]
+    doc    = tree.context.map_document[tree.resolve(ev).location]
     before = cc_public.eval.measure.digest(doc, tree.context.map_document)
     assert len(before) == 8
 
@@ -195,17 +195,17 @@ def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
     # criterion, an example or the scope does.
     cc_public.edit.field.set_field(tree, ev, 'criterion',
                                    prose = ' '.join(doc['criterion'].split()) + '\n')
-    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    doc = tree.context.map_document[tree.resolve(ev).location]
     assert cc_public.eval.measure.digest(doc, tree.context.map_document) == before
     seen = {before}
     cc_public.edit.case.case(tree, ev, 'sch_primitive', 'unmet', 'a case')
-    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    doc = tree.context.map_document[tree.resolve(ev).location]
     seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
     cc_public.edit.field.set_field(tree, ev, 'criterion', prose = 'Another criterion.\n')
-    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    doc = tree.context.map_document[tree.resolve(ev).location]
     seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
     cc_public.edit.field.set_field(tree, ev, 'scope', value = {'include': ['title']})
-    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    doc = tree.context.map_document[tree.resolve(ev).location]
     seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
     assert len(seen) == 4
 
