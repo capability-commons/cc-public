@@ -1,0 +1,154 @@
+id_self:                ddr_relation_constraint
+guid_self:              ddr_d8a64ab224bd4aa78128c36610907d8a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation constraints
+brief:                  |
+                        A relation entry may say what kinds of item
+                        its edges run from and to, and that they form
+                        no cycle. A constraint absent says nothing. A
+                        check reads them, and an edge that breaks one
+                        is a fault.
+context:                |
+                        ddr_relation_register left open whether a
+                        relation should constrain the types of its
+                        ends, and noted that the answer differs by
+                        relation: r_is_specified_by_schema plainly
+                        ends at a schema, while r_decides ends at
+                        anything a decision can settle. Nothing
+                        prevented an edge saying that a schema is held
+                        in a registry.
+
+                        The trace check then made this concrete. It
+                        passed any requirement carrying an
+                        r_is_derived_from edge, whatever the edge
+                        pointed at, and a requirement deriving from
+                        the type register was mechanically clean. A
+                        trace that can point at anything shows
+                        nothing.
+decision:               |
+                        A relation register entry may carry domain,
+                        the types by readable id an edge of the
+                        relation may run from; range, the types it may
+                        run to; and acyclic, whether its edges may
+                        form a cycle, an edge from an item to itself
+                        included. Each is optional, and an absent
+                        constraint says nothing rather than permitting
+                        nothing. The relation register names
+                        sch_reg_relation as its schema, which composes
+                        the general register schema with
+                        sch_entry_relation, in the pattern the type
+                        register uses.
+
+                        A relation check, after the reference check,
+                        resolves both ends of every edge and reports
+                        an edge outside its domain or range as a
+                        critical fault at the edge, a cycle in an
+                        acyclic relation as a critical fault at the
+                        edge that closes it, and a constraint naming a
+                        type the type register does not hold as a
+                        fault at the entry. An edge whose target does
+                        not resolve is the reference check's to report
+                        and is passed over here.
+
+                        Every relation whose meaning fixes an end is
+                        constrained: derivation runs from a
+                        requirement, a need or a decision to a need or
+                        a requirement and is acyclic; being a form of
+                        a type is acyclic; the rest as the register
+                        says. r_decides, r_binds, r_is_snapshot_of and
+                        r_answers leave the end that may be anything
+                        unconstrained.
+rationale:              |
+                        Constraints on the entry rather than in the
+                        check, because the register is data and
+                        travels, as ddr_relation_register wanted for
+                        the vocabulary itself; a partner reading the
+                        register learns what an edge may join without
+                        the tool. Exact types rather than schema
+                        families or prefixes, because a type is the
+                        one thing every item has and the simplest
+                        thing to name; a family can be added when a
+                        constraint wants one.
+
+                        Absent means unconstrained, as the open
+                        question foresaw: a relation that declines to
+                        constrain its ends says nothing, since
+                        r_decides constrained would assert a boundary
+                        that does not exist.
+
+                        Cycles forbidden by the entry rather than for
+                        every relation, because derivation and
+                        subtyping are orders and most relations are
+                        not.
+
+                        The absence of a trace stays advisory in the
+                        trace check, because a requirement may be
+                        written before its need is. An asserted trace
+                        that is wrong is critical, because it is a
+                        false claim rather than a gap.
+alternative:            |
+                        A check for r_is_derived_from alone, in code.
+                        Rejected: the rule is general, and each
+                        relation that wanted it would be one more
+                        special case that does not travel.
+
+                        Constraints by prefix. Rejected: a prefix is
+                        the type's to claim and the type is what the
+                        constraint means.
+
+                        A source item type for evidence, so that
+                        derivation could run to a source. Deferred to
+                        ddr_need's open question; the range is widened
+                        when the type exists.
+consequence:            |
+                        A requirement cannot be made to trace by
+                        pointing at anything; the trace check says a
+                        trace is missing and the relation check says a
+                        trace is wrong.
+
+                        Nine checks. An edge is examined twice, once
+                        for resolving and once for fitting, and the
+                        two reports do not overlap.
+
+                        A relation added to the register with no
+                        constraints behaves as every relation did
+                        before this record.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_relation
+    guid_target:        sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.relation
+    guid_target:        pym_02a9a99732d544069897b6f7b090c9c5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_relation
+    guid_target:        reg_512fbf5c51be4efaa4517b52310ddf80
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_relation_register.c47c19f26
+    guid_target:        qst_b9b402132fad433aad5bdf3545cbcac6
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_relation_register.c9f58ac59
+    guid_target:        qst_477d676fa8534d75be4f348bf273e477

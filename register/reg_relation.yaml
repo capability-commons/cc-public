@@ -29,7 +29,13 @@ note:                   |
                         The relation register gives us a single
                         mechanism for taking any pair of items that
                         have identifiers
-relation:               []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
 
 table:
 
@@ -46,9 +52,12 @@ table:
                         item identified by SUBJ be specified by the
                         schema data item identified by OBJ.
 
-  # ---------------------------------------------------------------------------
-  # r_is_held_in_registry — Is held in registry relation
-  #
+    # ---------------------------------------------------------------------------
+    # r_is_held_in_registry — Is held in registry relation
+    #
+    range:
+      - t_schema
+
   r_is_held_in_registry:
     id_self:            r_is_held_in_registry
     guid_self:          r_016e74a0abea4a3990cc3259942baf92
@@ -59,9 +68,12 @@ table:
                         identified by SUBJ be recorded within the
                         registry data item identified by OBJ.
 
-  # ---------------------------------------------------------------------------
-  # r_evaluates_items_of_type — Evaluates items of type relation
-  #
+    # ---------------------------------------------------------------------------
+    # r_evaluates_items_of_type — Evaluates items of type relation
+    #
+    range:
+      - t_register
+
   r_evaluates_items_of_type:
     id_self:            r_evaluates_items_of_type
     guid_self:          r_18cffd40f764443c89211cfc4854dc08
@@ -76,9 +88,15 @@ table:
                         one to reach for where a criterion is
                         genuinely particular to one kind of thing.
 
-  # ---------------------------------------------------------------------------
-  # r_evaluates_items_specified_by_schema — Evaluates items specified by schema
-  #
+    # ---------------------------------------------------------------------------
+    # r_evaluates_items_specified_by_schema — Evaluates items specified by schema
+    #
+    domain:
+      - t_eval
+
+    range:
+      - t_type
+
   r_evaluates_items_specified_by_schema:
     id_self:            r_evaluates_items_specified_by_schema
     guid_self:          r_3096106ed2b84a05a46a9aa8bd0254be
@@ -100,9 +118,15 @@ table:
                         not yet invented -- without being restated for
                         each.
 
-  # ---------------------------------------------------------------------------
-  # r_evaluates_items_joined_by_relation — Evaluates items joined by relation
-  #
+    # ---------------------------------------------------------------------------
+    # r_evaluates_items_joined_by_relation — Evaluates items joined by relation
+    #
+    domain:
+      - t_eval
+
+    range:
+      - t_schema
+
   r_evaluates_items_joined_by_relation:
     id_self:            r_evaluates_items_joined_by_relation
     guid_self:          r_c7a437a455054da6bbedbced7c4bf32d
@@ -120,9 +144,15 @@ table:
                         decides actually agree, say. Such a criterion
                         has no single item to anchor to.
 
-  # ---------------------------------------------------------------------------
-  # r_decides — Decides relation
-  #
+    # ---------------------------------------------------------------------------
+    # r_decides — Decides relation
+    #
+    domain:
+      - t_eval
+
+    range:
+      - t_relation
+
   r_decides:
     id_self:            r_decides
     guid_self:          r_4aefda84f8894e02aede8729ced91732
@@ -139,6 +169,9 @@ table:
                         finds that reasoning by looking for what
                         decides it.
 
+    domain:
+      - t_ddr
+
   r_instantiates:
     id_self:            r_instantiates
     guid_self:          r_335c008f9bea4580ba63e4d6def980d3
@@ -150,6 +183,12 @@ table:
                         identified by OBJ. The node supplies
                         configuration; the component supplies ports,
                         prompts and evals.
+
+    domain:
+      - t_node
+
+    range:
+      - t_component
 
   r_is_judged_by:
     id_self:            r_is_judged_by
@@ -166,6 +205,14 @@ table:
                         This is how an eval is anchored to a port. The
                         eval keeps its own criterion and examples; the
                         edge says only where it applies.
+
+    domain:
+      - t_port
+      - t_component
+      - t_node
+
+    range:
+      - t_eval
 
   r_is_implemented_by:
     id_self:            r_is_implemented_by
@@ -191,6 +238,14 @@ table:
                         can be enumerated and a policy binding all of
                         them can be checked.
 
+    domain:
+      - t_type
+
+    range:
+      - t_type
+
+    acyclic:            true
+
   r_deploys:
     id_self:            r_deploys
     guid_self:          r_c9dc371d2bf747068e9ea29b3f320ecd
@@ -201,6 +256,12 @@ table:
                         machinery under which the workflow identified
                         by OBJ is run: which model, what budget, and
                         whatever else the definition must not say.
+
+    domain:
+      - t_deployment
+
+    range:
+      - t_workflow_dataflow
 
   r_ran_under:
     id_self:            r_ran_under
@@ -213,6 +274,12 @@ table:
                         that ran is reached through the deployment,
                         and machinery is recorded nowhere else.
 
+    domain:
+      - t_execution
+
+    range:
+      - t_deployment
+
   r_binds:
     id_self:            r_binds
     guid_self:          r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
@@ -223,6 +290,9 @@ table:
                         identified by OBJ as the one that filled a
                         port on one pass of an execution. The port and
                         the node are named on the binding itself.
+
+    domain:
+      - t_binding
 
   r_measures:
     id_self:            r_measures
@@ -236,6 +306,13 @@ table:
                         identified by OBJ is measured. Several sets
                         may measure one eval, and a partner brings
                         their own.
+
+    domain:
+      - t_control_set
+
+    range:
+      - t_eval
+
     relation:           []
 
   r_is_snapshot_of:
@@ -250,6 +327,10 @@ table:
                         OBJ rendered to when the case was made.
                         Informational: what suppresses a finding is
                         the text matching, not this edge.
+
+    domain:
+      - t_control_case
+
     relation:           []
 
   r_answers:
@@ -264,6 +345,10 @@ table:
                         incoming edge of this relation is still open,
                         which is what makes what is open a query
                         rather than a reading.
+
+    range:
+      - t_question
+
     relation:           []
 
   r_results_from:
@@ -277,6 +362,13 @@ table:
                         execution identified by OBJ produced or
                         revised. A commit with no such edge was made
                         by a person.
+
+    domain:
+      - t_commit
+
+    range:
+      - t_execution
+
     relation:           []
 
   r_is_derived_from:
@@ -292,6 +384,17 @@ table:
                         is necessary.
     status:             proposed
     alias:              []
+
+    domain:
+      - t_textual_requirement
+      - t_need
+      - t_ddr
+
+    range:
+      - t_need
+      - t_textual_requirement
+
+    acyclic:            true
     relation:           []
 
   r_contributes_to:
@@ -306,4 +409,11 @@ table:
                         reference matrix of the INCOSE guide.
     status:             proposed
     alias:              []
+
+    domain:
+      - t_requirement_rule
+
+    range:
+      - t_requirement_characteristic
+
     relation:           []

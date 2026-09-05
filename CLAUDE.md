@@ -11,8 +11,8 @@ All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
 `--root DIR` (repeatable), `check` takes `--path`.
 
-- `check` — eight mechanical checks (parse, guid, identifier, reference,
-  schema, layout, workflow, trace). Must be clean. `--fail-fast`, `--closed-world`,
+- `check` — nine mechanical checks (parse, guid, identifier, reference,
+  relation, schema, layout, workflow, trace). Must be clean. `--fail-fast`, `--closed-world`,
   `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
   paste a key into chat). `--confirm N` re-judges an adverse verdict N times,

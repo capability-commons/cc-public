@@ -319,7 +319,6 @@ def test_a_port_names_its_fields_and_fills_a_table_and_a_record_is_proposed(repo
     tree = cc_public.edit.tree.Tree([repo])
     cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'field',
         value = ['title', 'brief', 'context', 'decision', 'rationale', 'alternative', 'consequence', 'assumption'])
-    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'derives', value = 'subject')
     gen = Scripted({'assumption': '[{"key": "guids_hold", "statement": "A guid is never reused.", '
                                   '"evidence": "Minted from 128 random bits; ddr_identity_field_naming."}]'})
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
@@ -330,7 +329,6 @@ def test_a_port_names_its_fields_and_fills_a_table_and_a_record_is_proposed(repo
     asm = doc['assumption']['guids_hold']
     assert asm['id_self'] == 'asm_identity_trait.guids_hold' and asm['statement'].startswith('A guid')
     assert doc['status'] == 'proposed'
-    assert ('r_is_derived_from', 'sch_identity') in [(e['id_relation'], e['id_target']) for e in doc['relation']]
     assert clean(repo) == []
 
 
@@ -458,6 +456,11 @@ def test_a_declined_edge_withdraws_its_delivery_and_the_unfed_node_is_skipped(re
     assert r['node'][2]['declined'] == ['challenge.input.proposal']
     assert 'did not fire' in r['node'][3]['skipped']
     assert 'skipped' in cc_public.workflow.run._summary(r['node'])
+
+    # The port says derives: need, so the proposal derives from the need.
+    made = cc_public.load.from_file(cc_public.edit.tree.Tree([repo]).resolve(r['node'][0]['made'][0]).filepath)
+    assert ('r_is_derived_from', 'need_runs_bounded') in \
+           [(e['id_relation'], e['id_target']) for e in made['relation']]
 
 
 def test_two_forward_edges_into_one_input_are_a_fault(repo):

@@ -57,7 +57,7 @@ def check(context):
 
     """
 
-    map_declaration = _map_declaration(context)
+    declared = map_declaration(context)
 
     # Where the caller asserts the paths hold everything, a reference
     # that does not resolve is a fault rather than a boundary, and the
@@ -82,8 +82,8 @@ def check(context):
             count_reference += 1
 
             for found in _inspect(filepath, path, guid, id_advisory,
-                                  map_declaration, severity_unresolved):
-                if is_history and guid not in map_declaration:
+                                  declared, severity_unresolved):
+                if is_history and guid not in declared:
                     if guid not in gone:
                         gone.append(guid)
                 else:
@@ -244,7 +244,7 @@ def _path_declaration(document):
 
 
 # -----------------------------------------------------------------------------
-def _map_declaration(context):
+def map_declaration(context):
     """
     Return a guid to (filepath, id_item) map of everything declared in scope.
 

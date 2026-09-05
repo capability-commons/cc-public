@@ -441,3 +441,38 @@ def test_a_write_is_the_old_file_or_the_new_one_and_keeps_its_mode(tmp_path, mon
         cc_public.edit.tree.write_text(target, 'newer\n')
     assert target.read_text() == 'new\n'
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
+    def faults():
+        return [m for (c, m) in clean(tmp_path) if c == 'relation']
+
+    assert faults() == []
+
+    # A requirement may derive from a need or a requirement, not a register.
+    cc_public.edit.link.link(tree, 'req_printer_idempotent', 'r_is_derived_from', 'reg_type')
+    assert any('runs to t_need or t_textual_requirement' in m for m in faults())
+    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'relation.1.guid_target',
+                                   value = tree.resolve('req_renamer_keeps_guid').guid_self)
+    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'relation.1.id_target',
+                                   value = 'req_renamer_keeps_guid')
+    assert faults() == []
+
+    # Derivation forms no cycle, and an item does not derive from itself.
+    cc_public.edit.link.link(tree, 'req_renamer_keeps_guid', 'r_is_derived_from',
+                             'req_printer_idempotent')
+    assert any('cycle' in m and 'req_printer_idempotent -> req_renamer_keeps_guid' in m
+               for m in faults())
+    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', 'relation.1.guid_target',
+                                   value = tree.resolve('req_renamer_keeps_guid').guid_self)
+    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', 'relation.1.id_target',
+                                   value = 'req_renamer_keeps_guid')
+    assert any('cycle' in m and 'req_renamer_keeps_guid -> req_renamer_keeps_guid' in m
+               for m in faults())
+
+    # A relation that constrains nothing constrains nothing; a constraint
+    # naming no type is a fault at the entry.
+    cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'req_printer_idempotent')
+    assert not any('r_decides' in m for m in faults())
+    cc_public.edit.field.set_field(tree, 'r_decides', 'range', value = ['t_nonsense'])
+    assert any('t_nonsense' in m and 'not a type' in m for m in faults())
