@@ -150,9 +150,15 @@ def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for
     after_req = cc_public.check.evidence.digest(tree.context.map_document, guid_req, guid_case)
     assert after_req != before
     assert [s for (s, m) in evidence(True)] == ['advisory'] and 'stale' in evidence(True)[0][1]
-    (tmp_path / 'src' / 'cc_public' / 'layout.py').write_text(
-        (tmp_path / 'src' / 'cc_public' / 'layout.py').read_text() + '\n# a change\n')
-    tree.refresh(tmp_path / 'src' / 'cc_public' / 'layout.py')
+    # Prose and layout in the implementation stale nothing; code does.
+    layout = tmp_path / 'src' / 'cc_public' / 'layout.py'
+    layout.write_text(layout.read_text() + '\n# a change\n')
+    tree.refresh(layout)
+    assert cc_public.check.evidence.digest(tree.context.map_document, guid_req, guid_case) == after_req
+    cc_public.edit.field.set_field(tree, 'pym_cc_public.layout', 'brief', prose = 'Reworded.')
+    assert cc_public.check.evidence.digest(tree.context.map_document, guid_req, guid_case) == after_req
+    layout.write_text(layout.read_text() + '\nWIDTH_EXTRA = 1\n')
+    tree.refresh(layout)
     after_impl = cc_public.check.evidence.digest(tree.context.map_document, guid_req, guid_case)
     assert after_impl != after_req
     path.write_text(path.read_text().replace('assert True', 'assert 1'))

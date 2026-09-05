@@ -274,6 +274,35 @@ def source_of(text, anchor):
 
 
 # -----------------------------------------------------------------------------
+def code_of(text, anchor):
+    """
+    Return what the definition at anchor in text does, as its syntax
+    tree with every docstring removed, dumped to a string; or the
+    module's, for no anchor. None where nothing sits at anchor.
+
+    What evidence is stamped with. Prose and layout are not in it, so
+    neither stales evidence; a change to what runs does.
+
+    """
+
+    node = ast.parse(text)
+
+    if anchor:
+        node = next((d.node for d in iter_definition(text) if d.path == tuple(anchor)), None)
+        if node is None:
+            return None
+
+    for child in ast.walk(node):
+        body = getattr(child, 'body', None)
+        if (isinstance(body, list) and body and isinstance(body[0], ast.Expr)
+                and isinstance(body[0].value, ast.Constant)
+                and isinstance(body[0].value.value, str)):
+            del body[0]
+
+    return ast.dump(node)
+
+
+# -----------------------------------------------------------------------------
 def iter_document(data: bytes, encoding: str | None = None):
     """
     Yield (kind, path, document) for every docstring document in a

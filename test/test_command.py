@@ -84,8 +84,9 @@ def test_accept_is_the_only_path_and_refuses_what_lacks(repo):
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.edit.accept.accept(tree, 'need_runs_bounded')
 
-    # Proposed again: with its attestation in the copy, it is accepted.
+    # Proposed again, attested in this copy: it is accepted.
     cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    cc_public.evidence.attest(tree, req, 'passed', 'a test', note = 'Attested here.')
     assert cc_public.edit.accept.accept(tree, req).id_self == req
     assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'accepted'
 

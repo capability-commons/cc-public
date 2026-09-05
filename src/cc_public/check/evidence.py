@@ -81,9 +81,12 @@ def digest(map_document, guid_requirement, guid_case = None):
     observed by the case guid_case where there is one.
 
     Covers what a verdict depends on and nothing else: the requirement
-    as claimed, the source of every item implementing it, and the
-    source of the case. A change to any of these makes evidence stale;
-    a change to anything else, the evidence itself included, does not.
+    as claimed, the code of every item implementing it, and the code of
+    the case. Code is the syntax tree of the definition with its
+    docstrings removed, so that a change to prose or to layout stales
+    nothing and a change to what runs stales everything that rests on
+    it. A change to anything else, the evidence itself included, does
+    not.
 
     """
 
@@ -216,7 +219,7 @@ def _source(index, guid):
     (location, document) = found
 
     if location.filepath.suffix == SUFFIX_PYTHON:
-        return cc_public.load.python.source_of(
+        return cc_public.load.python.code_of(
                     location.filepath.read_text(encoding = 'utf-8'), location.anchor)
 
     return json.loads(json.dumps(document, default = str))
