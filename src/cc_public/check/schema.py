@@ -81,6 +81,20 @@ def check(context):
 
     for (filepath, document) in sorted(map_document.items()):
 
+        # An item naming two schemas would be validated against one of
+        # them, chosen by the order of its edges; naming two is a fault.
+        #
+        list_named = _list_id_schema(document)
+
+        if len(list_named) > 1:
+            list_nonconformity.append(cc_public.check.result.Nonconformity(
+                        filepath = str(filepath),
+                        path     = KEY_RELATION,
+                        message  = 'Names {n} schemas, {names}. An item names one '
+                                   'schema, or none and takes its type\'s.'.format(
+                                        n = len(list_named), names = ', '.join(list_named))))
+            continue
+
         (id_schema, reason) = select_schema(document, map_prefix)
 
         if id_schema is None:
@@ -272,18 +286,23 @@ def _id_schema(mapping):
 
     """
 
+    list_named = _list_id_schema(mapping)
+
+    return list_named[0] if list_named else None
+
+
+# -----------------------------------------------------------------------------
+def _list_id_schema(mapping):
+    """
+    Return the ids of every schema mapping names for itself.
+
+    """
+
     if not isinstance(mapping, dict):
-        return None
+        return []
 
-    for edge in mapping.get(KEY_RELATION) or []:
-
-        if not isinstance(edge, dict):
-            continue
-
-        if edge.get(KEY_ID_REL) == ID_REL_SCHEMA:
-            return edge.get(KEY_ID_TARGET)
-
-    return None
+    return [edge.get(KEY_ID_TARGET) for edge in mapping.get(KEY_RELATION) or []
+            if isinstance(edge, dict) and edge.get(KEY_ID_REL) == ID_REL_SCHEMA]
 
 
 # -----------------------------------------------------------------------------
