@@ -1,0 +1,89 @@
+id_self:                evl_assumption_evidential
+guid_self:              evl_aee5d9bf95f144c6b80dc9dc7e59802c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Assumptions are evidential
+brief:                  |
+                        Every assumption on a design decision is a
+                        claim about the world with its evidence, not a
+                        claim of design, a restatement of the framing,
+                        or a preference. A design claim among the
+                        assumptions is routed past the wrong check.
+criterion:              |
+                        You are given the assumptions of a design
+                        decision.
+
+                        MET when each assumption states something
+                        about the world as it is, which could be true
+                        or false independently of what the decision
+                        chooses, and names the evidence for it, or
+                        says plainly that evidence is lacking and what
+                        would supply it.
+
+                        UNMET when an assumption is a claim of design,
+                        what should be done or which way is best; when
+                        it restates the framing or the decision as if
+                        it were a fact about the world; when it is a
+                        value judgement or a preference; or when it
+                        asserts a fact with no evidence and no
+                        admission that evidence is lacking.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, name the assumption and say which
+                        kind of fault it is.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        assumption: grid_cut: Grid power near the
+                        front is cut for days at a time. Evidence: the
+                        February 2026 procurement report shows
+                        repeated generator deliveries.
+    verdict:            met
+    feedback:           |
+                        A fact about the world, with a source.
+
+  - input:              |
+                        assumption: dependency_model_relevance:
+                        Analysing the need as a dependency problem
+                        best reveals failure points and redundancy
+                        opportunities. Evidence: the dependency
+                        framing.
+    verdict:            unmet
+    feedback:           |
+                        A claim of design, that this framing is best,
+                        and a restatement of the framing. It belongs
+                        in the rationale, defended by argument.
+
+  - input:              |
+                        assumption: hostile_jamming_continuous:
+                        Hostile jamming on the front never stops.
+                        Evidence: none found; a spectrum survey over a
+                        month would substantiate or refute it.
+    verdict:            met
+    feedback:           |
+                        A claim about the world that admits its
+                        evidence is lacking and says what would supply
+                        it.
+
+scope:
+
+  include:
+    - assumption
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_ddr
+    guid_target:        sch_d801523ec4814494be182b54dd62e8e3

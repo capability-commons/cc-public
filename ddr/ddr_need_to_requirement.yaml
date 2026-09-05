@@ -11,10 +11,12 @@ protective_mark:
 title:                  From need to requirement
 brief:                  |
                         A requirement derives from a need through
-                        analysis, not directly. The analysis is done
-                        under a framing, its decomposition is a design
-                        decision of its own, and both are items the
-                        workflow produces.
+                        analysis under a framing. The decomposition is
+                        a design decision that separates what it
+                        assumes about the world from what it chooses,
+                        is challenged from a second model, and is
+                        judged for sufficiency as a set. Framings and
+                        methodologies are registers.
 context:                |
                         A need is a demand with no entity; a
                         requirement is an obligation on one. Only the
@@ -33,108 +35,177 @@ decision:               |
                         into narrower needs, and a narrow enough need
                         into requirements on an entity, each step
                         recorded by r_is_derived_from edges from what
-                        was produced to what it came from.
+                        was produced to what it came from. The first
+                        decomposition that chooses the entity records
+                        it on the child need's entity slot, so the
+                        chain runs need, need on an entity,
+                        requirement, as ISO 29148 runs stakeholder
+                        need, stakeholder requirement, system
+                        requirement.
 
-                        The DECOMPOSITION of a need is a design
-                        decision item, a t_ddr, that decides the
-                        narrower needs or the requirements it
-                        produced. Its context names the need and the
-                        framing; its alternatives are the other
-                        decompositions considered; its rationale is
-                        why this one. Competing decompositions of one
-                        need are competing decision items, each
-                        deciding its own children, so that
-                        alternatives can be explored and compared
-                        rather than the first one kept.
+                        The DECOMPOSITION is a design decision item, a
+                        t_ddr deriving from the need, whose context
+                        names the need and the framing, whose decision
+                        names the children, whose alternative names
+                        the other cuts considered, and whose
+                        ASSUMPTIONS, entries with identities of their
+                        own, state each claim about the world the cut
+                        relies on with its evidence. The assumptions
+                        are the evidential half of the decision and
+                        the decision is the design half; they are
+                        checked differently, by evidence and by
+                        argument, and the assumption eval refuses a
+                        claim of design among them.
 
-                        A FRAMING is the way the need is looked at for
-                        the analysis. It is named in the
-                        decomposition's context now, and becomes an
-                        item of its own, t_framing, when a workflow
-                        needs to bind one: a framing states what it
-                        treats as in scope, which sub-problems it
-                        makes salient, and which kinds of solution it
-                        makes relevant.
+                        The decision is CHALLENGED. A second node, on
+                        a second model the deployment names and
+                        refuses to be the first, writes the strongest
+                        case against it: a child that does not serve
+                        the need, an uncovered part of the outcome, an
+                        assumption that is false or unevidenced, a
+                        threat the context names that no child
+                        answers, a rejected alternative that was
+                        better. The proposer answers it in a
+                        resolution, standing, revising or conceding,
+                        and the loop runs until the challenger
+                        concedes or the budget is spent. The challenge
+                        and the resolution stay on the record as its
+                        defense.
 
-                        The analysis is a workflow: a component that
-                        takes a need and a framing and produces the
-                        decision item and its children, judged by the
-                        need evals on the children and by
-                        evl_requirement_realises_need on any
-                        requirement, looping on its judgement as the
-                        design decision workflow does. An analysis
-                        METHODOLOGY, where one is followed, is what
-                        such a component implements; methodologies are
-                        not items until two exist.
+                        A decomposition is judged as a SET: given the
+                        parent, the assumptions and the children, do
+                        the children together deliver the outcome for
+                        the subject in the context, and are the
+                        threats the context implies answered or named
+                        as not. That is evl_decomposition_sufficient,
+                        on the derivation edge.
+
+                        A FRAMING is an entry of reg_framing: what it
+                        treats as the problem, what it makes salient,
+                        what responses it admits. The analysis binds
+                        one; competing decompositions of one need are
+                        the same need under different framings, each
+                        its own decision item. A METHODOLOGY is an
+                        entry of reg_methodology; a component that
+                        follows one names it.
+
+                        The priority of the need bound sets the budget
+                        of the run, through budget_by_priority on the
+                        deployment. A decomposition a workflow makes
+                        is proposed until a person accepts it.
 rationale:              |
-                        Decomposition as a decision item, because that
-                        is what it is: a choice among ways to cut a
-                        problem, with alternatives and consequences,
-                        and the repository already has the item for
-                        recording such a choice and the evals for
-                        judging it. Nothing new is needed to record
-                        it.
+                        Assumptions beside the decision, because a
+                        requirement realises a need only together with
+                        what is true of the environment, which is Zave
+                        and Jackson's reference model, and because the
+                        admissible claims position says a claim
+                        needing both evidence and argument is two
+                        claims. A decomposition that carries its
+                        assumptions can be wrong in a way that is
+                        findable; one that does not hides its false
+                        premise in a polished cut.
 
-                        Competing decompositions as competing
-                        decisions rather than as branches of one,
-                        because each stands or falls on its own
-                        rationale, and a reader comparing them wants
-                        two records side by side.
+                        A challenge from a second model, because a
+                        defense built by the process that made the
+                        claim is the claim restated. The first
+                        decomposition run showed the mechanism: the
+                        challenger found two gaps the proposer had
+                        called closed.
 
-                        Framing as a named thing before it is an item,
-                        because the first analyses can name their
-                        framing in prose, and the shape of a framing
-                        item is better decided after a few have been
-                        named than before.
+                        Sufficiency as a set, because KAOS defines a
+                        refinement as complete when the children
+                        together entail the parent given the domain
+                        properties, INCOSE asks that children be
+                        necessary and sufficient, and the LLM
+                        literature finds that local quality is not
+                        system quality: models produce well formed
+                        children that together miss the parent.
 
-                        The edges the same at every level,
-                        r_is_derived_from, because a reader walking
-                        from a requirement to the demand behind it
-                        should not need to know how many levels of
-                        analysis lie between.
+                        Framings as a register, on the precedent of
+                        problem frames: a catalogue of ways to cut a
+                        problem, each with a known concern, is what
+                        makes exploring alternatives systematic rather
+                        than a fresh invention each time. A framing is
+                        reusable; its application is the
+                        decomposition.
+
+                        The entity as a slot on the need rather than a
+                        type, because the rung between a need and a
+                        requirement differs from a need only in naming
+                        the entity, and 29148 treats it as a
+                        stakeholder requirement, still in the
+                        stakeholder's voice.
+
+                        Priority driving the budget, because uniform
+                        rigour spends the scarce passes where they
+                        change nothing.
 alternative:            |
-                        Direct derivation only, every requirement from
-                        a need in one step. Rejected: it works for the
-                        broadest requirements and for none of the
-                        rest, and hides the decomposition that
-                        produced them.
+                        Direct derivation only. Rejected: it works for
+                        the broadest requirements and hides the
+                        decomposition that produced the rest.
 
-                        Framing as a field on the need. Rejected: one
-                        need has several framings, and a framing is a
-                        hypothesis about the analysis, not a fact
-                        about the need.
+                        A decomposition as one design claim,
+                        assumptions folded into its rationale.
+                        Rejected: the evidential and the design halves
+                        have opposite failure modes, fabrication and
+                        timidity, and one check cannot serve both.
 
-                        A decomposition recorded only as edges, the
-                        children deriving from the parent. Rejected:
-                        the edges say what was produced and not why,
-                        nor what else was considered.
+                        The proposer generating its own counter-case.
+                        Rejected: the same blind spots produce the
+                        appearance of scrutiny; independence is what
+                        makes an argument a defense.
 
-                        Assessment items, as the legacy work had,
-                        recording what is known and unknown about a
-                        need under a framing before decomposition.
-                        Deferred: the decision item's context and
-                        questions carry that for now.
+                        Framings as items per need, as the legacy
+                        chain had, and assessment items between
+                        framing and decomposition. Rejected and
+                        deferred: the reusable thing is the lens, and
+                        the decision item's context and questions
+                        carry what an assessment carried, until
+                        evidence says otherwise.
+
+                        A separate type for a need on an entity.
+                        Rejected: one optional slot does the work.
 consequence:            |
-                        The analysis workflow is the next component to
-                        build, and its first run on a specimen need is
-                        the test of this decision.
+                        The first run of wf_decomposition_from_need,
+                        on the frontline power need under the
+                        dependency framing with a small proposer and a
+                        strong challenger, converged in two passes and
+                        exposed three faults, each now answered: the
+                        loop ended on a false met because the eval let
+                        a resolution to an earlier challenge pass for
+                        the new one; a later pass inserted the
+                        assumption table on top of itself; and one
+                        assumption was a claim of design. The record
+                        is a confirmed case on three evals.
 
-                        The need evals apply to child needs as they do
-                        to top ones. A child need's evidence may be
-                        its parent and the analysis, which the
-                        evidence eval should accept as described
-                        evidence.
+                        The children of a decomposition are named in
+                        its decision and are not yet items.
+                        Materialising them, one child need per element
+                        of a list the model returns with the
+                        derivation edges made by the executor, is the
+                        next executor feature, the same mechanism that
+                        fills a table.
 
-                        A framing item type, a methodology register
-                        and assessment items are each a decision
-                        waiting on evidence from the first analyses.
+                        evl_decomposition_sufficient is anchored on a
+                        relation and so is not consulted by a guard,
+                        which judges one item; it runs after. Making a
+                        guard consult a relation eval, or the executor
+                        judge a pair, is open.
 
-relation:
+                        The deployment refuses one model for both
+                        nodes. Nothing yet refuses the judge being the
+                        challenger's model; a third independence,
+                        judge from challenger, is worth a rule when
+                        the evidence shows it matters.
 
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          term_framing
-    guid_target:        term_cbdb5c8991d04c0fb84ceac521cac9ad
+                        Sources: Zave and Jackson, Four dark corners
+                        of requirements engineering; van Lamsweerde,
+                        goal oriented requirements engineering;
+                        Jackson, Problem frames; ISO/IEC/IEEE 29148;
+                        the INCOSE guide to writing requirements; the
+                        Continental ADAS requirements method; the
+                        admissible claims position in the reference
+                        library.
 
 question:
 
@@ -167,3 +238,92 @@ question:
                         judgement over the two decision items, or by a
                         person.
     relation:           []
+
+  guard:
+    id_self:            qst_need_to_requirement.guard
+    guid_self:          qst_46d6871ca8d14ec6bac1a1cde5208c22
+    question:           |
+                        Whether a guard should be able to consult an
+                        eval anchored on a relation, so that
+                        sufficiency can send a decomposition round,
+                        given that the executor judges one item at a
+                        time.
+    relation:           []
+
+  children:
+    id_self:            qst_need_to_requirement.children
+    guid_self:          qst_6cf86534914c4170b7ed88dcb9dc767a
+    question:           |
+                        Whether the children of a decomposition should
+                        be made as need items by the executor from a
+                        list the model returns, with derivation edges,
+                        and how a later pass revises rather than
+                        remakes them.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_framing
+    guid_target:        term_cbdb5c8991d04c0fb84ceac521cac9ad
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_framing
+    guid_target:        reg_742219baff0943e084a11895a8f3f897
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_methodology
+    guid_target:        reg_3dce4c8b7d784b02897940ee1f37bb61
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_framing
+    guid_target:        t_1fa09aca323b45b0bac385a34f96886c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_methodology
+    guid_target:        t_c82040ae2986457182ad376a9d04dde2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_propose_decomposition
+    guid_target:        cmp_0eb2da2054eb4aa3af096eeb2fa5a6f3
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_challenge_decomposition
+    guid_target:        cmp_8934df758fea48549785ee81771d0e02
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_decomposition_from_need
+    guid_target:        wf_58e6d76c6a564c27b6a5c705dba83981
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_challenge_answered
+    guid_target:        evl_63a94938fe014899b093e1ed560d599a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_decomposition_sufficient
+    guid_target:        evl_2961755149cc4beb8b1b4b649c747721
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_assumption_evidential
+    guid_target:        evl_aee5d9bf95f144c6b80dc9dc7e59802c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_assumption
+    guid_target:        t_3cf8aba2d173418e8279c51d29426648
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_assumption
+    guid_target:        sch_d6d33c5cef554bb98bf66052e09079e1

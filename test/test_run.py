@@ -361,3 +361,24 @@ def test_budget_follows_the_priority_of_what_is_bound_and_a_need_names_its_entit
     assert cc_public.workflow.run._budget(tree, {'budget': 2}, ['need_runs_bounded']) == 2
     doc = cc_public.load.from_file(repo / 'need' / 'need_runs_bounded.yaml')
     assert 'from the Executor, in order to' in cc_public.need.statement(doc)
+
+
+def test_a_table_is_updated_in_place_on_a_later_pass(repo):
+    deploy(repo, judge = 'always', commit = 'never', budget = 3)
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'field',
+        value = ['title', 'brief', 'context', 'decision', 'rationale', 'alternative', 'consequence', 'assumption'])
+    first  = '[{"key": "a", "statement": "A.", "evidence": "E1."}, {"key": "b", "statement": "B.", "evidence": "E2."}]'
+    second = '[{"key": "a", "statement": "A revised.", "evidence": "E1."}, {"key": "c", "statement": "C.", "evidence": "E3."}]'
+    class Gen(Scripted):
+        def produce(self, prompt, map_input, list_field, want_slug):
+            out = super().produce(prompt, map_input, list_field, want_slug)
+            out['assumption'] = second if 'prior' in map_input else first
+            return out
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND, Gen(), Judge(['unmet'] * 5))
+    assert [e['pass'] for e in r['node']] == [1, 2] and not r['node'][1]['note']
+    doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
+    assert list(doc['assumption']) == ['a', 'c']
+    assert doc['assumption']['a']['statement'].startswith('A revised')
+    assert clean(repo) == []

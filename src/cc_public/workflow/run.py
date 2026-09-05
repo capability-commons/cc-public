@@ -613,22 +613,39 @@ def _fill_table(tree, id_item, field, text, entry):
                              'list; left empty.'.format(item = id_item, field = field))
         return
 
+    # The list replaces the table: an entry whose key is kept keeps its
+    # identity and takes the new fields, a new key is inserted, and a
+    # key the model no longer returns is removed.
+    #
+    item_doc = tree.context.map_document[tree.resolve(id_item).filepath]
+    existing = dict((item_doc.get(field) or {}))
+    kept     = set()
+
     for (n, row) in enumerate(list_row):
         if not isinstance(row, dict):
             continue
         name = _slug(row.get('key', ''), '') or 'a{n}'.format(n = n + 1)
-        try:
-            (_, id_entry) = cc_public.edit.insert.insert(tree, 't_' + field, name,
-                                                         id_item, field)
-        except cc_public.edit.tree.ErrorItem as err:
-            entry['note'].append('{item}.{field}: {err}'.format(item = id_item,
-                                                                field = field, err = err))
-            continue
+        kept.add(name)
+        if name in existing:
+            id_entry = existing[name]['id_self']
+        else:
+            try:
+                (_, id_entry) = cc_public.edit.insert.insert(tree, 't_' + field, name,
+                                                             id_item, field)
+            except cc_public.edit.tree.ErrorItem as err:
+                entry['note'].append('{item}.{field}: {err}'.format(item = id_item,
+                                                                    field = field, err = err))
+                continue
         for (key, value) in row.items():
             if key in ('key', 'id_self', 'guid_self') or not isinstance(value, str) \
                     or not value.strip():
                 continue
             cc_public.edit.field.set_field(tree, id_entry, key, prose = value)
+
+    for name in existing:
+        if name not in kept:
+            cc_public.edit.field.unset_field(tree, id_item,
+                                             cc_public.path.join(field, name))
 
 
 # -----------------------------------------------------------------------------
