@@ -39,6 +39,8 @@ are shorthands. Every command has `--help`; the writing commands take
   commit record into the message. `log [-n N]` reads them back.
 - `pixi run test` — pytest over `test/`: the printer's content-preservation
   proof over every file, and the edit commands against a copy of the tree.
+- `pixi run lint` — ruff over `src` and `test`, configured in `pyproject.toml`
+  for the house style; must be clean after any code edit (`ddr_code_quality`).
 
 ## Writing items — use the tool, never hand-edit
 
