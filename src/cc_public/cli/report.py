@@ -28,13 +28,11 @@ description:            |
 import json
 import pathlib
 import sys
-import typing
 
 import rich.console
 import rich.table
 import rich.text
 
-import cc_public.load
 
 
 FORMAT_TEXT = 'text'
@@ -86,7 +84,7 @@ def write(report: dict,
 
     if filepath_out is not None:
         try:
-            file_out = open(filepath_out, 'wt', encoding = 'utf-8')
+            file_out = open(filepath_out, 'w', encoding = 'utf-8')   # noqa: SIM115  closed below by the caller's contract
         except OSError as err:
             list_error.append({'id_check':  '',
                                'message':   'Could not open {path} for '
@@ -179,7 +177,7 @@ def _xml_safe(node):
 
     if isinstance(node, dict):
         return {key: _xml_safe(value) for (key, value) in node.items()
-                                      if  value != [] and value != {}}
+                                      if  value not in ([], {})}
 
     if isinstance(node, list):
         return [_xml_safe(value) for value in node]

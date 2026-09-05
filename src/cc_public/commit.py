@@ -67,7 +67,6 @@ class ErrorCommit(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -158,7 +157,7 @@ def record(tree, title, brief, description, status, count, id_execution,
     """
 
     guid  = PREFIX + '_' + uuid.uuid4().hex
-    stamp = datetime.datetime.now(datetime.timezone.utc).strftime(FORMAT_STAMP)
+    stamp = datetime.datetime.now(datetime.UTC).strftime(FORMAT_STAMP)
 
     document = ruamel.yaml.comments.CommentedMap()
     document['id_self']     = '{prefix}_{stamp}_{tag}'.format(
@@ -265,7 +264,8 @@ def _git(root, *args, input = None):
     """
 
     done = subprocess.run(['git', '-C', str(root), *args],
-                          capture_output = True, text = True, input = input)
+                          capture_output = True, text = True, input = input,
+                          check = False)
 
     if done.returncode != 0:
         raise ErrorCommit('git {args}: {err}'.format(

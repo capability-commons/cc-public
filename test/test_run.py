@@ -106,7 +106,8 @@ def repo(tmp_path):
     for name in KEEP:
         src = ROOT / name
         (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
-    git(tmp_path, 'init', '-q'); git(tmp_path, 'add', '-A')
+    git(tmp_path, 'init', '-q')
+    git(tmp_path, 'add', '-A')
     git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
     return tmp_path
 
@@ -115,7 +116,8 @@ def deploy(repo, **kw):
     tree = cc_public.edit.tree.Tree([repo])
     for (k, v) in kw.items():
         cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local', k, value = v)
-    git(repo, 'add', '-A'); git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'deploy')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'deploy')
 
 
 def clean(root):

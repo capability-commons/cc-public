@@ -36,6 +36,7 @@ import cc_public.edit.case
 import cc_public.edit.tree
 import cc_public.eval.control
 import cc_public.eval.measure
+import cc_public.eval.runner
 import cc_public.eval.select
 import cc_public.load
 
@@ -67,9 +68,6 @@ class Scripted:
     def sample(self, task, count):
         answers = self._answer(task)
         return [answers[i % len(answers)] for i in range(count)]
-
-
-import cc_public.eval.runner
 
 
 @pytest.fixture
@@ -127,7 +125,8 @@ def test_measure_rates_per_origin(tree, tmp_path):
     # split on the unmet one (majority met, so a false negative).
     subj = {k: cc_public.eval.control.normalise(c['subject']) for (_, k, c) in cases}
     by   = {c['verdict']: [] for (_, _, c) in cases}
-    for (_, k, c) in cases: by[c['verdict']].append(subj[k])
+    for (_, k, c) in cases:
+        by[c['verdict']].append(subj[k])
     table = {by['met'][0]: ['met'], by['met'][1]: ['unmet'],
              by['unmet'][0]: ['met', 'met', 'unmet']}
     (rows, detail) = cc_public.eval.measure.measure(tree2.context, ev,

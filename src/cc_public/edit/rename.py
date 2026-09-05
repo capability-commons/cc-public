@@ -250,7 +250,7 @@ def _repoint(document, map_guid):
 
     changed = False
 
-    for (path, key, guid, id_advisory) in \
+    for (path, key, guid, _id_advisory) in \
             cc_public.check.reference.iter_reference(document):
         if guid not in map_guid or not key.startswith(PREFIX_GUID):
             continue
@@ -280,7 +280,7 @@ def _mentions(tree, set_id):
     for (filepath, document) in tree.context.map_document.items():
         for (path, value) in _iter_string(document):
             key = cc_public.path.split(path)[-1]
-            if key.startswith(PREFIX_ID) or key.startswith(PREFIX_GUID):
+            if key.startswith((PREFIX_ID, PREFIX_GUID)):
                 continue
             if regex.search(value):
                 out.append((filepath, path))

@@ -62,7 +62,6 @@ class ErrorMetadataMissing(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -77,7 +76,6 @@ class ErrorEllipsisInProse(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -125,7 +123,7 @@ def _walk(node, path, list_line):
 
     """
 
-    if isinstance(node, ast.Module) or isinstance(node, NODE_DEFINITION):
+    if isinstance(node, (ast.Module, *NODE_DEFINITION)):
 
         found = _document(node, path, list_line)
 

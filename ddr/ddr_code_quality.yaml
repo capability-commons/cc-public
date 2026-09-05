@@ -1,0 +1,114 @@
+id_self:                ddr_code_quality
+guid_self:              ddr_a2da6e108bde4c9797020b8cf49eeb4f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Code quality gates
+brief:                  |
+                        The tool's code is held to a linter now, with
+                        complexity and size thresholds recorded as a
+                        baseline to ratchet down, and coverage and
+                        traceability to requirements to follow.
+context:                |
+                        The tool has grown to nine thousand lines
+                        across forty five modules, written quickly and
+                        checked only by its tests and by the data
+                        checks it runs on the repository. A review by
+                        another model found faults in it. The first
+                        run of a linter found two real defects: a
+                        function naming two identifiers that did not
+                        exist, unreachable until it was not, and
+                        closures in the executor capturing loop
+                        variables. The rest was style, unused names,
+                        and size.
+decision:               |
+                        Ruff is the linter, run by pixi run lint over
+                        src and test, configured in pyproject.toml.
+                        The rule families are errors, warnings,
+                        pyflakes, bugbear, mccabe, naming, pylint,
+                        pyupgrade, simplify, return, arguments,
+                        security, datetime and the modern idiom sets.
+                        Rules that would fight the house style are
+                        off: format rather than f-strings, lazy
+                        imports that keep an optional dependency
+                        optional, literals beside their comparisons,
+                        exceptions named Error and a thing, protocol
+                        methods that take what the protocol says, and
+                        subprocess running git by name. Tests may
+                        assert and may run long.
+
+                        The complexity and size thresholds are set to
+                        the maxima measured on 2026-09-05: cyclomatic
+                        complexity 21, eleven arguments, twenty three
+                        branches, sixty four statements. They are a
+                        baseline, not a target. Each is ratcheted down
+                        as the functions above it are simplified,
+                        never raised.
+
+                        The lint passes clean before a commit, as the
+                        checks do. A commit is not refused on lint
+                        yet; that waits until the thresholds have
+                        ratcheted to where a refusal would be about a
+                        new fault and not an old one.
+rationale:              |
+                        One linter rather than several, because ruff
+                        carries the rule sets of the others and runs
+                        in a second. Configured against the house
+                        style rather than the house style bent to it,
+                        because the style is decided and the layout of
+                        YAML and code is meant to read the same.
+                        Thresholds at the measured maxima, because a
+                        gate that fails on day one is switched off; a
+                        gate that passes and tightens is kept.
+alternative:            |
+                        Reformatting the code with ruff format.
+                        Rejected: the house style aligns values in
+                        columns, which the formatter would undo, and
+                        the layout decision says code beneath a
+                        docstring is not mechanised.
+
+                        Thresholds at the conventional defaults with
+                        the offenders marked as exceptions. Rejected:
+                        a marked exception is a fault made permanent;
+                        a baseline that ratchets is a fault with a
+                        date.
+consequence:            |
+                        The functions over the conventional thresholds
+                        are known: insert at complexity 21, run and
+                        produce at 19, node at 17, the run report
+                        writer at 16. Simplifying them is the next
+                        step, with the thresholds following down.
+
+                        Coverage is next after that: measured,
+                        recorded, and a floor set at what it is. Then
+                        traceability from tests to requirements: a
+                        test names the requirement it verifies, and
+                        the trace check reports a requirement no test
+                        verifies.
+relation:               []
+
+question:
+
+  gate:
+    id_self:            qst_code_quality.gate
+    guid_self:          qst_731947b2027d4899affc5417d791bf2b
+    question:           |
+                        Whether cctool commit should refuse a commit
+                        on a lint failure as it does on a critical
+                        finding, and at what point in the ratchet.
+    relation:           []
+
+  trace:
+    id_self:            qst_code_quality.trace
+    guid_self:          qst_13880a64fe3e492f84805990c805be09
+    question:           |
+                        How a test names the requirement it verifies,
+                        a marker, a docstring document, or a naming
+                        convention, and whether the trace check or a
+                        new check reports the gap.
+    relation:           []

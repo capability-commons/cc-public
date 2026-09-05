@@ -85,8 +85,8 @@ def parse(message):
 
     list_line = message.splitlines()
     title     = list_line[0].strip() if list_line else ''
-    first     = next((i for (i, l) in enumerate(list_line)
-                        if l.strip() == MARKER_OPEN), None)
+    first     = next((i for (i, line) in enumerate(list_line)
+                        if line.strip() == MARKER_OPEN), None)
 
     if first is None:
         return (title, None)

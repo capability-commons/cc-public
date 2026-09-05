@@ -344,7 +344,8 @@ def test_an_execution_may_name_what_has_gone(tree, tmp_path):
 
 
 def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_path):
-    import cc_public.need, cc_public.eval.select
+    import cc_public.need
+    import cc_public.eval.select
     doc = cc_public.load.from_file(tmp_path / 'need' / 'need_runs_bounded.yaml')
     text = cc_public.need.statement(doc)
     assert text.startswith('In Workflows with back edges') and 'need A run that loops' in text \

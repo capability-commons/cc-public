@@ -500,8 +500,8 @@ def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
         click.echo('  {origin:10} {cases:5} {samples:7} {fp:>14} {fn:>14} '
                    '{un:9}'.format(origin = row['origin'], cases = row['cases'],
                                    samples = row['samples'],
-                                   fp = row['false_positive'] if row['false_positive'] is not None else '-',
-                                   fn = row['false_negative'] if row['false_negative'] is not None else '-',
+                                   fp = _rate(row['false_positive']),
+                                   fn = _rate(row['false_negative']),
                                    un = row['unanimous']))
 
     if is_record:
@@ -547,6 +547,16 @@ def case_(id_eval, name_item, verdict, origin, note, list_root):
         _fail(err)
 
     click.echo('{set}  {case}'.format(set = id_set, case = id_case))
+
+
+# -----------------------------------------------------------------------------
+def _rate(value):
+    """
+    Return a rate for the table, or a dash where there is none.
+
+    """
+
+    return '-' if value is None else value
 
 
 # -----------------------------------------------------------------------------
@@ -612,7 +622,7 @@ def questions(is_open_only, list_root):
     list_row = cc_public.question.report(_tree(list_root).context.map_document)
     count    = 0
 
-    for (id_record, id_question, text, list_answerer) in list_row:
+    for (_id_record, id_question, text, list_answerer) in list_row:
         if is_open_only and list_answerer:
             continue
         count += 1
@@ -798,21 +808,29 @@ def _write_run(report):
         click.echo('  {node}{n}'.format(node = e['node'],
                                         n = '' if e.get('pass', 1) == 1 else
                                             '  pass {n}'.format(n = e['pass'])))
-        for i in e['made']:    click.echo('    made     {i}'.format(i = i))
-        for i in e['revised']: click.echo('    revised  {i}'.format(i = i))
+        for i in e['made']:
+            click.echo('    made     {i}'.format(i = i))
+        for i in e['revised']:
+            click.echo('    revised  {i}'.format(i = i))
         for (port, vs) in e['verdict'].items():
             for (ev, v) in vs:
                 click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
-        for t in e['fired']:    click.echo('    fired    -> {t}'.format(t = t))
-        for t in e['declined']: click.echo('    declined -> {t}'.format(t = t))
+        for t in e['fired']:
+            click.echo('    fired    -> {t}'.format(t = t))
+        for t in e['declined']:
+            click.echo('    declined -> {t}'.format(t = t))
         for n in e.get('note') or []:
             click.echo('    note     {n}'.format(n = n))
         for t in e.get('exhausted') or []:
             click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
-        if e.get('commit'):     click.echo('    commit   {h}'.format(h = e['commit'][:10]))
-    if report['execution']: click.echo('  execution {e}'.format(e = report['execution']))
-    if report['commit']:    click.echo('  commit    {h}'.format(h = report['commit'][:10]))
-    if report['stopped']:   click.echo('  STOPPED   {r}'.format(r = report['stopped']))
+        if e.get('commit'):
+            click.echo('    commit   {h}'.format(h = e['commit'][:10]))
+    if report['execution']:
+        click.echo('  execution {e}'.format(e = report['execution']))
+    if report['commit']:
+        click.echo('  commit    {h}'.format(h = report['commit'][:10]))
+    if report['stopped']:
+        click.echo('  STOPPED   {r}'.format(r = report['stopped']))
 
 
 # -----------------------------------------------------------------------------

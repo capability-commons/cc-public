@@ -113,24 +113,6 @@ def check(context):
 
 
 # -----------------------------------------------------------------------------
-def _find_register_type(map_document):
-    """
-    Return the type register document.
-
-    """
-
-    for document in map_document.values():
-        if _id_item(document) == ID_REG_TYPE:
-            return document
-
-    raise ErrorRegisterNotFound(
-        'No data item with id_item {id_item} was found among the paths '
-        'given, so no schema can be selected. Add the type register to '
-        '--path, along with any schema it names.'.format(
-                                                id_item = ID_REG_TYPE))
-
-
-# -----------------------------------------------------------------------------
 def map_schema(map_document):
     """
     Return an id_item to document map of every schema in the tree.

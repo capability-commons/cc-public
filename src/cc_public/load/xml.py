@@ -56,7 +56,6 @@ class ErrorNotTreeShaped(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -70,7 +69,6 @@ class ErrorEncodingNotSupported(Exception):
 
     """
 
-    pass
 
 
 
@@ -131,7 +129,7 @@ def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
 
 # -----------------------------------------------------------------------------
 def _find_mixed_content(data: typing.Any,
-                        path: str = '') -> typing.Optional[str]:
+                        path: str = '') -> str | None:
     """
     Return the path of the first mixed content element, or None.
 

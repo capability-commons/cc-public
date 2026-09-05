@@ -86,8 +86,9 @@ def test_printer_preserves_and_is_fixpoint(filepath):
         assert code_of(out) == code_of(source)
         assert documents_of(out) == documents_of(source)
 
-    n = lambda t: sum(l.lstrip().startswith('#') for l in t.splitlines())
-    assert n(out) == n(source)
+    def count_comment(text):
+        return sum(line.lstrip().startswith('#') for line in text.splitlines())
+    assert count_comment(out) == count_comment(source)
 
 
 def test_long_plain_scalar_is_left_alone():

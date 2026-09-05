@@ -79,7 +79,6 @@ class Unsupported(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -121,7 +120,7 @@ def _lead(list_line):
 
         if not line.strip():
             continue
-        elif REGEX_COMMENT.match(line):
+        if REGEX_COMMENT.match(line):
             comments.append(line.strip())
         else:
             if comments:

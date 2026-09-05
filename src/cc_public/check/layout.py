@@ -101,7 +101,7 @@ def _first_difference(text, other):
     list_a = text.splitlines()
     list_b = other.splitlines()
 
-    for (index, (a, b)) in enumerate(zip(list_a, list_b), 1):
+    for (index, (a, b)) in enumerate(zip(list_a, list_b, strict = False), 1):
         if a != b:
             return index
 

@@ -120,5 +120,5 @@ def test_records_sort_by_time(repo):
     for n in (5, 6):
         cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
                                        'budget', value = n)
-        ids.append(cc_public.commit.commit(repo, 'Budget %d' % n)[1])
+        ids.append(cc_public.commit.commit(repo, 'Budget {n}'.format(n = n))[1])
     assert ids == sorted(ids)

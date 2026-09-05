@@ -112,7 +112,6 @@ class Stop(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -177,10 +176,11 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     # the claim, or it is the claim restated. A deployment of a graph
     # with a challenging node names a second model, and it differs.
     #
-    if any(graph.node[n].get(KEY_CHALLENGER) for n in graph.node):
-        if not dep.get('model_challenge') or dep.get('model_challenge') == dep.get('model'):
-            raise Stop('The workflow has a challenging node, and the deployment '
-                       'names no model_challenge different from its model.')
+    if any(graph.node[n].get(KEY_CHALLENGER) for n in graph.node) and (
+            not dep.get('model_challenge')
+            or dep.get('model_challenge') == dep.get('model')):
+        raise Stop('The workflow has a challenging node, and the deployment '
+                   'names no model_challenge different from its model.')
     if generator_challenge is None:
         generator_challenge = generator
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
@@ -281,6 +281,20 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
 
 
 # -----------------------------------------------------------------------------
+def _fires(guard, verdicts):
+    """
+    Return whether an edge with this guard fires on these verdicts: an
+    unguarded edge always, met when every verdict is met, unmet when any
+    is.
+
+    """
+
+    return (guard is None
+            or (guard == VERDICT_MET and all(v == VERDICT_MET for v in verdicts))
+            or (guard == VERDICT_UNMET and any(v == VERDICT_UNMET for v in verdicts)))
+
+
+# -----------------------------------------------------------------------------
 def _budget(tree, dep, list_id_bound):
     """
     Return the most passes a node may take: the budget by the highest
@@ -324,7 +338,7 @@ def _execution(tree, ledger, id_workflow, id_deployment):
     """
 
     guid   = PREFIX_EXE + '_' + uuid.uuid4().hex
-    stamp  = datetime.datetime.now(datetime.timezone.utc).strftime(FORMAT_STAMP)
+    stamp  = datetime.datetime.now(datetime.UTC).strftime(FORMAT_STAMP)
     id_exe = '{p}_{stamp}_{tag}'.format(p = PREFIX_EXE, stamp = stamp,
                                         tag = guid.split('_', 1)[1][:LENGTH_TAG])
 
@@ -421,20 +435,15 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
         verdicts = [v for (_, v) in entry['verdict'].get(port, [])]
 
-        def fires(guard):
-            return (guard is None
-                    or (guard == VERDICT_MET and all(v == VERDICT_MET for v in verdicts))
-                    or (guard == VERDICT_UNMET and any(v == VERDICT_UNMET for v in verdicts)))
-
         # What an edge delivers: the item, or the judgement of it, which
         # is the binding of this port on this pass.
         #
-        def delivered(carries):
-            return map_bnd[('output', port)] if carries == CARRIES_JUDGE else id_item
+        def delivered(carries, id_item = id_item, id_bnd = map_bnd[('output', port)]):
+            return id_bnd if carries == CARRIES_JUDGE else id_item
 
         for (node_dst, port_dst, guard, carries) in outgoing:
             target = f'{node_dst}.input.{port_dst}'
-            if fires(guard):
+            if _fires(guard, verdicts):
                 bound[(node_dst, port_dst)] = delivered(carries)
                 entry['fired'].append(target)
             else:
@@ -446,7 +455,7 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
         #
         for (node_dst, port_dst, guard, carries) in back:
             target = f'{node_dst}.input.{port_dst}'
-            if not fires(guard):
+            if not _fires(guard, verdicts):
                 entry['declined'].append(target)
             elif map_pass.get(node_dst, 0) >= policy['budget']:
                 entry['exhausted'].append(target)
@@ -508,7 +517,8 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry
     # What the schema bounds, the model is told, so that a title comes
     # back within its line rather than being cut to it afterwards.
     #
-    hints = ['{f} is one line of at most {n} characters'.format(f = f, n = properties[f]['maxLength'])
+    hints = ['{f} is one line of at most {n} characters'.format(
+                                            f = f, n = properties[f]['maxLength'])
              for f in list_field
              if 'maxLength' in (properties.get(f) or {})
              and properties[f]['maxLength'] <= WIDTH_LINE]
@@ -618,7 +628,7 @@ def _fill_table(tree, id_item, field, text, entry):
     # key the model no longer returns is removed.
     #
     item_doc = tree.context.map_document[tree.resolve(id_item).filepath]
-    existing = dict((item_doc.get(field) or {}))
+    existing = dict(item_doc.get(field) or {})
     kept     = set()
 
     for (n, row) in enumerate(list_row):
@@ -669,7 +679,7 @@ def _line(text, width):
 
     cut = ' '.join(words).rstrip(' ,;:')
 
-    return cut if cut else text[:width]
+    return cut or text[:width]
 
 
 # -----------------------------------------------------------------------------

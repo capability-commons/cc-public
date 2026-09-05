@@ -126,7 +126,7 @@ def select(context, selector = None):
         if not _is_eval(document):
             continue
 
-        if not _wanted_eval(document, selector, map_schema):
+        if not _wanted_eval(document, selector):
             continue
 
         for (id_subject, text_input) in _iter_subject(document,
@@ -162,7 +162,7 @@ def _is_eval(document):
 
 
 # -----------------------------------------------------------------------------
-def _wanted_eval(document, selector, map_schema):
+def _wanted_eval(document, selector):
     """
     Return whether the eval side of the selector admits this eval.
 
@@ -345,7 +345,7 @@ def _iter_item(context):
 
     """
 
-    for (filepath, document) in sorted(context.map_document.items()):
+    for (_filepath, document) in sorted(context.map_document.items()):
 
         if not isinstance(document, dict) or _is_eval(document):
             continue
@@ -407,10 +407,10 @@ def _map_compose(map_schema):
 
     map_closed = {}
 
-    for id_self in map_direct:
+    for (id_self, list_direct) in map_direct.items():
 
         seen    = {id_self}
-        pending = list(map_direct[id_self])
+        pending = list(list_direct)
 
         while pending:
             id_next = pending.pop()
@@ -462,8 +462,8 @@ def _render(tuple_item, document_eval):
     list_part = []
     is_empty  = True
 
-    for (id_self, document) in tuple_item:
-        document = cc_public.need.compose(document)     # a need shows its statement
+    for (id_self, item) in tuple_item:
+        document = cc_public.need.compose(item)          # a need shows its statement
         selected = cc_public.path.select(document, include, exclude)
         if selected is cc_public.path.DROP:
             selected = {}

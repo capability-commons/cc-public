@@ -29,3 +29,40 @@ id_mark         = "mark_public"
 check           = "cctool check"
 format          = "cctool format"
 test            = "pytest -q test"
+lint            = "ruff check src test"
+
+[tool.pixi.dependencies]
+ruff = ">=0.16.6,<0.17"
+
+# Lint. The house style aligns values in columns and formats strings
+# with format rather than f-strings, so the rules that would fight it
+# are off. Complexity and size thresholds are the maxima as measured on
+# 2026-09-05, a baseline to ratchet down, not a target.
+#
+[tool.ruff]
+line-length     = 100
+target-version  = "py313"
+extend-exclude  = ["execution"]
+
+[tool.ruff.lint]
+select          = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
+                   "ARG", "S", "DTZ", "PIE", "FURB"]
+ignore          = ["UP032",   # format() is the house form
+                   "PLC0415", # a lazy import keeps an optional dependency optional
+                   "PLR2004", # a literal beside its comparison reads
+                   "N818",    # exceptions are named Error<Thing>
+                   "ARG002",  # a protocol method takes what the protocol says
+                   "S603", "S607"]   # subprocess runs git, by name, on purpose
+
+[tool.ruff.lint.mccabe]
+max-complexity  = 21
+
+[tool.ruff.lint.pylint]
+max-args        = 11
+max-positional-args = 11
+max-branches    = 23
+max-statements  = 64
+
+[tool.ruff.lint.per-file-ignores]
+"test/*"        = ["S101", "E501", "PLR0913", "PLR0917", "ARG001"]
+"src/cc_public/cli/command.py" = ["PLR0913", "PLR0917"]   # a click command takes one argument per option

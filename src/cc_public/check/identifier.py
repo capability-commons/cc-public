@@ -225,8 +225,7 @@ def _uri_disagreement(filepath, document):
 
     stem = id_uri.rsplit('/', 1)[-1]
 
-    if stem.endswith(SUFFIX_URI):
-        stem = stem[:-len(SUFFIX_URI)]
+    stem = stem.removesuffix(SUFFIX_URI)
 
     if stem == id_self:
         return []
@@ -281,7 +280,7 @@ def _pair_disagreement(filepath, node, path = ''):
                                    'item.'.format(
                                         prefix_guid = _prefix_of(value),
                                         prefix_id   = _prefix_of(id_paired),
-                                        id_paired   = id_paired))) 
+                                        id_paired   = id_paired)))
 
             list_bad.extend(_pair_disagreement(
                         filepath, value, '{path}/{key}'.format(path = path,

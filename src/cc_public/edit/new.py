@@ -74,8 +74,8 @@ ORDER_ENVELOPE = ('id_self', 'guid_self', 'copyright', 'license',
                   'description', 'usage', 'note')
 
 EMPTY = {'string':  '',
-         'object':  lambda: ruamel.yaml.comments.CommentedMap(),
-         'array':   lambda: ruamel.yaml.comments.CommentedSeq(),
+         'object':  ruamel.yaml.comments.CommentedMap,
+         'array':   ruamel.yaml.comments.CommentedSeq,
          'integer': 0,
          'number':  0,
          'boolean': False}

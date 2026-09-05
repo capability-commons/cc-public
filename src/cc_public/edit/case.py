@@ -28,7 +28,6 @@ description:            |
 """
 
 
-import pathlib
 
 import cc_public.edit.field
 import cc_public.edit.insert

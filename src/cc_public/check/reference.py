@@ -77,7 +77,7 @@ def check(context):
                 document.get('id_self', '')).split(SEPARATOR, 1)[0] in PREFIX_HISTORY
         gone       = []
 
-        for (path, key, guid, id_advisory) in iter_reference(document):
+        for (path, _key, guid, id_advisory) in iter_reference(document):
 
             count_reference += 1
 

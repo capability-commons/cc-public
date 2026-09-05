@@ -46,9 +46,9 @@ def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
 
     if encoding is None:
 
-        # RFC 8259 requires utf-8 and makes no allowance for 
-        # a byte order mark. Editors emit one anyway, so decode 
-        # with utf-8-sig, which consumes a mark where there 
+        # RFC 8259 requires utf-8 and makes no allowance for
+        # a byte order mark. Editors emit one anyway, so decode
+        # with utf-8-sig, which consumes a mark where there
         # is one and is plain utf-8 where there is not.
         #
         encoding = 'utf-8-sig'

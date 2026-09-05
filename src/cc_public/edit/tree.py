@@ -62,7 +62,6 @@ class ErrorItem(Exception):
 
     """
 
-    pass
 
 
 # -----------------------------------------------------------------------------
@@ -238,8 +237,7 @@ def defaults():
 
     import tomllib
 
-    for parent in (pathlib.Path('.').resolve(),
-                   *pathlib.Path('.').resolve().parents):
+    for parent in (pathlib.Path.cwd(), *pathlib.Path.cwd().parents):
         candidate = parent / 'pyproject.toml'
         if candidate.exists():
             with open(candidate, 'rb') as file:

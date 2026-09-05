@@ -127,7 +127,7 @@ def record(tree, id_eval, rows, id_model):
 
     item     = tree.resolve(id_eval)
     document = cc_public.load.from_file(item.filepath)
-    date     = datetime.date.today().isoformat()
+    date     = datetime.datetime.now(datetime.UTC).date().isoformat()
     kept     = [r for r in (document.get('confidence') or [])
                   if r.get('model') != id_model]
     fresh    = [dict(model = id_model, date = date, **r) for r in rows]

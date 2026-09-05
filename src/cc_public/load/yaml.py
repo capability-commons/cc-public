@@ -36,6 +36,14 @@ import ruamel.yaml
 ERROR_LOAD = (ruamel.yaml.YAMLError,)
 
 
+BOM_ENCODING     = ((codecs.BOM_UTF32_LE, 'utf-32'),
+                    (codecs.BOM_UTF32_BE, 'utf-32'),
+                    (codecs.BOM_UTF16_LE, 'utf-16'),
+                    (codecs.BOM_UTF16_BE, 'utf-16'),
+                    (codecs.BOM_UTF8,     'utf-8-sig'))
+ENCODING_DEFAULT = 'utf-8'
+
+
 # -----------------------------------------------------------------------------
 def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
     """
@@ -68,27 +76,19 @@ def _encoding_from_bom(data: bytes) -> str:
 
     """
 
-    # YAML 1.2 section 5.2 -- a stream may announce its 
+    # YAML 1.2 section 5.2 -- a stream may announce its
     # encoding with a byte order mark, and is UTF-8 in
     # the absence of one. UTF-32 must be tested before
-    # UTF-16, since the little endian UTF-32 mark begins 
+    # UTF-16, since the little endian UTF-32 mark begins
     # with the little endian UTF-16 mark.
     #
-    # The utf-16 and utf-32 codecs read endianness from 
-    # the mark and strip it; utf-8-sig strips it. So the 
+    # The utf-16 and utf-32 codecs read endianness from
+    # the mark and strip it; utf-8-sig strips it. So the
     # encoding named here always consumes the mark rather
     # than leaving it in the decoded text.
     #
-    BOM_ENCODING = ((codecs.BOM_UTF32_LE, 'utf-32'),
-                    (codecs.BOM_UTF32_BE, 'utf-32'),
-                    (codecs.BOM_UTF16_LE, 'utf-16'),
-                    (codecs.BOM_UTF16_BE, 'utf-16'),
-                    (codecs.BOM_UTF8,     'utf-8-sig'))
-
     for (bom, encoding) in BOM_ENCODING:
         if data.startswith(bom):
             return encoding
-
-    ENCODING_DEFAULT = 'utf-8'
 
     return ENCODING_DEFAULT
