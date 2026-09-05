@@ -17,6 +17,7 @@ brief:                  |
 description:            |
                         Holds the command definitions and the
                         presentation of a report.
+relation:               []
 
 ...
 """

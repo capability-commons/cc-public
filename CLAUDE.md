@@ -77,7 +77,10 @@ are shorthands. Every command has `--help`; the writing commands take
   yours to `set`.
 - `link SOURCE RELATION TARGET` — both items by id or guid; looks up guids,
   refuses unknown relations and duplicates. Answer a question with
-  `link ANSWERER r_answers qst_…`, never by editing it.
+  `link ANSWERER r_answers qst_…`, never by editing it. A relation may
+  constrain its ends (`domain`, `range`, `acyclic` on the register entry);
+  the relation check refuses an edge outside them. A test module names the
+  requirement it verifies with `link pym_test.test_x r_verifies req_y`.
 - Dot paths: `properties.title.maxLength`, `table.t_foo`,
   `edge_back.draft_to_draft.guard`. A key never contains a dot; an address
   such as `draft.output.record` is a value.

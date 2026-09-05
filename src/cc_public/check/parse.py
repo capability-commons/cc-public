@@ -19,6 +19,7 @@ description:            |
                         The loading itself is done once by the driver,
                         so this check reports what was found rather
                         than reading anything again.
+relation:               []
 
 ...
 """

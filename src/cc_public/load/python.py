@@ -23,6 +23,7 @@ description:            |
 
                         The file is read with the abstract syntax
                         tree. Nothing is imported.
+relation:               []
 
 ...
 """

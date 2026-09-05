@@ -20,6 +20,7 @@ description:            |
                         by lookup. Adds the one source of bytes wanted
                         often enough to be worth naming: a file on
                         disk.
+relation:               []
 
 ...
 """

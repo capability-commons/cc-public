@@ -19,6 +19,7 @@ description:            |
                         together with the two severity values and what
                         they mean. A module of its own, depended on by
                         the driver and by each check.
+relation:               []
 
 ...
 """

@@ -22,6 +22,7 @@ description:            |
                         two halves of a reference name the same type,
                         that no two types claim one prefix, and that
                         no two items claim one readable id.
+relation:               []
 
 ...
 """

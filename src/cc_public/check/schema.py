@@ -21,6 +21,7 @@ description:            |
                         schema references resolve from a registry
                         built locally, so no reference is ever
                         retrieved over the network.
+relation:               []
 
 ...
 """

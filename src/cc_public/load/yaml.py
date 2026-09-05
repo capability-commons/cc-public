@@ -20,6 +20,7 @@ description:            |
                         keys are an error. A YAML stream announces its
                         encoding with a byte order mark and is UTF-8
                         where it carries none.
+relation:               []
 
 ...
 """

@@ -72,6 +72,15 @@ decision:               |
                         thresholds are ratcheted down, never lowered.
                         A workflow on GitHub runs the gate on every
                         push, on macOS and on Linux.
+
+                        A test names the requirement it verifies by an
+                        r_verifies edge on the test module's document,
+                        which every test module carries as any item
+                        does; the relation runs from a python module
+                        to a requirement. The trace check reports, as
+                        advisory, a requirement verified by test that
+                        no test names. A function will name its own
+                        requirement when functions are items.
 rationale:              |
                         One linter rather than several, because ruff
                         carries the rule sets of the others and runs
@@ -93,6 +102,16 @@ rationale:              |
                         as a gate must not return success on a
                         critical finding, and the report-oriented
                         default is worth keeping for the agent.
+
+                        An edge on the module's document rather than a
+                        pytest marker or a naming convention, because
+                        the module is already an item and an edge is
+                        what the trace check and the relation check
+                        already read; a marker would be a second
+                        traceability mechanism, checkable only by
+                        importing the tests. Module grain for now,
+                        because a function is not yet an item; the
+                        edge moves down when it is.
 alternative:            |
                         Reformatting the code with ruff format.
                         Rejected: the house style aligns values in
@@ -154,3 +173,13 @@ relation:
     guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
     id_target:          qst_code_quality.gate
     guid_target:        qst_731947b2027d4899affc5417d791bf2b
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_code_quality.trace
+    guid_target:        qst_13880a64fe3e492f84805990c805be09
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb

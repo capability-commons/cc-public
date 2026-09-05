@@ -27,6 +27,7 @@ description:            |
                         complete refuses it whatever is asked for,
                         since no state of the checks can then be
                         recorded.
+relation:               []
 
 ...
 """

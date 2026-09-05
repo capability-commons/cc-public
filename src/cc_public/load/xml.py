@@ -23,6 +23,7 @@ description:            |
                         rather than ignored. Mixed content has no
                         faithful representation as a mapping and is
                         refused.
+relation:               []
 
 ...
 """

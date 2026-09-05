@@ -21,6 +21,7 @@ description:            |
                         runs each check against it, and assembles the
                         report. Knows nothing about how a report is
                         presented.
+relation:               []
 
 ...
 """

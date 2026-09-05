@@ -21,6 +21,7 @@ description:            |
                         the item and decides where the text goes.
                         Asked for a slug, it may also propose the
                         readable name of a new item.
+relation:               []
 
 ...
 """

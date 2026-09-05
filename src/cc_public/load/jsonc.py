@@ -18,6 +18,7 @@ description:            |
                         JSON with comments, as understood by VS Code.
                         Both line and block comments are permitted, as
                         are trailing commas.
+relation:               []
 
 ...
 """

@@ -23,6 +23,7 @@ description:            |
                         judge, a model or a reader, and never stored,
                         so that it cannot say something the slots do
                         not.
+relation:               []
 
 ...
 """

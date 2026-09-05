@@ -21,6 +21,7 @@ description:            |
                         by a relation. Narrows the result by selector.
                         Run alone, it reports what would be judged and
                         at what cost.
+relation:               []
 
 ...
 """

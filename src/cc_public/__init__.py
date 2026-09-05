@@ -18,6 +18,7 @@ description:            |
                         The root package. Holds the loaders, the
                         checks, the eval machinery and the command
                         line interface.
+relation:               []
 
 ...
 """

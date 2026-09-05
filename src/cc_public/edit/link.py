@@ -22,6 +22,7 @@ description:            |
                         than typed, and it is appended to the source
                         item's relation list, which is created where
                         absent.
+relation:               []
 
 ...
 """

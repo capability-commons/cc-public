@@ -26,6 +26,7 @@ description:            |
                         docstring where the file is python. Says what
                         a new item in the tree is given, from the
                         configuration at or above its root.
+relation:               []
 
 ...
 """

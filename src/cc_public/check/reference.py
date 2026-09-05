@@ -21,6 +21,7 @@ description:            |
                         anywhere that is not a declaration. Reports
                         those that do not resolve, and those whose
                         advisory readable id has gone stale.
+relation:               []
 
 ...
 """

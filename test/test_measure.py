@@ -21,6 +21,18 @@ description:            |
                         origin split, and the suppression path can be
                         asserted exactly.
 
+relation:
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_judge_confirms_unmet
+    guid_target:        req_ad4f5b42320a4f3f9aa2b1b9457b32f3
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_judge_reports_confirmed_verdict
+    guid_target:        req_7e8813d18aa3443ba6cb92805469a451
+
 ...
 """
 
@@ -229,3 +241,35 @@ def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
     assert sum('no current confidence for null' in n['message'] for n in c['note']) == 1
     assert c['detail']['count_call_max'] == c['detail']['count_call'] * 1
     assert c['detail']['count_char'] > 0
+
+
+class Sampled(cc_public.eval.runner.DspyRunner):
+    """The judge's confirmation over scripted fresh samples, no model needed."""
+
+    def __init__(self, samples):
+        self.id_model = 'sampled'
+        self.samples  = list(samples)
+        self.asked    = []
+
+    def sample(self, task, count):
+        self.asked.append(count)
+        return [self.samples.pop(0) for _ in range(count)]
+
+
+def test_an_unmet_screen_is_confirmed_count_times_and_the_majority_reported(tree, tmp_path):
+    task    = cc_public.eval.select.Task('evl_x', {}, ('sch_x',), 'x', 'subject')
+    screen  = cc_public.eval.runner.Verdict('evl_x', ('sch_x',), 'unmet', 'because', 'sampled')
+
+    judge   = Sampled(['met', 'met', 'unmet', 'met'])
+    verdict = judge.confirm(task, screen, 5)
+    assert judge.asked == [4]                      # the screen counts as the first
+    assert verdict.verdict == 'met'                # two unmet of five: variance
+
+    judge   = Sampled(['unmet', 'met', 'unmet', 'unmet'])
+    verdict = judge.confirm(task, screen, 5)
+    assert verdict.verdict == 'unmet'
+    assert verdict.feedback.startswith('Unmet on 4 of 5 judgements.')
+
+    judge   = Sampled([])
+    assert judge.confirm(task, screen, 1) is screen
+    assert judge.asked == []

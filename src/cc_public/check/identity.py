@@ -19,6 +19,7 @@ description:            |
                         reports any guid declared more than once.
                         Walks the loaded structure, so a guid quoted
                         in prose is not a declaration.
+relation:               []
 
 ...
 """

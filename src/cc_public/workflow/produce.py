@@ -26,6 +26,7 @@ description:            |
                         as prose or as a table of entries from a JSON
                         list, and marks what it made proposed. Knows
                         nothing of scheduling, judgement or edges.
+relation:               []
 
 ...
 """

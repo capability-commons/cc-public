@@ -19,6 +19,7 @@ description:            |
                         judges nothing and reports what it would have
                         judged. The null runner uses no model, no
                         credentials and no network.
+relation:               []
 
 ...
 """

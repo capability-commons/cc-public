@@ -23,6 +23,7 @@ description:            |
 usage:                  |
                         Run as part of cctool check. What it reports,
                         cctool format fixes.
+relation:               []
 
 ...
 """

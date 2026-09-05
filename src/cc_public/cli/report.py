@@ -20,6 +20,7 @@ description:            |
                         to standard output in every format; standard
                         error is reserved for failures of the analysis
                         itself.
+relation:               []
 
 ...
 """

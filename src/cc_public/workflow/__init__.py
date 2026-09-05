@@ -23,6 +23,7 @@ description:            |
                         after every node and a critical finding stops
                         the run; what the run touched is then put
                         back.
+relation:               []
 
 ...
 """

@@ -27,6 +27,7 @@ description:            |
                         stops the run, and a stopped run restores
                         every file it touched. A finished one commits
                         as the deployment says.
+relation:               []
 
 ...
 """

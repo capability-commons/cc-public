@@ -20,6 +20,7 @@ description:            |
                         requires, tolerating a byte order mark that
                         the specification does not allow for but
                         editors emit anyway.
+relation:               []
 
 ...
 """

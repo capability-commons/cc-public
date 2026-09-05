@@ -18,6 +18,7 @@ description:            |
                         The type register, and the map from a type
                         prefix to the entry describing that type. Used
                         by the checks that resolve a type.
+relation:               []
 
 ...
 """

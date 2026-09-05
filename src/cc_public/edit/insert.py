@@ -27,6 +27,7 @@ description:            |
                         is a local name and the id is qualified by the
                         container. A collection that is a list is
                         appended to.
+relation:               []
 
 ...
 """

@@ -25,6 +25,7 @@ description:            |
                         from the tool's defaults. A package or a
                         module is written as a file holding only its
                         docstring.
+relation:               []
 
 ...
 """

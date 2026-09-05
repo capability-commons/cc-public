@@ -23,6 +23,13 @@ description:            |
                         fired, declined, stopped, restored and
                         committed.
 
+relation:
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_executor_honours_budget
+    guid_target:        req_a1428b3ae8ec4b5687e58895592accad
+
 ...
 """
 

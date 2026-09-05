@@ -20,6 +20,7 @@ description:            |
                         read from a stream and stored as a block
                         scalar, which is what marks it as prose to the
                         printer.
+relation:               []
 
 ...
 """

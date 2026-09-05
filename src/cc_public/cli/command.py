@@ -19,6 +19,7 @@ description:            |
                         turns the resulting report into an exit
                         status. Holds no knowledge of what checks
                         exist or what they look for.
+relation:               []
 
 ...
 """

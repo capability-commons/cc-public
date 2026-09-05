@@ -19,6 +19,7 @@ description:            |
                         Makes a repository from a copy of the tree,
                         changes it, commits through the tool, and
                         reads the record back from the history.
+relation:               []
 
 ...
 """

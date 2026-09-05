@@ -17,6 +17,7 @@ brief:                  |
 description:            |
                         Holds the selection of what an eval applies
                         to, and the runners that judge it.
+relation:               []
 
 ...
 """

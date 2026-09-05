@@ -21,6 +21,18 @@ description:            |
                         asserting each change is well formed and each
                         refusal is refused.
 
+relation:
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_renamer_keeps_guid
+    guid_target:        req_9e78e8f7be56415a87394b2065de11e8
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_checker_locates_each_finding
+    guid_target:        req_9186d8b81a574b2cbbe0f1cf370d2cf9
+
 ...
 """
 
@@ -285,12 +297,14 @@ def test_unset_last_key_leaves_an_empty_mapping(tree, tmp_path):
 
 def test_rename_carries_to_qualified_items_references_and_file(tree, tmp_path):
     import cc_public.edit.rename
+    guid   = tree.resolve('cmp_draft_design_decision').guid_self
     report = cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision',
                                           'cmp_draft_thing')
     assert report.map_rename['prt_draft_design_decision.decision'] == 'prt_draft_thing.decision'
     assert not (tmp_path / 'workflow' / 'cmp_draft_design_decision.yaml').exists()
     doc = cc_public.load.from_file(tmp_path / 'workflow' / 'cmp_draft_thing.yaml')
     assert doc['id_self'] == 'cmp_draft_thing'
+    assert doc['guid_self'] == guid                 # the guid is the identity; it stays
     assert doc['output']['decision']['id_self'] == 'prt_draft_thing.decision'
     wf = cc_public.load.from_file(tmp_path / 'workflow' / 'wf_design_decision_from_schema.yaml')
     edge = next(e for e in wf['node']['draft']['relation']
@@ -356,8 +370,13 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
     cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget', 'relation')
     rep = cc_public.check.check(list_path = [tmp_path])['report']
     trace = next(c for c in rep['check'] if c['id_check'] == 'trace')
-    assert [n['severity'] for n in trace['nonconformity']] == ['advisory']
-    assert 'req_executor_honours_budget' in trace['nonconformity'][0]['filepath']
+    derived = [n for n in trace['nonconformity'] if n['path'] == 'relation']
+    assert [n['severity'] for n in derived] == ['advisory']
+    assert 'req_executor_honours_budget' in derived[0]['filepath']
+    # This copy holds no tests, so every requirement verified by test says
+    # no test names it; the tree itself says otherwise.
+    verified = [n for n in trace['nonconformity'] if n['path'] == 'verification']
+    assert len(verified) == 6 and all(n['severity'] == 'advisory' for n in verified)
 
 
 def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):

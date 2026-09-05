@@ -20,6 +20,7 @@ description:            |
                         rest of the checks. Turns a verdict into the
                         same nonconformity every other check produces.
                         Does not run unless asked for.
+relation:               []
 
 ...
 """

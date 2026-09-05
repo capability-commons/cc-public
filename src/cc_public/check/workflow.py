@@ -29,6 +29,7 @@ usage:                  |
                         Run as part of cctool check. A node with no
                         evals is reported as a note rather than a
                         fault.
+relation:               []
 
 ...
 """

@@ -21,6 +21,13 @@ description:            |
                         content is preserved, comments are kept, and
                         the result is a fixpoint.
 
+relation:
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_printer_idempotent
+    guid_target:        req_28a87e8cfef7443f90fb70372e7c47e8
+
 ...
 """
 

@@ -19,6 +19,7 @@ description:            |
                         Walks every record for its questions and every
                         item for r_answers edges, and pairs them. A
                         question with no incoming edge is open.
+relation:               []
 
 ...
 """

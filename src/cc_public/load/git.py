@@ -22,6 +22,7 @@ description:            |
                         markers a docstring uses. Reads one message
                         into its document, and walks the log for every
                         commit that carries one.
+relation:               []
 
 ...
 """

@@ -31,6 +31,7 @@ description:            |
                         One notation serves both, so a path read in a
                         report can be pasted into a pattern without
                         translation.
+relation:               []
 
 ...
 """

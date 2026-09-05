@@ -23,6 +23,7 @@ description:            |
                         not exist is a fault at the entry. A target
                         that does not resolve is left to the reference
                         check. An absent constraint says nothing.
+relation:               []
 
 ...
 """
