@@ -15,11 +15,13 @@ title:                  Report presentation
 brief:                  |
                         Present a check report.
 description:            |
-                        Writes a report as text for a person, or as
-                        JSON, YAML or XML for a program. Findings go
-                        to standard output in every format; standard
-                        error is reserved for failures of the analysis
-                        itself.
+                        Writes a check report as text for a person, or
+                        as JSON, YAML or XML for a program, and
+                        renders what the other commands show: a run, a
+                        trace, an impact, an item and its edges.
+                        Findings go to standard output in every
+                        format; standard error is reserved for
+                        failures of the analysis itself.
 relation:               []
 
 ...

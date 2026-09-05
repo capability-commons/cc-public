@@ -16,11 +16,13 @@ brief:                  |
                         Read the commit records held in a repository's
                         history.
 description:            |
-                        A commit record lives in the message of the
-                        commit it describes: a plain first line, a
-                        blank line, and a YAML document between the
-                        markers a docstring uses. Reads one message
-                        into its document, and walks the log for every
+                        The one place git is run: a runner that
+                        reports a failure one way for every caller,
+                        the commit checked out, and the files changed
+                        since a commit. Reads a commit record out of a
+                        message, a plain first line, a blank line, and
+                        a YAML document between the markers a
+                        docstring uses, and walks the log for every
                         commit that carries one.
 relation:               []
 

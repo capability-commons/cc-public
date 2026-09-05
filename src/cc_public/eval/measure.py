@@ -23,6 +23,10 @@ description:            |
                         origin, because cases from different origins
                         answer different questions and pooling them
                         without saying so would say nothing true.
+                        Records the rows on the eval stamped with the
+                        digest of what they measured, and lists the
+                        evals whose rows for a judge are absent or
+                        stale.
 relation:               []
 
 ...

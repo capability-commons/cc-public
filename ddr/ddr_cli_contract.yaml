@@ -40,6 +40,18 @@ decision:               |
                         as a union. Stopping early stops at the first
                         CHECK with a critical finding, not the first
                         finding.
+
+                        The command line is a package of modules by
+                        kind, checking, editing, judging, assurance,
+                        committing and running, each registering its
+                        commands on one group that holds what they
+                        share: the root option, the odd count type,
+                        the exit statuses, and the two helpers that
+                        open a tree and report a failure. The entry
+                        point imports them and exposes the group. A
+                        command adapts what was typed into one call on
+                        the tiers below and renders what comes back
+                        through the report module; it holds no policy.
 rationale:              |
                         A nonconformity does not fail by default
                         because the ordinary caller reads the report
@@ -95,6 +107,17 @@ consequence:            |
                         things for several callers, and each of them
                         is named rather than implied.
 
+question:
+
+  c90a0e93f:
+    id_self:            qst_cli_contract.c90a0e93f
+    guid_self:          qst_5354ba2e5a9c413a86423c21a7c80c78
+    question:           |
+                        Whether the report should itself be a data
+                        item, with a type and a schema, rather than a
+                        structure this command happens to emit.
+    relation:           []
+
 relation:
 
   - id_relation:        r_decides
@@ -112,13 +135,37 @@ relation:
     id_target:          pym_cc_public.cli.report
     guid_target:        pym_24937d5ee1fa47109752773ea2a636d8
 
-question:
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.group
+    guid_target:        pym_2eafe633dcb14f25a475d4c85e1f8111
 
-  c90a0e93f:
-    id_self:            qst_cli_contract.c90a0e93f
-    guid_self:          qst_5354ba2e5a9c413a86423c21a7c80c78
-    question:           |
-                        Whether the report should itself be a data
-                        item, with a type and a schema, rather than a
-                        structure this command happens to emit.
-    relation:           []
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.checking
+    guid_target:        pym_17f14ede03a74bf29f9f31eccabb2408
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.editing
+    guid_target:        pym_8a84f2c29d87412f8d1ef923c8abc71f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.judging
+    guid_target:        pym_680f985033a442b79af41f2386f9f966
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.assurance
+    guid_target:        pym_091ea6c8043a4ae4a7c817a4fdaa9ac4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.committing
+    guid_target:        pym_5f5dd94acb004e519720507af71b5c25
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.running
+    guid_target:        pym_2e94fa6dd42a4d75947f283c4f4a02fa

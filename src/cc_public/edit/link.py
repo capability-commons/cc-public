@@ -21,7 +21,9 @@ description:            |
                         edge has, with both guids looked up rather
                         than typed, and it is appended to the source
                         item's relation list, which is created where
-                        absent.
+                        absent. unlink removes an edge found the same
+                        way, by relation and target guid, so that a
+                        stale readable id on it does not hide it.
 relation:               []
 
 ...
