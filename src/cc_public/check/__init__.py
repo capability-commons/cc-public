@@ -34,6 +34,7 @@ import typing
 import cc_public.eval.runner
 import cc_public.load
 
+from cc_public.check import confidence as check_confidence
 from cc_public.check import eval       as check_eval
 from cc_public.check import identifier as check_identifier
 from cc_public.check import identity   as check_identity
@@ -58,7 +59,8 @@ CHECK      = (check_parse,
               check_schema,
               check_layout,
               check_workflow,
-              check_trace)
+              check_trace,
+              check_confidence)
 
 STATUS_OK  = 'ok'
 STATUS_ADV = 'advisory'

@@ -171,3 +171,61 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
     result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
                                               ['check', '--confirm', '4', '--path', str(tmp_path)])
     assert result.exit_code == 2 and 'odd' in result.output
+
+
+def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
+    ev     = 'evl_prose_matches_structure'
+    doc    = tree.context.map_document[tree.resolve(ev).filepath]
+    before = cc_public.eval.measure.digest(doc, tree.context.map_document)
+    assert len(before) == 8
+
+    # Refilling prose does not change the digest; changing a case, the
+    # criterion, an example or the scope does.
+    cc_public.edit.field.set_field(tree, ev, 'criterion',
+                                   prose = ' '.join(doc['criterion'].split()) + '\n')
+    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    assert cc_public.eval.measure.digest(doc, tree.context.map_document) == before
+    seen = {before}
+    cc_public.edit.case.case(tree, ev, 'sch_primitive', 'unmet', 'a case')
+    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    cc_public.edit.field.set_field(tree, ev, 'criterion', prose = 'Another criterion.\n')
+    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    cc_public.edit.field.set_field(tree, ev, 'scope', value = {'include': ['title']})
+    doc = tree.context.map_document[tree.resolve(ev).filepath]
+    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    assert len(seen) == 4
+
+    # Recording stamps the rows, the check is quiet, and a later change
+    # makes the rows stale, which the check reports as advisory.
+    rows = [{'origin': 'all', 'cases': 1, 'samples': 3, 'false_positive': 0.0,
+             'false_negative': 0.0, 'unanimous': 1.0}]
+    cc_public.eval.measure.record(tree, ev, rows, 'scripted')
+    ev2 = cc_public.load.from_file(tree.resolve(ev).filepath)
+    assert ev2['confidence'][0]['digest'] == cc_public.eval.measure.digest(
+                                                ev2, tree.context.map_document)
+
+    def confidence():
+        rep = cc_public.check.check(list_path = [tmp_path])['report']
+        c   = next(c for c in rep['check'] if c['id_check'] == 'confidence')
+        return ([n['message'] for n in c['nonconformity'] if ev in n['filepath']],
+                [n['message'] for n in c['note'] if ev in n['filepath']])
+
+    assert confidence() == ([], [])
+    cc_public.edit.field.set_field(tree, ev, 'criterion', prose = 'Changed again.\n')
+    (bad, note) = confidence()
+    assert bad and 'scripted' in bad[0] and 'since changed' in bad[0] and note == []
+    cc_public.edit.field.set_field(tree, ev, 'confidence',
+                                   value = [dict(model = 'scripted', date = '2026-01-01', **rows[0])])
+    (bad, note) = confidence()
+    assert bad == [] and note and 'before rows carried a digest' in note[0]
+
+    # A sweep says once, per eval, that its findings carry no confidence.
+    selector = cc_public.eval.select.Selector(id_eval = (ev,))
+    rep = cc_public.check.check(list_path = [tmp_path], selector_eval = selector,
+                                id_model_eval = 'null', count_confirm = 1)['report']
+    c   = next(c for c in rep['check'] if c['id_check'] == 'eval')
+    assert sum('no current confidence for null' in n['message'] for n in c['note']) == 1
+    assert c['detail']['count_call_max'] == c['detail']['count_call'] * 1
+    assert c['detail']['count_char'] > 0

@@ -46,6 +46,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.eval.runner
+import cc_public.eval.measure
 import cc_public.eval.select
 import cc_public.path
 import cc_public.workflow.graph
@@ -65,6 +66,7 @@ KEY_PRIORITY   = 'priority'
 KEY_STATUS     = 'status'
 STATUS_PROPOSED = 'proposed'
 REL_DERIVED    = 'r_is_derived_from'
+KEY_ADMIT      = 'admit_unmeasured'
 KEY_JUDGEMENT  = 'judgement'
 CARRIES_JUDGE  = 'judgement'
 REL_DECIDES    = 'r_decides'
@@ -136,7 +138,8 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     policy = {'judge':   dep.get('judge', JUDGE_ALWAYS),
               'confirm': dep.get('confirm', cc_public.eval.runner.COUNT_CONFIRM),
               'commit':  dep.get('commit', COMMIT_RUN),
-              'budget':  dep.get('budget', 1)}
+              'budget':  dep.get('budget', 1),
+              'admit_unmeasured': bool(dep.get(KEY_ADMIT, False))}
 
     # A challenge is built by a process other than the one that made
     # the claim, or it is the claim restated. A deployment of a graph
@@ -397,7 +400,7 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
         if policy['judge'] == JUDGE_ALWAYS or \
                 (policy['judge'] == JUDGE_GUARDS and is_gated):
-            judgement = _judge(tree, spec, id_item, runner, policy['confirm'])
+            judgement = _judge(tree, spec, id_item, runner, policy, is_gated)
             entry['verdict'][port] = [(j['id_eval'], j['verdict']) for j in judgement]
             if judgement:
                 cc_public.edit.field.set_field(tree, map_bnd[('output', port)],
@@ -715,10 +718,14 @@ def _bind(tree, graph, local, bound, id_exe, n_pass = 1):
 
 
 # -----------------------------------------------------------------------------
-def _judge(tree, spec, id_item, runner, count_confirm):
+def _judge(tree, spec, id_item, runner, policy, is_gated):
     """
     Return the judgement of a port: one row per eval anchored to it, with
     the verdict and the judge's reason.
+
+    A guarded port decides what happens next, so an eval guarding one
+    must carry current confidence for the judge in use, or the
+    deployment must say that an unmeasured judge is admitted.
 
     """
 
@@ -734,6 +741,15 @@ def _judge(tree, spec, id_item, runner, count_confirm):
             continue
         ev      = tree.resolve(edge[KEY_GUID_TGT])
         doc_ev  = tree.context.map_document[ev.filepath]
+        if is_gated and not policy['admit_unmeasured'] and not any(
+                isinstance(row, dict) and row.get('model') == runner.id_model
+                and cc_public.eval.measure.is_current(row, doc_ev,
+                                                      tree.context.map_document)
+                for row in doc_ev.get('confidence') or []):
+            raise Stop('{ev} guards an edge and carries no current confidence '
+                       'for {model}. Measure it, or deploy with '
+                       'admit_unmeasured: true.'.format(ev    = ev.id_self,
+                                                        model = runner.id_model))
         task    = cc_public.eval.select.Task(
                         id_eval       = ev.id_self,
                         document_eval = doc_ev,
@@ -743,7 +759,7 @@ def _judge(tree, spec, id_item, runner, count_confirm):
                                                 ((id_item, doc),), doc_ev))
         verdict = runner.run(task)
         if verdict.verdict == VERDICT_UNMET:
-            verdict = runner.confirm(task, verdict, count_confirm)
+            verdict = runner.confirm(task, verdict, policy['confirm'])
         out.append({'id_eval':   ev.id_self,
                     'guid_eval': ev.guid_self,
                     'verdict':   verdict.verdict,

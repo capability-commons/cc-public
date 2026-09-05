@@ -1,0 +1,159 @@
+id_self:                ddr_eval_admission
+guid_self:              ddr_ea46ad0cba6a4ddfa3d9466b06cc4565
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Eval admission
+brief:                  |
+                        A confidence row names what it measured, by a
+                        digest, and is stale when the eval or its
+                        cases have changed since. A judge with no
+                        current confidence for an eval is not admitted
+                        to guard an edge, and a sweep says once per
+                        eval when its findings carry none.
+context:                |
+                        ddr_cost_of_checking says a finding is worth
+                        its severity together with the confidence of
+                        the check that raised it, and that a check
+                        whose discrimination has not been measured
+                        carries none. ddr_eval_measurement made
+                        confidence measurable and recorded it on the
+                        eval, and left open whether the runner should
+                        warn or refuse when no confidence exists for
+                        the judge in use or when the confidence is
+                        older than the criterion.
+
+                        A confidence row carried a model, a date and
+                        the rates, and nothing saying what criterion,
+                        examples, scope or cases it was measured
+                        against. After any of those changed, the old
+                        rates read as current. Nothing warned when a
+                        workflow gated an edge on an eval its judge
+                        had never been measured on, and a workflow
+                        guard is where a wrong verdict changes what
+                        gets made.
+decision:               |
+                        cctool measure stamps each row it records with
+                        a digest of what the measurement depended on:
+                        the criterion, the examples, the scope, and
+                        every control case measuring the eval as
+                        subject, verdict and origin, with prose
+                        whitespace collapsed so that refilling changes
+                        nothing. A row is current when its digest is
+                        the eval's now.
+
+                        A confidence check, costing nothing and run
+                        always, reports a row that is not current as
+                        advisory and a row with no digest as a note.
+                        Rows recorded before digests existed were
+                        stamped with the digest as of the commit that
+                        recorded them, computed from the history, so
+                        that they read as current or stale according
+                        to what has happened since and never as
+                        something they are not.
+
+                        A guarded port is judged only by evals
+                        carrying current confidence for the judge in
+                        use; the run stops otherwise, unless the
+                        deployment says admit_unmeasured. An unguarded
+                        port is judged regardless, since its judgement
+                        informs and decides nothing. A sweep judges
+                        regardless and notes, once per eval, that the
+                        eval carries no current confidence for the
+                        judge, so its findings carry none. A dry run
+                        reports the screening calls, the most calls a
+                        run could make if every screen were confirmed,
+                        and the characters of subject sent.
+rationale:              |
+                        A digest rather than a date compared against
+                        history, because a date answers only with a
+                        git query nobody runs, and the digest makes
+                        staleness a mechanical check that travels with
+                        the eval. The cases in the digest as well as
+                        the eval, because the rates are over the
+                        cases: a case added or retired changes what
+                        the rates describe.
+
+                        Refuse for a guard and note for a sweep,
+                        because the two are priced differently, as
+                        ddr_cost_of_checking prices them. A sweep's
+                        finding costs an investigation and a person
+                        weighs it; a guard's verdict is acted on by
+                        the executor with nobody weighing it, so the
+                        confidence it lacks cannot be supplied later.
+                        The override is on the deployment because that
+                        is where the judge is named and the run is
+                        configured.
+
+                        Stamping old rows from the history rather than
+                        as of today, because a stamp is a claim about
+                        what was measured and today's content is not
+                        always what was.
+alternative:            |
+                        Warning on a guard rather than refusing.
+                        Rejected: a warning printed during a run that
+                        goes on to commit is read after the harm.
+
+                        Refusing in a sweep too. Rejected: a sweep's
+                        findings are read by a person, and a note
+                        beside them says what they are worth.
+
+                        Thresholds on the rates, admitting an eval
+                        only below some error rate. Deferred: what
+                        rate is acceptable is the allocation
+                        ddr_cost_of_checking describes and differs by
+                        what the eval gates; the rates stay visible
+                        and a threshold can be added where one is
+                        wanted.
+
+                        Rows without a digest reported as stale.
+                        Rejected: they may well be current, and the
+                        history could say which.
+consequence:            |
+                        Ten checks. A criterion cannot be edited and
+                        its old confidence kept silently; the check
+                        says so on the next run.
+
+                        A deployment on a model nobody has measured
+                        the guarding evals for does not run until they
+                        are measured or the deployment says the judge
+                        is admitted unmeasured. The test deployments
+                        say so, since the scripted judge is measured
+                        nowhere.
+
+                        Confidence goes stale when the cases change,
+                        which is oftener than the criterion does.
+                        Adding a case means measuring again, which is
+                        the point of adding a case.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.confidence
+    guid_target:        pym_deab1d80c47245f983f8754b7f94d615
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.measure
+    guid_target:        pym_77bb285571e34b1ea01f58e8d019661f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_deployment
+    guid_target:        sch_17ba23d4628842b19533d1ab38fb67c0
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_eval
+    guid_target:        sch_a7edf040404f4294bcbcc2294955775f
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_eval_measurement.cc868630d
+    guid_target:        qst_13a12103977d4e47bb0fbdd77110298d

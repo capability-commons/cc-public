@@ -172,7 +172,7 @@ allOf:
 
             date:
               type:     string
-              pattern:  '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+              pattern:  ^[0-9]{4}-[0-9]{2}-[0-9]{2}$
 
             origin:
               type:     string
@@ -206,6 +206,18 @@ allOf:
 
             unanimous:
               type:     number
+
+            digest:
+              type:     string
+              pattern:  ^[0-9a-f]{8}$
+              description:  |
+                        The digest of what the measurement depended
+                        on: the criterion, the examples, the scope and
+                        the control cases, as cctool measure computes
+                        it. A row whose digest is not the eval's now
+                        was measured about something else, which the
+                        confidence check reports. Absent on rows
+                        recorded before rows carried one.
 
       severity:
 

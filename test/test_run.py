@@ -36,6 +36,7 @@ import cc_public.check
 import cc_public.edit.field
 import cc_public.edit.tree
 import cc_public.eval.control
+import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.load
 import cc_public.load.git
@@ -114,6 +115,7 @@ def repo(tmp_path):
 
 def deploy(repo, **kw):
     tree = cc_public.edit.tree.Tree([repo])
+    kw.setdefault('admit_unmeasured', True)     # the scripted judge is measured nowhere
     for (k, v) in kw.items():
         cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local', k, value = v)
     git(repo, 'add', '-A')
@@ -424,6 +426,7 @@ def test_a_declined_edge_withdraws_its_delivery_and_the_unfed_node_is_skipped(re
     cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'commit', value = 'never')
     cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'judge', value = 'guards')
     cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'budget', value = 2)
+    cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'admit_unmeasured', value = True)
     cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'budget_by_priority',
                                    value = {'high': 2, 'medium': 2, 'low': 2})
     git(repo, 'add', '-A')
@@ -469,3 +472,34 @@ def test_two_forward_edges_into_one_input_are_a_fault(repo):
                                    value = {'from': 'challenge.output.decision',
                                             'to':   'challenge.input.proposal'})
     assert any('one forward edge' in m for m in clean(repo))
+
+
+def test_a_guard_is_refused_to_a_judge_the_eval_was_not_measured_for(repo):
+    deploy(repo, judge = 'guards', commit = 'never', admit_unmeasured = False)
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] and 'no current confidence for judge' in r['stopped']
+    assert git(repo, 'status', '--porcelain') == ''
+
+    # Measured for this judge, and current: admitted.
+    tree = cc_public.edit.tree.Tree([repo])
+    for ev in EVALS:
+        rows = [{'origin': 'all', 'cases': 1, 'samples': 3, 'false_positive': 0.0,
+                 'false_negative': 0.0, 'unanimous': 1.0}]
+        cc_public.eval.measure.record(tree, ev, rows, 'judge')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'measured')
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] is None
+
+    # The criterion changes: the confidence is stale, and the guard is refused again.
+    cc_public.edit.field.set_field(tree, EVALS[0], 'criterion', prose = 'Something else.\n')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'changed')
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] and EVALS[0] in r['stopped']

@@ -11,8 +11,8 @@ All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
 `--root DIR` (repeatable), `check` takes `--path`.
 
-- `check` — nine mechanical checks (parse, guid, identifier, reference,
-  relation, schema, layout, workflow, trace). Must be clean. `--fail-fast`, `--closed-world`,
+- `check` — ten mechanical checks (parse, guid, identifier, reference,
+  relation, schema, layout, workflow, trace, confidence). Must be clean. `--fail-fast`, `--closed-world`,
   `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
   paste a key into chat). `--confirm N` re-judges an adverse verdict N times,
@@ -20,7 +20,11 @@ are shorthands. Every command has `--help`; the writing commands take
   narrow (anchored regex); `--judge-model null` dry-runs.
 - `measure --id-eval X [--samples N] [--record]` — judges X's control cases
   fresh and reports false-positive / false-negative / unanimity per origin;
-  `--record` writes them onto the eval as `confidence`.
+  `--record` writes them onto the eval as `confidence`, stamped with a digest
+  of criterion, examples, scope and cases. Change any of those and the row
+  is stale: the confidence check says so, and a guard on that eval is
+  refused to that judge until it is measured again (`ddr_eval_admission`).
+  N is odd.
 - `case --id-eval X --item Y --verdict met|unmet --note "…"` — turns a finding
   into a control case (met = suppressed, unmet = confirmed). A later sweep
   matching the same words reports a met case as a note, not a finding.

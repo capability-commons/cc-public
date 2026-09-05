@@ -28,6 +28,7 @@ description:            |
 import cc_public.check.result
 import cc_public.eval.control
 import cc_public.eval.runner
+import cc_public.eval.measure
 import cc_public.eval.select
 
 
@@ -59,8 +60,25 @@ def check(context):
     list_nonconformity = []
     count_verdict      = 0
     map_known          = {}
+    set_unmeasured     = set()
 
     for task in cc_public.eval.select.select(context, context.selector_eval):
+
+        # Findings from an eval with no current confidence for this
+        # judge carry none, which is said once per eval, not per finding.
+        #
+        if task.id_eval not in set_unmeasured and not any(
+                isinstance(row, dict) and row.get('model') == runner.id_model
+                and cc_public.eval.measure.is_current(row, task.document_eval,
+                                                      context.map_document)
+                for row in task.document_eval.get('confidence') or []):
+            set_unmeasured.add(task.id_eval)
+            list_note.append(cc_public.check.result.Note(
+                    filepath = task.filepath,
+                    message  = '{id_eval} carries no current confidence for '
+                               '{model}, so its findings carry none. Measure '
+                               'it.'.format(id_eval = task.id_eval,
+                                            model   = runner.id_model)))
 
         verdict        = runner.run(task)
         count_verdict += 1
@@ -125,5 +143,25 @@ def check(context):
                         count_item         = count_verdict,
                         list_nonconformity = list_nonconformity,
                         list_note          = list_note,
-                        detail             = {'id_model':      runner.id_model,
-                                              'count_confirm': context.count_confirm})
+                        detail             = _detail(runner, context, count_verdict))
+
+
+# -----------------------------------------------------------------------------
+def _detail(runner, context, count_verdict):
+    """
+    Return what the report says about the judge, and, for a dry run,
+    what a real one would cost at most: the screening calls, the calls
+    if every screen came back unmet and was confirmed, and the
+    characters of subject sent.
+
+    """
+
+    detail = {'id_model':      runner.id_model,
+              'count_confirm': context.count_confirm}
+
+    if hasattr(runner, 'count_call'):
+        detail['count_call']     = runner.count_call
+        detail['count_call_max'] = count_verdict * context.count_confirm
+        detail['count_char']     = runner.count_char
+
+    return detail
