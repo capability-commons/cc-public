@@ -1,0 +1,80 @@
+id_self:                wf_decomposition_from_need
+guid_self:              wf_58e6d76c6a564c27b6a5c705dba83981
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decomposition from need
+brief:                  |
+                        Decompose a need under a framing, challenge
+                        the decomposition from a second model, and
+                        redraft until the challenge is answered or the
+                        budget is spent.
+description:            |
+                        Two nodes. Propose takes the need, the framing
+                        and the guide and makes the decomposition
+                        decision with its assumptions. Challenge, on
+                        the deployment's second model, writes the
+                        strongest case against it. While the challenge
+                        is not answered, two back edges return the
+                        decision and its judgement to propose, which
+                        writes the resolution and revises. What leaves
+                        is a decision that survived an independent
+                        challenge, or the record of one that did not
+                        within the budget.
+
+node:
+
+  propose:
+    id_self:            node_decomposition_from_need.propose
+    guid_self:          node_09db7df7a0d644efb452c4e28f000a07
+    title:              Propose
+    brief:              |
+                        The propose node.
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_propose_decomposition
+        guid_target:    cmp_0eb2da2054eb4aa3af096eeb2fa5a6f3
+
+  challenge:
+    id_self:            node_decomposition_from_need.challenge
+    guid_self:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    title:              Challenge
+    brief:              |
+                        The challenge node.
+    challenger:         true
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_challenge_decomposition
+        guid_target:    cmp_8934df758fea48549785ee81771d0e02
+
+edge:
+
+  propose_to_challenge:
+    from:               propose.output.decision
+    to:                 challenge.input.proposal
+
+edge_back:
+
+  challenge_to_propose:
+    from:               challenge.output.decision
+    to:                 propose.input.prior
+    guard:              unmet
+
+  challenge_to_propose_judgement:
+    from:               challenge.output.decision
+    to:                 propose.input.judgement
+    guard:              unmet
+    carries:            judgement
+
+relation:               []

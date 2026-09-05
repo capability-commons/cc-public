@@ -1,0 +1,134 @@
+id_self:                ddr_decompose_frontline_power_dependency
+guid_self:              ddr_fcce04e347ee489a8f68db6defa92381
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Frontline power and connectivity, decomposed as a dependency problem
+brief:                  |
+                        The need for resilient frontline power,
+                        connectivity and control, cut by what it
+                        depends on: three narrower needs, on power, on
+                        a second communications path, and on control
+                        links under electronic warfare.
+context:                |
+                        The need is
+                        need_resilient_frontline_power_connectivity.
+                        The framing is frame_dependency: the outcome
+                        fails when something it depends on fails, so
+                        the cut follows the dependencies the evidence
+                        names.
+decision:               |
+                        The need is decomposed into three children. In
+                        frontline operations with repeated attacks on
+                        infrastructure, distributed frontline teams
+                        need local power and charging that continues
+                        when grid power is cut, in order to keep
+                        drones, jammers and radios running. In
+                        frontline operations where one satellite
+                        service carries most traffic, the same teams
+                        need a second communications path independent
+                        of that service, in order to keep command and
+                        reconnaissance going through an outage of the
+                        first. In frontline operations under
+                        electronic warfare, the same teams need
+                        control links to drones and remote systems
+                        that hold under jamming, in order to keep
+                        those systems in use. No entity is chosen;
+                        each child is a need, not a requirement.
+rationale:              |
+                        The dependency framing was chosen because the
+                        evidence is about failures of things depended
+                        on: a provider outage, cut grid power, jammed
+                        links. Cutting by dependency gives children
+                        that each remove one single point of failure
+                        and can be traced to one piece of evidence.
+alternative:            |
+                        Cut by resource, as a supply problem: power,
+                        bandwidth, spares. Rejected: it merges the
+                        outage of one provider with the lack of
+                        bandwidth generally, which the evidence
+                        separates. Cut by activity: command,
+                        reconnaissance, repair. Rejected: every
+                        activity depends on all three of power,
+                        communications and control, so the children
+                        would repeat each other.
+consequence:            |
+                        The children answer the grid outage, the
+                        single provider outage and jamming the context
+                        names. They do not answer physical attack on
+                        the equipment itself, which the context
+                        implies and which is left to a later
+                        decomposition under frame_adversary.
+
+assumption:
+
+  single_provider:
+    id_self:            asm_decompose_frontline_power_dependency.single_provider
+    guid_self:          asm_695f2d9339154aa9b29c0efd63eeca69
+    statement:          |
+                        Most frontline traffic runs over one satellite
+                        service.
+    evidence:           |
+                        Reuters, July 2025: the Starlink outage
+                        disrupted communications across the whole
+                        front.
+    relation:           []
+
+  grid_cut:
+    id_self:            asm_decompose_frontline_power_dependency.grid_cut
+    guid_self:          asm_69016c2290b645279655611c6db9fd66
+    statement:          |
+                        Grid power near the front is cut for days at a
+                        time.
+    evidence:           |
+                        The February 2026 procurement report shows
+                        repeated deliveries of generators and power
+                        banks to brigades.
+    relation:           []
+
+  jamming_persistent:
+    id_self:            asm_decompose_frontline_power_dependency.jamming_persistent
+    guid_self:          asm_7120bc93b11540f48426f99cccdf69ec
+    statement:          |
+                        Electronic warfare on the front is continuous,
+                        not episodic.
+    evidence:           |
+                        The March 2026 US Army paper on frontline
+                        power notes jammers needing continuous supply.
+    relation:           []
+
+challenge:              |
+                        The third child, control links that hold under
+                        jamming, is not a need but a solution
+                        direction: the need is to keep remote systems
+                        in use under electronic warfare, and control
+                        links are one way. A fibre tethered system
+                        needs no link that jamming can reach. If the
+                        child stands as written, the decomposition
+                        forecloses the tether. The assumption that
+                        jamming is continuous is also taken from a
+                        paper on power, which says jammers need power,
+                        not that jamming never stops.
+resolution:             |
+                        The first point stands and the child is
+                        revised: the same teams need to keep drones
+                        and remote systems in use under electronic
+                        warfare, with the means open. The second point
+                        is conceded in part: the assumption is
+                        reworded to what the evidence supports, that
+                        jammers run continuously on the friendly side,
+                        and its evidence for the hostile side is
+                        marked as lacking.
+status:                 proposed
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_resilient_frontline_power_connectivity
+    guid_target:        need_fad12e25838c4ffd92db3dbd74baebc9

@@ -1,0 +1,128 @@
+id_self:                evl_decomposition_sufficient
+guid_self:              evl_2961755149cc4beb8b1b4b649c747721
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decomposition is sufficient
+brief:                  |
+                        The children a decomposition names, given its
+                        assumptions, together deliver the parent
+                        need's outcome for its subject in its context,
+                        and answer the threats the context implies.
+criterion:              |
+                        You are given a design decision that
+                        decomposes a need, with its assumptions, and
+                        the need it decomposes.
+
+                        MET when every child serves the parent; when
+                        the children together, if each were met and
+                        the assumptions held, would deliver the
+                        outcome for the subject in the context, with
+                        no part of the outcome left to no child; when
+                        each assumption is evidenced or says plainly
+                        that it is not; and when each threat or
+                        degraded condition the context names is
+                        answered by some child or is named in
+                        consequence as unanswered.
+
+                        UNMET when a child addresses something the
+                        need does not ask; when the children together
+                        leave part of the outcome uncovered and the
+                        record does not say so; when an assumption is
+                        contradicted by the need's evidence or is
+                        asserted without evidence and without saying
+                        so; or when a threat or degraded condition in
+                        the context is answered by no child and not
+                        acknowledged.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, name the child, assumption or gap
+                        at fault and quote it.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        --- ddr_x decision: Three children. In front
+                        line operations under jamming, distributed
+                        teams need power that does not depend on the
+                        grid. The same teams need a second
+                        communications path independent of any single
+                        provider. The same teams need control links
+                        that hold under electronic warfare.
+                        assumption: grid_unreliable: Grid power near
+                        the front is cut for days at a time. Evidence:
+                        the February 2026 procurement report shows
+                        repeated generator deliveries. --- need_y
+                        statement: In frontline operations with heavy
+                        dependence on drones and repeated attacks on
+                        infrastructure, distributed teams need
+                        reliable local power, communications and
+                        control links when grid power, central
+                        internet, GNSS or a single service is denied,
+                        in order to keep operations going under
+                        attack. evidence: Reuters reported a Starlink
+                        outage across the front; a procurement report
+                        shows repeated generator deliveries.
+    verdict:            met
+    feedback:           |
+                        The three children cover power, communications
+                        and control; the assumption is evidenced; the
+                        single-service denial the evidence centres on
+                        is answered by the second child.
+
+  - input:              |
+                        --- ddr_x decision: Two children. Teams need
+                        power that does not depend on the grid. Teams
+                        need better training in drone operation.
+                        assumption: none. --- need_y statement: In
+                        frontline operations with heavy dependence on
+                        drones and repeated attacks on infrastructure,
+                        distributed teams need reliable local power,
+                        communications and control links when grid
+                        power, central internet, GNSS or a single
+                        service is denied, in order to keep operations
+                        going under attack. evidence: Reuters reported
+                        a Starlink outage across the front.
+    verdict:            unmet
+    feedback:           |
+                        Training is not asked for; communications and
+                        control are left to no child; the outage the
+                        evidence centres on is unanswered. Quote:
+                        Teams need better training in drone operation.
+
+subject:
+
+  include_type:
+    - t_ddr
+    - t_need
+
+scope:
+
+  include:
+    - decision
+    - assumption
+    - consequence
+    - challenge
+    - resolution
+    - statement
+    - subject
+    - outcome
+    - purpose
+    - context
+    - evidence
+
+relation:
+
+  - id_relation:        r_evaluates_items_joined_by_relation
+    guid_relation:      r_c7a437a455054da6bbedbced7c4bf32d
+    id_target:          r_is_derived_from
+    guid_target:        r_a8017d991f8a4e63a84d1eec5a2d6051

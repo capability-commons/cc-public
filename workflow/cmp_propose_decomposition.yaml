@@ -1,0 +1,161 @@
+id_self:                cmp_propose_decomposition
+guid_self:              cmp_0eb2da2054eb4aa3af096eeb2fa5a6f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Propose a decomposition
+brief:                  |
+                        Break a need into narrower needs under a
+                        framing, as a design decision with its
+                        assumptions.
+description:            |
+                        Given a need, a framing and the writing style
+                        guide, and on a later pass its own prior
+                        decision with the judgement and challenge it
+                        drew, produce the design decision that
+                        decomposes the need: the children it proposes,
+                        the assumptions about the world it relies on,
+                        the alternatives it rejected, and, where a
+                        challenge was made, its resolution. Follows
+                        method_kaos for refinement and obstacles and
+                        method_admissible_claims for what the record
+                        must carry.
+
+output:
+
+  decision:
+    id_self:            prt_propose_decomposition.decision
+    guid_self:          prt_0c1f90d40b80460bbdd762b6a54d29f3
+    title:              Decomposition decision
+    brief:              |
+                        The design decision decomposing the need.
+    id_type:            t_ddr
+    guid_type:          t_5751ab6c7b0c44e8b4ed8f6c882192d8
+    revises:            prior
+    derives:            need
+
+    field:
+      - title
+      - brief
+      - context
+      - decision
+      - rationale
+      - alternative
+      - consequence
+      - assumption
+      - resolution
+
+    prompt:             |
+                        Decompose the need on need into narrower
+                        needs, looking at it the way the framing on
+                        framing says. Say in context which need and
+                        which framing, in one sentence each. In
+                        decision, name each child need as one sentence
+                        in the form the parent uses: in a context, a
+                        subject needs an outcome, in order to a
+                        purpose; where the decomposition chooses the
+                        entity the outcome is needed from, name it.
+                        State in assumption every claim about the
+                        world the decomposition relies on, as a JSON
+                        list of objects with a key, a statement and
+                        its evidence; an assumption with no evidence
+                        says so. In alternative say what other ways of
+                        cutting the need were considered and why not.
+                        In consequence say what follows, including
+                        which threats or degraded conditions in the
+                        need's context the children answer and which
+                        they do not. Where judgement or prior is
+                        bound, revise the prior: answer every unmet
+                        finding. Where the prior carries a challenge,
+                        write in resolution how the position answers
+                        it, standing, revising or conceding, point by
+                        point; otherwise leave resolution empty. The
+                        rules on guide say how to write; follow them
+                        and do not mention them. Write the decision as
+                        the act of deciding, not as a report.
+
+    relation:
+
+      - id_relation:    r_is_judged_by
+        guid_relation:  r_2ad95cd22e3e45beb317f3e082386a96
+        id_target:      evl_plain_text
+        guid_target:    evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+
+      - id_relation:    r_is_judged_by
+        guid_relation:  r_2ad95cd22e3e45beb317f3e082386a96
+        id_target:      evl_decision_stated
+        guid_target:    evl_59bc0d987435402bb368cff27332a4f4
+
+      - id_relation:    r_is_judged_by
+        guid_relation:  r_2ad95cd22e3e45beb317f3e082386a96
+        id_target:      evl_decision_decides
+        guid_target:    evl_095873b6012d43069725006433b2fff3
+
+      - id_relation:    r_is_judged_by
+        guid_relation:  r_2ad95cd22e3e45beb317f3e082386a96
+        id_target:      evl_records_the_decision
+        guid_target:    evl_d1c939981d7c44eaa252f4f61d212441
+
+relation:               []
+
+input:
+
+  need:
+    id_self:            prt_propose_decomposition.need
+    guid_self:          prt_2b1ad730029d40ffb131b00e039a7344
+    title:              Need
+    brief:              |
+                        The need to decompose.
+    id_type:            t_need
+    guid_type:          t_e2252072b81d4aac8ee8f267b42d34be
+    relation:           []
+
+  framing:
+    id_self:            prt_propose_decomposition.framing
+    guid_self:          prt_71ba7778a2a2483a970a5fb524ad5939
+    title:              Framing
+    brief:              |
+                        The lens the decomposition is made under.
+    id_type:            t_framing
+    guid_type:          t_1fa09aca323b45b0bac385a34f96886c
+    relation:           []
+
+  guide:
+    id_self:            prt_propose_decomposition.guide
+    guid_self:          prt_bc7707400975449ca044b26e2570000b
+    title:              Writing style guide
+    brief:              |
+                        The register of writing style rules the prose
+                        follows.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []
+
+  prior:
+    id_self:            prt_propose_decomposition.prior
+    guid_self:          prt_eaee2105b747420e9a309f54aa130c31
+    title:              Prior decision
+    brief:              |
+                        The previous pass of this decision, where the
+                        challenge sent it back.
+    id_type:            t_ddr
+    guid_type:          t_5751ab6c7b0c44e8b4ed8f6c882192d8
+    optional:           true
+    relation:           []
+
+  judgement:
+    id_self:            prt_propose_decomposition.judgement
+    guid_self:          prt_b02c65b7952744b3a55fd6cd5658fd9c
+    title:              Judgement of the prior decision
+    brief:              |
+                        What the evals said of the prior decision, and
+                        why.
+    id_type:            t_binding
+    guid_type:          t_77bea970bdfb407d9ad740aa7ad2ee1b
+    optional:           true
+    relation:           []
