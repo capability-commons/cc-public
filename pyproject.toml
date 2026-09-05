@@ -1,38 +1,46 @@
 [project]
-authors         = [{name = "William Payne", email = "wtpayne@gmail.com"}]
-name            = "cc-public"
-version         = "0.1.0"
-requires-python = ">= 3.14"
-dependencies    = ["ruamel-yaml>=0.19.1,<0.20",
-                   "click>=8.5.0,<9", "defusedxml>=0.7.1,<0.8", "jstyleson>=0.0.2,<0.0.3", "xmltodict>=1.0.4,<2", "jsonschema>=4.26.0,<5", "rich>=15.0.0,<16", "dspy==3.3.1", "python-dotenv>=1.2.3,<2", "pytest>=9.1.1,<10"]
+authors                 = [{name = "William Payne", email = "wtpayne@gmail.com"}]
+name                    = "cc-public"
+version                 = "0.1.0"
+requires-python         = ">= 3.14"
+dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
+                           "click>=8.5.0,<9",
+                           "defusedxml>=0.7.1,<0.8",
+                           "jstyleson>=0.0.2,<0.0.3",
+                           "xmltodict>=1.0.4,<2",
+                           "jsonschema>=4.26.0,<5",
+                           "rich>=15.0.0,<16",
+                           "dspy==3.3.1",
+                           "python-dotenv>=1.2.3,<2",
+                           "pytest>=9.1.1,<10"]
 
 [project.scripts]
-cctool          = "cc_public.cli.command:main"
+cctool                  = "cc_public.cli.command:main"
 
 [build-system]
-build-backend   = "hatchling.build"
-requires        = ["hatchling"]
+build-backend           = "hatchling.build"
+requires                = ["hatchling"]
 
 [tool.pixi.workspace]
-channels        = ["conda-forge"]
-platforms       = ["osx-arm64"]
+channels                = ["conda-forge"]
+platforms               = ["osx-arm64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public       = { path = ".", editable = true }
+cc_public               = { path = ".", editable = true }
 
 [tool.cctool.new]
-copyright       = "Copyright 2026 William Payne"
-license         = "Apache-2.0"
-id_mark         = "mark_public"
+copyright               = "Copyright 2026 William Payne"
+license                 = "Apache-2.0"
+id_mark                 = "mark_public"
 
 [tool.pixi.tasks]
-check           = "cctool check"
-format          = "cctool format"
-test            = "pytest -q test"
-lint            = "ruff check src test"
+check                   = "cctool check"
+format                  = "cctool format"
+test                    = "pytest -q test"
+lint                    = "ruff check src test"
 
 [tool.pixi.dependencies]
-ruff = ">=0.16.6,<0.17"
+ruff                    = ">=0.16.6,<0.17"
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it
@@ -40,29 +48,30 @@ ruff = ">=0.16.6,<0.17"
 # 2026-09-05, a baseline to ratchet down, not a target.
 #
 [tool.ruff]
-line-length     = 100
-target-version  = "py313"
-extend-exclude  = ["execution"]
+line-length             = 100
+target-version          = "py313"
+extend-exclude          = ["execution"]
 
 [tool.ruff.lint]
-select          = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
-                   "ARG", "S", "DTZ", "PIE", "FURB"]
-ignore          = ["UP032",   # format() is the house form
-                   "PLC0415", # a lazy import keeps an optional dependency optional
-                   "PLR2004", # a literal beside its comparison reads
-                   "N818",    # exceptions are named Error<Thing>
-                   "ARG002",  # a protocol method takes what the protocol says
-                   "S603", "S607"]   # subprocess runs git, by name, on purpose
+select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
+                           "ARG", "S", "DTZ", "PIE", "FURB"]
+ignore                  = ["UP032",   # format() is the house form
+                           "PLC0415", # a lazy import keeps an optional dependency optional
+                           "PLR2004", # a literal beside its comparison reads
+                           "N818",    # exceptions are named Error<Thing>
+                           "ARG002",  # a protocol method takes what the protocol says
+                           "S603",
+                           "S607"]    # subprocess runs git, by name, on purpose
 
 [tool.ruff.lint.mccabe]
-max-complexity  = 21
+max-complexity          = 21
 
 [tool.ruff.lint.pylint]
-max-args        = 11
-max-positional-args = 11
-max-branches    = 23
-max-statements  = 64
+max-args                = 11
+max-positional-args     = 11
+max-branches            = 23
+max-statements          = 64
 
 [tool.ruff.lint.per-file-ignores]
-"test/*"        = ["S101", "E501", "PLR0913", "PLR0917", "ARG001"]
+"test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "ARG001"]
 "src/cc_public/cli/command.py" = ["PLR0913", "PLR0917"]   # a click command takes one argument per option

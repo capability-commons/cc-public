@@ -384,3 +384,23 @@ def test_a_table_is_updated_in_place_on_a_later_pass(repo):
     assert list(doc['assumption']) == ['a', 'c']
     assert doc['assumption']['a']['statement'].startswith('A revised')
     assert clean(repo) == []
+
+
+def test_a_check_that_cannot_run_stops_the_run_and_restores(repo, monkeypatch):
+    class Raising:
+        ID_CHECK = 'raising'
+        TITLE    = 'A check that raises'
+        NOUN     = 'thing'
+
+        @staticmethod
+        def check(_context):
+            raise RuntimeError('the check fell over')
+
+    deploy(repo, judge = 'always', commit = 'never')
+    monkeypatch.setattr(cc_public.check, 'CHECK', (*cc_public.check.CHECK, Raising))
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] and 'did not complete' in r['stopped']
+    assert not (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
+    assert git(repo, 'status', '--porcelain') == ''

@@ -347,7 +347,7 @@ def _execution(tree, ledger, id_workflow, id_deployment):
     #
     root = _root(tree)
     path = cc_public.edit.new.new(tree, 't_execution', id_exe,
-                                  cc_public.edit.tree.defaults(),
+                                  tree.defaults(),
                                   dirpath_out = root / DIR_EXECUTION, guid = guid)
     ledger.note_create(path)
 
@@ -407,12 +407,10 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
     map_bnd = _bind(tree, graph, local, bound, id_exe, n_pass)
 
-    report = cc_public.check.check(list_path = [root])['report']
-    faults = [n['message'] for c in report['check'] for n in c['nonconformity']
-                if n['severity'] == 'critical']
-    if faults:
-        raise Stop('After {node}, {n} critical finding(s): {first}'.format(
-                            node = local, n = len(faults), first = faults[0]))
+    refusal = cc_public.check.refusal(cc_public.check.check(list_path = [root]))
+    if refusal is not None:
+        raise Stop('After {node}, {why}'.format(node = local,
+                                                why  = refusal.message))
 
     for (port, spec) in graph.outputs(local).items():
 
@@ -548,7 +546,7 @@ def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry
                                                   s = entry_type[KEY_PREFIX] + '_' + slug,
                                                   id = id_item))
         path = cc_public.edit.new.new(tree, id_type, id_item,
-                                      cc_public.edit.tree.defaults(), guid = guid)
+                                      tree.defaults(), guid = guid)
         ledger.note_create(path)
         if spec.get(KEY_DECIDES):
             id_decided = bound.get((local, spec[KEY_DECIDES]))

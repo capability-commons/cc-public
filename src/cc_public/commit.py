@@ -22,6 +22,9 @@ description:            |
                         record; the diff says it. A critical finding
                         refuses the commit unless a checkpoint is
                         asked for, in which case the record says so.
+                        An analysis that did not complete refuses it
+                        whatever is asked for, since no state of the
+                        checks can then be recorded.
 
 ...
 """
@@ -116,20 +119,19 @@ def commit(root, title, brief = None, description = None,
     if not list_changed:
         raise ErrorCommit('Nothing has changed, so there is nothing to commit.')
 
-    report   = cc_public.check.check(list_path = [root])['report']
-    count    = {'count':    len(report['check']),
-                'critical': sum(1 for c in report['check']
-                                  for n in c['nonconformity']
-                                  if n['severity'] == 'critical'),
-                'advisory': sum(1 for c in report['check']
-                                  for n in c['nonconformity']
-                                  if n['severity'] == 'advisory')}
+    report  = cc_public.check.check(list_path = [root])
+    refusal = cc_public.check.refusal(report, is_checkpoint)
 
-    if count['critical'] and not is_checkpoint:
-        raise ErrorCommit(
-            '{n} critical finding(s). A commit with the checks failing is a '
-            'checkpoint; ask for one with --checkpoint and it will be '
-            'recorded as such.'.format(n = count['critical']))
+    if refusal is not None:
+        raise ErrorCommit(refusal.message + (
+            ' A commit with the checks failing is a checkpoint; ask for one '
+            'with --checkpoint and it will be recorded as such.'
+                if refusal.kind == cc_public.check.STATUS_BAD else ''))
+
+    summary = report['report']['summary']
+    count   = {'count':    summary['count_check'],
+               'critical': summary['count_critical'],
+               'advisory': summary['count_advisory']}
 
     tree     = cc_public.edit.tree.Tree([root])
     document = record(tree, title, brief, description,

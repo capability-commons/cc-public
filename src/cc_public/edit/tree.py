@@ -17,12 +17,15 @@ brief:                  |
                         back through the printer.
 description:            |
                         Loads the tree once and indexes every identity
-                        it declares, top level and embedded. Resolves
-                        a readable id or a guid to the file holding it
-                        and the path within that file. Writes a
-                        changed document back in the layout the
-                        printer gives it, splicing into a docstring
-                        where the file is python.
+                        it declares, top level and embedded, and
+                        refuses a tree it could not read entirely.
+                        Resolves a readable id or a guid to the file
+                        holding it and the path within that file.
+                        Writes a changed document back in the layout
+                        the printer gives it, splicing into a
+                        docstring where the file is python. Says what
+                        a new item in the tree is given, from the
+                        configuration at or above its root.
 
 ...
 """
@@ -90,10 +93,28 @@ class Tree:
 
     def __init__(self, list_root):
 
+        if not list_root:
+            raise ErrorItem('A tree needs at least one root.')
+
         self.root = pathlib.Path(list_root[0]).resolve()
 
         (self.context, list_error) = cc_public.check._context(
                                             [pathlib.Path(p) for p in list_root])
+
+        # An edit over part of a tree could miss the item it collides
+        # with or the reference it breaks, so a tree that could not be
+        # read entirely is not one that can be written to. The checks
+        # report the same files; this is what stops anything acting
+        # before they are fixed.
+        #
+        list_problem = [e['message'] for e in list_error] + [
+                            '{path}: {err}'.format(path = path, err = err)
+                            for (path, err) in self.context.list_failure_load]
+
+        if list_problem:
+            raise ErrorItem('The tree could not be read entirely, so nothing '
+                            'in it can be edited until it can: '
+                            '{problems}'.format(problems = '; '.join(list_problem)))
 
         self.map_id   = {}
         self.map_guid = {}
@@ -110,6 +131,15 @@ class Tree:
                     if key in index:
                         self.dup.add(key)
                     index[key] = item
+
+    # -------------------------------------------------------------------------
+    def defaults(self):
+        """
+        Return the rights a new item in this tree is given.
+
+        """
+
+        return defaults(self.root)
 
     # -------------------------------------------------------------------------
     def resolve(self, name):
@@ -229,15 +259,22 @@ def _text_of(filepath):
 
 
 # -----------------------------------------------------------------------------
-def defaults():
+def defaults(root):
     """
-    Return the rights a new item is given, from pyproject.toml.
+    Return the rights a new item is given, from the pyproject.toml at
+    or above root.
+
+    The tree being written to is what says what a new item in it gets.
+    Where the command is run from says nothing: a tree edited from
+    another directory takes its own defaults, not that directory's.
 
     """
 
     import tomllib
 
-    for parent in (pathlib.Path.cwd(), *pathlib.Path.cwd().parents):
+    root = pathlib.Path(root).resolve()
+
+    for parent in (root, *root.parents):
         candidate = parent / 'pyproject.toml'
         if candidate.exists():
             with open(candidate, 'rb') as file:
@@ -247,5 +284,6 @@ def defaults():
                 return section
             break
 
-    raise ErrorItem('No [tool.cctool.new] in pyproject.toml, so no '
-                    'copyright, license or id_mark to give a new item.')
+    raise ErrorItem('No [tool.cctool.new] in a pyproject.toml at or above '
+                    '{root}, so no copyright, license or id_mark to give a '
+                    'new item there.'.format(root = root))

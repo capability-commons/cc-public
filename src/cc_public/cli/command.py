@@ -340,9 +340,9 @@ def new(id_type, id_self, dirpath_out, list_root):
     """
 
     try:
-        defaults = cc_public.edit.tree.defaults()
-        filepath = cc_public.edit.new.new(_tree(list_root), id_type, id_self,
-                                          defaults, dirpath_out)
+        tree     = _tree(list_root)
+        filepath = cc_public.edit.new.new(tree, id_type, id_self,
+                                          tree.defaults(), dirpath_out)
     except (cc_public.edit.tree.ErrorItem, KeyError) as err:
         _fail(err)
 

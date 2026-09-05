@@ -122,3 +122,27 @@ def test_records_sort_by_time(repo):
                                        'budget', value = n)
         ids.append(cc_public.commit.commit(repo, 'Budget {n}'.format(n = n))[1])
     assert ids == sorted(ids)
+
+
+class Raising:
+    """A check that cannot run, standing in for a defect in the tool."""
+
+    ID_CHECK = 'raising'
+    TITLE    = 'A check that raises'
+    NOUN     = 'thing'
+
+    @staticmethod
+    def check(_context):
+        raise RuntimeError('the check fell over')
+
+
+def test_commit_refuses_an_incomplete_analysis_even_as_a_checkpoint(repo, monkeypatch):
+    monkeypatch.setattr(cc_public.check, 'CHECK', (*cc_public.check.CHECK, Raising))
+    (repo / 'NOTES.md').write_text('a note\n')
+    for is_checkpoint in (False, True):
+        with pytest.raises(cc_public.commit.ErrorCommit) as caught:
+            cc_public.commit.commit(repo, 'Blind', is_checkpoint = is_checkpoint)
+        assert 'did not complete' in str(caught.value)
+        assert 'the check fell over' in str(caught.value)
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '1'
+    assert git(repo, 'status', '--porcelain').split() == ['??', 'NOTES.md']

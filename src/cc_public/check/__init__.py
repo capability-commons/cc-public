@@ -29,6 +29,7 @@ description:            |
 import os
 import pathlib
 import traceback
+import typing
 
 import cc_public.eval.runner
 import cc_public.load
@@ -121,6 +122,61 @@ def check(list_path = (), is_fail_fast = False,
 
     return _report(list_dirpath, list_check, list_error, is_fail_fast,
                    is_closed_world)
+
+
+# -----------------------------------------------------------------------------
+class Refusal(typing.NamedTuple):
+    """
+    Why a report cannot be acted on: what kind of thing stops it, how
+    many of them there are, and the first of them.
+
+    """
+
+    kind:  str
+    count: int
+    first: str
+
+    @property
+    def message(self):
+        if self.kind == STATUS_ERR:
+            return ('The analysis did not complete, so nothing can be said '
+                    'about conformity: {n} error(s), the first: '
+                    '{first}'.format(n = self.count, first = self.first))
+        return '{n} critical finding(s), the first: {first}'.format(
+                                            n = self.count, first = self.first)
+
+
+# -----------------------------------------------------------------------------
+def refusal(report, is_checkpoint = False):
+    """
+    Return the Refusal a caller acting on this report must stop for, or
+    None where the report may be acted on.
+
+    The one place the policy lives, so that the committer, the executor
+    and the gate cannot disagree about it. An analysis that failed to
+    run refuses always: no claim about the data can be made from a
+    report that did not look at all of it, and a checkpoint, which
+    records a known nonconformity, does not cover an unknown one. A
+    critical finding refuses unless a checkpoint is asked for.
+    Advisories never refuse.
+
+    """
+
+    inner = report['report']
+
+    if inner['error']:
+        return Refusal(STATUS_ERR, len(inner['error']),
+                       '{id_check}: {message}'.format(
+                                    id_check = inner['error'][0]['id_check'],
+                                    message  = inner['error'][0]['message']))
+
+    if inner['summary']['count_critical'] and not is_checkpoint:
+        first = next(n['message'] for c in inner['check']
+                                  for n in c['nonconformity']
+                                  if n['severity'] == check_result.SEVERITY_CRITICAL)
+        return Refusal(STATUS_BAD, inner['summary']['count_critical'], first)
+
+    return None
 
 
 # -----------------------------------------------------------------------------

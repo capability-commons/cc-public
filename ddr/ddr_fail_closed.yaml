@@ -1,0 +1,138 @@
+id_self:                ddr_fail_closed
+guid_self:              ddr_ebf0d29492ee4d97869422b1d7ff2132
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fail closed
+brief:                  |
+                        Nothing acts on what the tool could not read
+                        or check. An analysis that did not complete
+                        refuses a commit and stops a run whatever else
+                        is asked for, a tree that could not be loaded
+                        entirely cannot be edited, and what a new item
+                        is given comes from the tree it goes into.
+context:                |
+                        The check driver has kept three outcomes apart
+                        since ddr_check_architecture: an error, where
+                        the analysis failed; a nonconformity, where
+                        the data did; and a note. The committer and
+                        the executor read the nonconformities and
+                        never the errors, so a check that raised was a
+                        clean commit or a passed node. A checkpoint
+                        commit, meant to record a known nonconformity,
+                        would have recorded an unknown one as clean.
+
+                        The tree an edit works over was built from
+                        whatever loaded, with load failures dropped.
+                        An edit could then miss the item it collided
+                        with, or the file holding a reference it
+                        broke.
+
+                        The rights a new item was given were read from
+                        the pyproject.toml nearest the working
+                        directory rather than the tree being written
+                        to. A tree edited from elsewhere took the
+                        wrong copyright, or none.
+
+                        A review of the foundation by another model
+                        found all three.
+decision:               |
+                        One function, refusal in the check package,
+                        says why a report cannot be acted on: an error
+                        in the analysis always, a critical finding
+                        unless a checkpoint is asked for, an advisory
+                        never. The committer and the executor's gate
+                        after every node ask it and nothing else. A
+                        refusal for an error is not overridden by a
+                        checkpoint, because a checkpoint records a
+                        known state and an incomplete analysis is not
+                        one.
+
+                        An editable tree refuses to be built where any
+                        root is missing or any file failed to load,
+                        naming the files. A file that loads and fails
+                        its schema is still editable: a skeleton made
+                        by new is meant to be filled over several
+                        commands.
+
+                        What a new item is given is read from the
+                        pyproject.toml at or above the tree's root,
+                        asked of the tree. The first root given owns
+                        new files. Where the command is run from says
+                        nothing.
+rationale:              |
+                        The policy in one place, because three callers
+                        with three copies of it had already disagreed:
+                        the command line reported an error in its exit
+                        status and the committer and the executor did
+                        not. A function that returns a reason rather
+                        than a boolean, so that what stops a caller is
+                        what the caller says.
+
+                        Refusing the partial tree rather than warning,
+                        because an edit is a write and a warning is
+                        read after it. The checks report the same
+                        failure; refusing here keeps a write from
+                        landing before the report is read.
+
+                        Defaults from the target, because the tree is
+                        the thing being written and the only thing
+                        that can say what belongs in it.
+                        ddr_edit_commands leaves open whether the
+                        defaults should be an item in the tree; this
+                        narrows where the configuration is read from
+                        and does not answer that.
+alternative:            |
+                        Counting an error as a critical finding.
+                        Rejected: it conflates the tool being broken
+                        with the data being wrong, which
+                        ddr_check_architecture keeps apart, and a
+                        checkpoint would then override it.
+
+                        A field on the commit record saying the
+                        analysis was incomplete. Rejected: no commit
+                        is made in that state, so the field would
+                        never be written.
+
+                        An editable tree that loads what it can and
+                        warns. Rejected above.
+
+                        Defaults passed in by every caller. Rejected:
+                        every caller would resolve them the same way,
+                        and one of them did it wrongly.
+consequence:            |
+                        A commit made through the tool says the checks
+                        ran and what they found, and there is no state
+                        of the tool in which it says so falsely. A run
+                        stops at the first node after which a check
+                        could not run, and restores what it wrote.
+
+                        A malformed file anywhere in the tree stops
+                        every edit until it is fixed, which is the
+                        checks' first finding in any case.
+
+                        new, insert, case and the executor take their
+                        defaults from the tree. The module function
+                        takes a root.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.check
+    guid_target:        pyp_0dcce7d7c1084e04b20e99e52400d2b7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.commit
+    guid_target:        pym_d1a0197b9dd444b4a74a5a294a070a0d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e

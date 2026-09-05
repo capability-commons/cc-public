@@ -112,7 +112,7 @@ def _set_for(tree, id_eval):
     root = tree.resolve(id_eval).filepath.parent
 
     cc_public.edit.new.new(tree, 't_control_set', id_set,
-                           cc_public.edit.tree.defaults(), root)
+                           tree.defaults(), root)
 
     cc_public.edit.field.set_field(tree, id_set, 'title',
                                    value = 'Control set for ' + id_eval)

@@ -42,7 +42,7 @@ import cc_public.load
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'schema', 'register', 'eval', 'workflow', 'src')
+KEEP = ('ddr', 'schema', 'register', 'eval', 'workflow', 'src', 'pyproject.toml')
 
 
 class Scripted:
@@ -73,7 +73,8 @@ class Scripted:
 @pytest.fixture
 def tree(tmp_path):
     for name in KEEP:
-        shutil.copytree(ROOT / name, tmp_path / name)
+        src = ROOT / name
+        (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
     return cc_public.edit.tree.Tree([tmp_path])
 
 
