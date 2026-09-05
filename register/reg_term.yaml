@@ -1047,10 +1047,11 @@ table:
                         An item that lives in the docstring of a
                         python package, module, class or function.
     description:        |
-                        Found by walking the syntax tree. Only a
-                        package's and a module's become items of their
-                        own today; a class's and a function's are
-                        located but not yet items.
+                        Found by walking the syntax tree. A package
+                        and a module carry one always; a class and a
+                        function carry one where something needs to
+                        name them, and each is an item of its own at a
+                        location naming the file and the definition.
     term:               source item
 
     avoid:
@@ -1559,5 +1560,157 @@ table:
     avoid:
       - approach
       - framework
+
+    relation:           []
+
+  term_location:
+    id_self:            term_location
+    guid_self:          term_c9fcb5a05e3e4781b19a09931769ad80
+    title:              Location
+    brief:              |
+                        Where a document sits: a file, and beneath it
+                        the run of definition names down to a
+                        docstring.
+    description:        |
+                        Written as pytest writes a test's place, the
+                        file then each name after two colons:
+                        run.py::State::generator_for. The file's own
+                        document has no names after it. Findings,
+                        tasks and cases name locations.
+    term:               location
+
+    also:
+      - anchor
+
+    relation:           []
+
+  term_tier:
+    id_self:            term_tier
+    guid_self:          term_8c1ff39f610a42fe8bceff58629e6b30
+    title:              Tier
+    brief:              |
+                        One of the seven layers of the tool, each
+                        importing only from the tiers below it.
+    description:        |
+                        Foundations, layout, checks, edits, the
+                        committer beside the judgement package and
+                        evidence, workflow, and the command line. Held
+                        by a layers contract the lint enforces. See
+                        ddr_layered_architecture.
+    term:               tier
+
+    also:
+      - layer
+
+    relation:           []
+
+  term_evidence:
+    id_self:            term_evidence
+    guid_self:          term_283a168e6be842b38c23a1d44def37ea
+    title:              Evidence
+    brief:              |
+                        What an observer found about a requirement: an
+                        outcome, stamped with a digest of what it was
+                        observed against.
+    description:        |
+                        Observed, not authored, and rewritten by the
+                        next observation. A row names the requirement,
+                        the case where the method has one, the outcome
+                        and the digest. Distinct from a verification
+                        declaration, which says what is meant to
+                        verify; evidence says what did. See
+                        ddr_verification_evidence.
+    term:               evidence
+
+    also:
+      - verification evidence
+
+    avoid:
+      - test result
+      - proof
+
+    relation:           []
+
+  term_attestation:
+    id_self:            term_attestation
+    guid_self:          term_481203aceda849d3a32434c6ac903eb7
+    title:              Attestation
+    brief:              |
+                        Evidence a person or a tool gives for a
+                        requirement verified by inspection,
+                        demonstration or analysis.
+    description:        |
+                        Recorded by cctool attest, naming the observer
+                        and the outcome, and stamped like any
+                        evidence. A requirement verified by test is
+                        not attested; its test observes it.
+    term:               attestation
+
+    avoid:
+      - sign-off
+      - approval
+
+    relation:           []
+
+  term_observer:
+    id_self:            term_observer
+    guid_self:          term_9f4e7595d668483fbf56a83f41c0a7eb
+    title:              Observer
+    brief:              |
+                        What produced a piece of evidence: a tool and
+                        its version, or the person attesting.
+    description:        |
+                        Named on every evidence item, and on a row
+                        where it differs from the item's. pytest 9.1.1
+                        is an observer; so is the agent that inspected
+                        the log.
+    term:               observer
+
+    avoid:
+      - runner
+      - tester
+
+    relation:           []
+
+  term_implementation:
+    id_self:            term_implementation
+    guid_self:          term_36b13c69ec354c47b0a6d54fbd8bb05a
+    title:              Implementation
+    brief:              |
+                        The source item responsible for a requirement
+                        or a component, named by an
+                        r_is_implemented_by edge.
+    description:        |
+                        Places responsibility and shows nothing about
+                        whether the requirement is met. The narrowest
+                        stable item: a module where behaviour is
+                        spread over helpers, a function where one
+                        carries it. See ddr_implementation_trace.
+    term:               implementation
+
+    avoid:
+      - realisation
+
+    relation:           []
+
+  term_trace_projection:
+    id_self:            term_trace_projection
+    guid_self:          term_ef81afa1b6df4ab69800cb003a169637
+    title:              Trace projection
+    brief:              |
+                        What one requirement derives from, what
+                        derives from it, what implements it, what
+                        verifies it, and what it lacks, computed from
+                        the tree.
+    description:        |
+                        One module in the foundations computes it, and
+                        the trace check and cctool trace both read it,
+                        so that they cannot disagree. The reverse, the
+                        impact of a change to one item, is the same
+                        projection asked the other way.
+    term:               trace projection
+
+    also:
+      - trace
 
     relation:           []

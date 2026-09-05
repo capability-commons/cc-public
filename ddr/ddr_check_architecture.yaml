@@ -96,10 +96,16 @@ consequence:            |
                         Adding a check is one module and one line in
                         the list that names them.
 
-                        The context is loosely typed where it carries
-                        eval configuration, because the eval package
-                        depends on the checks and naming its types
-                        would close an import cycle.
+                        The context carries what the judgement tier
+                        hands in, a Judgement naming the eval check,
+                        the selector, a builder for the judge and the
+                        confirmation count, typed in the result
+                        module. It was loosely typed at first, because
+                        the judgement package depended on the checks
+                        and naming its types would have closed an
+                        import cycle; ddr_layered_architecture cut the
+                        cycle by having the command line hand the
+                        judgement in.
 
                         These rules live in Python and therefore do
                         NOT travel. A federated partner running their
