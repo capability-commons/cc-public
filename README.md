@@ -75,6 +75,11 @@ To judge with a language model, put a judge in `.env` as
 or `pixi run cctool measure --id-eval evl_x`. Never write a key into an
 item or a commit.
 
+The mechanical checks need no model stack. `pixi install` brings
+everything; a plain install takes `cc-public` for the checks and the
+edit commands, `cc-public[eval]` to judge, and `cc-public[test]` for the
+tests.
+
 ## Where to read next
 
 `CLAUDE.md` is the working guide for an agent editing the tree. The

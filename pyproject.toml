@@ -18,9 +18,14 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
                            "xmltodict>=1.0.4,<2",
                            "jsonschema>=4.26.0,<5",
                            "rich>=15.0.0,<16",
-                           "dspy==3.3.1",
-                           "python-dotenv>=1.2.3,<2",
-                           "pytest>=9.1.1,<10"]
+                           "python-dotenv>=1.2.3,<2"]
+
+# The mechanical checks need none of the model stack. A judge does, and
+# is installed by asking for the eval extra; the tests by the test extra.
+#
+[project.optional-dependencies]
+eval                    = ["dspy==3.3.1"]
+test                    = ["pytest>=9.1.1,<10"]
 
 [project.urls]
 Repository              = "https://github.com/capability-commons/cc-public"
@@ -37,7 +42,7 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test"] }
 
 [tool.cctool.new]
 copyright               = "Copyright 2026 William Payne"
