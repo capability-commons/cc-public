@@ -27,9 +27,6 @@ relation:               []
 ...
 """
 
-import pathlib
-import shutil
-import subprocess
 
 import pytest
 
@@ -43,10 +40,9 @@ import cc_public.load
 import cc_public.load.git
 import cc_public.workflow.produce
 import cc_public.workflow.run
+from conftest import git
 
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'requirement', 'need', 'src', 'pyproject.toml')
 
 FIELDS = {'title':       'Identity trait',
           'brief':       'What every item declares to be addressable.',
@@ -98,23 +94,8 @@ class Judge:
         return [self.verdict] * count
 
 
-def git(root, *args):
-    return subprocess.run(['git', '-C', str(root), '-c', 'user.name=T',
-                           '-c', 'user.email=t@t', *args],
-                          capture_output = True, text = True, check = True).stdout
 
 
-@pytest.fixture
-def repo(tmp_path):
-    for name in KEEP:
-        src = ROOT / name
-        (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
-    git(tmp_path, 'init', '-q')
-    git(tmp_path, 'config', 'user.name', 'Test')      # a runner may have no identity
-    git(tmp_path, 'config', 'user.email', 't@t')
-    git(tmp_path, 'add', '-A')
-    git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
-    return tmp_path
 
 
 def deploy(repo, **kw):

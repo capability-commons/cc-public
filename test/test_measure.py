@@ -25,8 +25,6 @@ relation:               []
 ...
 """
 
-import pathlib
-import shutil
 
 import click.testing
 import pytest
@@ -45,8 +43,6 @@ import cc_public.eval.select
 import cc_public.load
 
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'src', 'pyproject.toml')
 
 
 class Scripted:
@@ -74,12 +70,6 @@ class Scripted:
         return [answers[i % len(answers)] for i in range(count)]
 
 
-@pytest.fixture
-def tree(tmp_path):
-    for name in KEEP:
-        src = ROOT / name
-        (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
-    return cc_public.edit.tree.Tree([tmp_path])
 
 
 def test_case_makes_set_and_suppresses(tree, tmp_path):

@@ -30,6 +30,7 @@ relation:               []
 """
 
 
+import shutil
 import subprocess
 
 import pytest
@@ -46,6 +47,8 @@ from conftest import DEFAULTS, clean
 
 
 def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
+    shutil.rmtree(tmp_path / 'evidence')          # this copy observes from nothing
+    tree = cc_public.edit.tree.Tree([tmp_path])
     subprocess.run(['git', '-C', str(tmp_path), 'init', '-q'], check = True)
     (tmp_path / 'pyproject.toml').write_text(
         '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'
@@ -103,6 +106,8 @@ def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
 
 
 def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for_inspection(tree, tmp_path):
+    shutil.rmtree(tmp_path / 'evidence')          # this copy observes from nothing
+    tree = cc_public.edit.tree.Tree([tmp_path])
     subprocess.run(['git', '-C', str(tmp_path), 'init', '-q'], check = True)
     (tmp_path / 'pyproject.toml').write_text(
         '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'
@@ -164,6 +169,8 @@ def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for
 
 
 def test_an_attestation_stands_for_inspection_and_refuses_a_test(tree, tmp_path):
+    shutil.rmtree(tmp_path / 'evidence')          # this copy observes from nothing
+    tree = cc_public.edit.tree.Tree([tmp_path])
     subprocess.run(['git', '-C', str(tmp_path), 'init', '-q'], check = True)
     (tmp_path / 'pyproject.toml').write_text(
         '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'

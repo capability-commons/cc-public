@@ -28,8 +28,6 @@ relation:               []
 """
 
 
-import pathlib
-import shutil
 
 import click.testing
 import pytest
@@ -42,29 +40,17 @@ import cc_public.edit.link
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.load
+from conftest import clean
 
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'requirement', 'need',
-        'evidence', 'src', 'pyproject.toml')
 
 
-@pytest.fixture
-def repo(tmp_path):
-    for name in KEEP:
-        src = ROOT / name
-        (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
-    return tmp_path
 
 
 def run(*args):
     return click.testing.CliRunner().invoke(cc_public.cli.command.main, list(args))
 
 
-def clean(root):
-    report = cc_public.check.check(list_path = [root])['report']
-    return [(c['id_check'], n['message']) for c in report['check']
-            for n in c['nonconformity'] if n['severity'] == 'critical']
 
 
 def test_unlink_removes_an_edge_and_refuses_one_that_is_not_there(repo):
@@ -152,10 +138,6 @@ def test_show_names_every_edge_at_an_item_both_ways(repo):
 
 
 def test_trace_says_what_the_files_changed_since_a_ref_may_affect(repo):
-    import subprocess
-    for args in (['init', '-q'], ['config', 'user.name', 'T'], ['config', 'user.email', 't@t'],
-                 ['add', '-A'], ['-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start']):
-        subprocess.run(['git', '-C', str(repo), *args], check = True)
     path = repo / 'src' / 'cc_public' / 'layout.py'
     path.write_text(path.read_text() + '\n# touched\n')
     (repo / 'README.md').write_text('unrelated\n')

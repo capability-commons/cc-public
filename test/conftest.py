@@ -35,6 +35,7 @@ relation:               []
 
 import pathlib
 import shutil
+import subprocess
 
 import pytest
 
@@ -51,14 +52,58 @@ MAP_OUTCOME = {}
 DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
             'license':   'Apache-2.0',
             'id_mark':   'mark_public'}
-KEEP     = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'execution', 'requirement', 'need', 'src')
+KEEP     = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'execution',
+            'requirement', 'need', 'evidence', 'src', 'pyproject.toml')
+
+
+def copy_tree(dirpath):
+    """
+    Copy what a test tree is made of into dirpath.
+
+    """
+
+    for name in KEEP:
+        src = ROOT / name
+        (shutil.copytree if src.is_dir() else shutil.copy)(src, dirpath / name)
+
+
+def git(root, *args):
+    """
+    Run git at root with a test identity, and return its output.
+
+    """
+
+    return subprocess.run(['git', '-C', str(root), '-c', 'user.name=Test',
+                           '-c', 'user.email=t@t', *args],
+                          capture_output = True, text = True, check = True).stdout
 
 
 @pytest.fixture
 def tree(tmp_path):
-    for name in KEEP:
-        shutil.copytree(ROOT / name, tmp_path / name)
+    """
+    A copy of the tree, opened.
+
+    """
+
+    copy_tree(tmp_path)
     return cc_public.edit.tree.Tree([tmp_path])
+
+
+@pytest.fixture
+def repo(tmp_path):
+    """
+    A copy of the tree in a git repository with one commit and an
+    identity of its own, since a runner may have none.
+
+    """
+
+    copy_tree(tmp_path)
+    git(tmp_path, 'init', '-q')
+    git(tmp_path, 'config', 'user.name', 'Test')
+    git(tmp_path, 'config', 'user.email', 't@t')
+    git(tmp_path, 'add', '-A')
+    git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
+    return tmp_path
 
 
 def clean(root):

@@ -94,7 +94,9 @@ tests.
 `CLAUDE.md` is the working guide for an agent editing the tree. The
 design decisions in `ddr/` say why things are as they are; start with
 `ddr_design_decision`, `ddr_check_architecture`, `ddr_fail_closed`,
-`ddr_eval_measurement` and `ddr_workflow_execution`.
+`ddr_layered_architecture`, `ddr_eval_measurement`,
+`ddr_implementation_trace`, `ddr_verification_evidence` and
+`ddr_workflow_execution`.
 
 ## Limitations
 

@@ -62,7 +62,9 @@ import cc_public.workflow.run
 
 
 # -----------------------------------------------------------------------------
-@cc_public.cli.group.main.command()
+@cc_public.cli.group.main.command(
+    help = 'Check the data for conformity. The checks, in the order they run: '
+           + ', '.join(m.ID_CHECK for m in cc_public.check.CHECK) + '.')
 @click.option('--path',
               'list_path',
               multiple = True,

@@ -27,7 +27,6 @@ relation:               []
 
 import pathlib
 import re
-import shutil
 
 import pytest
 
@@ -39,7 +38,7 @@ import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.load
 import cc_public.path
-from conftest import DEFAULTS, KEEP, ROOT, clean
+from conftest import DEFAULTS, clean, copy_tree
 
 
 def test_path_write_sets_and_appends_and_refuses_missing_parent():
@@ -385,8 +384,7 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
 
 
 def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):
-    for name in KEEP:
-        shutil.copytree(ROOT / name, tmp_path / name)
+    copy_tree(tmp_path)
     (tmp_path / 'ddr' / 'ddr_broken.yaml').write_text('id_self: [unclosed\n')
     with pytest.raises(cc_public.edit.tree.ErrorItem) as caught:
         cc_public.edit.tree.Tree([tmp_path])
@@ -399,8 +397,8 @@ def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):
 
 def test_defaults_come_from_the_tree_and_not_from_where_the_command_runs(tmp_path, monkeypatch):
     target = tmp_path / 'target'
-    for name in KEEP:
-        shutil.copytree(ROOT / name, target / name)
+    target.mkdir()
+    copy_tree(target)
     (target / 'pyproject.toml').write_text(
         '[tool.cctool.new]\ncopyright = "Copyright of the target"\n'
         'license = "Apache-2.0"\nid_mark = "mark_public"\n')

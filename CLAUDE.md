@@ -11,9 +11,8 @@ All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
 `--root DIR` (repeatable), `check` takes `--path`.
 
-- `check` — twelve mechanical checks (parse, guid, identifier, source,
-  reference, relation, schema, layout, workflow, trace, confidence,
-  evidence). Must be clean. A finding names its file, and for a class or function item
+- `check` — the mechanical checks; `check --help` lists them in the order
+  they run, from the driver, so that list is never stale. Must be clean. A finding names its file, and for a class or function item
   the definition beneath it: `run.py::State::generator_for`. `--fail-fast`, `--closed-world`,
   `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never

@@ -24,10 +24,7 @@ relation:               []
 ...
 """
 
-import pathlib
 import re
-import shutil
-import subprocess
 
 import pytest
 
@@ -36,30 +33,13 @@ import cc_public.edit.field
 import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.load.git
+from conftest import git
 
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'src', 'pyproject.toml')
 
 
-def git(root, *args):
-    return subprocess.run(['git', '-C', str(root),
-                           '-c', 'user.name=Test', '-c', 'user.email=t@t',
-                           *args], capture_output = True, text = True,
-                          check = True).stdout
 
 
-@pytest.fixture
-def repo(tmp_path):
-    for name in KEEP:
-        src = ROOT / name
-        (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
-    git(tmp_path, 'init', '-q')
-    git(tmp_path, 'config', 'user.name', 'Test')      # a runner may have no identity
-    git(tmp_path, 'config', 'user.email', 't@t')
-    git(tmp_path, 'add', '-A')
-    git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
-    return tmp_path
 
 
 def test_commit_carries_a_valid_record(repo):
