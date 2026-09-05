@@ -62,6 +62,10 @@ LENGTH_GUID_TAG = 6
 
 FORMAT_STAMP    = '%Y%m%d%H%M%S'
 
+# Status letters whose record carries a second path.
+#
+STATUS_TWO_PATH = 'RC'
+
 
 # -----------------------------------------------------------------------------
 class ErrorCommit(Exception):
@@ -78,20 +82,29 @@ def changed(root):
     Return [(status, path)] for every path the working tree has changed,
     untracked files included, renames as their new path.
 
+    Read from the NUL delimited form of the status, in which a path is
+    exactly the bytes git holds for it. The line form quotes a path
+    holding a space, a quote or a character outside ASCII, and a path
+    read from it is the display of the path rather than the path.
+
     """
 
-    text = _git(root, 'status', '--porcelain', '--untracked-files=all')
+    text = _git(root, 'status', '--porcelain=v1', '-z', '--untracked-files=all')
     out  = []
+    part = iter(text.split('\0'))
 
-    for line in text.splitlines():
+    for record in part:
 
-        if len(line) < 4:
+        if len(record) < 4:
             continue
 
-        (status, path) = (line[:2], line[3:])
+        (status, path) = (record[:2], record[3:])
 
-        if ' -> ' in path:
-            path = path.split(' -> ', 1)[1]
+        # A rename or a copy is two records: the new path, then the
+        # path it came from, which is not a change of its own.
+        #
+        if status[0] in STATUS_TWO_PATH:
+            next(part, None)
 
         out.append((status.strip() or '?', path))
 
@@ -140,7 +153,7 @@ def commit(root, title, brief = None, description = None,
 
     text = message(document, list_trailer)
 
-    _git(root, 'add', '-A', '--', *[path for (_, path) in list_changed])
+    _git(root, 'add', '-A', '--', '.')
     _git(root, 'commit', '--quiet', '-F', '-', input = text)
 
     return (_git(root, 'rev-parse', 'HEAD').strip(), document['id_self'])

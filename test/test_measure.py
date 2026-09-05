@@ -27,11 +27,13 @@ description:            |
 import pathlib
 import shutil
 
+import click.testing
 import pytest
 
 import cc_public.check
 import cc_public.check.eval
 import cc_public.check.result
+import cc_public.cli.command
 import cc_public.edit.case
 import cc_public.edit.tree
 import cc_public.eval.control
@@ -143,3 +145,29 @@ def test_measure_rates_per_origin(tree, tmp_path):
     ev2 = cc_public.load.from_file(tree2.resolve('evl_prose_matches_structure').filepath)
     assert {r['origin'] for r in ev2['confidence']} == {'suppressed', 'confirmed', 'all'}
     assert all(r['model'] == 'scripted' for r in ev2['confidence'])
+
+
+def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
+    majority = cc_public.eval.runner.majority
+    assert majority(['unmet', 'met', 'unmet']) == 'unmet'
+    assert majority(['met', 'met', 'unmet']) == 'met'
+    assert majority(['unmet']) == 'unmet'
+    assert majority(['unknown', 'unknown', 'unknown']) == 'met'
+    for bad in ([], ['met', 'unmet'], ['unmet'] * 4):
+        with pytest.raises(ValueError):
+            majority(bad)
+    for bad in (0, -1, 2, 4, '3'):
+        with pytest.raises(ValueError):
+            cc_public.eval.runner.check_count(bad, 'The count')
+    with pytest.raises(ValueError):
+        cc_public.check.check(list_path = [tmp_path], count_confirm = 2)
+    ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').filepath]
+    with pytest.raises(ValueError):
+        cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 2)
+
+    result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
+                                              ['measure', '--id-eval', 'x', '--samples', '2'])
+    assert result.exit_code == 2 and 'odd' in result.output
+    result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
+                                              ['check', '--confirm', '4', '--path', str(tmp_path)])
+    assert result.exit_code == 2 and 'odd' in result.output

@@ -54,6 +54,8 @@ def measure(context, document_eval, runner, count_sample):
 
     """
 
+    cc_public.eval.runner.check_count(count_sample, 'The sample count')
+
     detail = []
 
     for (id_set, key, case) in cc_public.eval.control.iter_case(
@@ -87,14 +89,13 @@ def _row(origin, list_detail, count_sample):
     """
     Return the rates over one stratum of cases.
 
-    A case's verdict is the majority of its samples. Unanimous is the
-    fraction of cases every sample answered alike.
+    A case's verdict is the majority of its samples, taken as a sweep
+    takes it. Unanimous is the fraction of cases every sample answered
+    alike.
 
     """
 
-    def majority(tally):
-        return VERDICT_UNMET if tally.count(VERDICT_UNMET) * 2 > len(tally) \
-                             else VERDICT_MET
+    majority = cc_public.eval.runner.majority
 
     met   = [d for d in list_detail if d[2] == VERDICT_MET]
     unmet = [d for d in list_detail if d[2] == VERDICT_UNMET]

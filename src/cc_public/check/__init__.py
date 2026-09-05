@@ -90,6 +90,8 @@ def check(list_path = (), is_fail_fast = False,
 
     """
 
+    cc_public.eval.runner.check_count(count_confirm, 'The confirmation count')
+
     list_dirpath   = [pathlib.Path(path) for path in list_path]
     list_dirpath   = list_dirpath or [pathlib.Path.cwd()]
 

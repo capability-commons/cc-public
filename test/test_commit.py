@@ -146,3 +146,25 @@ def test_commit_refuses_an_incomplete_analysis_even_as_a_checkpoint(repo, monkey
         assert 'the check fell over' in str(caught.value)
     assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '1'
     assert git(repo, 'status', '--porcelain').split() == ['??', 'NOTES.md']
+
+
+def test_awkward_paths_are_read_exactly_and_committed(repo):
+    for name in ('two words.txt', 'quote"d.txt', 'naïve.txt', '-dash.txt',
+                 'tab\there.txt'):
+        (repo / name).write_text('x\n')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'awkward')
+    git(repo, 'mv', 'two words.txt', 'three more words.txt')
+    (repo / 'naïve.txt').write_text('y\n')
+    (repo / '-dash.txt').unlink()
+    (repo / 'new one.txt').write_text('x\n')
+
+    assert sorted(cc_public.commit.changed(repo)) == [
+        ('??', 'new one.txt'), ('D', '-dash.txt'), ('M', 'naïve.txt'),
+        ('R', 'three more words.txt')]
+
+    cc_public.commit.commit(repo, 'Awkward names')
+    assert git(repo, 'status', '--porcelain') == ''
+    listed = git(repo, 'ls-files', '-z').split('\0')
+    assert 'three more words.txt' in listed and 'new one.txt' in listed
+    assert 'two words.txt' not in listed and '-dash.txt' not in listed

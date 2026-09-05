@@ -61,6 +61,25 @@ EXIT_ERROR         = 2
 
 
 # -----------------------------------------------------------------------------
+class Odd(click.ParamType):
+    """
+    An odd positive integer: a count of judgements a majority exists over.
+
+    """
+
+    name = 'odd integer'
+
+    def convert(self, value, param, ctx):
+        try:
+            return cc_public.eval.runner.check_count(int(value), 'The count')
+        except ValueError as err:
+            self.fail(str(err), param, ctx)
+
+
+ODD = Odd()
+
+
+# -----------------------------------------------------------------------------
 @click.group()
 def main():
     """
@@ -151,14 +170,14 @@ def main():
                              'wrote the items being judged.')
 @click.option('--confirm',
               'count_confirm',
-              type    = click.IntRange(min = 1),
+              type    = ODD,
               default = cc_public.eval.runner.COUNT_CONFIRM,
               show_default = True,
               help    = 'Over how many judgements an adverse verdict is '
                         'confirmed before it is reported. The screen is one '
                         'call and only what comes back unmet is asked again, '
                         'so on a clean corpus this costs little. One believes '
-                        'the screen alone.')
+                        'the screen alone. Odd, so that a majority exists.')
 @click.option('--out',
               'filepath_out',
               type    = click.Path(path_type = pathlib.Path),
@@ -453,8 +472,8 @@ def insert(id_type, name, name_container, path_collection, id_self, list_root):
 @click.option('--id-eval', 'id_eval', required = True,
               help = 'The eval to measure, by readable id.')
 @click.option('--samples', 'count_sample', default = 5,
-              type = click.IntRange(min = 1), show_default = True,
-              help = 'Fresh judgements per case.')
+              type = ODD, show_default = True,
+              help = 'Fresh judgements per case. Odd, so that a majority exists.')
 @click.option('--record', 'is_record', is_flag = True,
               help = 'Write the rates onto the eval as its confidence for '
                      'this judge model, replacing earlier rows for it.')

@@ -79,6 +79,14 @@ decision:               |
                         A case's local name is a letter and a prefix
                         of the digest of its normalised subject, so
                         that the same text is the same case.
+
+                        A majority is taken over an odd count. The
+                        sample count of a measurement and the
+                        confirmation count of a sweep or a deployment
+                        are odd, refused otherwise at the command
+                        line, in the library and by the deployment
+                        schema, and measurement and confirmation take
+                        the majority through one function.
 rationale:              |
                         Cases apart from examples, because examples
                         are shown to the judge and a case that had
@@ -138,6 +146,17 @@ rationale:              |
                         finding be weighed as severity together with
                         confidence, which the severity design lacked a
                         partner for.
+
+                        An odd count rather than a rule for ties,
+                        because a tie read as met is an acceptance
+                        nobody gave and a tie read as unmet an
+                        accusation nobody made. Before this,
+                        confirmation and measurement each read a tie
+                        as met, so whether a finding stood could turn
+                        on whether the count asked for was even. A
+                        count that cannot tie needs no rule, and one
+                        function for the majority keeps the two from
+                        drifting apart again.
 alternative:            |
                         Cases held on the eval beside its examples.
                         Rejected: contamination, size, and a partner's
@@ -195,43 +214,6 @@ consequence:            |
                         not about how good it is. A written case can
                         be wrong.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_control_set
-    guid_target:        sch_b31d6cf715dc47c28869fd81dd8a65d0
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_control_case
-    guid_target:        sch_6315a0262304416da9dfb1f0fae6ea6a
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.eval.measure
-    guid_target:        pym_77bb285571e34b1ea01f58e8d019661f
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.eval.control
-    guid_target:        pym_d3c30505c19c48708b12bc12f946f862
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.edit.case
-    guid_target:        pym_526d7635fff54b9181e88a61a869704b
-
-  - id_relation:        r_answers
-    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
-    id_target:          qst_eval_design.c0feb290a
-    guid_target:        qst_8d833cb5d7ec4d689741ee8947f684c2
-
-  - id_relation:        r_answers
-    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
-    id_target:          qst_judge_subject.c003fd82e
-    guid_target:        qst_fcf5fab8bc9b4fe79899938cdc07f1f2
-
 question:
 
   cc868630d:
@@ -271,3 +253,40 @@ question:
                         the judge answers two ways is the case worth
                         reading.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_control_set
+    guid_target:        sch_b31d6cf715dc47c28869fd81dd8a65d0
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_control_case
+    guid_target:        sch_6315a0262304416da9dfb1f0fae6ea6a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.measure
+    guid_target:        pym_77bb285571e34b1ea01f58e8d019661f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.control
+    guid_target:        pym_d3c30505c19c48708b12bc12f946f862
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.case
+    guid_target:        pym_526d7635fff54b9181e88a61a869704b
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_eval_design.c0feb290a
+    guid_target:        qst_8d833cb5d7ec4d689741ee8947f684c2
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_judge_subject.c003fd82e
+    guid_target:        qst_fcf5fab8bc9b4fe79899938cdc07f1f2

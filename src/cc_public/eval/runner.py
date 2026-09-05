@@ -51,6 +51,41 @@ NAME_ENV_MODEL  = 'CCTOOL_JUDGE_MODEL'
 
 
 # -----------------------------------------------------------------------------
+def check_count(count, what):
+    """
+    Return count, an odd positive integer, or raise ValueError.
+
+    A majority is taken over an odd count, so that there is one. An
+    even count can tie, and a tie read either way is a verdict nobody
+    reached.
+
+    """
+
+    if not isinstance(count, int) or count < 1 or count % 2 == 0:
+        raise ValueError('{what} is {count}, and must be an odd positive '
+                         'integer, so that a majority of judgements '
+                         'exists.'.format(what = what, count = count))
+
+    return count
+
+
+# -----------------------------------------------------------------------------
+def majority(tally):
+    """
+    Return the verdict most of the tally holds, met or unmet.
+
+    A verdict that is neither, unknown for one, counts for neither, so
+    a tally of unknowns is met: nothing found the subject wanting.
+
+    """
+
+    check_count(len(tally), 'The number of judgements')
+
+    return VERDICT_UNMET if tally.count(VERDICT_UNMET) * 2 > len(tally) \
+                         else VERDICT_MET
+
+
+# -----------------------------------------------------------------------------
 class Verdict(typing.NamedTuple):
     """
     What a runner returns for one task.
@@ -209,13 +244,13 @@ class DspyRunner:
 
         """
 
-        if count <= 1:
+        if check_count(count, 'The confirmation count') == 1:
             return verdict
 
         tally       = [verdict.verdict] + self.sample(task, count - 1)
         count_unmet = tally.count(VERDICT_UNMET)
 
-        if count_unmet * 2 <= len(tally):
+        if majority(tally) == VERDICT_MET:
             return verdict._replace(verdict = VERDICT_MET)
 
         return verdict._replace(

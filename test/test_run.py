@@ -404,3 +404,13 @@ def test_a_check_that_cannot_run_stops_the_run_and_restores(repo, monkeypatch):
     assert r['stopped'] and 'did not complete' in r['stopped']
     assert not (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
     assert git(repo, 'status', '--porcelain') == ''
+
+
+def test_a_deployment_cannot_confirm_over_an_even_count(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'confirm', value = 2)
+    assert any('multipleOf' in m or 'not' in m for m in clean(repo))
+    cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
+                                   'confirm', value = 3)
+    assert clean(repo) == []
