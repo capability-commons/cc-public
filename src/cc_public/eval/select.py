@@ -33,6 +33,7 @@ import typing
 import ruamel.yaml
 
 import cc_public.check.register
+import cc_public.need
 import cc_public.check.schema
 import cc_public.path
 
@@ -462,6 +463,7 @@ def _render(tuple_item, document_eval):
     is_empty  = True
 
     for (id_self, document) in tuple_item:
+        document = cc_public.need.compose(document)     # a need shows its statement
         selected = cc_public.path.select(document, include, exclude)
         if selected is cc_public.path.DROP:
             selected = {}

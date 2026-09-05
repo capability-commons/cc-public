@@ -43,7 +43,7 @@ import cc_public.workflow.run
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'schema', 'register', 'eval', 'workflow', 'src', 'pyproject.toml')
+KEEP = ('ddr', 'schema', 'register', 'eval', 'workflow', 'requirement', 'need', 'src', 'pyproject.toml')
 
 FIELDS = {'title':       'Identity trait',
           'brief':       'What every item declares to be addressable.',

@@ -44,7 +44,7 @@ ROOT     = pathlib.Path(__file__).resolve().parent.parent
 DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
             'license':   'Apache-2.0',
             'id_mark':   'mark_public'}
-KEEP     = ('ddr', 'schema', 'register', 'eval', 'workflow', 'execution', 'src')
+KEEP     = ('ddr', 'schema', 'register', 'eval', 'workflow', 'execution', 'requirement', 'need', 'src')
 
 
 @pytest.fixture
@@ -341,3 +341,19 @@ def test_an_execution_may_name_what_has_gone(tree, tmp_path):
     ref = next(c for c in rep['check'] if c['id_check'] == 'reference')
     assert not [n for n in ref['nonconformity'] if gone in n['message']]
     assert [n for n in ref['note'] if gone in n['message']]
+
+
+def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_path):
+    import cc_public.need, cc_public.eval.select
+    doc = cc_public.load.from_file(tmp_path / 'need' / 'need_runs_bounded.yaml')
+    text = cc_public.need.statement(doc)
+    assert text.startswith('In Workflows with back edges') and 'need A run that loops' in text \
+           and text.endswith('before it starts.')
+    assert 'statement' not in doc
+    rendered = cc_public.eval.select._render((('need_runs_bounded', doc),), {'scope': {'include': ['statement']}})
+    assert 'statement:' in rendered and 'in order to' in rendered
+    cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget', 'relation')
+    rep = cc_public.check.check(list_path = [tmp_path])['report']
+    trace = next(c for c in rep['check'] if c['id_check'] == 'trace')
+    assert [n['severity'] for n in trace['nonconformity']] == ['advisory']
+    assert 'req_executor_honours_budget' in trace['nonconformity'][0]['filepath']

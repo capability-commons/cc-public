@@ -1,0 +1,75 @@
+id_self:                evl_need_subject_specific
+guid_self:              evl_843d0edc97534487b504d4e3c813583b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Subject is specific
+brief:                  |
+                        The subject of a need names who has it at the
+                        most specific level the evidence supports, and
+                        is not a supplier, product or technology.
+criterion:              |
+                        MET when the subject is a concrete group,
+                        role, organisation or unit that experiences
+                        the need or is accountable for the outcome,
+                        specific enough to validate the need with and
+                        to engage.
+
+                        UNMET when the subject is a category so broad
+                        it names no one, such as users, the military,
+                        Europe, stakeholders, everyone, the public;
+                        when it lumps parties whose needs differ; or
+                        when it names a supplier, product, technology
+                        or proposed solution rather than who needs it.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        subject: Frontline casualty evacuation teams
+    verdict:            met
+    feedback:           |
+                        A concrete role.
+
+  - input:              |
+                        subject: Users
+    verdict:            unmet
+    feedback:           |
+                        Names no one. Quote: Users.
+
+  - input:              |
+                        subject: Baltic critical infrastructure
+                        operators
+    verdict:            met
+    feedback:           |
+                        A specific group, at the level the evidence
+                        names.
+
+  - input:              |
+                        subject: Product X and its integrators
+    verdict:            unmet
+    feedback:           |
+                        A product is not who has a need.
+
+scope:
+
+  include:
+    - subject
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_need
+    guid_target:        sch_09b2a0d969794594914cd39d563c9261

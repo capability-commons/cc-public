@@ -1,0 +1,101 @@
+id_self:                evl_requirement_realises_need
+guid_self:              evl_1e4c91b782344e6b9e30822b6efa3472
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requirement realises its need
+brief:                  |
+                        A requirement derived from a need obliges an
+                        entity to do or be something that, in the
+                        need's context, delivers the outcome for the
+                        subject.
+criterion:              |
+                        You are given a requirement and the need it
+                        derives from.
+
+                        MET when what the requirement obliges of its
+                        entity, if met, contributes to the need's
+                        outcome for the need's subject in the need's
+                        context. The requirement may cover part of the
+                        outcome; a need is usually met by several.
+
+                        UNMET when the requirement addresses something
+                        the need does not ask; when it ignores a
+                        context the need states; or when it only
+                        restates the need as a shall statement, naming
+                        no entity and adding no verifiable obligation.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        --- req_x statement: When the Printer receives
+                        a Laid_Out_Document, the Printer shall write
+                        the Laid_Out_Document with each byte
+                        unchanged. --- need_y statement: In a
+                        repository edited by people and models,
+                        maintainers need every document laid out one
+                        way, checkable by machine, in order to read
+                        without the noise of drift.
+    verdict:            met
+    feedback:           |
+                        An obligation on the Printer that delivers the
+                        outcome.
+
+  - input:              |
+                        --- req_x statement: The Printer shall lay out
+                        documents one way so that maintainers can read
+                        them. --- need_y statement: In a repository
+                        edited by people and models, maintainers need
+                        every document laid out one way, checkable by
+                        machine, in order to read without the noise of
+                        drift.
+    verdict:            unmet
+    feedback:           |
+                        The need said again with shall; no verifiable
+                        obligation.
+
+  - input:              |
+                        --- req_x statement: The Committer shall write
+                        the commit record into the commit message. ---
+                        need_y statement: In a repository edited by
+                        people and models, maintainers need every
+                        document laid out one way, checkable by
+                        machine, in order to read without the noise of
+                        drift.
+    verdict:            unmet
+    feedback:           |
+                        Addresses something the need does not ask.
+
+scope:
+
+  include:
+    - statement
+    - subject
+    - outcome
+    - purpose
+    - context
+
+subject:
+
+  include_type:
+    - t_textual_requirement
+    - t_need
+
+relation:
+
+  - id_relation:        r_evaluates_items_joined_by_relation
+    guid_relation:      r_c7a437a455054da6bbedbced7c4bf32d
+    id_target:          r_is_derived_from
+    guid_target:        r_a8017d991f8a4e63a84d1eec5a2d6051

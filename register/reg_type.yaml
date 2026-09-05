@@ -944,3 +944,37 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_requirement_characteristic
         guid_target:    reg_64a1c0971df64615b170905fd3a46b21
+
+  t_need:
+    id_self:            t_need
+    guid_self:          t_e2252072b81d4aac8ee8f267b42d34be
+    title:              Need type
+    brief:              |
+                        Type of need data items
+    description:        |
+                        Each need data item holds one need: who needs
+                        what, why, in what circumstances, and on what
+                        evidence. It names no entity and no solution;
+                        a requirement derived from it names the
+                        entity.
+    prefix:             need
+    regex_id:           ^need_[a-z][a-z0-9_]*$
+    usage:              |
+                        Needs are the demand side of the repository. A
+                        requirement traces to a need by an
+                        r_is_derived_from edge, and so does a need
+                        refined from a broader one. Needs live in
+                        need/.
+    note:               |
+                        The statement of a need is composed from its
+                        slots when the need is rendered, never stored.
+                        See ddr_need.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_need
+        guid_target:    sch_09b2a0d969794594914cd39d563c9261

@@ -1,0 +1,163 @@
+id_self:                ddr_need
+guid_self:              ddr_3f0a996859ce4882a7585907f9a2918e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Need
+brief:                  |
+                        A need is an item of five slots, subject,
+                        outcome, purpose, context and evidence, with
+                        its statement composed from them and no entity
+                        named. A requirement derives from it and names
+                        the entity.
+context:                |
+                        Requirements exist and nothing yet holds what
+                        they derive from. The legacy schema in
+                        cc-legacy held needs in five slots with
+                        elicitation guidance under each, and also a
+                        brief, a description and a stored statement;
+                        sixty one needs were written to it. The INCOSE
+                        guide writes a need on an entity, the
+                        stakeholders need the system to, and treats
+                        the transformation of needs into requirements
+                        as formal.
+decision:               |
+                        A NEED is a data item of type t_need, held in
+                        need/, with a title as its unique name and
+                        five required slots: subject, who has the
+                        need; outcome, what must become possible or
+                        different; purpose, what that is for; context,
+                        the circumstances that change the need;
+                        evidence, what shows the need exists and
+                        matters. Priority and status are optional. It
+                        composes identity, rights and relations and
+                        not the descriptive trait.
+
+                        The STATEMENT of a need is composed from the
+                        slots wherever the need is rendered, in the
+                        form in the context, the subject needs the
+                        outcome, in order to the purpose, and is never
+                        stored.
+
+                        A need names no entity and no solution. It is
+                        a demand before any system is conceived. The
+                        requirement that derives from it names the
+                        entity and the obligation, and traces to it by
+                        an r_is_derived_from edge, which is also how a
+                        narrower need traces to the broader one it
+                        refines. A requirement with no such edge is an
+                        advisory finding of the trace check.
+
+                        The legacy guidance under each slot becomes
+                        evals: the subject is specific, the outcome is
+                        an effect, the purpose is the consequence, the
+                        context discriminates, the evidence is
+                        described. A sixth eval, on the derivation
+                        edge, judges that a requirement realises its
+                        need.
+rationale:              |
+                        Five slots and not a statement, because a need
+                        statement is exactly its slots in order, and
+                        storing it beside them let the legacy examples
+                        say the same thing four times and differently
+                        each time. Composition removes a field and the
+                        drift.
+
+                        No entity, because the legacy need is right
+                        that a demand signal precedes any system, and
+                        the guide is right that a requirement is on an
+                        entity. Keeping the entity out of the need and
+                        putting it in the requirement makes the
+                        transformation visible as what it is: a design
+                        decision about what will meet the need.
+
+                        No brief and no description, for the reason
+                        given for requirements: the composed statement
+                        is the summary, and the legacy description was
+                        where solutions crept in.
+
+                        The slot guidance as evals, because every
+                        avoid in it is a checkable fault, and the
+                        sixty one legacy needs are written cases.
+
+                        The trace check mechanical, because whether an
+                        edge exists needs no judge.
+alternative:            |
+                        The legacy schema adopted as it stands.
+                        Rejected: four copies of one thing, a
+                        description that listed candidate solutions, a
+                        related_to relation used four hundred times to
+                        say nothing, and workflow and display fields
+                        that belong to a tool this repository does not
+                        have.
+
+                        A need written in INCOSE's form, on an entity.
+                        Rejected: the entity is what the requirement
+                        adds; a need that names it has already decided
+                        what will meet it.
+
+                        A need as a requirement with a category.
+                        Rejected: a requirement obliges an entity and
+                        is verified against it; a need obliges nobody
+                        and is validated against the world.
+consequence:            |
+                        Evidence is prose naming its sources; the
+                        sources are not yet items. A source item type
+                        and an r_is_evidenced_by edge are the next
+                        step for provenance.
+
+                        Three legacy needs whose evidence is public
+                        reporting are converted as specimens, and six
+                        needs of cctool's own are written so that the
+                        seven requirements trace. The other fifty
+                        eight legacy needs stay where they are.
+
+                        Most needs cannot be turned into requirements
+                        directly. How a need is analysed and broken
+                        down, and under what framing, is a design
+                        decision of its own, taken up in
+                        ddr_need_to_requirement.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_need
+    guid_target:        t_e2252072b81d4aac8ee8f267b42d34be
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_need
+    guid_target:        sch_09b2a0d969794594914cd39d563c9261
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.need
+    guid_target:        pym_92b7b4aa5b164a388cbcb7bf61736988
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_need
+    guid_target:        term_0e437e13ce67461a86a5fcccf107ce8f
+
+question:
+
+  source:
+    id_self:            qst_need.source
+    guid_self:          qst_49da9549527d46d3a961e893938678ed
+    question:           |
+                        Whether evidence should point at source items
+                        by an r_is_evidenced_by edge, and what a
+                        source item is: a captured document, a
+                        citation, or a statement by a stakeholder.
+    relation:           []

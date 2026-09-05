@@ -1,0 +1,83 @@
+id_self:                evl_need_evidence_described
+guid_self:              evl_6cf24cea780e477b8de29950670a5e74
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence is described
+brief:                  |
+                        The evidence of a need describes what was
+                        observed, reported, requested or measured,
+                        with sources named and quantities where known,
+                        rather than asserting that evidence exists.
+criterion:              |
+                        MET when the evidence says who observed or
+                        reported what, when, and how it bears on the
+                        subject, outcome, purpose and context; or says
+                        plainly that evidence is lacking and what
+                        would substantiate the need.
+
+                        UNMET when the evidence asserts instead of
+                        describing, such as this is widely known, the
+                        need is obvious, strong evidence exists, many
+                        people say so, it is urgently needed; or when
+                        the popularity of a product stands in for
+                        evidence of the gap.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        evidence: Ministry reporting shows rapid
+                        growth in unmanned ground vehicle missions,
+                        while separate frontline reporting repeatedly
+                        describes personnel exposure during resupply
+                        and casualty evacuation.
+    verdict:            met
+    feedback:           |
+                        Sources, what they show, and how it bears.
+
+  - input:              |
+                        evidence: This is widely known and urgently
+                        needed.
+    verdict:            unmet
+    feedback:           |
+                        An assertion. Quote: widely known.
+
+  - input:              |
+                        evidence: Direct evidence is lacking; a survey
+                        of evacuation teams in two brigades would
+                        substantiate the need.
+    verdict:            met
+    feedback:           |
+                        Says what is missing and what would do.
+
+  - input:              |
+                        evidence: Thousands of units have asked for
+                        Product X.
+    verdict:            unmet
+    feedback:           |
+                        Popularity of a product, not the gap behind
+                        it.
+
+scope:
+
+  include:
+    - evidence
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_need
+    guid_target:        sch_09b2a0d969794594914cd39d563c9261

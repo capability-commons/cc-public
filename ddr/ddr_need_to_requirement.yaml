@@ -1,0 +1,169 @@
+id_self:                ddr_need_to_requirement
+guid_self:              ddr_b2984d8109ed42ffa535bf713503826b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  From need to requirement
+brief:                  |
+                        A requirement derives from a need through
+                        analysis, not directly. The analysis is done
+                        under a framing, its decomposition is a design
+                        decision of its own, and both are items the
+                        workflow produces.
+context:                |
+                        A need is a demand with no entity; a
+                        requirement is an obligation on one. Only the
+                        broadest requirements follow from a need in
+                        one step. A need such as resilient frontline
+                        power is first broken into smaller problems,
+                        and how it is broken down depends on how it is
+                        looked at: as a logistics problem, an
+                        electronic warfare problem, a power problem.
+                        The legacy work explored framings for this,
+                        and assessments of a need under a framing.
+                        Different analysis methodologies may apply,
+                        and the whole is to be driven by a workflow.
+decision:               |
+                        Derivation is by ANALYSIS. A need is refined
+                        into narrower needs, and a narrow enough need
+                        into requirements on an entity, each step
+                        recorded by r_is_derived_from edges from what
+                        was produced to what it came from.
+
+                        The DECOMPOSITION of a need is a design
+                        decision item, a t_ddr, that decides the
+                        narrower needs or the requirements it
+                        produced. Its context names the need and the
+                        framing; its alternatives are the other
+                        decompositions considered; its rationale is
+                        why this one. Competing decompositions of one
+                        need are competing decision items, each
+                        deciding its own children, so that
+                        alternatives can be explored and compared
+                        rather than the first one kept.
+
+                        A FRAMING is the way the need is looked at for
+                        the analysis. It is named in the
+                        decomposition's context now, and becomes an
+                        item of its own, t_framing, when a workflow
+                        needs to bind one: a framing states what it
+                        treats as in scope, which sub-problems it
+                        makes salient, and which kinds of solution it
+                        makes relevant.
+
+                        The analysis is a workflow: a component that
+                        takes a need and a framing and produces the
+                        decision item and its children, judged by the
+                        need evals on the children and by
+                        evl_requirement_realises_need on any
+                        requirement, looping on its judgement as the
+                        design decision workflow does. An analysis
+                        METHODOLOGY, where one is followed, is what
+                        such a component implements; methodologies are
+                        not items until two exist.
+rationale:              |
+                        Decomposition as a decision item, because that
+                        is what it is: a choice among ways to cut a
+                        problem, with alternatives and consequences,
+                        and the repository already has the item for
+                        recording such a choice and the evals for
+                        judging it. Nothing new is needed to record
+                        it.
+
+                        Competing decompositions as competing
+                        decisions rather than as branches of one,
+                        because each stands or falls on its own
+                        rationale, and a reader comparing them wants
+                        two records side by side.
+
+                        Framing as a named thing before it is an item,
+                        because the first analyses can name their
+                        framing in prose, and the shape of a framing
+                        item is better decided after a few have been
+                        named than before.
+
+                        The edges the same at every level,
+                        r_is_derived_from, because a reader walking
+                        from a requirement to the demand behind it
+                        should not need to know how many levels of
+                        analysis lie between.
+alternative:            |
+                        Direct derivation only, every requirement from
+                        a need in one step. Rejected: it works for the
+                        broadest requirements and for none of the
+                        rest, and hides the decomposition that
+                        produced them.
+
+                        Framing as a field on the need. Rejected: one
+                        need has several framings, and a framing is a
+                        hypothesis about the analysis, not a fact
+                        about the need.
+
+                        A decomposition recorded only as edges, the
+                        children deriving from the parent. Rejected:
+                        the edges say what was produced and not why,
+                        nor what else was considered.
+
+                        Assessment items, as the legacy work had,
+                        recording what is known and unknown about a
+                        need under a framing before decomposition.
+                        Deferred: the decision item's context and
+                        questions carry that for now.
+consequence:            |
+                        The analysis workflow is the next component to
+                        build, and its first run on a specimen need is
+                        the test of this decision.
+
+                        The need evals apply to child needs as they do
+                        to top ones. A child need's evidence may be
+                        its parent and the analysis, which the
+                        evidence eval should accept as described
+                        evidence.
+
+                        A framing item type, a methodology register
+                        and assessment items are each a decision
+                        waiting on evidence from the first analyses.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_framing
+    guid_target:        term_cbdb5c8991d04c0fb84ceac521cac9ad
+
+question:
+
+  framing:
+    id_self:            qst_need_to_requirement.framing
+    guid_self:          qst_510c6333669a415c94f99b2fd7483663
+    question:           |
+                        What a framing item carries beyond a name: the
+                        scope it asserts, the sub-problems it makes
+                        salient, the solution kinds it admits, and
+                        whether it also carries the questions an
+                        assessment answers.
+    relation:           []
+
+  methodology:
+    id_self:            qst_need_to_requirement.methodology
+    guid_self:          qst_8584982e5bcd45e3ae6aeb68c5011be8
+    question:           |
+                        Whether analysis methodologies are a register
+                        of named methods that a component declares it
+                        follows, or are simply what a component is.
+    relation:           []
+
+  compare:
+    id_self:            qst_need_to_requirement.compare
+    guid_self:          qst_18204dd8f7a348d58d7fe0fd324aa4ff
+    question:           |
+                        How competing decompositions of one need are
+                        compared: by the evals on their children, by a
+                        judgement over the two decision items, or by a
+                        person.
+    relation:           []

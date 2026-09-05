@@ -1,0 +1,75 @@
+id_self:                evl_need_purpose_is_consequence
+guid_self:              evl_10f4de8f0dca45fc92eae8566faac2cf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Purpose is the consequence
+brief:                  |
+                        The purpose of a need says why the outcome
+                        matters: the harm reduced or the objective
+                        served. It does not restate the outcome and it
+                        is not vague.
+criterion:              |
+                        MET when the purpose expresses what follows
+                        from achieving the outcome, a harm reduced or
+                        an opportunity or objective served, so that
+                        someone outside the domain sees why the need
+                        matters.
+
+                        UNMET when the purpose repeats the outcome in
+                        other words; or when it is a justification
+                        that could attach to anything, such as improve
+                        capability, support the mission, increase
+                        effectiveness, because it is important.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        outcome: Timely warning of incoming strike
+                        drones purpose: Enable personnel to take
+                        protective action and keep critical systems
+                        operating during repeated attacks
+    verdict:            met
+    feedback:           |
+                        The consequence of the warning.
+
+  - input:              |
+                        outcome: Timely warning of incoming strike
+                        drones purpose: Improve capability
+    verdict:            unmet
+    feedback:           |
+                        Attaches to anything. Quote: Improve
+                        capability.
+
+  - input:              |
+                        outcome: Timely warning of incoming strike
+                        drones purpose: Have warning of strike drones
+                        in good time
+    verdict:            unmet
+    feedback:           |
+                        The outcome again.
+
+scope:
+
+  include:
+    - outcome
+    - purpose
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_need
+    guid_target:        sch_09b2a0d969794594914cd39d563c9261

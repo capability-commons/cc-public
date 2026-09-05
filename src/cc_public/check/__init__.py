@@ -41,6 +41,7 @@ from cc_public.check import parse     as check_parse
 from cc_public.check import reference as check_reference
 from cc_public.check import result    as check_result
 from cc_public.check import schema    as check_schema
+from cc_public.check import trace     as check_trace
 from cc_public.check import workflow  as check_workflow
 
 
@@ -53,7 +54,8 @@ CHECK      = (check_parse,
               check_reference,
               check_schema,
               check_layout,
-              check_workflow)
+              check_workflow,
+              check_trace)
 
 STATUS_OK  = 'ok'
 STATUS_ADV = 'advisory'

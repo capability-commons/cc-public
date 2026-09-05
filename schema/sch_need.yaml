@@ -1,0 +1,128 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_need.yaml
+id_self:                sch_need
+guid_self:              sch_09b2a0d969794594914cd39d563c9261
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Need schema
+brief:                  |
+                        Schema for need data items: the five slots of
+                        a need, and no statement, which is composed.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. The title is the unique name. The
+                        slots are the subject who has the need, the
+                        outcome the subject needs, the purpose the
+                        outcome serves, the context in which the need
+                        holds, and the evidence the need rests on. The
+                        statement, in the form in context the subject
+                        needs the outcome in order to the purpose, is
+                        composed from the slots by the tool wherever
+                        the need is shown, so that it cannot drift
+                        from them.
+type:                   object
+additionalProperties:   true
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - subject
+      - outcome
+      - purpose
+      - context
+      - evidence
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the need, one line.
+
+      subject:
+        type:           string
+        minLength:      1
+        description:    |
+                        Who has the need: the group, role,
+                        organisation or unit that experiences it or is
+                        accountable for the outcome, at the most
+                        specific level the evidence supports. Not
+                        users, not everyone, not a supplier or a
+                        product.
+
+      outcome:
+        type:           string
+        minLength:      1
+        description:    |
+                        What must become possible, reliable,
+                        available, reduced, maintained or prevented:
+                        an effect, not an artefact, stated so that
+                        materially different solutions could satisfy
+                        it. A means appears only where it is an
+                        imposed constraint.
+
+      purpose:
+        type:           string
+        minLength:      1
+        description:    |
+                        What achieving the outcome is for: the harm
+                        reduced or the objective served. The
+                        consequence of satisfying the need, not the
+                        outcome again.
+
+      context:
+        type:           string
+        minLength:      1
+        description:    |
+                        The circumstances in which the need holds or
+                        matters: place, phase, threat, conditions,
+                        constraints. Only what changes the need, its
+                        priority or the range of responses; general
+                        where the need is not restricted.
+
+      evidence:
+        type:           string
+        minLength:      1
+        description:    |
+                        What has been observed, reported, requested or
+                        measured that shows the need exists and
+                        matters, described rather than asserted, with
+                        sources named. Where evidence is lacking, say
+                        so and say what would substantiate the need.
+
+      priority:
+        type:           string
+
+        enum:
+          - high
+          - medium
+          - low
+
+        description:    |
+                        Optional. How the need ranks among needs.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the need.

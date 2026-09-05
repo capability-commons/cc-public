@@ -1,0 +1,77 @@
+id_self:                evl_need_context_discriminates
+guid_self:              evl_f7704c28331a4d2b91720f7c7f5153df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Context discriminates
+brief:                  |
+                        The context of a need names the circumstances
+                        that change the need, its priority or the
+                        range of responses, and nothing so broad it
+                        discriminates nothing.
+criterion:              |
+                        MET when the context names conditions, place,
+                        phase, threat or constraints under which the
+                        need arises or matters, such that changing
+                        them would change the need or the candidate
+                        responses; or is general where the need is
+                        genuinely unrestricted.
+
+                        UNMET when the context is so broad it excludes
+                        nothing, such as in wartime, in Europe, during
+                        operations, in the field; or when it embeds
+                        solution details that are not genuine
+                        constraints.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, quote the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        context: Front-line operations within range of
+                        hostile electronic warfare and indirect fire
+    verdict:            met
+    feedback:           |
+                        Conditions that change the responses.
+
+  - input:              |
+                        context: In wartime
+    verdict:            unmet
+    feedback:           |
+                        Excludes nothing. Quote: In wartime.
+
+  - input:              |
+                        context: Prolonged winter attacks on
+                        geographically dispersed civilian energy
+                        infrastructure
+    verdict:            met
+    feedback:           |
+                        Place, season and threat.
+
+  - input:              |
+                        context: Operations using the Model 7 jammer
+    verdict:            unmet
+    feedback:           |
+                        A solution detail standing as context.
+
+scope:
+
+  include:
+    - context
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_need
+    guid_target:        sch_09b2a0d969794594914cd39d563c9261
