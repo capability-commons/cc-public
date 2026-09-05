@@ -506,6 +506,14 @@ def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
     assert any('t_nonsense' in m and 'not a type' in m for m in faults())
 
 
+def test_a_plain_register_refuses_a_field_its_entries_do_not_declare(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'frame_supply', 'bogus', value = 1)
+    faults = [(c, m) for (c, m) in clean(tmp_path) if c == 'schema']
+    assert len(faults) == 1 and 'bogus' in faults[0][1]
+    cc_public.edit.field.unset_field(tree, 'frame_supply', 'bogus')
+    assert clean(tmp_path) == []
+
+
 def test_a_concrete_schema_refuses_a_field_it_does_not_declare(tree, tmp_path):
     """
     ---

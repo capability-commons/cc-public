@@ -77,6 +77,16 @@ decision:               |
                         path beneath which another error was reported,
                         so that the fault is reported once, where it
                         is.
+
+                        A register whose entries add no field of their
+                        own names one shared schema, sch_reg_plain,
+                        which composes the register schema and closes
+                        each entry over the generic entry shape. One
+                        schema for every such register rather than an
+                        empty schema each, since they would say the
+                        same thing; a register whose entries gain a
+                        field then gains a schema of its own, as the
+                        others have.
 rationale:              |
                         unevaluatedProperties rather than
                         additionalProperties false, because the latter
@@ -139,6 +149,19 @@ consequence:            |
                         its own stay open: the framing, methodology
                         and requirement characteristic registers.
 
+question:
+
+  plain_register:
+    id_self:            qst_schema_closure.plain_register
+    guid_self:          qst_11726b9b7544408c9120b3ddf26c1a78
+    question:           |
+                        How the entries of a register with no schema
+                        of its own are closed: a per register schema
+                        that adds nothing, a dynamic reference from
+                        the general entry, or a rule that every
+                        register names a schema.
+    relation:           []
+
 relation:
 
   - id_relation:        r_decides
@@ -186,15 +209,12 @@ relation:
     id_target:          qst_per_register_entry_schema.cbba08ad3
     guid_target:        qst_b44c5915e76944759f086c003214c95e
 
-question:
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_schema_closure.plain_register
+    guid_target:        qst_11726b9b7544408c9120b3ddf26c1a78
 
-  plain_register:
-    id_self:            qst_schema_closure.plain_register
-    guid_self:          qst_11726b9b7544408c9120b3ddf26c1a78
-    question:           |
-                        How the entries of a register with no schema
-                        of its own are closed: a per register schema
-                        that adds nothing, a dynamic reference from
-                        the general entry, or a rule that every
-                        register names a schema.
-    relation:           []
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_plain
+    guid_target:        sch_40018b62a691433bb322fa44d25cd632

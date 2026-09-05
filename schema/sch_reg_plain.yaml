@@ -1,0 +1,53 @@
+id_self:                sch_reg_plain
+guid_self:              sch_40018b62a691433bb322fa44d25cd632
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain register schema
+brief:                  |
+                        A register whose entries carry the generic
+                        fields and nothing more, closed.
+description:            |
+                        Composes the register schema and closes every
+                        entry over the generic entry shape, so that a
+                        misspelled field in an entry is refused at the
+                        path it was written, as it is in a register
+                        with fields of its own. Adds nothing: the
+                        entry shape is the one every register shares.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_plain.yaml
+usage:                  |
+                        Named by a register through an
+                        r_is_specified_by_schema edge where its
+                        entries add no field of their own: the
+                        framings, the methodologies and the
+                        requirement characteristics. A register whose
+                        entries do add fields names a schema of its
+                        own, as the type register names sch_reg_type.
+note:                   |
+                        The answer to the schema closure question on
+                        plain registers: one shared schema rather than
+                        one empty schema per register.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+
+          unevaluatedProperties:  false
+
+unevaluatedProperties:  false
