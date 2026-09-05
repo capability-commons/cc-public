@@ -36,7 +36,6 @@ relation:               []
 import datetime
 import hashlib
 import pathlib
-import subprocess
 
 import ruamel.yaml.scalarstring
 
@@ -46,6 +45,7 @@ import cc_public.edit.field
 import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.load
+import cc_public.load.git
 import cc_public.trace
 
 
@@ -120,14 +120,10 @@ def head(root):
     """
 
     try:
-        revision = subprocess.run(['git', '-C', str(root), 'rev-parse', 'HEAD'],
-                                  capture_output = True, text = True,
-                                  check = True).stdout.strip()
-        status   = subprocess.run(['git', '-C', str(root), 'status', '--porcelain',
-                                   '--untracked-files=all'],
-                                  capture_output = True, text = True,
-                                  check = True).stdout
-    except (OSError, subprocess.CalledProcessError):
+        revision = cc_public.load.git.git(root, 'rev-parse', 'HEAD').strip()
+        status   = cc_public.load.git.git(root, 'status', '--porcelain',
+                                          '--untracked-files=all')
+    except cc_public.load.git.ErrorGit:
         return (None, True)
 
     is_dirty = any(line[3:].split('/', 1)[0] != DIR_EVIDENCE

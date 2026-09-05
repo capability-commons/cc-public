@@ -30,6 +30,7 @@ import json
 import pathlib
 import sys
 
+import click
 import rich.console
 import rich.table
 import rich.text
@@ -289,3 +290,154 @@ def _write_entry(console, entry):
                       overflow = 'ellipsis')
         for line in item['message'].splitlines():
             console.print('    {line}'.format(line = line))
+
+
+# -----------------------------------------------------------------------------
+def write_trace(list_record, id_format):
+    """
+    Write the projection, as text or as json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps([plain_record(r) for r in list_record], indent = 2))
+        return
+
+    for r in list_record:
+        click.echo('{id}  {status}{leaf}'.format(
+                        id = r.id_self, status = r.status,
+                        leaf = '  leaf' if r.is_leaf else ''))
+        for (label, names) in (('derives from', r.derives_from),
+                               ('children', r.children),
+                               ('implemented by', r.implemented_by),
+                               ('verified by', r.verified_by),
+                               ('unresolved', r.unresolved)):
+            if names:
+                click.echo('    {label:15} {names}'.format(label = label,
+                                                          names = ', '.join(names)))
+        if r.verification:
+            click.echo('    {label:15} {v}{c}'.format(
+                            label = 'verification', v = r.verification,
+                            c = ', criteria' if r.has_criteria else ', NO CRITERIA'))
+        for gap in r.gap:
+            click.echo('    {sev:15} {path}: {msg}'.format(
+                            sev = gap.severity.upper(), path = gap.path, msg = gap.message))
+
+    click.echo('{n} requirement(s), {g} with gaps.'.format(
+                    n = len(list_record), g = sum(1 for r in list_record if r.gap)))
+
+
+
+# -----------------------------------------------------------------------------
+def write_impact(list_impact, id_format):
+    """
+    Write what each source item may affect, as text or as json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps([{'id_self':    i.id_self,
+                                'guid_self':  i.guid_self,
+                                'implements': [plain_record(r) for r in i.implements],
+                                'verifies':   [plain_record(r) for r in i.verifies]}
+                               for i in list_impact], indent = 2))
+        return
+
+    for i in list_impact:
+        click.echo('{id}'.format(id = i.id_self))
+        for (label, records) in (('implements', i.implements), ('verifies', i.verifies)):
+            for r in records:
+                click.echo('    {label:12} {req}  verified by {v}'.format(
+                                label = label, req = r.id_self,
+                                v = ', '.join(r.verified_by) or 'nothing'))
+        if not (i.implements or i.verifies):
+            click.echo('    implements and verifies no requirement.')
+
+
+
+# -----------------------------------------------------------------------------
+def plain_record(record):
+    """
+    Return a projection record as plain data, gaps included.
+
+    """
+
+    out        = record._asdict()
+    out['gap'] = [g._asdict() for g in record.gap]
+
+    return out
+
+
+
+# -----------------------------------------------------------------------------
+def rate(value):
+    """
+    Return a rate for the table, or a dash where there is none.
+
+    """
+
+    return '-' if value is None else value
+
+
+
+# -----------------------------------------------------------------------------
+def write_run(report):
+    """
+    Print a run report for a person.
+
+    """
+
+    click.echo('{wf} under {dep}  judge={j} confirm={c} commit={k}'.format(
+                    wf = report['workflow'], dep = report['deployment'],
+                    j = report['policy']['judge'], c = report['policy']['confirm'],
+                    k = report['policy']['commit']))
+    for (port, item) in (report.get('bound') or {}).items():
+        click.echo('  bound  {port} = {item}'.format(port = port, item = item))
+    for e in report['node']:
+        _write_pass(e)
+    if report['execution']:
+        click.echo('  execution {e}  {o}'.format(e = report['execution'],
+                                                 o = report.get('outcome') or ''))
+    if report['commit']:
+        click.echo('  commit    {h}'.format(h = report['commit'][:10]))
+    if report['stopped']:
+        click.echo('  STOPPED   {r}'.format(r = report['stopped']))
+
+
+
+# -----------------------------------------------------------------------------
+def _write_pass(e):
+    """
+    Print one node's entry of a run report: what it would do on a dry
+    run, else what it made, judged, fired and declined.
+
+    """
+
+    if 'input' in e:                                     # dry run
+        click.echo('  {node}: {out}'.format(
+                        node = e['node'],
+                        out  = '; '.join(f'{p} {what}' for (p, what) in e['output'].items())))
+        return
+
+    click.echo('  {node}{n}'.format(node = e['node'],
+                                    n = '' if e.get('pass', 1) == 1 else
+                                        '  pass {n}'.format(n = e['pass'])))
+    if e.get('skipped'):
+        click.echo('    skipped  {why}'.format(why = e['skipped']))
+    for (label, items) in (('made    ', e['made']), ('revised ', e['revised'])):
+        for i in items:
+            click.echo('    {label} {i}'.format(label = label, i = i))
+    for (port, vs) in e['verdict'].items():
+        for (ev, v) in vs:
+            click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
+    for (label, items) in (('fired    -> ', e['fired']),
+                           ('declined -> ', e['declined']),
+                           ('note     ', e.get('note') or [])):
+        for t in items:
+            click.echo('    {label}{t}'.format(label = label, t = t))
+    for t in e.get('exhausted') or []:
+        click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
+    if e.get('commit'):
+        click.echo('    commit   {h}'.format(h = e['commit'][:10]))
+
+

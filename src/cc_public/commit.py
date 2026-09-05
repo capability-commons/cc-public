@@ -46,6 +46,7 @@ import cc_public.check
 import cc_public.check.schema
 import cc_public.edit.tree
 import cc_public.layout
+import cc_public.load.git
 
 
 PREFIX          = 'cmt'
@@ -385,17 +386,12 @@ def _plain(node):
 # -----------------------------------------------------------------------------
 def _git(root, *args, input = None):
     """
-    Run one git command at root and return its output.
+    Run one git command at root and return its output, a failure being
+    a failure of the commit.
 
     """
 
-    done = subprocess.run(['git', '-C', str(root), *args],
-                          capture_output = True, text = True, input = input,
-                          check = False)
-
-    if done.returncode != 0:
-        raise ErrorCommit('git {args}: {err}'.format(
-                                    args = ' '.join(args[:2]),
-                                    err  = done.stderr.strip()))
-
-    return done.stdout
+    try:
+        return cc_public.load.git.git(root, *args, input = input)
+    except cc_public.load.git.ErrorGit as err:
+        raise ErrorCommit(str(err)) from err

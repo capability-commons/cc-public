@@ -104,6 +104,55 @@ def parse(message):
 
 
 # -----------------------------------------------------------------------------
+class ErrorGit(Exception):
+    """
+    Raised where git could not do what was asked.
+
+    """
+
+
+
+# -----------------------------------------------------------------------------
+def git(root, *args, input = None):
+    """
+    Run one git command at root and return its output, or raise
+    ErrorGit with what git said.
+
+    The one place git is run, so that every caller reports its failure
+    the same way and none runs it by another path.
+
+    """
+
+    import subprocess
+
+    try:
+        done = subprocess.run(['git', '-C', str(root), *args],
+                              capture_output = True, text = True, input = input,
+                              check = False)
+    except OSError as err:
+        raise ErrorGit('git could not be run: {err}'.format(err = err)) from err
+
+    if done.returncode != 0:
+        raise ErrorGit('git {args}: {err}'.format(args = ' '.join(args[:2]),
+                                                  err  = done.stderr.strip()))
+
+    return done.stdout
+
+
+# -----------------------------------------------------------------------------
+def revision(root):
+    """
+    Return the commit checked out at root, or None where there is none.
+
+    """
+
+    try:
+        return git(root, 'rev-parse', 'HEAD').strip()
+    except ErrorGit:
+        return None
+
+
+# -----------------------------------------------------------------------------
 def iter_commit(root, count = None):
     """
     Yield a Commit for each commit in the history of root, newest first.

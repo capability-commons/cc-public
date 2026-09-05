@@ -99,8 +99,8 @@ max-complexity          = 11
 [tool.ruff.lint.pylint]
 max-args                = 9
 max-positional-args     = 9
-max-branches            = 12
-max-statements          = 50
+max-branches            = 10
+max-statements          = 40
 
 # Layers. The tool is seven tiers importing downward only, with the
 # committer and the judgement package as independent siblings, and the
@@ -122,6 +122,6 @@ layers                  = ["cc_public.cli",
                            "cc_public.load | cc_public.path | cc_public.need | cc_public.question | cc_public.control | cc_public.trace"]
 
 [tool.ruff.lint.per-file-ignores]
-"test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "ARG001",
-                           "SLF001"]  # a test may reach the internals of what it tests
+"test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "PLR0915", "ARG001",
+                           "SLF001"]  # a test may be long, and reach the internals of what it tests
 "src/cc_public/cli/command.py" = ["PLR0913", "PLR0917"]   # a click command takes one argument per option

@@ -16,13 +16,17 @@ brief:                  |
                         Pytest hooks that hand a session's outcomes to
                         the evidence module.
 description:            |
-                        Notes the outcome of every test instance as
-                        pytest reports it, maps pytest's words onto
-                        the evidence outcomes, an expected failure
-                        being nothing observed and an unexpected pass
-                        a failure, and at the end of the session
-                        writes what was observed as evidence. A
-                        failure to write is reported and never hidden.
+                        Holds the fixture every test module shares, a
+                        copy of the tree with its defaults and a
+                        helper that lists critical findings, and the
+                        pytest hooks that note the outcome of every
+                        test instance, map pytest's words onto the
+                        evidence outcomes, an expected failure being
+                        nothing observed and an unexpected pass a
+                        failure, and at the end of the session hand
+                        them to the evidence module from the
+                        controller alone. A failure to write is
+                        reported and never hidden.
 relation:               []
 
 ...
@@ -30,14 +34,38 @@ relation:               []
 
 
 import pathlib
+import shutil
 
 import pytest
 
+import cc_public.check
+import cc_public.edit.tree
 import cc_public.evidence
 
 
 ROOT        = pathlib.Path(__file__).resolve().parent.parent
 MAP_OUTCOME = {}
+
+# What a test tree is made of, and what a new item in it is given.
+#
+DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
+            'license':   'Apache-2.0',
+            'id_mark':   'mark_public'}
+KEEP     = ('ddr', 'schema', 'register', 'eval', 'workflow', 'execution', 'requirement', 'need', 'src')
+
+
+@pytest.fixture
+def tree(tmp_path):
+    for name in KEEP:
+        shutil.copytree(ROOT / name, tmp_path / name)
+    return cc_public.edit.tree.Tree([tmp_path])
+
+
+def clean(root):
+    report = cc_public.check.check(list_path = [root])['report']
+    return [(c['id_check'], n['message'])
+            for c in report['check'] for n in c['nonconformity']
+            if n['severity'] == 'critical']
 
 # pytest's words for what happened, as evidence records them. An
 # expected failure that failed observed nothing about the requirement;
