@@ -40,6 +40,7 @@ import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.load
 import cc_public.load.git
+import cc_public.workflow.produce
 import cc_public.workflow.run
 
 
@@ -296,11 +297,11 @@ def test_a_bounded_field_is_told_its_bound_and_cut_to_it_if_overrun(repo):
 
 
 def test_a_cut_line_drops_a_dangling_word_and_a_slug_is_normalised():
-    line = cc_public.workflow.run._line
+    line = cc_public.workflow.produce._line
     assert line('Define port schema with identity, prompts, and relations', 47) == \
            'Define port schema with identity, prompts'
     assert line('short', 80) == 'short'
-    slug = cc_public.workflow.run._slug
+    slug = cc_public.workflow.produce._slug
     assert slug('Port Schema: Design-Decision!', 'ddr') == 'port_schema_design_decision'
     assert slug('ddr_port_schema', 'ddr') == 'port_schema'
     assert slug('', 'ddr') == ''

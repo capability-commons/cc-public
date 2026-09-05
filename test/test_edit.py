@@ -351,7 +351,7 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
     assert text.startswith('In Workflows with back edges') and 'need A run that loops' in text \
            and text.endswith('before it starts.')
     assert 'statement' not in doc
-    rendered = cc_public.eval.select._render((('need_runs_bounded', doc),), {'scope': {'include': ['statement']}})
+    rendered = cc_public.eval.select.render((('need_runs_bounded', doc),), {'scope': {'include': ['statement']}})
     assert 'statement:' in rendered and 'in order to' in rendered
     cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget', 'relation')
     rep = cc_public.check.check(list_path = [tmp_path])['report']

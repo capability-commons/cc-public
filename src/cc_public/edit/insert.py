@@ -79,7 +79,6 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                                                         id_type = id_type))
 
     entry_type = table[id_type]
-    prefix     = entry_type[KEY_PREFIX]
     container  = tree.resolve(name_container)
     document   = tree.document(container)
     is_reg     = container.id_self.split(SEPARATOR, 1)[0] == PREFIX_REGISTER
@@ -100,49 +99,10 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                                     path = path_collection,
                                     name = container.id_self))
 
-    map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
-    map_prefix = cc_public.check.register.map_prefix(tree.type_register())
-    (id_schema, reason) = cc_public.check.schema.select_schema(
-                            tree.context.map_document[container.filepath],
-                            map_prefix)
-
-    if id_schema is None:
-        raise cc_public.edit.tree.ErrorItem(reason)
-
-    required   = []
-    properties = {}
-
-    for (shape, _) in _entry_shape(map_schema[id_schema], path_full,
-                                   map_schema, isinstance(collection, list)):
-        (req, props) = cc_public.edit.new.gather(shape, map_schema)
-        required.extend(r for r in req if r not in required)
-        for (key_prop, value) in props.items():
-            properties.setdefault(key_prop, value)
-
-    # Key and readable id, by the container's convention.
-    #
-    if KEY_ID_SELF in properties or KEY_ID_SELF in required:
-        if is_reg:
-            key     = prefix + SEPARATOR + name
-            id_self = id_self or key
-        else:
-            key     = name
-            id_self = id_self or (prefix + SEPARATOR
-                                  + container.id_self.split(SEPARATOR, 1)[1]
-                                  + '.' + name)
-        if not re.match(entry_type[KEY_REGEX_ID], id_self):
-            raise cc_public.edit.tree.ErrorItem(
-                    '{id_self} does not match {regex}, the form of a '
-                    '{id_type} identifier.'.format(
-                            id_self = id_self,
-                            regex   = entry_type[KEY_REGEX_ID],
-                            id_type = id_type))
-        if id_self in tree.map_id:
-            raise cc_public.edit.tree.ErrorItem(
-                    '{id_self} already exists.'.format(id_self = id_self))
-    else:
-        key     = name
-        id_self = None
+    (required, properties) = _shape_at(tree, container, path_full,
+                                       isinstance(collection, list))
+    (key, id_self) = _identity(tree, entry_type, name, container, is_reg,
+                               id_self, required, properties)
 
     if isinstance(collection, dict) and key in collection:
         raise cc_public.edit.tree.ErrorItem(
@@ -151,22 +111,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                                     name = container.id_self,
                                     key  = key))
 
-    item = ruamel.yaml.comments.CommentedMap()
-
-    if id_self is not None:
-        item[KEY_ID_SELF]   = id_self
-        item[KEY_GUID_SELF] = prefix + SEPARATOR + uuid.uuid4().hex
-
-    for field in cc_public.edit.new.ORDER_ENVELOPE:
-        if field in required and field not in item:
-            item[field] = cc_public.edit.new.empty(properties.get(field))
-
-    for field in required:
-        if field not in item and field != KEY_RELATION:
-            item[field] = cc_public.edit.new.empty(properties.get(field))
-
-    if KEY_RELATION in properties or KEY_RELATION in required:
-        item[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
+    item = _skeleton(id_self, entry_type[KEY_PREFIX], required, properties)
 
     if isinstance(collection, dict):
         collection[key] = item
@@ -187,6 +132,104 @@ def insert(tree, id_type, name, name_container, path_collection = None,
         tree.map_guid[item[KEY_GUID_SELF]] = made
 
     return (key, id_self)
+
+
+# -----------------------------------------------------------------------------
+def _shape_at(tree, container, path_full, is_list):
+    """
+    Return (required keys, properties) for an entry at path_full in the
+    container, gathered from every subschema that mentions the place.
+
+    """
+
+    map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
+    map_prefix = cc_public.check.register.map_prefix(tree.type_register())
+    (id_schema, reason) = cc_public.check.schema.select_schema(
+                            tree.context.map_document[container.filepath],
+                            map_prefix)
+
+    if id_schema is None:
+        raise cc_public.edit.tree.ErrorItem(reason)
+
+    required   = []
+    properties = {}
+
+    for (shape, _) in _entry_shape(map_schema[id_schema], path_full,
+                                   map_schema, is_list):
+        (req, props) = cc_public.edit.new.gather(shape, map_schema)
+        required.extend(r for r in req if r not in required)
+        for (key_prop, value) in props.items():
+            properties.setdefault(key_prop, value)
+
+    return (required, properties)
+
+
+# -----------------------------------------------------------------------------
+def _identity(tree, entry_type, name, container, is_reg, id_self, required,
+              properties):
+    """
+    Return (key, id_self) by the container's convention: in a register
+    the key is the id; elsewhere the key is the local name and the id
+    is qualified by the container. An entry with no identity of its own
+    has a key and no id.
+
+    """
+
+    if KEY_ID_SELF not in properties and KEY_ID_SELF not in required:
+        return (name, None)
+
+    prefix = entry_type[KEY_PREFIX]
+
+    if is_reg:
+        key     = prefix + SEPARATOR + name
+        id_self = id_self or key
+    else:
+        key     = name
+        id_self = id_self or (prefix + SEPARATOR
+                              + container.id_self.split(SEPARATOR, 1)[1]
+                              + '.' + name)
+
+    if not re.match(entry_type[KEY_REGEX_ID], id_self):
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} does not match {regex}, the form of a '
+                '{id_type} identifier.'.format(
+                        id_self = id_self,
+                        regex   = entry_type[KEY_REGEX_ID],
+                        id_type = entry_type[KEY_ID_SELF]))
+
+    if id_self in tree.map_id:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} already exists.'.format(id_self = id_self))
+
+    return (key, id_self)
+
+
+# -----------------------------------------------------------------------------
+def _skeleton(id_self, prefix, required, properties):
+    """
+    Return the new entry: its identity where it has one, then every
+    required field empty, envelope fields first and relations last.
+
+    """
+
+    item = ruamel.yaml.comments.CommentedMap()
+
+    if id_self is not None:
+        item[KEY_ID_SELF]   = id_self
+        item[KEY_GUID_SELF] = prefix + SEPARATOR + uuid.uuid4().hex
+
+    for field in cc_public.edit.new.ORDER_ENVELOPE:
+        if field in required and field not in item:
+            item[field] = cc_public.edit.new.empty(properties.get(field))
+
+    for field in required:
+        if field not in item and field != KEY_RELATION:
+            item[field] = cc_public.edit.new.empty(properties.get(field))
+
+    if KEY_RELATION in properties or KEY_RELATION in required:
+        item[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
+
+    return item
 
 
 # -----------------------------------------------------------------------------

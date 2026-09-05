@@ -92,32 +92,8 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
 
     """
 
-    table = tree.type_register()[KEY_TABLE]
-
-    if id_type not in table:
-        raise cc_public.edit.tree.ErrorItem(
-                '{id_type} is not in the type register.'.format(
-                                                        id_type = id_type))
-
-    entry  = table[id_type]
-    prefix = entry[KEY_PREFIX]
-
-    if prefix in PREFIX_EMBEDDED:
-        raise cc_public.edit.tree.ErrorItem(
-                'A {id_type} lives in the docstring of a class or function '
-                'inside a module. Write it there.'.format(id_type = id_type))
-
-    if not re.match(entry[KEY_REGEX_ID], id_self):
-        raise cc_public.edit.tree.ErrorItem(
-                '{id_self} does not match {regex}, the form of a {id_type} '
-                'identifier.'.format(id_self = id_self,
-                                     regex   = entry[KEY_REGEX_ID],
-                                     id_type = id_type))
-
-    if id_self in tree.map_id:
-        raise cc_public.edit.tree.ErrorItem(
-                '{id_self} already exists.'.format(id_self = id_self))
-
+    entry     = _entry(tree, id_type, id_self)
+    prefix    = entry[KEY_PREFIX]
     is_source = prefix in (PREFIX_PACKAGE, PREFIX_MODULE)
 
     if is_source:
@@ -127,37 +103,12 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
                     else _home(tree, prefix))
         filepath = dirpath / (id_self + SUFFIX)
 
-    mark = tree.resolve(defaults['id_mark'])
-
-    document = ruamel.yaml.comments.CommentedMap()
-    document['id_self']   = id_self
-    document['guid_self'] = guid or (prefix + '_' + uuid.uuid4().hex)
-    document['copyright'] = defaults['copyright']
-    document['license']   = defaults['license']
-
-    marks = ruamel.yaml.comments.CommentedSeq()
-    one   = ruamel.yaml.comments.CommentedMap()
-    one['id_mark']   = mark.id_self
-    one['guid_mark'] = mark.guid_self
-    marks.append(one)
-    document['protective_mark'] = marks
-
-    (required, properties) = _shape(tree, entry)
-
-    for key in ORDER_ENVELOPE:
-        if key in required and key not in document:
-            document[key] = empty(properties.get(key))
-
-    for key in required:
-        if key not in document and key != KEY_RELATION:
-            document[key] = empty(properties.get(key))
-
-    if KEY_RELATION in properties or KEY_RELATION in required:
-        document[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
-
     if filepath.exists():
         raise cc_public.edit.tree.ErrorItem(
                 '{path} already exists.'.format(path = filepath))
+
+    document = _skeleton(tree, entry, id_self,
+                         guid or (prefix + '_' + uuid.uuid4().hex), defaults)
 
     filepath.parent.mkdir(parents = True, exist_ok = True)
 
@@ -177,6 +128,83 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
     tree.map_guid[document['guid_self']] = made
 
     return filepath
+
+
+# -----------------------------------------------------------------------------
+def _entry(tree, id_type, id_self):
+    """
+    Return the type register entry for id_type, having refused a type
+    that is not one, one that lives inside a module, an id that is not
+    of the type's form, and an id already taken.
+
+    """
+
+    table = tree.type_register()[KEY_TABLE]
+
+    if id_type not in table:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_type} is not in the type register.'.format(
+                                                        id_type = id_type))
+
+    entry = table[id_type]
+
+    if entry[KEY_PREFIX] in PREFIX_EMBEDDED:
+        raise cc_public.edit.tree.ErrorItem(
+                'A {id_type} lives in the docstring of a class or function '
+                'inside a module. Write it there.'.format(id_type = id_type))
+
+    if not re.match(entry[KEY_REGEX_ID], id_self):
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} does not match {regex}, the form of a {id_type} '
+                'identifier.'.format(id_self = id_self,
+                                     regex   = entry[KEY_REGEX_ID],
+                                     id_type = id_type))
+
+    if id_self in tree.map_id:
+        raise cc_public.edit.tree.ErrorItem(
+                '{id_self} already exists.'.format(id_self = id_self))
+
+    return entry
+
+
+# -----------------------------------------------------------------------------
+def _skeleton(tree, entry, id_self, guid, defaults):
+    """
+    Return the new document: its identity and rights, then every field
+    its schema requires, empty, envelope fields first and relations
+    last.
+
+    """
+
+    mark = tree.resolve(defaults['id_mark'])
+
+    document = ruamel.yaml.comments.CommentedMap()
+    document['id_self']   = id_self
+    document['guid_self'] = guid
+    document['copyright'] = defaults['copyright']
+    document['license']   = defaults['license']
+
+    marks = ruamel.yaml.comments.CommentedSeq()
+    one   = ruamel.yaml.comments.CommentedMap()
+    one['id_mark']   = mark.id_self
+    one['guid_mark'] = mark.guid_self
+    marks.append(one)
+    document['protective_mark'] = marks
+
+    (required, properties) = shape(tree, entry)
+
+    for key in ORDER_ENVELOPE:
+        if key in required and key not in document:
+            document[key] = empty(properties.get(key))
+
+    for key in required:
+        if key not in document and key != KEY_RELATION:
+            document[key] = empty(properties.get(key))
+
+    if KEY_RELATION in properties or KEY_RELATION in required:
+        document[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
+
+    return document
 
 
 # -----------------------------------------------------------------------------
@@ -250,7 +278,7 @@ def _home(tree, prefix):
 
 
 # -----------------------------------------------------------------------------
-def _shape(tree, entry):
+def shape(tree, entry):
     """
     Return (required keys in order, properties) for a type's schema,
     gathered through everything it composes.

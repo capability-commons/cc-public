@@ -26,3 +26,15 @@ description:            |
 
 ...
 """
+
+
+# -----------------------------------------------------------------------------
+class Stop(Exception):
+    """
+    Raised where a run cannot go on. The reason is the message.
+
+    A domain stop, not a crash: the executor catches it, restores what
+    the run wrote, and reports the reason. Anything else that is raised
+    is a defect and is raised again after the restore.
+
+    """

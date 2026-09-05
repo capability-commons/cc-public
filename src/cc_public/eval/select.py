@@ -269,7 +269,7 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval):
         if id_self.split(SEPARATOR, 1)[0] == prefix \
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), _render(((id_self, document),), document_eval))
+            yield ((id_self,), render(((id_self, document),), document_eval))
 
 
 # -----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
         if _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), _render(((id_self, document),), document_eval))
+            yield ((id_self,), render(((id_self, document),), document_eval))
 
 
 # -----------------------------------------------------------------------------
@@ -334,7 +334,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
             if _wanted_item(document, selector) \
                             or _wanted_item(document_far, selector):
                 yield ((id_self, id_far),
-                       _render(((id_self, document), (id_far, document_far)),
+                       render(((id_self, document), (id_far, document_far)),
                                document_eval))
 
 
@@ -443,7 +443,7 @@ def _iter_ref(node):
 
 
 # -----------------------------------------------------------------------------
-def _render(tuple_item, document_eval):
+def render(tuple_item, document_eval):
     """
     Return the text a judge would be given for these items.
 

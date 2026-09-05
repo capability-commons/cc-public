@@ -819,39 +819,49 @@ def _write_run(report):
     for (port, item) in (report.get('bound') or {}).items():
         click.echo('  bound  {port} = {item}'.format(port = port, item = item))
     for e in report['node']:
-        if 'input' in e:                                     # dry run
-            click.echo('  {node}: {out}'.format(
-                            node = e['node'],
-                            out  = '; '.join(f'{p} {what}' for (p, what) in e['output'].items())))
-            continue
-        click.echo('  {node}{n}'.format(node = e['node'],
-                                        n = '' if e.get('pass', 1) == 1 else
-                                            '  pass {n}'.format(n = e['pass'])))
-        if e.get('skipped'):
-            click.echo('    skipped  {why}'.format(why = e['skipped']))
-        for i in e['made']:
-            click.echo('    made     {i}'.format(i = i))
-        for i in e['revised']:
-            click.echo('    revised  {i}'.format(i = i))
-        for (port, vs) in e['verdict'].items():
-            for (ev, v) in vs:
-                click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
-        for t in e['fired']:
-            click.echo('    fired    -> {t}'.format(t = t))
-        for t in e['declined']:
-            click.echo('    declined -> {t}'.format(t = t))
-        for n in e.get('note') or []:
-            click.echo('    note     {n}'.format(n = n))
-        for t in e.get('exhausted') or []:
-            click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
-        if e.get('commit'):
-            click.echo('    commit   {h}'.format(h = e['commit'][:10]))
+        _write_entry(e)
     if report['execution']:
         click.echo('  execution {e}'.format(e = report['execution']))
     if report['commit']:
         click.echo('  commit    {h}'.format(h = report['commit'][:10]))
     if report['stopped']:
         click.echo('  STOPPED   {r}'.format(r = report['stopped']))
+
+
+# -----------------------------------------------------------------------------
+def _write_entry(e):
+    """
+    Print one node's entry of a run report: what it would do on a dry
+    run, else what it made, judged, fired and declined.
+
+    """
+
+    if 'input' in e:                                     # dry run
+        click.echo('  {node}: {out}'.format(
+                        node = e['node'],
+                        out  = '; '.join(f'{p} {what}' for (p, what) in e['output'].items())))
+        return
+
+    click.echo('  {node}{n}'.format(node = e['node'],
+                                    n = '' if e.get('pass', 1) == 1 else
+                                        '  pass {n}'.format(n = e['pass'])))
+    if e.get('skipped'):
+        click.echo('    skipped  {why}'.format(why = e['skipped']))
+    for (label, items) in (('made    ', e['made']), ('revised ', e['revised'])):
+        for i in items:
+            click.echo('    {label} {i}'.format(label = label, i = i))
+    for (port, vs) in e['verdict'].items():
+        for (ev, v) in vs:
+            click.echo('    {v:6} {port}  {ev}'.format(v = v, port = port, ev = ev))
+    for (label, items) in (('fired    -> ', e['fired']),
+                           ('declined -> ', e['declined']),
+                           ('note     ', e.get('note') or [])):
+        for t in items:
+            click.echo('    {label}{t}'.format(label = label, t = t))
+    for t in e.get('exhausted') or []:
+        click.echo('    exhausted -> {t}  (budget spent)'.format(t = t))
+    if e.get('commit'):
+        click.echo('    commit   {h}'.format(h = e['commit'][:10]))
 
 
 # -----------------------------------------------------------------------------

@@ -17,63 +17,55 @@ brief:                  |
                         deployment, and record what happened.
 description:            |
                         Binds the graph's inputs, orders the nodes,
-                        and for each has the generator fill the items
-                        its output ports produce or revise, through
-                        the edit package. After every node the checks
-                        run and a critical finding stops the run; the
-                        anchored evals are judged as the deployment
-                        says; forward edges fire by their guards; and
-                        the bindings go on the execution. A stopped
-                        run restores every file it touched. A finished
-                        one commits as the deployment says.
+                        and walks them, keeping what a run carries
+                        from node to node in one state. Each node has
+                        its output ports materialised by the produce
+                        module, its bindings put on the execution, the
+                        checks run, its ports judged as the deployment
+                        says and its edges fired by their guards. A
+                        critical finding or an incomplete analysis
+                        stops the run, and a stopped run restores
+                        every file it touched. A finished one commits
+                        as the deployment says.
 
 ...
 """
 
 
 import datetime
-import json
 import pathlib
-import re
 import uuid
 
 import cc_public.check
 import cc_public.commit
 import cc_public.edit.field
-import cc_public.edit.ledger
 import cc_public.edit.insert
+import cc_public.edit.ledger
 import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.tree
-import cc_public.eval.runner
 import cc_public.eval.measure
+import cc_public.eval.runner
 import cc_public.eval.select
 import cc_public.path
+import cc_public.workflow
 import cc_public.workflow.graph
+import cc_public.workflow.produce
 
 
-KEY_TABLE      = 'table'
-KEY_PREFIX     = 'prefix'
-KEY_REGEX_ID   = 'regex_id'
 KEY_ID_TYPE    = 'id_type'
-KEY_PROMPT     = 'prompt'
 KEY_REVISES    = 'revises'
-KEY_DECIDES    = 'decides'
-KEY_DERIVES    = 'derives'
-KEY_FIELD      = 'field'
 KEY_CHALLENGER = 'challenger'
 KEY_PRIORITY   = 'priority'
-KEY_STATUS     = 'status'
-STATUS_PROPOSED = 'proposed'
-REL_DERIVED    = 'r_is_derived_from'
 KEY_ADMIT      = 'admit_unmeasured'
 KEY_JUDGEMENT  = 'judgement'
 CARRIES_JUDGE  = 'judgement'
-REL_DECIDES    = 'r_decides'
 KEY_OPTIONAL   = 'optional'
 KEY_RELATION   = 'relation'
 KEY_ID_REL     = 'id_relation'
 KEY_GUID_TGT   = 'guid_target'
+KEY_MODEL      = 'model'
+KEY_CONFIDENCE = 'confidence'
 
 REL_JUDGED_BY  = 'r_is_judged_by'
 REL_RAN_UNDER  = 'r_ran_under'
@@ -94,27 +86,46 @@ PREFIX_EXE     = 'exe'
 DIR_EXECUTION  = 'execution'
 FORMAT_STAMP   = '%Y%m%d%H%M%S'
 LENGTH_TAG     = 6
-WIDTH_VALUE    = 50
-WIDTH_LINE     = 80
 
-# A cut line does not end on one of these.
-#
-WORDS_DANGLING = {'and', 'or', 'with', 'of', 'for', 'to', 'the', 'a', 'an',
-                  'by', 'in', 'on', 'at', 'from', 'as', 'but', 'nor'}
-
-# Envelope fields the tool fills; never asked of the generator.
-#
-FIELD_OWN      = ('id_self', 'guid_self', 'copyright', 'license',
-                  'protective_mark', 'relation', 'status')
+Stop = cc_public.workflow.Stop
 
 
 # -----------------------------------------------------------------------------
-class Stop(Exception):
+class State:
     """
-    Raised where a run cannot go on. The reason is the message.
+    What one run carries from node to node.
+
+    The tree and the graph, the policy read from the deployment, the
+    generators and the judge, the ledger of what has been written, the
+    execution being recorded, the bindings of every port so far, and
+    how many passes each node has taken.
 
     """
 
+    def __init__(self, root, tree, graph, policy, generator, generator_challenge,
+                 runner):
+        self.root                = root
+        self.tree                = tree
+        self.graph               = graph
+        self.policy              = policy
+        self.generator           = generator
+        self.generator_challenge = generator_challenge
+        self.runner              = runner
+        self.ledger              = cc_public.edit.ledger.Ledger()
+        self.id_exe              = None
+        self.bound               = {}
+        self.map_pass            = {}
+
+    # -------------------------------------------------------------------------
+    def generator_for(self, local):
+        """
+        Return the generator a node runs on: the challenging one where
+        the node challenges.
+
+        """
+
+        return self.generator_challenge if self.graph.node[local].get(KEY_CHALLENGER) \
+               else self.generator
 
 
 # -----------------------------------------------------------------------------
@@ -135,29 +146,72 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     tree   = cc_public.edit.tree.Tree([root])
     graph  = cc_public.workflow.graph.Graph(tree, id_workflow)
     dep    = tree.context.map_document[tree.resolve(id_deployment).filepath]
-    policy = {'judge':   dep.get('judge', JUDGE_ALWAYS),
-              'confirm': dep.get('confirm', cc_public.eval.runner.COUNT_CONFIRM),
-              'commit':  dep.get('commit', COMMIT_RUN),
-              'budget':  dep.get('budget', 1),
-              'admit_unmeasured': bool(dep.get(KEY_ADMIT, False))}
-
-    # A challenge is built by a process other than the one that made
-    # the claim, or it is the claim restated. A deployment of a graph
-    # with a challenging node names a second model, and it differs.
-    #
-    if any(graph.node[n].get(KEY_CHALLENGER) for n in graph.node) and (
-            not dep.get('model_challenge')
-            or dep.get('model_challenge') == dep.get('model')):
-        raise Stop('The workflow has a challenging node, and the deployment '
-                   'names no model_challenge different from its model.')
-    if generator_challenge is None:
-        generator_challenge = generator
+    state  = State(root, tree, graph, _policy(dep, graph), generator,
+                   generator_challenge or generator, runner)
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
-              'policy': policy, 'order': graph.order(), 'node': [],
+              'policy': state.policy, 'order': graph.order(), 'node': [],
               'execution': None, 'commit': None, 'stopped': None}
 
-    # The graph's inputs, from --bind. Every required one must be given.
-    #
+    state.bound = _bound(tree, graph, map_bind)
+    report['bound'] = {f'{n}.input.{p}': i for ((n, p), i) in state.bound.items()}
+    state.policy['budget'] = _budget(tree, dep, state.bound.values())
+
+    if is_dry:
+        report['node'] = [_plan(graph, local, state.bound) for local in report['order']]
+        return report
+
+    if state.policy['commit'] != COMMIT_NEVER and cc_public.commit.changed(root):
+        raise Stop('The working tree is not clean, and this deployment '
+                   'commits. Commit or stash first, or deploy with commit: '
+                   'never.')
+
+    try:
+        _execute(state, report, id_deployment, list_trailer)
+    except Stop as stop:
+        state.ledger.restore()
+        report['stopped'] = str(stop)
+        if state.policy['commit'] != COMMIT_NODE:
+            report['execution'] = None
+    except Exception:
+        state.ledger.restore()       # a crash leaves nothing half written
+        raise
+
+    return report
+
+
+# -----------------------------------------------------------------------------
+def _policy(dep, graph):
+    """
+    Return the run's policy, read from the deployment.
+
+    A challenge is built by a process other than the one that made the
+    claim, or it is the claim restated. A deployment of a graph with a
+    challenging node names a second model, and it differs.
+
+    """
+
+    if any(graph.node[n].get(KEY_CHALLENGER) for n in graph.node) and (
+            not dep.get('model_challenge')
+            or dep.get('model_challenge') == dep.get(KEY_MODEL)):
+        raise Stop('The workflow has a challenging node, and the deployment '
+                   'names no model_challenge different from its model.')
+
+    return {'judge':   dep.get('judge', JUDGE_ALWAYS),
+            'confirm': dep.get('confirm', cc_public.eval.runner.COUNT_CONFIRM),
+            'commit':  dep.get('commit', COMMIT_RUN),
+            'budget':  dep.get('budget', 1),
+            'admit_unmeasured': bool(dep.get(KEY_ADMIT, False))}
+
+
+# -----------------------------------------------------------------------------
+def _bound(tree, graph, map_bind):
+    """
+    Return {(node, port): id_item} for the graph's inputs, from the
+    bindings given. Every required one must be given, and none may be
+    fed by an edge.
+
+    """
+
     bound = {}
 
     for (path, name) in map_bind.items():
@@ -176,77 +230,65 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
             raise Stop('{node}.input.{port} is required and nothing binds '
                        'it. Give --bind.'.format(node = node, port = port))
 
-    report['bound']  = {f'{n}.input.{p}': i for ((n, p), i) in bound.items()}
-    policy['budget'] = _budget(tree, dep, bound.values())
+    return bound
 
-    if is_dry:
-        for local in report['order']:
-            report['node'].append(_plan(graph, local, bound))
-        return report
 
-    if policy['commit'] != COMMIT_NEVER and cc_public.commit.changed(root):
-        raise Stop('The working tree is not clean, and this deployment '
-                   'commits. Commit or stash first, or deploy with commit: '
-                   'never.')
+# -----------------------------------------------------------------------------
+def _execute(state, report, id_deployment, list_trailer):
+    """
+    Walk the nodes, and commit as the policy says.
 
-    ledger = cc_public.edit.ledger.Ledger()
+    The forward order is walked once; a back edge that fires puts the
+    nodes from its target to its source back on the front of the queue
+    for another pass, while the target's budget allows.
 
-    try:
-        id_exe = _execution(tree, ledger, graph.id_self, id_deployment)
-        report['execution'] = id_exe
+    """
 
-        # The forward order, walked once; a back edge that fires puts
-        # the nodes from its target to its source back on the front of
-        # the queue for another pass, while the target's budget allows.
-        #
-        order    = report['order']
-        queue    = list(order)
-        map_pass = {local: 0 for local in order}      # passes each node has run
+    state.id_exe        = _execution(state, report['workflow'], id_deployment)
+    report['execution'] = state.id_exe
+    order               = report['order']
+    queue               = list(order)
+    state.map_pass      = dict.fromkeys(order, 0)
 
-        while queue:
-            local = queue.pop(0)
-            map_pass[local] += 1
-            entry = _node(tree, graph, local, bound,
-                          generator_challenge if graph.node[local].get(KEY_CHALLENGER)
-                          else generator,
-                          runner, policy, ledger, id_exe, root, map_pass)
-            report['node'].append(entry)
+    while queue:
+        local = queue.pop(0)
+        state.map_pass[local] += 1
+        entry = _node(state, local)
+        report['node'].append(entry)
 
-            if entry['back']:
-                node_dst = min(entry['back'], key = order.index)
-                queue    = order[order.index(node_dst):order.index(local) + 1] \
-                         + queue
+        if entry['back']:
+            node_dst = min(entry['back'], key = order.index)
+            queue    = order[order.index(node_dst):order.index(local) + 1] + queue
 
-            if policy['commit'] == COMMIT_NODE:
-                (hash, _) = cc_public.commit.commit(
-                        root, 'Run {wf}: {node}'.format(wf = graph.id_self,
-                                                        node = local),
-                        description = _summary([entry]),
-                        id_execution = id_exe, list_trailer = list_trailer)
-                entry['commit'] = hash
-                ledger.clear()
+        if state.policy['commit'] == COMMIT_NODE:
+            entry['commit'] = _commit(state, 'Run {wf}: {node}'.format(
+                                                wf = report['workflow'], node = local),
+                                      [entry], list_trailer)
 
-        cc_public.edit.field.set_field(tree, id_exe, 'description',
-                                       prose = _summary(report['node']))
+    cc_public.edit.field.set_field(state.tree, state.id_exe, 'description',
+                                   prose = _summary(report['node']))
 
-        if policy['commit'] == COMMIT_RUN:
-            (hash, _) = cc_public.commit.commit(
-                    root, 'Run {wf} under {dep}'.format(wf  = graph.id_self,
-                                                        dep = id_deployment),
-                    description = _summary(report['node']),
-                    id_execution = id_exe, list_trailer = list_trailer)
-            report['commit'] = hash
+    if state.policy['commit'] == COMMIT_RUN:
+        report['commit'] = _commit(state, 'Run {wf} under {dep}'.format(
+                                            wf = report['workflow'], dep = id_deployment),
+                                   report['node'], list_trailer)
 
-    except Stop as stop:
-        ledger.restore()
-        report['stopped'] = str(stop)
-        if policy['commit'] != COMMIT_NODE:
-            report['execution'] = None
-    except Exception:
-        ledger.restore()             # a crash leaves nothing half written
-        raise
 
-    return report
+# -----------------------------------------------------------------------------
+def _commit(state, title, list_entry, list_trailer):
+    """
+    Commit what the run has written so far and return the hash. What
+    is committed is durable, so the ledger forgets it.
+
+    """
+
+    (hash, _) = cc_public.commit.commit(state.root, title,
+                                        description  = _summary(list_entry),
+                                        id_execution = state.id_exe,
+                                        list_trailer = list_trailer)
+    state.ledger.clear()
+
+    return hash
 
 
 # -----------------------------------------------------------------------------
@@ -300,25 +342,24 @@ def _plan(graph, local, bound):
 
 
 # -----------------------------------------------------------------------------
-def _execution(tree, ledger, id_workflow, id_deployment):
+def _execution(state, id_workflow, id_deployment):
     """
     Make the execution record and return its id.
 
+    Executions have a directory of their own. They accumulate, one per
+    run, and would otherwise bury the definitions they ran.
+
     """
 
+    tree   = state.tree
     guid   = PREFIX_EXE + '_' + uuid.uuid4().hex
     stamp  = datetime.datetime.now(datetime.UTC).strftime(FORMAT_STAMP)
     id_exe = '{p}_{stamp}_{tag}'.format(p = PREFIX_EXE, stamp = stamp,
                                         tag = guid.split('_', 1)[1][:LENGTH_TAG])
-
-    # Executions have a directory of their own. They accumulate, one
-    # per run, and would otherwise bury the definitions they ran.
-    #
-    root = _root(tree)
-    path = cc_public.edit.new.new(tree, 't_execution', id_exe,
-                                  tree.defaults(),
-                                  dirpath_out = root / DIR_EXECUTION, guid = guid)
-    ledger.note_create(path)
+    path   = cc_public.edit.new.new(tree, 't_execution', id_exe, tree.defaults(),
+                                    dirpath_out = state.root / DIR_EXECUTION,
+                                    guid = guid)
+    state.ledger.note_create(path)
 
     cc_public.edit.field.set_field(tree, id_exe, 'title',
                                    value = 'Run of ' + id_workflow)
@@ -332,18 +373,7 @@ def _execution(tree, ledger, id_workflow, id_deployment):
 
 
 # -----------------------------------------------------------------------------
-def _root(tree):
-    """
-    Return the root the tree was built from.
-
-    """
-
-    return tree.root
-
-
-# -----------------------------------------------------------------------------
-def _node(tree, graph, local, bound, generator, runner, policy, ledger,
-          id_exe, root, map_pass = None):
+def _node(state, local):
     """
     Run one node and return its report entry.
 
@@ -352,373 +382,149 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
 
     """
 
-    map_pass  = map_pass if map_pass is not None else {local: 1}
-    n_pass    = map_pass[local]
+    n_pass    = state.map_pass[local]
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
                  'exhausted': [], 'note': [], 'commit': None, 'skipped': None}
-    map_input = {}
+    map_input = _inputs(state, local, entry)
 
-    for (port, spec) in graph.inputs(local).items():
-        if (local, port) in bound:
-            map_input[port] = _text(tree, bound[(local, port)])
-        elif spec.get(KEY_OPTIONAL):
-            continue
-        elif graph.incoming(local, port):
-            # The branch this node is on was not taken: the edge that
-            # feeds it did not fire on this pass. The node is skipped,
-            # and what it would have produced goes nowhere.
-            #
-            entry['skipped'] = ('{node}.input.{port} is required and the edge '
-                                'feeding it did not fire.'.format(node = local,
-                                                                  port = port))
-            return entry
-        else:
-            raise Stop('{node}.input.{port} is required and nothing binds '
-                       'it.'.format(node = local, port = port))
+    if map_input is None:
+        return entry
 
-    for (port, spec) in graph.outputs(local).items():
-        id_item = _produce(tree, graph, local, port, spec, map_input,
-                           generator, ledger, entry, bound)
-        bound[(local, port)] = id_item
-        was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in bound
+    for (port, spec) in state.graph.outputs(local).items():
+        id_item   = cc_public.workflow.produce.produce(state, local, port, spec,
+                                                      map_input, entry)
+        was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in state.bound
+        state.bound[(local, port)] = id_item
         entry['revised' if was_bound else 'made'].append(id_item)
 
-    map_bnd = _bind(tree, graph, local, bound, id_exe, n_pass)
+    map_bnd = _bind(state, local, n_pass)
+    refusal = cc_public.check.refusal(cc_public.check.check(list_path = [state.root]))
 
-    refusal = cc_public.check.refusal(cc_public.check.check(list_path = [root]))
     if refusal is not None:
-        raise Stop('After {node}, {why}'.format(node = local,
-                                                why  = refusal.message))
+        raise Stop('After {node}, {why}'.format(node = local, why = refusal.message))
 
-    for (port, spec) in graph.outputs(local).items():
-
-        id_item  = bound[(local, port)]
-        outgoing = graph.outgoing(local, port)
-        back     = graph.outgoing_back(local, port)
-        is_gated = any(guard for (_, _, guard, _) in outgoing + back)
-
-        if policy['judge'] == JUDGE_ALWAYS or \
-                (policy['judge'] == JUDGE_GUARDS and is_gated):
-            judgement = _judge(tree, spec, id_item, runner, policy, is_gated)
-            entry['verdict'][port] = [(j['id_eval'], j['verdict']) for j in judgement]
-            if judgement:
-                cc_public.edit.field.set_field(tree, map_bnd[('output', port)],
-                                               KEY_JUDGEMENT, value = judgement)
-        elif is_gated:
-            raise Stop('An edge from {node}.output.{port} carries a guard, '
-                       'and the deployment judges nothing.'.format(
-                                                node = local, port = port))
-
-        verdicts = [v for (_, v) in entry['verdict'].get(port, [])]
-
-        # What an edge delivers: the item, or the judgement of it, which
-        # is the binding of this port on this pass.
-        #
-        def delivered(carries, id_item = id_item, id_bnd = map_bnd[('output', port)]):
-            return id_bnd if carries == CARRIES_JUDGE else id_item
-
-        # An edge that does not fire delivers nothing, and takes back
-        # what it delivered on an earlier pass: a node downstream reads
-        # what reached it on this pass or finds nothing, never what
-        # reached it last time.
-        #
-        for (node_dst, port_dst, guard, carries) in outgoing:
-            target = f'{node_dst}.input.{port_dst}'
-            if _fires(guard, verdicts):
-                bound[(node_dst, port_dst)] = delivered(carries)
-                entry['fired'].append(target)
-            else:
-                bound.pop((node_dst, port_dst), None)
-                entry['declined'].append(target)
-
-        # A back edge returns the item for another pass. It fires only
-        # while its target node has budget left; met with none, it is
-        # exhausted and the run goes on without it.
-        #
-        for (node_dst, port_dst, guard, carries) in back:
-            target = f'{node_dst}.input.{port_dst}'
-            if not _fires(guard, verdicts):
-                bound.pop((node_dst, port_dst), None)
-                entry['declined'].append(target)
-            elif map_pass.get(node_dst, 0) >= policy['budget']:
-                bound.pop((node_dst, port_dst), None)
-                entry['exhausted'].append(target)
-            else:
-                bound[(node_dst, port_dst)] = delivered(carries)
-                entry['fired'].append(target)
-                entry['back'].append(node_dst)
+    for (port, spec) in state.graph.outputs(local).items():
+        _deliver(state, local, port, spec, entry, map_bnd[('output', port)])
 
     return entry
 
 
 # -----------------------------------------------------------------------------
-def _produce(tree, graph, local, port, spec, map_input, generator, ledger, entry,
-             bound):
+def _inputs(state, local, entry):
     """
-    Make or revise the item on one output port. Return its id.
+    Return {port: text} for the node's bound inputs, or None where the
+    node is skipped on this pass.
+
+    A required input fed by an edge that did not fire means the branch
+    this node is on was not taken: the node is skipped, the entry says
+    so, and what it would have produced goes nowhere.
 
     """
 
-    table   = tree.type_register()[KEY_TABLE]
-    id_type = spec.get(KEY_ID_TYPE)
+    map_input = {}
 
-    if id_type not in table:
-        raise Stop('{node}.output.{port} carries {t}, which is not a '
-                   'type.'.format(node = local, port = port, t = id_type))
-
-    entry_type = table[id_type]
-    (required, properties) = cc_public.edit.new._shape(tree, entry_type)
-    # The fields the model fills: those the port names, else every
-    # required prose field. A table field, an object of entries, is
-    # filled from a list the model returns.
-    #
-    if spec.get(KEY_FIELD):
-        list_field = [f for f in spec[KEY_FIELD] if f in properties]
-    else:
-        list_field = [f for f in required if f not in FIELD_OWN
-                      and (properties.get(f) or {}).get('type', 'string') == 'string']
-    list_table = [f for f in list_field if _is_table(properties.get(f))]
-    prompt     = spec.get(KEY_PROMPT) or ''
-    if list_table:
-        prompt = prompt.rstrip() + '\n\n' + ' '.join(
-            '{f} is a JSON list of objects, each with a key of lowercase letters and '
-            'underscores and the fields the prompt names for it; answer it with the JSON '
-            'and nothing else.'.format(f = f) for f in list_table)
-
-    # A port revising an input returns that input's item, changed in
-    # place. Where the input is optional and nothing is bound there, as
-    # on the first pass through a loop, a new item is made instead.
-    #
-    id_item = bound.get((local, spec[KEY_REVISES])) if spec.get(KEY_REVISES) \
-              else None
-
-    if spec.get(KEY_REVISES) and id_item is None \
-            and not graph.inputs(local)[spec[KEY_REVISES]].get(KEY_OPTIONAL):
-        raise Stop('{node}.output.{port} revises {src}, which is not '
-                   'bound.'.format(node = local, port = port,
-                                   src = spec[KEY_REVISES]))
-
-    # What the schema bounds, the model is told, so that a title comes
-    # back within its line rather than being cut to it afterwards.
-    #
-    hints = ['{f} is one line of at most {n} characters'.format(
-                                            f = f, n = properties[f]['maxLength'])
-             for f in list_field
-             if 'maxLength' in (properties.get(f) or {})
-             and properties[f]['maxLength'] <= WIDTH_LINE]
-    if hints:
-        prompt = prompt.rstrip() + '\n\n' + '. '.join(hints) + '.'
-
-    if id_item is not None:
-        answer = generator.produce(prompt, map_input, list_field, False)
-        ledger.note_modify(tree.resolve(id_item).filepath)
-    else:
-        answer  = generator.produce(prompt, map_input, list_field, True)
-        guid    = entry_type[KEY_PREFIX] + '_' + uuid.uuid4().hex
-        tag     = guid.split('_', 1)[1][:LENGTH_TAG]
-        slug    = _slug(answer.get('slug', ''), entry_type[KEY_PREFIX])
-        id_item = entry_type[KEY_PREFIX] + '_' + slug
-        if not slug or not re.fullmatch(entry_type[KEY_REGEX_ID], id_item):
-            id_item = '{p}_{node}_{tag}'.format(p = entry_type[KEY_PREFIX],
-                                                node = local, tag = tag)
-            entry['note'].append('{node}.output.{port}: the slug offered, {s!r}, '
-                                 'was not usable; {id} minted.'.format(
-                                    node = local, port = port,
-                                    s = answer.get('slug', ''), id = id_item))
-        elif id_item in tree.map_id:
-            id_item = id_item + '_' + tag
-            entry['note'].append('{node}.output.{port}: {s} is taken; {id} '
-                                 'minted.'.format(node = local, port = port,
-                                                  s = entry_type[KEY_PREFIX] + '_' + slug,
-                                                  id = id_item))
-        path = cc_public.edit.new.new(tree, id_type, id_item,
-                                      tree.defaults(), guid = guid)
-        ledger.note_create(path)
-        if spec.get(KEY_DECIDES):
-            id_decided = bound.get((local, spec[KEY_DECIDES]))
-            if id_decided is None:
-                raise Stop('{node}.output.{port} decides {src}, which is not '
-                           'bound.'.format(node = local, port = port,
-                                           src = spec[KEY_DECIDES]))
-            cc_public.edit.link.link(tree, id_item, REL_DECIDES, id_decided)
-        if spec.get(KEY_DERIVES):
-            id_source = bound.get((local, spec[KEY_DERIVES]))
-            if id_source is None:
-                raise Stop('{node}.output.{port} derives from {src}, which is not '
-                           'bound.'.format(node = local, port = port,
-                                           src = spec[KEY_DERIVES]))
-            cc_public.edit.link.link(tree, id_item, REL_DERIVED, id_source)
-        # What a workflow makes is proposed until a person accepts it.
-        #
-        if STATUS_PROPOSED in ((properties.get(KEY_STATUS) or {}).get('enum') or []) \
-                and KEY_STATUS not in list_field:
-            cc_public.edit.field.set_field(tree, id_item, KEY_STATUS, value = STATUS_PROPOSED)
-
-    for field in list_field:
-        text = str(answer.get(field, '') or '')
-        if not text.strip():
-            continue                      # left empty: the checks will say so
-        if field in list_table:
-            _fill_table(tree, id_item, field, text, entry)
+    for (port, spec) in state.graph.inputs(local).items():
+        if (local, port) in state.bound:
+            map_input[port] = cc_public.workflow.produce.render(
+                                            state.tree, state.bound[(local, port)])
+        elif spec.get(KEY_OPTIONAL):
             continue
-        # A field the schema bounds to a line is one line whatever the
-        # model returned, so its whitespace is collapsed. Otherwise one
-        # short line is a value and anything longer is prose, the same
-        # line the printer draws.
-        #
-        sub     = properties.get(field) or {}
-        is_line = 'maxLength' in sub and sub['maxLength'] <= WIDTH_LINE
-        if is_line:
-            text = _line(' '.join(text.split()), sub['maxLength'])
-        if is_line or 'enum' in sub or 'pattern' in sub or (
-                '\n' not in text.strip() and len(text.strip()) <= WIDTH_VALUE):
-            cc_public.edit.field.set_field(tree, id_item, field, value = text.strip())
+        elif state.graph.incoming(local, port):
+            entry['skipped'] = ('{node}.input.{port} is required and the edge '
+                                'feeding it did not fire.'.format(node = local,
+                                                                  port = port))
+            return None
         else:
-            cc_public.edit.field.set_field(tree, id_item, field, prose = text)
+            raise Stop('{node}.input.{port} is required and nothing binds '
+                       'it.'.format(node = local, port = port))
 
-    return id_item
-
-
-# -----------------------------------------------------------------------------
-def _is_table(subschema):
-    return isinstance(subschema, dict) and subschema.get('type') == 'object' \
-           and isinstance(subschema.get('additionalProperties'), dict)
+    return map_input
 
 
 # -----------------------------------------------------------------------------
-def _fill_table(tree, id_item, field, text, entry):
+def _deliver(state, local, port, spec, entry, id_bnd):
     """
-    Insert one entry under field for each object in the JSON list the
-    model returned. The entry's type is the table's name: assumption
-    holds t_assumption, question holds t_question. A list that does
-    not parse is noted and the table left empty.
+    Judge one output port as the policy says, then fire its edges.
+
+    An edge that does not fire delivers nothing, and takes back what it
+    delivered on an earlier pass: a node downstream reads what reached
+    it on this pass or finds nothing, never what reached it last time.
+    A back edge fires only while its target node has budget left; met
+    with none, it is exhausted and the run goes on without it.
 
     """
 
-    start = text.find('[')
-    end   = text.rfind(']')
-    try:
-        list_row = json.loads(text[start:end + 1]) if start >= 0 <= end else None
-    except ValueError:
-        list_row = None
+    id_item  = state.bound[(local, port)]
+    outgoing = state.graph.outgoing(local, port)
+    back     = state.graph.outgoing_back(local, port)
+    is_gated = any(guard for (_, _, guard, _) in outgoing + back)
+    policy   = state.policy
 
-    if not isinstance(list_row, list):
-        entry['note'].append('{item}.{field}: the model did not return a JSON '
-                             'list; left empty.'.format(item = id_item, field = field))
-        return
+    if policy['judge'] == JUDGE_ALWAYS or (policy['judge'] == JUDGE_GUARDS and is_gated):
+        judgement = _judge(state, spec, id_item, is_gated)
+        entry['verdict'][port] = [(j['id_eval'], j['verdict']) for j in judgement]
+        if judgement:
+            cc_public.edit.field.set_field(state.tree, id_bnd, KEY_JUDGEMENT,
+                                           value = judgement)
+    elif is_gated:
+        raise Stop('An edge from {node}.output.{port} carries a guard, '
+                   'and the deployment judges nothing.'.format(node = local, port = port))
 
-    # The list replaces the table: an entry whose key is kept keeps its
-    # identity and takes the new fields, a new key is inserted, and a
-    # key the model no longer returns is removed.
-    #
-    item_doc = tree.context.map_document[tree.resolve(id_item).filepath]
-    existing = dict(item_doc.get(field) or {})
-    kept     = set()
+    verdicts = [v for (_, v) in entry['verdict'].get(port, [])]
 
-    for (n, row) in enumerate(list_row):
-        if not isinstance(row, dict):
-            continue
-        name = _slug(row.get('key', ''), '') or 'a{n}'.format(n = n + 1)
-        kept.add(name)
-        if name in existing:
-            id_entry = existing[name]['id_self']
+    for (node_dst, port_dst, guard, carries) in outgoing + back:
+        is_back = (node_dst, port_dst, guard, carries) in back
+        target  = f'{node_dst}.input.{port_dst}'
+        if not _fires(guard, verdicts):
+            state.bound.pop((node_dst, port_dst), None)
+            entry['declined'].append(target)
+        elif is_back and state.map_pass.get(node_dst, 0) >= policy['budget']:
+            state.bound.pop((node_dst, port_dst), None)
+            entry['exhausted'].append(target)
         else:
-            try:
-                (_, id_entry) = cc_public.edit.insert.insert(tree, 't_' + field, name,
-                                                             id_item, field)
-            except cc_public.edit.tree.ErrorItem as err:
-                entry['note'].append('{item}.{field}: {err}'.format(item = id_item,
-                                                                    field = field, err = err))
-                continue
-        for (key, value) in row.items():
-            if key in ('key', 'id_self', 'guid_self') or not isinstance(value, str) \
-                    or not value.strip():
-                continue
-            cc_public.edit.field.set_field(tree, id_entry, key, prose = value)
-
-    for name in existing:
-        if name not in kept:
-            cc_public.edit.field.unset_field(tree, id_item,
-                                             cc_public.path.join(field, name))
+            state.bound[(node_dst, port_dst)] = id_bnd if carries == CARRIES_JUDGE \
+                                                else id_item
+            entry['fired'].append(target)
+            if is_back:
+                entry['back'].append(node_dst)
 
 
 # -----------------------------------------------------------------------------
-def _line(text, width):
-    """
-    Return text cut to width at a word boundary, where it is longer.
-
-    A model told the bound and overrunning it anyway would otherwise
-    stop the whole run on a title, and the ledger would throw the pass
-    away. A cut title is visible and cheap to mend; a lost pass is not.
-
-    """
-
-    if len(text) <= width:
-        return text
-
-    words = text[:width].rsplit(' ', 1)[0].split(' ')
-
-    while words and words[-1].rstrip(',;:').lower() in WORDS_DANGLING:
-        words.pop()
-
-    cut = ' '.join(words).rstrip(' ,;:')
-
-    return cut or text[:width]
-
-
-# -----------------------------------------------------------------------------
-def _slug(offered, prefix):
-    """
-    Return the slug a model offered as the body of a readable id: lower
-    case, runs of anything else made one underscore, a repeated type
-    prefix dropped, and nothing at either end.
-
-    """
-
-    slug = re.sub(r'[^a-z0-9]+', '_', str(offered or '').lower()).strip('_')
-
-    if slug.startswith(prefix + '_'):
-        slug = slug[len(prefix) + 1:]
-
-    return slug
-
-
-# -----------------------------------------------------------------------------
-def _bind(tree, graph, local, bound, id_exe, n_pass = 1):
+def _bind(state, local, n_pass):
     """
     Put a binding on the execution for every bound port of the node.
     Return {(side, port): id_binding}.
 
     """
 
-    node = graph.node[local]
+    tree = state.tree
+    node = state.graph.node[local]
     out  = {}
 
-    for (side, ports) in (('input', graph.inputs(local)),
-                          ('output', graph.outputs(local))):
+    for (side, ports) in (('input', state.graph.inputs(local)),
+                          ('output', state.graph.outputs(local))):
         for (port, spec) in ports.items():
-            id_item = bound.get((local, port))
+            id_item = state.bound.get((local, port))
             if id_item is None:
                 continue
             (_, id_bnd) = cc_public.edit.insert.insert(
                                 tree, 't_binding', f'{local}_{side}_{port}_{n_pass}',
-                                id_exe, 'binding')
-            item = tree.resolve(id_item)
+                                state.id_exe, 'binding')
             for (key, value) in (('id_node',   node['id_self']),
                                  ('guid_node', node['guid_self']),
                                  ('id_port',   spec['id_self']),
                                  ('guid_port', spec['guid_self']),
                                  ('pass',      n_pass)):
                 cc_public.edit.field.set_field(tree, id_bnd, key, value = value)
-            cc_public.edit.link.link(tree, id_bnd, REL_BINDS, item.id_self)
+            cc_public.edit.link.link(tree, id_bnd, REL_BINDS, tree.resolve(id_item).id_self)
             out[(side, port)] = id_bnd
 
     return out
 
 
 # -----------------------------------------------------------------------------
-def _judge(tree, spec, id_item, runner, policy, is_gated):
+def _judge(state, spec, id_item, is_gated):
     """
     Return the judgement of a port: one row per eval anchored to it, with
     the verdict and the judge's reason.
@@ -729,9 +535,12 @@ def _judge(tree, spec, id_item, runner, policy, is_gated):
 
     """
 
+    runner = state.runner
+
     if runner is None:
         raise Stop('The deployment judges, and no judge was given.')
 
+    tree = state.tree
     out  = []
     item = tree.resolve(id_item)
     doc  = tree.context.map_document[item.filepath]
@@ -741,11 +550,8 @@ def _judge(tree, spec, id_item, runner, policy, is_gated):
             continue
         ev      = tree.resolve(edge[KEY_GUID_TGT])
         doc_ev  = tree.context.map_document[ev.filepath]
-        if is_gated and not policy['admit_unmeasured'] and not any(
-                isinstance(row, dict) and row.get('model') == runner.id_model
-                and cc_public.eval.measure.is_current(row, doc_ev,
-                                                      tree.context.map_document)
-                for row in doc_ev.get('confidence') or []):
+        if is_gated and not state.policy['admit_unmeasured'] \
+                and not _measured(doc_ev, runner.id_model, tree.context.map_document):
             raise Stop('{ev} guards an edge and carries no current confidence '
                        'for {model}. Measure it, or deploy with '
                        'admit_unmeasured: true.'.format(ev    = ev.id_self,
@@ -755,11 +561,11 @@ def _judge(tree, spec, id_item, runner, policy, is_gated):
                         document_eval = doc_ev,
                         id_subject    = (id_item,),
                         filepath      = str(item.filepath),
-                        text_input    = cc_public.eval.select._render(
+                        text_input    = cc_public.eval.select.render(
                                                 ((id_item, doc),), doc_ev))
         verdict = runner.run(task)
         if verdict.verdict == VERDICT_UNMET:
-            verdict = runner.confirm(task, verdict, policy['confirm'])
+            verdict = runner.confirm(task, verdict, state.policy['confirm'])
         out.append({'id_eval':   ev.id_self,
                     'guid_eval': ev.guid_self,
                     'verdict':   verdict.verdict,
@@ -771,19 +577,15 @@ def _judge(tree, spec, id_item, runner, policy, is_gated):
 
 
 # -----------------------------------------------------------------------------
-def _text(tree, id_item):
+def _measured(doc_ev, id_model, map_document):
     """
-    Return an item as prose, for a generator to read.
+    Return whether the eval carries current confidence for the model.
 
     """
 
-    item = tree.resolve(id_item)
-    node = tree.context.map_document[item.filepath]
-
-    for step in cc_public.path.split(item.path):       # an embedded item
-        node = node[int(step)] if isinstance(node, list) else node[step]
-
-    return cc_public.eval.select._render(((id_item, node),), {})
+    return any(isinstance(row, dict) and row.get(KEY_MODEL) == id_model
+               and cc_public.eval.measure.is_current(row, doc_ev, map_document)
+               for row in doc_ev.get(KEY_CONFIDENCE) or [])
 
 
 # -----------------------------------------------------------------------------

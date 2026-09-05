@@ -43,12 +43,14 @@ decision:               |
                         assert and may run long.
 
                         The complexity and size thresholds are set to
-                        the maxima measured on 2026-09-05: cyclomatic
-                        complexity 21, eleven arguments, twenty three
-                        branches, sixty four statements. They are a
-                        baseline, not a target. Each is ratcheted down
-                        as the functions above it are simplified,
-                        never raised.
+                        the maxima measured on 2026-09-05 once the
+                        executor and the edit commands had been
+                        decomposed: cyclomatic complexity 11, nine
+                        arguments, twelve branches, fifty statements.
+                        They began the day at 21, 11, 23 and 64. They
+                        are a baseline, not a target. Each is
+                        ratcheted down as the functions above it are
+                        simplified, never raised.
 
                         cctool commit runs the linter where the tree
                         configures one, which this tree does, and
@@ -104,11 +106,14 @@ alternative:            |
                         a baseline that ratchets is a fault with a
                         date.
 consequence:            |
-                        The functions over the conventional thresholds
-                        are known: insert at complexity 21, run and
-                        produce at 19, node at 17, the run report
-                        writer at 16. Simplifying them is the next
-                        step, with the thresholds following down.
+                        The executor is two modules, one that
+                        schedules and one that materialises, with what
+                        a run carries from node to node held in one
+                        state rather than passed as eleven arguments.
+                        insert, rename, new and the run report writer
+                        are each split into the steps they take. Three
+                        functions sit at complexity 11, one above the
+                        conventional ten; the next ratchet is theirs.
 
                         Coverage is next after that: measured,
                         recorded, and a floor set at what it is. Then

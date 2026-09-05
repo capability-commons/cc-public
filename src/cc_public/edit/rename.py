@@ -69,6 +69,37 @@ def rename(tree, name, id_new):
     """
 
     item = tree.resolve(name)
+    _refuse(tree, item, name, id_new)
+
+    map_rename   = _cascade(tree, item.id_self, id_new)
+    map_document = _rewritten(tree, map_rename)
+    list_mention = _mentions(tree, set(map_rename))
+    target       = None if item.path \
+                   else item.filepath.with_name(id_new + item.filepath.suffix)
+
+    _write(tree, map_document, item.filepath, target)
+
+    if target is not None:
+        _move_index(tree, item.filepath, target)
+
+    list_filepath = sorted(target if target is not None and f == item.filepath
+                           else f for f in map_document)
+
+    for (old, new) in map_rename.items():
+        it            = tree.map_id.pop(old)
+        it.id_self    = new
+        it.path       = _path_new(it.path, old, new)
+        tree.map_id[new] = it
+
+    return Report(map_rename, list_filepath, list_mention)
+
+
+# -----------------------------------------------------------------------------
+def _refuse(tree, item, name, id_new):
+    """
+    Raise where the rename cannot be made as asked.
+
+    """
 
     if item.path and not _is_register_entry(item) \
             and id_new.rsplit(DELIM, 1)[0] != item.id_self.rsplit(DELIM, 1)[0]:
@@ -88,7 +119,16 @@ def rename(tree, name, id_new):
 
     _validate(tree, id_new)
 
-    map_rename   = _cascade(tree, item.id_self, id_new)
+
+# -----------------------------------------------------------------------------
+def _rewritten(tree, map_rename):
+    """
+    Return {filepath: document} for every file the rename changes: the
+    declarations and keys of the renamed items, and every reference to
+    them, repointed by guid.
+
+    """
+
     map_guid     = {tree.resolve(old).guid_self: new
                             for (old, new) in map_rename.items()}
     map_document = {}
@@ -110,12 +150,21 @@ def rename(tree, name, id_new):
         if _repoint(doc, map_guid):
             map_document[filepath] = doc
 
-    list_mention = _mentions(tree, set(map_rename))
+    return map_document
 
-    # Several files change and one may move. Either all of it happens
-    # or none of it: whatever was written before a failure is put back
-    # from the bytes it had, and the failure is raised.
-    #
+
+# -----------------------------------------------------------------------------
+def _write(tree, map_document, filepath_old, target):
+    """
+    Write every changed document, then move the renamed file where it
+    moves.
+
+    Several files change and one may move. Either all of it happens or
+    none of it: whatever was written before a failure is put back from
+    the bytes it had, and the failure is raised.
+
+    """
+
     ledger = cc_public.edit.ledger.Ledger()
 
     try:
@@ -124,16 +173,12 @@ def rename(tree, name, id_new):
             cc_public.edit.tree.save(filepath, doc)
             tree.refresh(filepath)
 
-        list_filepath = sorted(map_document)
-        filepath_old  = item.filepath
-
-        if not item.path:
-            target = item.filepath.with_name(id_new + item.filepath.suffix)
+        if target is not None:
             if target.exists():
                 raise cc_public.edit.tree.ErrorItem(
                         '{target} already exists.'.format(target = target))
-            ledger.note_move(item.filepath, target)
-            item.filepath.rename(target)
+            ledger.note_move(filepath_old, target)
+            filepath_old.rename(target)
     except BaseException:
         ledger.restore()
         for filepath in map_document:
@@ -141,22 +186,19 @@ def rename(tree, name, id_new):
                 tree.refresh(filepath)
         raise
 
-    if not item.path:
-        tree.context.map_document[target] = \
-                            tree.context.map_document.pop(item.filepath)
-        list_filepath = [target if f == item.filepath else f
-                                                for f in list_filepath]
-        for it in tree.map_guid.values():
-            if it.filepath == filepath_old:
-                it.filepath = target
 
-    for (old, new) in map_rename.items():
-        it            = tree.map_id.pop(old)
-        it.id_self    = new
-        it.path       = _path_new(it.path, old, new)
-        tree.map_id[new] = it
+# -----------------------------------------------------------------------------
+def _move_index(tree, filepath_old, target):
+    """
+    Move the tree's knowledge of a file from the old path to the new.
 
-    return Report(map_rename, list_filepath, list_mention)
+    """
+
+    tree.context.map_document[target] = tree.context.map_document.pop(filepath_old)
+
+    for it in tree.map_guid.values():
+        if it.filepath == filepath_old:
+            it.filepath = target
 
 
 # -----------------------------------------------------------------------------
