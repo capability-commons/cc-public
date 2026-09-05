@@ -32,7 +32,9 @@ description:            |
 
 
 import io
+import os
 import pathlib
+import shutil
 
 import ruamel.yaml
 
@@ -56,6 +58,7 @@ ID_TYPE_RELATION = 't_relation'
 REL_HELD_IN      = 'r_is_held_in_registry'
 
 SUFFIX_PYTHON = cc_public.layout.SUFFIX_PYTHON
+SUFFIX_TMP    = '.tmp'
 
 
 # -----------------------------------------------------------------------------
@@ -225,7 +228,7 @@ def save(filepath, document):
     text = cc_public.layout.format(stream.getvalue())
 
     if filepath.suffix != SUFFIX_PYTHON:
-        filepath.write_text(text, encoding = 'utf-8')
+        write_text(filepath, text)
         return
 
     source    = filepath.read_text(encoding = 'utf-8')
@@ -237,9 +240,32 @@ def save(filepath, document):
 
     list_line[found.first : found.last] = [''] + body + ['']
 
-    filepath.write_text('\n'.join(list_line)
-                        + ('\n' if source.endswith('\n') else ''),
-                        encoding = 'utf-8')
+    write_text(filepath, '\n'.join(list_line)
+                         + ('\n' if source.endswith('\n') else ''))
+
+
+# -----------------------------------------------------------------------------
+def write_text(filepath, text):
+    """
+    Write text to filepath so that the file is either what it was or
+    what it is asked to be, and never part of either.
+
+    The text goes to a hidden file beside the target, which the checks
+    never walk, and is moved over the target in one step. A file that
+    exists keeps its mode.
+
+    """
+
+    filepath = pathlib.Path(filepath)
+    tmp      = filepath.with_name('.' + filepath.name + SUFFIX_TMP)
+
+    try:
+        tmp.write_text(text, encoding = 'utf-8')
+        if filepath.exists():
+            shutil.copymode(filepath, tmp)
+        os.replace(tmp, filepath)
+    finally:
+        tmp.unlink(missing_ok = True)
 
 
 # -----------------------------------------------------------------------------

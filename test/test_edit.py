@@ -394,3 +394,50 @@ def test_defaults_come_from_the_tree_and_not_from_where_the_command_runs(tmp_pat
     (target / 'pyproject.toml').unlink()
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.edit.tree.Tree([target]).defaults()
+
+
+def test_a_failed_rename_puts_every_file_back(tree, tmp_path, monkeypatch):
+    import cc_public.edit.rename
+    before = {p: p.read_bytes() for p in tmp_path.rglob('*.yaml')}
+    saved  = []
+    real   = cc_public.edit.tree.save
+
+    def failing_save(filepath, document):
+        if len(saved) == 2:
+            raise OSError('disk full')
+        saved.append(filepath)
+        real(filepath, document)
+
+    monkeypatch.setattr(cc_public.edit.tree, 'save', failing_save)
+    with pytest.raises(OSError):
+        cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision', 'cmp_draft_decision')
+    assert len(saved) == 2
+    after = {p: p.read_bytes() for p in tmp_path.rglob('*.yaml')}
+    assert after == before
+
+    monkeypatch.setattr(cc_public.edit.tree, 'save', real)
+    monkeypatch.setattr(pathlib.Path, 'rename',
+                        lambda _self, _target: (_ for _ in ()).throw(OSError("cannot move")))
+    with pytest.raises(OSError):
+        cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision', 'cmp_draft_decision')
+    after = {p: p.read_bytes() for p in tmp_path.rglob('*.yaml')}
+    assert after == before
+    assert (tmp_path / 'workflow' / 'cmp_draft_design_decision.yaml').exists()
+
+
+def test_a_write_is_the_old_file_or_the_new_one_and_keeps_its_mode(tmp_path, monkeypatch):
+    import os
+    target = tmp_path / 'thing.yaml'
+    target.write_text('old\n')
+    target.chmod(0o640)
+    cc_public.edit.tree.write_text(target, 'new\n')
+    assert target.read_text() == 'new\n'
+    assert (target.stat().st_mode & 0o777) == 0o640
+    assert list(tmp_path.iterdir()) == [target]
+
+    monkeypatch.setattr(os, 'replace',
+                        lambda _src, _dst: (_ for _ in ()).throw(OSError("interrupted")))
+    with pytest.raises(OSError):
+        cc_public.edit.tree.write_text(target, 'newer\n')
+    assert target.read_text() == 'new\n'
+    assert list(tmp_path.iterdir()) == [target]

@@ -40,6 +40,7 @@ import uuid
 import cc_public.check
 import cc_public.commit
 import cc_public.edit.field
+import cc_public.edit.ledger
 import cc_public.edit.insert
 import cc_public.edit.link
 import cc_public.edit.new
@@ -115,41 +116,6 @@ class Stop(Exception):
 
 
 # -----------------------------------------------------------------------------
-class Ledger:
-    """
-    What a run has written, so that it can be put back.
-
-    A file the run made is deleted. A file it changed is rewritten
-    from the bytes it had before. Nothing else is touched.
-
-    """
-
-    def __init__(self):
-        self.created  = []
-        self.modified = {}
-
-    def note_create(self, path):
-        self.created.append(pathlib.Path(path))
-
-    def note_modify(self, path):
-        path = pathlib.Path(path)
-        if path not in self.modified and path not in self.created:
-            self.modified[path] = path.read_bytes()
-
-    def restore(self):
-        for (path, data) in self.modified.items():
-            path.write_bytes(data)
-        for path in reversed(self.created):
-            if path.exists():
-                path.unlink()
-        self.clear()
-
-    def clear(self):
-        self.created  = []
-        self.modified = {}
-
-
-# -----------------------------------------------------------------------------
 def run(root, id_workflow, id_deployment, map_bind, generator, runner,
         is_dry = False, list_trailer = (), generator_challenge = None):
     """
@@ -220,7 +186,7 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
                    'commits. Commit or stash first, or deploy with commit: '
                    'never.')
 
-    ledger = Ledger()
+    ledger = cc_public.edit.ledger.Ledger()
 
     try:
         id_exe = _execution(tree, ledger, graph.id_self, id_deployment)
@@ -387,16 +353,26 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
     n_pass    = map_pass[local]
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
-                 'exhausted': [], 'note': [], 'commit': None}
+                 'exhausted': [], 'note': [], 'commit': None, 'skipped': None}
     map_input = {}
 
     for (port, spec) in graph.inputs(local).items():
         if (local, port) in bound:
             map_input[port] = _text(tree, bound[(local, port)])
-        elif not spec.get(KEY_OPTIONAL):
-            raise Stop('{node}.input.{port} is required and was never bound; '
-                       'the edge feeding it declined.'.format(node = local,
-                                                              port = port))
+        elif spec.get(KEY_OPTIONAL):
+            continue
+        elif graph.incoming(local, port):
+            # The branch this node is on was not taken: the edge that
+            # feeds it did not fire on this pass. The node is skipped,
+            # and what it would have produced goes nowhere.
+            #
+            entry['skipped'] = ('{node}.input.{port} is required and the edge '
+                                'feeding it did not fire.'.format(node = local,
+                                                                  port = port))
+            return entry
+        else:
+            raise Stop('{node}.input.{port} is required and nothing binds '
+                       'it.'.format(node = local, port = port))
 
     for (port, spec) in graph.outputs(local).items():
         id_item = _produce(tree, graph, local, port, spec, map_input,
@@ -439,12 +415,18 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
         def delivered(carries, id_item = id_item, id_bnd = map_bnd[('output', port)]):
             return id_bnd if carries == CARRIES_JUDGE else id_item
 
+        # An edge that does not fire delivers nothing, and takes back
+        # what it delivered on an earlier pass: a node downstream reads
+        # what reached it on this pass or finds nothing, never what
+        # reached it last time.
+        #
         for (node_dst, port_dst, guard, carries) in outgoing:
             target = f'{node_dst}.input.{port_dst}'
             if _fires(guard, verdicts):
                 bound[(node_dst, port_dst)] = delivered(carries)
                 entry['fired'].append(target)
             else:
+                bound.pop((node_dst, port_dst), None)
                 entry['declined'].append(target)
 
         # A back edge returns the item for another pass. It fires only
@@ -454,8 +436,10 @@ def _node(tree, graph, local, bound, generator, runner, policy, ledger,
         for (node_dst, port_dst, guard, carries) in back:
             target = f'{node_dst}.input.{port_dst}'
             if not _fires(guard, verdicts):
+                bound.pop((node_dst, port_dst), None)
                 entry['declined'].append(target)
             elif map_pass.get(node_dst, 0) >= policy['budget']:
+                bound.pop((node_dst, port_dst), None)
                 entry['exhausted'].append(target)
             else:
                 bound[(node_dst, port_dst)] = delivered(carries)
@@ -796,6 +780,10 @@ def _summary(list_entry):
     lines = []
 
     for e in list_entry:
+        if e.get('skipped'):
+            lines.append('{node}, pass {n}: skipped, {why}'.format(
+                            node = e['node'], n = e.get('pass', 1), why = e['skipped']))
+            continue
         lines.append('{node}, pass {n}: made {made}; revised {rev}; fired {f}; declined '
                      '{d}.'.format(node = e['node'], n = e.get('pass', 1),
                                    made = ', '.join(e['made']) or 'nothing',

@@ -414,3 +414,55 @@ def test_a_deployment_cannot_confirm_over_an_even_count(repo):
     cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
                                    'confirm', value = 3)
     assert clean(repo) == []
+
+
+def test_a_declined_edge_withdraws_its_delivery_and_the_unfed_node_is_skipped(repo):
+    # Guard the forward edge of the decomposition workflow, and judge the
+    # proposal met on the first pass and unmet on the second: the
+    # challenger must not consume the first pass's proposal on the second.
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'wf_decomposition_from_need',
+                                   'edge.propose_to_challenge.guard', value = 'met')
+    cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'commit', value = 'never')
+    cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'judge', value = 'guards')
+    cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'budget', value = 2)
+    cc_public.edit.field.set_field(tree, 'dep_decomposition_local', 'budget_by_priority',
+                                   value = {'high': 2, 'medium': 2, 'low': 2})
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'guarded')
+
+    class Sequence(Judge):
+        """met on the proposal, unmet on the challenge, then unmet on the proposal."""
+        def __init__(self):
+            super().__init__('met')
+            self.by_port = {}
+        def run(self, task):
+            n       = self.by_port[task.id_eval] = self.by_port.get(task.id_eval, 0) + 1
+            verdict = 'unmet' if (n > 1 or 'challenge' in task.id_eval) else 'met'
+            return cc_public.eval.runner.Verdict(task.id_eval, task.id_subject,
+                                                 verdict, 'scripted', self.id_model)
+
+    r = cc_public.workflow.run.run(repo, 'wf_decomposition_from_need',
+                                   'dep_decomposition_local',
+                                   {'propose.input.need':    'need_runs_bounded',
+                                    'propose.input.framing': 'frame_dependency',
+                                    'propose.input.guide':   'reg_writing_style_rule',
+                                    'challenge.input.need':  'need_runs_bounded',
+                                    'challenge.input.guide': 'reg_writing_style_rule'},
+                                   Scripted(), Sequence(),
+                                   generator_challenge = Scripted())
+    assert r['stopped'] is None
+    passes = [(e['node'], e['pass'], bool(e['skipped'])) for e in r['node']]
+    assert passes == [('propose', 1, False), ('challenge', 1, False),
+                      ('propose', 2, False), ('challenge', 2, True)]
+    assert r['node'][2]['declined'] == ['challenge.input.proposal']
+    assert 'did not fire' in r['node'][3]['skipped']
+    assert 'skipped' in cc_public.workflow.run._summary(r['node'])
+
+
+def test_two_forward_edges_into_one_input_are_a_fault(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'wf_decomposition_from_need', 'edge.again',
+                                   value = {'from': 'challenge.output.decision',
+                                            'to':   'challenge.input.proposal'})
+    assert any('one forward edge' in m for m in clean(repo))

@@ -34,6 +34,7 @@ import re
 
 import cc_public.check.reference
 import cc_public.check.register
+import cc_public.edit.ledger
 import cc_public.edit.tree
 import cc_public.path
 
@@ -111,16 +112,36 @@ def rename(tree, name, id_new):
 
     list_mention = _mentions(tree, set(map_rename))
 
-    for (filepath, doc) in sorted(map_document.items()):
-        cc_public.edit.tree.save(filepath, doc)
-        tree.refresh(filepath)
+    # Several files change and one may move. Either all of it happens
+    # or none of it: whatever was written before a failure is put back
+    # from the bytes it had, and the failure is raised.
+    #
+    ledger = cc_public.edit.ledger.Ledger()
 
-    list_filepath = sorted(map_document)
-    filepath_old  = item.filepath
+    try:
+        for (filepath, doc) in sorted(map_document.items()):
+            ledger.note_modify(filepath)
+            cc_public.edit.tree.save(filepath, doc)
+            tree.refresh(filepath)
+
+        list_filepath = sorted(map_document)
+        filepath_old  = item.filepath
+
+        if not item.path:
+            target = item.filepath.with_name(id_new + item.filepath.suffix)
+            if target.exists():
+                raise cc_public.edit.tree.ErrorItem(
+                        '{target} already exists.'.format(target = target))
+            ledger.note_move(item.filepath, target)
+            item.filepath.rename(target)
+    except BaseException:
+        ledger.restore()
+        for filepath in map_document:
+            if filepath.exists():
+                tree.refresh(filepath)
+        raise
 
     if not item.path:
-        target = item.filepath.with_name(id_new + item.filepath.suffix)
-        item.filepath.rename(target)
         tree.context.map_document[target] = \
                             tree.context.map_document.pop(item.filepath)
         list_filepath = [target if f == item.filepath else f

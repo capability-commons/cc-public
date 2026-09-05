@@ -1,0 +1,106 @@
+id_self:                ddr_atomic_edit
+guid_self:              ddr_8e6830eda6484a239b227f70af76312a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Atomic edits
+brief:                  |
+                        A write leaves a file as it was or as it was
+                        asked to be, never part of either, and an edit
+                        that touches several files leaves all of them
+                        changed or none. One ledger serves the
+                        executor and the edit commands.
+context:                |
+                        The executor kept a ledger of what a run
+                        wrote, so that a run that stopped or crashed
+                        could put the tree back. Nothing else did. A
+                        rename rewrote several documents and then
+                        moved a file, and a failure part way through
+                        left the earlier files changed and the later
+                        ones not. Every write went straight to its
+                        target, so an interruption between opening the
+                        file and closing it left a truncated document
+                        where the only copy had been.
+decision:               |
+                        Every write of a document goes to a hidden
+                        file beside its target and is moved over the
+                        target in one step, keeping the target's mode.
+                        The hidden file begins with a full stop, so
+                        the checks never walk it, and is removed
+                        whether or not the move happened.
+
+                        The ledger is a module of the edit package. It
+                        notes a file about to be made, a file about to
+                        change with the bytes it has, and a file about
+                        to move, and restores them in the reverse
+                        order. The executor keeps one for a run and
+                        rename keeps one for an edit; an exception
+                        during either restores everything noted and is
+                        raised again. A commit a run made before it
+                        stopped is durable and is not a candidate for
+                        restoring.
+rationale:              |
+                        A hidden temporary file and one move, because
+                        a move within a directory is the one write the
+                        filesystem makes whole or not at all. Beside
+                        the target rather than in a temporary
+                        directory, because a move across filesystems
+                        is a copy.
+
+                        One ledger for both, because the executor's
+                        was already right and a second copy would
+                        drift. Restoring on any exception rather than
+                        on the domain stop alone, because a crash is
+                        the case the ledger exists for.
+
+                        Not a general transaction that stages every
+                        prospective byte and validates the prospective
+                        tree before replacing anything. The ledger
+                        gives the same guarantee for the cases that
+                        arise, and the checks after a node already
+                        validate what a run wrote; the larger
+                        machinery waits for a case that needs it.
+alternative:            |
+                        Writing straight to the target, which was the
+                        state before this record. Rejected: a
+                        truncated file is the only copy.
+
+                        Restoring by git checkout. Rejected: it
+                        discards what the user had changed and not
+                        committed alongside, and a tree need not be a
+                        repository.
+
+                        A staged transaction over prospective bytes.
+                        Deferred, as above.
+consequence:            |
+                        A rename, a set, a link, an insert and a new
+                        item are each all or nothing. A stopped or
+                        crashed run restores what it wrote, as before,
+                        through the shared ledger.
+
+                        A directory made for a new file is not removed
+                        when the write fails, so an empty directory
+                        can be left behind. Accepted: it holds nothing
+                        and the checks ignore it.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.ledger
+    guid_target:        pym_2ca905d838364b58b8f936667aea6b02
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.rename
+    guid_target:        pym_5fc4c54cf6934f2e822a1b3f3a2b664b

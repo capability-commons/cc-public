@@ -292,7 +292,7 @@ def format_(list_path, is_check):
         list_changed.append(filepath)
 
         if not is_check:
-            filepath.write_text(formatted, encoding = 'utf-8')
+            cc_public.edit.tree.write_text(filepath, formatted)
 
     verb = 'would change' if is_check else 'changed'
 
@@ -827,6 +827,8 @@ def _write_run(report):
         click.echo('  {node}{n}'.format(node = e['node'],
                                         n = '' if e.get('pass', 1) == 1 else
                                             '  pass {n}'.format(n = e['pass'])))
+        if e.get('skipped'):
+            click.echo('    skipped  {why}'.format(why = e['skipped']))
         for i in e['made']:
             click.echo('    made     {i}'.format(i = i))
         for i in e['revised']:

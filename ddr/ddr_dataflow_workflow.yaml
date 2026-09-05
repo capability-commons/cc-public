@@ -88,6 +88,16 @@ decision:               |
 
                         The graph names no model and no budget. See
                         ddr_workflow_deployment.
+
+                        An edge that does not fire delivers nothing,
+                        and takes back what it delivered on an earlier
+                        pass, so that a node reads what reached it on
+                        this pass or finds nothing. A node whose
+                        required input is fed by an edge that did not
+                        fire is skipped for that pass, and the
+                        execution says so: that is how a branch is not
+                        taken. An input is fed by one forward edge at
+                        most; two are a fault.
 rationale:              |
                         A guard on the edge is where a verdict has to
                         go, because a verdict is not an item and so
@@ -148,6 +158,21 @@ rationale:              |
                         quoting to be reached. Names were once a
                         maintenance cost; a model writing the graph
                         pays it for nothing.
+
+                        Delivery taken back, because the bindings were
+                        one map across every pass and a guard that
+                        declined on the second pass left the first
+                        pass's item where the next node would read it.
+                        Nothing in the two workflows had the shape to
+                        show it; a loop with a guarded forward edge
+                        does. Skipping the unfed node rather than
+                        stopping, because a declined guard is the
+                        branch not being taken and not a fault, and
+                        the branching this record describes had never
+                        worked any other way. One forward edge per
+                        input, because with two, what arrived would
+                        depend on which fired last; a join is a shape
+                        for later, if a workflow wants one.
 alternative:            |
                         A node iterating internally against a budget.
                         The first decision here, superseded. It hides

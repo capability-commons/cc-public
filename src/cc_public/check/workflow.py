@@ -154,6 +154,7 @@ def _inspect(filepath, document, map_by_guid):
                                                   component = component[KEY_ID_SELF])))
 
     seen = {}
+    fed  = {}
     for (key, is_back) in ((KEY_EDGE, False), (KEY_EDGE_BACK, True)):
         for (name, edge) in (document.get(key) or {}).items():
             list_bad.extend(_edge(filepath, f'{key}.{name}', edge, is_back,
@@ -165,6 +166,17 @@ def _inspect(filepath, document, map_by_guid):
                         'its endpoints, whatever it is called.'.format(
                                                         other = seen[ends])))
             seen.setdefault(ends, f'{key}.{name}')
+
+            # One forward edge feeds an input. Two would leave what
+            # arrives there to depend on which of them fired last.
+            #
+            if not is_back:
+                if edge.get(KEY_TO) in fed:
+                    list_bad.append(_fault(filepath, f'{key}.{name}',
+                            'Feeds an input that {other} already feeds. An '
+                            'input is fed by one forward edge.'.format(
+                                                    other = fed[edge.get(KEY_TO)])))
+                fed.setdefault(edge.get(KEY_TO), f'{key}.{name}')
 
     list_bad.extend(_orderable(filepath, document, map_component))
 

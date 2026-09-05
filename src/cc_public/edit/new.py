@@ -224,8 +224,8 @@ def _write_source(filepath, document):
     body = cc_public.layout.format(stream.getvalue()).rstrip('\n')
     text = '"""\n---\n\n' + body + '\n\n...\n"""\n'
 
-    filepath.write_text(cc_public.layout.format_metadata(text),
-                        encoding = 'utf-8')
+    cc_public.edit.tree.write_text(filepath,
+                                   cc_public.layout.format_metadata(text))
 
 
 # -----------------------------------------------------------------------------
