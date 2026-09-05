@@ -74,6 +74,12 @@ def pytest_sessionfinish(session, exitstatus):
 
     """
 
+    # Under xdist a worker is a session too, and every report it makes
+    # reaches the controller; the controller alone writes, once.
+    #
+    if hasattr(session.config, 'workerinput'):
+        return
+
     reporter = session.config.pluginmanager.get_plugin('terminalreporter')
 
     try:

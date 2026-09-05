@@ -390,6 +390,7 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
     assert 'statement' not in doc
     rendered = cc_public.eval.select.render((('need_runs_bounded', doc),), {'scope': {'include': ['statement']}})
     assert 'statement:' in rendered and 'in order to' in rendered
+    cc_public.edit.field.set_field(tree, 'req_executor_honours_budget', 'status', value = 'proposed')
     cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget', 'relation')
     rep = cc_public.check.check(list_path = [tmp_path])['report']
     trace = next(c for c in rep['check'] if c['id_check'] == 'trace')
@@ -709,6 +710,10 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
     import cc_public.trace
     import cc_public.check.relation
 
+    # The tree's requirements are accepted; these start again from proposed.
+    for req in ('req_printer_idempotent', 'req_renamer_keeps_guid', 'req_executor_honours_budget'):
+        cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+
     # A requirement names code at any of the four grains, and several of them:
     # the tree already names the layout module; a function and a package join.
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.layout.format', DEFAULTS)
@@ -751,6 +756,8 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
 
 def test_an_accepted_requirement_lacks_critically_and_the_trace_command_reads_the_projection(tree, tmp_path):
     import cc_public.trace
+    for req in ('req_printer_idempotent', 'req_renamer_keeps_guid', 'req_executor_honours_budget'):
+        cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.layout.format', DEFAULTS)
     for (field, value) in (('title', 'Format'), ('description', 'Lays a document out.')):
         cc_public.edit.field.set_field(tree, 'pyf_cc_public.layout.format', field, value = value)
@@ -833,6 +840,7 @@ def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
     # critically in a closed world; then the test observes and it is current.
     req  = 'req_printer_idempotent'
     case = 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint'
+    cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
     cc_public.edit.new.new(tree, 't_python_module', 'pym_test.test_layout', DEFAULTS, tmp_path / 'test')
     for (f, v) in (('title', 'Layout tests'), ('brief', 'Tests.'), ('description', 'Tests of the printer.')):
         cc_public.edit.field.set_field(tree, 'pym_test.test_layout', f, value = v)
@@ -845,10 +853,10 @@ def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
     cc_public.edit.link.link(tree, case, 'r_verifies', req)
     cc_public.edit.field.set_field(tree, req, 'status', value = 'accepted')
 
-    def evidence(is_closed = False):
+    def evidence(is_closed = False, about = req):
         rep = cc_public.check.check(list_path = [tmp_path], is_closed_world = is_closed)['report']
         return [(n['severity'], n['message']) for c in rep['check'] if c['id_check'] == 'evidence'
-                for n in c['nonconformity']]
+                for n in c['nonconformity'] if about in n['filepath']]
 
     assert [s for (s, m) in evidence(True)] == ['critical'] and 'no evidence' in evidence(True)[0][1]
     assert [s for (s, m) in evidence(False)] == ['advisory']
@@ -882,6 +890,7 @@ def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for
         subprocess.run(['git', '-C', str(tmp_path), *args], check = True)
     req  = 'req_printer_idempotent'
     case = 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint'
+    cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
     cc_public.edit.new.new(tree, 't_python_module', 'pym_test.test_layout', DEFAULTS, tmp_path / 'test')
     for (f, v) in (('title', 'Layout tests'), ('brief', 'Tests.'), ('description', 'Tests of the printer.')):
         cc_public.edit.field.set_field(tree, 'pym_test.test_layout', f, value = v)
@@ -897,10 +906,10 @@ def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for
     guid_case = tree.resolve(case).guid_self
     cc_public.evidence.from_pytest(tmp_path, {'test/test_layout.py::test_printer_preserves_and_is_fixpoint': 'passed'}, '9.1.1')
 
-    def evidence(is_closed = False):
+    def evidence(is_closed = False, about = req):
         rep = cc_public.check.check(list_path = [tmp_path], is_closed_world = is_closed)['report']
         return [(n['severity'], n['message']) for c in rep['check'] if c['id_check'] == 'evidence'
-                for n in c['nonconformity']]
+                for n in c['nonconformity'] if about in n['filepath']]
 
     assert evidence(True) == []
 
@@ -940,10 +949,12 @@ def test_an_attestation_stands_for_inspection_and_refuses_a_test(tree, tmp_path)
         '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'
         'license = "Apache-2.0"\nid_mark = "mark_public"\n')
 
-    def evidence(is_closed = False):
+    req = 'req_committer_writes_record'
+
+    def evidence(is_closed = False, about = req):
         rep = cc_public.check.check(list_path = [tmp_path], is_closed_world = is_closed)['report']
         return [(n['severity'], n['message']) for c in rep['check'] if c['id_check'] == 'evidence'
-                for n in c['nonconformity']]
+                for n in c['nonconformity'] if about in n['filepath']]
 
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.evidence.attest(tree, 'req_printer_idempotent', 'passed', 'a person')

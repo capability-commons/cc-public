@@ -26,7 +26,7 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
 #
 [project.optional-dependencies]
 eval                    = ["dspy==3.3.1"]
-test                    = ["pytest>=9.1.1,<10"]
+test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4"]
 lint                    = ["import-linter>=2.15,<3"]
 
 [project.urls]
@@ -59,8 +59,8 @@ id_mark                 = "mark_public"
 [tool.pixi.tasks]
 check                   = "cctool check"
 format                  = "cctool format"
-test                    = "pytest -q test --cov=cc_public --cov-report= --cov-fail-under=81"
-coverage                = "pytest -q test --cov=cc_public --cov-report=term-missing"
+test                    = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=81"
+coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 lint                    = "ruff check src test && lint-imports"
 gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
 
