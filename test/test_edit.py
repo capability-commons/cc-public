@@ -493,11 +493,16 @@ def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
     assert faults() == []
 
     # A requirement may derive from a need or a requirement, not a register.
+    def last(item):
+        doc = tree.context.map_document[tree.resolve(item).location]
+        return 'relation.{n}'.format(n = len(doc['relation']) - 1)
+
     cc_public.edit.link.link(tree, 'req_printer_idempotent', 'r_is_derived_from', 'reg_type')
     assert any('runs to t_need or t_textual_requirement' in m for m in faults())
-    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'relation.1.guid_target',
+    edge = last('req_printer_idempotent')
+    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', edge + '.guid_target',
                                    value = tree.resolve('req_renamer_keeps_guid').guid_self)
-    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'relation.1.id_target',
+    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', edge + '.id_target',
                                    value = 'req_renamer_keeps_guid')
     assert faults() == []
 
@@ -506,9 +511,10 @@ def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
                              'req_printer_idempotent')
     assert any('cycle' in m and 'req_printer_idempotent -> req_renamer_keeps_guid' in m
                for m in faults())
-    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', 'relation.1.guid_target',
+    edge = last('req_renamer_keeps_guid')
+    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', edge + '.guid_target',
                                    value = tree.resolve('req_renamer_keeps_guid').guid_self)
-    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', 'relation.1.id_target',
+    cc_public.edit.field.set_field(tree, 'req_renamer_keeps_guid', edge + '.id_target',
                                    value = 'req_renamer_keeps_guid')
     assert any('cycle' in m and 'req_renamer_keeps_guid -> req_renamer_keeps_guid' in m
                for m in faults())
@@ -703,8 +709,8 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
     import cc_public.trace
     import cc_public.check.relation
 
-    # A requirement names code at any of the four grains, and several of them.
-    cc_public.edit.link.link(tree, 'req_printer_idempotent', 'r_is_implemented_by', 'pym_cc_public.layout')
+    # A requirement names code at any of the four grains, and several of them:
+    # the tree already names the layout module; a function and a package join.
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.layout.format', DEFAULTS)
     for (field, value) in (('title', 'Format'), ('description', 'Lays a document out.')):
         cc_public.edit.field.set_field(tree, 'pyf_cc_public.layout.format', field, value = value)
@@ -733,13 +739,18 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
     assert printer.implemented_by == ('pym_cc_public.layout', 'pyf_cc_public.layout.format')
     assert printer.derives_from == ('need_layout_stable',)
     assert [(g.path, g.severity) for g in printer.gap] == [('verification', 'advisory')]
+    assert [g.path for g in by['req_executor_honours_budget'].gap] == ['verification']
+    doc = cc_public.load.from_file(tmp_path / 'requirement' / 'req_executor_honours_budget.yaml')
+    cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget',
+                                     'relation.{n}'.format(n = len(doc['relation']) - 1))
+    ctx = cc_public.check.context([tmp_path])[0]
+    by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
     assert [g.severity for g in by['req_executor_honours_budget'].gap] == ['advisory', 'advisory']
 
 
 
 def test_an_accepted_requirement_lacks_critically_and_the_trace_command_reads_the_projection(tree, tmp_path):
     import cc_public.trace
-    cc_public.edit.link.link(tree, 'req_printer_idempotent', 'r_is_implemented_by', 'pym_cc_public.layout')
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.layout.format', DEFAULTS)
     for (field, value) in (('title', 'Format'), ('description', 'Lays a document out.')):
         cc_public.edit.field.set_field(tree, 'pyf_cc_public.layout.format', field, value = value)
@@ -750,8 +761,8 @@ def test_an_accepted_requirement_lacks_critically_and_the_trace_command_reads_th
     ctx = cc_public.check.context([tmp_path])[0]
     open_world   = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
     closed_world = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document, True)}
-    assert [g.severity for g in open_world['req_executor_honours_budget'].gap] == ['advisory', 'advisory']
-    assert [g.severity for g in closed_world['req_executor_honours_budget'].gap] == ['critical', 'critical']
+    assert [g.severity for g in open_world['req_executor_honours_budget'].gap] == ['advisory']
+    assert [g.severity for g in closed_world['req_executor_honours_budget'].gap] == ['critical']
     cc_public.edit.field.unset_field(tree, 'req_executor_honours_budget', 'success_criteria')
     ctx = cc_public.check.context([tmp_path])[0]
     gaps = {r.id_self: r.gap for r in cc_public.trace.projection(ctx.map_document)}

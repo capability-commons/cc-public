@@ -129,9 +129,30 @@ def commit(root, title, brief = None, description = None,
            is_checkpoint = False, id_execution = None, list_trailer = (),
            list_link = ()):
     """
-    Make the record, commit everything that changed, and return
-    (hash, id_self).
+    ---
 
+    id_self:                pyf_cc_public.commit.commit
+    guid_self:              pyf_43484b20de624168ae850b0a3661f35a
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Commit
+    brief:                  |
+                            Make the record, commit everything that
+                            changed, and return (hash, id_self).
+    description:            |
+                            Runs the checks and the linters, refuses on
+                            what refusal says, mints and validates the
+                            record, stages the root and commits with the
+                            message.
+    relation:               []
+
+    ...
     """
 
     root = root.resolve()
@@ -289,9 +310,32 @@ def record(tree, title, brief, description, status, count, id_execution,
 # -----------------------------------------------------------------------------
 def message(document, list_trailer = ()):
     """
-    Return the commit message: the title, then the record between its
-    markers, laid out by the printer, then any trailers.
+    ---
 
+    id_self:                pyf_cc_public.commit.message
+    guid_self:              pyf_0011bfc1a9b34a44be2c132a3f9ff035
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Commit message
+    brief:                  |
+                            Return the commit message: the title, then the
+                            record between its markers, laid out by the
+                            printer, then any trailers.
+    description:            |
+                            The title on the first line, a blank line, the
+                            record laid out by the printer between a line
+                            of three dashes and a line of three full
+                            stops, then any trailers: the record format
+                            cctool log reads back.
+    relation:               []
+
+    ...
     """
 
     stream = io.StringIO()

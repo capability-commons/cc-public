@@ -236,13 +236,31 @@ class DspyRunner:
     # -------------------------------------------------------------------------
     def confirm(self, task, verdict, count) -> Verdict:
         """
-        Return the majority verdict over count judgements of this task.
+        ---
 
-        The screening verdict counts as the first. The rest are fresh
-        samples. Where the majority is met, the finding was variance and
-        is dropped; where it is unmet, the finding stands and says over
-        how many judgements.
+        id_self:                pyf_cc_public.eval.runner.dspyrunner.confirm
+        guid_self:              pyf_29ceb0158ff1456a8fd2606da0e65101
+        copyright:              Copyright 2026 William Payne
+        license:                Apache-2.0
 
+        protective_mark:
+
+          - id_mark:            mark_public
+            guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+        title:                  Confirm
+        brief:                  |
+                                Return the majority verdict over count
+                                judgements of this task.
+        description:            |
+                                The screening verdict counts as the first
+                                judgement and the rest are fresh samples; the
+                                majority over the odd count is the verdict
+                                reported, met dropping the finding and unmet
+                                standing with the tally.
+        relation:               []
+
+        ...
         """
 
         if check_count(count, 'The confirmation count') == 1:

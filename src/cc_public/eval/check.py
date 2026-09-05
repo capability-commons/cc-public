@@ -69,13 +69,32 @@ def judgement(selector, id_model, count_confirm = cc_public.eval.runner.COUNT_CO
 # -----------------------------------------------------------------------------
 def check(context):
     """
-    Return a Result holding a verdict for every task the selector picks.
+    ---
 
-    An UNMET verdict becomes a nonconformity at the severity the eval
-    declares. A MET verdict says nothing. A verdict of unknown -- which
-    is what a dry run produces -- becomes a note, since a task that was
-    not judged must not be mistaken for one that passed.
+    id_self:                pyf_cc_public.eval.check.check
+    guid_self:              pyf_4eb27e7eab764186ae2ade5946cda02f
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
 
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Eval check
+    brief:                  |
+                            Return a Result holding a verdict for every
+                            task the selector picks.
+    description:            |
+                            The judge screens every subject once and
+                            confirms an adverse verdict over the
+                            confirmation count; what comes back unmet is a
+                            nonconformity at the severity the eval
+                            declares, met says nothing, and unknown is a
+                            note.
+    relation:               []
+
+    ...
     """
 
     if context.selector_eval is None or context.runner_eval is None:
