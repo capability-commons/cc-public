@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.check.eval
+id_self:                pym_cc_public.eval.check
 guid_self:              pym_f7d96b0d7bf84b16b05cb018b140590f
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -17,17 +17,25 @@ brief:                  |
                         them.
 description:            |
                         The seam between the eval machinery and the
-                        rest of the checks. Turns a verdict into the
+                        mechanical checks. Turns a verdict into the
                         same nonconformity every other check produces.
-                        Does not run unless asked for.
+                        Handed to the check driver by the command line
+                        as a judgement, this module with the selector,
+                        a builder for the judge and the confirmation
+                        count, so that the checks import nothing above
+                        themselves. Does not run unless asked for.
 relation:               []
 
 ...
 """
 
 
+import functools
+import sys
+
+import cc_public.check.confidence
 import cc_public.check.result
-import cc_public.eval.control
+import cc_public.control
 import cc_public.eval.runner
 import cc_public.eval.measure
 import cc_public.eval.select
@@ -38,6 +46,24 @@ TITLE        = 'Items meet their evals'
 NOUN         = 'judgement'
 
 KEY_SEVERITY = 'severity'
+
+
+# -----------------------------------------------------------------------------
+def judgement(selector, id_model, count_confirm = cc_public.eval.runner.COUNT_CONFIRM):
+    """
+    Return what the check driver is handed to run the evals as a check:
+    this module, the selector, a builder for the judge named, and the
+    confirmation count, which must be odd.
+
+    """
+
+    cc_public.eval.runner.check_count(count_confirm, 'The confirmation count')
+
+    return cc_public.check.result.Judgement(
+                module        = sys.modules[__name__],
+                selector      = selector,
+                build         = functools.partial(cc_public.eval.runner.build, id_model),
+                count_confirm = count_confirm)
 
 
 # -----------------------------------------------------------------------------
@@ -70,7 +96,7 @@ def check(context):
         #
         if task.id_eval not in set_unmeasured and not any(
                 isinstance(row, dict) and row.get('model') == runner.id_model
-                and cc_public.eval.measure.is_current(row, task.document_eval,
+                and cc_public.check.confidence.is_current(row, task.document_eval,
                                                       context.map_document)
                 for row in task.document_eval.get('confidence') or []):
             set_unmeasured.add(task.id_eval)
@@ -98,18 +124,18 @@ def check(context):
         #
         if verdict.verdict == cc_public.eval.runner.VERDICT_UNMET:
 
-            guid_eval = task.document_eval.get(cc_public.eval.control.KEY_GUID_SELF)
+            guid_eval = task.document_eval.get(cc_public.control.KEY_GUID_SELF)
 
             if guid_eval not in map_known:
-                map_known[guid_eval] = cc_public.eval.control.map_case(
+                map_known[guid_eval] = cc_public.control.map_case(
                                             context.map_document, guid_eval)
 
             case = map_known[guid_eval].get(
-                        cc_public.eval.control.normalise(task.text_input))
+                        cc_public.control.normalise(task.text_input))
 
             if case is not None:
-                id_case = case.get(cc_public.eval.control.KEY_ID_SELF)
-                if case.get(cc_public.eval.control.KEY_VERDICT) == \
+                id_case = case.get(cc_public.control.KEY_ID_SELF)
+                if case.get(cc_public.control.KEY_VERDICT) == \
                                         cc_public.eval.runner.VERDICT_MET:
                     list_note.append(cc_public.check.result.Note(
                             filepath = task.filepath,
@@ -117,7 +143,7 @@ def check(context):
                                        'in {case}. {note}'.format(
                                             case = id_case,
                                             note = case.get(
-                                                cc_public.eval.control.KEY_NOTE,
+                                                cc_public.control.KEY_NOTE,
                                                 '')).strip()))
                     continue
                 verdict = verdict._replace(

@@ -32,12 +32,13 @@ import click.testing
 import pytest
 
 import cc_public.check
-import cc_public.check.eval
+import cc_public.check.confidence
 import cc_public.check.result
 import cc_public.cli.command
-import cc_public.edit.case
 import cc_public.edit.tree
-import cc_public.eval.control
+import cc_public.eval.case
+import cc_public.eval.check
+import cc_public.control
 import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.eval.select
@@ -57,7 +58,7 @@ class Scripted:
         self.table = table
 
     def _answer(self, task):
-        return self.table.get(cc_public.eval.control.normalise(task.text_input),
+        return self.table.get(cc_public.control.normalise(task.text_input),
                               ['met'])
 
     def run(self, task):
@@ -82,7 +83,7 @@ def tree(tmp_path):
 
 
 def test_case_makes_set_and_suppresses(tree, tmp_path):
-    (id_set, id_case) = cc_public.edit.case.case(
+    (id_set, id_case) = cc_public.eval.case.case(
                 tree, 'evl_prose_matches_structure', 'pym_cc_public.load.yaml', 'met',
                 'Describes the loader. The judge misreads an effect as an argument.')
     assert id_set == 'ctl_prose_matches_structure'
@@ -100,10 +101,10 @@ def test_case_makes_set_and_suppresses(tree, tmp_path):
                     selector_eval = cc_public.eval.select.Selector(
                                         id_eval = ('evl_prose_matches_structure',),
                                         id_item = ('pym_cc_public.load.yaml',)),
-                    runner_eval   = Scripted({cc_public.eval.control.normalise(
+                    runner_eval   = Scripted({cc_public.control.normalise(
                                                 case['subject']): ['unmet']}),
                     count_confirm = 1)
-    result = cc_public.check.eval.check(ctx)
+    result = cc_public.eval.check.check(ctx)
     assert result.list_nonconformity == []
     assert any('judged met by hand' in n.message for n in result.list_note)
 
@@ -117,17 +118,17 @@ def test_measure_rates_per_origin(tree, tmp_path):
     for (item, verdict, note) in (('pym_cc_public.load.yaml', 'met',   'a'),
                                   ('pym_cc_public.load.xml',  'met',   'b'),
                                   ('sch_primitive',           'unmet', 'c')):
-        cc_public.edit.case.case(tree, 'evl_prose_matches_structure', item, verdict, note)
+        cc_public.eval.case.case(tree, 'evl_prose_matches_structure', item, verdict, note)
 
     tree2 = cc_public.edit.tree.Tree([tmp_path])
     ev    = tree2.context.map_document[tree2.resolve('evl_prose_matches_structure').location]
-    cases = list(cc_public.eval.control.iter_case(tree2.context.map_document,
+    cases = list(cc_public.control.iter_case(tree2.context.map_document,
                                                   ev['guid_self']))
     assert len(cases) == 3
 
     # Judge: right on the first met case, always wrong on the second, and
     # split on the unmet one (majority met, so a false negative).
-    subj = {k: cc_public.eval.control.normalise(c['subject']) for (_, k, c) in cases}
+    subj = {k: cc_public.control.normalise(c['subject']) for (_, k, c) in cases}
     by   = {c['verdict']: [] for (_, _, c) in cases}
     for (_, k, c) in cases:
         by[c['verdict']].append(subj[k])
@@ -161,7 +162,7 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
         with pytest.raises(ValueError):
             cc_public.eval.runner.check_count(bad, 'The count')
     with pytest.raises(ValueError):
-        cc_public.check.check(list_path = [tmp_path], count_confirm = 2)
+        cc_public.eval.check.judgement(cc_public.eval.select.Selector(), 'null', 2)
     ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').location]
     with pytest.raises(ValueError):
         cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 2)
@@ -177,7 +178,7 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
 def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
     ev     = 'evl_prose_matches_structure'
     doc    = tree.context.map_document[tree.resolve(ev).location]
-    before = cc_public.eval.measure.digest(doc, tree.context.map_document)
+    before = cc_public.check.confidence.digest(doc, tree.context.map_document)
     assert len(before) == 8
 
     # Refilling prose does not change the digest; changing a case, the
@@ -185,17 +186,17 @@ def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
     cc_public.edit.field.set_field(tree, ev, 'criterion',
                                    prose = ' '.join(doc['criterion'].split()) + '\n')
     doc = tree.context.map_document[tree.resolve(ev).location]
-    assert cc_public.eval.measure.digest(doc, tree.context.map_document) == before
+    assert cc_public.check.confidence.digest(doc, tree.context.map_document) == before
     seen = {before}
-    cc_public.edit.case.case(tree, ev, 'sch_primitive', 'unmet', 'a case')
+    cc_public.eval.case.case(tree, ev, 'sch_primitive', 'unmet', 'a case')
     doc = tree.context.map_document[tree.resolve(ev).location]
-    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    seen.add(cc_public.check.confidence.digest(doc, tree.context.map_document))
     cc_public.edit.field.set_field(tree, ev, 'criterion', prose = 'Another criterion.\n')
     doc = tree.context.map_document[tree.resolve(ev).location]
-    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    seen.add(cc_public.check.confidence.digest(doc, tree.context.map_document))
     cc_public.edit.field.set_field(tree, ev, 'scope', value = {'include': ['title']})
     doc = tree.context.map_document[tree.resolve(ev).location]
-    seen.add(cc_public.eval.measure.digest(doc, tree.context.map_document))
+    seen.add(cc_public.check.confidence.digest(doc, tree.context.map_document))
     assert len(seen) == 4
 
     # Recording stamps the rows, the check is quiet, and a later change
@@ -204,7 +205,7 @@ def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
              'false_negative': 0.0, 'unanimous': 1.0}]
     cc_public.eval.measure.record(tree, ev, rows, 'scripted')
     ev2 = cc_public.load.from_file(tree.resolve(ev).filepath)
-    assert ev2['confidence'][0]['digest'] == cc_public.eval.measure.digest(
+    assert ev2['confidence'][0]['digest'] == cc_public.check.confidence.digest(
                                                 ev2, tree.context.map_document)
 
     def confidence():
@@ -224,8 +225,8 @@ def test_confidence_carries_the_digest_of_what_it_measured(tree, tmp_path):
 
     # A sweep says once, per eval, that its findings carry no confidence.
     selector = cc_public.eval.select.Selector(id_eval = (ev,))
-    rep = cc_public.check.check(list_path = [tmp_path], selector_eval = selector,
-                                id_model_eval = 'null', count_confirm = 1)['report']
+    rep = cc_public.check.check(list_path = [tmp_path],
+                                judgement = cc_public.eval.check.judgement(selector, 'null', 1))['report']
     c   = next(c for c in rep['check'] if c['id_check'] == 'eval')
     assert sum('no current confidence for null' in n['message'] for n in c['note']) == 1
     assert c['detail']['count_call_max'] == c['detail']['count_call'] * 1

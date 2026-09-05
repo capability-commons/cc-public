@@ -36,7 +36,6 @@ import ruamel.yaml
 import cc_public.check
 import cc_public.check.schema
 import cc_public.commit
-import cc_public.edit.case
 import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
@@ -44,7 +43,9 @@ import cc_public.edit.new
 import cc_public.edit.rename
 import cc_public.edit.tree
 import cc_public.cli.report
-import cc_public.eval.control
+import cc_public.eval.case
+import cc_public.eval.check
+import cc_public.control
 import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.eval.select
@@ -229,12 +230,12 @@ def check(list_path,
     if not (is_eval or any(selector)):
         selector = None
 
-    report = cc_public.check.check(list_path       = list_path,
-                                   is_fail_fast    = is_fail_fast,
-                                   is_closed_world = is_closed_world,
-                                   selector_eval   = selector,
-                                   id_model_eval   = id_model_eval,
-                                   count_confirm   = count_confirm)
+    judgement = cc_public.eval.check.judgement(selector, id_model_eval, count_confirm) \
+                if selector is not None else None
+    report    = cc_public.check.check(list_path       = list_path,
+                                      is_fail_fast    = is_fail_fast,
+                                      is_closed_world = is_closed_world,
+                                      judgement       = judgement)
 
     list_error = report['report']['error']
     list_error.extend(cc_public.cli.report.write(report,
@@ -541,7 +542,7 @@ def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
               help = 'What a person holds the subject to. met answers the '
                      'finding; unmet confirms it.')
 @click.option('--origin', 'origin', default = None,
-              type = click.Choice(cc_public.eval.control.ORIGIN_ALL),
+              type = click.Choice(cc_public.control.ORIGIN_ALL),
               help = 'Where the case came from. Defaults to suppressed for '
                      'met and confirmed for unmet; written marks a subject '
                      'a person wrote and holds to the verdict.')
@@ -560,7 +561,7 @@ def case_(id_eval, name_item, verdict, origin, note, list_root):
     """
 
     try:
-        (id_set, id_case) = cc_public.edit.case.case(
+        (id_set, id_case) = cc_public.eval.case.case(
                     _tree(list_root), id_eval, name_item, verdict, note,
                     origin)
     except cc_public.edit.tree.ErrorItem as err:

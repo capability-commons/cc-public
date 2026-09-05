@@ -32,18 +32,19 @@ context:                |
                         The import graph says something the count does
                         not. Two pairs of packages import each other.
                         The check package imports the judgement
-                        package to run evals as a check and to build
-                        the judge, and the judgement package imports
+                        package to run evals as a check, to build the
+                        judge, and to compute the digest a confidence
+                        row carries, and the judgement package imports
                         the check package for schema selection, the
                         type register and the context;
-                        ddr_check_architecture noticed this and typed
-                        the context loosely to keep the cycle from
-                        closing at import time. The edit package holds
-                        the case command, which renders a subject
-                        through the judgement package, while the
-                        judgement package writes confidence through
-                        the edit package. Everything else already
-                        forms a strict order.
+                        ddr_check_architecture noticed the first of
+                        these and typed the context loosely to keep
+                        the cycle from closing at import time. The
+                        edit package holds the case command, which
+                        renders a subject through the judgement
+                        package, while the judgement package writes
+                        confidence through the edit package.
+                        Everything else already forms a strict order.
 
                         The system is meant to run unmanned, so a
                         boundary that holds only under review is no
@@ -53,30 +54,38 @@ decision:               |
                         below its own, and siblings within a tier do
                         not import each other.
 
-                        One, foundations: load, path, need and
-                        question, pure functions over bytes and
+                        One, foundations: load, path, need, question
+                        and control, pure functions over bytes and
                         documents that import nothing else in the
-                        tool. Two, layout: the printer. Three, checks:
-                        the context, the mechanical checks, the report
-                        and the refusal policy, reading only. Four,
-                        edits: the tree, the writing commands, the
-                        ledger and atomic writes. Five, the committer
-                        and the judgement package as independent
-                        siblings: commit runs the checks and writes
-                        history; eval selects and renders subjects,
-                        judges, measures, admits, and holds the case
-                        command and the eval check. Six, workflow: the
-                        graph, the executor and the materialiser.
-                        Seven, the command line, which composes the
-                        rest and holds no logic of its own.
+                        tool; control finds and keys control sets and
+                        cases. Two, layout: the printer. Three,
+                        checks: the context, the mechanical checks,
+                        the report and the refusal policy, reading
+                        only, the digest a confidence row carries
+                        among them. Four, edits: the tree, the writing
+                        commands, the ledger and atomic writes. Five,
+                        the committer and the judgement package as
+                        independent siblings: commit runs the checks
+                        and writes history; eval selects and renders
+                        subjects, judges, measures, admits, and holds
+                        the case command and the eval check. Six,
+                        workflow: the graph, the executor and the
+                        materialiser. Seven, the command line, which
+                        composes the rest and holds no logic of its
+                        own.
 
-                        Two moves make the graph match. The eval check
-                        and the judge are given to the check driver by
-                        its caller, the command line, rather than
-                        imported by it; the check module moves to the
-                        judgement package. The case command moves from
-                        the edit package to the judgement package,
-                        whose data it makes.
+                        Three moves make the graph match. The eval
+                        check and the judge are given to the check
+                        driver by its caller, the command line, rather
+                        than imported by it; the check module moves to
+                        the judgement package. The case command moves
+                        from the edit package to the judgement
+                        package, whose data it makes. The control
+                        module moves to the foundations and the digest
+                        to the confidence check, since the check that
+                        reads a confidence row must compute what the
+                        row was stamped with without reaching upward
+                        for it.
 
                         A name beginning with an underscore belongs to
                         its module. Nothing outside the module uses
@@ -177,10 +186,22 @@ consequence:            |
                         loose typing ddr_check_architecture accepted
                         becomes unnecessary.
 
-                        What is proposed here is decided and not yet
-                        built. Until it is, the six private accesses
-                        and the two cycles stand, and the lint does
-                        not yet refuse them.
+                        The cycles are cut and the graph is one way.
+                        The six private accesses stand until the
+                        promotions are made, and the lint does not yet
+                        refuse either rule.
+
+question:
+
+  question_module:
+    id_self:            qst_layered_architecture.question_module
+    guid_self:          qst_6681b55f6faa4b1ab5a56ec613eb0f33
+    question:           |
+                        Whether the question module belongs with the
+                        foundations, where its imports put it, or with
+                        the checks, where its purpose does, and
+                        whether the two ever need to disagree.
+    relation:           []
 
 relation:
 
@@ -218,15 +239,3 @@ relation:
     guid_relation:      r_4aefda84f8894e02aede8729ced91732
     id_target:          pym_cc_public.commit
     guid_target:        pym_d1a0197b9dd444b4a74a5a294a070a0d
-
-question:
-
-  question_module:
-    id_self:            qst_layered_architecture.question_module
-    guid_self:          qst_6681b55f6faa4b1ab5a56ec613eb0f33
-    question:           |
-                        Whether the question module belongs with the
-                        foundations, where its imports put it, or with
-                        the checks, where its purpose does, and
-                        whether the two ever need to disagree.
-    relation:           []

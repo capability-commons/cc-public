@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.edit.case
+id_self:                pym_cc_public.eval.case
 guid_self:              pym_526d7635fff54b9181e88a61a869704b
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -35,7 +35,7 @@ import cc_public.edit.insert
 import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.tree
-import cc_public.eval.control
+import cc_public.control
 import cc_public.eval.select
 import cc_public.path
 
@@ -80,7 +80,7 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
                                                        eval = id_eval))
 
     id_set = _set_for(tree, id_eval)
-    key    = cc_public.eval.control.key_of(text)
+    key    = cc_public.control.key_of(text)
 
     (key, id_case) = cc_public.edit.insert.insert(tree, 't_control_case', key,
                                                   id_set, 'case')

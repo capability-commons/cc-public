@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.eval.control
+id_self:                pym_cc_public.control
 guid_self:              pym_d3c30505c19c48708b12bc12f946f862
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0

@@ -38,6 +38,7 @@ import pathlib
 import uuid
 
 import cc_public.check
+import cc_public.check.confidence
 import cc_public.commit
 import cc_public.edit.field
 import cc_public.edit.insert
@@ -596,7 +597,7 @@ def _measured(doc_ev, id_model, map_document):
     """
 
     return any(isinstance(row, dict) and row.get(KEY_MODEL) == id_model
-               and cc_public.eval.measure.is_current(row, doc_ev, map_document)
+               and cc_public.check.confidence.is_current(row, doc_ev, map_document)
                for row in doc_ev.get(KEY_CONFIDENCE) or [])
 
 

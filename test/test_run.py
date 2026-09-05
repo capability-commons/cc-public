@@ -36,7 +36,7 @@ import pytest
 import cc_public.check
 import cc_public.edit.field
 import cc_public.edit.tree
-import cc_public.eval.control
+import cc_public.control
 import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.load

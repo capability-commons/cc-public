@@ -98,6 +98,27 @@ class Context(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
+class Judgement(typing.NamedTuple):
+    """
+    What the judgement tier hands the check driver to run the evals as
+    a check, so that the driver imports nothing above itself.
+
+    module exposes check(context) and the three constants every check
+    has. selector says which evals and which items. build returns the
+    judge and may raise, and is called by the driver so that having no
+    judge is reported like any other failure of the analysis.
+    count_confirm is over how many judgements an adverse verdict is
+    confirmed.
+
+    """
+
+    module:        typing.Any
+    selector:      typing.Any
+    build:         typing.Any
+    count_confirm: int = 1
+
+
+# -----------------------------------------------------------------------------
 class Nonconformity(typing.NamedTuple):
     """
     One way in which the data does not conform.

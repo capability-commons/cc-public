@@ -30,8 +30,11 @@ relation:               []
 """
 
 
+import hashlib
+import json
+
 import cc_public.check.result
-import cc_public.eval.measure
+import cc_public.control
 
 
 ID_CHECK       = 'confidence'
@@ -40,10 +43,75 @@ NOUN           = 'confidence row'
 
 KEY_ID_SELF    = 'id_self'
 KEY_CONFIDENCE = 'confidence'
-KEY_DIGEST     = cc_public.eval.measure.KEY_DIGEST
-KEY_MODEL      = cc_public.eval.measure.KEY_MODEL
 PREFIX_EVAL    = 'evl'
 SEPARATOR      = '_'
+
+KEY_DIGEST    = 'digest'
+KEY_MODEL     = 'model'
+
+# The eval's fields that shape a judgement. A change to any of them is
+# a change to what the confidence was measured about.
+#
+FIELD_JUDGED  = ('criterion', 'example', 'scope')
+
+LENGTH_DIGEST = cc_public.control.LENGTH_KEY
+
+
+# -----------------------------------------------------------------------------
+def digest(document_eval, map_document):
+    """
+    Return a short digest of everything a measurement of this eval
+    depends on: the fields that shape a judgement, and every control
+    case measuring it as (subject, verdict, origin).
+
+    A confidence row carries the digest at the time it was measured, and
+    a row whose digest is not the eval's now was measured about
+    something else.
+
+    """
+
+    cases = sorted(
+        (cc_public.control.normalise(case.get(cc_public.control.KEY_SUBJECT, '')),
+         case.get(cc_public.control.KEY_VERDICT),
+         case.get(cc_public.control.KEY_ORIGIN))
+        for (_, _, case) in cc_public.control.iter_case(
+                    map_document, document_eval[cc_public.control.KEY_GUID_SELF]))
+
+    content = {field: _plain(document_eval.get(field)) for field in FIELD_JUDGED}
+    content['case'] = cases
+    text = json.dumps(content, sort_keys = True, ensure_ascii = True,
+                      separators = (',', ':'))
+
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()[:LENGTH_DIGEST]
+
+
+# -----------------------------------------------------------------------------
+def is_current(row, document_eval, map_document):
+    """
+    Return whether a confidence row describes the eval as it is now.
+
+    """
+
+    return row.get(KEY_DIGEST) == digest(document_eval, map_document)
+
+
+# -----------------------------------------------------------------------------
+def _plain(node):
+    """
+    Return node as plain python with its prose whitespace collapsed, so
+    that a refilled paragraph is the same content.
+
+    """
+
+    if isinstance(node, dict):
+        return {str(k): _plain(v) for (k, v) in node.items()}
+    if isinstance(node, list):
+        return [_plain(v) for v in node]
+    if isinstance(node, str):
+        return cc_public.control.normalise(node)
+    return node
+
+
 
 
 # -----------------------------------------------------------------------------
@@ -75,7 +143,7 @@ def check(context):
         if not list_row:
             continue
 
-        stamp = cc_public.eval.measure.digest(document, context.map_document)
+        stamp = digest(document, context.map_document)
         stale = sorted({row.get(KEY_MODEL) for row in list_row
                         if isinstance(row, dict)
                         and row.get(KEY_DIGEST) not in (None, stamp)})

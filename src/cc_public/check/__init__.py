@@ -32,11 +32,9 @@ import pathlib
 import traceback
 import typing
 
-import cc_public.eval.runner
 import cc_public.load
 
 from cc_public.check import confidence as check_confidence
-from cc_public.check import eval       as check_eval
 from cc_public.check import identifier as check_identifier
 from cc_public.check import identity   as check_identity
 from cc_public.check import layout     as check_layout
@@ -76,9 +74,7 @@ COMMAND    = 'check'
 
 # -----------------------------------------------------------------------------
 def check(list_path = (), is_fail_fast = False,
-          is_closed_world = False, selector_eval = None,
-          id_model_eval = None,
-          count_confirm = cc_public.eval.runner.COUNT_CONFIRM):
+          is_closed_world = False, judgement = None):
     """
     Return a report over the union of the paths given.
 
@@ -86,9 +82,11 @@ def check(list_path = (), is_fail_fast = False,
     always returned; failures of the analysis are recorded in it rather
     than raised.
 
-    id_model_eval names the judge. The runner is built here rather
-    than by the caller, so that having no judge is reported like any
-    other failure of the analysis instead of raised at the caller.
+    judgement is what the judgement tier hands in to run the evals as a
+    check: the check module, the selector, and a builder for the judge,
+    which is called here rather than by the caller, so that having no
+    judge is reported like any other failure of the analysis. None runs
+    the mechanical checks alone, which cost nothing.
 
     is_closed_world asserts that the paths given hold everything a
     reference could resolve to. It is an assertion by the caller, who
@@ -97,19 +95,12 @@ def check(list_path = (), is_fail_fast = False,
 
     """
 
-    cc_public.eval.runner.check_count(count_confirm, 'The confirmation count')
-
     list_dirpath   = [pathlib.Path(path) for path in list_path]
     list_dirpath   = list_dirpath or [pathlib.Path.cwd()]
 
-    (context, list_error) = _context(list_dirpath, is_closed_world,
-                                     selector_eval, id_model_eval,
-                                     count_confirm)
+    (context, list_error) = _context(list_dirpath, is_closed_world, judgement)
 
-    # The eval check runs only where the caller asked for it, so that a
-    # command costing nothing by default stays that way.
-    #
-    tuple_check = CHECK + ((check_eval,) if selector_eval is not None else ())
+    tuple_check = CHECK + ((judgement.module,) if judgement is not None else ())
 
     list_check = []
 
@@ -290,9 +281,7 @@ def _count(entry, severity):
 
 
 # -----------------------------------------------------------------------------
-def _context(list_dirpath, is_closed_world = False,
-             selector_eval = None, id_model_eval = None,
-             count_confirm = cc_public.eval.runner.COUNT_CONFIRM):
+def _context(list_dirpath, is_closed_world = False, judgement = None):
     """
     Return (Context, list_error) for the union of the paths given.
 
@@ -329,11 +318,11 @@ def _context(list_dirpath, is_closed_world = False,
 
     runner_eval = None
 
-    if selector_eval is not None:
+    if judgement is not None:
         try:
-            runner_eval = cc_public.eval.runner.build(id_model_eval)
+            runner_eval = judgement.build()
         except Exception as err:
-            list_error.append({'id_check':  'eval',
+            list_error.append({'id_check':  judgement.module.ID_CHECK,
                                'message':   '{name}: {err}'.format(
                                             name = type(err).__name__,
                                             err  = err),
@@ -343,9 +332,11 @@ def _context(list_dirpath, is_closed_world = False,
                                  map_document      = map_document,
                                  list_failure_load = list_failure_load,
                                  is_closed_world   = is_closed_world,
-                                 selector_eval     = selector_eval,
+                                 selector_eval     = judgement.selector
+                                                     if judgement is not None else None,
                                  runner_eval       = runner_eval,
-                                 count_confirm     = count_confirm),
+                                 count_confirm     = judgement.count_confirm
+                                                     if judgement is not None else 1),
             list_error)
 
 
