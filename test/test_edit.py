@@ -335,7 +335,7 @@ def test_an_execution_may_name_what_has_gone(tree, tmp_path):
     doc = cc_public.load.from_file(exe)
     gone = next(b['guid_node'] for b in doc['binding'].values())
     # take the declaration away by deleting the workflow that holds the node
-    wf = next(p for p in (tmp_path / 'workflow').glob('wf_*.yaml'))
+    wf = next(p for p in (tmp_path / 'workflow').glob('wf_*.yaml') if gone in p.read_text())
     wf.unlink()
     rep = cc_public.check.check(list_path = [tmp_path])['report']
     ref = next(c for c in rep['check'] if c['id_check'] == 'reference')
