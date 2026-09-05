@@ -70,8 +70,8 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
     for step in cc_public.path.split(subj_item.path):
         node = node[int(step)] if isinstance(node, list) else node[step]
 
-    text = cc_public.eval.select.render(((subj_item.id_self, node),),
-                                         doc_eval)
+    text = cc_public.eval.select.render(((subj_item.id_self, node,
+                                          subj_item.location),), doc_eval)
 
     if not text.strip():
         raise cc_public.edit.tree.ErrorItem(

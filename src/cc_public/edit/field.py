@@ -27,6 +27,7 @@ relation:               []
 
 
 import ruamel.yaml
+import ruamel.yaml.comments
 import ruamel.yaml.scalarstring
 
 import cc_public.edit.tree
@@ -156,16 +157,18 @@ def unset_field(tree, name, path):
         raise KeyError('No {step} at {path}.'.format(step = last,
                                                     path = path)) from None
 
-    # A mapping emptied of its last key keeps the comment tokens of
-    # what it held, and the dumper then writes it badly. A fresh empty
-    # mapping in its place carries nothing.
+    # A mapping or a sequence emptied of its last member keeps the
+    # comment tokens of what it held, and the dumper then writes it
+    # badly. A fresh empty one in its place carries nothing.
     #
-    if above is not None and isinstance(parent, dict) and not parent:
+    if above is not None and isinstance(parent, (dict, list)) and not parent:
         (grand, step) = above
+        fresh         = ruamel.yaml.comments.CommentedMap() if isinstance(parent, dict) \
+                        else ruamel.yaml.comments.CommentedSeq()
         if isinstance(grand, list):
-            grand[int(step)] = {}
+            grand[int(step)] = fresh
         else:
-            grand[step] = {}
+            grand[step] = fresh
 
     cc_public.edit.tree.save(item.location, document)
     tree.refresh(item.filepath)

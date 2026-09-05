@@ -133,7 +133,7 @@ def render(tree, id_item):
     for step in cc_public.path.split(item.path):       # an embedded item
         node = node[int(step)] if isinstance(node, list) else node[step]
 
-    return cc_public.eval.select.render(((id_item, node),), {})
+    return cc_public.eval.select.render(((id_item, node, item.location),), {})
 
 
 # -----------------------------------------------------------------------------

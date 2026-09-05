@@ -574,7 +574,7 @@ def _judge(state, spec, id_item, is_gated):
                         id_subject    = (id_item,),
                         filepath      = str(item.filepath),
                         text_input    = cc_public.eval.select.render(
-                                                ((id_item, doc),), doc_ev))
+                                                ((id_item, doc, item.location),), doc_ev))
         verdict = runner.run(task)
         if verdict.verdict == VERDICT_UNMET:
             verdict = runner.confirm(task, verdict, state.policy['confirm'])

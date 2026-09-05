@@ -246,6 +246,34 @@ def _walk_definition(node, path):
 
 
 # -----------------------------------------------------------------------------
+def source_of(text, anchor):
+    """
+    Return the source of the definition at anchor in text, decorators
+    included, or the whole text for the module itself. None where
+    nothing sits at anchor.
+
+    An item's source is the whole text of its definition, contained
+    definitions included: what a judge reads is code with its
+    docstrings, not code with holes in it.
+
+    """
+
+    if not anchor:
+        return text
+
+    found = next((d for d in iter_definition(text) if d.path == tuple(anchor)), None)
+
+    if found is None:
+        return None
+
+    node      = found.node
+    list_line = text.splitlines()
+    first     = min([node.lineno, *[d.lineno for d in node.decorator_list]]) - 1
+
+    return '\n'.join(list_line[first : node.end_lineno]) + '\n'
+
+
+# -----------------------------------------------------------------------------
 def iter_document(data: bytes, encoding: str | None = None):
     """
     Yield (kind, path, document) for every docstring document in a

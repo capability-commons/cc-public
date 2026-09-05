@@ -65,7 +65,11 @@ are shorthands. Every command has `--help`; the writing commands take
   lower case (`pyf_cc_public.edit.tree.tree.resolve` is `Tree.resolve`).
   Make one only where something needs to point at it. The source check
   refuses a document whose id is not where it sits; `rename` refuses
-  source items, since their names are the code's.
+  source items, since their names are the code's. An eval that names
+  `source` in its scope is shown the definition's code beside the item's
+  fields (`evl_record_and_code_agree` judges a decision against the
+  function it decides). A test function that proves a requirement is an
+  item and links `r_verifies` to it.
 - `insert TYPE NAME --into ITEM [--at COLLECTION]` — a new embedded item
   (register entry, port, node, question…) with its shape read from the
   container's schema. NAME is bare: the tool adds the type prefix, so

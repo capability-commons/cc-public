@@ -143,6 +143,14 @@ def measure(context, document_eval, runner, count_sample):
                        case.get(cc_public.eval.control.KEY_VERDICT),
                        tally))
 
+    # No cases, no measurement. A row over nothing would read as a
+    # measurement, and record nothing true.
+    #
+    if not detail:
+        raise ValueError('No control case measures {id_eval}, so there is '
+                         'nothing to measure. Add cases with cctool case, or '
+                         'through the API.'.format(id_eval = document_eval['id_self']))
+
     rows = [_row(origin, [d for d in detail if d[1] == origin], count_sample)
             for origin in cc_public.eval.control.ORIGIN_ALL
             if any(d[1] == origin for d in detail)]

@@ -13,23 +13,22 @@ brief:                  |
                         A design decision and the code it decides do
                         the same thing.
 note:                   |
-                        NOT ANCHORED. This eval names no relation, so
-                        it reaches nothing and is never run.
+                        Anchored on r_decides, and reaches a pair only
+                        where the decided item is a class or function:
+                        the judge is shown the decision and the source
+                        of the definition, which ddr_source_item made
+                        an item and the renderer projects when an eval
+                        names source in its scope. Modules and
+                        packages are left out for now, since a
+                        module's source runs to seventeen thousand
+                        characters and a claim about a module is met
+                        by its functions.
 
-                        It is written because the criterion is worth
-                        stating, and because the gap is worth having
-                        somewhere other than in a record. A code data
-                        item carries prose ABOUT the code and not the
-                        code itself, so a judge shown one can read
-                        what a module claims to do and never what it
-                        does.
-
-                        Measured: of three record and code pairs given
-                        a decision the code plainly contradicted, none
-                        was detected.
-
-                        It gains its anchor when a source item carries
-                        its source. See ddr_eval_reach.
+                        Before it was anchored, three record and code
+                        pairs given a decision the code plainly
+                        contradicted went undetected, because the
+                        judge saw prose about the code and never the
+                        code.
 criterion:              |
                         You are given a design decision and the source
                         of one code item it decides.
@@ -52,8 +51,6 @@ subject:
 
   include_type:
     - t_ddr
-    - t_python_package
-    - t_python_module
     - t_python_class
     - t_python_function
 
@@ -96,4 +93,47 @@ example:
                         the record says nothing about, and silence is
                         not disagreement.
 
-relation:               []
+scope:
+
+  include:
+    - decision
+    - source
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              2
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+    digest:             b3cd9847
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             mutated
+    cases:              4
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+    digest:             b3cd9847
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              6
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+    digest:             b3cd9847
+
+relation:
+
+  - id_relation:        r_evaluates_items_joined_by_relation
+    guid_relation:      r_c7a437a455054da6bbedbced7c4bf32d
+    id_target:          r_decides
+    guid_target:        r_4aefda84f8894e02aede8729ced91732

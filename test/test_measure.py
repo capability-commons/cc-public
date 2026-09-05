@@ -20,18 +20,7 @@ description:            |
                         that the arithmetic of the rates, the per
                         origin split, and the suppression path can be
                         asserted exactly.
-
-relation:
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_judge_confirms_unmet
-    guid_target:        req_ad4f5b42320a4f3f9aa2b1b9457b32f3
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_judge_reports_confirmed_verdict
-    guid_target:        req_7e8813d18aa3443ba6cb92805469a451
+relation:               []
 
 ...
 """
@@ -257,6 +246,46 @@ class Sampled(cc_public.eval.runner.DspyRunner):
 
 
 def test_an_unmet_screen_is_confirmed_count_times_and_the_majority_reported(tree, tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_measure.test_an_unmet_screen_is_confirmed_count_times_and_the_majority_reported
+    guid_self:              pyf_9bc5b3f1136c42be92f969c533edd42a
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  An unmet screen is confirmed count times and the majority reported
+    brief:                  |
+                            An unmet screen is confirmed count times and
+                            the majority reported.
+    description:            |
+                            Confirms an unmet screening verdict over
+                            scripted fresh samples and asserts the judge
+                            asks for count less one samples, reports met
+                            where the majority is met, reports unmet with
+                            the tally where it is not, and asks nothing
+                            when the count is one.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_judge_confirms_unmet
+        guid_target:        req_ad4f5b42320a4f3f9aa2b1b9457b32f3
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_judge_reports_confirmed_verdict
+        guid_target:        req_7e8813d18aa3443ba6cb92805469a451
+
+    ...
+    """
+
     task    = cc_public.eval.select.Task('evl_x', {}, ('sch_x',), 'x', 'subject')
     screen  = cc_public.eval.runner.Verdict('evl_x', ('sch_x',), 'unmet', 'because', 'sampled')
 
@@ -273,3 +302,9 @@ def test_an_unmet_screen_is_confirmed_count_times_and_the_majority_reported(tree
     judge   = Sampled([])
     assert judge.confirm(task, screen, 1) is screen
     assert judge.asked == []
+
+
+def test_an_eval_with_no_cases_cannot_be_measured(tree, tmp_path):
+    ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').location]
+    with pytest.raises(ValueError):
+        cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 3)

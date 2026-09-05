@@ -22,13 +22,7 @@ description:            |
                         and asserts what was made, revised, bound,
                         fired, declined, stopped, restored and
                         committed.
-
-relation:
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_executor_honours_budget
-    guid_target:        req_a1428b3ae8ec4b5687e58895592accad
+relation:               []
 
 ...
 """
@@ -284,6 +278,40 @@ def test_back_edge_fires_and_the_draft_revises_its_prior_in_place(repo):
 
 
 def test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
+    """
+    ---
+
+    id_self:                pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+    guid_self:              pyf_f940333d706a4646904867a7cca8ab74
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A back edge is exhausted when the budget is spent
+    brief:                  |
+                            A back edge is exhausted when the budget is
+                            spent.
+    description:            |
+                            Runs the one node workflow with a budget of
+                            one and a judge that always answers unmet, and
+                            asserts the node ran once, both back edges
+                            were reported exhausted, nothing fired, and
+                            the execution says it ended exhausted.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_executor_honours_budget
+        guid_target:        req_a1428b3ae8ec4b5687e58895592accad
+
+    ...
+    """
+
     deploy(repo, judge = 'always', commit = 'never', budget = 1)
     r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
                                    'dep_design_decision_from_schema_local', BIND,

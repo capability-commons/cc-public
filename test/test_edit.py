@@ -20,18 +20,7 @@ description:            |
                         and links items through the edit package,
                         asserting each change is well formed and each
                         refusal is refused.
-
-relation:
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_renamer_keeps_guid
-    guid_target:        req_9e78e8f7be56415a87394b2065de11e8
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_checker_locates_each_finding
-    guid_target:        req_9186d8b81a574b2cbbe0f1cf370d2cf9
+relation:               []
 
 ...
 """
@@ -296,6 +285,40 @@ def test_unset_last_key_leaves_an_empty_mapping(tree, tmp_path):
 
 
 def test_rename_carries_to_qualified_items_references_and_file(tree, tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_edit.test_rename_carries_to_qualified_items_references_and_file
+    guid_self:              pyf_735385cfb85b4e9eb1381957b9f6f751
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A rename carries to qualified items, references and the file
+    brief:                  |
+                            A rename carries to qualified items,
+                            references and the file.
+    description:            |
+                            Renames a component and asserts its guid is
+                            unchanged, its file and the ids it qualifies
+                            follow, every reference is repointed, a local
+                            key can change only its last step, and a
+                            python item is refused.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_renamer_keeps_guid
+        guid_target:        req_9e78e8f7be56415a87394b2065de11e8
+
+    ...
+    """
+
     import cc_public.edit.rename
     guid   = tree.resolve('cmp_draft_design_decision').guid_self
     report = cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision',
@@ -498,6 +521,39 @@ def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
 
 
 def test_a_concrete_schema_refuses_a_field_it_does_not_declare(tree, tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_edit.test_a_concrete_schema_refuses_a_field_it_does_not_declare
+    guid_self:              pyf_352156764ce54b61b1b011e7896f4e60
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A concrete schema refuses a field it does not declare
+    brief:                  |
+                            A concrete schema refuses a field it does not
+                            declare.
+    description:            |
+                            Writes a misspelled field into a decision, a
+                            question, a port and a type entry, and asserts
+                            each is reported once, at the path where it
+                            was written, and never as its parent's fault.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_checker_locates_each_finding
+        guid_target:        req_9186d8b81a574b2cbbe0f1cf370d2cf9
+
+    ...
+    """
+
     def schema_faults():
         return [(m.split("'")[1], p) for (c, m, p) in
                 [(c, n['message'], n['path']) for c in cc_public.check.check(
@@ -604,3 +660,39 @@ def test_a_class_and_a_function_of_one_name_are_told_apart_by_kind(tree, tmp_pat
     text = (tmp_path / 'src' / 'cc_public' / 'check' / '__init__.py').read_text()
     assert text.count('id_self:                pyc_cc_public.check.refusal') == 1
     assert text.count('id_self:                pyf_cc_public.check.refusal') == 1
+
+
+def test_unsetting_the_last_edge_leaves_an_empty_list(tree, tmp_path):
+    cc_public.edit.field.unset_field(tree, 'ddr_fail_closed', 'relation.0')
+    n = len(cc_public.load.from_file(tmp_path / 'ddr' / 'ddr_fail_closed.yaml')['relation'])
+    for i in reversed(range(n)):
+        cc_public.edit.field.unset_field(tree, 'ddr_fail_closed', 'relation.{n}'.format(n = i))
+    doc = cc_public.load.from_file(tmp_path / 'ddr' / 'ddr_fail_closed.yaml')
+    assert doc['relation'] == []
+    cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'pym_cc_public.commit')
+    assert [(c, m) for (c, m) in clean(tmp_path) if c != 'source'] == []
+
+
+def test_a_source_item_shows_its_source_where_an_eval_asks(tree, tmp_path):
+    import cc_public.eval.select
+    import cc_public.load
+    ctx = cc_public.check._context([tmp_path])[0]
+    sel = cc_public.eval.select.Selector(id_eval = ('evl_record_and_code_agree',))
+    tasks = list(cc_public.eval.select.select(ctx, sel))
+    assert [t.id_subject for t in tasks] == [('ddr_fail_closed', 'pyf_cc_public.check.refusal')]
+    text = tasks[0].text_input
+    assert 'decision:' in text and 'source:' in text
+    assert 'def refusal(report, is_checkpoint = False):' in text
+    assert 'class Refusal' not in text                    # its own definition, not its module
+
+    # Without source in scope, a source item shows only its fields; and a
+    # class's source holds the methods beneath it.
+    item = tree.resolve('pyf_cc_public.check.refusal')
+    doc  = tree.context.map_document[item.location]
+    plain = cc_public.eval.select.render(((item.id_self, doc, item.location),), {})
+    assert 'def refusal' not in plain and 'title:' in plain
+    text = (tmp_path / 'src' / 'cc_public' / 'check' / '__init__.py').read_text()
+    src  = cc_public.load.python.source_of(text, ('Refusal',))
+    assert src.startswith('class Refusal') and 'def message(self)' in src
+    assert cc_public.load.python.source_of(text, ('nothing',)) is None
+    assert cc_public.load.python.source_of(text, ()) == text

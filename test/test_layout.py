@@ -20,13 +20,7 @@ description:            |
                         and over adversarial documents, asserting
                         content is preserved, comments are kept, and
                         the result is a fixpoint.
-
-relation:
-
-  - id_relation:        r_verifies
-    guid_relation:      r_490096e908d1444cb0defb530fcf7786
-    id_target:          req_printer_idempotent
-    guid_target:        req_28a87e8cfef7443f90fb70372e7c47e8
+relation:               []
 
 ...
 """
@@ -82,6 +76,39 @@ FILES = sorted(p for p in set(cc_public.check.iter_filepath_all([ROOT]))
 
 @pytest.mark.parametrize('filepath', FILES, ids = lambda p: p.name)
 def test_printer_preserves_and_is_fixpoint(filepath):
+    """
+    ---
+
+    id_self:                pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+    guid_self:              pyf_8b8d9a067006402c93ea0f801153b299
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  The printer preserves content and is a fixpoint
+    brief:                  |
+                            The printer preserves content and is a
+                            fixpoint.
+    description:            |
+                            For every structured file in the tree, lays it
+                            out and asserts the content is unchanged
+                            scalar for scalar and that laying the result
+                            out again changes nothing.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_printer_idempotent
+        guid_target:        req_28a87e8cfef7443f90fb70372e7c47e8
+
+    ...
+    """
+
     source = filepath.read_text(encoding = 'utf-8')
     out    = cc_public.layout.format_source(source, filepath.suffix)
 

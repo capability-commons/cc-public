@@ -34,6 +34,7 @@ import typing
 import ruamel.yaml
 
 import cc_public.check.register
+import cc_public.load.python
 import cc_public.need
 import cc_public.check.schema
 import cc_public.path
@@ -60,6 +61,9 @@ KEY_INCL_TYPE = 'include_type'
 KEY_INCLUDE   = 'include'
 KEY_EXCLUDE   = 'exclude'
 
+
+KEY_SOURCE    = 'source'
+SUFFIX_PYTHON = '.py'
 
 # -----------------------------------------------------------------------------
 class Selector(typing.NamedTuple):
@@ -266,11 +270,11 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval):
     if prefix is None:
         return
 
-    for (id_self, document) in _iter_item(context):
+    for (id_self, document, location) in _iter_item(context):
         if id_self.split(SEPARATOR, 1)[0] == prefix \
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), render(((id_self, document),), document_eval))
+            yield ((id_self,), render(((id_self, document, location),), document_eval))
 
 
 # -----------------------------------------------------------------------------
@@ -283,7 +287,7 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
     id_schema = edge.get(KEY_ID_TARGET)
 
-    for (id_self, document) in _iter_item(context):
+    for (id_self, document, location) in _iter_item(context):
 
         (id_selected, _) = cc_public.check.schema.select_schema(document,
                                                                 map_prefix)
@@ -296,7 +300,7 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
         if _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), render(((id_self, document),), document_eval))
+            yield ((id_self,), render(((id_self, document, location),), document_eval))
 
 
 # -----------------------------------------------------------------------------
@@ -307,12 +311,12 @@ def _subject_of_join(edge, context, map_prefix, selector,
 
     """
 
-    id_rel     = edge.get(KEY_ID_TARGET)
-    map_by_id  = dict(_iter_item(context))
-    map_by_guid = {d.get(KEY_GUID_SELF): (i, d)
-                        for (i, d) in map_by_id.items()}
+    id_rel      = edge.get(KEY_ID_TARGET)
+    map_by_id   = {i: (d, loc) for (i, d, loc) in _iter_item(context)}
+    map_by_guid = {d.get(KEY_GUID_SELF): (i, d, loc)
+                        for (i, (d, loc)) in map_by_id.items()}
 
-    for (id_self, document) in sorted(map_by_id.items()):
+    for (id_self, (document, location)) in sorted(map_by_id.items()):
         for edge_item in document.get(KEY_RELATION) or []:
 
             if not isinstance(edge_item, dict):
@@ -326,7 +330,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
             if found is None:
                 continue                  # dangling; the reference check says so
 
-            (id_far, document_far) = found
+            (id_far, document_far, location_far) = found
 
             if not (_wanted_type(id_self, document_eval, map_prefix)
                     and _wanted_type(id_far, document_eval, map_prefix)):
@@ -335,18 +339,20 @@ def _subject_of_join(edge, context, map_prefix, selector,
             if _wanted_item(document, selector) \
                             or _wanted_item(document_far, selector):
                 yield ((id_self, id_far),
-                       render(((id_self, document), (id_far, document_far)),
-                               document_eval))
+                       render(((id_self, document, location),
+                               (id_far, document_far, location_far)),
+                              document_eval))
 
 
 # -----------------------------------------------------------------------------
 def _iter_item(context):
     """
-    Yield (id_self, document) for every item that is not itself an eval.
+    Yield (id_self, document, location) for every item that is not
+    itself an eval.
 
     """
 
-    for (_filepath, document) in sorted(context.map_document.items()):
+    for (location, document) in sorted(context.map_document.items()):
 
         if not isinstance(document, dict) or _is_eval(document):
             continue
@@ -354,7 +360,7 @@ def _iter_item(context):
         id_self = document.get(KEY_ID_SELF)
 
         if isinstance(id_self, str):
-            yield (id_self, document)
+            yield (id_self, document, location)
 
 
 # -----------------------------------------------------------------------------
@@ -463,8 +469,10 @@ def render(tuple_item, document_eval):
     list_part = []
     is_empty  = True
 
-    for (id_self, item) in tuple_item:
+    for (id_self, item, *rest) in tuple_item:
         document = cc_public.need.compose(item)          # a need shows its statement
+        if KEY_SOURCE in include and rest:                # a source item shows its source
+            document = _with_source(document, rest[0])
         selected = cc_public.path.select(document, include, exclude)
         if selected is cc_public.path.DROP:
             selected = {}
@@ -484,6 +492,33 @@ def render(tuple_item, document_eval):
         return ''
 
     return '\n'.join(list_part)
+
+
+# -----------------------------------------------------------------------------
+def _with_source(document, location):
+    """
+    Return a copy of document carrying the source at location under
+    source, where location is in a python file; else document as it is.
+
+    Source is not a field of the item and is never stored in it. It is
+    projected from the file when an eval names source in its scope, so
+    that a judge sees the code and not only prose about the code.
+
+    """
+
+    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
+        return document
+
+    text = cc_public.load.python.source_of(
+                location.filepath.read_text(encoding = 'utf-8'), location.anchor)
+
+    if text is None:
+        return document
+
+    out = dict(document)
+    out[KEY_SOURCE] = text
+
+    return out
 
 
 # -----------------------------------------------------------------------------
