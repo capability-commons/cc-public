@@ -35,6 +35,7 @@ import typing
 import cc_public.load
 
 from cc_public.check import confidence as check_confidence
+from cc_public.check import evidence   as check_evidence
 from cc_public.check import identifier as check_identifier
 from cc_public.check import identity   as check_identity
 from cc_public.check import layout     as check_layout
@@ -61,6 +62,7 @@ CHECK      = (check_parse,
               check_layout,
               check_workflow,
               check_trace,
+              check_evidence,
               check_confidence)
 
 STATUS_OK  = 'ok'

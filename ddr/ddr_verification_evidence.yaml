@@ -1,0 +1,238 @@
+id_self:                ddr_verification_evidence
+guid_self:              ddr_e36c83cfd0744b588168bc399a3fac71
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verification evidence
+brief:                  |
+                        Evidence is an item an observer writes, a row
+                        per case and requirement with an outcome and a
+                        digest of what it was observed against. The
+                        pytest adapter writes it at the end of every
+                        session, cctool attest writes a person's
+                        finding, and the evidence check reports an
+                        accepted requirement whose evidence is absent,
+                        not a pass, or stale.
+context:                |
+                        ddr_implementation_trace made a requirement
+                        name what implements it and what verifies it,
+                        and left evidence unrepresented: an accepted
+                        requirement with no gap said its assurance was
+                        declared, not that anyone had observed it. A
+                        verification declaration says what is meant to
+                        verify; a test that exists is not a test that
+                        passed, and a test that passed last month
+                        against other code is not one that passed
+                        against this.
+
+                        Executions are the precedent for observed data
+                        as items: written once, not edited, one per
+                        run. Evidence observed on every test run
+                        cannot follow that precedent, or the tree
+                        would gain an item per run. Confidence rows
+                        are the other precedent: replaced per judge,
+                        stamped with a digest of what they measured,
+                        and reported stale when that digest moves.
+
+                        The brief asked that evidence be distinct from
+                        declarations, that it carry an explicit
+                        freshness model bound to content rather than
+                        to the commit, that inspection be represented
+                        honestly rather than as a test that passed,
+                        and that pytest not become a dependency of
+                        mechanical checking.
+decision:               |
+                        A verification evidence item, prefix evd,
+                        holds what one observer found about the
+                        requirements verified by one method: the
+                        method, the observer, the commit checked out
+                        and whether the tree was dirty, as provenance,
+                        and a table of rows keyed by a digest of the
+                        case and the requirement. A row names the
+                        requirement, the case where the method has
+                        one, the outcome, when, and the digest of what
+                        it was observed against. The item is rewritten
+                        by each observation, rows for the same case
+                        and requirement replaced and others kept; its
+                        history is in git.
+
+                        The digest covers what a verdict depends on
+                        and nothing else: the requirement's statement,
+                        success criteria and verification method, the
+                        source of every item that implements it, and
+                        the source of the case. A change to any of
+                        these makes the evidence stale. A change to
+                        anything else, the evidence itself, a rename
+                        that keeps the guid, an unrelated file, does
+                        not.
+
+                        Outcomes are passed, failed, error, skipped
+                        and not_run. A case with several collected
+                        instances passes only where every instance
+                        did: one error outranks, then one failure,
+                        then one skip. Nothing collected is not_run,
+                        which is not a pass. pytest's expected failure
+                        that failed is skipped, since it observed
+                        nothing about the requirement, and an
+                        unexpected pass is failed, since the
+                        expectation was wrong.
+
+                        The pytest adapter is a conftest in the test
+                        directory: hooks that note each instance's
+                        outcome and, when the session ends, hand them
+                        to the evidence module, which maps each node
+                        id to the test function item at that location,
+                        folds instances into cases, and writes rows
+                        for every requirement the case verifies. A
+                        function that is not an item is not a case. A
+                        failure to write is reported and never hidden.
+                        cctool attest records what a person or a tool
+                        found for a requirement verified by
+                        inspection, demonstration or analysis, naming
+                        the observer, and refuses one verified by
+                        test.
+
+                        The evidence check, the twelfth, holds every
+                        accepted requirement to evidence that is a
+                        pass and current. Absent, or observed and not
+                        a pass, is critical in a closed world and
+                        advisory in an open one. Stale is advisory
+                        always: a tree being edited is ordinarily
+                        ahead of its last observation, and the merge
+                        gate observes afresh by running the tests
+                        before it checks. A proposed requirement is
+                        asked for no evidence.
+rationale:              |
+                        One item per method and observer, rewritten,
+                        rather than one per run, for the reason
+                        confidence rows are replaced: an observation
+                        supersedes the last and the tree should not
+                        grow by the frequency of testing. The revision
+                        recorded as provenance and not as the test of
+                        currency, because evidence committed after the
+                        run it describes names a commit that does not
+                        contain it, and a digest of content has no
+                        such circle.
+
+                        A digest over source rather than over files,
+                        so that a change elsewhere in a module does
+                        not stale evidence about one function, and so
+                        that a rename that keeps the guid keeps the
+                        evidence.
+
+                        Every instance must pass, because a
+                        parameterised test that fails for one
+                        parameter has found the requirement unmet for
+                        that parameter, and a majority of parameters
+                        is not a verdict about the requirement.
+
+                        A conftest rather than a plugin or an ingested
+                        report, because it needs nothing installed,
+                        runs only under pytest, and hands its outcomes
+                        to code that has never heard of pytest; the
+                        mechanical checks stay free of it.
+
+                        Stale advisory rather than critical, because a
+                        critical stale finding would refuse every
+                        commit that touched code until the tests were
+                        rerun, which is the development profile the
+                        brief warned against; the gate runs the tests
+                        first, so at the gate stale cannot arise for
+                        tests, and for an attestation it says a person
+                        must look again.
+alternative:            |
+                        One evidence item per run, as executions are.
+                        Rejected above.
+
+                        Evidence in a commit trailer or a CI
+                        attestation outside the tree. Not taken: it
+                        could not be checked by the checks, which read
+                        the tree, and a partner slice would lose it.
+
+                        Currency by naming the current commit.
+                        Rejected for the circle above.
+
+                        Inspection recorded as a passing test.
+                        Rejected: it would say a test observed what a
+                        person did.
+
+                        Inferring verification from coverage.
+                        Rejected: a line executed is not a requirement
+                        observed.
+consequence:            |
+                        Twelve checks. An accepted requirement means:
+                        derived, implemented, verified, and observed
+                        to pass against the code as it is, or the
+                        check says which of those is missing. None is
+                        accepted yet; each of the seven will be, one
+                        at a time, once its evidence is present.
+
+                        Every pytest session rewrites the evidence
+                        item, so the working tree is dirty after a
+                        test run by exactly that file. The gate runs
+                        the tests and then the check, and reads fresh
+                        evidence by construction; the committed
+                        evidence is what the last committer observed.
+
+                        A test function becomes a case only by being
+                        an item, so evidence is written only for tests
+                        something names, which is the six that verify
+                        requirements today.
+
+                        Demonstration and analysis have the same
+                        representation as inspection and no observer
+                        yet but a person.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_verification_evidence
+    guid_target:        t_b84cb711e3d444a0a44962e748cef7e2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_evidence
+    guid_target:        sch_f51af4d59bd0417f86850e9fc35c0638
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.evidence
+    guid_target:        pym_88b56f85d0a243fa8981a6216238ade1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+question:
+
+  gate:
+    id_self:            qst_verification_evidence.gate
+    guid_self:          qst_bad3ccd8fb014546bdd4484a18921ef8
+    question:           |
+                        Whether the merge gate should refuse stale
+                        evidence for an accepted requirement outright,
+                        once the profiles of development, merge and
+                        release are distinct commands.
+    relation:           []
+
+  history:
+    id_self:            qst_verification_evidence.history
+    guid_self:          qst_9ad10df8469d4d9d9027fb71ee1a1d03
+    question:           |
+                        Whether a release should keep the evidence it
+                        shipped with as an item of its own, since the
+                        rewritten item loses the observation the
+                        release rested on to git alone.
+    relation:           []

@@ -11,9 +11,9 @@ All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
 are shorthands. Every command has `--help`; the writing commands take
 `--root DIR` (repeatable), `check` takes `--path`.
 
-- `check` — eleven mechanical checks (parse, guid, identifier, source,
-  reference, relation, schema, layout, workflow, trace, confidence). Must
-  be clean. A finding names its file, and for a class or function item
+- `check` — twelve mechanical checks (parse, guid, identifier, source,
+  reference, relation, schema, layout, workflow, trace, confidence,
+  evidence). Must be clean. A finding names its file, and for a class or function item
   the definition beneath it: `run.py::State::generator_for`. `--fail-fast`, `--closed-world`,
   `--format json`, `--out FILE`.
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
@@ -41,6 +41,16 @@ are shorthands. Every command has `--help`; the writing commands take
   source item implements and verifies. Reads the same projection
   (`cc_public.trace`) as the trace check. Proposed gaps are advisory;
   accepted ones critical (`ddr_implementation_trace`).
+- `attest --requirement X --outcome passed|failed --by NAME [--note …]` —
+  records a person's or a tool's finding for a requirement verified by
+  inspection, demonstration or analysis, into `evidence/evd_attestation`.
+  Test evidence is written by `test/conftest.py` at the end of every pytest
+  session into `evidence/evd_pytest`, one row per test-function item and
+  requirement it verifies, stamped with a digest of the requirement, its
+  implementation and the test; the evidence check reports an accepted
+  requirement whose evidence is absent, not a pass, or stale
+  (`ddr_verification_evidence`). A test run therefore dirties the tree by
+  that one file.
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
   of a dataflow workflow. `--dry-run` shows the order and writes nothing.
   Needs a clean tree. Makes items with `new`, fills fields with `set`,
@@ -161,6 +171,6 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Where things are
 
-`ddr/` design decisions · `need/` needs · `requirement/` requirements · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing and methodology registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

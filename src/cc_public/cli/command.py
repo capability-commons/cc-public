@@ -50,6 +50,7 @@ import cc_public.control
 import cc_public.eval.measure
 import cc_public.eval.runner
 import cc_public.eval.select
+import cc_public.evidence
 import cc_public.layout
 import cc_public.load.git
 import cc_public.question
@@ -785,6 +786,41 @@ def _plain_record(record):
     out['gap'] = [g._asdict() for g in record.gap]
 
     return out
+
+
+# -----------------------------------------------------------------------------
+@main.command()
+@click.option('--requirement', 'name_requirement', required = True,
+              help = 'The requirement attested, by readable id or guid. Its '
+                     'verification method must be inspection, demonstration '
+                     'or analysis; a test observes itself.')
+@click.option('--outcome', 'outcome', required = True,
+              type = click.Choice(['passed', 'failed']),
+              help = 'What the observer found.')
+@click.option('--by', 'observer', required = True,
+              help = 'Who or what observed: a person, or a tool and its version.')
+@click.option('--note', 'note', default = None,
+              help = 'What was inspected, demonstrated or analysed, and how.')
+@OPTION_ROOT
+def attest(name_requirement, outcome, observer, note, list_root):
+    """
+    Record that a person or a tool found a requirement met, or not, by
+    the method it declares.
+
+    The row is stamped with the digest of the requirement and the code
+    implementing it as they are now, so that the evidence check can say
+    when the attestation no longer applies.
+
+    """
+
+    tree = _tree(list_root)
+
+    try:
+        path = cc_public.evidence.attest(tree, name_requirement, outcome, observer, note)
+    except cc_public.edit.tree.ErrorItem as err:
+        _fail(err)
+
+    click.echo(str(path))
 
 
 # -----------------------------------------------------------------------------

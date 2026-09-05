@@ -1072,3 +1072,43 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_methodology
         guid_target:    reg_3dce4c8b7d784b02897940ee1f37bb61
+
+  t_verification_evidence:
+    id_self:            t_verification_evidence
+    guid_self:          t_b84cb711e3d444a0a44962e748cef7e2
+    title:              Verification evidence type
+    brief:              |
+                        Type of verification evidence data items
+    description:        |
+                        Each verification evidence data item records
+                        what one observer found about the requirements
+                        verified by one method: a row per case and
+                        requirement, with an outcome and the digest of
+                        what it was observed against.
+    prefix:             evd
+    regex_id:           ^evd_[a-z][a-z0-9_]*$
+    usage:              |
+                        Written by an observer, the pytest adapter or
+                        cctool attest, and rewritten by the next
+                        observation. Read by the evidence check, which
+                        reports an accepted requirement whose evidence
+                        is absent, not a pass, or stale.
+    note:               |
+                        Observed, not authored: a claim about the
+                        past, replaced rather than edited, with its
+                        history in git. Evidence is not a verification
+                        declaration; r_verifies says what is meant to
+                        verify, and a row says what did.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_evidence
+        guid_target:    sch_f51af4d59bd0417f86850e9fc35c0638
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_type
+        guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d

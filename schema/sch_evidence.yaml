@@ -1,0 +1,170 @@
+id_self:                sch_evidence
+guid_self:              sch_f51af4d59bd0417f86850e9fc35c0638
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verification evidence schema
+brief:                  |
+                        The shape of verification evidence: what an
+                        observer found about the requirements verified
+                        by one method.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. One item per method and observer,
+                        holding a table of rows keyed by a digest of
+                        the case and the requirement. A row says what
+                        was observed about one requirement, by which
+                        case where the method has one, with what
+                        outcome, and carries the digest of what it was
+                        observed against, so that the evidence check
+                        can tell a current observation from a stale
+                        one.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_evidence.yaml
+usage:                  |
+                        Selected for evidence by the type register,
+                        which maps the evd prefix to that type.
+                        Written by observers, the pytest adapter and
+                        cctool attest, and read by the evidence check;
+                        never edited by hand.
+note:                   |
+                        Evidence is observed, not authored. It records
+                        what happened at a time and is replaced by the
+                        next observation; history is in git. A row
+                        that names no case is an attestation by a
+                        person or a tool.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - method
+      - observer
+      - time
+      - case
+      - relation
+
+    properties:
+
+      method:
+        type:           string
+
+        enum:
+          - test
+          - inspection
+          - demonstration
+          - analysis
+
+        description:    The verification method every row here was observed by.
+
+      observer:
+        type:           string
+        minLength:      1
+        description:    'What observed: a tool and its version, or what stands for the people attesting.'
+
+      revision:
+        type:           string
+        pattern:        ^[0-9a-f]{40}$
+        description:    The commit checked out when observed, as provenance; the digests decide currency.
+
+      is_dirty:
+        type:           boolean
+        description:    Whether anything but evidence had changed since that commit.
+
+      time:
+        type:           string
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+        description:    When the item was last written, UTC.
+
+      case:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         '#/$defs/row'
+
+        description:    The rows, keyed by a digest of the case and the requirement.
+
+unevaluatedProperties:  false
+
+$defs:
+
+  row:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - id_requirement
+      - guid_requirement
+      - outcome
+      - digest
+      - time
+
+    properties:
+
+      id_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    'The case that observed: a test function item. Absent for an attestation.'
+
+      id_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+      outcome:
+        type:           string
+
+        enum:
+          - passed
+          - failed
+          - error
+          - skipped
+          - not_run
+
+        description:    'passed: every collected instance passed. failed, error, skipped: at least one did. not_run: nothing was collected, which is not a pass.'
+
+      digest:
+        type:           string
+        pattern:        ^[0-9a-f]{8}$
+        description:    Of the requirement as claimed, the source implementing it and the source of the case, when observed.
+
+      time:
+        type:           string
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+
+      count_collected:
+        type:           integer
+        minimum:        0
+
+      count_passed:
+        type:           integer
+        minimum:        0
+
+      duration:
+        type:           number
+        minimum:        0
+
+      observer:
+        type:           string
+        minLength:      1
+        description:    Who or what attested, where it is not the item's observer.
+
+      reason:
+        type:           string
+
+      note:
+        type:           string
