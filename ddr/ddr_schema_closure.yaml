@@ -1,0 +1,200 @@
+id_self:                ddr_schema_closure
+guid_self:              ddr_698ae593d34e438fa4364124870ac706
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema closure
+brief:                  |
+                        A trait declares its fields and says nothing
+                        about others; a concrete schema, for an item
+                        or an embedded entry, refuses a field no
+                        composed schema declares. An item naming its
+                        own schema names one that composes the schema
+                        its type names.
+context:                |
+                        ddr_trait_composition builds every item schema
+                        from traits by allOf, and every schema was
+                        open: additionalProperties true at the top of
+                        each. Composition needs a trait to tolerate
+                        the fields other traits bring, but an open
+                        concrete schema lets a misspelled field pass,
+                        and a field written to the wrong item is then
+                        a field nobody reads. A review of the
+                        foundation found that a concrete schema could
+                        not tell a typo from a field.
+
+                        ddr_per_register_entry_schema left open
+                        whether an item naming its own schema should
+                        be obliged to name one composing the schema
+                        its type names. Nothing obliged it, so an item
+                        could name a weaker schema and leave its
+                        type's contract behind.
+decision:               |
+                        A trait declares its fields and carries no
+                        additionalProperties at all, so that it
+                        neither refuses nor claims the fields it does
+                        not declare. A concrete schema, one selected
+                        for a document by a type or named by an item,
+                        carries unevaluatedProperties false at its
+                        top, and so does the schema of an embedded
+                        entry that is the one schema validating it: a
+                        port, a node, a binding, a question, an
+                        assumption, a control case. A field is then
+                        accepted where some composed schema declares
+                        it and refused anywhere else, at the path
+                        where it was written.
+
+                        A register entry is validated twice, by the
+                        general entry shape in sch_register and by the
+                        register's own entry schema, from two branches
+                        that cannot see each other's annotations. So
+                        the general entry stays open, and a per
+                        register schema closes its entries by
+                        composing the general entry with its own in
+                        one place: an allOf of the two with
+                        unevaluatedProperties false, at the table's
+                        entries.
+
+                        sch_schema stays open, because a schema
+                        carries whatever keywords the draft allows and
+                        enumerating them would be a copy of the draft.
+
+                        An item naming its own schema names the schema
+                        its type names or one that composes it,
+                        transitively through allOf. The schema check
+                        refuses any other. Naming a schema narrows a
+                        type's contract; it cannot replace it.
+
+                        When an embedded entry fails its closure, the
+                        branch validating it yields no annotations and
+                        its parent reports every field as unevaluated.
+                        The schema check drops a closure error at a
+                        path beneath which another error was reported,
+                        so that the fault is reported once, where it
+                        is.
+rationale:              |
+                        unevaluatedProperties rather than
+                        additionalProperties false, because the latter
+                        sees only the properties declared beside it
+                        and would refuse every field a composed trait
+                        brings. The draft made the former for this
+                        case, and the validator in use honours it
+                        through allOf and through a reference.
+
+                        Traits with no additionalProperties keyword
+                        rather than false, because true is the default
+                        and a trait saying so explicitly claims every
+                        field as evaluated, which defeats the closure
+                        above it; the keyword absent, the trait says
+                        nothing.
+
+                        The general register entry open, because the
+                        alternative was every per register schema
+                        restating the general shape, and the per
+                        register schema is where the entry is known in
+                        full. The cost is that a register with no
+                        schema of its own has open entries, which is
+                        recorded below as a question.
+
+                        Composition required of an override, because
+                        the type register's edge to a schema is the
+                        type's contract and an item that could point
+                        elsewhere would make that edge advisory.
+alternative:            |
+                        Closing every schema with additionalProperties
+                        false and repeating every trait's fields in
+                        every concrete schema. Rejected: the traits
+                        would then be documentation.
+
+                        A dynamic reference from the general register
+                        entry to whatever entry schema the outermost
+                        register schema declares. Not taken: it would
+                        close every register's entries in one move,
+                        and it rests on the least used corner of the
+                        draft; worth trying when the three registers
+                        without a schema of their own want closing.
+
+                        Leaving concrete schemas open and catching
+                        typos with an eval. Rejected: a misspelled
+                        field is exactly what a schema is for.
+consequence:            |
+                        Every item, register, component, workflow,
+                        deployment, execution, eval, need,
+                        requirement, control set, python package and
+                        module, and every port, node, binding,
+                        question, assumption and control case refuses
+                        a field it does not declare. The tree as it
+                        stood conformed entirely.
+
+                        A new field is added to the schema before it
+                        is written to an item, which is the order the
+                        tool already imposes through new.
+
+                        The entries of a register with no schema of
+                        its own stay open: the framing, methodology
+                        and requirement characteristic registers.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_register
+    guid_target:        sch_a4620d79fab546b3be6c756f0325e069
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_type
+    guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_term
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_protective_mark
+    guid_target:        sch_7743b9d4144d40e1bc4da68dff82b1df
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_requirement_rule
+    guid_target:        sch_ec4c089a108844759b571e2ec48c1d0e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_writing_style_rule
+    guid_target:        sch_8b8088534ec24938b9390e48d20b10e6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.schema
+    guid_target:        pym_dc70a7fa709c4eaaab6b18f0eadd5fb0
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_per_register_entry_schema.cbba08ad3
+    guid_target:        qst_b44c5915e76944759f086c003214c95e
+
+question:
+
+  plain_register:
+    id_self:            qst_schema_closure.plain_register
+    guid_self:          qst_11726b9b7544408c9120b3ddf26c1a78
+    question:           |
+                        How the entries of a register with no schema
+                        of its own are closed: a per register schema
+                        that adds nothing, a dynamic reference from
+                        the general entry, or a rule that every
+                        register names a schema.
+    relation:           []

@@ -106,6 +106,12 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Conventions that are not in the code
 
+- Schemas are closed (`ddr_schema_closure`): a concrete schema refuses a
+  field no composed schema declares, at the path it was written. Add the
+  field to the schema before writing it to an item. A trait carries no
+  `additionalProperties` at all; a concrete schema carries
+  `unevaluatedProperties: false`. An item naming its own schema names one
+  that composes its type's.
 - Identity: `id_self`/`guid_self` declare; `id_<role>`/`guid_<role>`
   refer and are checked. A table key equals `id_self` only in a
   register's `table:`; ports, nodes and bindings use a short local key.

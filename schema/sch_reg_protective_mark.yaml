@@ -30,7 +30,6 @@ note:                   |
                         of its own; one whose entries carry none is
                         validated by sch_register.yaml directly.
 type:                   object
-additionalProperties:   true
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_register.yaml
@@ -42,4 +41,9 @@ allOf:
       table:
 
         additionalProperties:
-          $ref:         https://capability-commons.org/schema/sch_entry_protective_mark.yaml
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+            - $ref:     https://capability-commons.org/schema/sch_entry_protective_mark.yaml
+
+          unevaluatedProperties:  false

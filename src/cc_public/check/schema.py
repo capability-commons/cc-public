@@ -53,6 +53,8 @@ KEY_ID_TARGET = 'id_target'       # the edge's far end
 
 SEPARATOR     = '_'
 
+KEYWORD_UNEVALUATED = 'unevaluatedProperties'
+
 
 # -----------------------------------------------------------------------------
 def check(context):
@@ -84,6 +86,24 @@ def check(context):
             list_note.append(cc_public.check.result.Note(
                                             filepath = str(filepath),
                                             message  = reason))
+            continue
+
+        # An item naming its own schema narrows the contract its type
+        # makes; it cannot swap it for another. The one named must be
+        # the type's, or compose it.
+        #
+        id_typed = _id_schema_of_type(document, map_prefix)
+
+        if id_typed is not None and id_schema != id_typed \
+                and not _composes(id_schema, id_typed, map_by_id):
+            list_nonconformity.append(cc_public.check.result.Nonconformity(
+                        filepath = str(filepath),
+                        path     = KEY_RELATION,
+                        message  = 'Names {own} as its schema, which does not '
+                                   'compose {typed}, the schema its type names. '
+                                   'An item may narrow its type\'s contract and '
+                                   'not replace it.'.format(own   = id_schema,
+                                                            typed = id_typed)))
             continue
 
         if id_schema not in map_by_id:
@@ -195,6 +215,51 @@ def select_schema(document, map_prefix):
 
 
 # -----------------------------------------------------------------------------
+def _id_schema_of_type(document, map_prefix):
+    """
+    Return the id of the schema the document's type names, or None.
+
+    """
+
+    id_item = _id_item(document)
+
+    if id_item is None or SEPARATOR not in id_item:
+        return None
+
+    entry = map_prefix.get(id_item.split(SEPARATOR, 1)[0])
+
+    return _id_schema(entry) if entry is not None else None
+
+
+# -----------------------------------------------------------------------------
+def _composes(id_schema, id_wanted, map_by_id, seen = None):
+    """
+    Return whether the schema id_schema names, or any it composes by
+    allOf, transitively, is id_wanted.
+
+    """
+
+    seen = seen if seen is not None else set()
+
+    if id_schema == id_wanted:
+        return True
+
+    if id_schema in seen or id_schema not in map_by_id:
+        return False
+
+    seen.add(id_schema)
+
+    for branch in map_by_id[id_schema].get('allOf') or []:
+        ref = branch.get('$ref') if isinstance(branch, dict) else None
+        if isinstance(ref, str):
+            name = ref.rsplit('/', 1)[-1].split('.yaml', 1)[0]
+            if _composes(name, id_wanted, map_by_id, seen):
+                return True
+
+    return False
+
+
+# -----------------------------------------------------------------------------
 def _id_schema(mapping):
     """
     Return the id of the schema mapping names for itself, or None.
@@ -227,10 +292,20 @@ def _validate(document, document_schema, registry):
 
     validator = jsonschema.Draft202012Validator(document_schema,
                                                 registry = registry)
+    list_error = sorted(validator.iter_errors(document),
+                        key = lambda error: list(error.path))
+
+    # An embedded entry that fails its closure yields no annotations, so
+    # its parent then reports every field as unevaluated. That error is
+    # the child's, reported once, where it is.
+    #
+    list_path = [list(error.path) for error in list_error]
 
     return [(_path(error), error.message)
-                for error in sorted(validator.iter_errors(document),
-                                    key = lambda error: list(error.path))]
+                for (error, path) in zip(list_error, list_path, strict = True)
+                if not (error.validator == KEYWORD_UNEVALUATED
+                        and any(len(other) > len(path) and other[:len(path)] == path
+                                for other in list_path))]
 
 
 # -----------------------------------------------------------------------------

@@ -476,3 +476,40 @@ def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
     assert not any('r_decides' in m for m in faults())
     cc_public.edit.field.set_field(tree, 'r_decides', 'range', value = ['t_nonsense'])
     assert any('t_nonsense' in m and 'not a type' in m for m in faults())
+
+
+def test_a_concrete_schema_refuses_a_field_it_does_not_declare(tree, tmp_path):
+    def schema_faults():
+        return [(m.split("'")[1], p) for (c, m, p) in
+                [(c, n['message'], n['path']) for c in cc_public.check.check(
+                    list_path = [tmp_path])['report']['check'] if c['id_check'] == 'schema'
+                 for n in c['nonconformity']]
+                if 'Unevaluated' in m]
+
+    assert schema_faults() == []
+    cc_public.edit.field.set_field(tree, 'ddr_fail_closed', 'descripton', value = 'x')
+    cc_public.edit.field.set_field(tree, 'qst_code_quality.trace', 'bogus', value = 'x')
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'optinal', value = True)
+    cc_public.edit.field.set_field(tree, 't_ddr', 'prefx', value = 'x')
+    # Each is reported once, at its own path, and never as its parent's fault.
+    assert sorted(schema_faults()) == [('bogus', 'question.trace'), ('descripton', ''),
+                                       ('optinal', 'output.decision'), ('prefx', 'table.t_ddr')]
+
+
+def test_an_item_may_narrow_its_type_schema_and_not_replace_it(tree, tmp_path):
+    def faults():
+        return [n['message'] for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
+                if c['id_check'] == 'schema' for n in c['nonconformity']]
+
+    cc_public.edit.new.new(tree, 't_schema', 'sch_other', DEFAULTS)
+    for (k, v) in (('$schema', 'https://json-schema.org/draft/2020-12/schema'),
+                   ('$id', 'https://capability-commons.org/schema/sch_other.yaml'),
+                   ('title', 'Other'), ('brief', 'Other.'), ('description', 'Other.'),
+                   ('type', 'object')):
+        cc_public.edit.field.set_field(tree, 'sch_other', k, value = v)
+    cc_public.edit.link.link(tree, 'need_runs_bounded', 'r_is_specified_by_schema', 'sch_other')
+    assert any('does not compose sch_need' in m for m in faults())
+
+    cc_public.edit.field.set_field(tree, 'sch_other', 'allOf',
+                                   value = [{'$ref': 'https://capability-commons.org/schema/sch_need.yaml'}])
+    assert not any('does not compose' in m for m in faults())

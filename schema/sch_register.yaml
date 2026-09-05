@@ -50,7 +50,6 @@ note:                   |
                         its own. The type register adds prefix and
                         regex.
 type:                   object
-additionalProperties:   true
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_base.yaml
@@ -68,7 +67,7 @@ allOf:
     properties:
 
       status:
-        $ref:           "#/$defs/register_status"
+        $ref:           '#/$defs/register_status'
         description:    |
                         Lifecycle status of this register as a whole.
                         Distinct from the status of any individual
@@ -88,7 +87,7 @@ allOf:
           $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
 
         additionalProperties:
-          $ref:         "#/$defs/register_entry"
+          $ref:         '#/$defs/register_entry'
 
 $defs:
 
@@ -105,7 +104,6 @@ $defs:
                         two traits rather than sch_base.yaml. It has
                         no rights of its own; it is covered by the
                         rights of the register holding it.
-    additionalProperties:  true
 
     allOf:
       - $ref:           https://capability-commons.org/schema/sch_identity.yaml
@@ -145,7 +143,7 @@ $defs:
           $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
 
       status:
-        $ref:           "#/$defs/entry_status"
+        $ref:           '#/$defs/entry_status'
         description:    |
                         Optional. Lifecycle status of this entry.
 
@@ -195,3 +193,5 @@ $defs:
                         Deprecated entries remain resolvable for
                         historical data; new writes should prefer any
                         replacement named in note.
+
+unevaluatedProperties:  false

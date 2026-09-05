@@ -36,7 +36,6 @@ note:                   |
                         The pattern for a register whose entries carry
                         subject specific fields.
 type:                   object
-additionalProperties:   true
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_register.yaml
@@ -48,4 +47,9 @@ allOf:
       table:
 
         additionalProperties:
-          $ref:         https://capability-commons.org/schema/sch_entry_type.yaml
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+            - $ref:     https://capability-commons.org/schema/sch_entry_type.yaml
+
+          unevaluatedProperties:  false
