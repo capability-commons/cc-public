@@ -55,6 +55,8 @@ def repo(tmp_path):
         src = ROOT / name
         (shutil.copytree if src.is_dir() else shutil.copy)(src, tmp_path / name)
     git(tmp_path, 'init', '-q')
+    git(tmp_path, 'config', 'user.name', 'Test')      # a runner may have no identity
+    git(tmp_path, 'config', 'user.email', 't@t')
     git(tmp_path, 'add', '-A')
     git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
     return tmp_path
