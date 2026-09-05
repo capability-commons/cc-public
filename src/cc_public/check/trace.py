@@ -29,88 +29,43 @@ relation:               []
 
 
 import cc_public.check.result
+import cc_public.trace
 
 
-ID_CHECK         = 'trace'
-TITLE            = 'Requirements trace to what they derive from and what verifies them'
-NOUN             = 'requirement'
-
-KEY_ID_SELF      = 'id_self'
-KEY_GUID_SELF    = 'guid_self'
-KEY_RELATION     = 'relation'
-KEY_ID_REL       = 'id_relation'
-KEY_GUID_TGT     = 'guid_target'
-KEY_VERIFICATION = 'verification'
-PREFIX_REQ       = 'req'
-REL_DERIVED      = 'r_is_derived_from'
-REL_VERIFIES     = 'r_verifies'
-VERIFICATION_TEST = 'test'
+ID_CHECK  = 'trace'
+TITLE     = 'Requirements trace to what derives, implements and verifies them'
+NOUN      = 'requirement'
 
 
 # -----------------------------------------------------------------------------
 def check(context):
     """
-    Return a Result naming every requirement with no derivation edge,
-    and every requirement verified by test that no test names.
+    Return a Result naming what every requirement lacks, as the trace
+    projection finds it.
 
-    Both are advisory. A requirement may be written before its need is,
-    and before its test is, but not left so.
+    The rules and their severities live in the projection, which the
+    trace command reads too, so that what the check reports and what
+    the command shows cannot differ. A proposed requirement's gaps are
+    advisory; an accepted one's are critical, except where an open
+    world leaves room for the missing thing to exist elsewhere.
 
     """
 
-    list_bad = []
-    count    = 0
-    verified = _verified(context.map_document)
+    map_location = {d.get(cc_public.trace.KEY_GUID_SELF): location
+                    for (location, d) in context.map_document.items()
+                    if isinstance(d, dict)}
+    list_bad     = []
+    list_record  = cc_public.trace.projection(context.map_document,
+                                              context.is_closed_world)
 
-    for (filepath, document) in sorted(context.map_document.items()):
+    for record in list_record:
+        for gap in record.gap:
+            list_bad.append(cc_public.check.result.Nonconformity(
+                    filepath = str(map_location.get(record.guid_self, record.id_self)),
+                    path     = gap.path,
+                    severity = gap.severity,
+                    message  = gap.message))
 
-        if not isinstance(document, dict) or \
-                str(document.get(KEY_ID_SELF, '')).split('_', 1)[0] != PREFIX_REQ:
-            continue
-
-        count += 1
-
-        if not any(isinstance(e, dict) and e.get(KEY_ID_REL) == REL_DERIVED
-                   for e in document.get(KEY_RELATION) or []):
-            list_bad.append(_advisory(filepath, KEY_RELATION,
-                    'Derives from nothing. A requirement traces to a need, a '
-                    'source or a higher level requirement by an '
-                    'r_is_derived_from edge, or it cannot show it is necessary.'))
-
-        if document.get(KEY_VERIFICATION) == VERIFICATION_TEST \
-                and document.get(KEY_GUID_SELF) not in verified:
-            list_bad.append(_advisory(filepath, KEY_VERIFICATION,
-                    'Verified by test, and no test names it. A test module '
-                    'says what it verifies by an r_verifies edge, or the '
-                    'requirement is verified by nothing.'))
-
-    return cc_public.check.result.Result(count_item         = count,
+    return cc_public.check.result.Result(count_item         = len(list_record),
                                          list_nonconformity = list_bad,
                                          list_note          = [])
-
-
-# -----------------------------------------------------------------------------
-def _verified(map_document):
-    """
-    Return the guids every r_verifies edge in the tree points at.
-
-    """
-
-    return {edge.get(KEY_GUID_TGT)
-            for document in map_document.values() if isinstance(document, dict)
-            for edge in document.get(KEY_RELATION) or []
-            if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_VERIFIES}
-
-
-# -----------------------------------------------------------------------------
-def _advisory(filepath, path, message):
-    """
-    Return one advisory nonconformity.
-
-    """
-
-    return cc_public.check.result.Nonconformity(
-                filepath = str(filepath),
-                path     = path,
-                severity = cc_public.check.result.SEVERITY_ADVISORY,
-                message  = message)

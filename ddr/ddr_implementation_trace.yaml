@@ -1,0 +1,219 @@
+id_self:                ddr_implementation_trace
+guid_self:              ddr_c801ee01abb04990bbbd9c48be1295e0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requirements trace to code
+brief:                  |
+                        A requirement names the code responsible for
+                        it by an r_is_implemented_by edge, as a
+                        component already does. What a requirement
+                        lacks depends on its status: a proposed one
+                        may be incomplete and its gaps are advisory;
+                        an accepted one has claimed completeness and
+                        its gaps are critical. One projection computes
+                        the trace, and the trace check and the trace
+                        command both read it.
+context:                |
+                        The tool is the first system the repository
+                        assures. Its seven requirements derive from
+                        needs and are verified by named test
+                        functions, and nothing says which code is
+                        responsible for any of them. The
+                        implementation relation existed for components
+                        alone, pointing a component at the code that
+                        runs in place of a prompt.
+
+                        The requirement schema carries a status,
+                        proposed, accepted or deprecated, that nothing
+                        read. Every requirement is proposed, and the
+                        trace check held them all to the same two
+                        advisories, derivation and a verifying test,
+                        whatever their status said.
+
+                        A brief from another model asked for current,
+                        navigable and enforceable assurance from
+                        requirement to code to evidence, with a
+                        render-neutral query the checks and the
+                        command line both consume, and with intention,
+                        implementation and evidence kept distinct.
+                        This decision settles intention and
+                        implementation; evidence follows in its own
+                        decision.
+decision:               |
+                        r_is_implemented_by runs from a requirement or
+                        a component to a source item: a package,
+                        module, class or function. From a requirement
+                        it places responsibility, the code where the
+                        requirement is met or is not, and shows
+                        nothing about whether it is met. A requirement
+                        may name several source items and a source
+                        item may serve several requirements. The
+                        target is the narrowest stable item, a module
+                        where behaviour is spread over helpers that
+                        come and go, a function where one function
+                        carries it.
+
+                        What a requirement lacks follows from its
+                        status. Proposed: it may be incomplete while
+                        it is written, and every gap is advisory.
+                        Accepted: it has claimed to be complete, so no
+                        derivation, no success criteria or no
+                        verification method is critical; a leaf with
+                        nothing implementing it, or a test-verified
+                        requirement no test names, is critical in a
+                        closed world and advisory in an open one,
+                        where the missing thing may exist elsewhere.
+                        Deprecated: history, and lacks nothing. A leaf
+                        is a requirement from which no requirement in
+                        the tree derives. These rules are critical for
+                        accepted requirements from the outset, since
+                        none is accepted yet and there is no corpus to
+                        migrate; a requirement is accepted when its
+                        projection shows no gap.
+
+                        One module in the foundations, trace, computes
+                        the projection: for each requirement, its
+                        status, what it derives from, what derives
+                        from it, whether it is a leaf, what implements
+                        it, what verifies it, what it names that does
+                        not resolve, and its gaps with their
+                        severities. It computes the reverse too, the
+                        impact of a change to one item: the
+                        requirements it implements and the ones it
+                        verifies. The trace check reports the gaps and
+                        nothing else of its own; cctool trace shows
+                        the projection, for a requirement, for a
+                        source item, or for the gaps alone, as text or
+                        as JSON in a stable order, with the closed
+                        world an explicit option.
+rationale:              |
+                        One relation for components and requirements
+                        rather than two, because both say the same
+                        thing, that this code carries that out, and
+                        the relation register already holds it.
+                        Responsibility kept apart from evidence,
+                        because a link is authored and evidence is
+                        observed, and a link that implied a pass would
+                        be a claim nobody measured.
+
+                        Severity from status, because a gap in a draft
+                        is information and a gap in an acceptance is a
+                        broken promise. Critical from the outset for
+                        accepted requirements rather than advisory and
+                        promoted later, because the caution that
+                        argues for advisory, a corpus that must be
+                        migrated, does not apply to an empty one. The
+                        open world softening, because a federated
+                        slice is not entitled to call absent what it
+                        cannot see, which is the same rule the
+                        reference check follows.
+
+                        The projection in the foundations rather than
+                        in the check, because the command line wants
+                        the same answer as the check and a query
+                        written twice would drift, and because a
+                        module over documents alone can sit where
+                        question sits and be read by anything above.
+                        Named by readable id where a target resolves
+                        and by guid where it does not, so that the
+                        projection can say what it could not find
+                        without inventing a name for it.
+alternative:            |
+                        A new relation for requirements,
+                        r_is_realised_by or the like, beside the
+                        component one. Rejected: two names for one
+                        meaning.
+
+                        An allocation step, requirement to logical
+                        component to source. Not taken: nothing yet
+                        wants the indirection, and the relation can
+                        gain it later without losing what it says now.
+
+                        New maturity findings advisory until promoted.
+                        Rejected above, for want of a corpus to
+                        protect.
+
+                        Every field of an accepted requirement
+                        required by the schema. Rejected: a schema
+                        sees one status at a time and would make a
+                        proposed requirement impossible to save half
+                        written, which new depends on.
+
+                        The rules in the check, with the command
+                        rendering the check's report. Rejected: a
+                        report is findings, and the command wants what
+                        is there as well as what is missing.
+consequence:            |
+                        The trace check becomes a thin reader of the
+                        projection, and its rules grow from two to
+                        five. Every proposed requirement now shows a
+                        leaf gap, since none names its code yet; that
+                        is the work the brief asks for next, one
+                        requirement at a time.
+
+                        A source item can be asked what it implements
+                        and what it verifies, and a requirement what
+                        implements and verifies it, from one place, in
+                        a form a later interface can read without
+                        parsing text.
+
+                        Evidence, that a verification passed against
+                        the implementation as it now is, has no
+                        representation yet. Until it does, an accepted
+                        requirement with no gap says its assurance is
+                        declared, not that it is current.
+
+                        Nothing says that a requirement is a software
+                        requirement. The leaf rule asks every accepted
+                        leaf for code, which is right for this tree
+                        and may not be for a tree of procedures.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_implemented_by
+    guid_target:        r_f9975465bdd64371ba4d59ed5563477e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_textual_requirement
+    guid_target:        t_ca3efb2ddd534838844c500aa92c848c
+
+question:
+
+  applicability:
+    id_self:            qst_implementation_trace.applicability
+    guid_self:          qst_99c151bbe84749ffbc9eeab099925304
+    question:           |
+                        How a requirement says what kind of thing
+                        realises it, code, a procedure or a person, so
+                        that the leaf rule asks for the right kind and
+                        a tree of non-software requirements is not
+                        held to code.
+    relation:           []
+
+  deprecated:
+    id_self:            qst_implementation_trace.deprecated
+    guid_self:          qst_2e8e30f703424c06900dd455aff2277e
+    question:           |
+                        What a deprecated requirement must keep, and
+                        whether it names its replacement by a relation
+                        of its own.
+    relation:           []

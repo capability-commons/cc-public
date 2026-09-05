@@ -25,6 +25,7 @@ relation:               []
 """
 
 
+import json
 import pathlib
 import sys
 
@@ -52,6 +53,7 @@ import cc_public.eval.select
 import cc_public.layout
 import cc_public.load.git
 import cc_public.question
+import cc_public.trace
 import cc_public.workflow.generate
 import cc_public.workflow.graph
 import cc_public.workflow.run
@@ -654,6 +656,135 @@ def questions(is_open_only, list_root):
 
     click.echo('{n} question(s){only}.'.format(n = count,
                                             only = ' open' if is_open_only else ''))
+
+
+# -----------------------------------------------------------------------------
+@main.command()
+@click.option('--requirement', 'list_requirement', multiple = True,
+              help = 'A requirement to show, by readable id or guid. May be '
+                     'given more than once. Absent, every requirement.')
+@click.option('--source', 'list_source', multiple = True,
+              help = 'A source item, by readable id or guid: show the '
+                     'requirements it implements and the ones it verifies.')
+@click.option('--gaps', 'is_gaps_only', is_flag = True,
+              help = 'Show only requirements that lack something.')
+@click.option('--closed-world', 'is_closed_world', is_flag = True,
+              help = 'Assert the tree holds everything an edge could point '
+                     'at, so that a leaf with nothing implementing it lacks '
+                     'it entirely rather than perhaps elsewhere.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True,
+              help = 'text for a person; json for a program, in a stable order.')
+@OPTION_ROOT
+def trace(list_requirement, list_source, is_gaps_only, is_closed_world,
+          id_format, list_root):
+    """
+    Show what each requirement derives from, what implements it, what
+    verifies it, and what it lacks; or, for a source item, what it may
+    affect.
+
+    Reads what the trace check reads, and writes nothing.
+
+    """
+
+    map_document = _tree(list_root).context.map_document
+
+    if list_source:
+        list_impact = [cc_public.trace.impact(map_document, name, is_closed_world)
+                       for name in list_source]
+        if None in list_impact:
+            _fail('Nothing in this tree is named {name}.'.format(
+                        name = list_source[list_impact.index(None)]))
+        _write_impact(list_impact, id_format)
+        return
+
+    list_record = cc_public.trace.projection(map_document, is_closed_world)
+
+    if list_requirement:
+        wanted = set(list_requirement)
+        list_record = [r for r in list_record
+                         if r.id_self in wanted or r.guid_self in wanted]
+        if len(list_record) != len(wanted):
+            _fail('Not every requirement named is in this tree.')
+
+    if is_gaps_only:
+        list_record = [r for r in list_record if r.gap]
+
+    _write_trace(list_record, id_format)
+
+
+# -----------------------------------------------------------------------------
+def _write_trace(list_record, id_format):
+    """
+    Write the projection, as text or as json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps([_plain_record(r) for r in list_record], indent = 2))
+        return
+
+    for r in list_record:
+        click.echo('{id}  {status}{leaf}'.format(
+                        id = r.id_self, status = r.status,
+                        leaf = '  leaf' if r.is_leaf else ''))
+        for (label, names) in (('derives from', r.derives_from),
+                               ('children', r.children),
+                               ('implemented by', r.implemented_by),
+                               ('verified by', r.verified_by),
+                               ('unresolved', r.unresolved)):
+            if names:
+                click.echo('    {label:15} {names}'.format(label = label,
+                                                          names = ', '.join(names)))
+        if r.verification:
+            click.echo('    {label:15} {v}{c}'.format(
+                            label = 'verification', v = r.verification,
+                            c = ', criteria' if r.has_criteria else ', NO CRITERIA'))
+        for gap in r.gap:
+            click.echo('    {sev:15} {path}: {msg}'.format(
+                            sev = gap.severity.upper(), path = gap.path, msg = gap.message))
+
+    click.echo('{n} requirement(s), {g} with gaps.'.format(
+                    n = len(list_record), g = sum(1 for r in list_record if r.gap)))
+
+
+# -----------------------------------------------------------------------------
+def _write_impact(list_impact, id_format):
+    """
+    Write what each source item may affect, as text or as json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps([{'id_self':    i.id_self,
+                                'guid_self':  i.guid_self,
+                                'implements': [_plain_record(r) for r in i.implements],
+                                'verifies':   [_plain_record(r) for r in i.verifies]}
+                               for i in list_impact], indent = 2))
+        return
+
+    for i in list_impact:
+        click.echo('{id}'.format(id = i.id_self))
+        for (label, records) in (('implements', i.implements), ('verifies', i.verifies)):
+            for r in records:
+                click.echo('    {label:12} {req}  verified by {v}'.format(
+                                label = label, req = r.id_self,
+                                v = ', '.join(r.verified_by) or 'nothing'))
+        if not (i.implements or i.verifies):
+            click.echo('    implements and verifies no requirement.')
+
+
+# -----------------------------------------------------------------------------
+def _plain_record(record):
+    """
+    Return a projection record as plain data, gaps included.
+
+    """
+
+    out        = record._asdict()
+    out['gap'] = [g._asdict() for g in record.gap]
+
+    return out
 
 
 # -----------------------------------------------------------------------------

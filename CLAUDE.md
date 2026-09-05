@@ -34,6 +34,13 @@ are shorthands. Every command has `--help`; the writing commands take
   mutated case is made through the API with its subject text set.
 - `questions [--open]` — what the design decisions leave open, and what
   answered it.
+- `trace [--requirement X] [--source Y] [--gaps] [--closed-world] [--format json]`
+  — what each requirement derives from, what implements it
+  (`r_is_implemented_by`, to a package, module, class or function), what
+  verifies it (`r_verifies`) and what it lacks; `--source` shows what a
+  source item implements and verifies. Reads the same projection
+  (`cc_public.trace`) as the trace check. Proposed gaps are advisory;
+  accepted ones critical (`ddr_implementation_trace`).
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
   of a dataflow workflow. `--dry-run` shows the order and writes nothing.
   Needs a clean tree. Makes items with `new`, fills fields with `set`,
