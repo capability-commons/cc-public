@@ -676,7 +676,7 @@ def test_unsetting_the_last_edge_leaves_an_empty_list(tree, tmp_path):
 def test_a_source_item_shows_its_source_where_an_eval_asks(tree, tmp_path):
     import cc_public.eval.select
     import cc_public.load
-    ctx = cc_public.check._context([tmp_path])[0]
+    ctx = cc_public.check.context([tmp_path])[0]
     sel = cc_public.eval.select.Selector(id_eval = ('evl_record_and_code_agree',))
     tasks = list(cc_public.eval.select.select(ctx, sel))
     assert [t.id_subject for t in tasks] == [('ddr_fail_closed', 'pyf_cc_public.check.refusal')]

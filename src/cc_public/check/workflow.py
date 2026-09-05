@@ -134,7 +134,7 @@ def _inspect(filepath, document, map_by_guid):
 
     for (name, node) in (document.get(KEY_NODE) or {}).items():
 
-        component = _component_of(node, map_by_guid)
+        component = component_of(node, map_by_guid)
 
         if component is None:
             list_bad.append(_fault(filepath, f'node.{name}',
@@ -361,7 +361,7 @@ def _revises(filepath, name, component):
 
 
 # -----------------------------------------------------------------------------
-def _component_of(node, map_by_guid):
+def component_of(node, map_by_guid):
     """
     Return the component a node instantiates, or None.
 

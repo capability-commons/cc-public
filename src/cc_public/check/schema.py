@@ -73,7 +73,7 @@ def check(context):
     map_by_id    = map_schema(map_document)
     (_, document_type) = cc_public.check.register.find_type(map_document)
     map_prefix   = cc_public.check.register.map_prefix(document_type)
-    registry     = _registry(map_by_id)
+    reg          = registry(map_by_id)
 
     count_valid        = 0
     list_note          = []
@@ -116,7 +116,7 @@ def check(context):
                                    'found.'.format(id_schema = id_schema)))
             continue
 
-        list_error = _validate(document, map_by_id[id_schema], registry)
+        list_error = validate(document, id_schema, map_by_id, reg)
 
         if not list_error:
             count_valid += 1
@@ -152,12 +152,14 @@ def map_schema(map_document):
 
 
 # -----------------------------------------------------------------------------
-def _registry(map_schema):
+def registry(map_schema):
     """
     Return a referencing registry holding every schema, keyed by $id.
 
     Cross schema $ref is resolved from this registry, so no reference
-    is ever retrieved over the network.
+    is ever retrieved over the network. A caller validating many
+    documents builds one and hands it to validate; a caller validating
+    one lets validate build it.
 
     """
 
@@ -285,14 +287,19 @@ def _id_schema(mapping):
 
 
 # -----------------------------------------------------------------------------
-def _validate(document, document_schema, registry):
+def validate(document, id_schema, map_schema, reg = None):
     """
-    Return a list of validation error messages, empty when valid.
+    Return [(path, message)] for every way document fails the schema
+    id_schema names, empty when it conforms.
+
+    map_schema holds every schema by id, as map_schema returns it. The
+    registry is built here where the caller has none.
 
     """
 
-    validator = jsonschema.Draft202012Validator(document_schema,
-                                                registry = registry)
+    validator = jsonschema.Draft202012Validator(map_schema[id_schema],
+                                                registry = reg if reg is not None
+                                                           else registry(map_schema))
     list_error = sorted(validator.iter_errors(document),
                         key = lambda error: list(error.path))
 

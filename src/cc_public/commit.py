@@ -256,10 +256,9 @@ def record(tree, title, brief, description, status, count, id_execution,
 
     # Validated as any item is, once, here.
     #
-    map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
-    registry   = cc_public.check.schema._registry(map_schema)
-    list_error = cc_public.check.schema._validate(
-                        _plain(document), map_schema[ID_SCHEMA], registry)
+    list_error = cc_public.check.schema.validate(
+                        _plain(document), ID_SCHEMA,
+                        cc_public.check.schema.map_schema(tree.context.map_document))
 
     if list_error:
         raise ErrorCommit('The commit record is not valid: {err}'.format(

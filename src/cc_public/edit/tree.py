@@ -106,7 +106,7 @@ class Tree:
 
         self.root = pathlib.Path(list_root[0]).resolve()
 
-        (self.context, list_error) = cc_public.check._context(
+        (self.context, list_error) = cc_public.check.context(
                                             [pathlib.Path(p) for p in list_root])
 
         # An edit over part of a tree could miss the item it collides

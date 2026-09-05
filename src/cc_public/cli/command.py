@@ -716,7 +716,7 @@ def log(count, root):
 
     tree       = _tree([root])
     map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
-    registry   = cc_public.check.schema._registry(map_schema)
+    registry   = cc_public.check.schema.registry(map_schema)
 
     for c in cc_public.load.git.iter_commit(root, count):
 
@@ -725,8 +725,8 @@ def log(count, root):
                                                    title = c.title))
             continue
 
-        list_error = cc_public.check.schema._validate(
-                        c.document, map_schema['sch_commit'], registry)
+        list_error = cc_public.check.schema.validate(
+                        c.document, 'sch_commit', map_schema, registry)
         state = 'ok' if not list_error else 'INVALID'
 
         if c.document.get('title') != c.title:

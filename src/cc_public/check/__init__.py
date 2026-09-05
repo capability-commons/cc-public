@@ -98,7 +98,7 @@ def check(list_path = (), is_fail_fast = False,
     list_dirpath   = [pathlib.Path(path) for path in list_path]
     list_dirpath   = list_dirpath or [pathlib.Path.cwd()]
 
-    (context, list_error) = _context(list_dirpath, is_closed_world, judgement)
+    (ctx, list_error) = context(list_dirpath, is_closed_world, judgement)
 
     tuple_check = CHECK + ((judgement.module,) if judgement is not None else ())
 
@@ -106,7 +106,7 @@ def check(list_path = (), is_fail_fast = False,
 
     for module in tuple_check:
 
-        (entry, error) = _run(module, context, is_fail_fast)
+        (entry, error) = _run(module, ctx, is_fail_fast)
 
         if error is not None:
             list_error.append(error)
@@ -281,9 +281,13 @@ def _count(entry, severity):
 
 
 # -----------------------------------------------------------------------------
-def _context(list_dirpath, is_closed_world = False, judgement = None):
+def context(list_dirpath, is_closed_world = False, judgement = None):
     """
-    Return (Context, list_error) for the union of the paths given.
+    Return (Context, list_error) for the union of the paths given: every
+    document under the paths, loaded once, with the failures of loading
+    recorded rather than raised.
+
+    What the checks run over, and what the tree indexes.
 
     """
 

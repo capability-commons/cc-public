@@ -78,7 +78,7 @@ class Graph:
         self.component = {}
 
         for (local, node) in (self.document.get(KEY_NODE) or {}).items():
-            component = cc_public.check.workflow._component_of(node, map_by_guid)
+            component = cc_public.check.workflow.component_of(node, map_by_guid)
             if component is None:
                 raise ErrorGraph('Node {local} names no component this tree '
                                  'holds.'.format(local = local))
