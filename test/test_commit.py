@@ -200,3 +200,18 @@ def test_commit_lints_a_tree_that_configures_a_linter(repo):
     bad.write_text(head + '\nimport os\n')
     cc_public.commit.commit(repo, 'No linter asked for')
     assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '4'
+
+
+def test_commit_refuses_an_import_against_the_layers(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    bad  = cc_public.edit.new.new(tree, 't_python_module', 'pym_cc_public.check.upward',
+                                  tree.defaults())
+    for field in ('title', 'brief', 'description'):
+        cc_public.edit.field.set_field(tree, 'pym_cc_public.check.upward', field, value = 'Upward')
+    head = bad.read_text()
+    bad.write_text(head + '\nimport cc_public.workflow\n\nprint(cc_public.workflow.Stop)\n')
+    with pytest.raises(cc_public.commit.ErrorCommit) as caught:
+        cc_public.commit.commit(repo, 'A check that imports a workflow')
+    assert 'lint' in str(caught.value)
+    assert 'cc_public.check.upward -> cc_public.workflow' in str(caught.value)
+    assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '1'

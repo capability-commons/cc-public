@@ -48,8 +48,10 @@ are shorthands. Every command has `--help`; the writing commands take
   proof over every file, and the edit commands against a copy of the tree.
   Holds a coverage floor; `pixi run coverage` shows what is uncovered.
 - `pixi run lint` — ruff over `src` and `test`, configured in `pyproject.toml`
-  for the house style; must be clean after any code edit (`ddr_code_quality`).
-  `commit` runs it too and refuses on a finding.
+  for the house style, then `lint-imports` holding the seven tiers of
+  `ddr_layered_architecture`: a package imports downward only, and an
+  underscore name is its module's (tests excepted). Must be clean after any
+  code edit; `commit` runs both and refuses on a finding.
 - `pixi run gate` — what a pipeline runs: check with the world closed and
   failing on a critical finding, lint, test. `check` alone only reports.
 

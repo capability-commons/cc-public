@@ -35,6 +35,7 @@ relation:               []
 
 import datetime
 import io
+import os
 import subprocess
 import uuid
 
@@ -68,6 +69,15 @@ FORMAT_STAMP    = '%Y%m%d%H%M%S'
 # Status letters whose record carries a second path.
 #
 STATUS_TWO_PATH = 'RC'
+DIR_SOURCE      = 'src'
+
+# The linters a tree may configure, by the pyproject.toml table that
+# configures each, and the command that runs it. Each runs before a
+# commit where its table is present.
+#
+LINTER          = (('ruff',         ['ruff', 'check', '--quiet',
+                                     '--output-format', 'concise', '.']),
+                   ('importlinter', ['lint-imports']))
 
 
 # -----------------------------------------------------------------------------
@@ -172,13 +182,15 @@ def commit(root, title, brief = None, description = None,
 # -----------------------------------------------------------------------------
 def lint(root):
     """
-    Return what the linter found at root, or None where it found nothing
-    or the tree configures no linter.
+    Return what the linters found at root, or None where they found
+    nothing or the tree configures none.
 
     A tree that carries a [tool.ruff] table in its pyproject.toml has
-    asked to be linted, and is, before every commit. One that does not
-    is data alone and is not. A linter asked for and not found is an
-    error, not a pass: the commit is refused with the reason.
+    asked to be linted, and one that carries [tool.importlinter] has
+    asked for its layers to be held; each runs before every commit. A
+    tree with neither is data alone and is not linted. A linter asked
+    for and not found is an error, not a pass: the commit is refused
+    with the reason.
 
     """
 
@@ -190,22 +202,29 @@ def lint(root):
         return None
 
     with open(filepath, 'rb') as file:
-        if 'ruff' not in tomllib.load(file).get('tool', {}):
-            return None
+        tool = tomllib.load(file).get('tool', {})
 
-    try:
-        done = subprocess.run(['ruff', 'check', '--quiet', '--output-format', 'concise', '.'],
-                              cwd = root, capture_output = True, text = True,
-                              check = False)
-    except OSError as err:
-        raise ErrorCommit('The tree configures ruff and ruff could not be '
-                          'run, so the code could not be linted: {err}'.format(
-                                                                err = err)) from err
+    # The tree being committed is what is linted, not whatever package
+    # of the same name is installed: its source goes first on the path.
+    #
+    env = dict(os.environ)
+    src = root / DIR_SOURCE if (root / DIR_SOURCE).is_dir() else root
+    env['PYTHONPATH'] = os.pathsep.join([str(src), env.get('PYTHONPATH', '')]).rstrip(os.pathsep)
 
-    if done.returncode == 0:
-        return None
+    for (section, command) in LINTER:
+        if section not in tool:
+            continue
+        try:
+            done = subprocess.run(command, cwd = root, capture_output = True,
+                                  text = True, check = False, env = env)
+        except OSError as err:
+            raise ErrorCommit('The tree configures {name} and it could not be '
+                              'run, so the code could not be linted: {err}'.format(
+                                                name = command[0], err = err)) from err
+        if done.returncode != 0:
+            return (done.stdout.strip() or done.stderr.strip()).splitlines()[-1]
 
-    return (done.stdout.strip() or done.stderr.strip()).splitlines()[0]
+    return None
 
 
 # -----------------------------------------------------------------------------

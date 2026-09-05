@@ -186,15 +186,13 @@ consequence:            |
                         loose typing ddr_check_architecture accepted
                         becomes unnecessary.
 
-                        The cycles are cut and the graph is one way,
-                        and no module reaches another package's
-                        underscore name: the schema check exposes
-                        validate, which builds its registry where the
-                        caller has none, and registry for a caller
-                        validating many; the check driver exposes
-                        context; the workflow check exposes
-                        component_of. The lint does not yet refuse
-                        either rule.
+                        The cycles are cut, the graph is one way, no
+                        module reaches another package's underscore
+                        name, and both rules are lint: ruff's private
+                        member rule and the seven tier contract, held
+                        by import-linter from the lint extra, run in
+                        the lint task and before every commit. The
+                        decision is built.
 
 question:
 

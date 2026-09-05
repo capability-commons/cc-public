@@ -21,11 +21,13 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
                            "python-dotenv>=1.2.3,<2"]
 
 # The mechanical checks need none of the model stack. A judge does, and
-# is installed by asking for the eval extra; the tests by the test extra.
+# is installed by asking for the eval extra; the tests by the test extra;
+# the layers contract by the lint extra.
 #
 [project.optional-dependencies]
 eval                    = ["dspy==3.3.1"]
 test                    = ["pytest>=9.1.1,<10"]
+lint                    = ["import-linter>=2.15,<3"]
 
 [project.urls]
 Repository              = "https://github.com/capability-commons/cc-public"
@@ -42,7 +44,7 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true, extras = ["eval", "test"] }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint"] }
 
 [tool.cctool.new]
 copyright               = "Copyright 2026 William Payne"
@@ -59,7 +61,7 @@ check                   = "cctool check"
 format                  = "cctool format"
 test                    = "pytest -q test --cov=cc_public --cov-report= --cov-fail-under=81"
 coverage                = "pytest -q test --cov=cc_public --cov-report=term-missing"
-lint                    = "ruff check src test"
+lint                    = "ruff check src test && lint-imports"
 gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
 
 [tool.pixi.dependencies]
@@ -81,7 +83,8 @@ extend-exclude          = ["execution", ".pixi"]
 
 [tool.ruff.lint]
 select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
-                           "ARG", "S", "DTZ", "PIE", "FURB"]
+                           "ARG", "S", "DTZ", "PIE", "FURB",
+                           "SLF"]     # an underscore name is its module's (ddr_layered_architecture)
 ignore                  = ["UP032",   # format() is the house form
                            "PLC0415", # a lazy import keeps an optional dependency optional
                            "PLR2004", # a literal beside its comparison reads
@@ -99,6 +102,26 @@ max-positional-args     = 9
 max-branches            = 12
 max-statements          = 50
 
+# Layers. The tool is seven tiers importing downward only, with the
+# committer and the judgement package as independent siblings, and the
+# foundations independent of one another (ddr_layered_architecture).
+# lint-imports refuses an upward import; the lint task runs it.
+#
+[tool.importlinter]
+root_package            = "cc_public"
+
+[[tool.importlinter.contracts]]
+name                    = "seven tiers, importing downward only"
+type                    = "layers"
+layers                  = ["cc_public.cli",
+                           "cc_public.workflow",
+                           "cc_public.commit | cc_public.eval",
+                           "cc_public.edit",
+                           "cc_public.check",
+                           "cc_public.layout",
+                           "cc_public.load | cc_public.path | cc_public.need | cc_public.question | cc_public.control"]
+
 [tool.ruff.lint.per-file-ignores]
-"test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "ARG001"]
+"test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "ARG001",
+                           "SLF001"]  # a test may reach the internals of what it tests
 "src/cc_public/cli/command.py" = ["PLR0913", "PLR0917"]   # a click command takes one argument per option
