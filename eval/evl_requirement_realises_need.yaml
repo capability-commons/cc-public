@@ -30,6 +30,14 @@ criterion:              |
                         restates the need as a shall statement, naming
                         no entity and adding no verifiable obligation.
 
+                        A need is met by a set of requirements, not by
+                        one. The question is not whether this
+                        requirement alone delivers the outcome, but
+                        whether what it obliges is a step toward it
+                        that the need would want taken. A requirement
+                        on one stage of a mechanism the outcome
+                        depends on is MET.
+
                         Each subject opens with a label line: three
                         hyphens and the item's id, then the fields by
                         name. Labels are presentation, not prose.
@@ -52,6 +60,22 @@ example:
     feedback:           |
                         An obligation on the Printer that delivers the
                         outcome.
+
+  - input:              |
+                        --- req_x statement: When the
+                        Screening_Judgement of the Subject is unmet,
+                        the Judge shall judge the Subject
+                        Confirm_Count times. --- need_y statement: In
+                        model judges wrong about one time in ten, the
+                        maintainer needs an adverse finding worth
+                        acting on, with a known error rate, in order
+                        to act on findings without re-reading every
+                        subject.
+    verdict:            met
+    feedback:           |
+                        One step of the mechanism the outcome depends
+                        on. The error rate is another requirement's
+                        part; a need is met by the set.
 
   - input:              |
                         --- req_x statement: The Printer shall lay out
@@ -92,6 +116,35 @@ subject:
   include_type:
     - t_textual_requirement
     - t_need
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             written
+    cases:              7
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             mutated
+    cases:              3
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-05'
+    origin:             all
+    cases:              10
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
 
 relation:
 
