@@ -822,7 +822,8 @@ def _write_run(report):
     for e in report['node']:
         _write_entry(e)
     if report['execution']:
-        click.echo('  execution {e}'.format(e = report['execution']))
+        click.echo('  execution {e}  {o}'.format(e = report['execution'],
+                                                 o = report.get('outcome') or ''))
     if report['commit']:
         click.echo('  commit    {h}'.format(h = report['commit'][:10]))
     if report['stopped']:

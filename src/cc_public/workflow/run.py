@@ -67,6 +67,10 @@ KEY_ID_REL     = 'id_relation'
 KEY_GUID_TGT   = 'guid_target'
 KEY_MODEL      = 'model'
 KEY_CONFIDENCE = 'confidence'
+KEY_OUTCOME    = 'outcome'
+
+OUTCOME_COMPLETED = 'completed'
+OUTCOME_EXHAUSTED = 'exhausted'
 
 REL_JUDGED_BY  = 'r_is_judged_by'
 REL_RAN_UNDER  = 'r_ran_under'
@@ -151,7 +155,7 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
                    generator_challenge or generator, runner)
     report = {'workflow': graph.id_self, 'deployment': id_deployment,
               'policy': state.policy, 'order': graph.order(), 'node': [],
-              'execution': None, 'commit': None, 'stopped': None}
+              'execution': None, 'commit': None, 'stopped': None, 'outcome': None}
 
     state.bound = _bound(tree, graph, map_bind)
     report['bound'] = {f'{n}.input.{p}': i for ((n, p), i) in state.bound.items()}
@@ -266,6 +270,13 @@ def _execute(state, report, id_deployment, list_trailer):
                                                 wf = report['workflow'], node = local),
                                       [entry], list_trailer)
 
+    # How the run ended is a field, so that a run the budget cut short
+    # cannot be read as one the guards let finish.
+    #
+    report['outcome'] = OUTCOME_EXHAUSTED if any(e['exhausted'] for e in report['node']) \
+                        else OUTCOME_COMPLETED
+    cc_public.edit.field.set_field(state.tree, state.id_exe, KEY_OUTCOME,
+                                   value = report['outcome'])
     cc_public.edit.field.set_field(state.tree, state.id_exe, 'description',
                                    prose = _summary(report['node']))
 

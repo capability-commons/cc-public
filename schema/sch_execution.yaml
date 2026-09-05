@@ -43,6 +43,25 @@ allOf:
         additionalProperties:
           $ref:         https://capability-commons.org/schema/sch_binding.yaml
 
+      outcome:
+        type:           string
+
+        enum:
+          - completed
+          - exhausted
+
+        description:    |
+                        How the run ended. completed: every back edge
+                        that fired was followed and the run reached
+                        the end of its order with nothing left undone.
+                        exhausted: at least one back edge was met when
+                        its target had no budget left, so what the run
+                        settled on is what the budget allowed, not
+                        what the guards would have chosen. A run that
+                        stopped removes its execution, unless it
+                        committed after every node. Absent on
+                        executions recorded before this field.
+
       relation:
         type:           array
 

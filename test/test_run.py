@@ -178,6 +178,7 @@ def test_run_makes_judges_and_commits(repo):
     tree = cc_public.edit.tree.Tree([repo])
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
     assert exe['id_self'].startswith('exe_') and len(exe['binding']) == 3
+    assert exe['outcome'] == 'completed' and r['outcome'] == 'completed'
     assert {b['id_port'] for b in exe['binding'].values()} == {
         'prt_draft_design_decision.subject', 'prt_draft_design_decision.guide',
         'prt_draft_design_decision.decision'}
@@ -289,6 +290,9 @@ def test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
     assert [e['node'] for e in r['node']] == ['draft']
     assert sorted(r['node'][0]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
     assert r['node'][0]['fired'] == []
+    assert r['outcome'] == 'exhausted'
+    exe = cc_public.load.from_file(cc_public.edit.tree.Tree([repo]).resolve(r['execution']).filepath)
+    assert exe['outcome'] == 'exhausted'
 
 
 def test_a_bounded_field_is_told_its_bound_and_cut_to_it_if_overrun(repo):
