@@ -1,0 +1,793 @@
+id_self:                exe_20260905063232_8fa0e0
+guid_self:              exe_8fa0e02367014f748a8a76d637ef4d7e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run of wf_decomposition_from_need
+brief:                  |
+                        Under dep_decomposition_local.
+
+binding:
+
+  propose_input_need_1:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_need_1
+    guid_self:          bnd_f7c687d18a10475a98b00e9f063b092b
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.need
+    guid_port:          prt_2b1ad730029d40ffb131b00e039a7344
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      need_resilient_frontline_power_connectivity
+        guid_target:    need_fad12e25838c4ffd92db3dbd74baebc9
+
+  propose_input_framing_1:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_framing_1
+    guid_self:          bnd_8f6b16653f354188be99f30e3738641c
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.framing
+    guid_port:          prt_71ba7778a2a2483a970a5fb524ad5939
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      frame_dependency
+        guid_target:    frame_ee2dea2f9dd24e8d93ef54e8dde5c83d
+
+  propose_input_guide_1:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_guide_1
+    guid_self:          bnd_4255d28147914204a153a2c8d0c72a86
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.guide
+    guid_port:          prt_bc7707400975449ca044b26e2570000b
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  propose_output_decision_1:
+    id_self:            bnd_20260905063232_8fa0e0.propose_output_decision_1
+    guid_self:          bnd_56813d4c76d849a7835a7dabed5d31e2
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.decision
+    guid_port:          prt_0c1f90d40b80460bbdd762b6a54d29f3
+    pass:               1
+
+    judgement:
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        criterion:      |
+                        MET when every passage is plain prose:
+                        sentences and paragraphs, with names written
+                        as they are declared.
+
+                        UNMET when any passage carries markup: a
+                        heading marker, a bullet or numbered list
+                        marker at the start of a line, emphasis marks
+                        such as asterisks or underscores around words,
+                        backticks or a code fence, a table, or a link
+                        written in markdown form.
+
+                        A full stop, a colon, a comma, parentheses or
+                        a numeral inside a sentence are punctuation,
+                        not markup, and are MET. A name containing an
+                        underscore, such as guid_self, is a name and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never markup.
+
+                        When UNMET, quote the marked passage.
+        reason:         |
+                        All content is plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, tables, or markdown links.
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        unmet
+        criterion:      |
+                        MET when the decision is written as the act of
+                        deciding: what is done, kept, named, refused
+                        or held, said directly. The four field edge is
+                        kept. A glossary is a register whose entries
+                        are terms. Edges are held in a keyed table.
+
+                        UNMET when the decision is written as a report
+                        on the artefact: the artefact is the subject
+                        of the sentence and the verb tells what it
+                        defines, requires, includes, permits,
+                        specifies, provides or establishes, as a
+                        reader summarising it would write. The schema
+                        defines identity by requiring two fields. The
+                        schema explicitly permits additional
+                        properties. Such a sentence records nothing:
+                        it says what is there, not what was chosen.
+
+                        A sentence naming an artefact as the thing
+                        that carries or validates something is stated,
+                        not reported: a term register is validated by
+                        sch_reg_term. The test is whether the sentence
+                        would still make sense if the artefact did not
+                        yet exist. A decision is written before its
+                        artefact; a report is written after.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the sentences that report.
+        reason:         |
+                        Unmet on 5 of 5 judgements. The sentences
+                        describe needs and conditions, not a decision
+                        stated as what is done, kept, named, refused
+                        or held. They read as problem statements
+                        rather than choices about an artefact’s shape
+                        or a register’s terms. There is no reporting
+                        on an artefact either, but the criterion for
+                        MET requires explicit deciding language (e.g.
+                        “X is kept”, “X is an entry”, “X is refused”),
+                        which is absent here, so the decision is not
+                        written in the required form.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        criterion:      |
+                        MET when the decision states choices and their
+                        terms: what is done, what is named, what shape
+                        a thing takes, what is refused, and what
+                        follows mechanically from a choice.
+
+                        UNMET when a passage argues for a choice: says
+                        what it balances, ensures, enables, clarifies
+                        or avoids; what would be infeasible,
+                        impractical or costly otherwise; what is
+                        recommended; or that the choice is right,
+                        natural or simple. Argument belongs in the
+                        rationale, where a reader expects it.
+
+                        Stating what a thing is, holds, carries or is
+                        validated by is the decision specifying its
+                        artefact, and is MET however detailed. A
+                        reason given as the term of a choice, such as
+                        an id being kept short so that it reads, is
+                        MET; a paragraph weighing the choice is not.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the passage that argues.
+        reason:         |
+                        Unmet on 5 of 5 judgements. The passage argues
+                        for the needs by giving purposes introduced
+                        with “in order to”. These are rationales, not
+                        just terms of the choice. For example: “in
+                        order to keep essential capabilities
+                        operational under attack”, “in order to ensure
+                        continuous use of drones and electronic
+                        warfare systems”, and “in order to keep
+                        command, reconnaissance, targeting, repair,
+                        counter-drone activity, and remote-system use
+                        operating.”
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        criterion:      |
+                        MET when the decision names a choice that
+                        could have gone another way, and the
+                        alternative names at least one other way it
+                        could have gone and why that way was not
+                        taken.
+
+                        UNMET when the decision describes the artefact
+                        instead: lists its fields, restates its
+                        constraints, or paraphrases its structure,
+                        with no choice a reader could disagree with.
+                        UNMET also when the alternative is absent in
+                        substance: none, not applicable, or an option
+                        so weak nobody would have taken it.
+
+                        A decision may name the fields it settles; the
+                        test is whether it says why those and not
+                        others.
+
+                        When UNMET, quote the passage that describes
+                        rather than decides.
+        reason:         |
+                        The subject names a specific
+                        choice—decomposing needs by underlying
+                        dependencies (power and communication) for
+                        distributed frontline teams—and contrasts it
+                        with real alternatives: splitting by
+                        functional activity (command vs. targeting) or
+                        by system type (drones vs. EW). It also
+                        explains why those alternatives were not
+                        taken: resilience is driven more by robustness
+                        of shared power/communication dependencies
+                        than by particular functions or platforms, and
+                        partitioning by dependency better aligns with
+                        the framing and shared vulnerabilities. This
+                        matches the criterion of a decision that could
+                        have gone another way, with a substantive
+                        alternative and rationale.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  challenge_input_proposal_1:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_proposal_1
+    guid_self:          bnd_01812e2e78414191bff857a81bae002f
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.proposal
+    guid_port:          prt_50e044843ff84c509ca28154edc4fda2
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  challenge_input_need_1:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_need_1
+    guid_self:          bnd_de01e4b1a77c48f2b3a687d1625988f3
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.need
+    guid_port:          prt_fcd6282a734445e2a4f0305a96340271
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      need_resilient_frontline_power_connectivity
+        guid_target:    need_fad12e25838c4ffd92db3dbd74baebc9
+
+  challenge_input_guide_1:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_guide_1
+    guid_self:          bnd_047fe6ee608646b084e87803c6e1b4df
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.guide
+    guid_port:          prt_85e99a175c564fe6b9ee0f76af4ffcfc
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  challenge_output_decision_1:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_output_decision_1
+    guid_self:          bnd_e14f407253eb4e8191dc89a5d7c7dc21
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.decision
+    guid_port:          prt_1724f78cf9d9448d82a64fd01703408d
+    pass:               1
+
+    judgement:
+
+      - id_eval:        evl_challenge_answered
+        guid_eval:      evl_63a94938fe014899b093e1ed560d599a
+        verdict:        unmet
+        criterion:      |
+                        You are given a design decision with its
+                        challenge and its resolution.
+
+                        MET when the challenge is a specific case
+                        against the decision, naming what it attacks
+                        and what follows if it is right, and the
+                        resolution answers it point by point: the
+                        position stood with reasons, was revised in a
+                        stated way, or conceded. Also MET when the
+                        challenge itself finds nothing left open and
+                        says the position stands, with reasons.
+
+                        UNMET when the challenge is absent; when it is
+                        generic, a list of risks or cautions that
+                        could attach to any decision; when the
+                        resolution is absent though the challenge
+                        raises something; or when the resolution
+                        restates the decision or dismisses the
+                        challenge without engaging what it says.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, say which of the two is wanting
+                        and quote it.
+        reason:         |
+                        Unmet on 4 of 5 judgements. The challenge is
+                        specific and well‑formed, but the resolution
+                        does not answer it point by point. The
+                        challenge names exactly what it attacks (the
+                        lack of a distinct child for control links as
+                        a dependency) and what follows if it is right
+                        (false confidence and mission loss even when
+                        power and comms are redundant). The
+                        resolution, however, simply restates
+                        confidence in the “dependency-based approach”
+                        and claims “No concession is needed” without
+                        engaging the concrete claim that “there is no
+                        child that addresses ‘control links’ as a
+                        distinct dependency with its own failure
+                        modes” or the EW scenarios described. The
+                        wanting part is the resolution. Quote: “It
+                        stands by the dependency-based approach as the
+                        most effective way to isolate failure modes
+                        and guide resilient design. No concession is
+                        needed.”
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  propose_input_need_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_need_2
+    guid_self:          bnd_9f3e40e84e80472fac5549205e6b0c4f
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.need
+    guid_port:          prt_2b1ad730029d40ffb131b00e039a7344
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      need_resilient_frontline_power_connectivity
+        guid_target:    need_fad12e25838c4ffd92db3dbd74baebc9
+
+  propose_input_framing_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_framing_2
+    guid_self:          bnd_3701bbc70e834e30906b1f2d557934c5
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.framing
+    guid_port:          prt_71ba7778a2a2483a970a5fb524ad5939
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      frame_dependency
+        guid_target:    frame_ee2dea2f9dd24e8d93ef54e8dde5c83d
+
+  propose_input_guide_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_guide_2
+    guid_self:          bnd_d4af9d827d624e3988585f8dbf941731
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.guide
+    guid_port:          prt_bc7707400975449ca044b26e2570000b
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  propose_input_prior_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_prior_2
+    guid_self:          bnd_1a31058fa66d48a694a4e6606920c688
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.prior
+    guid_port:          prt_eaee2105b747420e9a309f54aa130c31
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  propose_input_judgement_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_input_judgement_2
+    guid_self:          bnd_2bb2cbe9423e44e2aa6ff6acd684a97a
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.judgement
+    guid_port:          prt_b02c65b7952744b3a55fd6cd5658fd9c
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      bnd_20260905063232_8fa0e0.challenge_output_decision_1
+        guid_target:    bnd_e14f407253eb4e8191dc89a5d7c7dc21
+
+  propose_output_decision_2:
+    id_self:            bnd_20260905063232_8fa0e0.propose_output_decision_2
+    guid_self:          bnd_89d5da93886a41b0a35ca9389ea04c06
+    id_node:            node_decomposition_from_need.propose
+    guid_node:          node_09db7df7a0d644efb452c4e28f000a07
+    id_port:            prt_propose_decomposition.decision
+    guid_port:          prt_0c1f90d40b80460bbdd762b6a54d29f3
+    pass:               2
+
+    judgement:
+
+      - id_eval:        evl_plain_text
+        guid_eval:      evl_2fbf3ae91e6b45f2b1d9753c1ae2b573
+        verdict:        met
+        criterion:      |
+                        MET when every passage is plain prose:
+                        sentences and paragraphs, with names written
+                        as they are declared.
+
+                        UNMET when any passage carries markup: a
+                        heading marker, a bullet or numbered list
+                        marker at the start of a line, emphasis marks
+                        such as asterisks or underscores around words,
+                        backticks or a code fence, a table, or a link
+                        written in markdown form.
+
+                        A full stop, a colon, a comma, parentheses or
+                        a numeral inside a sentence are punctuation,
+                        not markup, and are MET. A name containing an
+                        underscore, such as guid_self, is a name and
+                        is MET.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never markup.
+
+                        When UNMET, quote the marked passage.
+        reason:         |
+                        All content is plain prose: sentences and
+                        paragraphs with names written as declared.
+                        There are no headings, list markers, emphasis
+                        marks, backticks, tables, or markdown-style
+                        links.
+
+      - id_eval:        evl_decision_stated
+        guid_eval:      evl_59bc0d987435402bb368cff27332a4f4
+        verdict:        met
+        criterion:      |
+                        MET when the decision is written as the act of
+                        deciding: what is done, kept, named, refused
+                        or held, said directly. The four field edge is
+                        kept. A glossary is a register whose entries
+                        are terms. Edges are held in a keyed table.
+
+                        UNMET when the decision is written as a report
+                        on the artefact: the artefact is the subject
+                        of the sentence and the verb tells what it
+                        defines, requires, includes, permits,
+                        specifies, provides or establishes, as a
+                        reader summarising it would write. The schema
+                        defines identity by requiring two fields. The
+                        schema explicitly permits additional
+                        properties. Such a sentence records nothing:
+                        it says what is there, not what was chosen.
+
+                        A sentence naming an artefact as the thing
+                        that carries or validates something is stated,
+                        not reported: a term register is validated by
+                        sch_reg_term. The test is whether the sentence
+                        would still make sense if the artefact did not
+                        yet exist. A decision is written before its
+                        artefact; a report is written after.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the sentences that report.
+        reason:         |
+                        The sentences state needs and conditions
+                        directly, as decisions about what is required,
+                        not as reports on an artefact that “defines”,
+                        “requires”, or “provides” something. They
+                        would read the same if no artefact yet
+                        existed, so they are written as acts of
+                        deciding rather than summaries of an
+                        implemented schema.
+
+      - id_eval:        evl_decision_decides
+        guid_eval:      evl_095873b6012d43069725006433b2fff3
+        verdict:        unmet
+        criterion:      |
+                        MET when the decision states choices and their
+                        terms: what is done, what is named, what shape
+                        a thing takes, what is refused, and what
+                        follows mechanically from a choice.
+
+                        UNMET when a passage argues for a choice: says
+                        what it balances, ensures, enables, clarifies
+                        or avoids; what would be infeasible,
+                        impractical or costly otherwise; what is
+                        recommended; or that the choice is right,
+                        natural or simple. Argument belongs in the
+                        rationale, where a reader expects it.
+
+                        Stating what a thing is, holds, carries or is
+                        validated by is the decision specifying its
+                        artefact, and is MET however detailed. A
+                        reason given as the term of a choice, such as
+                        an id being kept short so that it reads, is
+                        MET; a paragraph weighing the choice is not.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose.
+
+                        When UNMET, quote the passage that argues.
+        reason:         |
+                        Unmet on 5 of 5 judgements. The passage argues
+                        for needs rather than stating a concrete
+                        choice and its terms. Each sentence gives a
+                        condition and a purpose (“in order to …”),
+                        which is argumentative rationale about why
+                        power, charging, and links are needed, not
+                        what is chosen or what shape an artefact
+                        takes. For example: “They need reliable local
+                        power sources sufficient to operate when grid
+                        power is lost, in order to maintain essential
+                        operational functions.” and “They need
+                        alternative communication links that remain
+                        functional when central internet, GNSS, or a
+                        single communications service is degraded or
+                        denied, in order to keep command,
+                        reconnaissance, targeting, repair,
+                        counter-drone activity, and remote-system use
+                        operational.”
+
+      - id_eval:        evl_records_the_decision
+        guid_eval:      evl_d1c939981d7c44eaa252f4f61d212441
+        verdict:        met
+        criterion:      |
+                        MET when the decision names a choice that
+                        could have gone another way, and the
+                        alternative names at least one other way it
+                        could have gone and why that way was not
+                        taken.
+
+                        UNMET when the decision describes the artefact
+                        instead: lists its fields, restates its
+                        constraints, or paraphrases its structure,
+                        with no choice a reader could disagree with.
+                        UNMET also when the alternative is absent in
+                        substance: none, not applicable, or an option
+                        so weak nobody would have taken it.
+
+                        A decision may name the fields it settles; the
+                        test is whether it says why those and not
+                        others.
+
+                        When UNMET, quote the passage that describes
+                        rather than decides.
+        reason:         |
+                        The subject names a specific choice of
+                        decomposition (separate dependencies for
+                        power, charging, comms, and control links) and
+                        contrasts it with real alternatives that
+                        “could have gone another way”: combining
+                        communications and control links, or
+                        decomposing by function (command,
+                        reconnaissance, targeting). It also explains
+                        why those alternatives were not taken: -
+                        “combining communications and control
+                        overlooks differentiated failure modes
+                        introduced by electronic warfare, particularly
+                        jamming and selective link denial.” -
+                        “Decomposition by function was rejected since
+                        resilience depends mainly on dependency
+                        robustness underlying all functions, not
+                        function-specific measures.” This matches the
+                        criterion of stating a decision, at least one
+                        other way it could have gone, and why that way
+                        was rejected.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  challenge_input_proposal_2:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_proposal_2
+    guid_self:          bnd_1522364ff75c42ae8bd71ac2266d0265
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.proposal
+    guid_port:          prt_50e044843ff84c509ca28154edc4fda2
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+  challenge_input_need_2:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_need_2
+    guid_self:          bnd_e3639e4873ca4d2a874cfd302ad7503b
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.need
+    guid_port:          prt_fcd6282a734445e2a4f0305a96340271
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      need_resilient_frontline_power_connectivity
+        guid_target:    need_fad12e25838c4ffd92db3dbd74baebc9
+
+  challenge_input_guide_2:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_input_guide_2
+    guid_self:          bnd_71cd8acefb1546df8fa2891e00a37e7c
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.guide
+    guid_port:          prt_85e99a175c564fe6b9ee0f76af4ffcfc
+    pass:               2
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+  challenge_output_decision_2:
+    id_self:            bnd_20260905063232_8fa0e0.challenge_output_decision_2
+    guid_self:          bnd_6e33cfaad74d491cac7ef1dc443292a9
+    id_node:            node_decomposition_from_need.challenge
+    guid_node:          node_3fe3c8ed231b452e8ed90e3284a1c5a5
+    id_port:            prt_challenge_decomposition.decision
+    guid_port:          prt_1724f78cf9d9448d82a64fd01703408d
+    pass:               2
+
+    judgement:
+
+      - id_eval:        evl_challenge_answered
+        guid_eval:      evl_63a94938fe014899b093e1ed560d599a
+        verdict:        met
+        criterion:      |
+                        You are given a design decision with its
+                        challenge and its resolution.
+
+                        MET when the challenge is a specific case
+                        against the decision, naming what it attacks
+                        and what follows if it is right, and the
+                        resolution answers it point by point: the
+                        position stood with reasons, was revised in a
+                        stated way, or conceded. Also MET when the
+                        challenge itself finds nothing left open and
+                        says the position stands, with reasons.
+
+                        UNMET when the challenge is absent; when it is
+                        generic, a list of risks or cautions that
+                        could attach to any decision; when the
+                        resolution is absent though the challenge
+                        raises something; or when the resolution
+                        restates the decision or dismisses the
+                        challenge without engaging what it says.
+
+                        Each subject opens with a label line: three
+                        hyphens and the item's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, say which of the two is wanting
+                        and quote it.
+        reason:         |
+                        The subject includes both a specific challenge
+                        and a resolution, and they engage each other
+                        point by point. The challenge is concrete and
+                        targeted: it names two specific gaps in the
+                        decomposition (“no child that addresses GNSS
+                        specifically as a dependency” and “none of the
+                        four children address resilience of local
+                        coordination and decision‑making when both
+                        communications and control links are degraded
+                        or lost”) and spells out what follows if it is
+                        right (designs could satisfy all four children
+                        yet still fail targeting, navigation, timing,
+                        repair, and counter‑drone functions under GNSS
+                        loss or total link loss). The resolution
+                        explicitly acknowledges the prior challenge
+                        (“combining communications and control
+                        overlooks critical failure modes from
+                        electronic warfare”) and states how the
+                        decision is revised (“explicitly adding a
+                        distinct child need for resilient control
+                        links”). It then claims this “directly
+                        addresses selective disruptions to control
+                        signals separate from general communications
+                        connectivity” and that this “responds point by
+                        point to the challenge, closing the identified
+                        coverage gap and preventing false confidence,”
+                        while maintaining the dependency-based
+                        approach. So the challenge is specific and
+                        consequence‑bearing, and the resolution stands
+                        with reasons and a stated revision to the
+                        position. This matches the MET condition.
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+        guid_target:    ddr_18350fa1bfdd4ab98804647a87496664
+
+description:            |
+                        propose, pass 1: made
+                        ddr_decompose_resilient_frontline_power_connectivity_as_dependency;
+                        revised nothing; fired
+                        challenge.input.proposal; declined nothing.
+
+                        challenge, pass 1: made nothing; revised
+                        ddr_decompose_resilient_frontline_power_connectivity_as_dependency;
+                        fired propose.input.prior,
+                        propose.input.judgement; declined nothing.
+
+                        propose, pass 2: made nothing; revised
+                        ddr_decompose_resilient_frontline_power_connectivity_as_dependency;
+                        fired challenge.input.proposal; declined
+                        nothing.
+
+                        challenge, pass 2: made nothing; revised
+                        ddr_decompose_resilient_frontline_power_connectivity_as_dependency;
+                        fired nothing; declined propose.input.prior,
+                        propose.input.judgement.
+
+relation:
+
+  - id_relation:        r_ran_under
+    guid_relation:      r_acbf8f7c3dea40249e7b9aa27ad6cdc3
+    id_target:          dep_decomposition_local
+    guid_target:        dep_cf2a07aabace422188b684afdd89b67b

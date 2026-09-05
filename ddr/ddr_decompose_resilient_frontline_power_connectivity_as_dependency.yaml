@@ -1,0 +1,285 @@
+id_self:                ddr_decompose_resilient_frontline_power_connectivity_as_dependency
+guid_self:              ddr_18350fa1bfdd4ab98804647a87496664
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decomposition of resilient frontline power, connectivity, and control into
+brief:                  |
+                        This decision splits the parent need for
+                        resilient frontline power, connectivity, and
+                        control into four distinct dependency needs:
+                        local power sources, local charging
+                        capability, alternative communication links,
+                        and resilient control links, clarifying
+                        failure points and tailored resilience
+                        measures in frontline operations.
+context:                |
+                        The need for resilient frontline power,
+                        connectivity, and control concerns distributed
+                        frontline teams operating drones and other
+                        networked systems in environments
+                        characterized by frequent infrastructure
+                        attacks and electronic warfare. The framing
+                        addresses this as a dependency problem to
+                        reveal points of failure and resilience
+                        opportunities.
+decision:               |
+                        In frontline and near-frontline operations
+                        with heavy reliance on drones and network
+                        systems, distributed frontline teams need
+                        reliable local power sources sufficient to
+                        operate when grid power is lost, in order to
+                        maintain essential operational functions. They
+                        need local charging capabilities sufficient to
+                        keep devices energized when centralized power
+                        fails, in order to sustain drone and
+                        electronic warfare system usage. They need
+                        alternative communication links that remain
+                        functional when central internet, GNSS, or a
+                        single communications service is degraded or
+                        denied, in order to keep command,
+                        reconnaissance, targeting, repair,
+                        counter-drone activity, and remote-system use
+                        operational. They need resilient control links
+                        that remain operable under electronic warfare
+                        or service disruption conditions, in order to
+                        maintain timely and reliable command and
+                        control of drones, remote systems, and
+                        electronic warfare assets despite jamming or
+                        selective link denial.
+rationale:              |
+                        Decomposing the resilient frontline power,
+                        connectivity, and control need by dependency
+                        clarifies distinct failure modes and guides
+                        design of appropriate resilience mechanisms.
+                        Local power and local charging address
+                        physical energy supply failures independently.
+                        Alternative communication links mitigate
+                        dependency on any single communications
+                        channel, including network and GNSS
+                        disruptions. Recognizing resilient control
+                        links as a separate dependency acknowledges
+                        that command and control signals can be
+                        selectively degraded by electronic warfare
+                        even when some communications persist.
+                        Including this explicitly prevents false
+                        confidence and mission loss that could arise
+                        if control-specific disruptions remain
+                        unaddressed. This approach aligns fully with
+                        the dependency framing that highlights single
+                        points of failure, redundancy opportunities,
+                        and graceful fallback. It achieves a more
+                        complete and actionable decomposition.
+alternative:            |
+                        Other decompositions considered were to
+                        combine communications and control links into
+                        a single dependency as previously done, or to
+                        decompose by function such as command,
+                        reconnaissance, or targeting. These were
+                        rejected because combining communications and
+                        control overlooks differentiated failure modes
+                        introduced by electronic warfare, particularly
+                        jamming and selective link denial.
+                        Decomposition by function was rejected since
+                        resilience depends mainly on dependency
+                        robustness underlying all functions, not
+                        function-specific measures. The chosen
+                        dependency-based approach cleanly isolates
+                        distinct vulnerabilities to power supply,
+                        energy replenishment, communications network
+                        access, and command and control link
+                        integrity.
+consequence:            |
+                        This decomposition ensures that resilience
+                        efforts explicitly target the separate
+                        vulnerabilities in power supply, charging,
+                        communications, and command and control. It
+                        addresses threats from grid power outages,
+                        loss of centralized charging, communications
+                        network or GNSS degradation, and electronic
+                        warfare that selectively degrades control
+                        links. Consequently, it reduces risks of
+                        mission loss from power failure, communication
+                        outage, or command and control disruption.
+                        However, simultaneous or compounded failures
+                        across these dependencies require integrated
+                        mitigation strategies. The decomposition also
+                        guides future capability development for
+                        autonomy modes or local control fallback to
+                        further harden control link resilience.
+status:                 proposed
+
+assumption:
+
+  dependence_on_grid_power:
+    id_self:            asm_decompose_resilient_frontline_power_connectivity_as_dependency.dependence_on_grid_power
+    guid_self:          asm_7dbf96762f234cfba9c8520ba148e2b7
+    statement:          |
+                        Distributed frontline teams rely on grid power
+                        as a primary energy source when not disrupted.
+    evidence:           |
+                        US Army paper notes large energy consumption
+                        by electronic warfare and counter-drone
+                        measures requiring continuous supply.
+    relation:           []
+
+  presence_of_multiple_communication_services:
+    id_self:            asm_decompose_resilient_frontline_power_connectivity_as_dependency.presence_of_multiple_communication_services
+    guid_self:          asm_c9eff3cd01a04f879b6ab8a6262a3c4a
+    statement:          |
+                        Frontline operations have access to multiple
+                        communication services including central
+                        internet access, GNSS, and satellite
+                        communications.
+    evidence:           |
+                        Reuters report of Starlink outage impacting
+                        Ukrainian military communication and calls for
+                        diversified communications.
+    relation:           []
+
+  local_power_and_charging_feasibility:
+    id_self:            asm_decompose_resilient_frontline_power_connectivity_as_dependency.local_power_and_charging_feasibility
+    guid_self:          asm_96bab17e0d7a42b7bbc551ca73036763
+    statement:          |
+                        Reliable local power and charging capabilities
+                        can be deployed or carried by frontline teams.
+    evidence:           |
+                        Charity procurement reports show deliveries of
+                        generators, power equipment, batteries to
+                        frontline brigades.
+    relation:           []
+
+  dependency_model_relevance:
+    id_self:            asm_decompose_resilient_frontline_power_connectivity_as_dependency.dependency_model_relevance
+    guid_self:          asm_13d4ea2a769f4ae48e6d64de6a650d3c
+    statement:          |
+                        Analyzing the need as a dependency problem
+                        best reveals failure points and redundancy
+                        opportunities.
+    evidence:           |
+                        Described in frame_dependency as highlighting
+                        single points of failure and shared services.
+    relation:           []
+
+  electronic_warfare_selectively_impairs_control_links:
+    id_self:            asm_decompose_resilient_frontline_power_connectivity_as_dependency.electronic_warfare_selectively_impairs_control_links
+    guid_self:          asm_ac09a174c9ad4c7d8256cc4590905ee3
+    statement:          |
+                        Electronic warfare can selectively degrade or
+                        deny control links independently of general
+                        communications channels.
+    evidence:           |
+                        The context notes frequent electronic warfare
+                        and service disruption; scenario examples
+                        include jamming uplinks or datalinks leaving
+                        some communications intact but control lost.
+    relation:           []
+
+resolution:             |
+                        This decision revises the prior decomposition
+                        by explicitly adding a distinct child need for
+                        resilient control links. It recognizes the
+                        prior challenge that combining communications
+                        and control overlooks critical failure modes
+                        from electronic warfare. The added resilient
+                        control links need directly addresses
+                        selective disruptions to control signals
+                        separate from general communications
+                        connectivity. This responds point by point to
+                        the challenge, closing the identified coverage
+                        gap and preventing false confidence. The
+                        dependency-based approach is maintained as
+                        effective and is improved by inclusion of this
+                        distinct dependency dimension.
+challenge:              |
+                        The revision claims to “close the identified
+                        coverage gap” by adding resilient control
+                        links as a distinct child, but it leaves at
+                        least two parts of the parent outcome and
+                        purpose still uncovered.
+
+                        First, the decomposition still treats
+                        “communications” as a single dependency and
+                        only distinguishes “control links” from that
+                        aggregate. The parent outcome is “Reliable
+                        local power, charging, communications and
+                        control links sufficient to continue
+                        operations when grid power, central internet
+                        access, GNSS integrity or a single
+                        communications service is degraded or denied.”
+                        This not only raises “communication links” as
+                        a dependency, but calls out specific upstream
+                        services whose loss has qualitatively
+                        different effects: central internet access,
+                        GNSS integrity, and a single communications
+                        service. The children talk about “alternative
+                        communication links that remain functional
+                        when central internet, GNSS, or a single
+                        communications service is degraded or denied,”
+                        but there is no child that addresses GNSS
+                        specifically as a dependency, even though GNSS
+                        integrity is explicitly part of the parent
+                        outcome. Losing GNSS can break targeting,
+                        navigation, and timing even when communication
+                        paths are intact. If GNSS integrity is not
+                        decomposed as its own dependency, a design can
+                        satisfy all four children yet still lose key
+                        parts of “reconnaissance, targeting … and
+                        remote-system use” when GNSS is spoofed or
+                        denied.
+
+                        Second, the parent purpose includes “repair”
+                        and “counter‑drone activity” as functions that
+                        must keep working “under attack,” but none of
+                        the four children address resilience of local
+                        coordination and decision‑making when both
+                        communications and control links are degraded
+                        or lost for extended periods. You assume that
+                        resilience is exhausted by “local power
+                        sources,” “local charging,” “alternative
+                        communication links,” and “resilient control
+                        links.” There is no explicit child for local
+                        autonomous or semi‑autonomous operation modes,
+                        pre‑planned fallbacks, or human‑only
+                        procedures that keep repair and counter‑drone
+                        activity functioning when all external links
+                        (including the now-separated control links)
+                        fail. The need’s own wording anticipates
+                        “frequent electronic warfare or service
+                        disruption” and attacks on infrastructure.
+                        That context makes complete loss of both
+                        communication and control plausible, not just
+                        selective degradation. If this assumption is
+                        wrong, then even with resilient control links
+                        as a separate child, a unit could keep drones
+                        powered and nominally connected but be unable
+                        to coordinate repair tasks or mount effective
+                        counter‑drone responses once both comms and
+                        control are intermittently or fully cut.
+                        Repair teams might sit idle for lack of
+                        updated tasking; counter‑drone systems might
+                        fail to engage in time without local
+                        autonomous triggers, leading to mission loss
+                        from the very failures the parent need is
+                        meant to prevent.
+
+                        If these gaps are real, the decomposition
+                        still under‑specifies resilience. It can be
+                        “complete” with respect to its four children,
+                        yet leave GNSS‑driven failures and total loss
+                        scenarios unaddressed, so command, targeting,
+                        repair, and counter‑drone functions still fail
+                        under the kinds of attacks the parent context
+                        explicitly describes.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_resilient_frontline_power_connectivity
+    guid_target:        need_fad12e25838c4ffd92db3dbd74baebc9
