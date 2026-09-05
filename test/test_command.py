@@ -45,7 +45,7 @@ import cc_public.load
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-KEEP = ('ddr', 'schema', 'register', 'eval', 'workflow', 'requirement', 'need',
+KEEP = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'requirement', 'need',
         'evidence', 'src', 'pyproject.toml')
 
 

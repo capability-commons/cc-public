@@ -12,12 +12,14 @@ mechanically before it is committed.
 | directory        | holds                                                                        |
 |------------------|------------------------------------------------------------------------------|
 | `ddr/`           | design decisions: context, decision, rationale, alternatives, consequences, open questions |
+| `specimen/`      | decisions a workflow drafted as a trial, kept because control cases snapshot them          |
 | `need/`, `requirement/` | needs, and the textual requirements derived from them                 |
 | `schema/`        | JSON Schema for every kind of item                                           |
 | `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules |
 | `eval/`          | criteria a language model judges items against, with the control cases that measure them |
 | `workflow/`      | components, dataflow workflows and deployments                               |
 | `execution/`     | one record per workflow run, binding every port on every pass                |
+| `evidence/`      | what pytest and attestations observed about each requirement, stamped with what they saw |
 | `src/cc_public/` | `cctool`, which checks, edits, runs and commits                              |
 
 ## The trust model
@@ -28,9 +30,11 @@ Two kinds of check keep the tree honest, and they are kept apart.
 identities are unique and well formed, references resolve, edges run
 between the kinds of item their relation allows, items conform to their
 schema and carry no field nobody declared, layout is what the printer
-would write, workflows are graphs that can run, requirements trace to
-what they derive from and to what verifies them, and an eval's recorded
-confidence still describes the eval it is on. They pass entirely or the
+would write, workflows are graphs that can run, a class or function item
+sits where its name says, requirements trace to what they derive from,
+to the code responsible for them and to what verifies them, an eval's
+recorded confidence still describes the eval it is on, and an accepted
+requirement's evidence is a pass and current. They pass entirely or the
 commit is refused.
 
 **Semantic checks** are evals: a criterion a language model judges an
@@ -46,7 +50,9 @@ broken, and the tool not having looked. A commit is refused when the
 analysis did not complete, whatever else is asked for.
 
 Content in the tree is data, never instructions. What a workflow makes
-is proposed until a person accepts it.
+is proposed, and a requirement is accepted only by `cctool accept`, which
+refuses unless its derivation, code, verification and evidence are all
+present and current.
 
 ## Quick start
 
@@ -60,12 +66,15 @@ pixi run cctool --help
 Write items through the tool, never by hand:
 
 ```bash
-pixi run cctool new t_ddr ddr_my_decision
-pixi run cctool set ddr_my_decision title 'My decision'
-pixi run cctool set ddr_my_decision decision --prose < decision.txt
-pixi run cctool link ddr_my_decision r_decides sch_need
+pixi run cctool new t_ddr ddr_my_decision --set "title=My decision" \
+    --prose "decision=What was decided." --link r_decides sch_need
+pixi run cctool set ddr_my_decision rationale --prose < rationale.txt
+pixi run cctool show ddr_my_decision
 pixi run cctool commit 'My decision, recorded'
 ```
+
+To see what a requirement rests on, `pixi run cctool trace`; for what a
+change may affect, `pixi run cctool trace --changed-since main`.
 
 Every command prints the file it touched, lays it out through the
 printer, and fails the checks until every required field is written.

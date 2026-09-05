@@ -183,6 +183,6 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Where things are
 
-`ddr/` design decisions · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing and methodology registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.
