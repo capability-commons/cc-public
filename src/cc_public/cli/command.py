@@ -557,8 +557,11 @@ def insert(id_type, name, name_container, path_collection, id_self, list_root):
 
 # -----------------------------------------------------------------------------
 @main.command()
-@click.option('--id-eval', 'id_eval', required = True,
+@click.option('--id-eval', 'id_eval', default = None,
               help = 'The eval to measure, by readable id.')
+@click.option('--stale', 'is_stale', is_flag = True,
+              help = 'Measure every eval with cases whose confidence for this '
+                     'judge is absent or stale, instead of naming one.')
 @click.option('--samples', 'count_sample', default = 5,
               type = ODD, show_default = True,
               help = 'Fresh judgements per case. Odd, so that a majority exists.')
@@ -569,7 +572,7 @@ def insert(id_type, name, name_container, path_collection, id_self, list_root):
               envvar = cc_public.eval.runner.NAME_ENV_MODEL, show_envvar = True,
               help = 'The model that judges. Required.')
 @OPTION_ROOT
-def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
+def measure(id_eval, is_stale, count_sample, is_record, id_model_eval, list_root):
     """
     Judge the control cases for an eval and report the error rates.
 
@@ -577,16 +580,42 @@ def measure(id_eval, count_sample, is_record, id_model_eval, list_root):
     positive is the share of met cases the judge called unmet; false
     negative the share of unmet cases it called met; unanimous the
     share of cases it answered the same way every time. Reported per
-    origin and pooled.
+    origin and pooled. --stale measures every eval whose confidence
+    for the judge is absent or stale, one after another.
 
     """
 
     tree = _tree(list_root)
 
+    if bool(id_eval) == is_stale:
+        _fail('Name one eval with --id-eval, or every stale one with --stale.')
+
     try:
-        item   = tree.resolve(id_eval)
         runner = cc_public.eval.runner.build(id_model_eval)
     except Exception as err:
+        _fail(err)
+
+    list_id = cc_public.eval.measure.list_stale(tree.context, runner.id_model) \
+              if is_stale else [id_eval]
+
+    if not list_id:
+        click.echo('  nothing is stale for {model}'.format(model = runner.id_model))
+
+    for one in list_id:
+        click.echo(one)
+        _measure_one(tree, one, runner, count_sample, is_record)
+
+
+# -----------------------------------------------------------------------------
+def _measure_one(tree, id_eval, runner, count_sample, is_record):
+    """
+    Measure one eval and write the rates, recording them where asked.
+
+    """
+
+    try:
+        item = tree.resolve(id_eval)
+    except cc_public.edit.tree.ErrorItem as err:
         _fail(err)
 
     document_eval  = tree.context.map_document[item.location]
@@ -740,6 +769,11 @@ def questions(is_open_only, list_root):
 @click.option('--source', 'list_source', multiple = True,
               help = 'A source item, by readable id or guid: show the '
                      'requirements it implements and the ones it verifies.')
+@click.option('--changed-since', 'ref', default = None, metavar = 'REF',
+              help = 'Show what the files changed since REF, a commit or a '
+                     'branch, may affect: every item in them that implements '
+                     'or verifies a requirement. Potentially affected; a '
+                     'static edge claims no more.')
 @click.option('--gaps', 'is_gaps_only', is_flag = True,
               help = 'Show only requirements that lack something.')
 @click.option('--closed-world', 'is_closed_world', is_flag = True,
@@ -750,7 +784,7 @@ def questions(is_open_only, list_root):
               default = 'text', show_default = True,
               help = 'text for a person; json for a program, in a stable order.')
 @OPTION_ROOT
-def trace(list_requirement, list_source, is_gaps_only, is_closed_world,
+def trace(list_requirement, list_source, ref, is_gaps_only, is_closed_world,
           id_format, list_root):
     """
     Show what each requirement derives from, what implements it, what
@@ -761,7 +795,18 @@ def trace(list_requirement, list_source, is_gaps_only, is_closed_world,
 
     """
 
-    map_document = _tree(list_root).context.map_document
+    tree         = _tree(list_root)
+    map_document = tree.context.map_document
+
+    if ref is not None:
+        try:
+            set_filepath = cc_public.load.git.changed_since(tree.root, ref)
+        except cc_public.load.git.ErrorGit as err:
+            _fail(err)
+        cc_public.cli.report.write_impact(
+            cc_public.trace.impact_of_files(map_document, set_filepath, is_closed_world),
+            id_format)
+        return
 
     if list_source:
         list_impact = [cc_public.trace.impact(map_document, name, is_closed_world)
@@ -785,6 +830,28 @@ def trace(list_requirement, list_source, is_gaps_only, is_closed_world,
         list_record = [r for r in list_record if r.gap]
 
     cc_public.cli.report.write_trace(list_record, id_format)
+
+
+# -----------------------------------------------------------------------------
+@main.command()
+@click.argument('name')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True,
+              help = 'text for a person; json for a program.')
+@OPTION_ROOT
+def show(name, id_format, list_root):
+    """
+    Show one item, by readable id or guid: where it is, what it says of
+    itself, every edge it holds, and every edge that points at it.
+
+    """
+
+    found = cc_public.trace.neighbourhood(_tree(list_root).context.map_document, name)
+
+    if found is None:
+        _fail('Nothing in this tree is named {name}.'.format(name = name))
+
+    cc_public.cli.report.write_neighbourhood(found, id_format)
 
 
 # -----------------------------------------------------------------------------

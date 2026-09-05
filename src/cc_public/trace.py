@@ -214,6 +214,82 @@ def impact(map_document, name, is_closed_world = False):
 
 
 # -----------------------------------------------------------------------------
+def impact_of_files(map_document, set_filepath, is_closed_world = False):
+    """
+    Return the Impact of every item in the files named that implements
+    or verifies a requirement, in id order.
+
+    Every document in a changed file is taken as possibly changed, the
+    module's and each definition's alike, which is conservative where a
+    change touched one function of many.
+
+    """
+
+    list_out = []
+
+    for (location, document) in sorted(map_document.items()):
+        if location.filepath not in set_filepath or not isinstance(document, dict):
+            continue
+        found = impact(map_document, document.get(KEY_GUID_SELF), is_closed_world)
+        if found is not None and (found.implements or found.verifies):
+            list_out.append(found)
+
+    return list_out
+
+
+# -----------------------------------------------------------------------------
+class Neighbourhood(typing.NamedTuple):
+    """
+    One item and every edge at it: those it holds, as (relation, target
+    id), and those held by others that point at it, as (source id,
+    relation). Targets and sources are named by id where they resolve
+    and by guid where they do not.
+
+    """
+
+    id_self:   str
+    guid_self: str
+    location:  str
+    title:     str | None
+    brief:     str | None
+    outgoing:  tuple
+    incoming:  tuple
+
+
+# -----------------------------------------------------------------------------
+def neighbourhood(map_document, name):
+    """
+    Return the Neighbourhood of the item called name, an id or a guid,
+    or None where nothing is called that.
+
+    """
+
+    (map_by_guid, map_edge) = _index(map_document)
+    guid = name if name in map_by_guid else next(
+                (g for (g, d) in map_by_guid.items() if d.get(KEY_ID_SELF) == name), None)
+
+    if guid is None:
+        return None
+
+    item     = map_by_guid[guid]
+    location = next((str(loc) for (loc, d) in map_document.items()
+                     if isinstance(d, dict) and d.get(KEY_GUID_SELF) == guid), '')
+    outgoing = tuple((e.get(KEY_ID_REL), _name(e.get(KEY_GUID_TGT), map_by_guid, []))
+                     for e in map_edge.get(guid, []))
+    incoming = tuple(sorted((map_by_guid[g].get(KEY_ID_SELF) or g, e.get(KEY_ID_REL))
+                            for (g, edges) in map_edge.items()
+                            for e in edges if e.get(KEY_GUID_TGT) == guid))
+
+    return Neighbourhood(id_self   = item.get(KEY_ID_SELF),
+                         guid_self = guid,
+                         location  = location,
+                         title     = item.get('title'),
+                         brief     = ' '.join(str(item.get('brief') or '').split()) or None,
+                         outgoing  = outgoing,
+                         incoming  = incoming)
+
+
+# -----------------------------------------------------------------------------
 def _gaps(record, is_closed_world):
     """
     Yield what the requirement lacks, given its status and the world.

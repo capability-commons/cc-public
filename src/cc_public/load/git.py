@@ -29,6 +29,7 @@ relation:               []
 
 
 import subprocess
+import pathlib
 import typing
 
 import ruamel.yaml
@@ -150,6 +151,26 @@ def revision(root):
         return git(root, 'rev-parse', 'HEAD').strip()
     except ErrorGit:
         return None
+
+
+# -----------------------------------------------------------------------------
+def changed_since(root, ref):
+    """
+    Return the files under root changed since ref, committed or not,
+    as resolved paths: what a diff against ref touches, and what the
+    working tree has changed or added since.
+
+    """
+
+    root  = pathlib.Path(root).resolve()
+    names = set(git(root, 'diff', '--name-only', ref, '--').split('\n'))
+
+    for line in git(root, 'status', '--porcelain=v1', '-z',
+                    '--untracked-files=all').split('\0'):
+        if len(line) > 3:
+            names.add(line[3:])
+
+    return {root / name for name in names if name}
 
 
 # -----------------------------------------------------------------------------

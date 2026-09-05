@@ -133,3 +133,51 @@ def test_new_takes_its_fields_and_edges_in_one_command(repo):
     assert clean(repo) == []
     out = run('new', '--root', str(repo), 't_ddr', 'ddr_half', '--set', 'title')
     assert out.exit_code == 2 and 'PATH=VALUE' in out.output
+
+
+def test_show_names_every_edge_at_an_item_both_ways(repo):
+    out = run('show', '--root', str(repo), 'req_printer_idempotent')
+    assert out.exit_code == 0, out.output
+    assert 'holds        r_is_derived_from  need_layout_stable' in out.output
+    assert 'holds        r_is_implemented_by  pym_cc_public.layout' in out.output
+    out = run('show', '--root', str(repo), 'need_layout_stable')
+    assert 'pointed at by req_printer_idempotent  r_is_derived_from' in out.output
+    out = run('show', '--root', str(repo), 'need_layout_stable', '--format', 'json')
+    assert out.exit_code == 0
+    import json
+    found = json.loads(out.output)
+    assert ['req_printer_idempotent', 'r_is_derived_from'] in found['incoming']
+    assert found['location'].endswith('need_layout_stable.yaml')
+    assert run('show', '--root', str(repo), 'nothing').exit_code == 2
+
+
+def test_trace_says_what_the_files_changed_since_a_ref_may_affect(repo):
+    import subprocess
+    for args in (['init', '-q'], ['config', 'user.name', 'T'], ['config', 'user.email', 't@t'],
+                 ['add', '-A'], ['-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start']):
+        subprocess.run(['git', '-C', str(repo), *args], check = True)
+    path = repo / 'src' / 'cc_public' / 'layout.py'
+    path.write_text(path.read_text() + '\n# touched\n')
+    (repo / 'README.md').write_text('unrelated\n')
+    out = run('trace', '--root', str(repo), '--changed-since', 'HEAD')
+    assert out.exit_code == 0, out.output
+    assert 'pym_cc_public.layout' in out.output and 'implements   req_printer_idempotent' in out.output
+    assert 'req_renamer_keeps_guid' not in out.output
+    out = run('trace', '--root', str(repo), '--changed-since', 'HEAD', '--format', 'json')
+    import json
+    assert [i['id_self'] for i in json.loads(out.output)] == ['pym_cc_public.layout']
+    assert run('trace', '--root', str(repo), '--changed-since', 'nowhere').exit_code == 2
+
+
+def test_measure_stale_names_the_evals_whose_confidence_is_missing_or_old(repo):
+    import cc_public.eval.measure
+    import cc_public.edit.field
+    tree = cc_public.edit.tree.Tree([repo])
+    stale = cc_public.eval.measure.list_stale(tree.context, 'openai/gpt-5.1')
+    assert 'evl_record_and_code_agree' not in stale               # measured, current
+    cc_public.edit.field.set_field(tree, 'evl_record_and_code_agree', 'criterion',
+                                   prose = 'Changed since it was measured.')
+    assert 'evl_record_and_code_agree' in cc_public.eval.measure.list_stale(tree.context, 'openai/gpt-5.1')
+    assert 'evl_record_and_code_agree' in cc_public.eval.measure.list_stale(tree.context, 'another/judge')
+    out = run('measure', '--root', str(repo), '--judge-model', 'null')
+    assert out.exit_code == 2 and '--stale' in out.output

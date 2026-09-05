@@ -343,6 +343,9 @@ def write_impact(list_impact, id_format):
                                for i in list_impact], indent = 2))
         return
 
+    if not list_impact:
+        click.echo('No item here implements or verifies a requirement.')
+
     for i in list_impact:
         click.echo('{id}'.format(id = i.id_self))
         for (label, records) in (('implements', i.implements), ('verifies', i.verifies)):
@@ -441,3 +444,30 @@ def _write_pass(e):
         click.echo('    commit   {h}'.format(h = e['commit'][:10]))
 
 
+# -----------------------------------------------------------------------------
+def write_neighbourhood(found, id_format):
+    """
+    Write one item and the edges at it, as text or as json.
+
+    """
+
+    if id_format == 'json':
+        out = found._asdict()
+        out['outgoing'] = [list(e) for e in found.outgoing]
+        out['incoming'] = [list(e) for e in found.incoming]
+        click.echo(json.dumps(out, indent = 2))
+        return
+
+    click.echo('{id}  {guid}'.format(id = found.id_self, guid = found.guid_self))
+    click.echo('    {label:12} {v}'.format(label = 'at', v = found.location))
+    for (label, value) in (('title', found.title), ('brief', found.brief)):
+        if value:
+            click.echo('    {label:12} {v}'.format(label = label, v = value))
+    for (rel, target) in found.outgoing:
+        click.echo('    {label:12} {rel}  {target}'.format(label = 'holds', rel = rel,
+                                                          target = target))
+    for (source, rel) in found.incoming:
+        click.echo('    {label:12} {source}  {rel}'.format(label = 'pointed at by',
+                                                          source = source, rel = rel))
+    if not (found.outgoing or found.incoming):
+        click.echo('    no edges')

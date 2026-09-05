@@ -43,6 +43,7 @@ VERDICT_MET   = cc_public.eval.runner.VERDICT_MET
 VERDICT_UNMET = cc_public.eval.runner.VERDICT_UNMET
 
 ORIGIN_POOLED = 'all'
+PREFIX_EVAL   = 'evl'
 
 # -----------------------------------------------------------------------------
 def measure(context, document_eval, runner, count_sample):
@@ -124,6 +125,32 @@ def _row(origin, list_detail, count_sample):
                                          for d in list_detail)
                                      / len(list_detail), 3)
                                if list_detail else 0.0)}
+
+
+# -----------------------------------------------------------------------------
+def list_stale(context, id_model):
+    """
+    Return the ids of every eval with control cases whose confidence
+    for id_model is absent or stale, in id order.
+
+    """
+
+    list_out = []
+
+    for (_, document) in sorted(context.map_document.items()):
+        if not isinstance(document, dict) or str(
+                document.get('id_self', '')).split('_', 1)[0] != PREFIX_EVAL:
+            continue
+        if not any(True for _ in cc_public.control.iter_case(
+                                context.map_document, document['guid_self'])):
+            continue
+        rows = [r for r in (document.get('confidence') or [])
+                  if r.get(cc_public.check.confidence.KEY_MODEL) == id_model]
+        if not rows or not all(cc_public.check.confidence.is_current(
+                                    r, document, context.map_document) for r in rows):
+            list_out.append(document['id_self'])
+
+    return list_out
 
 
 # -----------------------------------------------------------------------------

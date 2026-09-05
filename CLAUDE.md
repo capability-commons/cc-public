@@ -26,7 +26,8 @@ are shorthands. Every command has `--help`; the writing commands take
   of criterion, examples, scope and cases. Change any of those and the row
   is stale: the confidence check says so, and a guard on that eval is
   refused to that judge until it is measured again (`ddr_eval_admission`).
-  N is odd.
+  N is odd. `--stale` instead of `--id-eval` measures every eval whose
+  confidence for the judge is absent or stale.
 - `case --id-eval X --item Y --verdict met|unmet --note "…"` — turns a finding
   into a control case (met = suppressed, unmet = confirmed). A later sweep
   matching the same words reports a met case as a note, not a finding.
@@ -38,9 +39,13 @@ are shorthands. Every command has `--help`; the writing commands take
   — what each requirement derives from, what implements it
   (`r_is_implemented_by`, to a package, module, class or function), what
   verifies it (`r_verifies`) and what it lacks; `--source` shows what a
-  source item implements and verifies. Reads the same projection
-  (`cc_public.trace`) as the trace check. Proposed gaps are advisory;
-  accepted ones critical (`ddr_implementation_trace`).
+  source item implements and verifies; `--changed-since REF` shows what
+  every item in the files changed since a commit may affect. Reads the
+  same projection (`cc_public.trace`) as the trace check. Proposed gaps are
+  advisory; accepted ones critical (`ddr_implementation_trace`).
+- `show ITEM [--format json]` — one item: where it is, title and brief,
+  every edge it holds and every edge pointing at it. Use it before
+  grepping for a guid.
 - `attest --requirement X --outcome passed|failed --by NAME [--note …]` —
   records a person's or a tool's finding for a requirement verified by
   inspection, demonstration or analysis, into `evidence/evd_attestation`.
