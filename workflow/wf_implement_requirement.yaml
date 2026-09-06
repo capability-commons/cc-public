@@ -11,17 +11,21 @@ protective_mark:
 title:                  Implement and accept a requirement
 brief:                  |
                         An agent implements and tests a requirement;
+                        the tests are run and their evidence recorded;
                         then it is accepted, or the run says what it
                         lacks.
 description:            |
-                        Two nodes. The first is performed by an agent
-                        and parks the run with a brief: write the code
-                        and the test, link both, record evidence. On
-                        resume the second accepts the requirement
-                        through the same path as the accept command,
-                        or stops saying what is lacking, which is the
-                        brief for the next attempt. The
-                        per-requirement half of the requirements loop.
+                        Three nodes. The first is performed by an
+                        agent and parks the run with a brief: write
+                        the code and the test, link both. On resume
+                        the second runs the tests that verify the
+                        requirement and records the evidence, stopping
+                        on a failure. The third accepts the
+                        requirement through the same path as the
+                        accept command, or stops saying what is
+                        lacking, which is the brief for the next
+                        attempt. The per-requirement half of the
+                        requirements loop.
 
 node:
 
@@ -55,10 +59,29 @@ node:
         id_target:      cmp_accept_requirement
         guid_target:    cmp_469a5534091a49f2b3a0d7532e17907b
 
+  verify:
+    id_self:            node_implement_requirement.verify
+    guid_self:          node_cc4e09c088e74684a968822005598dbd
+    title:              Verify
+    brief:              |
+                        Runs the tests and records the evidence.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_verify_requirement
+        guid_target:    cmp_38096de1b470497e93c9fafaca0db996
+
 edge:
 
-  implement_to_accept:
+  implement_to_verify:
     from:               implement.output.implemented
+    to:                 verify.input.requirement
+
+  verify_to_accept:
+    from:               verify.output.verified
     to:                 accept.input.requirement
 
 relation:               []

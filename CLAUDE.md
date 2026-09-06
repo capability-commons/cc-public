@@ -103,8 +103,10 @@ Running and committing
   a report: it `revises` an input, or is `found` from one by a relation in
   a direction. A resume that finds nothing stops and leaves the record
   waiting. `wf_implement_requirement` with `dep_implement_local` is the
-  first: implement, then accept. When you are the performer, do the brief
-  through the tool, commit, then resume.
+  first: implement (agent), verify (runs the requirement's tests under
+  pytest and records `evd_pytest`; a failure stops and restores), then
+  accept. When you are the performer, do the brief through the tool,
+  commit, then resume.
 - `commit TITLE [--brief …] [--description …] [--link REL ITEM]` — runs the
   checks and the lint, refuses on a critical or lint finding unless
   `--checkpoint` and on an incomplete analysis always, writes a commit

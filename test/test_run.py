@@ -591,11 +591,11 @@ def test_a_component_in_code_names_a_function_and_carries_no_prompt(repo):
     assert any('not both' in f for f in faults), faults
 
 
-def perform(repo, req):
+def perform(repo, req, body = '    if 1 + 1 != 2:\n        raise AssertionError(\'no\')\n'):
     """
     Do what the implement node's brief asks, as a performer would: put
     a function into the tree, make it an item, and link it as the
-    requirement's verifier with evidence that it passed.
+    requirement's verifier.
 
     """
     tree = cc_public.edit.tree.Tree([repo])
@@ -604,7 +604,8 @@ def perform(repo, req):
                           ('description', 'Holds a stand-in for a test.')):
         cc_public.edit.field.set_field(tree, 'pym_cc_public.probe', field, value = text)
     path = repo / 'src' / 'cc_public' / 'probe.py'
-    path.write_text(path.read_text() + '\n\ndef test_probe():\n    """\n    Proves it.\n\n    """\n')
+    path.write_text(path.read_text() + '\n\ndef test_probe():\n    """\n    Proves it.\n\n    """\n'
+                    + body)
     tree = cc_public.edit.tree.Tree([repo])
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.probe.test_probe',
                            tree.defaults())
@@ -613,7 +614,6 @@ def perform(repo, req):
     cc_public.edit.field.set_field(tree, 'pyf_cc_public.probe.test_probe', 'description',
                                    prose = 'A stand-in for a test.')
     cc_public.edit.link.link(tree, 'pyf_cc_public.probe.test_probe', 'r_verifies', req)
-    cc_public.evidence.from_pytest(repo, {'src/cc_public/probe.py::test_probe': 'passed'}, 'x')
 
 
 def test_an_agent_node_parks_the_run_and_resume_reads_its_outputs_from_the_tree(repo):
@@ -640,8 +640,8 @@ def test_an_agent_node_parks_the_run_and_resume_reads_its_outputs_from_the_tree(
     tree = cc_public.edit.tree.Tree([repo])
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
     assert exe['outcome'] == 'waiting' and exe['waiting']['node'] == 'implement'
-    assert exe['state']['queue'] == ['accept'] and exe['state']['pass'] == {'implement': 1,
-                                                                            'accept': 0}
+    assert exe['state']['queue'] == ['verify', 'accept']
+    assert exe['state']['pass'] == {'implement': 1, 'verify': 0, 'accept': 0}
     assert [(b['port'], b['id_item']) for b in exe['state']['bound']] == \
            [('implement.input.requirement', req)]
 
@@ -658,10 +658,15 @@ def test_an_agent_node_parks_the_run_and_resume_reads_its_outputs_from_the_tree(
 
     r3 = cc_public.workflow.run.resume(repo, r['execution'], Scripted(), Judge())
     assert r3['stopped'] is None, r3['stopped']
-    assert [e['node'] for e in r3['node']] == ['implement', 'accept']
+    assert [e['node'] for e in r3['node']] == ['implement', 'verify', 'accept']
+    assert r3['node'][1]['revised'] == [req]
+    evidence = cc_public.load.from_file(repo / 'evidence' / 'evd_pytest.yaml')
+    (row,) = [c for c in evidence['case'].values() if c['id_requirement'] == req]
+    assert row['outcome'] == 'passed' and row['id_case'] == 'pyf_cc_public.probe.test_probe'
     assert r3['node'][0]['revised'] == [req]
     assert r3['node'][0]['made'] == ['pyf_cc_public.probe.test_probe']
-    assert r3['node'][0]['fired'] == ['accept.input.requirement']
+    assert r3['node'][0]['fired'] == ['verify.input.requirement']
+    assert r3['node'][1]['fired'] == ['accept.input.requirement']
     assert r3['outcome'] == 'completed'
     assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'accepted'
     exe = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
@@ -690,3 +695,33 @@ def test_each_performer_is_held_to_its_form(repo):
     assert any("only an agent's output does" in f for f in faults), faults
     assert any('says neither what it revises nor how' in f for f in faults), faults
     assert any('test carries no prompt' in f for f in faults), faults
+
+
+def test_a_failing_test_stops_the_run_at_verify_and_restores_the_evidence(repo):
+    """
+    The verify node runs the requirement's tests; one that fails stops
+    the run, which says which, leaves the record waiting and puts the
+    evidence back as it was.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    req  = 'req_committer_writes_record'
+    cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'proposed')
+    r = cc_public.workflow.run.run(repo, 'wf_implement_requirement', 'dep_implement_local',
+                                   {'implement.input.requirement': req}, Scripted(), Judge())
+    assert r['outcome'] == 'waiting'
+    perform(repo, req, body = '    raise AssertionError(\'no\')\n')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'performed badly')
+    before = (repo / 'evidence' / 'evd_pytest.yaml').read_bytes()
+
+    r2 = cc_public.workflow.run.resume(repo, r['execution'], Scripted(), Judge())
+    assert r2['stopped'] and 'did not pass' in r2['stopped'] and 'test_probe failed' in r2['stopped']
+    assert (repo / 'evidence' / 'evd_pytest.yaml').read_bytes() == before
+    assert git(repo, 'status', '--porcelain') == ''
+    tree = cc_public.edit.tree.Tree([repo])
+    exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
+    assert exe['outcome'] == 'waiting'
+    assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'proposed'

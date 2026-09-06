@@ -30,11 +30,20 @@ relation:               []
 """
 
 
+import importlib.metadata
+
 import cc_public.edit.accept
+import cc_public.edit.tree
+import cc_public.evidence
+import cc_public.facts
 
 
 PORT_REQUIREMENT = 'requirement'
 PORT_ACCEPTED    = 'accepted'
+PORT_VERIFIED    = 'verified'
+REL_VERIFIES     = 'r_verifies'
+PREFIX_FUNCTION  = 'pyf'
+SEPARATOR        = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -82,3 +91,94 @@ def accept(tree, ledger, map_input):
     cc_public.edit.accept.accept(tree, id_requirement)
 
     return {PORT_ACCEPTED: id_requirement}
+
+
+# -----------------------------------------------------------------------------
+def verify(tree, ledger, map_input):
+    """
+    ---
+
+    id_self:                pyf_cc_public.workflow.component.verify
+    guid_self:              pyf_7a3befec6f8946bca5f4f0dc70793ed9
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Verify a requirement
+    brief:                  |
+                            Run the tests that verify the requirement
+                            bound to the requirement input, record what
+                            they observed as evidence, and return the
+                            requirement on the verified output. Refuse
+                            where any did not pass, so that the run stops
+                            and says which.
+
+                            A requirement nothing verifies by test runs
+                            nothing: its evidence, if any, is an
+                            attestation, and the accept node says what it
+                            lacks. The evidence file is noted on the
+                            ledger first, so that a stop puts the tree
+                            back as it was, the failure being in the
+                            report.
+    description:            |
+                            The second component in code. Finds the
+                            function items that verify the requirement,
+                            runs them under pytest in a subprocess,
+                            records what they observed through the same
+                            evidence writer the test session uses, and
+                            refuses where any did not pass.
+    relation:               []
+
+    ...
+    """
+
+    id_requirement = map_input[PORT_REQUIREMENT]
+    list_nodeid    = _nodeids(tree, tree.resolve(id_requirement))
+
+    if not list_nodeid:
+        return {PORT_VERIFIED: id_requirement}
+
+    path = tree.root / cc_public.evidence.DIR_EVIDENCE \
+                     / (cc_public.evidence.ID_PYTEST + cc_public.evidence.SUFFIX)
+    (ledger.note_modify if path.exists() else ledger.note_create)(path)
+
+    map_outcome = cc_public.evidence.observe(tree.root, list_nodeid)
+    written     = cc_public.evidence.from_pytest(tree.root, map_outcome,
+                                                 importlib.metadata.version('pytest'))
+    if written is not None:
+        tree.refresh(written)
+
+    list_bad = sorted(n for (n, o) in map_outcome.items()
+                        if o != cc_public.evidence.OUTCOME_PASSED)
+    if list_bad:
+        raise cc_public.edit.tree.ErrorItem(
+                '{n} of {m} test(s) verifying {req} did not pass: {which}.'.format(
+                        n = len(list_bad), m = len(map_outcome), req = id_requirement,
+                        which = '; '.join('{t} {o}'.format(t = t, o = map_outcome[t])
+                                          for t in list_bad)))
+
+    return {PORT_VERIFIED: id_requirement}
+
+
+# -----------------------------------------------------------------------------
+def _nodeids(tree, requirement):
+    """
+    Return the pytest node ids of the function items that verify the
+    requirement, path::name, sorted.
+
+    """
+
+    facts     = cc_public.facts.facts(tree.context.map_document)
+    map_guid  = {item.guid_self: item for item in tree.map_id.values()}
+    list_item = [map_guid[e.guid_source] for e in facts.edge
+                 if e.id_relation == REL_VERIFIES and e.guid_target == requirement.guid_self
+                 and e.guid_source in map_guid]
+
+    return sorted('::'.join([str(item.filepath.relative_to(tree.root)),
+                             *item.location.anchor])
+                  for item in list_item
+                  if item.id_self.split(SEPARATOR, 1)[0] == PREFIX_FUNCTION)

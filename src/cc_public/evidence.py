@@ -35,7 +35,12 @@ relation:               []
 
 import datetime
 import hashlib
+import os
 import pathlib
+import subprocess
+import sys
+import tempfile
+import xml.etree.ElementTree
 
 import ruamel.yaml.scalarstring
 
@@ -51,6 +56,7 @@ import cc_public.trace
 
 ID_TYPE          = 't_verification_evidence'
 DIR_EVIDENCE     = 'evidence'
+SUFFIX           = '.yaml'
 ID_PYTEST        = 'evd_pytest'
 ID_ATTESTATION   = 'evd_attestation'
 
@@ -223,6 +229,69 @@ def record(tree, id_item, method, observer, list_row, title):
             cc_public.edit.field.set_field(tree, id_item, key, value = value)
 
     return item.filepath
+
+
+# -----------------------------------------------------------------------------
+def observe(root, list_nodeid):
+    """
+    Run pytest on the node ids, in a subprocess with the tree's src
+    first on the path, and return {nodeid: outcome} read from the
+    JUnit report pytest wrote, so that a run records what it saw
+    whether or not a conftest did.
+
+    """
+
+    src = pathlib.Path(root) / 'src'
+    env = dict(os.environ)
+    env['PYTHONPATH'] = os.pathsep.join([str(src), env.get('PYTHONPATH', '')]).rstrip(os.pathsep)
+    env['PYTHONDONTWRITEBYTECODE'] = '1'          # leave no cache in the tree
+
+    with tempfile.TemporaryDirectory() as dirpath:
+        path_report = pathlib.Path(dirpath) / 'report.xml'
+        command     = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+                       '--junitxml', str(path_report), *list_nodeid]
+        subprocess.run(command, cwd = root, env = env, capture_output = True,  # noqa: S603 -- the interpreter and pytest, on ids the tree names
+                       text = True, check = False)
+        map_junit = _junit(path_report) if path_report.exists() else {}
+
+    return {nodeid: map_junit.get(_junit_id(nodeid), OUTCOME_NOT_RUN)
+            for nodeid in list_nodeid}
+
+
+# -----------------------------------------------------------------------------
+def _junit(path_report):
+    """
+    Return {(classname, name): outcome} from a JUnit report, instances
+    of a parametrised function folded to their function.
+
+    """
+
+    root = xml.etree.ElementTree.parse(path_report).getroot()   # noqa: S314 -- pytest wrote it, just now, into a private directory
+    seen = {}
+
+    for case in root.iter('testcase'):
+        key  = (case.get('classname', ''), case.get('name', '').split('[', 1)[0])
+        tags = {child.tag for child in case}
+        seen.setdefault(key, []).append(
+                OUTCOME_FAILED if tags & {'failure', 'error'} else
+                OUTCOME_SKIPPED if 'skipped' in tags else OUTCOME_PASSED)
+
+    return {key: outcome_of(list_outcome)[0] for (key, list_outcome) in seen.items()}
+
+
+# -----------------------------------------------------------------------------
+def _junit_id(nodeid):
+    """
+    Return the (classname, name) pytest gives a node id in a JUnit
+    report: the path as a dotted module with any classes appended, and
+    the function.
+
+    """
+
+    (path, *anchor) = nodeid.split('::')
+    module          = path.removesuffix('.py').replace('/', '.')
+
+    return ('.'.join([module, *anchor[:-1]]), anchor[-1] if anchor else '')
 
 
 # -----------------------------------------------------------------------------
