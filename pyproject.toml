@@ -129,3 +129,16 @@ layers                  = ["cc_public.cli",
 "test/*"                = ["S101", "E501", "PLR0913", "PLR0917", "PLR0915", "ARG001",
                            "SLF001"]  # a test may be long, and reach the internals of what it tests
 "src/cc_public/cli/*.py" = ["PLR0913", "PLR0917"]   # a click command takes one argument per option
+
+# The demonstration's temporary user interface: a Streamlit app beside the
+# captures in ../demo, outside the tree. Its own environment, so that the
+# kernel's environment carries nothing for it.
+#
+[tool.pixi.feature.demo.pypi-dependencies]
+streamlit               = ">=1.40"
+
+[tool.pixi.feature.demo.tasks]
+ui                      = "streamlit run ../demo/ui/app.py --server.headless true --server.port 8501"
+
+[tool.pixi.environments]
+demo                    = { features = ["demo"], solve-group = "default" }

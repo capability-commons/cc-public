@@ -136,6 +136,10 @@ Pixi tasks
   code edit; `commit` runs both and refuses on a finding.
 - `pixi run gate` — what a pipeline runs: check with the world closed and
   failing on a critical finding, lint, test. `check` alone only reports.
+- `pixi run -e demo ui` — the demonstration's temporary Streamlit interface,
+  `../demo/ui/app.py`, in its own `demo` environment: a reader over the
+  tree and a control panel that shells `cctool` one job at a time. It edits
+  no item. Disposable; the projection it reads is not.
 
 ## Writing items — use the tool, never hand-edit
 
