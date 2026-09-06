@@ -277,6 +277,23 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
   when you are the one committing. Do not commit unless asked; the user
   commits, and a workflow run commits at its end.
 
+## Segments
+
+This repository is the core (`seg_cc_public`, `ddr_segment`). A repository
+declares itself with one `t_segment` item in `segment/`, governs the
+directory that directory sits in, and names by `r_consumes` every segment
+whose items its own may refer to. A reference may run within its segment
+or into one it consumes, never the other way; the segment check refuses
+the rest. A file under no segment is passed over.
+
+The core consumes nothing and holds what travels: the tool, the schemas,
+types, relations, registers and evals. A consumer holds its own items and
+in time its own schemas, usable from it and from anything consuming it,
+never from here. A consumer's gate names both roots and asserts the union
+closed; this repository's gate names only itself, so a consumer's content
+is never checked here and its own gate must run. The Brave1 demonstration
+is `../cc-brave1-demo`.
+
 ## Where things are
 
 `ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,

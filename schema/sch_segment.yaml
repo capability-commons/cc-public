@@ -1,0 +1,48 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_segment.yaml
+id_self:                sch_segment
+guid_self:              sch_52c08f6a29094a64b49706d0303008c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Segment schema
+brief:                  |
+                        Schema for segment data items: a repository
+                        declaring itself and what it consumes.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A segment item names the repository
+                        it governs, which is the directory its own
+                        directory sits in, and names by r_consumes
+                        every segment whose items it may refer to.
+                        Dependence is one way: nothing a segment holds
+                        may name anything belonging to a segment that
+                        consumes it, or to one beside it.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    properties:
+
+      role:
+        type:           string
+
+        enum:
+          - core
+          - segment
+
+        description:    |
+                        Optional. core: a repository other segments
+                        consume and which consumes none. segment: a
+                        consumer.
+
+unevaluatedProperties:  false

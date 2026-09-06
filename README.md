@@ -24,6 +24,7 @@ mechanically before it is committed.
 | `execution/`     | one record per workflow run, binding every port on every pass; a waiting one holds the run's state and a brief for its performer |
 | `evidence/`      | what pytest and attestations observed about each requirement, stamped with what they saw |
 | `query/`         | questions about the graph kept as SQL over its facts, with what a row means               |
+| `segment/`       | this repository declaring itself, and what it consumes                        |
 | `src/cc_public/` | `cctool`, which checks, edits, runs and commits                              |
 
 ## The trust model
@@ -105,6 +106,16 @@ design decisions in `ddr/` say why things are as they are; start with
 `ddr_layered_architecture`, `ddr_eval_measurement`,
 `ddr_implementation_trace`, `ddr_verification_evidence`,
 `ddr_workflow_execution` and `ddr_performer`.
+
+## Segments
+
+This is the core repository: it consumes nothing and holds what travels
+between segments. A repository declares itself with a segment item, names
+what it consumes, and may refer only to its own items and to those of the
+segments it consumes, directly or through them. The segment check refuses
+a reference that runs the other way, so a core cannot come to depend on
+its consumers. A consumer's gate names both roots and asserts their union
+closed; the core's gate sees only itself.
 
 ## Limitations
 

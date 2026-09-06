@@ -1,0 +1,186 @@
+id_self:                ddr_segment
+guid_self:              ddr_1b73ef9767c745bca918a448229fa1b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  'Segments: a repository is the world, and dependence runs one way'
+brief:                  |
+                        A repository declares itself a segment and
+                        names what it consumes; a reference may run
+                        within a segment or into one it consumes,
+                        never the other way, and the check refuses the
+                        rest.
+context:                |
+                        The tool always took a union of roots and let
+                        the caller assert that the union was closed,
+                        but everything had lived in one repository, so
+                        nothing said what a repository was or which
+                        references were allowed to cross. The
+                        demonstration built for Brave1 grew until its
+                        items outweighed the tool: of one hundred and
+                        fifty-nine requirements, one hundred and
+                        forty-two were its, and every advisory finding
+                        in the repository was a trace gap on one of
+                        them, so the tool could no longer see what it
+                        was itself accountable for. Federation was
+                        always the intent, and the
+                        opportunity-formation proposal describes
+                        segments publishing to and consuming from one
+                        another, but nothing held the direction of
+                        that dependence.
+decision:               |
+                        A SEGMENT is a repository that declares itself
+                        with one item of type t_segment, prefix seg,
+                        in segment/. The directory it governs is the
+                        one its own directory sits in, so the item
+                        both declares the repository and locates it,
+                        and a segment declared beneath another governs
+                        what is beneath it. A segment names by
+                        r_consumes, which is acyclic, every segment
+                        whose items its own may refer to.
+
+                        A REFERENCE may run within its segment, or
+                        into a segment its own consumes, directly or
+                        through what those consume in turn. Nothing
+                        else is allowed: an item may not name anything
+                        belonging to a segment that consumes its own,
+                        or to one beside it. The segment check refuses
+                        the rest as critical. A file under no segment
+                        is passed over, so a tree that declares none
+                        is unaffected and segments are adopted one
+                        repository at a time.
+
+                        The CORE is the segment that consumes nothing
+                        and holds what travels: the checks and the
+                        tool, and the schemas, types, relations,
+                        registers and evals every other segment uses.
+                        A consuming segment holds its own items, and
+                        in time its own schemas and registers, which
+                        are then usable from it and from anything that
+                        consumes it, never from the core.
+
+                        A segment's GATE names the roots it needs,
+                        which are its own and everything it consumes,
+                        and asserts that their union is closed. The
+                        core's gate names only itself. So a consumer's
+                        items are never checked by the core's gate,
+                        and a consumer must run its own.
+rationale:              |
+                        The root already scoped what was analysed; a
+                        segment gives that scope a name, a declaration
+                        and a rule, so what was a convention of
+                        invocation becomes something the checks hold.
+                        Deriving the governed directory from where the
+                        item sits means a repository cannot misdeclare
+                        its own extent, and makes a segment inside
+                        another work without a second mechanism.
+                        Refusing a reference by direction rather than
+                        by kind of item is what keeps a core free of
+                        its consumers: the core cannot come to depend
+                        on a segment by accident, which is the failure
+                        that makes a shared kernel unshareable.
+                        Passing over files under no segment lets the
+                        rule arrive without a migration, which is how
+                        every other rule here has arrived.
+alternative:            |
+                        Marking speculative items so the trace skips
+                        them: rejected, since a field can drift and
+                        the question is about ownership, not maturity.
+                        Selecting by subtree in the trace command
+                        alone: rejected, since it answers one check
+                        and leaves the others sharing a world. A
+                        manifest listing each segment's directories:
+                        rejected, since the item's own location says
+                        it. Naming the consumed segment on every
+                        reference: rejected as noise; the segment says
+                        it once. Enforcing by convention and review:
+                        rejected, since the point is that it cannot be
+                        enforced by attention.
+consequence:            |
+                        A type, a schema, a relation and a check, and
+                        one segment item in this repository. The
+                        demonstration moved to cc-brave1-demo, which
+                        consumes this segment, names both roots on
+                        every command and asserts the union closed;
+                        this repository's trace speaks for its own
+                        seventeen requirements again. The kernel loads
+                        every recognised file under a visible
+                        directory, so a segment's captures, tools and
+                        outputs must live under a hidden directory
+                        until there is an ignore rule. A consumer's
+                        content rots unless its own gate runs, which
+                        is the price of the core never seeing it.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_segment
+    guid_target:        sch_52c08f6a29094a64b49706d0303008c8
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_segment
+    guid_target:        t_ea7ae026558f44718988cacbcad360b4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_consumes
+    guid_target:        r_5b701ec2cf534d52b74c390129749ef5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          seg_cc_public
+    guid_target:        seg_ff49a69806ab46dcb447c9d7a587c569
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.segment
+    guid_target:        pym_9e6451efbd0040629ca2d539bf215321
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_test.test_segment
+    guid_target:        pym_2ed4892095d0498294ff644eb9f30e5a
+
+question:
+
+  ignore:
+    id_self:            qst_segment.ignore
+    guid_self:          qst_21476e98b5774116bb0c856c105d97d2
+    question:           |
+                        Whether a segment should declare what is not
+                        an item, so that a repository can hold its
+                        captures, scripts and rendered documents in
+                        visible directories instead of a hidden one.
+    relation:           []
+
+  publish:
+    id_self:            qst_segment.publish
+    guid_self:          qst_e36aeb9367cf4733871a26cff0213b0f
+    question:           |
+                        What a segment publishes as against what it
+                        merely holds, when a third segment consumes a
+                        second: whether everything of a consumed
+                        segment is visible, or only what it declares
+                        public.
+    relation:           []
+
+  lifecycle:
+    id_self:            qst_segment.lifecycle
+    guid_self:          qst_a73b65611cdd43448dccf7e181eb190d
+    question:           |
+                        What a status claims once segments exist: who
+                        asserted it, against which revision of the
+                        content, under what authority, and what a
+                        reader of another segment may conclude from
+                        it. The vocabularies differ by type today, and
+                        differ for good reasons; what must travel
+                        between segments is the contract, not the
+                        vocabulary.
+    relation:           []

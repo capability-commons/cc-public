@@ -1325,3 +1325,32 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_product
         guid_target:    sch_4a9c9fd8eccc43289b3423350b0115f9
+
+  t_segment:
+    id_self:            t_segment
+    guid_self:          t_ea7ae026558f44718988cacbcad360b4
+    title:              Segment type
+    brief:              |
+                        Type of segment data items
+    description:        |
+                        Each segment data item declares one repository
+                        of the commons and the segments it consumes.
+                        The repository it governs is the directory
+                        holding the directory the item sits in, so a
+                        repository declares itself by holding one.
+    prefix:             seg
+    regex_id:           ^seg_[a-z][a-z0-9_]*$
+    home:               segment
+    usage:              |
+                        One per repository, in segment/. The segment
+                        check holds every reference to the direction
+                        the r_consumes edges declare. A repository
+                        that declares none is passed over, so segments
+                        can be adopted one repository at a time.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_segment
+        guid_target:    sch_52c08f6a29094a64b49706d0303008c8
