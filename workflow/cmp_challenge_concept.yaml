@@ -1,0 +1,120 @@
+id_self:                cmp_challenge_concept
+guid_self:              cmp_ac4a405495af45d589969ad0935bd307
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Challenge a concept
+brief:                  |
+                        Construct the strongest case against a
+                        concept, from a stance independent of the one
+                        that proposed it.
+description:            |
+                        Given a concept and the need it answers, write
+                        the challenge: the strongest specific case
+                        that the concept does not serve the need, that
+                        a failure the source reports is ignored, that
+                        an assumption is false or unevidenced, that a
+                        quantity or product was copied from the source
+                        as if established, that a candidate
+                        requirement restates the need or cannot be
+                        verified or is missing, that the entity
+                        boundary hides part of the problem, or that a
+                        simpler concept was better. Runs on the
+                        deployment's challenge model, never the
+                        proposer's. Where a resolution already answers
+                        a prior challenge, either raise what it leaves
+                        open or concede that the position stands.
+                        Follows method_admissible_claims.
+
+output:
+
+  concept:
+    id_self:            prt_challenge_concept.concept
+    guid_self:          prt_43ba694339cc44769c3ff06691802238
+    title:              Challenged concept
+    brief:              |
+                        The same concept, carrying its challenge.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    revises:            proposal
+
+    field:
+      - challenge
+
+    prompt:             |
+                        Read the concept on proposal and the need on
+                        need. Write in challenge the strongest case
+                        against the concept: be specific, quote the
+                        assumption, part, candidate requirement or
+                        claim you attack, and say what would happen if
+                        you are right. Attack on these grounds where
+                        they apply: the concept does not serve the
+                        need's outcome in its context; a failure the
+                        need's evidence reports that the concept
+                        ignores; an assumption that is false,
+                        unevidenced or contradicted; a quantity or
+                        product copied from the source and treated as
+                        established; a candidate requirement that
+                        restates the need, cannot be verified, or is
+                        missing where an implementation would need it;
+                        the entity boundary hiding part of the
+                        problem; a simpler concept that was better. A
+                        challenge is one round. Where the concept
+                        carries a resolution to an earlier challenge,
+                        first say, point by point, whether the
+                        resolution answers it; press only a point it
+                        leaves open, and open new ground only where
+                        the revision itself created it. Where every
+                        point is answered and the revision opened
+                        nothing material, say that the position stands
+                        and why, and stop. Do not repeat the concept,
+                        do not praise it, and do not mention rules or
+                        style.
+
+    relation:
+
+      - id_relation:    r_is_judged_by
+        guid_relation:  r_2ad95cd22e3e45beb317f3e082386a96
+        id_target:      evl_challenge_answered
+        guid_target:    evl_63a94938fe014899b093e1ed560d599a
+
+performer:              model
+relation:               []
+
+input:
+
+  proposal:
+    id_self:            prt_challenge_concept.proposal
+    guid_self:          prt_ab3a586908dc4cedb2d1dec16915c4bc
+    title:              Concept
+    brief:              |
+                        The concept to challenge.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    relation:           []
+
+  need:
+    id_self:            prt_challenge_concept.need
+    guid_self:          prt_92e97dde88274ddc99bfdc52651649f5
+    title:              Need
+    brief:              |
+                        The need the concept answers.
+    id_type:            t_need
+    guid_type:          t_e2252072b81d4aac8ee8f267b42d34be
+    relation:           []
+
+  guide:
+    id_self:            prt_challenge_concept.guide
+    guid_self:          prt_ff6e79ef895a4ace85d4c99a0c6621ea
+    title:              Writing style guide
+    brief:              |
+                        The register of writing style rules the prose
+                        follows.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []

@@ -1,0 +1,83 @@
+id_self:                ddr_port_link
+guid_self:              ddr_354a273e6fa74f97af9763d1bd6a330c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A port links by any relation to any inputs
+brief:                  |
+                        An output port carries a map from relation to
+                        input ports, replacing the two scalar fields
+                        decides and derives.
+context:                |
+                        An output port said what its item decides and
+                        what it derives from, one input port each, and
+                        the executor added one r_decides and one
+                        r_is_derived_from edge. The demonstration for
+                        Brave1 makes a concept that derives from a
+                        need and is framed by a framing, and a
+                        requirement that derives from a concept and a
+                        need; an engineering-basis decision decides
+                        several items at once. Two scalar fields for
+                        two fixed relations could not say any of that,
+                        and the demonstrator design proposed widening
+                        decides to a list.
+decision:               |
+                        An output port carries link, a map from a
+                        relation identifier to a list of input port
+                        names. For each relation and each port named,
+                        the executor adds one edge of that relation
+                        from the item it made to the item bound on
+                        that port, after the item is made and before
+                        it is judged; a port named and not bound stops
+                        the run. The workflow check refuses a relation
+                        not in the register and a port the component
+                        does not have, and the relation check holds
+                        the edge to its domain and range as it holds
+                        every edge. The fields decides and derives are
+                        removed, and the three components that carried
+                        them say the same thing as a link.
+rationale:              |
+                        One map says everything the two fields said
+                        and everything they could not, in the same
+                        vocabulary the graph already uses: the
+                        relation register. The executor gains nothing
+                        to interpret, since a relation is named and
+                        looked up rather than implied by a field name,
+                        and the relation check, not the port, decides
+                        whether the edge is allowed. Replacing the
+                        fields rather than adding beside them keeps
+                        one way to say a thing.
+alternative:            |
+                        Widening decides and derives to lists:
+                        rejected, since a third relation would need a
+                        third field. Adding the edges after the run,
+                        outside the execution: rejected, since the
+                        record would not show what the run linked. A
+                        function node that links what a model node
+                        made: rejected as machinery to work around a
+                        port shape.
+consequence:            |
+                        Ports read as edges do: a relation and its
+                        ends. A port may link one item by several
+                        relations and by one relation to several
+                        inputs. The three existing components changed
+                        form and not meaning. A test settles two
+                        relations from one port and stops on an
+                        unbound one.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.workflow.produce
+    guid_target:        pym_317420d8fc6544b582b0713ee5c027c5

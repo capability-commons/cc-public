@@ -1,0 +1,83 @@
+id_self:                wf_concept_from_need
+guid_self:              wf_b2139eee236546a4a1982ec6e7eb58d1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept from need
+brief:                  |
+                        Propose a candidate solution concept for a
+                        need under a framing, challenge it on a second
+                        model, and revise until the challenge is
+                        answered or the budget is spent.
+description:            |
+                        Two nodes. The first proposes the concept from
+                        the need, the framing and the observation,
+                        with its assumptions, risks and candidate
+                        requirements, and is judged. The second, on
+                        the deployment's challenge model, writes the
+                        strongest case against it. While the challenge
+                        is unanswered, two back edges return the
+                        challenged concept and its judgement to the
+                        proposer for another pass, within the budget.
+                        Run once per framing: the concepts for one
+                        need are its alternatives. The second step of
+                        the observation-to-engineering demonstration.
+
+node:
+
+  propose:
+    id_self:            node_concept_from_need.propose
+    guid_self:          node_cf2a0c80e77a41a8bfb89a870c59aa72
+    title:              Propose
+    brief:              |
+                        Proposes the concept.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_propose_concept
+        guid_target:    cmp_e3aa9bb0cc0d4f05bc60b6fcc0dd742e
+
+  challenge:
+    id_self:            node_concept_from_need.challenge
+    guid_self:          node_91f5bac73173401590a844735d2f7274
+    title:              Challenge
+    brief:              |
+                        Attacks the concept.
+    config:             {}
+    challenger:         true
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_challenge_concept
+        guid_target:    cmp_ac4a405495af45d589969ad0935bd307
+
+edge:
+
+  propose_to_challenge:
+    from:               propose.output.concept
+    to:                 challenge.input.proposal
+
+edge_back:
+
+  challenge_to_propose:
+    from:               challenge.output.concept
+    to:                 propose.input.prior
+    guard:              unmet
+
+  challenge_to_propose_judgement:
+    from:               challenge.output.concept
+    to:                 propose.input.judgement
+    guard:              unmet
+    carries:            judgement
+
+relation:               []

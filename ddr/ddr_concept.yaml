@@ -1,0 +1,224 @@
+id_self:                ddr_concept
+guid_self:              ddr_100570c01c4e45e3bf3da9f6441e0f09
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Candidate solution concepts under framings
+brief:                  |
+                        A concept is a candidate solution to a need
+                        under a framing, carrying its assumptions,
+                        risks and a bounded table of candidate
+                        requirements; concepts are proposed and
+                        challenged, one per framing, and promotion
+                        makes requirement items from a concept's
+                        candidates.
+context:                |
+                        The demonstration for Brave1 goes from a
+                        captured public source to a need, and from the
+                        need to proposed solutions, each with the
+                        requirements an implementation would need. The
+                        tree had needs, framings and decomposition of
+                        a need into narrower needs, but nothing that
+                        stood for a solution, and a port carried one
+                        item, so a set of requirements of unknown size
+                        could not leave a node. The
+                        opportunity-formation proposal asks that
+                        alternatives be preserved as items, that a
+                        candidate remain a candidate until a recorded
+                        selection, and that promotion into assured
+                        engineering be explicit.
+decision:               |
+                        A CONCEPT is an item of type t_concept, prefix
+                        cpt, living in concept/. It names the entity
+                        it proposes, says how the subject would use it
+                        and what it is made of, what it does for the
+                        need and what it leaves undone, carries its
+                        assumptions as entries with identities as a
+                        design decision does, says how it fails, and
+                        holds its CANDIDATE REQUIREMENTS as entries of
+                        type t_candidate_requirement embedded in it: a
+                        statement on the entity, a rationale and a
+                        category, at least three and at most twelve by
+                        schema, so that what is explicit is what
+                        guides an implementation and the small things
+                        stay implicit. A concept derives from its need
+                        by r_is_derived_from and names its framing by
+                        r_is_framed_by. Several concepts for one need
+                        under different framings are its alternatives;
+                        none is selected by being made.
+
+                        A concept is PROPOSED by a model from the
+                        need, the framing and the observation, and
+                        CHALLENGED by a second model, as a
+                        decomposition is; the challenge and its
+                        resolution are fields on the concept, and the
+                        loop runs until the challenge is answered or
+                        the budget is spent. The workflow makes one
+                        concept; it is run once per framing.
+
+                        PROMOTION makes textual requirement items from
+                        a concept's candidate requirements, each
+                        deriving from the concept and from the need,
+                        proposed, judged by the requirement evals as
+                        any requirement is; the candidate entries stay
+                        in the concept as the record of what was
+                        proposed. Promotion is mechanical, a function,
+                        and is built next.
+rationale:              |
+                        A concept as an item of its own, rather than a
+                        design decision, keeps a candidate from
+                        reading as something decided, and lets several
+                        stand side by side for one need with the
+                        choice among them a decision of its own.
+                        Embedding the candidate requirements lets one
+                        model call return however many the concept
+                        needs, within a bound the schema enforces,
+                        without a collection-valued port; promotion
+                        then gives each the identity, derivation and
+                        judgement a requirement has, at the boundary
+                        where a proposal becomes something the
+                        assurance machinery holds to account. Naming
+                        the framing by an edge makes the lens visible
+                        in the graph, so that the alternatives can be
+                        read as one need seen three ways. Reusing the
+                        propose-and-challenge loop keeps one way to
+                        argue about a proposal.
+alternative:            |
+                        A concept as a design decision: rejected,
+                        since a decision records a choice and a
+                        concept is one of the choices. A fixed number
+                        of requirement nodes per concept: rejected,
+                        since the number is the concept's to say, and
+                        two would be false precision. Requirement
+                        items made directly by the model, one per
+                        port: rejected for the same reason. Judging
+                        the candidate entries with the requirement
+                        evals before promotion: deferred; the evals
+                        are anchored on the requirement schema and
+                        measured there, and the promoted item is what
+                        they judge. A workflow with one node per
+                        framing: rejected, since the framings are the
+                        operator's choice and their number is not the
+                        graph's to fix.
+consequence:            |
+                        Two types, two schemas, one relation and a
+                        directory. The derivation relation reaches
+                        concepts at both ends. The plain text,
+                        assumption and challenge evals are anchored on
+                        the concept schema as well as the decision
+                        schema. A run of the concept workflow makes
+                        one proposed concept with three to twelve
+                        candidate requirements or stops. Until
+                        promotion is built, a candidate requirement is
+                        judged by nobody, and the trace does not see
+                        it. A type register entry may name the home
+                        directory of its items, so that a workflow can
+                        make the first item of a type. A run that ends
+                        exhausted leaves the last challenge and the
+                        resolution before it on the concept, which is
+                        where the argument stands.
+
+question:
+
+  bound:
+    id_self:            qst_concept.bound
+    guid_self:          qst_a187f6201de7487980f8eb393ad31027
+    question:           |
+                        Whether three to twelve is the right bound on
+                        candidate requirements, and whether the
+                        judgement of which obligations matter enough
+                        to be explicit should be an eval rather than a
+                        prompt.
+    relation:           []
+
+  selection:
+    id_self:            qst_concept.selection
+    guid_self:          qst_239c7e598cd14b9ea6582c4ec754b739
+    question:           |
+                        How the concepts for one need are compared and
+                        one selected: by their evals, by a judgement
+                        over the set, or by a person, and how the
+                        selection is recorded.
+    relation:           []
+
+  source:
+    id_self:            qst_concept.source
+    guid_self:          qst_8129a43769c9419885784752e5a94bfb
+    question:           |
+                        Whether a concept should also derive from the
+                        observation, since the proposer reads it, or
+                        whether the need alone is its derivation.
+    relation:           []
+
+  concession:
+    id_self:            qst_concept.concession
+    guid_self:          qst_dbc5d46a4b494158a5088644ca3ce003
+    question:           |
+                        Whether a challenger should be held to
+                        concede: in the first runs the second model
+                        opened new ground every round, each time on a
+                        real weakness, and the eval that judges the
+                        answer to the previous round was never met, so
+                        every run ended exhausted with a good argument
+                        on record. Whether that is the right outcome,
+                        or the guard should judge the round before, or
+                        the challenger should be a different model, is
+                        to be decided from more runs.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_concept
+    guid_target:        sch_64222042ae3a4f2f982be45425c5c835
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_candidate_requirement
+    guid_target:        sch_f1b1a233919545fc8c26de0f93c6ad86
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_concept
+    guid_target:        t_cf7be428e5bb442b90cc501d5b59a61d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_candidate_requirement
+    guid_target:        t_528ccc3af5ad4265ad0b608e42b415d4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_framed_by
+    guid_target:        r_f855153d193b4901bd409d8ec11044fd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_propose_concept
+    guid_target:        cmp_e3aa9bb0cc0d4f05bc60b6fcc0dd742e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_challenge_concept
+    guid_target:        cmp_ac4a405495af45d589969ad0935bd307
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_concept_from_need
+    guid_target:        wf_b2139eee236546a4a1982ec6e7eb58d1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_concept_from_need_local
+    guid_target:        dep_2d9c76dc8c1a441da84f16864dcbf2f1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.new
+    guid_target:        pym_c2487d64bf424a308262068b32de1ae4

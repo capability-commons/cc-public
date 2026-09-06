@@ -180,7 +180,15 @@ Pixi tasks
   from it: `run wf_need_from_observation --deployment
   dep_need_from_observation_local --bind frame.input.observation=obs_… --bind
   frame.input.guide=reg_writing_style_rule`. Captures live outside the
-  tree, in `/Users/wtp/dev/cc/demo/`.
+  tree, in `/Users/wtp/dev/cc/demo/`. A concept (`cpt_`, in `concept/`) is a
+  candidate solution to a need under a framing, with assumptions, risks and
+  three to twelve embedded candidate requirements (`crq_`); `run
+  wf_concept_from_need --deployment dep_concept_from_need_local` with the
+  need, framing, observation and guide bound on `propose` and the need and
+  guide on `challenge`, once per framing (`ddr_concept`). An output port
+  links by `link: {relation: [input ports]}` (`ddr_port_link`); a type
+  entry may name its `home` directory so a workflow can make the first item
+  of a type.
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status

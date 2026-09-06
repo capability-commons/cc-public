@@ -13,7 +13,9 @@ mechanically before it is committed.
 |------------------|------------------------------------------------------------------------------|
 | `ddr/`           | design decisions: context, decision, rationale, alternatives, consequences, open questions |
 | `specimen/`      | decisions a workflow drafted as a trial, kept because control cases snapshot them          |
+| `observation/`   | captured public sources, unchanged, with locator, attribution, times and digest |
 | `need/`, `requirement/` | needs, and the textual requirements derived from them                 |
+| `concept/`       | candidate solutions to a need under a framing, each with assumptions, risks and candidate requirements |
 | `schema/`        | JSON Schema for every kind of item                                           |
 | `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules |
 | `eval/`          | criteria a language model judges items against, with the control cases that measure them |

@@ -725,3 +725,38 @@ def test_a_failing_test_stops_the_run_at_verify_and_restores_the_evidence(repo):
     exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
     assert exe['outcome'] == 'waiting'
     assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'proposed'
+
+
+def test_a_port_links_by_several_relations_and_stops_on_an_unbound_one(repo):
+    """
+    An output port's link map settles one edge per relation and input
+    named; naming an input nothing binds stops the run and restores.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    port = 'prt_draft_design_decision.decision'
+    cc_public.edit.field.set_field(tree, port, 'link',
+                                   value = {'r_decides': ['subject', 'guide']})
+    deploy(repo, judge = 'always', commit = 'never')
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] is None, r['stopped']
+    doc = cc_public.load.from_file(repo / 'ddr' / 'ddr_identity_trait.yaml')
+    assert sorted((e['id_relation'], e['id_target']) for e in doc['relation']) == \
+           [('r_decides', 'reg_writing_style_rule'), ('r_decides', 'sch_identity')]
+
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, port, 'link', value = {'r_decides': ['prior']})
+    (repo / 'ddr' / 'ddr_identity_trait.yaml').unlink()
+    r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                   'dep_design_decision_from_schema_local', BIND,
+                                   Scripted(), Judge('met'))
+    assert r['stopped'] and 'prior, which is not bound' in r['stopped']
+    assert not (repo / 'ddr' / 'ddr_identity_trait.yaml').exists()
+
+    cc_public.edit.field.set_field(tree, port, 'link',
+                                   value = {'r_nowhere': ['subject'], 'r_decides': ['nothing']})
+    faults = clean(repo)
+    assert any('r_nowhere, which is not in the relation register' in f for f in faults), faults
+    assert any('no input port of that name' in f for f in faults), faults

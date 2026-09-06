@@ -64,7 +64,7 @@ KEY_ID_REL      = 'id_relation'
 KEY_GUID_TARGET = 'guid_target'
 KEY_ID_TYPE     = 'id_type'
 KEY_REVISES     = 'revises'
-KEY_DECIDES     = 'decides'
+KEY_LINK        = 'link'
 KEY_CARRIES     = 'carries'
 CARRIES_JUDGE   = 'judgement'
 TYPE_BINDING    = 't_binding'
@@ -157,6 +157,7 @@ def _inspect(filepath, document, map_by_guid):
         list_bad.extend(_type_agreement(filepath, name, component, map_by_guid))
         list_bad.extend(_revises(filepath, name, component))
         list_bad.extend(_performer(filepath, name, component, map_by_guid))
+        list_bad.extend(_links(filepath, name, component, map_by_guid))
 
         if not _has_eval(component):
             list_note.append(cc_public.check.result.Note(
@@ -451,6 +452,37 @@ def _found_form(component, performer, outputs, map_by_guid):
 
 
 # -----------------------------------------------------------------------------
+def _links(filepath, name, component, map_by_guid):
+    """
+    Return a fault for each link an output port cannot make: a relation
+    not in the register, or an input port the component does not have.
+
+    """
+
+    inputs    = set(component.get(KEY_INPUT) or {})
+    register  = next((d for d in map_by_guid.values()
+                        if d.get(KEY_ID_SELF) == ID_REG_RELATION), {})
+    relations = set(register.get(KEY_TABLE) or {})
+    list_bad  = []
+
+    for (local, port) in (component.get(KEY_OUTPUT) or {}).items():
+        link = port.get(KEY_LINK) if isinstance(port, dict) else None
+        for (relation, list_port) in (link or {}).items():
+            where = f'node.{name}.output.{local}'
+            if relation not in relations:
+                list_bad.append(_fault(filepath, where,
+                        'Links by {rel}, which is not in the relation '
+                        'register.'.format(rel = relation)))
+            for port_src in list_port or []:
+                if port_src not in inputs:
+                    list_bad.append(_fault(filepath, where,
+                            'Links {rel} to {src}, and the component has no input '
+                            'port of that name.'.format(rel = relation, src = port_src)))
+
+    return list_bad
+
+
+# -----------------------------------------------------------------------------
 def _revises(filepath, name, component):
     """
     Return a fault for each output port revising an input it cannot.
@@ -465,12 +497,6 @@ def _revises(filepath, name, component):
     inputs   = component.get(KEY_INPUT) or {}
 
     for (local, port) in (component.get(KEY_OUTPUT) or {}).items():
-
-        decides = port.get(KEY_DECIDES) if isinstance(port, dict) else None
-        if decides is not None and decides not in inputs:
-            list_bad.append(_fault(filepath, f'node.{name}.output.{local}',
-                    'Decides {target}, and the component has no input port '
-                    'of that name.'.format(target = decides)))
 
         target = port.get(KEY_REVISES) if isinstance(port, dict) else None
 

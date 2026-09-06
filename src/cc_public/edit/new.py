@@ -52,6 +52,7 @@ import cc_public.load
 
 KEY_TABLE      = 'table'
 KEY_PREFIX     = 'prefix'
+KEY_HOME       = 'home'
 KEY_REGEX_ID   = 'regex_id'
 KEY_RELATION   = 'relation'
 KEY_ID_REL     = 'id_relation'
@@ -117,7 +118,7 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
         filepath = _source_path(tree, prefix, id_self, dirpath_out)
     else:
         dirpath  = (pathlib.Path(dirpath_out) if dirpath_out
-                    else _home(tree, prefix))
+                    else _home(tree, entry))
         filepath = dirpath / (id_self + SUFFIX)
 
     if filepath.exists():
@@ -407,13 +408,19 @@ def _write_source(filepath, document):
 
 
 # -----------------------------------------------------------------------------
-def _home(tree, prefix):
+def _home(tree, entry):
     """
-    Return the directory items of this prefix live in, by majority.
+    Return the directory items of this type live in: the home its type
+    register entry names, else where the items of its prefix already
+    are, by majority.
 
     """
 
-    count = {}
+    if entry.get(KEY_HOME):
+        return tree.root / entry[KEY_HOME]
+
+    prefix = entry[KEY_PREFIX]
+    count  = {}
 
     for (id_self, item) in tree.map_id.items():
         if id_self.split('_', 1)[0] == prefix and not item.path:
@@ -421,8 +428,9 @@ def _home(tree, prefix):
 
     if not count:
         raise cc_public.edit.tree.ErrorItem(
-                'No item with prefix {prefix} exists yet, so there is no '
-                'directory to put one in. Give --out.'.format(prefix = prefix))
+                'No item with prefix {prefix} exists yet and its type names no home, '
+                'so there is no directory to put one in. Give --out.'.format(
+                                                                prefix = prefix))
 
     return max(count, key = count.get)
 

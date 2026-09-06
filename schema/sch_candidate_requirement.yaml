@@ -1,0 +1,74 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_candidate_requirement.yaml
+id_self:                sch_candidate_requirement
+guid_self:              sch_f1b1a233919545fc8c26de0f93c6ad86
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Candidate requirement schema
+brief:                  |
+                        Schema for a candidate requirement: an entry
+                        embedded in a concept, an obligation proposed
+                        on the concept's entity.
+description:            |
+                        Composes identity. A candidate requirement is
+                        one shall statement on the entity the concept
+                        names, with its rationale and category, held
+                        in the concept as a proposal. It is not a
+                        requirement item: promotion makes a textual
+                        requirement from it, deriving from the
+                        concept, and that item is what the requirement
+                        evals judge and acceptance binds.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - statement
+      - rationale
+      - category
+
+    properties:
+
+      statement:
+        type:           string
+        minLength:      1
+        description:    |
+                        The obligation, one sentence: the entity
+                        shall.
+
+      rationale:
+        type:           string
+        minLength:      1
+        description:    |
+                        Why the entity must, in terms of the need.
+
+      category:
+        type:           string
+
+        enum:
+          - function
+          - fit
+          - form
+          - quality
+          - compliance
+
+        description:    |
+                        The kind of requirement, as for a textual
+                        requirement.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false

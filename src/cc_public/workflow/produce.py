@@ -52,8 +52,7 @@ KEY_REGEX_ID    = 'regex_id'
 KEY_ID_TYPE     = 'id_type'
 KEY_PROMPT      = 'prompt'
 KEY_REVISES     = 'revises'
-KEY_DECIDES     = 'decides'
-KEY_DERIVES     = 'derives'
+KEY_LINK        = 'link'
 KEY_FIELD       = 'field'
 KEY_OPTIONAL    = 'optional'
 KEY_STATUS      = 'status'
@@ -61,8 +60,6 @@ KEY_SLUG        = 'slug'
 KEY_KEY         = 'key'
 
 STATUS_PROPOSED = 'proposed'
-REL_DECIDES     = 'r_decides'
-REL_DERIVED     = 'r_is_derived_from'
 
 LENGTH_TAG      = 6
 WIDTH_VALUE     = 50
@@ -117,8 +114,8 @@ def produce(state, local, port, spec, map_input, entry):
 # -----------------------------------------------------------------------------
 def settle(state, local, port, spec, id_item):
     """
-    Do to a new item what the port says: link what it decides and
-    derives from, and mark it proposed where its schema allows, since
+    Do to a new item what the port says: link it by each relation in
+    its link map, and mark it proposed where its schema allows, since
     what a workflow makes is proposed until accepted. The same whether
     a prompt or a function made it.
 
@@ -281,19 +278,19 @@ def _mint(tree, entry_type, local, port, answer, entry):
 # -----------------------------------------------------------------------------
 def _link(state, local, port, spec, id_item):
     """
-    Link what the port says its item decides and derives from.
+    Link the item as the port says: for each relation in its link map,
+    an edge from the item to what is bound on each input port named.
 
     """
 
-    for (key, relation) in ((KEY_DECIDES, REL_DECIDES), (KEY_DERIVES, REL_DERIVED)):
-        if not spec.get(key):
-            continue
-        id_target = state.bound.get((local, spec[key]))
-        if id_target is None:
-            raise Stop('{node}.output.{port} {key} {src}, which is not '
-                       'bound.'.format(node = local, port = port, key = key,
-                                       src = spec[key]))
-        cc_public.edit.link.link(state.tree, id_item, relation, id_target)
+    for (relation, list_port) in (spec.get(KEY_LINK) or {}).items():
+        for port_src in list_port:
+            id_target = state.bound.get((local, port_src))
+            if id_target is None:
+                raise Stop('{node}.output.{port} links {rel} to {src}, which is not '
+                           'bound.'.format(node = local, port = port, rel = relation,
+                                           src = port_src))
+            cc_public.edit.link.link(state.tree, id_item, relation, id_target)
 
 
 # -----------------------------------------------------------------------------
@@ -402,7 +399,9 @@ def _fill_table(tree, id_item, field, text, entry):
             continue
         for (key, value) in row.items():
             if key not in FIELD_ROW_OWN and isinstance(value, str) and value.strip():
-                cc_public.edit.field.set_field(tree, id_entry, key, prose = value)
+                # The entry's schema says whether the field is a datum,
+                # an enumeration or a pattern, or prose.
+                cc_public.edit.field.set_field(tree, id_entry, key, value = value.strip())
 
     for name in existing:
         if name not in kept:

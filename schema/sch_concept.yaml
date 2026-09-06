@@ -1,0 +1,154 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_concept.yaml
+id_self:                sch_concept
+guid_self:              sch_64222042ae3a4f2f982be45425c5c835
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept schema
+brief:                  |
+                        Schema for candidate solution concepts: a
+                        design hypothesis under a framing, with its
+                        assumptions, risks and candidate requirements.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A concept names the entity it
+                        proposes, says how it would be used and what
+                        it is made of, what it does for the need and
+                        what it leaves undone, the claims about the
+                        world it relies on, how it fails, and the
+                        candidate requirements on its entity, bounded
+                        in number so that what is explicit is what
+                        guides an implementation. It carries a
+                        challenge and a resolution as a design
+                        decision does. It is a candidate until a
+                        recorded selection says otherwise.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - entity
+      - operation
+      - architecture
+      - effect
+      - risk
+      - candidate_requirement
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the concept.
+
+      entity:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The system or service the concept proposes,
+                        the entity candidate requirements are placed
+                        on.
+
+      operation:
+        type:           string
+        minLength:      1
+        description:    |
+                        How the subject of the need would use it and
+                        what happens, from need to outcome.
+
+      architecture:
+        type:           string
+        minLength:      1
+        description:    |
+                        The main parts and how they connect, sketched
+                        in prose.
+
+      effect:
+        type:           string
+        minLength:      1
+        description:    |
+                        What it does for the outcome the need names,
+                        and what it leaves undone.
+
+      assumption:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_assumption.yaml
+
+        description:    |
+                        Optional. The claims about the world the
+                        concept relies on, each with its evidence, as
+                        entries with identities of their own.
+
+      risk:
+        type:           string
+        minLength:      1
+        description:    |
+                        How the concept fails.
+
+      candidate_requirement:
+        type:           object
+        minProperties:  3
+        maxProperties:  12
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_candidate_requirement.yaml
+
+        description:    |
+                        The obligations proposed on the entity, as
+                        entries with identities of their own: at least
+                        three and at most twelve, so that what is
+                        explicit is what guides an implementation and
+                        the small things stay implicit.
+
+      challenge:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The strongest case against the
+                        concept, written by a challenger.
+
+      resolution:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How the concept answers the
+                        challenge: standing, revising or conceding.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - selected
+          - rejected
+
+        description:    |
+                        Optional. proposed until a recorded selection;
+                        selected or rejected by one.
+
+unevaluatedProperties:  false

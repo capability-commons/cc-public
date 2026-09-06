@@ -1173,6 +1173,7 @@ table:
                         observation/. An observation has no status: it
                         happened and was captured; a changed source is
                         a new observation.
+    home:               observation
 
     relation:
 
@@ -1180,3 +1181,65 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_observation
         guid_target:    sch_d48d2c9c6a924df6a7c2bc3266c296d9
+
+  t_concept:
+    id_self:            t_concept
+    guid_self:          t_cf7be428e5bb442b90cc501d5b59a61d
+    title:              Concept type
+    brief:              |
+                        Type of candidate solution concept data items
+    description:        |
+                        Each concept data item holds one candidate
+                        solution to a need under a framing: the entity
+                        it proposes, how it is used and made, what it
+                        does for the need, its assumptions, its risks
+                        and the candidate requirements on its entity.
+                        It is a hypothesis, proposed until a recorded
+                        selection.
+    prefix:             cpt
+    regex_id:           ^cpt_[a-z][a-z0-9_]*$
+    usage:              |
+                        Made by the concept workflow from a need and a
+                        framing, and challenged. A concept derives
+                        from its need by r_is_derived_from and names
+                        its lens by r_is_framed_by. Concepts live in
+                        concept/. Several concepts for one need are
+                        the alternatives; selecting one is a recorded
+                        decision.
+    home:               concept
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_concept
+        guid_target:    sch_64222042ae3a4f2f982be45425c5c835
+
+  t_candidate_requirement:
+    id_self:            t_candidate_requirement
+    guid_self:          t_528ccc3af5ad4265ad0b608e42b415d4
+    title:              Candidate requirement type
+    brief:              |
+                        Type of candidate requirement entries embedded
+                        in a concept
+    description:        |
+                        Each candidate requirement is one obligation
+                        proposed on a concept's entity, with its
+                        rationale and category, held in the concept's
+                        candidate_requirement table with an identity
+                        of its own. Promotion makes a textual
+                        requirement item from it.
+    prefix:             crq
+    regex_id:           ^crq_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    usage:              |
+                        Never a top-level item. Its id is the
+                        concept's name and the entry's key. The
+                        requirement evals judge the textual
+                        requirement promoted from it, not the entry.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_candidate_requirement
+        guid_target:    sch_f1b1a233919545fc8c26de0f93c6ad86
