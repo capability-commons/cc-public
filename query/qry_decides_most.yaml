@@ -1,0 +1,25 @@
+id_self:                qry_decides_most
+guid_self:              qry_a8c3acec395848c5853149290c0a5bac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The decisions that decide the most
+brief:                  |
+                        Each decision with the count of items it
+                        decides, most first.
+sql:                    |
+                        SELECT s.id_self AS decision, COUNT(*) AS
+                        decided FROM edge e JOIN item s ON s.guid =
+                        e.guid_source WHERE e.id_relation =
+                        'r_decides' GROUP BY s.id_self ORDER BY
+                        decided DESC, decision
+meaning:                |
+                        One decision and how many items it decides; a
+                        decision near the top settles much and is read
+                        first.
+relation:               []

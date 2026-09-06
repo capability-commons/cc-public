@@ -1,0 +1,45 @@
+id_self:                req_neighbourhood_drawn
+guid_self:              req_389dd46b64ba45598a0006556b88c2c3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A neighbourhood is drawn
+statement:              |
+                        When asked to draw the Neighbourhood, the Tool
+                        shall write the Neighbourhood as the Drawing
+                        in the Drawing_Format asked for.
+rationale:              |
+                        The Drawing has one node for each Item of the
+                        Neighbourhood and one edge labelled with its
+                        Relation for each Relation_Edge of it. A
+                        drawing shows clusters, hubs and gaps that a
+                        listing hides. The Drawing_Format is Graphviz
+                        DOT, the standard for graphs, or Mermaid,
+                        which a repository page renders without a
+                        tool.
+category:               function
+verification:           test
+status:                 accepted
+success_criteria:       |
+                        The Drawing names every Item of the
+                        Neighbourhood as a Node and every
+                        Relation_Edge of the Neighbourhood as an Edge
+                        labelled with its Relation, in the syntax of
+                        the Drawing_Format asked for.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_maintainer_sees_graph
+    guid_target:        need_d386d01bb6fd4ed384be0babadf2e5bc
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.query.drawing
+    guid_target:        pyf_e9351a12dedb4d3a8c4715ea7168b9ac

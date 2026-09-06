@@ -1,0 +1,44 @@
+id_self:                req_walk_reports_neighbourhood
+guid_self:              req_f954bd2cda2344d98ed5b1faa3d9fe99
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Walk reports the neighbourhood to a depth
+statement:              |
+                        When given the Start_Item and the Depth, the
+                        Tool shall report each Item within the Depth
+                        in Relation_Edges of the Start_Item, in either
+                        direction, with the Relation_Edge that reaches
+                        it.
+rationale:              |
+                        An edge two hops away binds as tightly as one,
+                        and the agent judging the reach of a change
+                        needs the whole neighbourhood, not the first
+                        hop. Either direction, because what points at
+                        an item is as much its neighbourhood as what
+                        it points at.
+category:               function
+verification:           test
+status:                 accepted
+success_criteria:       |
+                        On a graph of known shape, the Items reported
+                        at each Depth equal the Items within that many
+                        Relation_Edges by hand, and each reported Item
+                        carries the Relation_Edge it was reached by.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_agent_sees_reach
+    guid_target:        need_28b1a8fd2adc4af78556a44dcb901d60
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.query.database.walk
+    guid_target:        pyf_100de10c70814fca80c132c66d1e6890

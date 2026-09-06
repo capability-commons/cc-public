@@ -37,6 +37,7 @@ import rich.console
 import rich.table
 import rich.text
 
+import cc_public.query
 
 
 FORMAT_TEXT = 'text'
@@ -473,3 +474,47 @@ def write_neighbourhood(found, id_format):
                                                           source = source, rel = rel))
     if not (found.outgoing or found.incoming):
         click.echo('    no edges')
+
+
+# -----------------------------------------------------------------------------
+def write_walk(list_step, id_format):
+    """
+    Write the steps of a walk or a path: as text, as json, or as a
+    drawing in dot or mermaid.
+
+    """
+
+    if id_format in ('dot', 'mermaid'):
+        click.echo(cc_public.query.drawing(list_step, id_format), nl = False)
+        return
+
+    if id_format == 'json':
+        click.echo(json.dumps([s._asdict() for s in list_step], indent = 2))
+        return
+
+    for s in list_step:
+        if s.id_from is None:
+            click.echo(s.id_self)
+        else:
+            arrow = '->' if s.direction == 'out' else '<-'
+            click.echo('{pad}{arrow} {rel:28} {id}'.format(pad = '  ' * s.depth, arrow = arrow,
+                                                          rel = s.id_relation, id = s.id_self))
+    click.echo('{n} item(s).'.format(n = len(list_step)))
+
+
+# -----------------------------------------------------------------------------
+def write_rows(names, rows, id_format):
+    """
+    Write the rows of a query, as a table or as json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps([dict(zip(names, row, strict = True)) for row in rows], indent = 2))
+        return
+
+    width = [max([len(n)] + [len(str(r[i])) for r in rows]) for (i, n) in enumerate(names)]
+    click.echo('  '.join(n.ljust(w) for (n, w) in zip(names, width, strict = True)))
+    for row in rows:
+        click.echo('  '.join(str(v).ljust(w) for (v, w) in zip(row, width, strict = True)))
+    click.echo('{n} row(s).'.format(n = len(rows)))

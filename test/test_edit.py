@@ -380,7 +380,10 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
     # This copy holds no tests, so every requirement verified by test says
     # no test names it; the tree itself says otherwise.
     verified = [n for n in trace['nonconformity'] if n['path'] == 'verification']
-    assert len(verified) == 6 and all(n['severity'] == 'advisory' for n in verified)
+    count_test = sum(1 for d in tree.context.map_document.values()
+                     if isinstance(d, dict) and str(d.get('id_self', '')).startswith('req_')
+                     and d.get('verification') == 'test')
+    assert len(verified) == count_test and all(n['severity'] == 'advisory' for n in verified)
 
 
 def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):

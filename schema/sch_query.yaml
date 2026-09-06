@@ -1,0 +1,57 @@
+id_self:                sch_query
+guid_self:              sch_fa663f02c767447b87019d05ccaee9c9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Query schema
+brief:                  |
+                        The shape of a named query: SQL over the
+                        facts, and what its rows mean.
+description:            |
+                        Composes the base envelope and outgoing
+                        relations. A query holds the SQL it runs over
+                        the fact tables, item, edge and containment,
+                        and says what a row of its result means, so
+                        that a person reads the answer and not the
+                        question.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_query.yaml
+unevaluatedProperties:  false
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - sql
+      - meaning
+      - relation
+
+    properties:
+
+      sql:
+        type:           string
+        minLength:      1
+        description:    The SQL run over the fact tables item, edge and containment.
+
+      meaning:
+        type:           string
+        minLength:      1
+        description:    What one row of the result says.
+
+usage:                  |
+                        Selected for a query by the type register,
+                        which maps the qry prefix to that type. Run by
+                        cctool query, which loads the facts of the
+                        tree into an in-memory database and reports
+                        the rows.
+note:                   |
+                        A query reads the facts and writes nothing;
+                        the database it runs in lives for one command.

@@ -34,6 +34,7 @@ import cc_public.cli.committing    # noqa: F401
 import cc_public.cli.editing       # noqa: F401
 import cc_public.cli.group
 import cc_public.cli.judging       # noqa: F401
+import cc_public.cli.querying      # noqa: F401
 import cc_public.cli.running       # noqa: F401
 
 

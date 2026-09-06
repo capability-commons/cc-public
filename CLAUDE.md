@@ -68,6 +68,17 @@ Assurance
   rewrites that one file; a run that observes what the last one did
   leaves it alone.
 
+Querying
+
+- `walk ITEM [--depth N] [--relation R]… [--direction out|in|both] [--format text|json|dot|mermaid]`
+  — the neighbourhood of an item, breadth first, each item once with the
+  edge that reached it. `path A B` — a shortest path or its absence.
+  `orphans` — items nothing points at or holds, and relations no edge uses.
+  `query NAME | --sql …` — a named query (an item of type `t_query` in
+  `query/`, holding SQL over the tables `item`, `edge`, `containment`) or
+  SQL typed here, over facts derived from the tree on every use
+  (`ddr_graph_query`). Keep a question asked twice as a `qry_` item.
+
 Running and committing
 
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
@@ -200,6 +211,6 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Where things are
 
-`ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing and methodology registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

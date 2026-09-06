@@ -53,7 +53,7 @@ DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
             'license':   'Apache-2.0',
             'id_mark':   'mark_public'}
 KEEP     = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'execution',
-            'requirement', 'need', 'evidence', 'src', 'pyproject.toml')
+            'requirement', 'need', 'evidence', 'query', 'src', 'pyproject.toml')
 
 
 def copy_tree(dirpath):

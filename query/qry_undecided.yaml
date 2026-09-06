@@ -1,0 +1,24 @@
+id_self:                qry_undecided
+guid_self:              qry_384d3d6d0b8041e58bfb47e6a9463d7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Items no decision decides
+brief:                  |
+                        Each schema, type and relation that no
+                        decision decides.
+sql:                    |
+                        SELECT id_self FROM item WHERE prefix IN
+                        ('sch', 't', 'r') AND guid NOT IN (SELECT
+                        guid_target FROM edge WHERE id_relation =
+                        'r_decides') ORDER BY id_self
+meaning:                |
+                        One item whose shape or meaning nothing
+                        recorded decides; its reasoning, if any, is in
+                        prose or in nobody's head.
+relation:               []

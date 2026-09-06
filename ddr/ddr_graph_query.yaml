@@ -1,0 +1,197 @@
+id_self:                ddr_graph_query
+guid_self:              ddr_f2c5efca71f548db8efa3eda702d7eac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Querying the graph of relations
+brief:                  |
+                        The tree is turned into facts, items, edges
+                        and containment, by one extractor every query
+                        reads, and questions that cross more than one
+                        hop are put to those facts in an in-memory
+                        SQLite database through named queries held as
+                        items. The checks stay in Python; an engine
+                        for rules waits for a query SQL cannot say and
+                        a partner who wants to run them.
+context:                |
+                        The graph is about a thousand identities and
+                        fifteen hundred edges under twenty relations,
+                        with two structures the edges do not carry: an
+                        embedded item inside its holder, and a
+                        document inside a file. It will grow by
+                        hundreds. Every question about it that crosses
+                        more than one hop was answered this week by a
+                        grep for a guid or by a script against a
+                        private helper of the trace module, which
+                        itself is a relational query written by hand,
+                        as the impact query is. A third such walker
+                        was about to be written.
+
+                        Two needs ask for a tool: the agent editing
+                        the tree needs to see how an item connects
+                        across several hops, to judge the reach of a
+                        change; the maintainer needs to see the graph
+                        drawn. Datalog was the first idea for holding
+                        and querying the graph, since recursion and
+                        rules are what the questions need and rules
+                        are what the checks are.
+decision:               |
+                        One extractor in the foundations turns the
+                        tree into facts: an item fact per identity,
+                        with its type, status and location; an edge
+                        fact per relation edge; a containment fact per
+                        embedded item. Every query reads these facts
+                        and nothing else, and they are rebuilt from
+                        the tree on every use; nothing stores the
+                        graph anywhere but the tree.
+
+                        Questions are put to the facts in an in-memory
+                        SQLite database, from the standard library,
+                        with recursive common table expressions for
+                        reachability and paths. A query worth keeping
+                        is an item, holding its SQL and what its rows
+                        mean, so that the useful questions accumulate
+                        in the tree rather than in scripts. The
+                        commands walk a neighbourhood to a depth along
+                        chosen relations, find a shortest path, list
+                        what nothing points at and what no edge uses,
+                        run a named or a typed query, and write a
+                        subgraph in a form a person can draw.
+
+                        The checks stay in Python. They are the trust
+                        base, tested and measured, and a rule held
+                        twice would drift. An engine for rules,
+                        Datalog or another, is taken up when a real
+                        query is awkward in SQL and a partner wants to
+                        run our rules as data; the fact schema is then
+                        the interface it plugs into.
+rationale:              |
+                        A single extractor, because the projection,
+                        the impact query and the walk had begun to
+                        disagree about what the graph is by each
+                        indexing it for itself; the facts are what the
+                        graph is, once.
+
+                        SQLite before Datalog, because it is in the
+                        standard library, because SQL is the most
+                        standard query language there is, because a
+                        thousand nodes need expressiveness and not
+                        speed, and because anyone can open the same
+                        database and ask a question the tool did not
+                        anticipate. The python Datalog engines are
+                        unmaintained or heavy, and a home-grown
+                        evaluator would be a database project inside
+                        an engineering records project.
+
+                        Named queries as items, because a question
+                        asked twice is worth keeping and a kept
+                        question can be read, judged and traced like
+                        anything else here.
+
+                        The checks left as they are, because rewriting
+                        a trust base onto an engine with no failing
+                        case behind it is risk for nothing.
+alternative:            |
+                        Datalog, as first thought of. Deferred, not
+                        rejected: the questions are Datalog questions
+                        and the checks are Datalog rules, and when a
+                        rule set must travel to a partner it is the
+                        natural form. What it lacks today is a
+                        standard, maintained engine in this language.
+
+                        Pure python walkers, one per question.
+                        Rejected: that is what was being written, and
+                        the third would have made the drift plain.
+
+                        A stored graph, kept in step with the tree.
+                        Rejected: two copies of one fact, and the tree
+                        is the truth.
+
+                        A server or a graph database. Rejected for a
+                        thousand nodes.
+consequence:            |
+                        Two modules in the foundations, facts and
+                        query, and a query type with a schema and a
+                        directory of its own. The trace module reads
+                        the facts rather than indexing for itself.
+
+                        The first tool the tree assures for a person,
+                        built requirements first. What the process
+                        taught, in the order it taught it. The trace
+                        with its gaps was the to-do list: each
+                        requirement showed the code and the test it
+                        lacked until it had them, and zero gaps was
+                        the signal to run the suite. The requirement
+                        evals earned their place: in two rounds they
+                        found statements that were not singular, two
+                        requirements derived from a need they did not
+                        serve, which became a third need, and a
+                        mechanism written into a statement that
+                        belonged in this decision; one finding in four
+                        was the judge misreading report as a vague
+                        verb, and became a suppressed case that
+                        re-measured the eval. Wording must be final
+                        before acceptance, since a statement change
+                        stales the evidence and the acceptance with
+                        it, so the order is needs, requirements,
+                        evals, code, tests, evidence, acceptance.
+                        Writing one test per requirement made the
+                        verification edges obvious and many-to-many
+                        arose unforced, one path test for two path
+                        requirements. Each round of evals cost six
+                        minutes; judging only what changed since a
+                        commit, as the trace already does for impact,
+                        would cut that.
+
+                        Three smaller things. new writes a datum field
+                        given as prose as a block scalar, so the
+                        writer must know which fields are prose; the
+                        schema knows, and the tool could ask it. The
+                        test fixture lists the directories it copies
+                        by hand, and a new directory, query/, was left
+                        out until a test failed; the checks know which
+                        directories the tree has. rename prints the
+                        path the file had, not the path it has.
+
+question:
+
+  engine:
+    id_self:            qst_graph_query.engine
+    guid_self:          qst_193637a90b874f5bb1bb8f342ebf95b5
+    question:           |
+                        What a query looks like that SQL cannot say
+                        well, and whether it is the checks or a
+                        partner that first asks for rules as data;
+                        either is the moment to take up an engine.
+    relation:           []
+
+  workflow:
+    id_self:            qst_graph_query.workflow
+    guid_self:          qst_5f0dfdbf7e64440e97b712ec1606833a
+    question:           |
+                        Whether the order the process taught, needs,
+                        requirements, evals, code, tests, evidence,
+                        acceptance, should be a dataflow workflow with
+                        the evals as its guards, so that an agent
+                        building a tool from a need follows it by
+                        running it rather than by remembering it.
+    relation:           []
+
+  changed:
+    id_self:            qst_graph_query.changed
+    guid_self:          qst_66baeb4c47c746ce91a4ec3951f9b851
+    question:           |
+                        Whether check --eval should take
+                        --changed-since as trace does, judging only
+                        the items the files changed since a commit
+                        hold, since a round over nine requirements
+                        cost six minutes and most of it was judging
+                        what had not moved.
+    relation:           []
+
+relation:               []

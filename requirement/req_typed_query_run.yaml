@@ -1,0 +1,42 @@
+id_self:                req_typed_query_run
+guid_self:              req_5ffe40ced6b7489ca3b37c3b9ec20af2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A typed question is answered
+statement:              |
+                        When given the Query_Text at the command line,
+                        the Tool shall report each Row of the Result
+                        of the Query_Text over the Fact_Table.
+rationale:              |
+                        The questions the graph raises are not the
+                        ones the fixed reports answer, and the first
+                        form of a question is typed, not kept. A
+                        question worth keeping becomes a Query item,
+                        which the kept-query requirement covers.
+category:               function
+verification:           test
+status:                 accepted
+success_criteria:       |
+                        For Query_Text that counts the Edge_Facts, the
+                        Result has one Row holding the count of
+                        Edge_Facts in the Fact_Table, and Query_Text
+                        that names no table of the Fact_Table is
+                        refused with the reason.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_agent_asks_graph
+    guid_target:        need_ce71dc2290014e2bbebf06e4e93617e0
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.query.database.run
+    guid_target:        pyf_02ebd9a3cfb34863bd2716945a09e578

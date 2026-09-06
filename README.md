@@ -20,6 +20,7 @@ mechanically before it is committed.
 | `workflow/`      | components, dataflow workflows and deployments                               |
 | `execution/`     | one record per workflow run, binding every port on every pass                |
 | `evidence/`      | what pytest and attestations observed about each requirement, stamped with what they saw |
+| `query/`         | questions about the graph kept as SQL over its facts, with what a row means               |
 | `src/cc_public/` | `cctool`, which checks, edits, runs and commits                              |
 
 ## The trust model
@@ -74,7 +75,9 @@ pixi run cctool commit 'My decision, recorded'
 ```
 
 To see what a requirement rests on, `pixi run cctool trace`; for what a
-change may affect, `pixi run cctool trace --changed-since main`.
+change may affect, `pixi run cctool trace --changed-since main`; for the
+graph itself, `pixi run cctool walk ITEM --depth 2`, `path A B`,
+`orphans`, and `query qry_decides_most`.
 
 Every command prints the file it touched, lays it out through the
 printer, and fails the checks until every required field is written.
