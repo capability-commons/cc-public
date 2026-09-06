@@ -9,10 +9,6 @@ protective_mark:
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
 title:                  Committer writes the record in the message
-statement:              |
-                        When committing, the Commit_Command shall
-                        write the Commit_Record into the
-                        Commit_Message in the Record_Format.
 rationale:              |
                         The Record_Format is the title line, a blank
                         line, the record as a YAML document between a
@@ -29,6 +25,14 @@ success_criteria:       |
                         line, a YAML document between --- and ..., and
                         trailers.
 status:                 accepted
+condition_kind:         event
+condition:              the Commit_Command commits
+entity:                 Commit_Command
+obligation:             shall
+activity:               autonomous
+process:                write
+object:                 the Commit_Record into the Commit_Message in the Record_Format
+claim:                  design
 
 relation:
 

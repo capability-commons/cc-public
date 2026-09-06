@@ -44,23 +44,28 @@ import cc_public.edit.new
 import cc_public.edit.observe
 import cc_public.edit.tree
 import cc_public.load
+import cc_public.requirement
 import cc_public.workflow.run
 from conftest import clean
 from test_run import Judge
 
 
+SLOT = {'entity': 'Field_Power_Cell', 'obligation': 'shall', 'activity': 'autonomous', 'claim': 'design'}
 CANDIDATES = [
-    {'key': 'endurance', 'statement': 'The Field_Power_Cell shall power a terminal and two chargers for 72 hours without refuelling.',
-     'rationale': 'The post reports three nights without power.', 'category': 'function'},
-    {'key': 'carry', 'statement': 'The Field_Power_Cell shall be carried by two people over 500 metres.',
-     'rationale': 'Resupply roads are under fire, so it moves on foot.', 'category': 'fit'},
-    {'key': 'charge', 'statement': 'The Field_Power_Cell shall recharge from a vehicle supply within four hours.',
-     'rationale': 'Chargers are the load the post names.', 'category': 'function'},
-    {'key': 'state', 'statement': 'The Field_Power_Cell shall show its remaining energy.',
-     'rationale': 'Teams must plan around what is left.', 'category': 'quality', '__category': 'noise'}]
-CANDIDATES += [{'key': 'more_{n}'.format(n = n),
-                'statement': 'The Field_Power_Cell shall meet obligation {n}.'.format(n = n),
-                'rationale': 'A further obligation.', 'category': 'quality'} for n in range(6)]
+    dict(SLOT, key = 'endurance', process = 'power', object = 'a terminal and two chargers',
+         qualifier = 'for 72 hours without refuelling', claim = 'evidential',
+         rationale = 'The post reports three nights without power.', category = 'function'),
+    dict(SLOT, key = 'carry', process = 'be carried', object = 'by two people over 500 metres',
+         rationale = 'Resupply roads are under fire, so it moves on foot.', category = 'fit'),
+    dict(SLOT, key = 'charge', process = 'recharge', object = 'from a vehicle supply',
+         condition_kind = 'event', condition = 'the Field_Power_Cell is connected to a vehicle supply',
+         qualifier = 'within four hours', rationale = 'Chargers are the load the post names.', category = 'function'),
+    dict(SLOT, key = 'state', activity = 'interaction', actor = 'Operator', process = 'read',
+         object = 'the remaining energy', rationale = 'Teams must plan around what is left.',
+         category = 'quality', __category = 'noise')]
+CANDIDATES += [dict(SLOT, key = 'more_{n}'.format(n = n), process = 'meet',
+                    object = 'obligation {n}'.format(n = n),
+                    rationale = 'A further obligation.', category = 'quality') for n in range(6)]
 
 CAPTURE = {'schema_version': 1,
            'source_kind':    'social_post',
@@ -171,7 +176,10 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
     assert len(doc['candidate_requirement']) == 10 and doc['brief'].startswith('A battery')
     entry = doc['candidate_requirement']['carry']
     assert entry['id_self'] == 'crq_field_power_cell.carry' and entry['category'] == 'fit'
-    assert entry['statement'].startswith('The Field_Power_Cell shall be carried')
+    assert entry['process'] == 'be carried' and 'statement' not in entry
+    assert cc_public.requirement.statement(entry) == 'The Field_Power_Cell shall be carried by two people over 500 metres.'
+    state = doc['candidate_requirement']['state']
+    assert cc_public.requirement.statement(state) == 'The Field_Power_Cell shall provide the Operator with the ability to read the remaining energy.'
     assert doc['assumption']['fuel_scarce']['id_self'] == 'asm_field_power_cell.fuel_scarce'
     assert doc['challenge'].startswith('The fuel assumption') and 'resolution' not in doc
     assert any('__category is not a field' in n for n in r['node'][0]['note'])
@@ -207,7 +215,8 @@ def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_
     for (key, entry) in doc['candidate_requirement'].items():
         req = cc_public.load.from_file(repo / 'requirement' / f'req_field_power_cell_{key}.yaml')
         assert req['status'] == 'proposed' and req['category'] == entry['category']
-        assert req['statement'].split() == entry['statement'].split()
+        assert 'statement' not in req and req['claim'] == entry['claim']
+        assert cc_public.requirement.statement(req) == cc_public.requirement.statement(entry)
         assert len(req['title']) <= 80 and req['title'][0].isupper()
         assert sorted((e['id_relation'], e['id_target']) for e in req['relation']) == [
             ('r_is_derived_from', concept),

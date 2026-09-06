@@ -37,6 +37,7 @@ import json
 import cc_public.check.result
 import cc_public.control
 import cc_public.load.python
+import cc_public.requirement
 import cc_public.trace
 
 
@@ -97,7 +98,8 @@ def digest(map_document, guid_requirement, guid_case = None):
                       for edge in (document_req.get(KEY_RELATION) or [])
                       if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENTED]
 
-    plain = {'claimed':        {f: document_req.get(f) for f in FIELD_CLAIMED},
+    claimed = cc_public.requirement.compose(document_req)
+    plain = {'claimed':        {f: claimed.get(f) for f in FIELD_CLAIMED},
              'implementation': implementation,
              'case':           _source(index, guid_case) if guid_case else None}
 

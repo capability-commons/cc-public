@@ -1,0 +1,92 @@
+id_self:                sch_entry_document
+guid_self:              sch_51f31d1f8df1458dac1791ffedd5538c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Document entry schema
+brief:                  |
+                        What a document register entry carries beyond
+                        the general register entry.
+description:            |
+                        The particulars that let a reader find the
+                        external document: who wrote and published it,
+                        the identifier its publisher gave it, its
+                        revision and date, and a locator. Title,
+                        brief, description and alias come from the
+                        general entry shape; the brief says what the
+                        document is and the description what the
+                        repository takes from it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_document.yaml
+type:                   object
+
+properties:
+
+  author:
+    type:               string
+    minLength:          1
+    maxLength:          200
+    pattern:            ^[^\n]+$
+    description:        |
+                        Optional. The authors as the document names
+                        them.
+
+  publisher:
+    type:               string
+    minLength:          1
+    maxLength:          200
+    pattern:            ^[^\n]+$
+    description:        |
+                        The organisation that issued the document.
+
+  id_external:
+    type:               string
+    minLength:          1
+    maxLength:          200
+    pattern:            ^[^\n]+$
+    description:        |
+                        Optional. The identifier the publisher gave
+                        the document, as printed on it.
+
+  revision:
+    type:               string
+    minLength:          1
+    maxLength:          200
+    pattern:            ^[^\n]+$
+    description:        |
+                        Optional. The revision or edition, as the
+                        publisher names it.
+
+  date:
+    type:               string
+    pattern:            ^\d{4}(-\d{2}(-\d{2})?)?$
+    description:        |
+                        Optional. The date of issue, to the precision
+                        known.
+
+  uri:
+    type:               string
+    minLength:          1
+    maxLength:          200
+    pattern:            ^[^\n]+$
+    format:             uri
+    description:        |
+                        Optional. Where the document is published.
+
+  locator:
+    type:               string
+    minLength:          1
+    maxLength:          400
+    pattern:            ^[^\n]+$
+    description:        |
+                        Optional. Where a copy is held, as a path
+                        within a reference library that is not part of
+                        this tree.
+
+required:
+  - publisher

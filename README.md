@@ -18,7 +18,7 @@ mechanically before it is committed.
 | `concept/`       | candidate solutions to a need under a framing, each with assumptions, risks and candidate requirements |
 | `assessment/`    | feasibility assessments of concepts by a named assessor: verdict, seven rated dimensions, off-the-shelf candidates with references |
 | `schema/`        | JSON Schema for every kind of item                                           |
-| `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules |
+| `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules, external documents |
 | `eval/`          | criteria a language model judges items against, with the control cases that measure them |
 | `workflow/`      | components, dataflow workflows and deployments                               |
 | `execution/`     | one record per workflow run, binding every port on every pass; a waiting one holds the run's state and a brief for its performer |

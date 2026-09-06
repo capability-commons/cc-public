@@ -17,13 +17,16 @@ brief:                  |
                         on the concept's entity.
 description:            |
                         Composes identity. A candidate requirement is
-                        one shall statement on the entity the concept
-                        names, with its rationale and category, held
-                        in the concept as a proposal. It is not a
-                        requirement item: promotion makes a textual
-                        requirement from it, deriving from the
-                        concept, and that item is what the requirement
-                        evals judge and acceptance binds.
+                        one obligation on the entity the concept
+                        names, held as the slots of its statement with
+                        its claim, rationale and category, in the
+                        concept as a proposal. The statement is
+                        composed from the slots wherever the candidate
+                        is shown. It is not a requirement item:
+                        promotion makes a textual requirement from it,
+                        deriving from the concept, and that item is
+                        what the requirement evals judge and
+                        acceptance binds.
 type:                   object
 
 allOf:
@@ -32,18 +35,133 @@ allOf:
   - type:               object
 
     required:
-      - statement
+      - entity
+      - obligation
+      - activity
+      - process
+      - object
+      - claim
       - rationale
       - category
 
     properties:
 
-      statement:
+      condition_kind:
+        type:           string
+
+        enum:
+          - logic
+          - event
+          - time
+
+        description:    |
+                        Optional, with condition. logic: the condition
+                        is a state of affairs, written If. event: a
+                        moment, written As soon as. time: a period,
+                        written As long as.
+
+      condition:
         type:           string
         minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
         description:    |
-                        The obligation, one sentence: the entity
-                        shall.
+                        Optional. The condition under which the
+                        obligation holds, as a clause without its
+                        keyword: the Checker has run over the
+                        Directory_Tree. Given with condition_kind.
+
+      entity:
+        type:           string
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z0-9][A-Za-z0-9]*)*$
+        maxLength:      80
+        description:    |
+                        The entity the obligation is on, in
+                        Capitalised_Snake_Case, the subject of the
+                        statement.
+
+      obligation:
+        type:           string
+
+        enum:
+          - shall
+          - should
+          - will
+          - may
+
+        description:    |
+                        The degree of obligation: shall is mandatory,
+                        should a wish, will a statement of what is to
+                        come, may a permission.
+
+      activity:
+        type:           string
+
+        enum:
+          - autonomous
+          - interaction
+          - interface
+
+        description:    |
+                        The kind of activity. autonomous: the entity
+                        does it by itself. interaction: the entity
+                        provides the actor with the ability to do it.
+                        interface: the entity is able to do it on what
+                        a third party gives it.
+
+      actor:
+        type:           string
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z0-9][A-Za-z0-9]*)*$
+        maxLength:      80
+        description:    |
+                        The actor the entity provides the ability to,
+                        in Capitalised_Snake_Case. Given with activity
+                        interaction and not otherwise.
+
+      process:
+        type:           string
+        pattern:        ^[a-z]+( [a-z]+)*$
+        maxLength:      40
+        description:    |
+                        The process word: one main verb in the
+                        infinitive without to, such as report, display
+                        or back up, defined once in the glossary of
+                        the entity.
+
+      object:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        What the process acts on, with the details
+                        that complete it: the Location of each
+                        Nonconformity in the Directory_Tree.
+
+      qualifier:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The performance or manner, as a
+                        clause after the object: within 3 seconds of
+                        the request.
+
+      claim:
+        type:           string
+
+        enum:
+          - evidential
+          - design
+
+        description:    |
+                        What kind of claim the obligation is.
+                        evidential: it restates what a source says
+                        must hold, and is defended by citing the
+                        source. design: it is a choice, and is
+                        defended by argument, a decision with its
+                        challenge on record.
 
       rationale:
         type:           string

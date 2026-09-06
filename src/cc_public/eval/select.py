@@ -37,6 +37,7 @@ import cc_public.check.identifier
 import cc_public.check.register
 import cc_public.load.python
 import cc_public.need
+import cc_public.requirement
 import cc_public.check.schema
 import cc_public.path
 
@@ -492,7 +493,8 @@ def render(tuple_item, document_eval):
     is_empty  = True
 
     for (id_self, item, *rest) in tuple_item:
-        document = cc_public.need.compose(item)          # a need shows its statement
+        document = cc_public.requirement.compose(         # a need or a requirement
+                        cc_public.need.compose(item))     # shows its statement
         if KEY_SOURCE in include and rest:                # a source item shows its source
             document = _with_source(document, rest[0])
         selected = cc_public.path.select(document, include, exclude)

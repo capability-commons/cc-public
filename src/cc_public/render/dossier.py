@@ -34,6 +34,7 @@ import pathlib
 import cc_public.facts
 import cc_public.load.git
 import cc_public.need
+import cc_public.requirement
 import cc_public.trace
 
 
@@ -276,7 +277,7 @@ def _concept(index, doc):
             'assumption':   [{'key': k, 'statement': v.get('statement', ''),
                               'evidence': v.get('evidence', '')}
                              for (k, v) in (doc.get(KEY_ASSUMPTION) or {}).items()],
-            'candidate':    [{'key': k, 'statement': v.get('statement', ''),
+            'candidate':    [{'key': k, 'statement': _statement(v),
                               'rationale': v.get('rationale', ''),
                               'category': v.get('category', '')}
                              for (k, v) in (doc.get(KEY_CANDIDATE) or {}).items()],
@@ -363,13 +364,27 @@ def _references(index, list_cpt):
     return out
 
 
+def _statement(doc):
+    """
+    Return the statement of a requirement or a candidate, composed from
+    its slots, or nothing where they do not compose.
+
+    """
+
+    try:
+        return cc_public.requirement.statement(doc)
+    except cc_public.requirement.ErrorSlot:
+        return ''
+
+
 def _requirement(doc, id_concept, list_gap, findings):
     return {'id':        doc[KEY_ID_SELF],
             'guid':      doc[KEY_GUID_SELF],
             'title':     doc.get('title'),
-            'statement': doc.get('statement', ''),
+            'statement': _statement(doc),
             'rationale': doc.get('rationale', ''),
             'category':  doc.get('category'),
+            'claim':     doc.get('claim'),
             'status':    doc.get('status'),
             'concept':   id_concept,
             'gap':       [g for (guid, g) in list_gap if guid == doc[KEY_GUID_SELF]],

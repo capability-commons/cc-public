@@ -555,3 +555,59 @@ table:
 
     acyclic:            true
     relation:           []
+
+  r_is_taken_from:
+    id_self:            r_is_taken_from
+    guid_self:          r_63d66fa822d04128823be90fa6daee1e
+    title:              Is taken from
+    brief:              |
+                        SUBJ is taken from the external document OBJ.
+    description:        |
+                        The entry identified by SUBJ, a rule, a
+                        characteristic or a methodology, paraphrases
+                        or adopts material from the document
+                        identified by OBJ, an entry of the document
+                        register. The edge records where the material
+                        came from; it does not claim the document
+                        supports anything, and the document is not
+                        held here. A claim resting on a captured
+                        source cites an observation by r_cites
+                        instead.
+    status:             proposed
+    alias:              []
+
+    domain:
+      - t_requirement_rule
+      - t_requirement_characteristic
+      - t_methodology
+
+    range:
+      - t_document
+
+    relation:           []
+
+  r_corresponds_to:
+    id_self:            r_corresponds_to
+    guid_self:          r_7f34e392009a48208f386cd9f6c072e6
+    title:              Corresponds to
+    brief:              |
+                        SUBJ states the same rule as OBJ, from another
+                        source.
+    description:        |
+                        The rule identified by SUBJ and the rule
+                        identified by OBJ come from different
+                        documents and catch the same defect, so that
+                        an eval implementing one implements the other,
+                        and a finding on one is a finding on both. The
+                        edge is held once, from the rule entered later
+                        to the rule entered first.
+    status:             proposed
+    alias:              []
+
+    domain:
+      - t_requirement_rule
+
+    range:
+      - t_requirement_rule
+
+    relation:           []

@@ -1,0 +1,38 @@
+id_self:                sch_reg_document
+guid_self:              sch_a4eacff6d52d40d885e3b281e20f3266
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Document register schema
+brief:                  |
+                        The document register specifically: a register
+                        whose entries are additionally external
+                        documents.
+description:            |
+                        Composes the general register schema with the
+                        document entry schema, in the pattern
+                        sch_reg_term.yaml uses.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_document.yaml
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+            - $ref:     https://capability-commons.org/schema/sch_entry_document.yaml
+
+          unevaluatedProperties:  false

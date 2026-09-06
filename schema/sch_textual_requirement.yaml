@@ -12,22 +12,30 @@ protective_mark:
 
 title:                  Textual requirement schema
 brief:                  |
-                        Schema for textual requirement data items: a
-                        requirement statement and the attributes that
-                        make it a requirement expression.
+                        Schema for textual requirement data items: the
+                        slots of a requirement statement, the claim it
+                        makes, and the attributes that make it a
+                        requirement expression.
 description:            |
                         Composes identity, rights and outgoing
-                        relations, and adds the statement with the
-                        attributes the INCOSE guide names as those
-                        that aid definition and management. Title is
-                        the unique name. The statement is one sentence
-                        on one entity. Rationale says why, so that the
-                        statement need not. Category classifies for
-                        grouping and for finding gaps. Priority,
-                        verification method and success criteria are
-                        optional until the set is managed. Trace to
-                        what the requirement derives from is an
-                        r_is_derived_from edge.
+                        relations, and adds the slots of the statement
+                        with the attributes the INCOSE guide names as
+                        those that aid definition and management.
+                        Title is the unique name. The statement is not
+                        stored: it is composed from the slots, in the
+                        SOPHIST template, wherever the requirement is
+                        shown, so that it cannot drift from them. The
+                        slots are the condition with its kind, the
+                        entity, the obligation, the activity with its
+                        actor, the process, the object and the
+                        qualifier. Claim says whether the obligation
+                        is evidential or a design choice. Rationale
+                        says why, so that the statement need not.
+                        Category classifies for grouping and for
+                        finding gaps. Priority, verification method
+                        and success criteria are optional until the
+                        set is managed. Trace to what the requirement
+                        derives from is an r_is_derived_from edge.
 type:                   object
 
 allOf:
@@ -39,7 +47,12 @@ allOf:
 
     required:
       - title
-      - statement
+      - entity
+      - obligation
+      - activity
+      - process
+      - object
+      - claim
       - rationale
       - category
 
@@ -53,14 +66,122 @@ allOf:
         description:    |
                         The unique name of the requirement, one line.
 
-      statement:
+      condition_kind:
+        type:           string
+
+        enum:
+          - logic
+          - event
+          - time
+
+        description:    |
+                        Optional, with condition. logic: the condition
+                        is a state of affairs, written If. event: a
+                        moment, written As soon as. time: a period,
+                        written As long as.
+
+      condition:
         type:           string
         minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
         description:    |
-                        The requirement statement: one sentence, the
-                        entity as subject, shall, the action and its
-                        object, with any condition and performance in
-                        their own clauses.
+                        Optional. The condition under which the
+                        obligation holds, as a clause without its
+                        keyword: the Checker has run over the
+                        Directory_Tree. Given with condition_kind.
+
+      entity:
+        type:           string
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z0-9][A-Za-z0-9]*)*$
+        maxLength:      80
+        description:    |
+                        The entity the obligation is on, in
+                        Capitalised_Snake_Case, the subject of the
+                        statement.
+
+      obligation:
+        type:           string
+
+        enum:
+          - shall
+          - should
+          - will
+          - may
+
+        description:    |
+                        The degree of obligation: shall is mandatory,
+                        should a wish, will a statement of what is to
+                        come, may a permission.
+
+      activity:
+        type:           string
+
+        enum:
+          - autonomous
+          - interaction
+          - interface
+
+        description:    |
+                        The kind of activity. autonomous: the entity
+                        does it by itself. interaction: the entity
+                        provides the actor with the ability to do it.
+                        interface: the entity is able to do it on what
+                        a third party gives it.
+
+      actor:
+        type:           string
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z0-9][A-Za-z0-9]*)*$
+        maxLength:      80
+        description:    |
+                        The actor the entity provides the ability to,
+                        in Capitalised_Snake_Case. Given with activity
+                        interaction and not otherwise.
+
+      process:
+        type:           string
+        pattern:        ^[a-z]+( [a-z]+)*$
+        maxLength:      40
+        description:    |
+                        The process word: one main verb in the
+                        infinitive without to, such as report, display
+                        or back up, defined once in the glossary of
+                        the entity.
+
+      object:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        What the process acts on, with the details
+                        that complete it: the Location of each
+                        Nonconformity in the Directory_Tree.
+
+      qualifier:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The performance or manner, as a
+                        clause after the object: within 3 seconds of
+                        the request.
+
+      claim:
+        type:           string
+
+        enum:
+          - evidential
+          - design
+
+        description:    |
+                        What kind of claim the obligation is.
+                        evidential: it restates what a source says
+                        must hold, and is defended by citing the
+                        source. design: it is a choice, and is
+                        defended by argument, a decision with its
+                        challenge on record.
 
       rationale:
         type:           string

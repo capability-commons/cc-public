@@ -266,6 +266,14 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 - Prose follows the writing style guide, `register/reg_writing_style_rule.yaml`:
   seven rules, each with a sentence that follows it and one that breaks
   it. Read it before writing any field.
+- A requirement, and a candidate requirement in a concept, is its slots:
+  `condition_kind`, `condition`, `entity`, `obligation`, `activity`, `actor`,
+  `process`, `object`, `qualifier`, with a `claim` of `evidential` or `design`.
+  The statement is composed from them by `cc_public.requirement` wherever it
+  is shown and is never written (`ddr_requirement_slots`). The rules a
+  statement is judged by are `register/reg_requirement_rule.yaml`, INCOSE's
+  and SOPHIST's, each naming the document it is taken from by
+  `r_is_taken_from` into `register/reg_document.yaml` (`ddr_document_register`).
 - Prose in an item describes; argument goes in a design decision. Create
   one only for a genuine decision with real alternatives. The item is a
   design decision, never a "design decision record": every item is a
@@ -297,5 +305,5 @@ is `../cc-brave1-demo`.
 ## Where things are
 
 `ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
-term, style, rule, characteristic, framing and methodology registers · `eval/` evals and control sets · `workflow/` components,
+term, style, rule, characteristic, framing, methodology and document registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

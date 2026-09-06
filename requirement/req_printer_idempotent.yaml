@@ -9,10 +9,6 @@ protective_mark:
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
 title:                  Printer is idempotent
-statement:              |
-                        When the Printer receives a Laid_Out_Document,
-                        the Printer shall write the Laid_Out_Document
-                        with each byte unchanged.
 rationale:              |
                         A Laid_Out_Document is a document the Printer
                         has already written. The layout check is that
@@ -26,6 +22,15 @@ success_criteria:       |
                         in the repository, laid out twice, is byte
                         identical after the first pass.
 status:                 accepted
+condition_kind:         event
+condition:              the Printer receives a Laid_Out_Document
+entity:                 Printer
+obligation:             shall
+activity:               autonomous
+process:                write
+object:                 the Laid_Out_Document
+qualifier:              with each byte unchanged
+claim:                  design
 
 relation:
 

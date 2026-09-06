@@ -885,8 +885,10 @@ table:
                         rule for writing a requirement statement, with
                         its reasoning and an example that follows it
                         beside one that breaks it. The rules are those
-                        of the INCOSE guide to writing requirements,
-                        numbered as there.
+                        of the INCOSE guide to writing requirements
+                        and of the SOPHIST set of regulations,
+                        numbered as there with R and S, and each names
+                        the document it is taken from.
     prefix:             rule
     regex_id:           ^rule_[a-z][a-z0-9_]*$
     usage:              |
@@ -1354,3 +1356,36 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_segment
         guid_target:    sch_52c08f6a29094a64b49706d0303008c8
+
+  t_document:
+    id_self:            t_document
+    guid_self:          t_5571ffde1b304460a83fa33d0a9bb453
+    title:              Document type
+    brief:              |
+                        Type of external document data items
+    description:        |
+                        Each document data item names one external
+                        document, a standard, a guide, a paper or a
+                        book, with the particulars that let a reader
+                        find it, and what the repository takes from
+                        it.
+    prefix:             doc
+    regex_id:           ^doc_[a-z][a-z0-9_]*$
+    usage:              |
+                        Documents are the targets of r_is_taken_from
+                        edges from the rules, characteristics and
+                        methodologies that draw on them.
+    note:               |
+                        Documents exist only as entries in a document
+                        register, never as documents of their own, so
+                        this type names no schema. The register names
+                        one, and that schema governs its entries.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_document
+        guid_target:    reg_0954469dcdb84c5b8c84639845bea81c

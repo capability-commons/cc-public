@@ -39,6 +39,7 @@ import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.facts
+import cc_public.requirement
 
 
 PORT_REQUIREMENT = 'requirement'
@@ -53,6 +54,21 @@ KEY_ID_TARGET    = 'id_target'
 KEY_STATUS       = 'status'
 STATUS_PROPOSED  = 'proposed'
 TYPE_REQUIREMENT = 't_textual_requirement'
+
+# What a promoted requirement takes from its candidate as it stands:
+# the slots of the statement, the claim and the category. The
+# statement itself is composed from the slots wherever it is shown.
+#
+FIELD_COPIED     = (cc_public.requirement.KEY_CONDITION_KIND,
+                    cc_public.requirement.KEY_CONDITION,
+                    cc_public.requirement.KEY_ENTITY,
+                    cc_public.requirement.KEY_OBLIGATION,
+                    cc_public.requirement.KEY_ACTIVITY,
+                    cc_public.requirement.KEY_ACTOR,
+                    cc_public.requirement.KEY_PROCESS,
+                    cc_public.requirement.KEY_OBJECT,
+                    cc_public.requirement.KEY_QUALIFIER,
+                    'claim', 'category')
 PREFIX_REQ       = 'req'
 REL_DERIVED      = 'r_is_derived_from'
 WIDTH_TITLE      = 80
@@ -260,11 +276,12 @@ def promote(tree, ledger, map_input):
                                                   tree.defaults()))
         cc_public.edit.field.set_field(tree, id_requirement, 'title',
                                        value = _title(key))
-        for field in ('statement', 'rationale'):
-            cc_public.edit.field.set_field(tree, id_requirement, field,
-                                           prose = str(entry.get(field) or ''))
-        cc_public.edit.field.set_field(tree, id_requirement, 'category',
-                                       value = entry.get('category'))
+        cc_public.edit.field.set_field(tree, id_requirement, 'rationale',
+                                       prose = str(entry.get('rationale') or ''))
+        for field in FIELD_COPIED:
+            if entry.get(field):
+                cc_public.edit.field.set_field(tree, id_requirement, field,
+                                               value = str(entry[field]))
         cc_public.edit.field.set_field(tree, id_requirement, KEY_STATUS,
                                        value = STATUS_PROPOSED)
         cc_public.edit.link.link(tree, id_requirement, REL_DERIVED, id_concept)

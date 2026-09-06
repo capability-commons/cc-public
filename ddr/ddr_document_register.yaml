@@ -1,0 +1,190 @@
+id_self:                ddr_document_register
+guid_self:              ddr_5bb80671203943d49fa507ff3245773b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  External documents are a register, and provenance is an edge
+brief:                  |
+                        The external documents the repository takes
+                        material from are entries of a document
+                        register, and a rule, a characteristic or a
+                        methodology names the one it comes from by an
+                        r_is_taken_from edge. A rule that catches the
+                        same defect as one from another source says so
+                        by r_corresponds_to.
+context:                |
+                        The requirement rules, the characteristics and
+                        the methodologies each came from a document,
+                        and said so in prose: the INCOSE guide,
+                        revision 4; van Lamsweerde and Letier; Michael
+                        Jackson, Problem Frames, 2001. Nothing held
+                        the document itself, so nothing could be asked
+                        which entries came from where, and adding the
+                        SOPHIST rules beside the INCOSE ones would
+                        have left the register saying in its own brief
+                        which source each rule had. The design factory
+                        kept a document register for the same purpose,
+                        with an external identifier, a revision, a
+                        date and a path into a reference library. A
+                        captured public source is already an
+                        observation, with its content digested; a
+                        standard or a book is not captured and is not
+                        to be.
+decision:               |
+                        A DOCUMENT is an entry of reg_document, of
+                        type t_document, prefix doc, with the
+                        particulars that let a reader find it: author,
+                        publisher, the identifier the publisher gave
+                        it, revision, date, a uri, and a locator into
+                        a reference library outside the tree. Its
+                        brief says what it is and its description what
+                        the repository takes from it. A document is a
+                        pointer: no content is held and nothing is
+                        digested.
+
+                        An entry that paraphrases or adopts material
+                        from a document, a requirement rule, a
+                        characteristic or a methodology, names it by
+                        an r_is_taken_from edge, whose domain is those
+                        three types and whose range is t_document.
+                        Every INCOSE rule and characteristic names the
+                        guide; every SOPHIST rule names the set of
+                        regulations; each methodology names its
+                        source.
+
+                        Where a rule from one document catches the
+                        same defect as a rule from another, an
+                        r_corresponds_to edge runs from the rule
+                        entered later to the rule entered first, so
+                        that an eval implementing one implements the
+                        other and a finding on one is a finding on
+                        both.
+rationale:              |
+                        A register and an edge rather than a source
+                        field on each entry, because a field holds a
+                        string that nothing resolves, and an edge
+                        holds an identity the reference check resolves
+                        and the graph can be asked about: what came
+                        from the guide, what would change if the guide
+                        moved to revision 5.
+
+                        A document apart from an observation, because
+                        they answer different questions. An
+                        observation is evidence: what a source said,
+                        held word for word and digested, cited by
+                        r_cites from a claim that rests on it. A
+                        document is provenance: where a rule or a
+                        method was taken from, not a claim that the
+                        document supports anything. Conflating them
+                        would let a standard be cited as evidence
+                        without its text being held, which is the
+                        unearned authority the admissible claims
+                        position exists to prevent.
+
+                        Correspondence as an edge rather than a merged
+                        rule, because each source keeps its own
+                        numbering, which is how it is cited, and
+                        because the two wordings are not the same:
+                        SOPHIST asks a question where INCOSE states a
+                        rule.
+alternative:            |
+                        A source field on each rule entry, as first
+                        proposed. Rejected: a string that resolves to
+                        nothing.
+
+                        Documents as observations, captured and
+                        digested. Rejected: a standard is not public
+                        content to capture, and provenance is not
+                        evidence.
+
+                        One merged rule set with the sources listed on
+                        each rule. Rejected: the numbering is what a
+                        reader cites, and a merged rule loses the
+                        question SOPHIST attaches to its finding.
+consequence:            |
+                        Nine documents are entered. Forty two rules,
+                        fifteen characteristics and five methodologies
+                        carry r_is_taken_from edges, and the eighteen
+                        SOPHIST rules carry r_corresponds_to edges to
+                        the nine INCOSE rules that catch the same
+                        defect.
+
+                        The document particulars are datums bounded by
+                        length and pattern, so that the printer writes
+                        them on one line; a field once held as prose
+                        stays prose under set, so a bound added to a
+                        schema after entries exist needs the field
+                        unset and set again.
+
+                        Sources: the design factory document register;
+                        the admissible claims position in the
+                        reference library.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_document
+    guid_target:        reg_0954469dcdb84c5b8c84639845bea81c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_document
+    guid_target:        sch_a4eacff6d52d40d885e3b281e20f3266
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_document
+    guid_target:        sch_51f31d1f8df1458dac1791ffedd5538c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_document
+    guid_target:        t_5571ffde1b304460a83fa33d0a9bb453
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_taken_from
+    guid_target:        r_63d66fa822d04128823be90fa6daee1e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_corresponds_to
+    guid_target:        r_7f34e392009a48208f386cd9f6c072e6
+
+question:
+
+  locator:
+    id_self:            qst_document_register.locator
+    guid_self:          qst_0f9e6492651f45cd951d264a6326b022
+    question:           |
+                        Whether a locator into a private reference
+                        library belongs in a public register at all,
+                        or is a field a consumer segment adds on a
+                        register of its own.
+    relation:           []
+
+  citation:
+    id_self:            qst_document_register.citation
+    guid_self:          qst_9cffe143daf0426ba9020bcfdf9fddc1
+    question:           |
+                        Whether a claim may rest on a document rather
+                        than a captured observation, which would widen
+                        the range of r_cites to t_document, and what a
+                        citation of an uncaptured document is worth.
+    relation:           []
+
+  federation:
+    id_self:            qst_document_register.federation
+    guid_self:          qst_6d7f535acf3b49ca89cfa323c25679a4
+    question:           |
+                        How a consumer segment names documents of its
+                        own: a second register of the same type, on
+                        the glossary precedent, or entries proposed
+                        into this one.
+    relation:           []
