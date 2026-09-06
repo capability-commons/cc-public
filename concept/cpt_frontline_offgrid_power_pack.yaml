@@ -1,0 +1,561 @@
+id_self:                cpt_frontline_offgrid_power_pack
+guid_self:              cpt_d1049d65953c44a788e5367e864e94fe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Autonomous multiday off-grid power cache
+entity:                 Frontline_Autonomous_Power_Cache
+operation:              |
+                        Personnel receive a
+                        Frontline_Autonomous_Power_Cache precharged in
+                        the rear and move it forward as part of their
+                        normal logistics rotation, placing it in a
+                        dugout or hard cover near the terminal and
+                        chargers before road access is cut. They
+                        connect the terminal and drone chargers to its
+                        protected outputs and select a critical-load
+                        profile that enforces a capped power budget
+                        sized for several days, with clear indicators
+                        of remaining endurance in hours at that
+                        profile. During periods when grid and fuel are
+                        unavailable and movement is unsafe, the cache
+                        silently supplies power from its internal
+                        high-capacity batteries only; there is no
+                        expectation of human-powered recharging or
+                        solar deployment under fire. If the position
+                        is expected to be isolated for longer than one
+                        cache’s endurance, logistics pre-position a
+                        second or third cache in depth, either
+                        co-located or at alternate covered sites that
+                        can be reached during brief lulls, allowing a
+                        swap to a fresh unit without refuelling. The
+                        cache automatically sheds non-essential loads
+                        when reserves fall, preserving terminal and
+                        core communications until its defined
+                        endurance is exhausted, at which point it
+                        shuts down gracefully with prior warning so
+                        that data can be secured and a planned
+                        fallback, such as relocation to another
+                        pre-positioned cache or reduced comms
+                        discipline, can take effect.
+architecture:           |
+                        Frontline_Autonomous_Power_Cache consists of a
+                        ruggedised high-energy battery block sized for
+                        several days of strictly bounded critical
+                        loads; a hardened power conditioning module
+                        providing regulated DC outputs, optional AC
+                        inversion, surge protection, and autonomous
+                        load prioritisation; an endurance management
+                        and display unit that calculates remaining
+                        runtime under current and pre-set profiles
+                        without any network connectivity; and a
+                        protective enclosure that offers fragment and
+                        small-arms resistance, thermal masking,
+                        acoustic isolation, and electromagnetic
+                        shielding. The cache includes a rear-area
+                        charging and diagnostic interface, physically
+                        separate from the frontline user ports, that
+                        allows safe rapid recharge or battery
+                        replacement at secure logistics hubs. Units
+                        are designed as interchangeable modules so
+                        that logistics can rotate charged caches
+                        forward and evacuate depleted ones without
+                        special tools, and all external interfaces at
+                        the front are passive, wired, and
+                        low-signature.
+effect:                 |
+                        Frontline_Autonomous_Power_Cache gives
+                        frontline personnel a predictable, multiday
+                        supply of electrical power that is fully
+                        independent of grid, fuel, solar, or
+                        human-powered generation during the isolation
+                        period. It removes reliance on kinetic effort
+                        under fire and instead shifts the problem to
+                        pre-positioning enough silent capacity to ride
+                        out typical interdiction windows, with
+                        automatic shedding of non-critical loads to
+                        protect communications and minimal drone
+                        operations. It does not by itself extend
+                        endurance beyond the total cached capacity and
+                        cannot guarantee power if isolation lasts
+                        longer than planned or if loads exceed the
+                        profiled envelope, so it depends on realistic
+                        endurance planning and logistics’ ability to
+                        deliver and rotate caches between periods of
+                        road denial.
+risk:                   |
+                        Frontline_Autonomous_Power_Cache fails if
+                        actual isolation durations or power demands
+                        exceed the planned endurance so that even one
+                        or several cached units run flat before
+                        resupply or movement is possible, causing loss
+                        of terminal and drone capability despite
+                        correct use. If logistics cannot reliably
+                        pre-position or rotate caches due to more
+                        persistent interdiction, competing priorities,
+                        or misestimation of needs, frontline units may
+                        receive too few or depleted caches and assume
+                        a level of resilience that does not exist. A
+                        direct hit or severe fragment strike can
+                        breach the cache, potentially disabling it or
+                        creating a fire or toxic fume hazard despite
+                        protective design. Overly strict load shedding
+                        to preserve endurance might reduce drone
+                        sortie rates or disable seemingly non-critical
+                        equipment that turns out to be tactically
+                        important, while overly permissive profiles
+                        deplete reserves too quickly. The absence of
+                        any in-situ recharge path means that once the
+                        planned cache capacity is exhausted, there is
+                        no way to recover power until a new cache or
+                        other source arrives, so in the very worst,
+                        longest isolation scenarios the system
+                        degrades abruptly rather than gracefully.
+
+candidate_requirement:
+
+  interoperable_power_outputs:
+    id_self:            crq_frontline_offgrid_power_pack.interoperable_power_outputs
+    guid_self:          crq_a532d106f92245d2b4a64bc3a9af1c0d
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall provide
+                        protected DC and, where required, AC outputs
+                        compatible with existing terminals and drone
+                        chargers used by supported units, or shall be
+                        supplied with adapters that achieve such
+                        compatibility without reducing the specified
+                        endurance.
+    rationale:          |
+                        The need is to power existing equipment;
+                        ensuring electrical compatibility avoids
+                        forcing replacement of terminals or chargers
+                        and keeps endurance calculations valid.
+    category:           fit
+    relation:           []
+
+  multiday_fixed_endurance_floor:
+    id_self:            crq_frontline_offgrid_power_pack.multiday_fixed_endurance_floor
+    guid_self:          crq_831dc35c88be4a8ca6fb2db0882f16ec
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall provide
+                        sufficient internal energy storage to operate
+                        a defined terminal and critical communications
+                        load continuously, without any external input,
+                        for at least 96 hours under a specified
+                        worst-case duty cycle.
+    rationale:          |
+                        The need describes multiple nights without
+                        power; a 96-hour floor is a chosen design
+                        point that covers three nights with margin and
+                        aligns with typical short-term interdiction
+                        windows while remaining achievable with
+                        man-movable battery technology.
+    category:           function
+    relation:           []
+
+  no_reliance_on_in_situ_generation:
+    id_self:            crq_frontline_offgrid_power_pack.no_reliance_on_in_situ_generation
+    guid_self:          crq_8113959b94ff4ff088e5a0ed3d1bf927
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall meet
+                        its specified minimum endurance assuming zero
+                        contribution from solar, fuel-driven
+                        generators, or human-powered charging at the
+                        frontline position.
+    rationale:          |
+                        The prior challenge highlights that under
+                        extreme conditions neither solar nor kinetic
+                        inputs may be practical; making endurance
+                        independent of any in-situ generation ensures
+                        the cache still serves the need when personnel
+                        cannot safely operate chargers or deploy
+                        panels.
+    category:           function
+    relation:           []
+
+  autonomous_load_prioritisation:
+    id_self:            crq_frontline_offgrid_power_pack.autonomous_load_prioritisation
+    guid_self:          crq_ccf98c82e7ed47c686bceb93ab9efd7a
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall
+                        implement configurable load prioritisation
+                        that ensures terminal and critical
+                        communications outputs are maintained ahead of
+                        drone charging and non-essential loads
+                        whenever available energy is constrained.
+    rationale:          |
+                        In an adversarial isolation period, preserving
+                        command and communications is more critical
+                        than full drone sortie capacity, so the cache
+                        must enforce this priority automatically when
+                        reserves run low.
+    category:           function
+    relation:           []
+
+  endurance_visibility_in_hours:
+    id_self:            crq_frontline_offgrid_power_pack.endurance_visibility_in_hours
+    guid_self:          crq_5e0a393b9b194de0b66b9998d727ff15
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall present
+                        users with an estimate of remaining endurance
+                        in hours for at least one predefined
+                        critical-load profile without requiring any
+                        network connectivity or external tools.
+    rationale:          |
+                        Clear, local visibility of how many hours of
+                        power remain under an agreed profile allows
+                        personnel to adjust usage and mission plans
+                        before depletion, reducing the risk of sudden
+                        loss of communications.
+    category:           quality
+    relation:           []
+
+  low_signature_silent_operation:
+    id_self:            crq_frontline_offgrid_power_pack.low_signature_silent_operation
+    guid_self:          crq_d3b2f811a6734ea6814f2179cb053477
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall operate
+                        without moving parts, audible noise above
+                        typical dugout ambient levels, visible light
+                        emissions in low-signature mode, or active RF
+                        emissions during normal frontline use.
+    rationale:          |
+                        The framing is adversarial and positions may
+                        be under continuous observation; eliminating
+                        mechanical noise and RF and suppressing visual
+                        cues reduces the risk that the power source
+                        itself becomes a targeting aid compared to
+                        generators or kinetic chargers.
+    category:           quality
+    relation:           []
+
+  rear_area_fast_recharge_interface:
+    id_self:            crq_frontline_offgrid_power_pack.rear_area_fast_recharge_interface
+    guid_self:          crq_eeb56832f5f54a87aa457a6ca96a0fde
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall provide
+                        a dedicated rear-area interface that allows
+                        recharging from grid or generator power from
+                        10% to 90% state of charge within 8 hours
+                        using specified standard inputs.
+    rationale:          |
+                        Caches must be turned around between frontline
+                        deployments; a defined recharge time at a
+                        chosen design point supports logistics
+                        planning and ensures that a limited number of
+                        units can support repeated sorties.
+    category:           fit
+    relation:           []
+
+  team_portable_form_factor:
+    id_self:            crq_frontline_offgrid_power_pack.team_portable_form_factor
+    guid_self:          crq_8243b4a46f844e06a96015effb54e762
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall be
+                        capable of being carried over 100 meters by a
+                        team of at most four people using integrated
+                        handles or lifting points, without exceeding
+                        safe individual lift limits defined by
+                        applicable occupational standards.
+    rationale:          |
+                        Frontline positions may lack vehicle access
+                        when under fire; making the cache
+                        team-portable allows emplacement, relocation,
+                        or evacuation under partial cover without
+                        specialised equipment.
+    category:           form
+    relation:           []
+
+  environmental_and_battlefield_ruggedness:
+    id_self:            crq_frontline_offgrid_power_pack.environmental_and_battlefield_ruggedness
+    guid_self:          crq_3bc5185f6a9d4e67af20b293dca020a1
+    statement:          |
+                        Frontline_Autonomous_Power_Cache shall
+                        withstand specified shock, vibration,
+                        temperature, moisture, dust, and fragment
+                        impact levels without loss of basic power
+                        functionality or unsafe battery behaviour, and
+                        shall transition to a safe state in the event
+                        of enclosure breach or internal fault.
+    rationale:          |
+                        The cache operates under combat conditions
+                        where blast, rough handling, and harsh
+                        environments are expected; it must continue
+                        delivering power when damaged where possible
+                        and must not become a secondary hazard if
+                        critically compromised.
+    category:           quality
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  interdiction_duration_statistically_bounded:
+    id_self:            asm_frontline_offgrid_power_pack.interdiction_duration_statistically_bounded
+    guid_self:          asm_8771c205c47d46348973388259bcaf91
+    statement:          |
+                        Frontline road interdiction and isolation
+                        events at the positions of interest usually
+                        last on the order of several days and are
+                        infrequently longer than the combined
+                        endurance of one or a small stack of
+                        high-capacity caches sized for critical loads.
+    evidence:           |
+                        The observation mentions three nights without
+                        grid power and blocked fuel runs, implying a
+                        multiday but not necessarily multiweek
+                        isolation; open-source reporting from recent
+                        conflicts describes rotations and resupply
+                        often occurring on timescales of days when
+                        routes are contested, though hard
+                        distributions for this specific theatre are
+                        not provided.
+    relation:           []
+
+  logistics_can_preposition_caches:
+    id_self:            asm_frontline_offgrid_power_pack.logistics_can_preposition_caches
+    guid_self:          asm_8fa6000610c14d20a2869af8988ea5fc
+    statement:          |
+                        Rear-area logistics can precharge and deliver
+                        one or more high-capacity power caches to
+                        frontline positions in advance of or between
+                        periods of road interdiction.
+    evidence:           |
+                        The need’s context notes that fuel runs are
+                        blocked specifically while the road is under
+                        fire, which implies that at other times
+                        movement is possible; military logistics
+                        routinely preposition ammunition, water, and
+                        batteries when access windows open, suggesting
+                        similar treatment for power caches is feasible
+                        though unproven for this exact system.
+    relation:           []
+
+  critical_load_can_be_capped:
+    id_self:            asm_frontline_offgrid_power_pack.critical_load_can_be_capped
+    guid_self:          asm_6eede7f5417a4147bddd431b18ce9468
+    statement:          |
+                        The power demands of the terminal, essential
+                        communications, and a minimum viable drone
+                        operation rate can be capped and enforced to
+                        fit within the endurance provided by a
+                        man-movable cache over several days.
+    evidence:           |
+                        Typical rugged laptops, radios, and small
+                        reconnaissance drones have documented power
+                        consumption in ranges supportable by
+                        several-kWh-class man-portable or
+                        small-team-portable battery systems; however,
+                        the exact mission tempo and load discipline
+                        required at the observed position are not
+                        quantified.
+    relation:           []
+
+  multiple_caches_feasible_for_key_positions:
+    id_self:            asm_frontline_offgrid_power_pack.multiple_caches_feasible_for_key_positions
+    guid_self:          asm_2b7c7447d997466f830ffd039e577c60
+    statement:          |
+                        For the most exposed or critical positions, it
+                        is feasible to allocate and deliver more than
+                        one cache so that a fresh unit is available
+                        when the first depletes.
+    evidence:           |
+                        High-priority frontline positions already
+                        receive disproportionate shares of scarce
+                        resources such as precision munitions or
+                        specialised sensors; extending this
+                        prioritisation to a second or third power
+                        cache is plausible but may compete with other
+                        logistics demands and is not evidenced by the
+                        observation.
+    relation:           []
+
+  adversary_targets_emissions_and_visible_activity:
+    id_self:            asm_frontline_offgrid_power_pack.adversary_targets_emissions_and_visible_activity
+    guid_self:          asm_c7fb39dafcd14f34ba54b09d2c0591a6
+    statement:          |
+                        The adversary uses acoustic, thermal, visual,
+                        and RF signatures to locate and target
+                        frontline positions, and will exploit any
+                        distinctive generator-like or mechanical
+                        signatures if present.
+    evidence:           |
+                        Open-source analyses of recent conflicts
+                        report extensive use of drones, IR imaging,
+                        and RF direction finding to target generators,
+                        vehicles, and other emitters; the need’s
+                        framing as an adversary problem makes such
+                        behaviour salient though the fictional
+                        observation does not describe it directly.
+    relation:           []
+
+  silent_cache_less_targetable_than_generator:
+    id_self:            asm_frontline_offgrid_power_pack.silent_cache_less_targetable_than_generator
+    guid_self:          asm_082966d8971f4179b0bab070cbdd78bc
+    statement:          |
+                        A sealed, passively cooled battery cache with
+                        no moving parts and no active RF is
+                        significantly harder for the adversary to
+                        detect and classify than a fuel generator or
+                        human-operated kinetic charger for the same
+                        delivered power.
+    evidence:           |
+                        Batteries under load emit minimal acoustic
+                        noise and limited thermal contrast compared to
+                        combustion engines or moving mechanical
+                        systems; while IR and EM leakage can still
+                        exist, the qualitative difference in signature
+                        is supported by basic physics though specific
+                        sensor threat models for this theatre are not
+                        cited.
+    relation:           []
+
+  rear_area_charging_infrastructure_exists:
+    id_self:            asm_frontline_offgrid_power_pack.rear_area_charging_infrastructure_exists
+    guid_self:          asm_06e8de3fa203497e96ca5fb72bebf528
+    statement:          |
+                        Secure rear-area locations with grid or
+                        generator power exist where caches can be
+                        recharged or have their batteries replaced
+                        between forward deployments.
+    evidence:           |
+                        Military operations maintain bases and
+                        logistics hubs with power generation; although
+                        the need text focuses on a frontline position
+                        without grid or fuel, it implicitly contrasts
+                        this with safer areas where such supplies are
+                        available, but it does not describe those
+                        facilities explicitly.
+    relation:           []
+
+  personnel_can_move_within_position_briefly:
+    id_self:            asm_frontline_offgrid_power_pack.personnel_can_move_within_position_briefly
+    guid_self:          asm_cf309a0765de4806b017ccff9764eab0
+    statement:          |
+                        Even under incoming fire, there are brief
+                        lulls or covered routes within or immediately
+                        behind the frontline position that allow
+                        personnel to move a cache a short distance or
+                        swap to a second pre-positioned unit without
+                        prohibitive risk.
+    evidence:           |
+                        Infantry positions are typically constructed
+                        with trenches, communication tunnels, or other
+                        covered movement paths; however, the
+                        observation gives no layout detail for the
+                        specific site, so this remains an inferred
+                        pattern rather than a confirmed fact.
+    relation:           []
+
+  cache_mass_and_volume_are_team_portable:
+    id_self:            asm_frontline_offgrid_power_pack.cache_mass_and_volume_are_team_portable
+    guid_self:          asm_b8c929c82a3e45638e0b4e0b616c5c9b
+    statement:          |
+                        The mass and volume of a cache sized for
+                        several days of critical loads can be handled
+                        safely by a small team for emplacement and
+                        evacuation without specialised vehicles.
+    evidence:           |
+                        Commercial and military field battery systems
+                        in the 2–5 kWh class exist at weights that can
+                        be moved by two to four people or in small
+                        vehicles; precise sizing for this concept is
+                        not fixed, so this assumption rests on
+                        extrapolating from those products.
+    relation:           []
+
+challenge:              |
+                        The concept assumes that logistics can
+                        reliably pre-position and rotate charged
+                        caches at frontline positions during available
+                        access windows, as stated in the assumptions
+                        "logistics_can_preposition_caches" and
+                        "multiple_caches_feasible_for_key_positions."
+                        However, the need's evidence does not
+                        establish that logistical movement is
+                        sufficiently predictable, frequent, or secure
+                        to guarantee this outcome, especially under
+                        intense and unpredictable interdiction. The
+                        cited open-source examples from other
+                        conflicts are not specific to the observed
+                        position, and the observation itself describes
+                        a case where no resupply reached the position
+                        for three nights, with no confirmation that
+                        this is the typical or worst-case scenario. If
+                        access intervals are shorter or less certain
+                        than assumed, or if logistics is stretched by
+                        competing demands (such as ammunition or
+                        casualty evacuation), caches may not arrive in
+                        time or in enough quantity, and the system
+                        fails exactly as described in the "risk"
+                        section: terminal and drone power are lost
+                        despite the design. This means the system does
+                        not, in its own terms, satisfy the need's
+                        outcome in its context for any case where road
+                        denial lasts longer than planned, or more
+                        often than logistics can refresh caches. The
+                        concept’s claim to resilience, therefore, is
+                        not established for the full range of threat
+                        conditions likely in adversarial combat, and
+                        in those cases, the terminal and chargers will
+                        be powerless even if the cache’s local
+                        features work as intended.
+resolution:             |
+                        The challenge to the prior concept states that
+                        relying on a covert kinetic charging mechanism
+                        as a guaranteed fallback is unsafe because
+                        extreme frontline conditions may leave
+                        personnel without the physical or tactical
+                        capacity to operate it, so the system could
+                        regress to a finite battery with no viable
+                        recharge once solar and fuel are denied. This
+                        concept concedes that point and removes the
+                        dependency on human-powered input at the
+                        frontline entirely. First, it explicitly
+                        assumes zero in-situ generation in its design
+                        basis and makes the multiday endurance
+                        requirement rest solely on precharged internal
+                        storage, so that the need is met even if no
+                        one can safely perform additional physical
+                        work or deploy panels during isolation.
+                        Second, it shifts the resilience mechanism
+                        from human effort under fire to logistics
+                        planning and pre-positioning: the outcome now
+                        depends on delivering one or more silent
+                        caches before or between interdiction events,
+                        which aligns with existing patterns of
+                        rotating ammunition, water, and batteries when
+                        access windows open. Third, it recognises that
+                        this change trades one risk for another: if
+                        isolation durations or loads are misestimated,
+                        or logistics cannot move caches forward,
+                        endurance will still be insufficient, but this
+                        failure mode is now a matter of planning and
+                        allocation rather than an optimistic
+                        assumption about soldier fatigue margins under
+                        combat. In that sense the objection stands
+                        regarding kinetic infeasibility, and the
+                        design is revised to drop kinetic charging
+                        rather than defend it, accepting that in the
+                        worst, longest cut-offs with no resupply at
+                        all, no purely local system can prevent
+                        eventual power loss once fixed stored energy
+                        is exhausted.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_frontline_multiday_offgrid_power
+    guid_target:        need_0faac913d77d46468f29830da1b94a1d
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_adversary
+    guid_target:        frame_e23cafbd7b4846029ba4d34642861ac3

@@ -1,0 +1,567 @@
+id_self:                cpt_frontline_multiday_power_kit
+guid_self:              cpt_094cdffadf61469eaa24e18c134fae68
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Compact fuel-cell and battery reserve power module
+entity:                 Frontline_FuelCell_Reserve_System
+operation:              |
+                        Personnel at the frontline position receive
+                        one Frontline_FuelCell_Reserve_System per post
+                        as a managed supply item sized to their
+                        declared terminal and drone charger load.
+                        Before deployment, logistics staff configure
+                        the system to that load profile and issue it
+                        with a small starter hydrogen cartridge
+                        already installed, plus sealed spare
+                        cartridges and an integrated buffer battery
+                        charged from grid or generator. At the
+                        position, personnel place the ruggedised
+                        module under cover near the terminal, connect
+                        the terminal and chargers to its protected DC
+                        outputs, and stow the spare cartridges where
+                        they stay dry and cool. During normal
+                        operations with fuel available, the system’s
+                        battery is kept topped up from grid or
+                        generator while the cartridges are held in
+                        reserve. When grid and fuel are lost, the fuel
+                        cell automatically starts drawing from the
+                        installed cartridge, powering the load while
+                        keeping the buffer battery charged; a simple
+                        indicator shows remaining cartridge runtime
+                        and warns if the attached load exceeds the
+                        configured profile. When the active cartridge
+                        nears depletion, personnel follow a short
+                        drill to hot-swap in a fresh cartridge,
+                        extending operation for another planned block
+                        of hours. If isolation ends and resupply
+                        becomes possible, opened cartridges and the
+                        system are swapped or serviced through the
+                        supply chain, and new filled cartridges are
+                        issued so that each post again holds enough
+                        cartridges to cover the target number of
+                        fuel-free days for its standard load.
+architecture:           |
+                        Frontline_FuelCell_Reserve_System has four
+                        main elements: a compact fuel-cell power
+                        module, a small integrated battery, modular
+                        sealed fuel cartridges, and a control and
+                        interface unit. The fuel-cell power module is
+                        a low-noise, low-thermal-signature unit sized
+                        to deliver the continuous power needed by one
+                        terminal and a set number of drone chargers,
+                        using proton-exchange membrane or comparable
+                        technology tolerant of stop–start operation.
+                        The integrated battery is a rugged
+                        lithium-iron-phosphate or similar pack
+                        dimensioned to handle short load peaks, brief
+                        silent operation without the fuel cell
+                        running, and graceful shutdown, but not to
+                        carry multiday autonomy by itself. Sealed fuel
+                        cartridges, pre-filled with compressed
+                        hydrogen or a hydrogen-rich carrier approved
+                        by safety authorities, are standardised
+                        consumable items with integrated regulators or
+                        keyed connectors that mate only with the
+                        module, each designed to provide a specific
+                        number of operating hours at the standard
+                        load. The control and interface unit manages
+                        fuel-cell start–stop, battery charge, load
+                        protection, and runtime estimation for the
+                        active cartridge, presenting simple status
+                        indicators and overload warnings to the
+                        operator; it provides DC outputs matched to
+                        the terminal and chargers and optionally
+                        accepts grid or generator input for battery
+                        recharge without affecting cartridge stock.
+                        All cartridges and modules carry durable
+                        identifiers for supply tracking and can be
+                        transported and stockpiled as small,
+                        man-portable items forward of bulk fuel
+                        depots.
+effect:                 |
+                        Frontline_FuelCell_Reserve_System supplies
+                        multiday off-grid electrical power as a
+                        managed consumable by shifting the main energy
+                        store from heavy batteries to light,
+                        high-energy-density fuel cartridges feeding a
+                        compact fuel cell, with a small battery only
+                        for buffering and peak loads. This cuts the
+                        mass that must be carried per day of autonomy
+                        while still keeping individual modules and
+                        cartridges man-portable and logistically
+                        trackable, making it more plausible to hold
+                        several days’ reserve at a frontline post and
+                        to push additional cartridges forward by small
+                        teams or alternative routes when roads are
+                        under fire. It reduces reliance on bulk liquid
+                        fuel runs for generators and gives planners a
+                        clear mapping from “number of cartridges on
+                        hand” to “hours of autonomy at the standard
+                        load.” It does not by itself solve supply
+                        during very long sieges where no cartridges at
+                        all can reach the position, and it still
+                        depends on safe handling, approved storage,
+                        and theatre policies for hydrogen or other
+                        fuels, which may constrain where and how many
+                        cartridges can be stockpiled.
+risk:                   |
+                        Frontline_FuelCell_Reserve_System can fail if
+                        fuel cartridges do not reach the position in
+                        sufficient quantity before or during
+                        isolation, leaving the module with only its
+                        small buffer battery and therefore little
+                        remaining autonomy. Misestimation of the
+                        actual load, or uncontrolled addition of extra
+                        devices, can cause cartridges to deplete
+                        faster than planned, shortening the effective
+                        number of days covered and risking loss of
+                        power before resupply. Technical faults in the
+                        fuel cell, regulator, or connectors,
+                        especially under shock, dust, or cold, can
+                        render the fuel unusable even when cartridges
+                        are present. Safety incidents, such as leaks,
+                        damage, or perceived explosion risk, may lead
+                        commanders to restrict where cartridges can be
+                        stored, reducing the ability to stockpile them
+                        close to frontline posts. If theatre policy
+                        prohibits certain fuels at forward locations,
+                        or if specialised refilling infrastructure
+                        cannot be maintained, the cartridge supply
+                        chain may prove more fragile than expected. In
+                        very long sieges where no resupply of
+                        cartridges is possible by any route, the
+                        system will still ultimately exhaust both fuel
+                        and battery reserves and fail to meet the need
+                        beyond its designed autonomy window.
+
+candidate_requirement:
+
+  configured_load_profile:
+    id_self:            crq_frontline_multiday_power_kit.configured_load_profile
+    guid_self:          crq_a79d73218cc242328baafd6af3157a91
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall be
+                        configured and issued against a documented
+                        standard load profile specifying the number
+                        and type of terminals and drone chargers it is
+                        intended to support.
+    rationale:          |
+                        Binding each system to a clear, limited load
+                        profile allows sizing of fuel-cell power,
+                        buffer battery capacity, and cartridge stock,
+                        and constrains expectations about what the
+                        system can reliably power.
+    category:           function
+    relation:           []
+
+  minimum_autonomy_via_cartridges:
+    id_self:            crq_frontline_multiday_power_kit.minimum_autonomy_via_cartridges
+    guid_self:          crq_147abfdc5bd54c9784c235382f508ec1
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall
+                        provide sufficient combined energy from its
+                        integrated battery and the issued fuel
+                        cartridges to power its standard load profile
+                        for at least 72 hours without any input from
+                        grid, generator, or local harvesters.
+    rationale:          |
+                        The need calls for power that lasts several
+                        days without a fuel run; 72 hours is a chosen
+                        design point matching the described
+                        three-night outage and is achieved here by
+                        fuel and battery together rather than
+                        batteries alone.
+    category:           function
+    relation:           []
+
+  man_portable_module_and_cartridges:
+    id_self:            crq_frontline_multiday_power_kit.man_portable_module_and_cartridges
+    guid_self:          crq_1fcbf41645304e7f855a420a4d4d1199
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall be
+                        divisible into a main module and individual
+                        fuel cartridges, each weighing no more than 20
+                        kg for handling and carriage by individual
+                        personnel.
+    rationale:          |
+                        Limiting both the main unit and each cartridge
+                        to 20 kg is a chosen design point consistent
+                        with other man-portable systems and ensures
+                        that reserve energy and the generator itself
+                        can be emplaced and redistributed without
+                        vehicles.
+    category:           form
+    relation:           []
+
+  ruggedised_fuel_cell_and_battery_protection:
+    id_self:            crq_frontline_multiday_power_kit.ruggedised_fuel_cell_and_battery_protection
+    guid_self:          crq_ccde47d06d3342f6bb5a8feb69898cdd
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall
+                        protect its fuel cell, integrated battery, and
+                        power electronics against shock, dust,
+                        moisture, and temperature extremes within the
+                        operating envelope defined for frontline
+                        terminals and drone systems.
+    rationale:          |
+                        Environmental hardening is necessary for the
+                        system to function reliably at exposed
+                        frontline positions and not become a single
+                        point of failure for communications and drone
+                        charging.
+    category:           quality
+    relation:           []
+
+  fuel_cartridge_safety_and_interlocks:
+    id_self:            crq_frontline_multiday_power_kit.fuel_cartridge_safety_and_interlocks
+    guid_self:          crq_4d56b993fcdc47959ff884d1f51e1cdc
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall use
+                        fuel cartridges with integrated safety
+                        features and keyed connectors or interlocks
+                        that prevent incorrect installation,
+                        uncontrolled fuel release, or use with
+                        incompatible equipment.
+    rationale:          |
+                        Safety features on cartridges and connectors
+                        reduce the risk of leaks, mishandling, or
+                        explosive incidents and support approval for
+                        storage and use at frontline locations.
+    category:           compliance
+    relation:           []
+
+  runtime_estimation_and_overload_alert:
+    id_self:            crq_frontline_multiday_power_kit.runtime_estimation_and_overload_alert
+    guid_self:          crq_9e14581dd1d641eda4a3a3fe1ba7641e
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall
+                        measure its current electrical load and fuel
+                        usage and display an estimated remaining
+                        runtime for the active cartridge at the
+                        configured standard load profile, and shall
+                        provide a clear alert when the actual load
+                        exceeds that profile.
+    rationale:          |
+                        Visible runtime estimates and overload alerts
+                        help operators manage consumption and avoid
+                        unintentionally exhausting cartridges faster
+                        than planned.
+    category:           function
+    relation:           []
+
+  cartridge_identification_and_tracking:
+    id_self:            crq_frontline_multiday_power_kit.cartridge_identification_and_tracking
+    guid_self:          crq_8c7413de0756429281e8b5788434beee
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall
+                        support identification and tracking of fuel
+                        cartridges through unique durable identifiers
+                        compatible with existing supply and
+                        maintenance systems.
+    rationale:          |
+                        Treating cartridges as trackable consumables
+                        enables planning, stockpile management, and
+                        rotation, which is central to the supply
+                        framing of energy as a resource.
+    category:           compliance
+    relation:           []
+
+  grid_and_generator_charge_input:
+    id_self:            crq_frontline_multiday_power_kit.grid_and_generator_charge_input
+    guid_self:          crq_1b4b0830e27542a889b74f731ed24399
+    statement:          |
+                        Frontline_FuelCell_Reserve_System shall accept
+                        input power from grid or generator sources to
+                        recharge its integrated battery without
+                        consuming fuel cartridges when such sources
+                        are available.
+    rationale:          |
+                        Allowing opportunistic recharge from grid or
+                        generators preserves cartridges for periods of
+                        isolation and integrates the system into
+                        normal power arrangements when routes are
+                        open.
+    category:           function
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  load_within_low_kilowatt_range:
+    id_self:            asm_frontline_multiday_power_kit.load_within_low_kilowatt_range
+    guid_self:          asm_62d6987725b74d2ba3c9d9dcd0a867f6
+    statement:          |
+                        The combined continuous and peak power
+                        required for one frontline terminal and its
+                        associated drone chargers stays within the
+                        range that a compact fuel-cell module and
+                        small buffer battery can practically support.
+    evidence:           |
+                        The observation names only a terminal and
+                        drone battery chargers as critical loads and
+                        does not mention high-draw devices like
+                        heaters; typical rugged laptops, radios, and
+                        small UAV chargers together draw on the order
+                        of tens to a few hundred watts rather than
+                        multiple kilowatts, but no specific figures
+                        are given.
+    relation:           []
+
+  fuel_cell_energy_density_advantage:
+    id_self:            asm_frontline_multiday_power_kit.fuel_cell_energy_density_advantage
+    guid_self:          asm_a5cc49b546db436bbf6e252acb1c1aa4
+    statement:          |
+                        Field-deployable fuel-cell systems using
+                        compressed hydrogen or similar fuels offer
+                        higher usable energy per unit mass than rugged
+                        rechargeable batteries, making several days of
+                        autonomy at man-portable weights physically
+                        plausible.
+    evidence:           |
+                        Open literature and demonstrators for military
+                        and industrial portable fuel-cell systems
+                        report gravimetric energy densities several
+                        times higher than lithium batteries when
+                        including fuel, but the exact figures for the
+                        specific configuration and environment here
+                        are not quantified in the need or observation.
+    relation:           []
+
+  safe_handling_and_storage_approved:
+    id_self:            asm_frontline_multiday_power_kit.safe_handling_and_storage_approved
+    guid_self:          asm_df48d9b2424c424282bff362071ee567
+    statement:          |
+                        The employing organisation is willing and able
+                        to approve, train for, and enforce safe
+                        handling and storage of small fuel cartridges
+                        (such as compressed hydrogen cylinders or
+                        reformable fuel cartridges) at forward
+                        positions.
+    evidence:           |
+                        Many forces already use pressurised gases,
+                        flammables, and energetic materials at forward
+                        locations under regulation, but the
+                        observation does not address policies for
+                        hydrogen or similar fuels.
+    relation:           []
+
+  cartridges_can_be_man_portable:
+    id_self:            asm_frontline_multiday_power_kit.cartridges_can_be_man_portable
+    guid_self:          asm_2c3ebf9cd3df4b9b9c9382d384b3ed45
+    statement:          |
+                        Individual fuel cartridges can be designed to
+                        remain below a man-portable weight and size
+                        limit while still providing a meaningful block
+                        of runtime at the standard load.
+    evidence:           |
+                        Existing portable fuel-cell products for
+                        electronics and small power loads use
+                        cartridges from well under 1 kg to a few
+                        kilograms; extrapolating to
+                        military-ruggedised designs is reasonable but
+                        not directly supported by the observation.
+    relation:           []
+
+  frontline_personnel_can_swap_cartridges:
+    id_self:            asm_frontline_multiday_power_kit.frontline_personnel_can_swap_cartridges
+    guid_self:          asm_9bbdccd9c4344b1c8610077253c55dee
+    statement:          |
+                        Frontline personnel can safely and reliably
+                        perform cartridge changeover drills under
+                        field conditions without specialised tools or
+                        support.
+    evidence:           |
+                        Units already carry out similar actions with
+                        gas canisters, batteries, and other modular
+                        supplies; the observation does not mention
+                        operator skills but implies routine handling
+                        of generators and fuel.
+    relation:           []
+
+  logistics_can_supply_and_track_cartridges:
+    id_self:            asm_frontline_multiday_power_kit.logistics_can_supply_and_track_cartridges
+    guid_self:          asm_df61ff28d9d34179872e8fd8b7ea4d2d
+    statement:          |
+                        The logistics system can provision, transport,
+                        and track filled fuel cartridges as consumable
+                        supply items, including rotation and recovery
+                        of empties, even when bulk fuel convoys are
+                        constrained.
+    evidence:           |
+                        Forces commonly track ammunition, medical
+                        supplies, and gas cylinders as consumables;
+                        extending such processes to fuel-cell
+                        cartridges is organisationally feasible but
+                        not discussed in the observation.
+    relation:           []
+
+  cartridge_storage_lifetime_sufficient:
+    id_self:            asm_frontline_multiday_power_kit.cartridge_storage_lifetime_sufficient
+    guid_self:          asm_6379aaf874684354838236309389605f
+    statement:          |
+                        Fuel cartridges can be stockpiled near the
+                        frontline for months without unacceptable
+                        degradation or leakage that would materially
+                        reduce the planned autonomy.
+    evidence:           |
+                        Commercial and industrial gas cylinders and
+                        sealed fuel cartridges are typically rated for
+                        long storage lives, but specific shelf-life
+                        data for the intended military-grade
+                        cartridges are not provided in the need or
+                        observation.
+    relation:           []
+
+  acoustic_and_thermal_signature_acceptable:
+    id_self:            asm_frontline_multiday_power_kit.acoustic_and_thermal_signature_acceptable
+    guid_self:          asm_1ba86928c92b410aab1ede594f3feb83
+    statement:          |
+                        The acoustic and thermal signature of the
+                        compact fuel cell during operation remains low
+                        enough to be acceptable at a frontline
+                        position when used under cover.
+    evidence:           |
+                        Portable fuel cells are generally quieter and
+                        have a smaller hot surface area than
+                        combustion generators of similar output, but
+                        the observation is silent on detection risks
+                        or signature constraints.
+    relation:           []
+
+challenge:              |
+                        The core premise that fuel-cell and
+                        cartridge-based reserve power modules can be
+                        deployed and operated safely and reliably at
+                        frontline posts depends on several critical
+                        assumptions, most of which are not established
+                        by the need's evidence or are weakly
+                        supported. The assumption that
+                        "safe_handling_and_storage_approved" underlies
+                        the entire concept: if the employing
+                        organisation or the theatre commander
+                        prohibits compressed hydrogen or similar fuels
+                        at forward positions due to risks of leaks,
+                        fire, or explosion, the solution cannot be
+                        used as described. This policy risk is not
+                        hypothetical; many commands routinely restrict
+                        or ban hazardous materials under active fire
+                        or in uncontrolled environments, and the
+                        need's evidence does not demonstrate that
+                        these risks will be judged acceptable for this
+                        application. If fuel cartridges are barred or
+                        heavily restricted in practice, no operational
+                        reserve can be stockpiled near where it is
+                        needed, which collapses the supply chain and
+                        prevents the system from serving the need’s
+                        outcome.
+
+                        The assumption
+                        "cartridge_storage_lifetime_sufficient" is
+                        also not established by the need or evidence.
+                        If military-grade hydrogen cartridges degrade,
+                        leak, or lose significant capacity even after
+                        months—through environmental stress, imperfect
+                        sealing, or mishandling under fire—the actual
+                        autonomy on hand may fall short. This was a
+                        central failure in the original battery-only
+                        proposal: planning based on nominal capacity
+                        may mislead if real-world losses are
+                        significant, and the proposal gives no
+                        quantified shelf-life or degradation figures
+                        for the specified fuel cartridges.
+
+                        The logistics system's claimed ability to
+                        track, supply, and return cartridges
+                        ("logistics_can_supply_and_track_cartridges")
+                        is assumed rather than shown. Unlike
+                        ammunition or medevac supplies, pressurised
+                        fuel cartridges present unique hazards and
+                        require special handling and strict
+                        accountability. The proposal states logistics
+                        can do this but does not evidence it in the
+                        context of contested, denied terrain with
+                        disrupted supply nodes. If logistics cannot
+                        sustain timely rotation and recovery of
+                        cartridges under fire, posts will run dry and
+                        power will fail before resupply.
+
+                        Finally, accepting man-portable cartridge
+                        weight under 20 kg as sufficient to achieve 72
+                        hours of autonomy at the real load is
+                        plausible but not established by quantified
+                        figures. The concept claims higher energy
+                        density for fuel cells plus cartridges than
+                        batteries, with open-source figures as
+                        evidence, but does not show from product or
+                        test data that a module and set of cartridges
+                        can provide the necessary capacity in the
+                        actual operating environment.
+
+                        If these assumptions are wrong, the concept
+                        will either not be deployable due to policy,
+                        fail to deliver promised autonomy due to
+                        storage losses, or prove unworkable under real
+                        logistics and operational constraints. This
+                        means posts will still lose terminal and drone
+                        capability during isolation, and the need will
+                        remain unmet.
+resolution:             |
+                        The prior concept was challenged on a specific
+                        point: whether rugged batteries alone can
+                        practically deliver several kilowatt-hours of
+                        energy for a 72-hour autonomy target within
+                        man-portable weight limits. That challenge
+                        stands; no quantified evidence was provided
+                        that battery-only storage could meet both
+                        autonomy and 20 kg module limits for realistic
+                        loads. The new concept concedes this
+                        limitation and changes the energy storage
+                        approach rather than restating the
+                        requirement. It replaces large battery stacks
+                        with a compact fuel cell plus a small buffer
+                        battery and treats high-energy-density fuel
+                        cartridges as the primary energy store. This
+                        directly addresses the energy-density concern
+                        the challenge raised by relying on a
+                        technology class whose combined
+                        fuel-plus-converter mass per kilowatt-hour is
+                        known to be substantially lower than that of
+                        lithium batteries. The autonomy target of 72
+                        hours at a standard load is retained, but now
+                        rests on an assumption about fuel-cell and
+                        cartridge performance that is more plausible
+                        given current technology and is explicitly
+                        recorded. The 20 kg limit is preserved for
+                        both the main module and each cartridge to
+                        keep all elements man-portable; if later
+                        quantified studies show that a specific
+                        theatre or load profile cannot meet both
+                        weight and runtime within these bounds,
+                        planners can adjust either the number of
+                        cartridges issued or the autonomy target with
+                        clearer trade-offs. In this way the concept
+                        revises the design to answer the core
+                        feasibility challenge rather than ignoring it,
+                        while accepting that detailed energy and mass
+                        calculations still need to be validated
+                        against real equipment and environmental
+                        conditions.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_frontline_multiday_offgrid_power
+    guid_target:        need_0faac913d77d46468f29830da1b94a1d
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_supply
+    guid_target:        frame_08a4855abf0c47b7b8f744f6ed1ba3ba
