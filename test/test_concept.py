@@ -49,7 +49,7 @@ CANDIDATES = [
     {'key': 'charge', 'statement': 'The Field_Power_Cell shall recharge from a vehicle supply within four hours.',
      'rationale': 'Chargers are the load the post names.', 'category': 'function'},
     {'key': 'state', 'statement': 'The Field_Power_Cell shall show its remaining energy.',
-     'rationale': 'Teams must plan around what is left.', 'category': 'quality'}]
+     'rationale': 'Teams must plan around what is left.', 'category': 'quality', '__category': 'noise'}]
 CANDIDATES += [{'key': 'more_{n}'.format(n = n),
                 'statement': 'The Field_Power_Cell shall meet obligation {n}.'.format(n = n),
                 'rationale': 'A further obligation.', 'category': 'quality'} for n in range(6)]
@@ -123,6 +123,8 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
     assert entry['statement'].startswith('The Field_Power_Cell shall be carried')
     assert doc['assumption']['fuel_scarce']['id_self'] == 'asm_field_power_cell.fuel_scarce'
     assert doc['challenge'].startswith('The fuel assumption') and 'resolution' not in doc
+    assert any('__category is not a field' in n for n in r['node'][0]['note'])
+    assert '__category' not in doc['candidate_requirement']['state']
     assert r['outcome'] == 'completed'
     assert clean(repo) == []
 

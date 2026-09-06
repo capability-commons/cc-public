@@ -388,6 +388,7 @@ def _fill_table(tree, id_item, field, text, entry):
     item_doc = tree.context.map_document[tree.resolve(id_item).location]
     existing = dict(item_doc.get(field) or {})
     kept     = set()
+    declared = _entry_fields(tree, id_item, field)
 
     for (n, row) in enumerate(list_row):
         if not isinstance(row, dict):
@@ -398,15 +399,40 @@ def _fill_table(tree, id_item, field, text, entry):
         if id_entry is None:
             continue
         for (key, value) in row.items():
-            if key not in FIELD_ROW_OWN and isinstance(value, str) and value.strip():
-                # The entry's schema says whether the field is a datum,
-                # an enumeration or a pattern, or prose.
-                cc_public.edit.field.set_field(tree, id_entry, key, value = value.strip())
+            if key in FIELD_ROW_OWN or not isinstance(value, str) or not value.strip():
+                continue
+            if declared and key not in declared:
+                # A key the entry's schema does not declare is the
+                # model's noise; the closed schema would refuse it.
+                entry['note'].append('{item}.{field}.{name}: {key} is not a field of the '
+                                     'entry; dropped.'.format(item = id_item, field = field,
+                                                              name = name, key = key))
+                continue
+            # The entry's schema says whether the field is a datum, an
+            # enumeration or a pattern, or prose.
+            cc_public.edit.field.set_field(tree, id_entry, key, value = value.strip())
 
     for name in existing:
         if name not in kept:
             cc_public.edit.field.unset_field(tree, id_item,
                                              cc_public.path.join(field, name))
+
+
+# -----------------------------------------------------------------------------
+def _entry_fields(tree, id_item, field):
+    """
+    Return the fields the container's schema declares for an entry of
+    the table, or nothing where it cannot be told, in which case every
+    key is written and the checks say what is wrong.
+
+    """
+
+    try:
+        (_, properties) = cc_public.edit.insert.shape_at(tree, tree.resolve(id_item), field, False)
+    except cc_public.edit.tree.ErrorItem:
+        return set()
+
+    return set(properties)
 
 
 # -----------------------------------------------------------------------------

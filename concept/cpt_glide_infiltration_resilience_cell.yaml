@@ -1,0 +1,901 @@
+id_self:                cpt_glide_infiltration_resilience_cell
+guid_self:              cpt_645e25ce162c455c83f47024b0a92a3b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layered Micro-Cells for Glide Bomb and Infiltration Survival
+brief:                  |
+                        A Layered Micro-Cell system equips Ukrainian
+                        ground units with small, self-sufficient
+                        protection and sensing “micro-cells” that are
+                        pre-attached to vehicles and carried by
+                        squads, giving each cell a minimal blast
+                        shelter, ultra-simple alert, and basic
+                        counter-infiltration drill that can be used
+                        even when only seconds or a few minutes are
+                        available. It treats each micro-cell as a unit
+                        that can function alone when others are not
+                        yet deployed, reducing dependency on perfect,
+                        unit-wide setup and allowing partial but
+                        meaningful protection and detection under
+                        severe battlefield friction.
+entity:                 Glide_Infiltration_MicroCell_System
+operation:              |
+                        A Ukrainian company identified as a likely
+                        glide bomb target is organized into several
+                        micro-cells of 6–12 soldiers, each with its
+                        own Glide_Infiltration_MicroCell_System pack
+                        stowed on a primary vehicle and a “grab
+                        bundle” attached inside for instant dismount.
+                        When the unit halts or is ordered to occupy a
+                        position, each cell leader’s first action is
+                        to throw down a foldable blast mat and
+                        pop-open shelter shell at the team’s current
+                        cover point, while one designated soldier
+                        snaps a wristband sensor on and arms a small
+                        air/infiltration alarm puck with a single
+                        press. If there is time, they drag the
+                        lightweight shell a few meters to better
+                        defilade and unroll a small camouflage sheet;
+                        if not, they simply dive under or behind it on
+                        the first incoming-warning tone or blast.
+                        Simple colored paddles and a pre-agreed
+                        cardinal-direction board give instant, no-map
+                        cues for “threat from north/east/south/west,”
+                        and any surviving puck that detects close
+                        small-arms or drone noise after a strike emits
+                        a distinct infiltration tone and flashes,
+                        prompting the micro-cell to execute a
+                        rehearsed, very short bound (tens of meters)
+                        to a fallback depression or wall while one or
+                        two shooters take up ambush positions on
+                        likely rubble gaps. The company does not wait
+                        for full-kit deployment: any cell that has
+                        armed its alarm and has a shell on the ground
+                        has some protection and cueing, and additional
+                        decoy tarps or extra shelters are only
+                        deployed if a lull allows.
+architecture:           |
+                        Glide_Infiltration_MicroCell_System consists
+                        of three tightly coupled elements per
+                        micro-cell: a minimal blast-and-frag shelter
+                        set, ultra-rapid local alert devices, and a
+                        micro-TTP package for movement and
+                        counter-infiltration. The shelter set includes
+                        a thin, foldable blast mat, a pop-open
+                        semi-rigid shell sized for 4–6 soldiers, and a
+                        compact camouflage sheet, all packed in a bag
+                        permanently strapped to a vehicle side or
+                        carried by a squad. The alert element is a
+                        handful of rugged, battery-powered pucks with
+                        integrated acoustic and vibration sensing, a
+                        single arming button, and pre-defined tones
+                        and light signals for “air threat” and
+                        “post-strike movement nearby,” plus a simple
+                        wristband or chest clip that vibrates on
+                        threat to reach soldiers under noise. The TTP
+                        package is a laminated card set and visual
+                        board in each cell’s bag that defines cardinal
+                        sectors, very short pre-strike and post-strike
+                        moves, and standard signals for “take
+                        shelter,” “bound short,” and “infiltration
+                        from sector X,” relying on voice, flags, and
+                        light sticks rather than networked C2. At
+                        company level, optional add-ons (decoy tarps,
+                        a small number of ISR drones, extra shelters)
+                        can be issued, but the core system remains
+                        functional at micro-cell granularity without
+                        dependence on full company-wide setup, complex
+                        networks, or long preparation.
+effect:                 |
+                        The concept reduces dependency on long
+                        preparation, perfect coordination, and fully
+                        deployed company-wide kits by making each
+                        micro-cell self-sufficient for a basic level
+                        of blast protection and post-strike
+                        infiltration cueing; even if only a fraction
+                        of cells manage to throw down a shell and arm
+                        an alarm, those cells see a real survival and
+                        reaction benefit. It tolerates partial and
+                        imperfect deployment, because the protective
+                        value of a blast mat and a low shell, and the
+                        behavioural effect of a simple tone and
+                        vibration cue, do not require exact placement
+                        or deception realism to work. It does not
+                        neutralize glide bomb carrier aircraft or
+                        guarantee survival under direct hits, offers
+                        only coarse detection of post-strike
+                        infiltration and crude directional cues, and
+                        leaves higher-end decoy operations and
+                        integrated fires coordination to other systems
+                        and echelons.
+risk:                   |
+                        The concept can fail when micro-cell
+                        organization and role assignment break down
+                        under repeated attrition, leading to cells
+                        without a clear leader or designated shelter
+                        and alarm operators, so that the system’s
+                        procedures are not executed when needed. If
+                        vehicles are destroyed or abandoned suddenly,
+                        bags strapped to them may be lost before
+                        shelters are deployed, leaving dismounted
+                        troops with no physical assets beyond what is
+                        carried on-person. Alarm pucks that rely on
+                        simple acoustic and vibration thresholds may
+                        generate too many false positives in noisy
+                        environments, causing soldiers to ignore or
+                        disable them, or too many false negatives
+                        during intense bombardment, leading to missed
+                        cues. Crowding into small shelters without
+                        proper spacing or fallback drills can create
+                        localized casualties from a near-miss that
+                        might have been avoided by greater dispersion,
+                        turning the shelter into a point of
+                        concentrated risk. Very open, flat terrain
+                        without micro-cover may make it impossible to
+                        achieve even marginal defilade, reducing the
+                        protective benefit to a modest reduction in
+                        fragmentation but little blast protection.
+                        Power resupply failures or battery neglect can
+                        leave pucks unpowered when attacks come,
+                        eroding trust and perceived value.
+                        Over-reliance on local alarms may also cause
+                        some cells to delay movement away from
+                        high-risk positions until a tone sounds,
+                        rather than following higher-level guidance on
+                        threat windows, increasing vulnerability if
+                        sensors are degraded or mis-tuned.
+
+candidate_requirement:
+
+  micro_cell_pack_per_team:
+    id_self:            crq_glide_infiltration_resilience_cell.micro_cell_pack_per_team
+    guid_self:          crq_f59ea8ad646e41969019cd22dd6b86df
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        provide at least one complete micro-cell pack
+                        for every 6 to 12-person team in a company.
+    rationale:          |
+                        Ensuring each micro-cell is self-sufficient
+                        reduces dependency on company-wide setup and
+                        allows partial deployment to still yield
+                        benefit.
+    category:           function
+    relation:           []
+
+  vehicle_mounting_provision:
+    id_self:            crq_glide_infiltration_resilience_cell.vehicle_mounting_provision
+    guid_self:          crq_8e87abab446a462ca6c37f94e5e861ba
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        enable each micro-cell pack to be permanently
+                        mounted on a primary vehicle with a secondary
+                        on-person grab bundle of no more than 5 kg.
+    rationale:          |
+                        Permanent mounting and a small grab bundle
+                        reduce the risk of kits being left behind
+                        during hurried movements or vehicle losses.
+    category:           fit
+    relation:           []
+
+  rapid_shelter_deployment:
+    id_self:            crq_glide_infiltration_resilience_cell.rapid_shelter_deployment
+    guid_self:          crq_904e4b14690a4d9cb8a005e36f3addb5
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        allow a three-person element to deploy a blast
+                        mat and pop-open shelter shell to usable
+                        configuration in less than 60 seconds without
+                        tools.
+    rationale:          |
+                        Sub-minute deployment mitigates the challenge
+                        that only seconds or a few minutes may be
+                        available before or between strikes.
+    category:           fit
+    relation:           []
+
+  shelter_blast_protection_metric:
+    id_self:            crq_glide_infiltration_resilience_cell.shelter_blast_protection_metric
+    guid_self:          crq_0661de5e12d14e3e93941c065c59c862
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        provide shelters that reduce lethal
+                        fragmentation probability from a 200 kg class
+                        near-miss explosion at 20 meters by at least
+                        40 percent compared with no cover.
+    rationale:          |
+                        Quantified protection anchors the survival
+                        benefit of the shelters under realistic
+                        near-miss conditions.
+    category:           quality
+    relation:           []
+
+  alarm_single_action_arming:
+    id_self:            crq_glide_infiltration_resilience_cell.alarm_single_action_arming
+    guid_self:          crq_bbcab648d73e466a8af08057af8bb0d6
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        allow each alarm puck to arm from safe state
+                        with a single physical action that does not
+                        require menus or configuration.
+    rationale:          |
+                        Single-action arming increases the chance that
+                        alarms are actually activated under stress and
+                        time pressure.
+    category:           quality
+    relation:           []
+
+  alarm_air_threat_detection:
+    id_self:            crq_glide_infiltration_resilience_cell.alarm_air_threat_detection
+    guid_self:          crq_9592027868df460396fb3bf76b9ff0e6
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        enable each alarm puck to detect low-flying
+                        aircraft or large drones within a slant range
+                        of at least 3 km with a probability of
+                        detection of 0.6 under baseline noise
+                        conditions.
+    rationale:          |
+                        Early but coarse detection of approaching air
+                        threats supports timely sheltering, even if
+                        performance is lower than fixed sensors.
+    category:           function
+    relation:           []
+
+  post_strike_movement_detection:
+    id_self:            crq_glide_infiltration_resilience_cell.post_strike_movement_detection
+    guid_self:          crq_277b4f2138e046a1814242b71b537514
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        enable each alarm puck to signal distinct
+                        post-strike proximate movement when sustained
+                        acoustic or vibration activity is detected
+                        within 50 meters for more than 5 seconds.
+    rationale:          |
+                        Detecting nearby post-strike movement offers a
+                        simple cue for possible infiltrators moving
+                        through rubble or close cover.
+    category:           function
+    relation:           []
+
+  dual_modality_alerts:
+    id_self:            crq_glide_infiltration_resilience_cell.dual_modality_alerts
+    guid_self:          crq_ca012253281d40e5a957e5016c6364e1
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        provide both audible and vibration-based alert
+                        modes selectable by the micro-cell.
+    rationale:          |
+                        Dual modalities ensure alerts can be perceived
+                        under high noise or when auditory discipline
+                        is desired inside shelters.
+    category:           function
+    relation:           []
+
+  alert_latency_limit:
+    id_self:            crq_glide_infiltration_resilience_cell.alert_latency_limit
+    guid_self:          crq_5ff8b071a9b749f894d9b6692da20e48
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        issue an air threat alert within 5 seconds of
+                        an alarm puck confirming an air threat
+                        condition and an infiltration alert within 5
+                        seconds of confirming post-strike movement.
+    rationale:          |
+                        Low alert latency is critical for translating
+                        detection into immediate protective and
+                        movement actions.
+    category:           quality
+    relation:           []
+
+  cardinal_direction_board:
+    id_self:            crq_glide_infiltration_resilience_cell.cardinal_direction_board
+    guid_self:          crq_11cef2bfe2884588b7a7d3e580495c9a
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        provide each micro-cell with a durable
+                        cardinal-direction board and color-coded
+                        paddles to mark threat sectors visually.
+    rationale:          |
+                        Simple visual tools reduce dependency on maps
+                        or digital C2 and support rapid, shared
+                        understanding of threat direction.
+    category:           function
+    relation:           []
+
+  micro_ttp_instruction_cards:
+    id_self:            crq_glide_infiltration_resilience_cell.micro_ttp_instruction_cards
+    guid_self:          crq_6cbc290523384d3f841864219a1a3981
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        include laminated instruction cards per
+                        micro-cell that define no more than three
+                        standard drills for shelter deployment and
+                        post-strike movement.
+    rationale:          |
+                        Restricting drills to a tiny set reduces
+                        cognitive load and makes execution more
+                        reliable under stress.
+    category:           quality
+    relation:           []
+
+  short_bound_distance_definition:
+    id_self:            crq_glide_infiltration_resilience_cell.short_bound_distance_definition
+    guid_self:          crq_3d8ff7ef8bf741d5ad11d90d7865bddf
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        allow each micro-cell to predefine at least
+                        one post-strike bound destination within 30 to
+                        70 meters of the primary position using visual
+                        reference points only.
+    rationale:          |
+                        Short bounds to visible cover are more
+                        realistic under fire than longer,
+                        map-dependent movements.
+    category:           fit
+    relation:           []
+
+  battery_endurance_requirement:
+    id_self:            crq_glide_infiltration_resilience_cell.battery_endurance_requirement
+    guid_self:          crq_4bffab7bee0b4c179ffe0898d7a663e1
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        operate each alarm puck in armed mode for at
+                        least 24 hours on internal power without
+                        recharging.
+    rationale:          |
+                        Adequate endurance ensures alarms remain
+                        functional through typical high-risk windows
+                        between resupply opportunities.
+    category:           quality
+    relation:           []
+
+  mass_and_volume_limits:
+    id_self:            crq_glide_infiltration_resilience_cell.mass_and_volume_limits
+    guid_self:          crq_e3cf9d7c3fd44bba90af0395bec04d72
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        limit the total mass of one micro-cell pack to
+                        no more than 25 kg and its packed volume to no
+                        more than 0.1 cubic meters.
+    rationale:          |
+                        Compact and lightweight packs are necessary to
+                        avoid displacing critical supplies and to
+                        support permanent vehicle or on-person
+                        carriage.
+    category:           form
+    relation:           []
+
+  environmental_ruggedness:
+    id_self:            crq_glide_infiltration_resilience_cell.environmental_ruggedness
+    guid_self:          crq_d78cce99d9cf46848db00b5ad0f00833
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        operate its shelters and alarm pucks within
+                        temperature and dust ranges defined by STANAG
+                        2895 climatic categories A1 through C2.
+    rationale:          |
+                        Environmental robustness avoids hidden
+                        dependency on benign weather for core
+                        protection and alert functions.
+    category:           compliance
+    relation:           []
+
+  shock_and_vibration_resistance:
+    id_self:            crq_glide_infiltration_resilience_cell.shock_and_vibration_resistance
+    guid_self:          crq_0b04fc0853044b109165310a1b9fbae7
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        meet at least MIL-STD-810G or equivalent for
+                        shock and vibration resistance of its
+                        electronic components.
+    rationale:          |
+                        Ruggedization is needed to keep alarm pucks
+                        functional after vehicle movement and nearby
+                        explosions.
+    category:           compliance
+    relation:           []
+
+  minimal_training_time:
+    id_self:            crq_glide_infiltration_resilience_cell.minimal_training_time
+    guid_self:          crq_c0fbc56f17c84f05bc621066933ef79d
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        allow a micro-cell to learn and rehearse basic
+                        shelter and alarm drills in no more than three
+                        hours of instruction and practice.
+    rationale:          |
+                        Low training burden supports adoption by
+                        rotating or newly formed units under high
+                        operational tempo.
+    category:           fit
+    relation:           []
+
+  independent_cell_operation:
+    id_self:            crq_glide_infiltration_resilience_cell.independent_cell_operation
+    guid_self:          crq_c51b435e1794452fba6fc886b32ebedc
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        allow each micro-cell to execute all shelter
+                        and alarm drills without any dependency on
+                        external C2 links or other micro-cells.
+    rationale:          |
+                        Independence at micro-cell level ensures some
+                        benefit even when higher-level networks fail
+                        or other cells are not set up.
+    category:           function
+    relation:           []
+
+  use_under_emcon:
+    id_self:            crq_glide_infiltration_resilience_cell.use_under_emcon
+    guid_self:          crq_4b1317a4aae541dd926bae47adfd1745
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        support operation of shelters and
+                        vibration-only alerts without emitting
+                        radio-frequency energy.
+    rationale:          |
+                        Ability to function under EMCON reduces the
+                        risk that the system becomes a targeting
+                        beacon and removes dependency on RF emissions.
+    category:           compliance
+    relation:           []
+
+  simple_status_indication:
+    id_self:            crq_glide_infiltration_resilience_cell.simple_status_indication
+    guid_self:          crq_e0ee7ec1fe5b4003bfb8198af6244c02
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        provide a clear visual indicator on each alarm
+                        puck showing armed or safe state that can be
+                        read in low light within 1 second at 1 meter
+                        distance.
+    rationale:          |
+                        Obvious status indication reduces errors where
+                        pucks are believed to be armed but are not, or
+                        vice versa.
+    category:           quality
+    relation:           []
+
+  legal_compliance_requirement:
+    id_self:            crq_glide_infiltration_resilience_cell.legal_compliance_requirement
+    guid_self:          crq_4e8e72ae4cd1411f8233ffee5f2620ec
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        be employable in a manner that complies with
+                        applicable rules of engagement and
+                        international humanitarian law, including
+                        positive identification before directing fires
+                        based on infiltration alerts.
+    rationale:          |
+                        Compliance with legal and ethical standards is
+                        mandatory for any military system that
+                        influences soldier behaviour and fire
+                        directions.
+    category:           compliance
+    relation:           []
+
+  fallback_when_assets_lost:
+    id_self:            crq_glide_infiltration_resilience_cell.fallback_when_assets_lost
+    guid_self:          crq_5623572b20fc4fbca64fbbc2bcf5f30d
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        define procedures on its instruction cards for
+                        micro-cells that lose their physical packs to
+                        continue using improvised cover and verbal
+                        alerts.
+    rationale:          |
+                        Fallback procedures reduce dependence on the
+                        physical kit and maintain some protective
+                        behaviour after losses.
+    category:           fit
+    relation:           []
+
+  partial_deployment_tolerance:
+    id_self:            crq_glide_infiltration_resilience_cell.partial_deployment_tolerance
+    guid_self:          crq_a740831d7ffd4dffb56032305701631c
+    statement:          |
+                        The Glide_Infiltration_MicroCell_System shall
+                        ensure that shelters and alarm pucks each
+                        provide standalone benefit when used alone
+                        without the other component deployed.
+    rationale:          |
+                        Designing each component to be independently
+                        useful mitigates the risk that incomplete
+                        setup yields no meaningful protection or
+                        cueing.
+    category:           function
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  pattern_exists_limited_sectors:
+    id_self:            asm_glide_infiltration_resilience_cell.pattern_exists_limited_sectors
+    guid_self:          asm_8f6932100b614ffabaa1910ff5f1a16c
+    statement:          |
+                        Russian forces employ glide bomb strikes
+                        followed by infantry infiltration supported by
+                        drones in at least some sectors where
+                        Ukrainian units have limited preparation time.
+    evidence:           |
+                        The observation describes this pattern, and
+                        wider reporting notes increased glide bomb and
+                        FPV use; specific sector frequency and prep
+                        times vary and are not fully quantified.
+    relation:           []
+
+  prep_time_often_minutes:
+    id_self:            asm_glide_infiltration_resilience_cell.prep_time_often_minutes
+    guid_self:          asm_3e56fdc8f90b4ea3ba20aa18dda1578c
+    statement:          |
+                        Many high-value Ukrainian units have, at most,
+                        minutes to a small number of tens of minutes
+                        between arriving at or halting in a position
+                        and being subjected to glide bomb-enabled
+                        attacks.
+    evidence:           |
+                        Field reporting and analysis describe rapid
+                        strikes on newly established or moving
+                        positions; precise timing distributions are
+                        scarce but indicate frequent short-warning
+                        scenarios.
+    relation:           []
+
+  partial_setup_still_helps:
+    id_self:            asm_glide_infiltration_resilience_cell.partial_setup_still_helps
+    guid_self:          asm_91cd77faba5545c3bff79e696128f3cc
+    statement:          |
+                        Throwing down a blast mat and low shell and
+                        arming a simple alarm within seconds to a few
+                        minutes still provides meaningful blast and
+                        cueing benefits even if ideal digging,
+                        camouflaging, and decoy placement are not
+                        completed.
+    evidence:           |
+                        Blast and fragmentation studies show that low
+                        overhead cover and any interposed mass reduce
+                        casualty rates from near-miss explosions;
+                        existing practice uses improvised cover and
+                        shouted or siren alerts under contact, which
+                        still influence survival despite
+                        imperfections.
+    relation:           []
+
+  micro_cell_organization_feasible:
+    id_self:            asm_glide_infiltration_resilience_cell.micro_cell_organization_feasible
+    guid_self:          asm_af231076caa24e2a855de99ba05ae611
+    statement:          |
+                        Companies can practically organize into stable
+                        micro-cells with clearly identified leaders
+                        and pre-assigned roles for shelter deployment
+                        and alarm arming, without major doctrinal
+                        upheaval.
+    evidence:           |
+                        Ukrainian units already employ small fire
+                        teams and ad hoc groups with designated drone,
+                        EW, and medical roles; formalizing roles for
+                        shelter and alarm duties is a modest
+                        extension.
+    relation:           []
+
+  continuous_on_vehicle_stowage:
+    id_self:            asm_glide_infiltration_resilience_cell.continuous_on_vehicle_stowage
+    guid_self:          asm_d88cfee08c274fbaa1c78c8840616869
+    statement:          |
+                        Shelter and alert components can be
+                        permanently stowed on vehicles or carried
+                        on-person without displacing critical
+                        ammunition, fuel, or medical supplies.
+    evidence:           |
+                        Units already carry spare camouflage nets,
+                        tarps, and small toolkits on vehicles;
+                        replacing or augmenting some of these with
+                        compact shelter mats and alarm pucks is a
+                        design and logistics trade that requires field
+                        validation.
+    relation:           []
+
+  simple_devices_operable_under_stress:
+    id_self:            asm_glide_infiltration_resilience_cell.simple_devices_operable_under_stress
+    guid_self:          asm_723e1a76f34b461eb1bbcb1f9f5e0862
+    statement:          |
+                        Soldiers under extreme stress and fatigue can
+                        still reliably perform one to three very
+                        simple tasks such as throwing a shell bag to
+                        the ground, pulling it open, and pressing a
+                        single arming button.
+    evidence:           |
+                        Combat experience with tourniquets, colored
+                        smoke, and simple anti-drone devices shows
+                        that very low-complexity actions are
+                        executable even under fire when rehearsed.
+    relation:           []
+
+  minimal_sensors_can_discriminate_events:
+    id_self:            asm_glide_infiltration_resilience_cell.minimal_sensors_can_discriminate_events
+    guid_self:          asm_8f0349cdd85b451d957776031d62aadb
+    statement:          |
+                        Low-complexity acoustic and vibration sensing
+                        in the pucks can discriminate between
+                        pre-strike aircraft approach, heavy nearby
+                        explosions, and post-strike proximate movement
+                        well enough to trigger distinct air and
+                        infiltration cues at useful reliability.
+    evidence:           |
+                        Commercial and military low-cost sensors have
+                        demonstrated coarse detection of aircraft and
+                        nearby movement; performance in heavy EW and
+                        battle noise is variable and would need
+                        specific testing for this design.
+    relation:           []
+
+  doctrine_accepts_cell_level_autonomy:
+    id_self:            asm_glide_infiltration_resilience_cell.doctrine_accepts_cell_level_autonomy
+    guid_self:          asm_d3d8f7702ca84a0e9b728b517c5da104
+    statement:          |
+                        Ukrainian doctrine and command culture allow
+                        micro-cell leaders to execute shelter and
+                        post-strike movement drills on local alarm
+                        cues without waiting for company-level orders.
+    evidence:           |
+                        Decentralised adaptation and local initiative
+                        with drones, small-unit manoeuvre, and
+                        casualty care are widely documented, though
+                        local practices vary.
+    relation:           []
+
+  enemy_not_instantly_adapting_to_minimal_measures:
+    id_self:            asm_glide_infiltration_resilience_cell.enemy_not_instantly_adapting_to_minimal_measures
+    guid_self:          asm_f8f3e278caa94caf842e13c3d697cef3
+    statement:          |
+                        Russian forces will not immediately change
+                        tactics across the front to negate the
+                        specific combination of low shelters, brief
+                        short bounds, and simple local alarms.
+    evidence:           |
+                        Adaptation to new defensive measures occurs
+                        but usually over weeks to months; simple
+                        physical protection and local drills are
+                        harder to negate than signature-based decoys
+                        alone.
+    relation:           []
+
+  battery_operation_viable:
+    id_self:            asm_glide_infiltration_resilience_cell.battery_operation_viable
+    guid_self:          asm_54d3bdce25f44f90bfe7329ebf52ea83
+    statement:          |
+                        Battery-powered operation for 24 hours or more
+                        for small alarm pucks and vibration bands is
+                        feasible and can be sustained by existing
+                        resupply cycles.
+    evidence:           |
+                        Current frontline devices (radios, drones,
+                        optics) routinely operate on rechargeable or
+                        disposable batteries with daily resupply when
+                        logistics allow; exact endurance and resupply
+                        need field validation.
+    relation:           []
+
+  terrain_offers_some_micro_cover:
+    id_self:            asm_glide_infiltration_resilience_cell.terrain_offers_some_micro_cover
+    guid_self:          asm_3212a171fce74ce69ed15a27b9643831
+    statement:          |
+                        Even in heavily bombed or flat areas, there
+                        are usually at least shallow depressions,
+                        walls, or rubble edges within tens of meters
+                        where micro-cells can drag or place shelters
+                        for marginally better protection.
+    evidence:           |
+                        Combat imagery and accounts from urban and
+                        rural engagements show abundant micro-terrain,
+                        though there are exceptional cases of
+                        completely exposed ground.
+    relation:           []
+
+  training_on_micro_drills_absorbable:
+    id_self:            asm_glide_infiltration_resilience_cell.training_on_micro_drills_absorbable
+    guid_self:          asm_c66a1b2e39b449788ea8f666d95c781c
+    statement:          |
+                        Frontline troops can learn and retain a very
+                        small set of micro-cell drills (deploy shell
+                        and mat, arm alarm, react to two distinct
+                        cues) within a few hours of instruction and
+                        periodic refreshers.
+    evidence:           |
+                        Ukrainian forces have integrated new TTPs like
+                        drone use and casualty drills with short
+                        training; cognitive load grows with
+                        complexity, so limiting drills to a tiny set
+                        is important.
+    relation:           []
+
+  company_level_decoys_optional:
+    id_self:            asm_glide_infiltration_resilience_cell.company_level_decoys_optional
+    guid_self:          asm_88cf4bdd6bd74e4fb16e800d5310e05d
+    statement:          |
+                        Leaving elaborate decoys and more complex ISR
+                        drones as optional add-ons does not undermine
+                        the core value of the system, which is
+                        provided by micro-scale shelters and alarms.
+    evidence:           |
+                        Survival against blast and basic awareness of
+                        post-strike movement can improve without any
+                        decoy or drone support; current practice often
+                        yields some survival benefit purely from
+                        dispersal and improvised cover.
+    relation:           []
+
+  legal_and_ethical_use_maintainable:
+    id_self:            asm_glide_infiltration_resilience_cell.legal_and_ethical_use_maintainable
+    guid_self:          asm_82861afbb4f043e29b87d7fe8751876e
+    statement:          |
+                        The system can be employed in ways that comply
+                        with applicable rules of engagement and
+                        international humanitarian law, since it is
+                        defensive and only provides coarse cues.
+    evidence:           |
+                        Defensive shelters and basic alarms are
+                        standard practice and lawful; using coarse
+                        infiltration cues to direct fire still
+                        requires human positive identification, which
+                        can be mandated in procedures.
+    relation:           []
+
+challenge:              |
+                        The concept assumes that micro-cell
+                        organization with clearly identified leaders
+                        and pre-assigned roles is routinely feasible
+                        for Ukrainian units (“companies can
+                        practically organize into stable micro-cells
+                        with clearly identified leaders and
+                        pre-assigned roles for shelter deployment and
+                        alarm arming, without major doctrinal
+                        upheaval”). This is not established as true
+                        for the full range of units exposed to glide
+                        bomb and post-strike infiltration tactics.
+                        Field evidence only asserts that some teams
+                        already employ small, ad hoc groups with
+                        distinct roles for drones, EW, or medic
+                        duties. In practice, repeated attrition,
+                        forced integration of replacements, high
+                        casualty rates among NCOs, and short rotations
+                        often leave units improvised and under-led,
+                        making consistent role-assignment shaky at
+                        best. If cells are not organized with clarity
+                        or are degraded after initial structure, there
+                        will be no one reliably tasked with throwing
+                        shelters, arming pucks, or managing fallback
+                        drills. The system’s core routines—quick
+                        deployment followed by alarm and fallback
+                        movement—will not run, especially under stress
+                        or confusion after a strike. If this condition
+                        prevails, the concept’s claimed independence
+                        at micro-cell level does not serve the need:
+                        instead, the provision of packs and
+                        instruction cards per team fails, since “a
+                        micro-cell” is not a stable or actionable
+                        operational entity on the ground. Without
+                        robust cell-structure, incremental benefit
+                        collapses to nearly zero, as no one takes
+                        action or all actions are left to the most
+                        senior survivor, who must improvise anyway. A
+                        simpler, distributed scheme—such as giving
+                        every pair or individual a personal alarm and
+                        shell, with no cell-level drill—could deal
+                        better with the loss of structure and the
+                        extreme turnover and confusion reported, and
+                        might serve the need’s outcome more
+                        consistently.
+resolution:             |
+                        The challenge argues that the prior kit’s
+                        effectiveness depends on multiple interlocking
+                        components being correctly deployed under
+                        minutes-to-hours, high-friction conditions and
+                        that in reality, hurried, error-prone
+                        emplacement may leave pods half-buried, decoys
+                        obviously fake, and sensors mispositioned or
+                        unarmed, collapsing protective and decoy value
+                        and even creating new risks. It also suggests
+                        that if this is true, simpler fallbacks like
+                        dispersion, mobility, or focusing solely on
+                        alarms may be better than a complex package
+                        that rarely reaches full effectiveness.
+
+                        This concept concedes that multi-component,
+                        company-wide setups are unlikely to be
+                        reliably realized under such friction and
+                        therefore removes that dependency. Instead of
+                        requiring coordinated deployment of pods,
+                        decoys, and distributed sensor beacons across
+                        a position, it assumes that only one or two
+                        very simple actions per micro-cell are
+                        realistic: throw down a compact shelter set
+                        and arm an alarm puck. The design drops
+                        elaborate decoy schemes and optionalizes
+                        company-level ISR drones, so that their
+                        failure or non-deployment does not undermine
+                        the system’s core value; this answers the
+                        concern that decoys might be rushed,
+                        unrealistic, or mispositioned and create a
+                        false sense of security. Any deception effects
+                        from camouflage sheets are treated as marginal
+                        bonus rather than a central promise.
+
+                        To the risk that half-deployed pods and
+                        inadequate digging yield little real
+                        protection, this concept specifies shelters
+                        that give quantified blast and fragmentation
+                        reduction even when simply placed on the
+                        ground or dragged a few meters into whatever
+                        micro-cover exists. They do not rely on being
+                        buried or fully engineered. The requirement
+                        that each component provide standalone benefit
+                        means that if only the shelter or only the
+                        alarm is used, the micro-cell still gains
+                        something: physical cover in a blast, or a cue
+                        to take cover or bound. This is how the
+                        concept addresses the possibility that some
+                        pucks are left unarmed or some shells are not
+                        deployed in time: it expects such partial use
+                        and aims for each element to work on its own.
+
+                        The challenge also warns that complex alerts
+                        may be misunderstood or mistrusted if sensors
+                        are confused by noise or jamming. Here, the
+                        system intentionally limits itself to two core
+                        cues—air threat and proximate post-strike
+                        movement—with distinct tone and vibration
+                        patterns, supported by simple visual tools and
+                        at most three drills on laminated cards. This
+                        reduces interpretive burden and aims to
+                        preserve trust by avoiding a proliferation of
+                        ambiguous signals. It does not claim precise
+                        classification of threats; it only promises
+                        coarse prompts to “get under something low
+                        now” and “expect movement from this sector and
+                        execute a short bound,” which are actions
+                        soldiers already understand from existing
+                        practice.
+
+                        Finally, where the challenge proposes that
+                        simpler fallbacks such as dispersion,
+                        remaining mounted during high-risk windows, or
+                        focusing solely on alarms may be preferable,
+                        this concept is compatible with those measures
+                        and in some respects formalizes them rather
+                        than replaces them. Dispersion and short
+                        post-strike bounds are baked into the
+                        micro-TTP cards; use under EMCON and
+                        standalone vibration alerts allow alarms to be
+                        the only active element if leadership judges
+                        that physical shelters cannot be sensibly
+                        deployed in a given moment. The system’s
+                        purpose is not to create a sophisticated
+                        defended position but to slightly raise
+                        survival odds and orientation at the
+                        micro-cell level without relying on complete,
+                        optimized deployment. In this way, it revises
+                        the prior position by accepting the
+                        challenge’s premise about friction and
+                        complexity and by deliberately designing for
+                        minimal, independent actions that still yield
+                        incremental benefit.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_countering_glide_bomb_infiltration
+    guid_target:        need_e719b81eef7f4dc0949085703f216014
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_dependency
+    guid_target:        frame_ee2dea2f9dd24e8d93ef54e8dde5c83d

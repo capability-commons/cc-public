@@ -1,0 +1,777 @@
+id_self:                cpt_adaptive_decoy_fort_system
+guid_self:              cpt_5509a2ec847245f5aac8970f4c08f308
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Adaptive decoy forts for glide bomb disruption
+brief:                  |
+                        The concept is a networked system of hardened
+                        fighting positions paired with sacrificial
+                        decoy “forts” that attract glide bombs and
+                        break follow‑on infiltration with pre‑planned
+                        fires and drones. It uses deception,
+                        dispersion, rapid relocation and automated
+                        kill‑zones to keep real units combat‑effective
+                        while forcing the attacker into costly and
+                        uncertain assaults through ruined ground.
+entity:                 Adaptive_Decoy_Fort_System
+operation:              |
+                        Ukrainian ground units site a small number of
+                        hardened command and firing positions
+                        alongside a larger number of cheaper, visually
+                        convincing decoy forts laid out to appear as
+                        high‑value nodes from air and satellite
+                        reconnaissance. When Russian ISR assets begin
+                        target development, the unit powers and
+                        animates select decoys with heat, radio and
+                        movement signatures while the real positions
+                        fall silent or move to secondary hides. As
+                        glide bomb attacks are cued onto the apparent
+                        hubs, most munitions impact decoys or
+                        pre‑prepared empty structures, while the real
+                        positions survive to continue command and
+                        fires. Once bombs land and Russian infantry
+                        start to infiltrate through the ruins, the
+                        system triggers pre‑registered artillery,
+                        scatterable obstacles and loitering munitions
+                        around the impact zones and routes visible
+                        from those ruins, coordinated via
+                        short‑exposure radios and landline or laser
+                        links. Organic quadcopters and FPV drones
+                        orbit outside the expected glide bomb
+                        footprint and then surge in to hunt
+                        reconnaissance teams and infantry that break
+                        cover, while small mobile groups displace
+                        between hardened hides, avoiding static
+                        clustering. The result is that Russian forces
+                        find rubble with fewer viable entry routes,
+                        suffer attrition in kill‑zones they cannot
+                        easily scout, and struggle to identify and fix
+                        the true high‑value elements.
+architecture:           |
+                        Adaptive_Decoy_Fort_System comprises four main
+                        parts: physical fortifications and decoys, a
+                        deception and signature management layer, a
+                        protected C2 and sensing layer, and an effects
+                        integration layer. Physical elements include a
+                        few hardened command and weapon bunkers,
+                        multiple modular decoy “forts” built from
+                        cheap prefabricated shells, and route‑denial
+                        features such as pre‑placed mines and wire
+                        that can be remotely armed. The deception
+                        layer manages thermal, visual and radio
+                        emitters in decoys, including dummy antennas,
+                        heaters, low‑power radios and reflectors
+                        shaped to resemble valuable equipment from the
+                        air, all controlled by a local controller to
+                        schedule and vary signatures. The C2 and
+                        sensing layer uses a mix of short‑dwell
+                        radios, field cables, directional links and
+                        low‑probability‑of‑intercept nodes linked to
+                        local radar, acoustic and optical sensors plus
+                        small UAVs to detect glide‑bomb releases,
+                        impacts, Russian ISR drones and infantry
+                        movement. The effects layer ties into existing
+                        artillery, mortars, remote‑controlled mines,
+                        loitering munitions and FPV drone teams, with
+                        pre‑planned fire plans and geofenced “no‑go”
+                        corridors around real positions. A compact
+                        software tool runs on a rugged laptop or
+                        tablet to maintain a live map of decoys, real
+                        positions, sensor tracks and fire plans, and
+                        to recommend when to light or extinguish
+                        decoys and when to trigger kill‑zones.
+effect:                 |
+                        Adaptive_Decoy_Fort_System increases the
+                        likelihood that glide bombs expend their
+                        payload on decoy or empty structures,
+                        preserves the integrity of key command posts
+                        and firing assets, and shapes the post‑strike
+                        terrain into controlled kill‑zones that
+                        disrupt and attrit infiltrating infantry and
+                        their supporting drones. It does not eliminate
+                        the glide bomb threat, cannot fully protect
+                        exposed infrastructure, and depends on
+                        available artillery, drones and engineering
+                        resources; in sectors with very sparse assets
+                        or overwhelming enemy fires, its impact will
+                        be reduced and units will still need broader
+                        air defence and operational‑level counter‑air
+                        support.
+risk:                   |
+                        The concept can fail if Russian targeting
+                        improves faster than the decoy network adapts,
+                        for example by fusing multiple sensors or
+                        pattern-matching decoy layouts, causing bombs
+                        to fall on real positions despite deception.
+                        If engineering and logistics capacity are
+                        insufficient, decoys may be too sparse or
+                        unconvincing, leaving genuine high-value nodes
+                        exposed. Pre-planned kill-zones can misfire if
+                        situational awareness is degraded by EW or
+                        smoke, risking fratricide or wasted munitions
+                        and leaving gaps that infiltrating infantry
+                        exploit. The added complexity of signature
+                        management and coordinated fires may overload
+                        unit leadership, leading to missed triggers,
+                        poorly timed decoy activation or failure to
+                        relocate in time. Adversaries may also shift
+                        to targeting less-deniable infrastructure or
+                        civilian areas around defensive positions,
+                        creating ethical and political risks the
+                        system does not mitigate.
+
+candidate_requirement:
+
+  protect_real_positions:
+    id_self:            crq_adaptive_decoy_fort_system.protect_real_positions
+    guid_self:          crq_e6e0fbd79e3f4dcab5520f89e900a12a
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall reduce
+                        successful glide bomb hits on designated
+                        high-value positions by at least 50 percent
+                        compared to baseline sectors without the
+                        system.
+    rationale:          |
+                        The primary purpose is to keep command posts
+                        and key assets intact under glide bomb attack.
+    category:           function
+    relation:           []
+
+  support_decoy_density:
+    id_self:            crq_adaptive_decoy_fort_system.support_decoy_density
+    guid_self:          crq_f88fbe30aab349e0ba287d41d47872d8
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall support
+                        planning and management of at least three
+                        decoy forts for every hardened high-value
+                        position in a defended company sector.
+    rationale:          |
+                        A higher number of decoys than real positions
+                        is needed to dilute enemy targeting.
+    category:           fit
+    relation:           []
+
+  manage_signatures:
+    id_self:            crq_adaptive_decoy_fort_system.manage_signatures
+    guid_self:          crq_a6e0d97ada804768b686023309fbcb69
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall schedule
+                        visual, thermal and radio signatures on decoy
+                        forts with a configurable duty cycle between
+                        10 percent and 90 percent per 24-hour period.
+    rationale:          |
+                        Variable signatures prevent adversaries from
+                        easily classifying decoys while allowing power
+                        management.
+    category:           function
+    relation:           []
+
+  geofence_real_positions:
+    id_self:            crq_adaptive_decoy_fort_system.geofence_real_positions
+    guid_self:          crq_edb56ba859644ccf85dff01946e815ea
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall define
+                        and display a 3D geofenced exclusion volume of
+                        at least 150 meters radius around each real
+                        high-value position for all planned fires and
+                        obstacles.
+    rationale:          |
+                        Clear geofencing helps avoid friendly effects
+                        impacting protected positions.
+    category:           fit
+    relation:           []
+
+  preplan_killzones:
+    id_self:            crq_adaptive_decoy_fort_system.preplan_killzones
+    guid_self:          crq_f9e2b3558ad34da69bc315fce73d4182
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall allow
+                        operators to define at least twenty distinct
+                        kill-zones per battalion sector with
+                        associated fire plans and obstacle activation
+                        conditions.
+    rationale:          |
+                        Multiple potential infiltration routes through
+                        rubble must be covered with pre-planned
+                        effects.
+    category:           function
+    relation:           []
+
+  sensor_integration:
+    id_self:            crq_adaptive_decoy_fort_system.sensor_integration
+    guid_self:          crq_615d217ed87f4afaadcf474118ddd4a7
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall ingest
+                        and display tracks from at least three sensor
+                        types, including UAV feeds, ground observers
+                        and acoustic or radar detectors.
+    rationale:          |
+                        Fusing different sensors improves detection of
+                        glide bomb launches and infiltrating infantry.
+    category:           function
+    relation:           []
+
+  short_dwell_comms:
+    id_self:            crq_adaptive_decoy_fort_system.short_dwell_comms
+    guid_self:          crq_a27e614c45824ccd87ad62ba5535ce8e
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall support
+                        radio communication protocols that limit
+                        individual transmission bursts to a maximum of
+                        two seconds for routine control messages.
+    rationale:          |
+                        Short transmissions reduce probability of
+                        detection and geolocation by enemy EW.
+    category:           quality
+    relation:           []
+
+  degraded_mode_operation:
+    id_self:            crq_adaptive_decoy_fort_system.degraded_mode_operation
+    guid_self:          crq_79c81856b0bf471eb926266450511be3
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall maintain
+                        core decoy scheduling and pre-planned fire
+                        triggering when external network links are
+                        unavailable for up to 72 hours.
+    rationale:          |
+                        Defensive sectors may be isolated by fires and
+                        EW but must still apply deception and fires.
+    category:           quality
+    relation:           []
+
+  low_power_decoys:
+    id_self:            crq_adaptive_decoy_fort_system.low_power_decoys
+    guid_self:          crq_08677f0b767740dcbff134fba60a2261
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall operate
+                        each decoy fort’s signature package with an
+                        average electrical power draw not exceeding
+                        150 watts.
+    rationale:          |
+                        Frontline power generation and resupply are
+                        limited and must support many decoys.
+    category:           fit
+    relation:           []
+
+  rapid_decoy_activation:
+    id_self:            crq_adaptive_decoy_fort_system.rapid_decoy_activation
+    guid_self:          crq_dd7bd63030cf4aa2b624e3b452dc5245
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall activate
+                        or deactivate all signatures at a selected
+                        decoy fort within 30 seconds of an operator
+                        command.
+    rationale:          |
+                        Rapid control allows last-minute adjustments
+                        as enemy aircraft approach or depart.
+    category:           function
+    relation:           []
+
+  bomb_footprint_estimate:
+    id_self:            crq_adaptive_decoy_fort_system.bomb_footprint_estimate
+    guid_self:          crq_7e7b142a20844b269164c168feff3cdd
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall present
+                        operators with a configurable probable lethal
+                        radius for each known glide bomb type and
+                        overlay it on the map around candidate
+                        targets.
+    rationale:          |
+                        Understanding likely damage zones supports
+                        safe siting of real positions and sensors.
+    category:           function
+    relation:           []
+
+  uav_tasking:
+    id_self:            crq_adaptive_decoy_fort_system.uav_tasking
+    guid_self:          crq_b96c5b1caba34c358c7d8d03775869fe
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall output
+                        time-stamped target coordinates and priority
+                        tags to at least ten concurrent organic UAV
+                        sorties per battalion sector.
+    rationale:          |
+                        Coordinated UAV employment is needed to
+                        observe and attack infiltrating infantry and
+                        ISR teams.
+    category:           function
+    relation:           []
+
+  artillery_interface:
+    id_self:            crq_adaptive_decoy_fort_system.artillery_interface
+    guid_self:          crq_3bd764bb322d46a48c82c22575acbb08
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall export
+                        fire requests in a format compatible with
+                        existing Ukrainian artillery fire control
+                        systems as defined by current national
+                        standards.
+    rationale:          |
+                        Interoperability with existing fire control
+                        enables rapid implementation.
+    category:           compliance
+    relation:           []
+
+  obstacle_remote_control:
+    id_self:            crq_adaptive_decoy_fort_system.obstacle_remote_control
+    guid_self:          crq_4122a46d956f4478a762fd1057c85d0e
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall provide
+                        secure arming and disarming commands for
+                        remotely activated obstacles with confirmation
+                        within ten seconds over a 5 kilometer range.
+    rationale:          |
+                        Remote management of obstacles supports
+                        dynamic shaping of infiltration routes.
+    category:           function
+    relation:           []
+
+  user_training_time:
+    id_self:            crq_adaptive_decoy_fort_system.user_training_time
+    guid_self:          crq_2630cce12366408ba9933150939e3859
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall be usable
+                        by a trained platoon or company staff member
+                        after no more than 24 hours of classroom and
+                        field instruction.
+    rationale:          |
+                        Training time for frontline personnel is
+                        scarce and must be minimized.
+    category:           quality
+    relation:           []
+
+  rugged_hardware:
+    id_self:            crq_adaptive_decoy_fort_system.rugged_hardware
+    guid_self:          crq_d335311359fb4c7f9bf774c62a5a8530
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall operate
+                        on hardware tolerant of ambient temperatures
+                        from minus 20 degrees Celsius to plus 40
+                        degrees Celsius and resistant to IP65 dust and
+                        water ingress.
+    rationale:          |
+                        Frontline equipment must function reliably in
+                        harsh environmental conditions.
+    category:           form
+    relation:           []
+
+  ew_resilience:
+    id_self:            crq_adaptive_decoy_fort_system.ew_resilience
+    guid_self:          crq_24db2e40b0e34769a1758cdb6bfdf3c1
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall support
+                        at least two independent communication
+                        channels, including wired and wireless, for
+                        internal coordination within each defended
+                        sector.
+    rationale:          |
+                        Redundant communications improve resilience
+                        against electronic warfare and physical
+                        damage.
+    category:           quality
+    relation:           []
+
+  log_audit_trail:
+    id_self:            crq_adaptive_decoy_fort_system.log_audit_trail
+    guid_self:          crq_a011001bdd424c6e829ef70a24273fa0
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall log all
+                        decoy activation, fire plan execution and
+                        obstacle arming events with timestamps for
+                        later after-action review.
+    rationale:          |
+                        Audit trails enable evaluation of
+                        effectiveness and adaptation of tactics.
+    category:           compliance
+    relation:           []
+
+  role_based_access:
+    id_self:            crq_adaptive_decoy_fort_system.role_based_access
+    guid_self:          crq_1391f20f745649b5b8c6524c55e15d15
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall enforce
+                        role-based access control for fire plan
+                        modification, decoy signature changes and
+                        obstacle activation.
+    rationale:          |
+                        Limiting critical actions to authorized roles
+                        reduces the risk of accidental or malicious
+                        misuse.
+    category:           quality
+    relation:           []
+
+  tactical_mobility_support:
+    id_self:            crq_adaptive_decoy_fort_system.tactical_mobility_support
+    guid_self:          crq_c27339f600cd469c8c9dbb8f1d2b9dd1
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall support
+                        planning of at least two alternate hardened
+                        positions per high-value element and visualize
+                        recommended displacement routes.
+    rationale:          |
+                        Mobility between hides complements deception
+                        to reduce vulnerability to repeated strikes.
+    category:           fit
+    relation:           []
+
+  minimal_emission_mode:
+    id_self:            crq_adaptive_decoy_fort_system.minimal_emission_mode
+    guid_self:          crq_2180fffd39a541afab4a00aaa0bb123f
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall provide a
+                        minimal emission mode in which all external
+                        radio transmissions and active signatures are
+                        disabled within five seconds of operator
+                        activation.
+    rationale:          |
+                        Units require the ability to rapidly reduce
+                        signatures when under imminent targeting.
+    category:           quality
+    relation:           []
+
+  map_data_resilience:
+    id_self:            crq_adaptive_decoy_fort_system.map_data_resilience
+    guid_self:          crq_b86f3ab8086e49f8a3bb9d1095fbc186
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall store all
+                        map, decoy and fire plan data locally so that
+                        it remains accessible without external network
+                        connectivity.
+    rationale:          |
+                        Local data storage ensures continuity of
+                        operations under network disruption.
+    category:           quality
+    relation:           []
+
+  human_factors_interface:
+    id_self:            crq_adaptive_decoy_fort_system.human_factors_interface
+    guid_self:          crq_4aeb6e1fe5294f6c9b7d73bf2b86d6ae
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall present
+                        its primary operational picture and controls
+                        on a single screen without requiring more than
+                        three navigation actions for any critical
+                        function.
+    rationale:          |
+                        Simple interfaces reduce cognitive load under
+                        high-stress combat conditions.
+    category:           form
+    relation:           []
+
+  doctrine_alignment:
+    id_self:            crq_adaptive_decoy_fort_system.doctrine_alignment
+    guid_self:          crq_63eb822ebda44ef7ac9b3cdc88ab7abf
+    statement:          |
+                        The Adaptive_Decoy_Fort_System shall align its
+                        planning workflows with existing Ukrainian
+                        defensive doctrine as specified in current
+                        national field manuals.
+    rationale:          |
+                        Alignment with doctrine eases adoption and
+                        reduces training overhead.
+    category:           compliance
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  glide_bomb_inaccuracy:
+    id_self:            asm_adaptive_decoy_fort_system.glide_bomb_inaccuracy
+    guid_self:          asm_21f627160f404e5d8346cb0bc2094923
+    statement:          |
+                        Russian glide bombs are accurate enough to
+                        destroy buildings and fortifications but not
+                        precise enough to discriminate well between
+                        real and decoy high-value positions when
+                        signatures are manipulated.
+    evidence:           |
+                        The observation notes that glide bombs are
+                        very destructive but 'very inaccurate' and
+                        rely on reconnaissance and satellite guidance;
+                        open-source reporting on UMPK kits describes
+                        CEPs that degrade without good targeting.
+    relation:           []
+
+  reliance_on_isr:
+    id_self:            asm_adaptive_decoy_fort_system.reliance_on_isr
+    guid_self:          asm_788e5904c3884d128c8d8cbcccaff75b
+    statement:          |
+                        Russian targeting for glide bombs depends
+                        heavily on airborne and ground reconnaissance
+                        sensors that can be denied, deceived or forced
+                        to work at reduced effectiveness.
+    evidence:           |
+                        The observation states that glide bombs 'rely
+                        heavily on reconnaissance drones'; multiple
+                        independent reports describe Russian use of
+                        Orlan and other UAVs to cue strikes.
+    relation:           []
+
+  decoy_plausibility:
+    id_self:            asm_adaptive_decoy_fort_system.decoy_plausibility
+    guid_self:          asm_0fb3601a7b0a402f8eba499ae55bcfb4
+    statement:          |
+                        Simple, low-cost decoys with credible visual,
+                        thermal and radio signatures are sufficient to
+                        draw a significant share of glide bombs away
+                        from genuine positions.
+    evidence:           |
+                        Historical use of decoys (e.g. inflatable
+                        SAMs, HIMARS mock-ups) has caused adversaries
+                        to expend precision munitions; specific
+                        effects against glide bombs are inferred but
+                        not directly documented.
+    relation:           []
+
+  preplanned_killzones_work:
+    id_self:            asm_adaptive_decoy_fort_system.preplanned_killzones_work
+    guid_self:          asm_494fbdff611d4e24bd108319a303b6f7
+    statement:          |
+                        Pre-planned, sensor-cued fires and obstacles
+                        around likely infiltration routes through
+                        ruins can meaningfully slow and attrit
+                        infantry attempting to exploit glide bomb
+                        craters and rubble.
+    evidence:           |
+                        Standard defensive doctrine emphasizes
+                        pre-registered fires and obstacles; the
+                        particular effectiveness in heavily bombed
+                        urban terrain is inferred from general
+                        principles and urban combat accounts.
+    relation:           []
+
+  uav_availability:
+    id_self:            asm_adaptive_decoy_fort_system.uav_availability
+    guid_self:          asm_3337621672894823b4bb07183f5c5e72
+    statement:          |
+                        Ukrainian ground units facing
+                        glide-bomb-enabled infiltrations will have at
+                        least a small pool of reconnaissance and FPV
+                        UAVs that can be tasked within this system.
+    evidence:           |
+                        Media and unit-level reporting indicate
+                        widespread UAV use by Ukrainian units, though
+                        density and availability vary by sector.
+    relation:           []
+
+  engineering_capacity:
+    id_self:            asm_adaptive_decoy_fort_system.engineering_capacity
+    guid_self:          asm_128fc666b9ab44d68e1353e2e6203b26
+    statement:          |
+                        Units can construct or emplace a limited
+                        number of hardened positions and multiple
+                        decoy forts without prohibitive cost in time,
+                        materials or signature.
+    evidence:           |
+                        Ukrainian forces already build field
+                        fortifications and use mock-ups; the
+                        additional load of organized decoys is
+                        extrapolated but not quantified.
+    relation:           []
+
+  c2_resilience:
+    id_self:            asm_adaptive_decoy_fort_system.c2_resilience
+    guid_self:          asm_179eb2bead894fc281ad914b1362e7c3
+    statement:          |
+                        Local C2 nodes can operate with intermittent
+                        connectivity and low-probability-of-intercept
+                        communications while still coordinating
+                        deception and fires effectively.
+    evidence:           |
+                        Both sides have operated under intense EW and
+                        fires; resilient, low-signature C2 is known to
+                        be possible but implementation difficulty
+                        remains high.
+    relation:           []
+
+  russian_adaptation_time:
+    id_self:            asm_adaptive_decoy_fort_system.russian_adaptation_time
+    guid_self:          asm_05a45861d634401e9180c136d6732209
+    statement:          |
+                        Russian forces will adapt targeting tactics
+                        over time but not so rapidly that the decoy
+                        and kill-zone concept becomes obsolete before
+                        adjustments can be made.
+    evidence:           |
+                        Past adaptation cycles in the conflict (e.g.
+                        counter-battery, FPV use) have occurred over
+                        weeks to months, suggesting some window for
+                        counter-adaptation.
+    relation:           []
+
+  terrain_suitability:
+    id_self:            asm_adaptive_decoy_fort_system.terrain_suitability
+    guid_self:          asm_e25d82deeefc4de182612697a0f44893
+    statement:          |
+                        Defensive sectors where glide-bomb-enabled
+                        infiltrations occur include at least some
+                        terrain where decoys and pre-shaped kill-zones
+                        can be sited outside immediate observation.
+    evidence:           |
+                        The observation refers to urban blocks and
+                        fortifications, which generally allow some
+                        concealment; completely flat, open terrain
+                        would be less suitable and is a limiting case.
+    relation:           []
+
+  friendly_training_capacity:
+    id_self:            asm_adaptive_decoy_fort_system.friendly_training_capacity
+    guid_self:          asm_3adb82df38cb4800aa4a33dce89c0bca
+    statement:          |
+                        Units can be trained to plan and maintain the
+                        decoy network, manage signatures and execute
+                        fire plans without overloading already
+                        stretched commanders.
+    evidence:           |
+                        Training capacity and cognitive load are
+                        concerns but not well documented for this
+                        specific concept; this is an assumed
+                        manageable burden.
+    relation:           []
+
+  logistics_for_signatures:
+    id_self:            asm_adaptive_decoy_fort_system.logistics_for_signatures
+    guid_self:          asm_c9f2741973e84e2387b06749266b5dbf
+    statement:          |
+                        Batteries, small generators and simple
+                        electronics to power decoy signatures can be
+                        supplied and maintained in frontline
+                        conditions.
+    evidence:           |
+                        Frontline units already operate multiple
+                        electronic systems and power sources;
+                        additional draw is assumed to be incremental.
+    relation:           []
+
+  ew_threat_manageable:
+    id_self:            asm_adaptive_decoy_fort_system.ew_threat_manageable
+    guid_self:          asm_499e681f6f424ee99cccd8903231c086
+    statement:          |
+                        Electronic warfare in the sector will
+                        interfere with some links and UAVs but will
+                        not completely prevent short-exposure
+                        communications and local control.
+    evidence:           |
+                        Both sides continue to use UAVs and radios
+                        despite strong EW; total denial is rare,
+                        suggesting some workable communications
+                        windows.
+    relation:           []
+
+  legal_compatibility:
+    id_self:            asm_adaptive_decoy_fort_system.legal_compatibility
+    guid_self:          asm_6ed99e796bac486585f6c9382d962339
+    statement:          |
+                        Using decoy structures and remotely activated
+                        obstacles in this way is consistent with
+                        applicable Ukrainian policy and international
+                        humanitarian law.
+    evidence:           |
+                        Decoys and obstacles are recognized defensive
+                        means under the law of armed conflict when
+                        properly employed; specific national
+                        constraints would need review.
+    relation:           []
+
+  bomb_damage_radius_known:
+    id_self:            asm_adaptive_decoy_fort_system.bomb_damage_radius_known
+    guid_self:          asm_7148432d50b44a62bbda44e96ca1c57b
+    statement:          |
+                        The likely damage radius and fragmentation
+                        patterns of the relevant glide bombs are known
+                        well enough to position real positions and
+                        sensors outside typical lethal zones.
+    evidence:           |
+                        Open-source data and battlefield experience
+                        with Russian 500 kg-class bombs provide
+                        approximate lethal radii; detailed classified
+                        data is not available here but is assumed to
+                        exist in-theatre.
+    relation:           []
+
+resolution:             |
+                        The observation emphasizes destroying
+                        aircraft, hunting reconnaissance crews and
+                        dispersing positions as counters to glide
+                        bomb-enabled infiltrations.
+                        Adaptive_Decoy_Fort_System stands with that
+                        assessment and embeds it by increasing
+                        dispersion of real positions, actively
+                        deceiving reconnaissance to misdirect
+                        targeting, and integrating fires and UAVs to
+                        hunt ISR teams and infiltrating infantry. It
+                        revises the prior by adding structured decoy
+                        networks and pre-shaped kill-zones as
+                        additional layers that do not depend on
+                        reliably intercepting bombs or always finding
+                        aircraft, acknowledging that aircraft
+                        destruction is often an operational-level task
+                        beyond the local unit’s means. It concedes
+                        that without adequate reconnaissance, fires
+                        and engineering capacity, the concept’s
+                        benefits will be limited, and units may have
+                        to fall back on simpler dispersion and
+                        concealment alone.
+challenge:              |
+                        The concept relies on the assumption that
+                        simple, low-cost decoys with credible visual,
+                        thermal, and radio signatures (see
+                        decoy_plausibility assumption) are sufficient
+                        to draw a significant share of glide bombs
+                        away from genuine positions. However, the need
+                        states that effective protection is required
+                        against both glide bomb strikes and the
+                        follow-on infiltrating infantry operating with
+                        drone support, in engagements where Russians
+                        deliberately target high-value nodes and then
+                        exploit the resulting ruins. The key challenge
+                        is that adversary targeting has already shown
+                        rapid adaptation cycles and can employ
+                        multi-sensor fusion, post-strike
+                        reconnaissance, and pattern-detection
+                        algorithms, especially given the repeated use
+                        of decoys in this conflict. If Russian forces
+                        recognize and disregard decoys, or use
+                        secondary confirmation such as thermal
+                        persistence from recent operation or unique RF
+                        profiles from actual command posts, the entire
+                        system may fail to prevent bombs from striking
+                        real positions. Moreover, the candidate
+                        requirement stating the system "shall reduce
+                        successful glide bomb hits on designated
+                        high-value positions by at least 50 percent
+                        compared to baseline sectors without the
+                        system" lacks a mechanism for verification, as
+                        sectors, bomb targeting priorities, and
+                        Russian adaptation rates are variable and
+                        often classified. If the decoy affordance is
+                        overestimated, the system not only fails to
+                        provide effective protection as described in
+                        the need, but also risks creating denser
+                        patterns of fire and movement that could
+                        themselves become markers for genuine
+                        positions once the adversary detects the
+                        deception logic. This would leave Ukrainian
+                        forces exposed both to initial strikes and to
+                        coordinated follow-on attacks, negating the
+                        purpose of preserving combat effectiveness and
+                        limiting losses.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_countering_glide_bomb_infiltration
+    guid_target:        need_e719b81eef7f4dc0949085703f216014
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_adversary
+    guid_target:        frame_e23cafbd7b4846029ba4d34642861ac3
