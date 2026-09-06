@@ -1,0 +1,38 @@
+id_self:                sch_reg_process_word
+guid_self:              sch_9713aa06364f4ac2ad2069b58cacb970
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Process word register schema
+brief:                  |
+                        The process word register specifically: a
+                        register whose entries are additionally
+                        process words.
+description:            |
+                        Composes the general register schema with the
+                        process word entry schema, in the pattern
+                        sch_reg_term.yaml uses.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_process_word.yaml
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+            - $ref:     https://capability-commons.org/schema/sch_entry_process_word.yaml
+
+          unevaluatedProperties:  false

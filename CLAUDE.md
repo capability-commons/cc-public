@@ -274,6 +274,10 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
   statement is judged by are `register/reg_requirement_rule.yaml`, INCOSE's
   and SOPHIST's, each naming the document it is taken from by
   `r_is_taken_from` into `register/reg_document.yaml` (`ddr_document_register`).
+  The `process` slot names a verb defined in a process word register the
+  item's segment can see (`register/reg_process_word.yaml` in the core); the
+  requirement check reports a verb none defines, advisory while proposed and
+  critical once accepted (`ddr_process_word`).
 - Prose in an item describes; argument goes in a design decision. Create
   one only for a genuine decision with real alternatives. The item is a
   design decision, never a "design decision record": every item is a
@@ -307,5 +311,5 @@ is `../cc-brave1-demo`.
 ## Where things are
 
 `ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
-term, style, rule, characteristic, framing, methodology and document registers · `eval/` evals and control sets · `workflow/` components,
+term, style, rule, characteristic, framing, methodology, document and process word registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

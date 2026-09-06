@@ -1,0 +1,58 @@
+id_self:                sch_entry_process_word
+guid_self:              sch_ddf6221df7d34d47bb5df8787fb185ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Process word entry schema
+brief:                  |
+                        What a process word register entry carries
+                        beyond the general register entry.
+description:            |
+                        The verb as it is written in the process slot
+                        of a requirement, and the verbs that are not
+                        to be used for the same process. The brief is
+                        the definition, what the entity does when it
+                        does this, and the description says what the
+                        object of the verb must supply for the process
+                        to be complete: on what, for whom, from where.
+                        Title, brief, description and alias come from
+                        the general entry shape.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_process_word.yaml
+type:                   object
+
+required:
+  - term
+
+properties:
+
+  term:
+    type:               string
+    minLength:          1
+    maxLength:          40
+    pattern:            ^[a-z]+( [a-z]+)*$
+    description:        |
+                        The verb, in the infinitive without to, lower
+                        case, one word or a phrasal verb: report, back
+                        up. What the process slot of a requirement
+                        holds.
+
+  avoid:
+    type:               array
+    minItems:           1
+
+    items:
+      type:             string
+      minLength:        1
+      maxLength:        40
+      pattern:          ^[a-z]+( [a-z]+)*$
+
+    description:        |
+                        Optional. Verbs that name the same process and
+                        are not to be used, so that one process has
+                        one word.

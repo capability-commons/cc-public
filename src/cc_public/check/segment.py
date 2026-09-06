@@ -72,15 +72,15 @@ def check(context):
 
     """
 
-    map_segment = _map_segment(context.map_document)
+    segments = map_segment(context.map_document)
 
-    if not map_segment:
+    if not segments:
         return cc_public.check.result.Result(count_item         = 0,
                                              list_nonconformity = [],
                                              list_note          = [])
 
-    reach   = _reach(map_segment)
-    map_own = {guid: _segment_of(filepath, map_segment)
+    visible = reach(segments)
+    map_own = {guid: segment_of(filepath, segments)
                for (filepath, guid) in _iter_declaration(context.map_document)}
 
     count    = 0
@@ -91,7 +91,7 @@ def check(context):
         if not isinstance(document, dict):
             continue
 
-        id_segment = _segment_of(location.filepath, map_segment)
+        id_segment = segment_of(location.filepath, segments)
 
         if id_segment is None:
             continue
@@ -105,7 +105,7 @@ def check(context):
 
             count += 1
 
-            if id_target not in reach[id_segment]:
+            if id_target not in visible[id_segment]:
                 list_bad.append(_fault(location, path, id_segment, id_target))
 
     return cc_public.check.result.Result(count_item         = count,
@@ -114,7 +114,7 @@ def check(context):
 
 
 # -----------------------------------------------------------------------------
-def _map_segment(map_document):
+def map_segment(map_document):
     """
     Return {id_segment: (root, consumed)} for each segment declared: the
     directory it governs, which is the parent of the directory its item
@@ -143,7 +143,7 @@ def _map_segment(map_document):
 
 
 # -----------------------------------------------------------------------------
-def _reach(map_segment):
+def reach(segments):
     """
     Return {id_segment: the segments it may name}: itself and, through
     r_consumes, everything those consume in turn. A cycle is closed
@@ -151,24 +151,24 @@ def _reach(map_segment):
 
     """
 
-    reach = {}
+    out = {}
 
-    for id_segment in map_segment:
+    for id_segment in segments:
         seen  = {id_segment}
-        queue = list(map_segment[id_segment][1])
+        queue = list(segments[id_segment][1])
         while queue:
             found = queue.pop()
             if found in seen:
                 continue
             seen.add(found)
-            queue.extend(map_segment.get(found, (None, ()))[1])
-        reach[id_segment] = seen
+            queue.extend(segments.get(found, (None, ()))[1])
+        out[id_segment] = seen
 
-    return reach
+    return out
 
 
 # -----------------------------------------------------------------------------
-def _segment_of(filepath, map_segment):
+def segment_of(filepath, segments):
     """
     Return the segment governing a file: the one whose root is the
     longest prefix of its path, so that a segment inside another
@@ -180,7 +180,7 @@ def _segment_of(filepath, map_segment):
     found    = None
     depth    = -1
 
-    for (id_segment, (root, _)) in map_segment.items():
+    for (id_segment, (root, _)) in segments.items():
         if filepath.is_relative_to(root) and len(root.parts) > depth:
             (found, depth) = (id_segment, len(root.parts))
 

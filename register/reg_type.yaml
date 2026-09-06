@@ -1389,3 +1389,38 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_document
         guid_target:    reg_0954469dcdb84c5b8c84639845bea81c
+
+  t_process_word:
+    id_self:            t_process_word
+    guid_self:          t_efb7706620654cd4bdf5f8b26597c20b
+    title:              Process word type
+    brief:              |
+                        Type of process word data items
+    description:        |
+                        Each process word data item defines one verb a
+                        requirement may oblige an entity to perform:
+                        what the entity does, what the object must
+                        supply, and the verbs not to be used for the
+                        same process.
+    prefix:             verb
+    regex_id:           ^verb_[a-z][a-z0-9_]*$
+    usage:              |
+                        The process slot of a requirement or a
+                        candidate requirement is resolved against the
+                        process words its segment can see.
+    note:               |
+                        Process words exist only as entries in a
+                        process word register, never as documents of
+                        their own, so this type names no schema. The
+                        register names one, and that schema governs
+                        its entries. A consumer segment may hold a
+                        register of the same type.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_process_word
+        guid_target:    reg_14b9e34d84da45fc8d3f2385252ef9b1

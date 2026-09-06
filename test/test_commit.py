@@ -205,6 +205,8 @@ def test_commit_checks_a_consumer_beside_the_core_it_names(repo, tmp_path):
         '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'
         'license = "Apache-2.0"\nid_mark = "mark_public"\n')
     git(consumer, 'init', '-q')
+    git(consumer, 'config', 'user.name', 'Test')          # a runner has no identity of its own
+    git(consumer, 'config', 'user.email', 't@t')
     tree = cc_public.edit.tree.Tree([consumer, repo])
     cc_public.edit.new.new(tree, 't_segment', 'seg_consumer', tree.defaults(),
                            dirpath_out = consumer / 'segment')

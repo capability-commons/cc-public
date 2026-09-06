@@ -1,0 +1,196 @@
+id_self:                reg_process_word
+guid_self:              reg_14b9e34d84da45fc8d3f2385252ef9b1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Process word register
+brief:                  |
+                        Register of the process words the requirements
+                        of this repository use: each verb an entity is
+                        obliged to perform, defined once.
+description:            |
+                        Each entry is one verb as it is written in the
+                        process slot of a requirement, with what the
+                        entity does when it does this and what the
+                        object of the verb must supply. A process has
+                        one word; the verbs not to be used for it are
+                        listed under avoid. The requirement check
+                        resolves the process slot of every requirement
+                        and candidate against the process word
+                        registers its segment can see, and reports a
+                        verb none defines.
+usage:                  |
+                        A requirement names a defined verb in its
+                        process slot. A verb the register lacks is a
+                        finding, and the finding is the question: what
+                        does the entity do, and is it a verb already
+                        defined under another word. A consumer segment
+                        holds a register of the same type for the
+                        entities its own requirements are on.
+note:                   |
+                        SOPHIST asks that every process be named by a
+                        main verb defined in the glossary, so that
+                        enter, insert and input do not name three
+                        processes or one. This register is that
+                        glossary for the verbs; the nouns of the
+                        repository are in reg_term.
+
+table:
+
+  verb_report:
+    id_self:            verb_report
+    guid_self:          verb_9c3c06f8d0d64b61bc689935c539ef8a
+    title:              Report
+    brief:              |
+                        Make a finding, a result or a state known to
+                        the reader, in the output the command writes.
+    description:        |
+                        The object says what is reported, of what, and
+                        where the reader finds it: a Location of each
+                        Nonconformity, a Row of the Result.
+    term:               report
+
+    avoid:
+      - print
+      - show
+      - output
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_write:
+    id_self:            verb_write
+    guid_self:          verb_7d615472d8cd4dfcb0d8d84fdbfd0ec2
+    title:              Write
+    brief:              |
+                        Put content into a file or a message so that
+                        it is there afterwards.
+    description:        |
+                        The object says what is written and into what:
+                        the Commit_Record into the Commit_Message.
+    term:               write
+
+    avoid:
+      - save
+      - store
+      - emit
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_list:
+    id_self:            verb_list
+    guid_self:          verb_e3bc7d01b61d41b4b0bf3d8e7ffbc234
+    title:              List
+    brief:              |
+                        Report each member of a set, one per line, and
+                        nothing else.
+    description:        |
+                        The object names the set and what qualifies a
+                        member: each Unreferenced_Item in the
+                        Directory_Tree.
+    term:               list
+
+    avoid:
+      - enumerate
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_judge:
+    id_self:            verb_judge
+    guid_self:          verb_b217b571d0a54df88a1cf64910715ece
+    title:              Judge
+    brief:              |
+                        Put a subject to the judge and take its
+                        verdict.
+    description:        |
+                        The object says what is judged and, in the
+                        qualifier, how many times.
+    term:               judge
+
+    avoid:
+      - evaluate
+      - assess
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_run:
+    id_self:            verb_run
+    guid_self:          verb_f3a1c7ac6f7b4d05ae9fb4e6607993d5
+    title:              Run
+    brief:              |
+                        Execute something that has steps, to its end
+                        or to a bound.
+    description:        |
+                        The object says what is run, and the qualifier
+                        the bound: each Node no more than
+                        Deployment_Budget times.
+    term:               run
+
+    avoid:
+      - execute
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_produce:
+    id_self:            verb_produce
+    guid_self:          verb_4f0d7c5709dc43dc81a21cfade91eb88
+    title:              Produce
+    brief:              |
+                        Make an artefact from what is given, as a pure
+                        function of it.
+    description:        |
+                        The object says what is produced and from
+                        what: the Fact_Table of the Directory_Tree.
+    term:               produce
+
+    avoid:
+      - generate
+      - derive
+      - build
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  verb_leave:
+    id_self:            verb_leave
+    guid_self:          verb_d26b2435990547bca08f8c9dc84b29b9
+    title:              Leave
+    brief:              |
+                        Not change something that an action might have
+                        changed.
+    description:        |
+                        The object says what is left and in what
+                        state: the Guid of the Item unchanged.
+    term:               leave
+
+    avoid:
+      - preserve
+      - keep
+      - retain
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_process_word
+    guid_target:        sch_9713aa06364f4ac2ad2069b58cacb970

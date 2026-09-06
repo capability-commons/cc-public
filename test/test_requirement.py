@@ -31,6 +31,7 @@ relation:               []
 
 import pytest
 
+import cc_public.check
 import cc_public.check.evidence
 import cc_public.edit.field
 import cc_public.eval.select
@@ -106,3 +107,72 @@ def test_the_evidence_digest_follows_the_slots(tree):
     cc_public.edit.field.set_field(tree, 'req_executor_honours_budget', 'object', value = 'each Edge')
     after  = cc_public.check.evidence.digest(tree.context.map_document, guid)
     assert before != after
+
+
+def _found(tmp_path):
+    report = cc_public.check.check(list_path = [tmp_path])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'requirement']
+    return found
+
+
+def test_the_requirement_check_reads_every_requirement_and_candidate_and_passes(tree, tmp_path):
+    found = _found(tmp_path)
+    assert found['count_item'] >= 17 and found['nonconformity'] == []
+
+
+def test_an_undefined_process_word_is_advisory_while_proposed_and_critical_once_accepted(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'process', value = 'enumerate')
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'status', value = 'proposed')
+    (fault,) = _found(tmp_path)['nonconformity']
+    assert fault['severity'] == 'advisory' and 'enumerate' in fault['message']
+    assert fault['filepath'].endswith('req_walk_reports_neighbourhood.yaml') and fault['path'] == ''
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'status', value = 'accepted')
+    (fault,) = _found(tmp_path)['nonconformity']
+    assert fault['severity'] == 'critical'
+
+
+def test_slots_that_do_not_compose_are_critical(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'activity', value = 'interaction')
+    (fault,) = _found(tmp_path)['nonconformity']
+    assert fault['severity'] == 'critical' and 'actor' in fault['message']
+
+
+def test_a_process_word_is_seen_from_its_own_segment_and_its_consumers_only(tree, tmp_path):
+    import cc_public.edit.insert
+    import cc_public.edit.link
+    import cc_public.edit.new
+    # An inner segment beneath the core, consuming it, with a register of its own.
+    cc_public.edit.new.new(tree, 't_segment', 'seg_inner', tree.defaults(),
+                           dirpath_out = tmp_path / 'sub' / 'segment')
+    for (field, value) in (('title', 'An inner segment'), ('role', 'segment')):
+        cc_public.edit.field.set_field(tree, 'seg_inner', field, value = value)
+    for (field, value) in (('brief', 'A segment beneath the core.'), ('description', 'Holds a register.')):
+        cc_public.edit.field.set_field(tree, 'seg_inner', field, prose = value)
+    cc_public.edit.link.link(tree, 'seg_inner', 'r_consumes', 'seg_cc_public')
+    cc_public.edit.new.new(tree, 't_register', 'reg_process_word_inner', tree.defaults(),
+                           dirpath_out = tmp_path / 'sub' / 'register')
+    for (field, value) in (('title', 'Inner verbs'), ('status', 'draft')):
+        cc_public.edit.field.set_field(tree, 'reg_process_word_inner', field, value = value)
+    for field in ('brief', 'description'):
+        cc_public.edit.field.set_field(tree, 'reg_process_word_inner', field, prose = 'The inner verbs.')
+    cc_public.edit.link.link(tree, 'reg_process_word_inner', 'r_is_specified_by_schema', 'sch_reg_process_word')
+    cc_public.edit.insert.insert(tree, 't_process_word', 'enumerate', 'reg_process_word_inner')
+    for (field, value) in (('title', 'Enumerate'), ('term', 'enumerate'), ('status', 'proposed')):
+        cc_public.edit.field.set_field(tree, 'verb_enumerate', field, value = value)
+    cc_public.edit.field.set_field(tree, 'verb_enumerate', 'brief', prose = 'Count through a set.')
+    cc_public.edit.field.set_field(tree, 'verb_enumerate', 'description', prose = 'The object names the set.')
+    # A core requirement cannot see it; one of the inner segment can.
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'process', value = 'enumerate')
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'status', value = 'proposed')
+    (fault,) = _found(tmp_path)['nonconformity']
+    assert 'enumerate' in fault['message'] and fault['filepath'].endswith('req_walk_reports_neighbourhood.yaml')
+    cc_public.edit.field.set_field(tree, 'req_walk_reports_neighbourhood', 'process', value = 'report')
+    cc_public.edit.new.new(tree, 't_textual_requirement', 'req_inner_counts', tree.defaults(),
+                           dirpath_out = tmp_path / 'sub' / 'requirement')
+    for (field, value) in (('title', 'Inner counts'), ('entity', 'Counter'), ('obligation', 'shall'),
+                           ('activity', 'autonomous'), ('process', 'enumerate'), ('object', 'each Item'),
+                           ('claim', 'design'), ('category', 'function'), ('status', 'proposed')):
+        cc_public.edit.field.set_field(tree, 'req_inner_counts', field, value = value)
+    cc_public.edit.field.set_field(tree, 'req_inner_counts', 'rationale', prose = 'A verb of its own.')
+    cc_public.edit.link.link(tree, 'req_inner_counts', 'r_is_derived_from', 'need_runs_bounded')
+    assert _found(tmp_path)['nonconformity'] == []
