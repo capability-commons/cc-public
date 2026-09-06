@@ -1,0 +1,94 @@
+id_self:                exe_20260906161931_06e35c
+guid_self:              exe_06e35c0f94a14d07a141627a07ce503a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run of wf_research_concept
+brief:                  |
+                        Under dep_research_local.
+
+binding:
+
+  research_input_concept_1:
+    id_self:            bnd_20260906161931_06e35c.research_input_concept_1
+    guid_self:          bnd_dc15b71ca3bf44f3b3b5bb4a9de183ae
+    id_node:            node_research_concept.research
+    guid_node:          node_3433d5ca2e1a4044b1bf7c4baf07db35
+    id_port:            prt_research_concept.concept
+    guid_port:          prt_c30699359f0440a191afa2b768e67a33
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      cpt_frontline_solar_buffer_kit
+        guid_target:    cpt_1b61ed7c617443c3b60bb6b0d5d8e29c
+
+  research_input_need_1:
+    id_self:            bnd_20260906161931_06e35c.research_input_need_1
+    guid_self:          bnd_6c3c9d7d59114782b8d68dc26c46b33f
+    id_node:            node_research_concept.research
+    guid_node:          node_3433d5ca2e1a4044b1bf7c4baf07db35
+    id_port:            prt_research_concept.need
+    guid_port:          prt_596b90a0bfc64e29ae5f1fc2c212ac3c
+    pass:               1
+
+    relation:
+
+      - id_relation:    r_binds
+        guid_relation:  r_76c0ae2d6c2b4ab8a80e40155dbcb0f2
+        id_target:      need_frontline_multiday_offgrid_power
+        guid_target:    need_0faac913d77d46468f29830da1b94a1d
+
+description:            |
+                        Waiting at research.
+
+state:
+  queue:                []
+
+  pass:
+    research:           1
+
+  bound:
+
+    - port:             research.input.concept
+      id_item:          cpt_frontline_solar_buffer_kit
+      guid_item:        cpt_1b61ed7c617443c3b60bb6b0d5d8e29c
+
+    - port:             research.input.need
+      id_item:          need_frontline_multiday_offgrid_power
+      guid_item:        need_0faac913d77d46468f29830da1b94a1d
+
+waiting:
+  node:                 research
+  brief:                |
+                        Execution exe_20260906161931_06e35c of
+                        wf_research_concept is waiting at node
+                        research.
+
+                        Bound on its inputs:
+                          concept: cpt_frontline_solar_buffer_kit  Ruggedised multiday battery crate for frontline electronics
+                          need: need_frontline_multiday_offgrid_power  Sustained off-grid power for frontline terminal and chargers
+
+                        For each output, the task, and how its item is
+                        found once you are done:
+                          assessment: Research the feasibility of the concept on concept as an answer to the need on need, with your tools: find real products, standards and component classes the concept could use as they are, from vendors, standards bodies, defence procurement records and reputable reporting. Capture each source you rely on as an observation with cctool observe, from a capture file holding its text, locator, attribution and time; capture nothing you did not read. Make the assessment with cctool new t_assessment: title, verdict, summary, the seven dimensions each with a rating and a rationale that names its references, and the products each with role, maturity and support; link each product and the assessment r_cites to the observations it rests on, and the assessment r_assesses to the concept; write yourself and your tools in assessor. Rate unknown where you found nothing, never weak. Then run the checks, commit, and resume.
+                            found by r_assesses to the item on concept
+
+                        Work through cctool, commit, then run: cctool
+                        resume exe_20260906161931_06e35c
+
+outcome:                waiting
+
+relation:
+
+  - id_relation:        r_ran_under
+    guid_relation:      r_acbf8f7c3dea40249e7b9aa27ad6cdc3
+    id_target:          dep_research_local
+    guid_target:        dep_1a883314b5d14fb2baefc66ecdd0507d
