@@ -130,3 +130,30 @@ def test_too_few_candidate_requirements_fail_the_schema_and_the_run_restores(rep
     assert r['stopped'] and 'critical' in r['stopped'], r['stopped']
     assert not (repo / 'concept' / 'cpt_field_power_cell.yaml').exists()
     assert clean(repo) == []
+
+
+def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_twice(repo):
+    concept = 'cpt_frontline_multiday_power_kit'
+    r = cc_public.workflow.run.run(repo, 'wf_promote_concept', 'dep_promote_local',
+                                   {'promote.input.concept': concept}, Proposer(), None)
+    assert r['stopped'] is None, r['stopped']
+    (node,) = r['node']
+    assert node['revised'] == [concept] and len(node['made']) >= 3
+    assert all(i.startswith('req_frontline_multiday_power_kit_') for i in node['made'])
+    doc = cc_public.load.from_file(repo / 'concept' / (concept + '.yaml'))
+    assert len(node['made']) == len(doc['candidate_requirement'])
+    for (key, entry) in doc['candidate_requirement'].items():
+        req = cc_public.load.from_file(repo / 'requirement' / f'req_frontline_multiday_power_kit_{key}.yaml')
+        assert req['status'] == 'proposed' and req['category'] == entry['category']
+        assert req['statement'].split() == entry['statement'].split()
+        assert len(req['title']) <= 80 and req['title'][0].isupper()
+        assert sorted((e['id_relation'], e['id_target']) for e in req['relation']) == [
+            ('r_is_derived_from', concept),
+            ('r_is_derived_from', 'need_frontline_multiday_offgrid_power')]
+    assert clean(repo) == []
+
+    before = sorted(p.name for p in (repo / 'requirement').iterdir())
+    r = cc_public.workflow.run.run(repo, 'wf_promote_concept', 'dep_promote_local',
+                                   {'promote.input.concept': concept}, Proposer(), None)
+    assert r['stopped'] and 'promoted before' in r['stopped']
+    assert sorted(p.name for p in (repo / 'requirement').iterdir()) == before

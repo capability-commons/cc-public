@@ -33,6 +33,9 @@ relation:               []
 import importlib.metadata
 
 import cc_public.edit.accept
+import cc_public.edit.field
+import cc_public.edit.link
+import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.facts
@@ -41,6 +44,18 @@ import cc_public.facts
 PORT_REQUIREMENT = 'requirement'
 PORT_ACCEPTED    = 'accepted'
 PORT_VERIFIED    = 'verified'
+PORT_CONCEPT     = 'concept'
+PORT_PROMOTED    = 'promoted'
+KEY_CANDIDATE    = 'candidate_requirement'
+KEY_RELATION     = 'relation'
+KEY_ID_REL       = 'id_relation'
+KEY_ID_TARGET    = 'id_target'
+KEY_STATUS       = 'status'
+STATUS_PROPOSED  = 'proposed'
+TYPE_REQUIREMENT = 't_textual_requirement'
+PREFIX_REQ       = 'req'
+REL_DERIVED      = 'r_is_derived_from'
+WIDTH_TITLE      = 80
 REL_VERIFIES     = 'r_verifies'
 PREFIX_FUNCTION  = 'pyf'
 SEPARATOR        = '_'
@@ -182,3 +197,107 @@ def _nodeids(tree, requirement):
                              *item.location.anchor])
                   for item in list_item
                   if item.id_self.split(SEPARATOR, 1)[0] == PREFIX_FUNCTION)
+
+
+# -----------------------------------------------------------------------------
+def promote(tree, ledger, map_input):
+    """
+    ---
+
+    id_self:                pyf_cc_public.workflow.component.promote
+    guid_self:              pyf_d060a8befcfd44f0afa24ad9ae147c43
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Promote a concept
+    brief:                  |
+                            Make a proposed textual requirement item from
+                            each candidate requirement of the concept
+                            bound to the concept input, deriving from the
+                            concept and from the need the concept derives
+                            from, and return the concept on the promoted
+                            output. Refuse where a requirement the
+                            promotion would make exists already.
+
+                            The candidate entries stay in the concept as
+                            the record of what was proposed; the items are
+                            what the requirement evals judge and
+                            acceptance binds. The boundary from
+                            exploration to assurance, done mechanically.
+    description:            |
+                            The third component in code. Reads the
+                            candidate requirement entries of the concept,
+                            makes a proposed textual requirement item from
+                            each through the edit tier, deriving from the
+                            concept and from the need the concept derives
+                            from, and refuses where one exists already.
+    relation:               []
+
+    ...
+    """
+
+    id_concept = map_input[PORT_CONCEPT]
+    concept    = tree.context.map_document[tree.resolve(id_concept).location]
+    id_need    = _target_of(concept, REL_DERIVED)
+    stem       = id_concept.split(SEPARATOR, 1)[1]
+
+    for (key, entry) in (concept.get(KEY_CANDIDATE) or {}).items():
+
+        id_requirement = SEPARATOR.join([PREFIX_REQ, stem, key])
+
+        if id_requirement in tree.map_id:
+            raise cc_public.edit.tree.ErrorItem(
+                    '{id} exists already; {concept} was promoted before.'.format(
+                            id = id_requirement, concept = id_concept))
+
+        ledger.note_create(cc_public.edit.new.new(tree, TYPE_REQUIREMENT, id_requirement,
+                                                  tree.defaults()))
+        cc_public.edit.field.set_field(tree, id_requirement, 'title',
+                                       value = _title(key))
+        for field in ('statement', 'rationale'):
+            cc_public.edit.field.set_field(tree, id_requirement, field,
+                                           prose = str(entry.get(field) or ''))
+        cc_public.edit.field.set_field(tree, id_requirement, 'category',
+                                       value = entry.get('category'))
+        cc_public.edit.field.set_field(tree, id_requirement, KEY_STATUS,
+                                       value = STATUS_PROPOSED)
+        cc_public.edit.link.link(tree, id_requirement, REL_DERIVED, id_concept)
+        cc_public.edit.link.link(tree, id_requirement, REL_DERIVED, id_need)
+
+    return {PORT_PROMOTED: id_concept}
+
+
+# -----------------------------------------------------------------------------
+def _target_of(document, id_relation):
+    """
+    Return the readable id at the far end of the document's first
+    edge of the relation, or refuse where it has none.
+
+    """
+
+    for edge in document.get(KEY_RELATION) or []:
+        if edge.get(KEY_ID_REL) == id_relation:
+            return edge[KEY_ID_TARGET]
+
+    raise cc_public.edit.tree.ErrorItem(
+            '{id} carries no {rel} edge.'.format(id = document.get('id_self'),
+                                                rel = id_relation))
+
+
+# -----------------------------------------------------------------------------
+def _title(key):
+    """
+    Return the title a candidate's key gives its requirement: the key
+    as words, capitalised, cut to the title's bound.
+
+    """
+
+    words = key.replace(SEPARATOR, ' ').strip()
+    title = words[:1].upper() + words[1:]
+
+    return title[:WIDTH_TITLE].rstrip()

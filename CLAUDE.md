@@ -185,7 +185,13 @@ Pixi tasks
   three to twelve embedded candidate requirements (`crq_`); `run
   wf_concept_from_need --deployment dep_concept_from_need_local` with the
   need, framing, observation and guide bound on `propose` and the need and
-  guide on `challenge`, once per framing (`ddr_concept`). An output port
+  guide on `challenge`, once per framing (`ddr_concept`). `run
+  wf_promote_concept --deployment dep_promote_local --bind
+  promote.input.concept=cpt_…` makes a proposed requirement item from each
+  candidate, deriving from the concept and its need; then `check --eval
+  --id-item 'req_<concept>_.*'` judges them. The whole chain, with a
+  readme and the capture, is `/Users/wtp/dev/cc/demo/frontline_power/`.
+  An output port
   links by `link: {relation: [input ports]}` (`ddr_port_link`); a type
   entry may name its `home` directory so a workflow can make the first item
   of a type.

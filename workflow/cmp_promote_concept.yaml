@@ -1,0 +1,63 @@
+id_self:                cmp_promote_concept
+guid_self:              cmp_2fa483fc78a2450b8b467f3ce1cdd17c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Promote a concept
+brief:                  |
+                        Make a proposed requirement item from each
+                        candidate requirement of the concept on its
+                        input.
+description:            |
+                        Implemented in code by the promote function of
+                        the component module. Each candidate
+                        requirement entry of the concept becomes a
+                        textual requirement item, proposed, with the
+                        entry's statement, rationale and category,
+                        deriving from the concept and from its need;
+                        the entries stay in the concept as the record
+                        of what was proposed. The items are what the
+                        requirement evals judge and what the trace and
+                        acceptance hold to account. A concept promoted
+                        before is refused.
+
+output:
+
+  promoted:
+    id_self:            prt_promote_concept.promoted
+    guid_self:          prt_2fcc42d7aab846239a389dbcddf06a4e
+    title:              Promoted concept
+    brief:              |
+                        The same concept, its candidates now
+                        requirement items deriving from it.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    revises:            concept
+    relation:           []
+
+performer:              function
+
+relation:
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.workflow.component.promote
+    guid_target:        pyf_d060a8befcfd44f0afa24ad9ae147c43
+
+input:
+
+  concept:
+    id_self:            prt_promote_concept.concept
+    guid_self:          prt_abb99ccdfb0045329a2c166d42193676
+    title:              Concept to promote
+    brief:              |
+                        A concept whose candidate requirements are to
+                        become items.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    relation:           []

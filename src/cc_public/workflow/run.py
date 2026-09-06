@@ -583,6 +583,7 @@ def _node(state, local):
     found     = cc_public.workflow.code.implementation(state.tree, component)
 
     outputs = state.graph.outputs(local)
+    set_new = set()
 
     if is_agent and state.resumed != local:
         entry['waiting'] = cc_public.workflow.agent.brief(state, local, state.id_exe, map_id)
@@ -607,6 +608,10 @@ def _node(state, local):
                                                         map_input, entry))
         state.bound[(local, port)] = id_item
         entry['revised' if was_bound else 'made'].append(id_item)
+
+    # What a function made beyond its ports is the run's making too.
+    #
+    entry['made'].extend(sorted(set_new - set(entry['made']) - set(entry['revised'])))
 
     # A park bound the inputs of an agent node already.
     #
