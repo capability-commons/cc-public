@@ -68,7 +68,7 @@ Write items through the tool, never by hand:
 
 ```bash
 pixi run cctool new t_ddr ddr_my_decision --set "title=My decision" \
-    --prose "decision=What was decided." --link r_decides sch_need
+    --set "decision=What was decided." --link r_decides sch_need
 pixi run cctool set ddr_my_decision rationale --prose < rationale.txt
 pixi run cctool show ddr_my_decision
 pixi run cctool commit 'My decision, recorded'

@@ -17,12 +17,15 @@ brief:                  |
                         report, and the printer over a tree.
 description:            |
                         check adapts its options into a judgement for
-                        the driver where evals are asked for, writes
-                        the report in the format asked, and turns it
-                        into an exit status: two for a failure of the
-                        analysis always, one for a critical finding
-                        only when asked. format lays every document
-                        out, or says what it would change.
+                        the driver where evals are asked for, narrows
+                        the judgement to the items in the files
+                        changed since a commit where --changed-since
+                        is given, writes the report in the format
+                        asked, and turns it into an exit status: two
+                        for a failure of the analysis always, one for
+                        a critical finding only when asked. format
+                        lays every document out, or says what it would
+                        change.
 relation:               []
 
 ...

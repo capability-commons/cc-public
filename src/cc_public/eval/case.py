@@ -16,13 +16,14 @@ brief:                  |
                         Turn a live finding into a control case, with
                         the subject captured as the judge saw it.
 description:            |
-                        Renders the item for the eval exactly as a
-                        sweep would, and holds that text as the case's
-                        subject. The verdict a person gives sets the
-                        origin: met is a suppressed finding, unmet a
-                        confirmed one. The case goes into the eval's
-                        control set, made where absent, keyed by the
-                        content of its subject.
+                        Renders the item, or the pair for an eval over
+                        pairs, exactly as a sweep would, and holds
+                        that text as the case's subject. The verdict a
+                        person gives sets the origin: met is a
+                        suppressed finding, unmet a confirmed one. The
+                        case goes into the eval's control set, made
+                        where absent, keyed by the content of its
+                        subject, and snapshots every item it holds.
 relation:               []
 
 ...
