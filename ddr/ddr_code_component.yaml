@@ -1,0 +1,137 @@
+id_self:                ddr_code_component
+guid_self:              ddr_128e0272789840d1b6c4098b42bc5176
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Components implemented in code
+brief:                  |
+                        A component names either prompts or a
+                        function; the executor calls the function once
+                        per node with the tree, the ledger and the
+                        bound ids.
+context:                |
+                        The executor ran only components on prompts:
+                        each output port carried a prompt, the
+                        generator was asked once per port, and the
+                        answer was written into a new or revised item.
+                        The requirements loop that is to become a
+                        workflow ends in acceptance, which is not a
+                        matter of prose but of checks: judged as
+                        accepted in a closed world, no trace gap,
+                        current evidence. The component decision
+                        already allowed a component to name code by an
+                        r_is_implemented_by edge to a source item, and
+                        nothing ran it.
+decision:               |
+                        A component implemented in code names a
+                        function at module level by
+                        r_is_implemented_by to a function item, and
+                        carries no prompt on any output port. The
+                        executor calls the function once for the node,
+                        as f(tree, ledger, {port: id}) with the ids
+                        bound to its inputs, and takes from what it
+                        returns the id of an item for each output
+                        port. The function makes items through the
+                        edit tier and notes on the ledger what it
+                        changes before changing it; the executor notes
+                        what is new by comparing the tree's
+                        identifiers before and after, and settles a
+                        new item as it settles one a prompt made: the
+                        port's decides and derives links, and the
+                        proposed status where the schema allows.
+                        Anything the function raises, a missing
+                        output, an output the tree does not hold, or a
+                        return that is not a mapping stops the run,
+                        which restores. The function is found by
+                        importing the module named by the identifier
+                        of the file's own document and taking the
+                        attribute the function item's anchor names.
+                        The tool's own functions live in
+                        cc_public.workflow.component; the first
+                        accepts a requirement.
+rationale:              |
+                        One contract for both kinds of component keeps
+                        the executor's node loop to a single branch:
+                        inputs are bound ids either way, and a prompt
+                        renders them where a function takes them as
+                        they are. Passing the tree and the ledger, not
+                        a path, means a function writes through the
+                        same edit tier and the same restore as a
+                        prompt, so a stop after a function puts the
+                        tree back. Finding the function by import
+                        rather than by path keeps the source item as
+                        the one name of the code, checked by the
+                        source check to sit where its id says. Calling
+                        once per node, not once per port, matches what
+                        a function is: one computation with several
+                        results. Reusing the accept command's path
+                        means acceptance in a workflow refuses exactly
+                        where acceptance at the prompt refuses.
+alternative:            |
+                        Running code through a subprocess named by a
+                        string on the component: rejected, since a
+                        string names nothing the checks can see, and a
+                        subprocess cannot share the ledger. Calling
+                        the function once per output port, as a prompt
+                        is asked: rejected, since a function returning
+                        several items would run several times. Letting
+                        the function return documents for the executor
+                        to write: rejected, since the edit tier
+                        already writes and prints, and a function that
+                        cannot call it cannot link or accept.
+                        Requiring a deployment of a code-only workflow
+                        to name no model: deferred, as a question.
+consequence:            |
+                        The workflow check reports a component whose
+                        implementation is not a function item, and one
+                        that carries both a prompt and an
+                        implementation. A function called from a
+                        workflow is public code with a contract, and a
+                        test runs the accept workflow against a
+                        requirement in both states. The executor's
+                        inputs are ids, and the rendering to prose has
+                        moved to the prompt branch alone. A deployment
+                        still names a model where no node asks one.
+
+question:
+
+  model:
+    id_self:            qst_code_component.model
+    guid_self:          qst_85fab974a8d14a9cba80abe90cb780ea
+    question:           |
+                        Whether a deployment of a workflow whose every
+                        node is in code should name a model, which the
+                        schema requires and nothing asks.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.workflow.code
+    guid_target:        pym_f255418605674866868cca41062bdf16
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.workflow.component
+    guid_target:        pym_4fcb8b39bcdc4048a9a6402410525085
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_accept_requirement
+    guid_target:        cmp_469a5534091a49f2b3a0d7532e17907b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_accept_requirement
+    guid_target:        wf_12eeaf00dbae408db44ae663a61488cd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_accept_local
+    guid_target:        dep_b0ff55c4632b4909a869a0c8db1f0d12

@@ -52,6 +52,7 @@ import cc_public.eval.select
 import cc_public.path
 import cc_public.workflow
 import cc_public.workflow.graph
+import cc_public.workflow.code
 import cc_public.workflow.produce
 
 
@@ -399,15 +400,31 @@ def _node(state, local):
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
                  'exhausted': [], 'note': [], 'commit': None, 'skipped': None}
-    map_input = _inputs(state, local, entry)
+    map_id = _inputs(state, local, entry)
 
-    if map_input is None:
+    if map_id is None:
         return entry
 
+    # A component in code runs once for the node and fills every output
+    # port; one on prompts is asked once per port, with its inputs
+    # rendered as prose.
+    #
+    found = cc_public.workflow.code.implementation(state.tree, state.graph.component[local])
+
+    if found is not None:
+        (map_output, set_new) = cc_public.workflow.code.call(state, local, found, map_id)
+    else:
+        map_input = {port: cc_public.workflow.produce.render(state.tree, id_item)
+                     for (port, id_item) in map_id.items()}
+
     for (port, spec) in state.graph.outputs(local).items():
-        id_item   = cc_public.workflow.produce.produce(state, local, port, spec,
-                                                      map_input, entry)
         was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in state.bound
+        if found is not None:
+            id_item = cc_public.workflow.code.output(state, local, port, spec,
+                                                    map_output, set_new)
+        else:
+            id_item = cc_public.workflow.produce.produce(state, local, port, spec,
+                                                        map_input, entry)
         state.bound[(local, port)] = id_item
         entry['revised' if was_bound else 'made'].append(id_item)
 
@@ -426,7 +443,7 @@ def _node(state, local):
 # -----------------------------------------------------------------------------
 def _inputs(state, local, entry):
     """
-    Return {port: text} for the node's bound inputs, or None where the
+    Return {port: id} for the node's bound inputs, or None where the
     node is skipped on this pass.
 
     A required input fed by an edge that did not fire means the branch
@@ -439,8 +456,7 @@ def _inputs(state, local, entry):
 
     for (port, spec) in state.graph.inputs(local).items():
         if (local, port) in state.bound:
-            map_input[port] = cc_public.workflow.produce.render(
-                                            state.tree, state.bound[(local, port)])
+            map_input[port] = state.bound[(local, port)]
         elif spec.get(KEY_OPTIONAL):
             continue
         elif state.graph.incoming(local, port):

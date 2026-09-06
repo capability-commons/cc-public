@@ -73,6 +73,9 @@ KEY_INCL_TYPE   = 'include_type'
 
 REL_INSTANTIATES = 'r_instantiates'
 REL_JUDGED_BY    = 'r_is_judged_by'
+REL_IMPLEMENTED  = 'r_is_implemented_by'
+PREFIX_FUNCTION  = 'pyf'
+KEY_PROMPT       = 'prompt'
 
 SIDE_OUTPUT     = 'output'
 SIDE_INPUT      = 'input'
@@ -144,6 +147,7 @@ def _inspect(filepath, document, map_by_guid):
         map_component[name] = component
         list_bad.extend(_type_agreement(filepath, name, component, map_by_guid))
         list_bad.extend(_revises(filepath, name, component))
+        list_bad.extend(_implementation(filepath, name, component, map_by_guid))
 
         if not _has_eval(component):
             list_note.append(cc_public.check.result.Note(
@@ -314,6 +318,45 @@ def _type_agreement(filepath, name, component, map_by_guid):
                             'names only {include}.'.format(
                                     id_type = id_type,
                                     include = ', '.join(include))))
+
+    return list_bad
+
+
+# -----------------------------------------------------------------------------
+def _implementation(filepath, name, component, map_by_guid):
+    """
+    Return the faults of a component in code: it names a function, and
+    its output ports carry no prompt, since a component runs on one or
+    the other.
+
+    """
+
+    list_edge = [e for e in component.get(KEY_RELATION) or []
+                   if isinstance(e, dict) and e.get(KEY_ID_REL) == REL_IMPLEMENTED]
+
+    if not list_edge:
+        return []
+
+    list_bad = []
+    where    = f'node.{name}'
+
+    for edge in list_edge:
+        target = map_by_guid.get(edge.get(KEY_GUID_TARGET))
+        if target is None:
+            continue                      # the reference check reports it
+        if str(target.get(KEY_ID_SELF, '')).split('_', 1)[0] != PREFIX_FUNCTION:
+            list_bad.append(_fault(filepath, where,
+                    '{component} is implemented by {target}, which is not a '
+                    'function. A component in code names a function at module '
+                    'level.'.format(component = component[KEY_ID_SELF],
+                                    target    = target.get(KEY_ID_SELF))))
+
+    for (port, spec) in (component.get(KEY_OUTPUT) or {}).items():
+        if isinstance(spec, dict) and spec.get(KEY_PROMPT):
+            list_bad.append(_fault(filepath, where,
+                    '{component} is implemented in code and its output {port} '
+                    'carries a prompt. A component runs on prompts or on code, '
+                    'not both.'.format(component = component[KEY_ID_SELF], port = port)))
 
     return list_bad
 

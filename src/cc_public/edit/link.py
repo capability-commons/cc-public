@@ -128,9 +128,13 @@ def unlink(tree, name_source, id_relation, name_target):
     del existing[found[0]]
 
     # A list emptied of its last edge keeps the comment tokens of what
-    # it held; a fresh one carries nothing.
+    # it held, and the key keeps those of the blank line that followed
+    # the list; a fresh one under a bare key carries nothing, so the
+    # printer sees what it would write.
     #
     if not existing:
+        if hasattr(node, 'ca'):
+            node.ca.items.pop(KEY_RELATION, None)
         node[KEY_RELATION] = ruamel.yaml.comments.CommentedSeq()
 
     cc_public.edit.tree.save(source.location, document)

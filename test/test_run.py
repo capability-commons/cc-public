@@ -32,10 +32,12 @@ import pytest
 
 import cc_public.check
 import cc_public.edit.field
+import cc_public.edit.link
 import cc_public.edit.tree
 import cc_public.control
 import cc_public.eval.measure
 import cc_public.eval.runner
+import cc_public.evidence
 import cc_public.load
 import cc_public.load.git
 import cc_public.workflow.produce
@@ -526,3 +528,63 @@ def test_a_guard_is_refused_to_a_judge_the_eval_was_not_measured_for(repo):
                                    'dep_design_decision_from_schema_local', BIND,
                                    Scripted(), Judge('met'))
     assert r['stopped'] and EVALS[0] in r['stopped']
+
+
+def test_a_component_in_code_runs_its_function_once_and_revises_its_input(repo):
+    """
+    The accept workflow's one node is a function: it is called with the
+    bound ids, no prompt is asked, and the requirement leaves accepted.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    req  = 'req_committer_writes_record'
+    cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    cc_public.evidence.attest(tree, req, 'passed', 'a test', note = 'Attested here.')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'proposed')
+
+    gen = Scripted()
+    r   = cc_public.workflow.run.run(repo, 'wf_accept_requirement', 'dep_accept_local',
+                                     {'accept.input.requirement': req}, gen, Judge())
+    assert r['stopped'] is None, r['stopped']
+    (node,) = r['node']
+    assert node['revised'] == [req] and node['made'] == []
+    assert gen.calls == []
+    assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'accepted'
+
+    tree = cc_public.edit.tree.Tree([repo])
+    exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
+    assert {b['id_port'] for b in exe['binding'].values()} == {
+        'prt_accept_requirement.requirement', 'prt_accept_requirement.accepted'}
+    assert clean(repo) == []
+
+
+def test_a_function_that_refuses_stops_the_run_and_restores(repo):
+    """
+    Accepting what is accepted already is refused by the edit tier; the
+    refusal stops the run and the tree is put back.
+
+    """
+    r = cc_public.workflow.run.run(repo, 'wf_accept_requirement', 'dep_accept_local',
+                                   {'accept.input.requirement': 'req_committer_writes_record'},
+                                   Scripted(), Judge())
+    assert r['stopped'] and 'accepted already' in r['stopped']
+    assert git(repo, 'status', '--porcelain') == ''
+
+
+def test_a_component_in_code_names_a_function_and_carries_no_prompt(repo):
+    """
+    The workflow check reports an implementation that is not a
+    function, and a prompt beside an implementation.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.link.unlink(tree, 'cmp_accept_requirement', 'r_is_implemented_by',
+                               'pyf_cc_public.workflow.component.accept')
+    cc_public.edit.link.link(tree, 'cmp_accept_requirement', 'r_is_implemented_by',
+                             'pym_cc_public.workflow.component')
+    cc_public.edit.field.set_field(tree, 'prt_accept_requirement.accepted', 'prompt',
+                                   prose = 'Accept it.')
+    faults = clean(repo)
+    assert any('is not a function' in f for f in faults), faults
+    assert any('not both' in f for f in faults), faults

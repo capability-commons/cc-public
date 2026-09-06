@@ -1,0 +1,57 @@
+id_self:                cmp_accept_requirement
+guid_self:              cmp_469a5534091a49f2b3a0d7532e17907b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Accept a requirement
+brief:                  |
+                        Accept the requirement on its input, where its
+                        assurance is complete.
+description:            |
+                        Implemented in code by the accept function of
+                        the component module. The requirement is
+                        accepted through the same path as the accept
+                        command, which refuses unless the requirement
+                        is judged as accepted in a closed world, its
+                        trace shows no gap and its evidence is a pass
+                        and current. A refusal stops the run, and the
+                        tree is restored. The output carries the same
+                        requirement, revised.
+
+output:
+
+  accepted:
+    id_self:            prt_accept_requirement.accepted
+    guid_self:          prt_341670af87a3415c91cc82b06d5b10bd
+    title:              Accepted requirement
+    brief:              |
+                        The same requirement, accepted.
+    id_type:            t_textual_requirement
+    guid_type:          t_ca3efb2ddd534838844c500aa92c848c
+    revises:            requirement
+    relation:           []
+
+input:
+
+  requirement:
+    id_self:            prt_accept_requirement.requirement
+    guid_self:          prt_2636f9fd15914f64882c2bc14ffca05a
+    title:              Requirement to accept
+    brief:              |
+                        A proposed textual requirement whose assurance
+                        is to be checked.
+    id_type:            t_textual_requirement
+    guid_type:          t_ca3efb2ddd534838844c500aa92c848c
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.workflow.component.accept
+    guid_target:        pyf_074e3769a2d640ed9f73ec7e241169de

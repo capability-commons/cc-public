@@ -107,17 +107,34 @@ def produce(state, local, port, spec, map_input, entry):
     else:
         answer  = generator.produce(prompt, map_input, list_field, True)
         id_item = _make(state, local, port, spec, entry_type, answer, entry)
-        _link(state, local, port, spec, id_item)
-        # What a workflow makes is proposed until a person accepts it.
-        #
-        if STATUS_PROPOSED in ((properties.get(KEY_STATUS) or {}).get('enum') or []) \
-                and KEY_STATUS not in list_field:
-            cc_public.edit.field.set_field(state.tree, id_item, KEY_STATUS,
-                                           value = STATUS_PROPOSED)
+        settle(state, local, port, spec, id_item)
 
     _fill(state.tree, id_item, answer, list_field, list_table, properties, entry)
 
     return id_item
+
+
+# -----------------------------------------------------------------------------
+def settle(state, local, port, spec, id_item):
+    """
+    Do to a new item what the port says: link what it decides and
+    derives from, and mark it proposed where its schema allows, since
+    what a workflow makes is proposed until accepted. The same whether
+    a prompt or a function made it.
+
+    """
+
+    _link(state, local, port, spec, id_item)
+
+    entry_type      = _entry_type(state.tree, local, port, spec)
+    (_, properties) = cc_public.edit.new.shape(state.tree, entry_type)
+    item            = state.tree.resolve(id_item)
+    document        = state.tree.context.map_document[item.location]
+
+    if STATUS_PROPOSED in ((properties.get(KEY_STATUS) or {}).get('enum') or []) \
+            and not document.get(KEY_STATUS):
+        cc_public.edit.field.set_field(state.tree, id_item, KEY_STATUS,
+                                       value = STATUS_PROPOSED)
 
 
 # -----------------------------------------------------------------------------

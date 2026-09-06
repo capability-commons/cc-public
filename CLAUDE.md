@@ -89,7 +89,12 @@ Running and committing
   Needs a clean tree. Makes items with `new`, fills fields with `set`,
   links what a port `decides:` to what it makes, checks after every node,
   restores on a critical finding, writes an execution record to
-  `execution/`, commits if the deployment says so.
+  `execution/`, commits if the deployment says so. A component in code
+  (`r_is_implemented_by` to a function item, no prompt on any port) is
+  called once per node as `f(tree, ledger, {port: id})` and returns an id
+  per output port; the tool's own live in `cc_public.workflow.component`
+  (`ddr_code_component`). `wf_accept_requirement` with `dep_accept_local`
+  accepts a requirement that way.
 - `commit TITLE [--brief …] [--description …] [--link REL ITEM]` — runs the
   checks and the lint, refuses on a critical or lint finding unless
   `--checkpoint` and on an incomplete analysis always, writes a commit

@@ -1,0 +1,43 @@
+id_self:                wf_accept_requirement
+guid_self:              wf_12eeaf00dbae408db44ae663a61488cd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Accept a requirement
+brief:                  |
+                        Accept one requirement whose derivation, code,
+                        verification and evidence are in place.
+description:            |
+                        One node, implemented in code. It takes a
+                        requirement on its input and accepts it, or
+                        stops. No eval guards it: acceptance is
+                        decided by the mechanical checks and the
+                        trace, which the accept path runs. The last
+                        step of the requirements loop, kept as a
+                        workflow of its own so that the loop can end
+                        in it.
+
+node:
+
+  accept:
+    id_self:            node_accept_requirement.accept
+    guid_self:          node_b326f23dedf24a2e9a27dd778d0d39bd
+    title:              Accept
+    brief:              |
+                        Accepts the requirement.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_accept_requirement
+        guid_target:    cmp_469a5534091a49f2b3a0d7532e17907b
+
+edge:                   {}
+relation:               []
