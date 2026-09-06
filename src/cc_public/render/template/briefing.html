@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% set need = d.need[0] if d.need else none %}
+{% block title %}Briefing: {{ need.title if need else d.observation.title }}{% endblock %}
+{% block body %}
+<div class="cover">
+  <div class="kicker">Capability Commons · briefing</div>
+  <h1>From a public post to proposed engineering</h1>
+  <div class="sub">{{ need.title if need else d.observation.title }}</div>
+  <p class="meta">Drawn from the tree at revision {{ d.revision or 'unknown' }} on {{ d.generated_at }}.
+  Everything this briefing describes is <span class="standing">proposed</span>: nothing in it has been accepted, implemented or verified.
+  The technical appendix holds every item in full, every finding and every run.</p>
+</div>
+
+<h2>In five moves</h2>
+<ol class="moves">
+  <li><strong>The capture.</strong> One public {{ d.observation.source_kind }}, attributed as it attributes itself, preserved unchanged with its locator, times and digest.</li>
+  <li><strong>The need.</strong> What the post supports, stated without a product, with evidence that says what one post does and does not establish. Judged by the need evals as it was written.</li>
+  {% set lenses = d.concept|map(attribute='framing.id')|unique|list %}
+  <li><strong>{{ lenses|length }} lenses, {{ d.concept|length }} candidate concepts.</strong> The same need seen through different framings gives different candidate solutions, each with its assumptions and their evidence, its risks and its candidate requirements, each attacked by a second model and revised. Two of them are the same lens applied twice, which gave two different designs.</li>
+  <li><strong>Promotion.</strong> One concept's candidate requirements became {{ d.requirement|length }} proposed requirement items, deriving from the concept and the need. The other concepts stand as alternatives.</li>
+  <li><strong>Honesty.</strong> The requirement evals made {{ d.finding_count }} findings against the {{ d.requirement|length }} proposed requirements, and the trace reports nothing implements or verifies them. That is where proposal ends and assurance work begins.</li>
+</ol>
+
+<h2>The capture</h2>
+<blockquote class="capture">
+  {{ d.observation.content|prose }}
+  <p class="meta">{{ d.observation.attribution }}{% if d.observation.published_at %} · published {{ d.observation.published_at }}{% endif %} · captured {{ d.observation.observed_at }} · <span class="id">{{ d.observation.id }}</span></p>
+</blockquote>
+{% if d.observation.note %}<p class="small">{{ d.observation.note|words }}</p>{% endif %}
+
+{% if need %}
+<h2>The need</h2>
+<div class="box"><p class="statement">{{ need.statement|words }}</p></div>
+<h4>Evidence</h4>
+{{ need.evidence|prose }}
+<p class="meta"><span class="id">{{ need.id }}</span> · <span class="standing">{{ need.status }}</span></p>
+{% endif %}
+
+<h2>Candidate concepts</h2>
+<table>
+  <tr><th>Framing</th><th>Concept</th><th>Entity proposed</th><th>Candidates</th><th>Challenge rounds</th></tr>
+  {% for c in d.concept %}
+  <tr>
+    <td>{{ c.framing.title or c.framing.id }}</td>
+    <td>{{ c.title }}{% if c.promoted %} <span class="standing">promoted</span>{% endif %}</td>
+    <td class="id">{{ c.entity }}</td>
+    <td class="n">{{ c.candidate|length }}</td>
+    <td class="n">{% for e in d.execution if c.id in e.bound and e.workflow == 'wf_concept_from_need' %}{{ e.passes }} · {{ e.outcome }}{% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% for c in d.concept %}
+<h3>{{ c.title }}</h3>
+<p class="meta">Under the framing <em>{{ c.framing.title or c.framing.id }}</em>: {{ c.framing.brief|words }}</p>
+{{ c.effect|prose }}
+{% endfor %}
+<p class="small">Each concept's operation, architecture, assumptions with their evidence, risks, candidate requirements, and the last round of challenge and resolution are in the appendix, section C.</p>
+
+<h2>Proposed requirements</h2>
+{% if d.requirement %}
+<p>From <em>{{ (d.concept|selectattr('promoted')|first).title }}</em>, on its entity <span class="id">{{ (d.concept|selectattr('promoted')|first).entity }}</span>. Each is proposed, derives from the concept and the need, and carries its findings in the appendix.</p>
+<table>
+  <tr><th style="width:5%">#</th><th>Statement</th><th style="width:12%">Category</th><th style="width:9%">Findings</th></tr>
+  {% for r in d.requirement %}
+  <tr><td class="n">{{ loop.index }}</td><td>{{ r.statement|words }}</td><td>{{ r.category }}</td><td class="n">{{ r.finding|length }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No concept has been promoted.</p>
+{% endif %}
+
+<h2>Standing</h2>
+<p>Every item above is <span class="standing">proposed</span>. The trace reports, for each proposed requirement, that nothing implements it and nothing verifies it. Acceptance is refused until derivation, code, verification and current evidence are all present; the tree already holds the machinery for that half.</p>
+<h4>What this briefing does not claim</h4>
+<p class="notclaim">The post is one self-reported event: it establishes neither frequency nor prevalence, and its attribution is as observed, not a verified identity or an authority to speak. A concept is a hypothesis under a lens, not a design. A requirement here is a proposal, not an obligation anyone has accepted. The fixed shape, one need and one concept per framing, is the demonstration's choice, not a method.</p>
+{% endblock %}

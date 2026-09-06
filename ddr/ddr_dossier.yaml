@@ -1,0 +1,178 @@
+id_self:                ddr_dossier
+guid_self:              ddr_4117549cbf0a42a885aad774e7d187f8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  'The dossier: a briefing and a technical appendix drawn from the graph'
+brief:                  |
+                        A dossier rooted at an observation is a
+                        projection of the graph, rendered as two
+                        documents, a briefing and a technical
+                        appendix, as HTML and PDF, by the render
+                        command.
+context:                |
+                        The demonstration for Brave1 produces an
+                        observation, a need, concepts and proposed
+                        requirements, readable one item at a time
+                        through the show and walk commands and as
+                        YAML. A reader with little time needs one
+                        document that tells the story, and a reader
+                        who wants to check needs every item, every
+                        finding and every run, and the two should not
+                        be one document. The display architecture
+                        proposal separates projection from rendering
+                        and keeps the graph canonical; nothing in the
+                        tree yet rendered a document.
+decision:               |
+                        A DOSSIER is the projection of the graph
+                        rooted at one observation: the observation,
+                        each need derived from it, each concept
+                        derived from a need with its framing, entries,
+                        challenge and resolution, each requirement
+                        derived from a concept or a need, the runs
+                        that bound any of them with their last
+                        judgement, the findings a check report holds
+                        against each requirement, what the trace
+                        reports absent, the derivations drawn, and the
+                        identities. It is plain data with nothing of
+                        layout in it, in cc_public.render.dossier, a
+                        sibling of the committer, the judgement and
+                        the evidence in the tiers.
+
+                        Two documents render from one projection: the
+                        BRIEFING, the short account for a reader with
+                        little time, with the five moves, the capture,
+                        the need, the concepts by their effect, the
+                        proposed requirements and the standing; and
+                        the TECHNICAL APPENDIX, every item in full,
+                        every finding named by its rule, every run
+                        with its models and passes, the drawing and
+                        the identities. Both are HTML from templates
+                        held with the renderer, with the stylesheet
+                        inlined so that a page stands alone, and PDF
+                        written from the HTML by WeasyPrint. The
+                        drawing is SVG that Graphviz draws from the
+                        dot text the projection carries; the
+                        projection also carries mermaid for a page
+                        that can draw it.
+
+                        Eval findings come from a report written by
+                        check --eval --format json --out, given to the
+                        render command, since judging costs money and
+                        is a deliberate step. The command writes into
+                        a directory, never into the tree. A document
+                        names the tree revision and the executions it
+                        was drawn from, so that it can be drawn again
+                        and nothing in it is unattributed.
+rationale:              |
+                        Two documents from one projection give the two
+                        readers what each needs without one
+                        overwhelming the other, and cannot disagree,
+                        since they are drawn from the same data at the
+                        same moment. Keeping the projection free of
+                        layout means the same data can serve a page on
+                        a screen, which the demonstration wants next.
+                        HTML with a print stylesheet is one template
+                        language for print and screen, and WeasyPrint
+                        lays it out without a browser, so a document
+                        can be made on any machine with the
+                        environment. Graphviz draws on the server
+                        where a mermaid drawing needs a browser; the
+                        projection carries both so that the choice is
+                        the page's. Taking findings from a report
+                        keeps rendering cheap and exact, and puts the
+                        cost where the decision to judge is made.
+alternative:            |
+                        One document with the appendix behind the
+                        briefing: rejected, since the reader with
+                        little time is handed forty pages. Typst or
+                        LaTeX: rejected, since a second template
+                        language would not serve the screen. Markdown
+                        through pandoc: rejected, since it needs LaTeX
+                        for a PDF and gives less hold over tables.
+                        Judging at render time: rejected, since a
+                        document would cost money and minutes to draw
+                        and would judge afresh what was judged before.
+                        A dossier as an item in the tree: rejected for
+                        now; it is a projection, and its provenance is
+                        the revision and executions it names.
+consequence:            |
+                        A render package with a projection, templates,
+                        a stylesheet, a PDF writer and a drawing
+                        helper; WeasyPrint, Graphviz and Jinja in the
+                        environment; a render command; a test that
+                        draws the specimens. The projection's shape is
+                        the contract the coming pages will use. The
+                        framing prompt now asks for slots that compose
+                        into one sentence, since a document shows the
+                        composed statement and the first run wrote
+                        sentences. A dossier is not an item and is not
+                        checked; what it shows is.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.render
+    guid_target:        pyp_8d4215fe46ce491882189f0063bd11b4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.render.dossier
+    guid_target:        pym_a2e01762cb3a44dfb0898d436df4ec33
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.render.html
+    guid_target:        pym_6552a11395a544848649ee0301ad8a6c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.render.pdf
+    guid_target:        pym_41b0e5c73b8a459287aa180fb572c510
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.render.graph
+    guid_target:        pym_c14ad50354024816ad89ebd2dbbc07c7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.rendering
+    guid_target:        pym_0ebbac10169d48ee856c9df0b4261283
+
+question:
+
+  root:
+    id_self:            qst_dossier.root
+    guid_self:          qst_e3566789dcfc49b7b8c291bbb34e62b9
+    question:           |
+                        Whether a dossier should also be rooted at a
+                        need or a concept, for a reader who starts
+                        there, and what the briefing then leads with.
+    relation:           []
+
+  screen:
+    id_self:            qst_dossier.screen
+    guid_self:          qst_1d4a41c9d9994045bb8830f6e303fcaf
+    question:           |
+                        How the same projection serves pages on a
+                        screen: one page per item with the mermaid
+                        drawing, or the two documents as they are, and
+                        where a run is triggered from.
+    relation:           []
+
+  provenance:
+    id_self:            qst_dossier.provenance
+    guid_self:          qst_7d57d53851e84533bd1d83154faf58b0
+    question:           |
+                        Whether a rendered document should be
+                        recorded, as an export with its revision and
+                        policy, once documents leave the tree for
+                        readers who cannot regenerate them.
+    relation:           []

@@ -79,7 +79,9 @@ pixi run cctool commit 'My decision, recorded'
 To see what a requirement rests on, `pixi run cctool trace`; for what a
 change may affect, `pixi run cctool trace --changed-since main`; for the
 graph itself, `pixi run cctool walk ITEM --depth 2`, `path A B`,
-`orphans`, and `query qry_decides_most`.
+`orphans`, and `query qry_decides_most`. For a document, `pixi run cctool
+render OBSERVATION --out DIR` draws a briefing and a technical appendix,
+as HTML and PDF, from everything derived from a captured source.
 
 Every command prints the file it touched, lays it out through the
 printer, and fails the checks until every required field is written.

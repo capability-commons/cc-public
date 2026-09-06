@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% set need = d.need[0] if d.need else none %}
+{% block title %}Technical appendix: {{ need.title if need else d.observation.title }}{% endblock %}
+{% block body %}
+<div class="cover">
+  <div class="kicker">Capability Commons · technical appendix</div>
+  <h1>{{ need.title if need else d.observation.title }}</h1>
+  <div class="sub">Every item, every finding, every run</div>
+  <p class="meta">Drawn from the tree at revision {{ d.revision or 'unknown' }} on {{ d.generated_at }}. Identities are stable: each item is named by a readable id and a guid, listed in section G. Everything is <span class="standing">proposed</span>.</p>
+  <h4>Contents</h4>
+  <ul class="plain small">
+    <li>A. The observation</li><li>B. The need</li><li>C. The concepts</li><li>D. The proposed requirements and their findings</li><li>E. The derivations, drawn</li><li>F. The runs</li><li>G. Identities</li>
+  </ul>
+</div>
+
+<div class="section">
+<h2>A. The observation</h2>
+<blockquote class="capture">{{ d.observation.content|prose }}</blockquote>
+<table>
+  <tr><th style="width:24%">Field</th><th>Value</th></tr>
+  <tr><td>Identity</td><td class="id">{{ d.observation.id }} · {{ d.observation.guid }}</td></tr>
+  <tr><td>Source kind</td><td>{{ d.observation.source_kind }}</td></tr>
+  <tr><td>Locator</td><td class="id">{{ d.observation.source_uri }}</td></tr>
+  <tr><td>Attribution, as observed</td><td>{{ d.observation.attribution }}</td></tr>
+  <tr><td>Published, as the source says</td><td>{{ d.observation.published_at or 'not given' }}</td></tr>
+  <tr><td>Observed</td><td>{{ d.observation.observed_at }}</td></tr>
+  <tr><td>Capture method</td><td>{{ d.observation.method }}</td></tr>
+  <tr><td>Digest</td><td class="id">{{ d.observation.digest }}</td></tr>
+  {% if d.observation.note %}<tr><td>Note</td><td>{{ d.observation.note|words }}</td></tr>{% endif %}
+</table>
+</div>
+
+{% for n in d.need %}
+<div class="section">
+<h2>B. The need</h2>
+<div class="box"><p class="statement">{{ n.statement|words }}</p></div>
+<table>
+  <tr><th style="width:24%">Slot</th><th>Value</th></tr>
+  <tr><td>Subject</td><td>{{ n.subject|words }}</td></tr>
+  <tr><td>Outcome</td><td>{{ n.outcome|words }}</td></tr>
+  <tr><td>Purpose</td><td>{{ n.purpose|words }}</td></tr>
+  <tr><td>Context</td><td>{{ n.context|words }}</td></tr>
+  <tr><td>Status</td><td><span class="standing">{{ n.status }}</span></td></tr>
+  <tr><td>Identity</td><td class="id">{{ n.id }} · {{ n.guid }}</td></tr>
+</table>
+<h4>Evidence</h4>
+{{ n.evidence|prose }}
+{% for e in d.execution if n.id in e.bound and e.workflow == 'wf_need_from_observation' %}
+<h4>How it was written</h4>
+<p class="small">Run <span class="id">{{ e.id }}</span> of {{ e.workflow }} under {{ e.deployment }}, model {{ e.model }}, {{ e.passes }} pass{{ 'es' if e.passes != 1 }}, outcome {{ e.outcome }}.</p>
+{% if e.judgement %}
+<table><tr><th>Eval</th><th style="width:10%">Verdict</th><th>Reason</th></tr>
+{% for j in e.judgement %}<tr><td class="id">{{ j.eval }}</td><td>{{ j.verdict }}</td><td class="small">{{ j.reason|words }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+</div>
+{% endfor %}
+
+{% for c in d.concept %}
+<div class="section">
+<h2>C{{ loop.index }}. {{ c.title }}</h2>
+<p class="meta">Concept <span class="id">{{ c.id }}</span> · entity <span class="id">{{ c.entity }}</span> · framing <em>{{ c.framing.title or c.framing.id }}</em> · <span class="standing">{{ c.status }}</span>{% if c.promoted %} · <span class="standing">promoted</span>{% endif %}</p>
+<p class="small"><em>{{ c.framing.title }}.</em> {{ c.framing.brief|words }}</p>
+<h4>Operation</h4>{{ c.operation|prose }}
+<h4>Architecture</h4>{{ c.architecture|prose }}
+<h4>Effect</h4>{{ c.effect|prose }}
+<h4>Risk</h4>{{ c.risk|prose }}
+<h4>Assumptions</h4>
+<table><tr><th style="width:22%">Key</th><th>Statement</th><th>Evidence</th></tr>
+{% for a in c.assumption %}<tr><td class="id">{{ a.key }}</td><td>{{ a.statement|words }}</td><td class="small">{{ a.evidence|words }}</td></tr>{% endfor %}
+</table>
+<h4>Candidate requirements</h4>
+<table><tr><th style="width:22%">Key</th><th>Statement</th><th>Rationale</th><th style="width:10%">Category</th></tr>
+{% for q in c.candidate %}<tr><td class="id">{{ q.key }}</td><td>{{ q.statement|words }}</td><td class="small">{{ q.rationale|words }}</td><td>{{ q.category }}</td></tr>{% endfor %}
+</table>
+{% if c.challenge %}<h4>The last challenge</h4>{{ c.challenge|prose }}{% endif %}
+{% if c.resolution %}<h4>The resolution before it</h4>{{ c.resolution|prose }}{% endif %}
+{% for e in d.execution if c.id in e.bound and e.workflow == 'wf_concept_from_need' %}
+<h4>How it was made</h4>
+<p class="small">Run <span class="id">{{ e.id }}</span> of {{ e.workflow }} under {{ e.deployment }}: proposer {{ e.model }}, challenger {{ e.challenger }}, budget {{ e.budget }}, {{ e.passes }} pass{{ 'es' if e.passes != 1 }}, outcome <strong>{{ e.outcome }}</strong>.
+{% if e.outcome == 'exhausted' %}The challenger still had a point when the budget ran out; the last challenge and the resolution before it are above.{% endif %}</p>
+{% if e.judgement %}
+<table><tr><th style="width:22%">Eval, last round</th><th style="width:10%">Verdict</th><th>Reason</th></tr>
+{% for j in e.judgement %}<tr><td class="id">{{ j.eval }}</td><td>{{ j.verdict }}</td><td class="small">{{ j.reason|words }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+{% for e in d.execution if c.id in e.bound and e.workflow == 'wf_promote_concept' %}
+<p class="small">Promoted by run <span class="id">{{ e.id }}</span> of {{ e.workflow }}, a function, outcome <strong>{{ e.outcome }}</strong>.</p>
+{% endfor %}
+</div>
+{% endfor %}
+
+<div class="section">
+<h2>D. The proposed requirements and their findings</h2>
+{% if d.requirement %}
+<p>Promoted from <em>{{ (d.concept|selectattr('promoted')|first).title }}</em>. Each derives from the concept and from the need, is proposed, and was judged by the requirement evals: {{ d.finding_count }} findings in all, each naming the rule it applies and quoting the phrase at fault. The trace reports each as a leaf nothing implements or verifies.</p>
+{% for r in d.requirement %}
+<div class="keep">
+<h3>D{{ loop.index }}. {{ r.title }}</h3>
+<div class="box"><p>{{ r.statement|words }}</p></div>
+<p class="small"><strong>Rationale.</strong> {{ r.rationale|words }}</p>
+<p class="meta"><span class="id">{{ r.id }}</span> · category {{ r.category }} · <span class="standing">{{ r.status }}</span></p>
+{% for f in r.finding %}<div class="finding"><span class="rule">{{ f.eval }}</span> · {{ f.message|words }}</div>{% endfor %}
+{% for g in r.gap %}<div class="finding"><span class="rule">trace</span> · {{ g }}</div>{% endfor %}
+</div>
+{% endfor %}
+{% else %}<p>No concept has been promoted.</p>{% endif %}
+</div>
+
+<div class="section">
+<h2>E. The derivations, drawn</h2>
+<p class="small">Each arrow is an r_is_derived_from edge, checked by the relation check against its domain and range. Requirements derive from their concept and from the need; the second edge is left out of the drawing.</p>
+<div class="graph">{{ svg }}</div>
+</div>
+
+<div class="section">
+<h2>F. The runs</h2>
+<table>
+  <tr><th>Execution</th><th>Workflow</th><th>Model</th><th>Challenger</th><th style="width:8%">Passes</th><th style="width:10%">Outcome</th></tr>
+  {% for e in d.execution %}
+  <tr><td class="id">{{ e.id }}</td><td>{{ e.workflow }}</td><td class="id">{{ e.model }}</td><td class="id">{{ e.challenger or '' }}</td><td class="n">{{ e.passes }}</td><td>{{ e.outcome }}</td></tr>
+  {% endfor %}
+</table>
+<p class="small">A run's record binds every port on every pass and names the deployment it ran under; the model, prompt and parameters of each call are those the deployment and the component name at that revision.</p>
+</div>
+
+<div class="section">
+<h2>G. Identities</h2>
+<table>
+  <tr><th style="width:14%">Kind</th><th>Readable id</th><th>Guid</th></tr>
+  {% for (kind, id_self, guid) in d.identity %}
+  <tr><td>{{ kind }}</td><td class="id">{{ id_self }}</td><td class="id">{{ guid }}</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

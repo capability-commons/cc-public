@@ -82,6 +82,17 @@ Querying
   SQL typed here, over facts derived from the tree on every use
   (`ddr_graph_query`). Keep a question asked twice as a `qry_` item.
 
+Rendering
+
+- `render OBSERVATION [--findings report.json] [--out DIR] [--format pdf|html|both]`
+  — the dossier rooted at an observation as two documents, a briefing
+  and a technical appendix, drawn from the graph: needs, concepts,
+  promoted requirements, runs, the findings in a report from `check --eval
+  --format json --out FILE`, trace gaps, the derivations drawn by Graphviz.
+  Writes into DIR, never into the tree (`ddr_dossier`). The projection is
+  `cc_public.render.dossier.dossier(tree, id, report)`, plain data; the
+  templates are beside `cc_public.render.html`.
+
 Running and committing
 
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run

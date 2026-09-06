@@ -67,6 +67,9 @@ gate                    = { cmd = "cctool check --closed-world --fail-on-nonconf
 [tool.pixi.dependencies]
 ruff                    = ">=0.16.6,<0.17"
 pytest-cov              = ">=7.1.0,<8"
+weasyprint = ">=69.0,<70"
+graphviz = ">=14.1.2,<15"
+jinja2 = ">=3.1.6,<4"
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it
@@ -115,7 +118,7 @@ name                    = "seven tiers, importing downward only"
 type                    = "layers"
 layers                  = ["cc_public.cli",
                            "cc_public.workflow",
-                           "cc_public.commit | cc_public.eval | cc_public.evidence",
+                           "cc_public.commit | cc_public.eval | cc_public.evidence | cc_public.render",
                            "cc_public.edit",
                            "cc_public.check",
                            "cc_public.layout",
