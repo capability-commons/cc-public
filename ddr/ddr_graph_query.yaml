@@ -148,6 +148,22 @@ consequence:            |
                         commit, as the trace already does for impact,
                         would cut that.
 
+                        One more lesson came from looking at the first
+                        drawing rather than at the tests: it showed
+                        only the edges the walk had reached each item
+                        by and hid what two requirements shared,
+                        though the requirement asked for every edge of
+                        the neighbourhood. The test had been written
+                        against the code and passed with it. A test
+                        verifies a requirement only when it is written
+                        from the requirement, and the person looking
+                        at the output is still the check that finds
+                        this; the join evals cannot yet see a drawing.
+                        Along the way the failing test wrote failed
+                        evidence for an accepted requirement and the
+                        closed world check went critical, which is
+                        what the evidence check is for.
+
                         Three smaller things. new writes a datum field
                         given as prose as a block scalar, so the
                         writer must know which fields are prose; the
@@ -194,4 +210,29 @@ question:
                         what had not moved.
     relation:           []
 
-relation:               []
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.facts
+    guid_target:        pym_656182344c864fd28b265f23b0fe6527
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.query
+    guid_target:        pym_c51a761be6c14f958655cf7edebcabbf
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.querying
+    guid_target:        pym_574c0f5b1b2046529d3a922086e781c2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_query
+    guid_target:        t_2ada9ea7fcbe400497020013ada412e1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_query
+    guid_target:        sch_fa663f02c767447b87019d05ccaee9c9
