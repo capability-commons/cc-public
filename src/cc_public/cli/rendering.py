@@ -35,10 +35,6 @@ import click
 
 import cc_public.cli.group
 import cc_public.edit.tree
-import cc_public.render.dossier
-import cc_public.render.graph
-import cc_public.render.html
-import cc_public.render.pdf
 
 
 FORMATS  = ('pdf', 'html', 'both')
@@ -65,6 +61,15 @@ def render_(id_observation, dirpath_out, path_report, id_format, list_root):
     report; writes nothing into the tree.
 
     """
+
+    # The render tier is imported here, not at the top: it needs the
+    # render extra, and a tree that never draws a document should not
+    # have to install it to check or edit.
+    #
+    import cc_public.render.dossier
+    import cc_public.render.graph
+    import cc_public.render.html
+    import cc_public.render.pdf
 
     tree   = cc_public.cli.group.tree(list_root)
     report = json.loads(path_report.read_text(encoding = 'utf-8')) if path_report else None

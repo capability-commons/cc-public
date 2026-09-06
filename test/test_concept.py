@@ -21,9 +21,14 @@ description:            |
                         the need and framed by the framing, with
                         assumption and candidate requirement entries
                         carrying identities, challenged by the second
-                        node; a concept with too few candidate
-                        requirements fails the schema and the run
-                        restores.
+                        node; a key the entry schema does not declare
+                        is dropped with a note; a concept with too few
+                        candidate requirements fails the schema and
+                        the run restores; promotion makes one proposed
+                        requirement item per candidate and refuses to
+                        promote twice. Each test seeds its own
+                        observation and need, since those live in the
+                        segment that demonstrates them.
 relation:               []
 
 ...
@@ -34,6 +39,9 @@ import json
 
 import cc_public.check
 import cc_public.edit.field
+import cc_public.edit.link
+import cc_public.edit.new
+import cc_public.edit.observe
 import cc_public.edit.tree
 import cc_public.load
 import cc_public.workflow.run
@@ -54,12 +62,54 @@ CANDIDATES += [{'key': 'more_{n}'.format(n = n),
                 'statement': 'The Field_Power_Cell shall meet obligation {n}.'.format(n = n),
                 'rationale': 'A further obligation.', 'category': 'quality'} for n in range(6)]
 
-BIND = {'propose.input.need':        'need_frontline_multiday_offgrid_power',
-        'propose.input.framing':     'frame_supply',
-        'propose.input.observation': 'obs_frontline_power_post',
-        'propose.input.guide':       'reg_writing_style_rule',
-        'challenge.input.need':      'need_frontline_multiday_offgrid_power',
-        'challenge.input.guide':     'reg_writing_style_rule'}
+CAPTURE = {'schema_version': 1,
+           'source_kind':    'social_post',
+           'platform':       'x',
+           'post_id':        '7',
+           'source_uri':     'https://example.invalid/unit/status/7',
+           'author_handle':  '@unit_example',
+           'published_at':   '2026-08-30T06:40:00Z',
+           'captured_at':    '2026-09-06T11:00:00Z',
+           'text':           'Third night without grid power. We need power that lasts days.',
+           'capture_method': 'supplied_scrape'}
+
+NEED = {'title':    'Power through grid loss',
+        'subject':  'frontline teams at positions cut from grid power',
+        'outcome':  'communications and drone batteries to stay powered for days',
+        'purpose':  'keep reconnaissance and command running',
+        'context':  'a position whose resupply road is under fire',
+        'evidence': 'One post, obs_x_7, reports three nights without power. It establishes '
+                    'neither how often this happens nor how many positions are affected.',
+        'status':   'proposed'}
+
+ID_OBSERVATION = 'obs_x_7'
+ID_NEED        = 'need_power_through_grid_loss'
+ID_FRAMING     = 'frame_supply'
+ID_GUIDE       = 'reg_writing_style_rule'
+
+BIND = {'propose.input.need':        ID_NEED,
+        'propose.input.framing':     ID_FRAMING,
+        'propose.input.observation': ID_OBSERVATION,
+        'propose.input.guide':       ID_GUIDE,
+        'challenge.input.need':      ID_NEED,
+        'challenge.input.guide':     ID_GUIDE}
+
+
+def seed(repo):
+    """
+    Put the demonstration's first two rungs into a test tree: an
+    observation captured from a post, and the need it supports. The
+    items themselves live in the segment that demonstrates them, not
+    here, so a test that needs them makes its own.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.observe.observe(tree, CAPTURE)
+    cc_public.edit.new.new(tree, 't_need', ID_NEED, tree.defaults())
+    for (field, value) in NEED.items():
+        cc_public.edit.field.set_field(tree, ID_NEED, field, value = value)
+    cc_public.edit.link.link(tree, ID_NEED, 'r_is_derived_from', ID_OBSERVATION)
+    return (ID_OBSERVATION, ID_NEED)
 
 
 class Proposer:
@@ -92,6 +142,7 @@ class Proposer:
 
 
 def deploy(repo):
+    seed(repo)
     tree = cc_public.edit.tree.Tree([repo])
     cc_public.edit.field.set_field(tree, 'dep_concept_from_need_local', 'admit_unmeasured',
                                    value = True)                # the scripted judge is measured nowhere
@@ -114,8 +165,8 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
     doc = cc_public.load.from_file(repo / 'concept' / 'cpt_field_power_cell.yaml')
     assert doc['status'] == 'proposed' and doc['entity'] == 'Field_Power_Cell'
     assert sorted((e['id_relation'], e['id_target']) for e in doc['relation']) == [
-        ('r_is_derived_from', 'need_frontline_multiday_offgrid_power'),
-        ('r_is_framed_by', 'frame_supply')]
+        ('r_is_derived_from', ID_NEED),
+        ('r_is_framed_by', ID_FRAMING)]
     assert list(doc['candidate_requirement'])[:4] == ['endurance', 'carry', 'charge', 'state']
     assert len(doc['candidate_requirement']) == 10 and doc['brief'].startswith('A battery')
     entry = doc['candidate_requirement']['carry']
@@ -160,7 +211,7 @@ def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_
         assert len(req['title']) <= 80 and req['title'][0].isupper()
         assert sorted((e['id_relation'], e['id_target']) for e in req['relation']) == [
             ('r_is_derived_from', concept),
-            ('r_is_derived_from', 'need_frontline_multiday_offgrid_power')]
+            ('r_is_derived_from', ID_NEED)]
     assert clean(repo) == []
 
     before = sorted(p.name for p in (repo / 'requirement').iterdir())
