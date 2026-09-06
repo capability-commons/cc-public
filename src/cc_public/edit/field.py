@@ -36,28 +36,40 @@ import cc_public.path
 
 KEY_RELATION = 'relation'
 
+# What bounds a string to a line, and so marks a datum in a schema.
+#
+BOUND        = ('maxLength', 'pattern', 'enum', 'const', 'format', '$ref')
+
 
 # -----------------------------------------------------------------------------
 def set_field(tree, name, path, value = None, prose = None):
     """
     Set path within the item called name, and write the file back.
 
-    Exactly one of value and prose is given. value is stored as it is,
-    a string as a string; a caller with YAML text reads it first. prose
-    is text stored as a block scalar, given a final newline.
+    Exactly one of value and prose is given. prose is text stored as a
+    block scalar, given a final newline. value is stored as it is, a
+    caller with YAML text reading it first, except that a string is
+    stored as prose where the schema says the field is prose: a string
+    the schema leaves unbounded, with no length, pattern, enumeration
+    or format, is prose, and one it bounds is a datum. Where the schema
+    says nothing of the field, a string holding a line break is prose.
 
     """
 
     if (value is None) == (prose is None):
         raise ValueError('Give a value or prose, not both and not neither.')
 
+    item = tree.resolve(name)
+
     if prose is not None:
         content = ruamel.yaml.scalarstring.LiteralScalarString(
                                                     prose.rstrip('\n') + '\n')
+    elif isinstance(value, str) and is_prose(tree, item, path, value):
+        content = ruamel.yaml.scalarstring.LiteralScalarString(
+                                                    value.rstrip('\n') + '\n')
     else:
         content = _blocks(value)
 
-    item     = tree.resolve(name)
     document = tree.document(item)
 
     cc_public.path.write(document, cc_public.path.concat(item.path, path),
@@ -69,6 +81,73 @@ def set_field(tree, name, path, value = None, prose = None):
 
     return item
 
+
+
+# -----------------------------------------------------------------------------
+def is_prose(tree, item, path, value):
+    """
+    Return whether a string set at path on item is prose, by the
+    schema where it speaks of the field and by the value where it does
+    not.
+
+    The schema speaks of a field one step below the item: a top level
+    item's own field, or an embedded item's. A string it leaves
+    unbounded is prose; one it bounds by length, pattern, enumeration,
+    constant or format is a datum, since a datum fits a line and prose
+    does not. Deeper paths, and fields no schema names, are prose
+    where the value holds a line break.
+
+    """
+
+    list_step = cc_public.path.split(path)
+    sub       = _subschema(tree, item, list_step[0]) if len(list_step) == 1 else None
+
+    if not isinstance(sub, dict):
+        return '\n' in value
+
+    if sub.get('type') not in (None, 'string'):
+        return False
+
+    return not any(key in sub for key in BOUND)
+
+
+# -----------------------------------------------------------------------------
+def _subschema(tree, item, key):
+    """
+    Return the schema of the field key on item, or None where no schema
+    names it.
+
+    """
+
+    import cc_public.check.register
+    import cc_public.check.schema
+    import cc_public.edit.insert
+    import cc_public.edit.new
+
+    try:
+        if item.path:
+            # The shape of a member of the collection holding the item,
+            # which is the item's path with its own key taken off.
+            #
+            list_step  = cc_public.path.split(item.path)
+            collection = ''
+            for step in list_step[:-1]:
+                collection = cc_public.path.join(collection, step)
+            holder = cc_public.edit.tree.Item(item.filepath, '', None, None, item.location)
+            (_, properties) = cc_public.edit.insert.shape_at(
+                                    tree, holder, collection, list_step[-1].isdigit())
+        else:
+            map_schema = cc_public.check.schema.map_schema(tree.context.map_document)
+            map_prefix = cc_public.check.register.map_prefix(tree.type_register())
+            (id_schema, _) = cc_public.check.schema.select_schema(
+                                    tree.context.map_document[item.location], map_prefix)
+            if id_schema is None or id_schema not in map_schema:
+                return None
+            (_, properties) = cc_public.edit.new.gather(map_schema[id_schema], map_schema)
+    except (cc_public.edit.tree.ErrorItem, KeyError, TypeError):
+        return None
+
+    return properties.get(key)
 
 
 # -----------------------------------------------------------------------------

@@ -33,6 +33,7 @@ import typing
 
 import ruamel.yaml
 
+import cc_public.check.identifier
 import cc_public.check.register
 import cc_public.load.python
 import cc_public.need
@@ -447,6 +448,27 @@ def _iter_ref(node):
     elif isinstance(node, list):
         for value in node:
             yield from _iter_ref(value)
+
+
+# -----------------------------------------------------------------------------
+def ids_in(map_document, set_filepath):
+    """
+    Return the readable ids of every item held in the files named,
+    embedded items included, in id order: what a sweep over what
+    changed judges.
+
+    """
+
+    list_id = []
+
+    for (location, document) in map_document.items():
+        if location.filepath not in set_filepath:
+            continue
+        for (_, id_self, _) in cc_public.check.identifier.iter_identity(document):
+            if isinstance(id_self, str):
+                list_id.append(id_self)
+
+    return sorted(set(list_id))
 
 
 # -----------------------------------------------------------------------------

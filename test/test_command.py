@@ -29,6 +29,8 @@ relation:               []
 
 
 
+import json
+
 import click.testing
 import pytest
 
@@ -164,3 +166,39 @@ def test_measure_stale_names_the_evals_whose_confidence_is_missing_or_old(repo):
     assert 'evl_record_and_code_agree' in cc_public.eval.measure.list_stale(tree.context, 'another/judge')
     out = run('measure', '--root', str(repo), '--judge-model', 'null')
     assert out.exit_code == 2 and '--stale' in out.output
+
+
+def test_check_judges_only_what_changed_since_a_ref(repo):
+    tree = cc_public.edit.tree.Tree([repo])
+    out  = run('check', '--path', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null')
+    assert out.exit_code == 0 and 'Nothing changed since HEAD' in out.output
+    cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'rationale', prose = 'Reworded.')
+    out = run('check', '--path', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null',
+              '--format', 'json')
+    assert out.exit_code == 0, out.output
+    entry  = next(c for c in json.loads(out.output)['report']['check'] if c['id_check'] == 'eval')
+    judged = [n['message'] for n in entry['note'] if n['message'].startswith('would judge')]
+    assert judged and all('req_printer_idempotent' in m for m in judged)
+    assert any('need_layout_stable' in m for m in judged)            # a pair, one end changed
+    assert run('check', '--path', str(repo), '--changed-since', 'nowhere',
+               '--judge-model', 'null').exit_code == 2
+
+
+def test_a_case_may_hold_a_pair_for_an_eval_over_pairs(repo):
+    import cc_public.eval.case
+    import cc_public.eval.select
+    tree = cc_public.edit.tree.Tree([repo])
+    (id_set, id_case) = cc_public.eval.case.case(
+        tree, 'evl_requirement_realises_need',
+        ['req_walk_reports_neighbourhood', 'need_agent_sees_reach'], 'met', 'A pair held met.')
+    doc  = cc_public.load.from_file(repo / 'eval' / 'ctl_requirement_realises_need.yaml')
+    key  = id_case.split('.', 1)[1]
+    case = doc['case'][key]
+    assert case['subject'].startswith('--- req_walk_reports_neighbourhood')
+    assert '--- need_agent_sees_reach' in case['subject']
+    assert [e['id_target'] for e in case['relation']] == ['req_walk_reports_neighbourhood', 'need_agent_sees_reach']
+    assert clean(repo) == []
+    out = run('case', '--root', str(repo), '--id-eval', 'evl_requirement_realises_need',
+              '--item', 'req_no_path_reported', '--item', 'need_agent_sees_reach',
+              '--verdict', 'met', '--note', 'Held met.')
+    assert out.exit_code == 0, out.output

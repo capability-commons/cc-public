@@ -55,28 +55,27 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
     """
     Add the case and write it. Return (id_set, id_case).
 
-    origin says where the case came from. Absent, a met verdict is a
-    finding suppressed and an unmet one a finding confirmed; written
-    marks a subject a person wrote and holds to the verdict.
+    name_item names the subject: one item, or, for an eval over pairs,
+    the two items in the order the relation joins them, source then
+    target, as a list. origin says where the case came from. Absent, a
+    met verdict is a finding suppressed and an unmet one a finding
+    confirmed; written marks a subject a person wrote and holds to the
+    verdict.
 
     """
 
-    eval_item = tree.resolve(id_eval)
-    subj_item = tree.resolve(name_item)
-    doc_eval  = tree.context.map_document[eval_item.location]
-    doc_subj  = tree.context.map_document[subj_item.location]
+    eval_item  = tree.resolve(id_eval)
+    doc_eval   = tree.context.map_document[eval_item.location]
+    list_name  = [name_item] if isinstance(name_item, str) else list(name_item)
+    list_subj  = [tree.resolve(name) for name in list_name]
+    tuple_item = tuple((item.id_self, _node(tree, item), item.location) for item in list_subj)
 
-    node = doc_subj
-    for step in cc_public.path.split(subj_item.path):
-        node = node[int(step)] if isinstance(node, list) else node[step]
-
-    text = cc_public.eval.select.render(((subj_item.id_self, node,
-                                          subj_item.location),), doc_eval)
+    text = cc_public.eval.select.render(tuple_item, doc_eval)
 
     if not text.strip():
         raise cc_public.edit.tree.ErrorItem(
                 '{item} has nothing in the scope of {eval}, so there is '
-                'nothing to hold as a subject.'.format(item = subj_item.id_self,
+                'nothing to hold as a subject.'.format(item = ' + '.join(list_name),
                                                        eval = id_eval))
 
     id_set = _set_for(tree, id_eval)
@@ -93,9 +92,25 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
     if note:
         cc_public.edit.field.set_field(tree, id_case, 'note', prose = note)
 
-    cc_public.edit.link.link(tree, id_case, REL_SNAPSHOT, subj_item.id_self)
+    for item in list_subj:
+        cc_public.edit.link.link(tree, id_case, REL_SNAPSHOT, item.id_self)
 
     return (id_set, id_case)
+
+
+# -----------------------------------------------------------------------------
+def _node(tree, item):
+    """
+    Return the item's own mapping within its document.
+
+    """
+
+    node = tree.context.map_document[item.location]
+
+    for step in cc_public.path.split(item.path):
+        node = node[int(step)] if isinstance(node, list) else node[step]
+
+    return node
 
 
 # -----------------------------------------------------------------------------

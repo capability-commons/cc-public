@@ -100,7 +100,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
                                     path = path_collection,
                                     name = container.id_self))
 
-    (required, properties) = _shape_at(tree, container, path_full,
+    (required, properties) = shape_at(tree, container, path_full,
                                        isinstance(collection, list))
     (key, id_self) = _identity(tree, entry_type, name, container, is_reg,
                                id_self, required, properties)
@@ -136,7 +136,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
 
 
 # -----------------------------------------------------------------------------
-def _shape_at(tree, container, path_full, is_list):
+def shape_at(tree, container, path_full, is_list):
     """
     Return (required keys, properties) for an entry at path_full in the
     container, gathered from every subschema that mentions the place.

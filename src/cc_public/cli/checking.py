@@ -30,6 +30,7 @@ relation:               []
 
 
 import pathlib
+import re
 
 import click
 
@@ -120,6 +121,10 @@ import cc_public.workflow.run
                      'Regular expression.')
 @click.option('--guid-type',  'guid_type',  multiple = True,
               help = 'Select evals anchored on a type, by its guid. Exact.')
+@click.option('--changed-since', 'ref', default = None, metavar = 'REF',
+              help = 'Judge only the items held in the files changed since '
+                     'REF, a commit or a branch, committed or not. Implies '
+                     '--eval. A pair is judged where either end changed.')
 @click.option('--id-item',    'id_item',    multiple = True,
               help = 'Select the items to be judged, by readable id -- every '
                      'eval that applies to them. Regular expression.')
@@ -172,6 +177,7 @@ def check(list_path,
           guid_schema,
           id_type,
           guid_type,
+          ref,
           id_item,
           guid_item,
           count_confirm,
@@ -181,6 +187,12 @@ def check(list_path,
     Check the data for conformity.
 
     """
+
+    if ref is not None:
+        id_item = _changed(list_path, ref, id_item)
+        if not id_item:
+            click.echo('Nothing changed since {ref} holds an item to judge.'.format(ref = ref))
+            raise SystemExit(cc_public.cli.group.EXIT_OK)
 
     selector = cc_public.eval.select.Selector(id_eval     = id_eval,
                                               guid_eval   = guid_eval,
@@ -278,6 +290,27 @@ def format_(list_path, is_check):
 
     raise SystemExit(cc_public.cli.group.EXIT_NONCONFORMITY if (is_check and list_changed)
                                         else cc_public.cli.group.EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+def _changed(list_path, ref, id_item):
+    """
+    Return the item selectors for what the files changed since ref
+    hold, each an anchored pattern, joined to any given.
+
+    """
+
+    root = pathlib.Path(list_path[0] if list_path else '.').resolve()
+
+    try:
+        set_filepath = cc_public.load.git.changed_since(root, ref)
+    except cc_public.load.git.ErrorGit as err:
+        cc_public.cli.group.fail(err)
+
+    map_document = cc_public.check.context([root])[0].map_document
+
+    return tuple(id_item) + tuple(re.escape(one) for one in
+                                  cc_public.eval.select.ids_in(map_document, set_filepath))
 
 
 # -----------------------------------------------------------------------------

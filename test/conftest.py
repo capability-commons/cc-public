@@ -52,8 +52,13 @@ MAP_OUTCOME = {}
 DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
             'license':   'Apache-2.0',
             'id_mark':   'mark_public'}
-KEEP     = ('ddr', 'specimen', 'schema', 'register', 'eval', 'workflow', 'execution',
-            'requirement', 'need', 'evidence', 'query', 'src', 'pyproject.toml')
+# Every directory the tree keeps items in, read from the tree rather
+# than listed, so that a new kind of directory is copied from the day
+# it exists; the tests themselves and the working directories stay out.
+#
+KEEP     = tuple(sorted(p.name for p in ROOT.iterdir()
+                        if p.is_dir() and not p.name.startswith('.') and p.name != 'test')
+                 ) + ('pyproject.toml',)
 
 
 def copy_tree(dirpath):

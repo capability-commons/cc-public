@@ -22,7 +22,9 @@ Checking
 - `check --eval` — LLM evals. Needs `CCTOOL_JUDGE_MODEL` in `.env` (never
   paste a key into chat). `--confirm N` re-judges an adverse verdict N times,
   uncached (default 5); `--id-eval`/`--id-item`/`--id-type`/`--id-schema`
-  narrow (anchored regex); `--judge-model null` dry-runs.
+  narrow (anchored regex); `--changed-since REF` judges only the items in
+  the files changed since a commit, a pair where either end changed, and is
+  what to run after writing; `--judge-model null` dry-runs.
 - `format [--check]` — lays every document out to the convention.
 
 Judging
@@ -36,7 +38,8 @@ Judging
   N is odd. `--stale` instead of `--id-eval` measures every eval whose
   confidence for the judge is absent or stale.
 - `case --id-eval X --item Y --verdict met|unmet --note "…"` — turns a finding
-  into a control case (met = suppressed, unmet = confirmed). A later sweep
+  into a control case (met = suppressed, unmet = confirmed); for an eval over
+  pairs give `--item` twice, source then target. A later sweep
   matching the same words reports a met case as a note, not a finding.
   `--origin written` holds a hand-written item to a verdict instead; a
   mutated case is made through the API with its subject text set.
@@ -133,9 +136,12 @@ Pixi tasks
   `table`; elsewhere NAME is the key and the id is qualified by the
   container (`qst_<record>.<name>`). A list is appended to.
 - `set ITEM PATH VALUE` — VALUE is read as YAML: `3` is a number, `[]` a
-  list, and `a: b` a mapping, so quote a string containing `: ` or `#`.
-  Prose: `set ITEM PATH --prose <<'EOF' … EOF`. ITEM is an id or guid,
-  top-level or embedded; PATH is a dot path within it.
+  list, and `a: b` a mapping, so quote a string containing `: ` or `#`. A
+  string is stored as prose or as a datum by the schema: unbounded means
+  prose, a block scalar; a length, pattern or enumeration means a datum. So
+  `--set brief=…` is right; `--prose` forces a block scalar where the
+  schema is silent. ITEM is an id or guid, top-level or embedded; PATH is a
+  dot path within it.
 - `unset ITEM PATH` — removes a field.
 - `rename ITEM NEW_ID` — the guid stays; the id changes in its declaration,
   the file name, every embedded item it qualifies (ports, nodes) and every

@@ -154,8 +154,9 @@ def _measure_one(tree, id_eval, runner, count_sample, is_record):
 @cc_public.cli.group.main.command(name = 'case')
 @click.option('--id-eval', 'id_eval', required = True,
               help = 'The eval the finding came from.')
-@click.option('--item', 'name_item', required = True,
-              help = 'The item the finding was on, by readable id or guid.')
+@click.option('--item', 'list_item', required = True, multiple = True,
+              help = 'The item the finding was on, by readable id or guid. For '
+                     'an eval over pairs, give it twice, source then target.')
 @click.option('--verdict', 'verdict', required = True,
               type = click.Choice(['met', 'unmet']),
               help = 'What a person holds the subject to. met answers the '
@@ -168,7 +169,7 @@ def _measure_one(tree, id_eval, runner, count_sample, is_record):
 @click.option('--note', 'note', default = '',
               help = 'Why. Kept with the case and shown when it answers.')
 @cc_public.cli.group.OPTION_ROOT
-def case_(id_eval, name_item, verdict, origin, note, list_root):
+def case_(id_eval, list_item, verdict, origin, note, list_root):
     """
     Turn a finding into a control case.
 
@@ -181,7 +182,7 @@ def case_(id_eval, name_item, verdict, origin, note, list_root):
 
     try:
         (id_set, id_case) = cc_public.eval.case.case(
-                    cc_public.cli.group.tree(list_root), id_eval, name_item, verdict, note,
+                    cc_public.cli.group.tree(list_root), id_eval, list(list_item), verdict, note,
                     origin)
     except cc_public.edit.tree.ErrorItem as err:
         cc_public.cli.group.fail(err)

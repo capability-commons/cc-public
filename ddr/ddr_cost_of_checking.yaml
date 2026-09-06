@@ -67,6 +67,17 @@ decision:               |
                         raised it. A check whose discrimination has
                         never been measured has no confidence, and its
                         findings carry none.
+
+                        A sweep after a change judges what changed:
+                        check --eval --changed-since names the items
+                        held in the files changed since a commit,
+                        committed or not, and a pair is judged where
+                        either end changed. A round over nine
+                        requirements had cost six minutes, most of it
+                        judging what had not moved; this is the
+                        decision above, that a fallible check runs
+                        where the chance of a defect is high, made a
+                        command.
 rationale:              |
                         The two regimes are one rule with a degenerate
                         case. As cost approaches zero, any value at
@@ -176,18 +187,6 @@ consequence:            |
                         where an eval gates a node rather than a
                         corpus.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.eval.check
-    guid_target:        pym_f7d96b0d7bf84b16b05cb018b140590f
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.eval.runner
-    guid_target:        pym_83b8eb7c9d3f4aa1980016e9231297e6
-
 question:
 
   c976ba88a:
@@ -228,3 +227,15 @@ question:
                         anything true should be retired, and what
                         evidence would justify retiring it.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.check
+    guid_target:        pym_f7d96b0d7bf84b16b05cb018b140590f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.runner
+    guid_target:        pym_83b8eb7c9d3f4aa1980016e9231297e6

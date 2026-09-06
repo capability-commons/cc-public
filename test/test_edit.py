@@ -602,3 +602,27 @@ def test_unsetting_the_last_edge_leaves_an_empty_list(tree, tmp_path):
     assert doc['relation'] == []
     cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'pym_cc_public.commit')
     assert [(c, m) for (c, m) in clean(tmp_path) if c != 'source'] == []
+
+
+def test_set_stores_a_string_as_prose_where_the_schema_says_so(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'need_runs_bounded', 'entity', value = 'Executor')
+    cc_public.edit.field.set_field(tree, 'need_runs_bounded', 'purpose', value = 'Keep a run paid for.')
+    text = (tmp_path / 'need' / 'need_runs_bounded.yaml').read_text()
+    assert 'entity:                 Executor\n' in text                 # bounded: a datum
+    assert 'purpose:                |\n' in text                        # unbounded: prose
+    cc_public.edit.field.set_field(tree, 'ddr_fail_closed', 'title', value = 'Fail closed, again')
+    cc_public.edit.field.set_field(tree, 'ddr_fail_closed', 'brief', value = 'One sentence of brief.')
+    text = (tmp_path / 'ddr' / 'ddr_fail_closed.yaml').read_text()
+    assert 'title:                  Fail closed, again\n' in text
+    assert 'brief:                  |\n' in text
+    # an embedded item's field, by the entry schema; and a deeper path, by the value
+    cc_public.edit.field.set_field(tree, 'term_location', 'brief', value = 'Where a document sits.')
+    cc_public.edit.field.set_field(tree, 't_query', 'prefix', value = 'qry')
+    text = (tmp_path / 'register' / 'reg_term.yaml').read_text()
+    assert '    brief:              |\n                        Where a document sits.\n' in text
+    assert 'prefix:             qry\n' in (tmp_path / 'register' / 'reg_type.yaml').read_text()
+    cc_public.edit.field.set_field(tree, 'sch_deployment', 'allOf.2.properties.confirm.description',
+                                   value = 'One line, no break.')
+    assert re.search(r'description:\s+One line, no break\.\n',
+                     (tmp_path / 'schema' / 'sch_deployment.yaml').read_text())
+    assert clean(tmp_path) == []
