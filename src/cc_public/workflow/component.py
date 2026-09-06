@@ -56,6 +56,7 @@ TYPE_REQUIREMENT = 't_textual_requirement'
 PREFIX_REQ       = 'req'
 REL_DERIVED      = 'r_is_derived_from'
 WIDTH_TITLE      = 80
+PREFIX_KEY       = ('cr', 'crq', 'req')
 REL_VERIFIES     = 'r_verifies'
 PREFIX_FUNCTION  = 'pyf'
 SEPARATOR        = '_'
@@ -293,11 +294,15 @@ def _target_of(document, id_relation):
 def _title(key):
     """
     Return the title a candidate's key gives its requirement: the key
-    as words, capitalised, cut to the title's bound.
+    as words, less a prefix the model gave its keys, capitalised, cut to
+    the title's bound.
 
     """
 
     words = key.replace(SEPARATOR, ' ').strip()
+    for prefix in PREFIX_KEY:                    # a model's own prefix on its keys is not a title
+        if words.startswith(prefix + ' '):
+            words = words[len(prefix) + 1:]
     title = words[:1].upper() + words[1:]
 
     return title[:WIDTH_TITLE].rstrip()

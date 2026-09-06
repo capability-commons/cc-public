@@ -9,7 +9,7 @@
   <p class="meta">Drawn from the tree at revision {{ d.revision or 'unknown' }} on {{ d.generated_at }}. Identities are stable: each item is named by a readable id and a guid, listed in section G. Everything is <span class="standing">proposed</span>.</p>
   <h4>Contents</h4>
   <ul class="plain small">
-    <li>A. The observation</li><li>B. The need</li><li>C. The concepts</li><li>D. The proposed requirements and their findings</li><li>E. The derivations, drawn</li><li>F. The runs</li><li>G. Identities</li>
+    <li>A. The observation</li><li>B. The need</li><li>C. The concepts, one section each: in full, with assumptions, candidates, challenge, assessments and runs</li><li>D. The proposed requirements and their findings</li><li>E. The derivations, drawn</li><li>F. References</li><li>G. The runs</li><li>H. How this was made, and what it does not claim</li><li>I. Identities</li>
   </ul>
 </div>
 
@@ -62,6 +62,7 @@
 <h2>C{{ loop.index }}. {{ c.title }}</h2>
 <p class="meta">Concept <span class="id">{{ c.id }}</span> · entity <span class="id">{{ c.entity }}</span> · framing <em>{{ c.framing.title or c.framing.id }}</em> · <span class="standing">{{ c.status }}</span>{% if c.promoted %} · <span class="standing">promoted</span>{% endif %}</p>
 <p class="small"><em>{{ c.framing.title }}.</em> {{ c.framing.brief|words }}</p>
+{{ c.brief|prose }}
 <h4>Operation</h4>{{ c.operation|prose }}
 <h4>Architecture</h4>{{ c.architecture|prose }}
 <h4>Effect</h4>{{ c.effect|prose }}
@@ -89,16 +90,32 @@
 {% for e in d.execution if c.id in e.bound and e.workflow == 'wf_promote_concept' %}
 <p class="small">Promoted by run <span class="id">{{ e.id }}</span> of {{ e.workflow }}, a function, outcome <strong>{{ e.outcome }}</strong>.</p>
 {% endfor %}
+{% for a in c.assessment %}
+<h4>Assessment: {{ a.title }}</h4>
+<p class="madeby">Made by {% if a.made_by == 'agent' %}an agent with tools{% elif a.made_by == 'model' %}a model, without references{% else %}{{ a.assessor or 'an unnamed assessor' }}{% endif %}{% if a.assessor %} · {{ a.assessor }}{% endif %} · <span class="id">{{ a.id }}</span> · verdict <span class="verdict {{ a.verdict }}">{{ a.verdict|replace('_', ' ') }}</span>{% if a.status %} · <span class="standing">{{ a.status }}</span>{% endif %}</p>
+{{ a.summary|prose }}
+<table>
+  <tr><th style="width:20%">Dimension</th><th style="width:10%">Rating</th><th>Rationale</th></tr>
+  {% for dm in a.dimension %}<tr><td>{{ dm.key|replace('_', ' ') }}</td><td><span class="rating {{ dm.rating }}">{{ dm.rating }}</span></td><td class="small">{{ dm.rationale|words }}{% for ref in dm.cited %} <span class="id">[{{ ref.id }}]</span>{% endfor %}</td></tr>{% endfor %}
+</table>
+<table>
+  <tr><th style="width:26%">Product, standard or class</th><th style="width:11%">Maturity</th><th>Role</th><th style="width:28%">Support</th></tr>
+  {% for pr in a.product %}<tr><td>{{ pr.name }}</td><td>{{ pr.maturity }}</td><td class="small">{{ pr.role|words }}</td><td class="small">{{ pr.support|words }}{% for ref in pr.cited %} <span class="id">[{{ ref.id }}]</span>{% endfor %}</td></tr>{% endfor %}
+</table>
+{% for e in d.execution if a.id in e.bound %}
+<p class="small">Run <span class="id">{{ e.id }}</span> of {{ e.workflow }} under {{ e.deployment }}{% if e.model and e.workflow == 'wf_assess_concept' %}, model {{ e.model }}{% endif %}, outcome <strong>{{ e.outcome }}</strong>.</p>
+{% endfor %}
+{% endfor %}
 </div>
 {% endfor %}
 
 <div class="section">
 <h2>D. The proposed requirements and their findings</h2>
 {% if d.requirement %}
-<p>Promoted from <em>{{ (d.concept|selectattr('promoted')|first).title }}</em>. Each derives from the concept and from the need, is proposed, and was judged by the requirement evals: {{ d.finding_count }} findings in all, each naming the rule it applies and quoting the phrase at fault. The trace reports each as a leaf nothing implements or verifies.</p>
+<p>Each derives from its concept and from the need, is proposed, and was judged by the requirement evals: {{ d.finding_count }} findings in all, each naming the rule it applies and quoting the phrase at fault. The trace reports each as a leaf nothing implements or verifies.</p>
 {% for r in d.requirement %}
 <div class="keep">
-<h3>D{{ loop.index }}. {{ r.title }}</h3>
+<h3>D{{ loop.index }}. {{ r.title }} <span class="meta">({{ r.concept }})</span></h3>
 <div class="box"><p>{{ r.statement|words }}</p></div>
 <p class="small"><strong>Rationale.</strong> {{ r.rationale|words }}</p>
 <p class="meta"><span class="id">{{ r.id }}</span> · category {{ r.category }} · <span class="standing">{{ r.status }}</span></p>
@@ -116,7 +133,23 @@
 </div>
 
 <div class="section">
-<h2>F. The runs</h2>
+<h2>F. References</h2>
+<p class="small">The captured sources the assessments cite, each an observation with its locator, attribution, times and digest. An assessment that cites nothing rests on its assessor alone.</p>
+{% if d.reference %}
+{% for r in d.reference %}
+<div class="keep">
+<h4>{{ r.title }} <span class="meta">· cited {{ r.count }} time{{ 's' if r.count != 1 }}</span></h4>
+<p class="meta"><span class="id">{{ r.id }}</span> · {{ r.source_kind }} · {{ r.attribution }}{% if r.published_at %} · published {{ r.published_at }}{% endif %} · observed {{ r.observed_at }}<br><span class="id">{{ r.source_uri }}</span><br><span class="id">{{ r.digest }}</span></p>
+<blockquote class="capture small">{{ r.content|prose }}</blockquote>
+</div>
+{% endfor %}
+{% else %}
+<p>No reference is cited yet.</p>
+{% endif %}
+</div>
+
+<div class="section">
+<h2>G. The runs</h2>
 <table>
   <tr><th>Execution</th><th>Workflow</th><th>Model</th><th>Challenger</th><th style="width:8%">Passes</th><th style="width:10%">Outcome</th></tr>
   {% for e in d.execution %}
@@ -127,7 +160,22 @@
 </div>
 
 <div class="section">
-<h2>G. Identities</h2>
+<h2>H. How this was made, and what it does not claim</h2>
+<ol class="moves">
+  <li><strong>The capture.</strong> One public {{ d.observation.source_kind }}, attributed as it attributes itself, preserved unchanged with its locator, times and digest, imported by a deterministic command. No model took part.</li>
+  <li><strong>The need.</strong> A model wrote what the post supports, stated without a product, with evidence that says what one post does and does not establish; five need evals judged it as it was written, redrafting on an unmet verdict within a budget.</li>
+  <li><strong>The concepts.</strong> The same need was seen through {{ d.concept|map(attribute='framing.id')|unique|list|length }} framings; under each a model proposed a candidate solution with its assumptions and their evidence, its risks and its candidate requirements, and a second model attacked it for up to three rounds; the last challenge and the resolution before it are in section C.</li>
+  <li><strong>Promotion.</strong> Each concept's candidate requirements became proposed requirement items by a function, deriving from the concept and the need, and the eleven requirement evals judged them: {{ d.finding_count }} findings, in section D.</li>
+  <li><strong>Assessment.</strong> Each concept's feasibility was assessed, by an agent with tools that captured its references, or by a model without references; each assessment says which, and the briefing leads with the referenced one where it exists.</li>
+</ol>
+<h4>Standing</h4>
+<p>Every item in these documents is <span class="standing">proposed</span>. The trace reports, for each proposed requirement, that nothing implements it and nothing verifies it. Acceptance is refused until derivation, code, verification and current evidence are all present.</p>
+<h4>What these documents do not claim</h4>
+<p class="notclaim">The post is one self-reported event: it establishes neither frequency nor prevalence, and its attribution is as observed, not a verified identity or an authority to speak. A concept is a hypothesis under a lens, not a design. A requirement here is a proposal, not an obligation anyone has accepted. A product a model names without a reference is the model's knowledge, not a finding. The fixed shape, one need and one concept per framing, is the demonstration's choice, not a method.</p>
+</div>
+
+<div class="section">
+<h2>I. Identities</h2>
 <table>
   <tr><th style="width:14%">Kind</th><th>Readable id</th><th>Guid</th></tr>
   {% for (kind, id_self, guid) in d.identity %}

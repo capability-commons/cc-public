@@ -1,0 +1,142 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_assessment.yaml
+id_self:                sch_assessment
+guid_self:              sch_5b8be2436aa24a509762a44a51c831e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Assessment schema
+brief:                  |
+                        Schema for feasibility assessments of a
+                        concept: a verdict, seven rated dimensions,
+                        the off-the-shelf candidates, and who
+                        assessed.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. An assessment is a claim about a
+                        concept by a named assessor, a model, an agent
+                        or a person: a verdict on a scale that the
+                        briefing sorts by, a summary, seven dimensions
+                        each rated with its rationale, and the
+                        products, standards or component classes the
+                        concept could use as they are, each with its
+                        maturity and what supports the claim. It
+                        points at its concept by r_assesses and at its
+                        references by r_cites. Several assessments of
+                        one concept may stand side by side.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - verdict
+      - summary
+      - dimension
+      - product
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the assessment.
+
+      assessor:
+        type:           string
+        minLength:      1
+        maxLength:      120
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. Who assessed, where it is not the
+                        model a run names: an agent and its tools, or
+                        a person.
+
+      verdict:
+        type:           string
+
+        enum:
+          - feasible_now
+          - feasible_with_development
+          - speculative
+          - not_feasible
+
+        description:    |
+                        feasible_now with off-the-shelf parts;
+                        feasible_with_development; speculative;
+                        not_feasible. The briefing sorts concepts by
+                        it.
+
+      summary:
+        type:           string
+        minLength:      1
+        description:    |
+                        The assessment in a paragraph: what makes the
+                        concept feasible or not, and what would change
+                        the verdict.
+
+      dimension:
+        type:           object
+
+        required:
+          - maturity
+          - off_the_shelf
+          - integration
+          - logistics
+          - cost
+          - time_to_field
+          - operational_fit
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_dimension.yaml
+
+        description:    |
+                        The seven dimensions, each an entry with a
+                        rating and rationale: maturity, off_the_shelf,
+                        integration, logistics, cost, time_to_field,
+                        operational_fit.
+
+      product:
+        type:           object
+        minProperties:  1
+        maxProperties:  15
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_product.yaml
+
+        description:    |
+                        The off-the-shelf candidates, as entries with
+                        identities of their own.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. proposed until a person accepts the
+                        assessment.
+
+unevaluatedProperties:  false

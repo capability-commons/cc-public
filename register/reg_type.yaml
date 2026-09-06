@@ -1243,3 +1243,85 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_candidate_requirement
         guid_target:    sch_f1b1a233919545fc8c26de0f93c6ad86
+
+  t_assessment:
+    id_self:            t_assessment
+    guid_self:          t_f17bb0f6fb6347e38eb8fabf6a1b7eed
+    title:              Assessment type
+    brief:              |
+                        Type of feasibility assessment data items
+    description:        |
+                        Each assessment data item holds one assessor's
+                        judgement of one concept's feasibility: a
+                        verdict, seven rated dimensions with their
+                        rationale, and the off-the-shelf products,
+                        standards or component classes the concept
+                        could use, with what supports each claim.
+    prefix:             asmt
+    regex_id:           ^asmt_[a-z][a-z0-9_]*$
+    usage:              |
+                        Made by the assess workflow, by a model or by
+                        an agent with tools, or written by a person.
+                        An assessment points at its concept by
+                        r_assesses and at its references by r_cites.
+                        Assessments live in assessment/. The run that
+                        made one names its model; an agent or a person
+                        names themselves in assessor.
+    home:               assessment
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_assessment
+        guid_target:    sch_5b8be2436aa24a509762a44a51c831e4
+
+  t_dimension:
+    id_self:            t_dimension
+    guid_self:          t_0576d263e84a44ffb3f3a0e11b98d0bd
+    title:              Assessment dimension type
+    brief:              |
+                        Type of dimension entries embedded in an
+                        assessment
+    description:        |
+                        Each dimension entry rates one aspect of a
+                        concept's feasibility and says why. Never a
+                        top-level item.
+    prefix:             dim
+    regex_id:           ^dim_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    usage:              |
+                        Held in an assessment's dimension table under
+                        one of the seven fixed keys.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_dimension
+        guid_target:    sch_1a2141660c8f4beb92bdfb1adc42363f
+
+  t_product:
+    id_self:            t_product
+    guid_self:          t_4f818a5d1df642219d5494c99c0368ff
+    title:              Off-the-shelf product type
+    brief:              |
+                        Type of off-the-shelf candidate entries
+                        embedded in an assessment
+    description:        |
+                        Each product entry names a product, standard
+                        or component class a concept could use as it
+                        is, with its role, maturity and support. Never
+                        a top-level item.
+    prefix:             prd
+    regex_id:           ^prd_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    usage:              |
+                        Held in an assessment's product table. Cites
+                        its references by r_cites edges to
+                        observations.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_product
+        guid_target:    sch_4a9c9fd8eccc43289b3423350b0115f9

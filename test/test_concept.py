@@ -50,6 +50,9 @@ CANDIDATES = [
      'rationale': 'Chargers are the load the post names.', 'category': 'function'},
     {'key': 'state', 'statement': 'The Field_Power_Cell shall show its remaining energy.',
      'rationale': 'Teams must plan around what is left.', 'category': 'quality'}]
+CANDIDATES += [{'key': 'more_{n}'.format(n = n),
+                'statement': 'The Field_Power_Cell shall meet obligation {n}.'.format(n = n),
+                'rationale': 'A further obligation.', 'category': 'quality'} for n in range(6)]
 
 BIND = {'propose.input.need':        'need_frontline_multiday_offgrid_power',
         'propose.input.framing':     'frame_supply',
@@ -73,6 +76,7 @@ class Proposer:
         if list_field == ['challenge']:
             return {'challenge': 'The fuel assumption rests on one post.'}
         answer = {'title':        'Field power cell',
+                  'brief':        'A battery, a controller and a panel in one case, carried to the position.',
                   'entity':       'Field_Power_Cell',
                   'operation':    'The team carries the cell to the position and plugs in the terminal.',
                   'architecture': 'A battery, a charge controller and a folding solar panel.',
@@ -103,7 +107,7 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
     assert r['node'][0]['made'] == ['cpt_field_power_cell']
     assert r['node'][1]['revised'] == ['cpt_field_power_cell']
     assert gen.calls[0] == (['framing', 'guide', 'need', 'observation'],
-                            ['title', 'entity', 'operation', 'architecture', 'effect',
+                            ['title', 'brief', 'entity', 'operation', 'architecture', 'effect',
                              'assumption', 'risk', 'candidate_requirement', 'resolution'])
     assert gen.calls[1] == (['guide', 'need', 'proposal'], ['challenge'])
 
@@ -112,7 +116,8 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
     assert sorted((e['id_relation'], e['id_target']) for e in doc['relation']) == [
         ('r_is_derived_from', 'need_frontline_multiday_offgrid_power'),
         ('r_is_framed_by', 'frame_supply')]
-    assert list(doc['candidate_requirement']) == ['endurance', 'carry', 'charge', 'state']
+    assert list(doc['candidate_requirement'])[:4] == ['endurance', 'carry', 'charge', 'state']
+    assert len(doc['candidate_requirement']) == 10 and doc['brief'].startswith('A battery')
     entry = doc['candidate_requirement']['carry']
     assert entry['id_self'] == 'crq_field_power_cell.carry' and entry['category'] == 'fit'
     assert entry['statement'].startswith('The Field_Power_Cell shall be carried')
@@ -124,7 +129,7 @@ def test_a_concept_is_proposed_under_a_framing_and_challenged(repo):
 
 def test_too_few_candidate_requirements_fail_the_schema_and_the_run_restores(repo):
     deploy(repo)
-    gen = Proposer(candidates = CANDIDATES[:2])
+    gen = Proposer(candidates = CANDIDATES[:5])
     r   = cc_public.workflow.run.run(repo, 'wf_concept_from_need', 'dep_concept_from_need_local',
                                      BIND, gen, Judge('met'), generator_challenge = gen)
     assert r['stopped'] and 'critical' in r['stopped'], r['stopped']
@@ -133,17 +138,21 @@ def test_too_few_candidate_requirements_fail_the_schema_and_the_run_restores(rep
 
 
 def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_twice(repo):
-    concept = 'cpt_frontline_multiday_power_kit'
+    deploy(repo)
+    gen = Proposer()
+    cc_public.workflow.run.run(repo, 'wf_concept_from_need', 'dep_concept_from_need_local',
+                               BIND, gen, Judge('met'), generator_challenge = gen)
+    concept = 'cpt_field_power_cell'
     r = cc_public.workflow.run.run(repo, 'wf_promote_concept', 'dep_promote_local',
                                    {'promote.input.concept': concept}, Proposer(), None)
     assert r['stopped'] is None, r['stopped']
     (node,) = r['node']
     assert node['revised'] == [concept] and len(node['made']) >= 3
-    assert all(i.startswith('req_frontline_multiday_power_kit_') for i in node['made'])
+    assert all(i.startswith('req_field_power_cell_') for i in node['made'])
     doc = cc_public.load.from_file(repo / 'concept' / (concept + '.yaml'))
     assert len(node['made']) == len(doc['candidate_requirement'])
     for (key, entry) in doc['candidate_requirement'].items():
-        req = cc_public.load.from_file(repo / 'requirement' / f'req_frontline_multiday_power_kit_{key}.yaml')
+        req = cc_public.load.from_file(repo / 'requirement' / f'req_field_power_cell_{key}.yaml')
         assert req['status'] == 'proposed' and req['category'] == entry['category']
         assert req['statement'].split() == entry['statement'].split()
         assert len(req['title']) <= 80 and req['title'][0].isupper()

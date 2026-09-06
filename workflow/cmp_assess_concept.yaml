@@ -1,0 +1,129 @@
+id_self:                cmp_assess_concept
+guid_self:              cmp_e85b51ca00324954b0fa30aeb554402e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Assess a concept
+brief:                  |
+                        Judge the feasibility of a concept: a verdict,
+                        seven rated dimensions and the off-the-shelf
+                        parts it could use, by a model, quickly and
+                        without references.
+description:            |
+                        Given a concept and the need it answers, a
+                        model rates the concept on maturity,
+                        off-the-shelf availability, integration
+                        burden, logistics and sustainment, cost, time
+                        to field and operational fit, names the
+                        products, standards or component classes the
+                        concept could use as they are, and gives a
+                        verdict and a summary. What it names is not
+                        verified: a model cannot fetch a reference, so
+                        every product entry says that nothing yet
+                        supports it, and the research component,
+                        performed by an agent with tools, is the
+                        assessment to trust. The fallback for an
+                        unmanned run.
+
+output:
+
+  assessment:
+    id_self:            prt_assess_concept.assessment
+    guid_self:          prt_8a23f31bb7454721b6ae09422ea1a15a
+    title:              Assessment
+    brief:              |
+                        The feasibility assessment, proposed.
+    id_type:            t_assessment
+    guid_type:          t_f17bb0f6fb6347e38eb8fabf6a1b7eed
+
+    link:
+
+      r_assesses:
+        - concept
+
+    field:
+      - title
+      - verdict
+      - summary
+      - dimension
+      - product
+
+    prompt:             |
+                        Assess the feasibility of the concept on
+                        concept as an answer to the need on need, as
+                        an engineer who must say whether it can be
+                        built now from what exists. In title, name the
+                        assessment as the concept's name and the word
+                        assessed. In dimension, rate seven dimensions
+                        as a JSON list of objects with a key, a rating
+                        and a rationale, the keys exactly maturity,
+                        off_the_shelf, integration, logistics, cost,
+                        time_to_field and operational_fit, the rating
+                        one of strong, adequate, weak or unknown,
+                        where unknown means nothing is known and is
+                        not weak; in each rationale say why in terms
+                        of the concept, and say what would change the
+                        rating. In product, name between three and ten
+                        products, standards or component classes the
+                        concept could use as they are, as a JSON list
+                        of objects with a key, a name, a role, a
+                        maturity and a support: maturity one of
+                        fielded, commercial, demonstrated,
+                        developmental or unknown; in support write
+                        that no reference is cited and this is the
+                        model's knowledge alone, then say what would
+                        confirm it; name a class of product where you
+                        are not certain of a product. In verdict, give
+                        one of feasible_now, where the concept can be
+                        assembled from fielded or commercial parts;
+                        feasible_with_development, where one or two
+                        parts need engineering; speculative, where a
+                        part needs invention or its feasibility is
+                        unknown; not_feasible. In summary, say in one
+                        paragraph what makes the concept feasible or
+                        not and what would change the verdict. The
+                        rules on guide say how to write; follow them
+                        and do not mention them. Plain prose, no
+                        headings, no markup.
+    relation:           []
+
+performer:              model
+relation:               []
+
+input:
+
+  concept:
+    id_self:            prt_assess_concept.concept
+    guid_self:          prt_229a300dde574641b7762e345097f2e6
+    title:              Concept
+    brief:              |
+                        The concept to assess.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    relation:           []
+
+  need:
+    id_self:            prt_assess_concept.need
+    guid_self:          prt_9cd490f11e6545ebaf5d39b89699ce88
+    title:              Need
+    brief:              |
+                        The need the concept answers.
+    id_type:            t_need
+    guid_type:          t_e2252072b81d4aac8ee8f267b42d34be
+    relation:           []
+
+  guide:
+    id_self:            prt_assess_concept.guide
+    guid_self:          prt_789f4e65d8f24c268e950c8601b03e7e
+    title:              Writing style guide
+    brief:              |
+                        The register of writing style rules the prose
+                        follows.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []

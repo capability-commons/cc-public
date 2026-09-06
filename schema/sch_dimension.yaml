@@ -1,0 +1,63 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_dimension.yaml
+id_self:                sch_dimension
+guid_self:              sch_1a2141660c8f4beb92bdfb1adc42363f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Assessment dimension schema
+brief:                  |
+                        Schema for one dimension of a feasibility
+                        assessment: a rating and its rationale.
+description:            |
+                        Composes identity. A dimension entry rates one
+                        aspect of a concept's feasibility on a scale
+                        that keeps unknown apart from weak, and says
+                        why. The seven dimensions an assessment
+                        carries are fixed by the assessment schema.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - rating
+      - rationale
+
+    properties:
+
+      rating:
+        type:           string
+
+        enum:
+          - strong
+          - adequate
+          - weak
+          - unknown
+
+        description:    |
+                        strong, adequate or weak for the concept, or
+                        unknown where nothing is known; unknown is not
+                        weak.
+
+      rationale:
+        type:           string
+        minLength:      1
+        description:    |
+                        Why, in terms of the concept and what is
+                        known.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false

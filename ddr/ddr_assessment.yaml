@@ -1,0 +1,229 @@
+id_self:                ddr_assessment
+guid_self:              ddr_6cd0e659781a44a599b9d88d05b24fc1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Feasibility assessments as claims with a speaker
+brief:                  |
+                        A concept's feasibility is an assessment item
+                        by a named assessor: a verdict the briefing
+                        sorts by, seven rated dimensions, and the
+                        off-the-shelf parts it could use with their
+                        references; performed by an agent with tools,
+                        or by a model as the fallback.
+context:                |
+                        The briefing for Brave1 is to lead with the
+                        candidate solutions, sorted with the most
+                        directly feasible first, each with its
+                        requirements and a feasibility evaluation that
+                        weighs what can be bought off the shelf. A
+                        concept carried its assumptions, risks and
+                        candidates and nothing that said how feasible
+                        it was or could be sorted on. Anything a model
+                        names as a product is unverified, and a wrong
+                        product in front of the audience would cost
+                        more than the document earns. The
+                        opportunity-formation proposal asks that a
+                        claim keep its speaker, and the performer
+                        decision gives a component a model or an agent
+                        to perform it.
+decision:               |
+                        An ASSESSMENT is an item of type t_assessment,
+                        prefix asmt, in assessment/, pointing at its
+                        concept by r_assesses. It carries a verdict on
+                        a fixed scale, feasible_now,
+                        feasible_with_development, speculative,
+                        not_feasible, which orders concepts in a
+                        document; a summary; seven DIMENSIONS as
+                        entries with identities, maturity,
+                        off_the_shelf, integration, logistics, cost,
+                        time_to_field and operational_fit, each rated
+                        strong, adequate, weak or unknown, unknown
+                        kept apart from weak, with a rationale; and
+                        PRODUCTS, the off-the-shelf products,
+                        standards or component classes the concept
+                        could use as they are, each with its role,
+                        maturity and support. An assessment and a
+                        product cite their references by r_cites edges
+                        to observations, which is what a captured
+                        document or web page is; an assumption may
+                        cite the same way. Several assessments of one
+                        concept stand side by side, each by its
+                        assessor: the run that made it names the
+                        model, and an agent or a person names
+                        themselves in assessor.
+
+                        Two components produce one: research,
+                        performed by an agent with tools, which finds
+                        real options, captures each source as an
+                        observation and cites it, and is the
+                        assessment to trust; and assess, performed by
+                        a model, which rates and names without
+                        references, says so in every product entry,
+                        and is the fallback for an unmanned run. A
+                        document marks each assessment by how it was
+                        made.
+
+                        A concept carries a brief, and between ten and
+                        thirty candidate requirements by schema, so
+                        that every concept promoted has a set of
+                        requirement items that guides an
+                        implementation.
+rationale:              |
+                        A separate item keeps an assessment a claim
+                        with a speaker, so that a model's guess and a
+                        researcher's finding do not merge, and so that
+                        a second assessor can disagree without editing
+                        the first. A fixed verdict scale gives the
+                        briefing something exact to sort on, and fixed
+                        dimension keys make an assessment complete or
+                        not by schema rather than by reading. Unknown
+                        apart from weak keeps ignorance from being
+                        read as a fault of the concept. Reusing the
+                        observation as the reference keeps one
+                        vocabulary for captured sources, whatever
+                        their kind, and gives every reference a digest
+                        and a locator. Two performers of one contract
+                        is the performer decision applied: the agent
+                        for trust, the model for speed, the document
+                        honest about which.
+alternative:            |
+                        Fields on the concept: rejected, since the
+                        concept's author would then speak for its
+                        assessor. A numeric score: rejected, since a
+                        number hides the dimension that earned it; the
+                        verdict and the seven ratings are the score,
+                        read in the open. A model with web tools
+                        inside the executor: rejected for now, since
+                        the executor gives no model tools by design,
+                        and an agent session is where tools belong. A
+                        bibliography type of its own: rejected, since
+                        an observation already is a captured source
+                        with a locator.
+consequence:            |
+                        Three types, three schemas, two relations and
+                        a directory. The concept schema requires a
+                        brief and ten to thirty candidates, so the
+                        four concepts made before are removed and made
+                        again. Two components, two workflows and two
+                        deployments. No eval judges an assessment yet,
+                        and a model's ratings are no better than its
+                        knowledge; the agent-made assessment is what
+                        the briefing should show where it exists. The
+                        renderer sorts concepts by verdict, then by
+                        strong ratings.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_assessment
+    guid_target:        sch_5b8be2436aa24a509762a44a51c831e4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_dimension
+    guid_target:        sch_1a2141660c8f4beb92bdfb1adc42363f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_product
+    guid_target:        sch_4a9c9fd8eccc43289b3423350b0115f9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_assessment
+    guid_target:        t_f17bb0f6fb6347e38eb8fabf6a1b7eed
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_dimension
+    guid_target:        t_0576d263e84a44ffb3f3a0e11b98d0bd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_product
+    guid_target:        t_4f818a5d1df642219d5494c99c0368ff
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_assesses
+    guid_target:        r_a952311516d74b959c11a5a0e91a2fd7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_cites
+    guid_target:        r_283cc2237b924df080e77ffae68a7f9e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_concept
+    guid_target:        sch_64222042ae3a4f2f982be45425c5c835
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_assess_concept
+    guid_target:        cmp_e85b51ca00324954b0fa30aeb554402e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_research_concept
+    guid_target:        cmp_9cbf750daeca44e9bf0a35b08c14e41e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_assess_concept
+    guid_target:        wf_20e813c3b5344a4b89116be911bdd34d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_research_concept
+    guid_target:        wf_8f67f4fecc2748dca254bfdb988de141
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_assess_local
+    guid_target:        dep_3f25d39582e74293945e179f7689d9b5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_research_local
+    guid_target:        dep_1a883314b5d14fb2baefc66ecdd0507d
+
+question:
+
+  eval:
+    id_self:            qst_assessment.eval
+    guid_self:          qst_6e314d2b107d4ecc86eb811b8dc31f47
+    question:           |
+                        What an eval over an assessment would judge:
+                        that each rating's rationale supports it, that
+                        a product's support names its references, that
+                        unknown is not used for weak; and whether such
+                        an eval should guard the model assessor.
+    relation:           []
+
+  agreement:
+    id_self:            qst_assessment.agreement
+    guid_self:          qst_2bb2626ea9734aa5b775ba6e9a01f5f1
+    question:           |
+                        How two assessments of one concept that
+                        disagree are shown and resolved: side by side,
+                        by a person's acceptance, or by a challenge
+                        round between assessors.
+    relation:           []
+
+  reach:
+    id_self:            qst_assessment.reach
+    guid_self:          qst_17587b5ecf6f4f69a27304fdf74bfc13
+    question:           |
+                        Whether an assumption's evidence should become
+                        citations by rule, so that a concept's
+                        assumptions are as referenced as its
+                        assessment.
+    relation:           []

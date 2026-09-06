@@ -1,0 +1,887 @@
+id_self:                cpt_hybrid_solar_buffered_tactical_power_pod
+guid_self:              cpt_8447539c86324d77a6869cab81dd7ce7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Man-portable modular battery swarm for frontline power
+brief:                  |
+                        A modular battery swarm is a set of smaller,
+                        ruggedised, man-portable battery modules and
+                        compact harvesters that combine into a virtual
+                        pack at the position, but can be split,
+                        carried and reconstituted as units move. It
+                        removes dependence on any single heavy
+                        pre-positioned cache or continuous generator
+                        fuel by letting personnel bring in and rotate
+                        energy in backpack-sized pieces, while still
+                        presenting a single managed power source to
+                        terminals and chargers.
+entity:                 Man_Portable_Modular_Battery_Swarm
+operation:              |
+                        Personnel arriving at or rotating through the
+                        frontline position each carry one or more
+                        swarm battery modules or compact harvesters as
+                        part of their normal load, and on arrival they
+                        dock the modules into a small hub unit sited
+                        under cover. The hub automatically discovers
+                        all attached modules, aggregates their energy,
+                        and exposes protected DC outputs to the
+                        terminal and chargers, enforcing a simple
+                        priority profile so that communications are
+                        preserved over drone charging as energy
+                        depletes. When units must move or resupply
+                        windows briefly open, individual modules can
+                        be undocked and carried to and from vehicles,
+                        rear positions or other squads for charging or
+                        swap, without ever requiring a 100 kg class
+                        object to be placed at a precise point before
+                        roads are cut. Over several days with blocked
+                        fuel, the position runs from the pooled energy
+                        of all present modules, topped up
+                        opportunistically by charged modules brought
+                        in by foot or unmanned ground assets and by
+                        small low-signature trickle inputs, while the
+                        hub sheds low-priority loads if the swarm’s
+                        combined reserve drops.
+architecture:           |
+                        The system consists of three main parts:
+                        multiple identical rugged battery modules, a
+                        lightweight hub controller, and optional
+                        micro-harvesters. Each battery module is a
+                        sealed, backpack-weight lithium pack with
+                        integrated identification and safety
+                        electronics that presents a standard
+                        high-level DC interface to the hub. The hub
+                        provides several docking ports for modules,
+                        DC-DC conversion and aggregation, protected DC
+                        outputs for loads, a minimal status display,
+                        and logic to manage module charge state, load
+                        prioritisation and graceful shedding; it is
+                        small enough to be hand-carried and has no
+                        large internal battery. Optional harvesters,
+                        such as low-profile solar strips or kinetic
+                        units, connect to the hub as additional inputs
+                        but are not required to meet the basic
+                        multi-day autonomy. Modules can be connected
+                        directly to ad hoc vehicle or generator
+                        chargers away from the position, then rejoined
+                        to the swarm, and the hub treats arriving and
+                        departing modules dynamically, maintaining
+                        continuous power to connected equipment.
+effect:                 |
+                        The modular swarm reduces dependency on a
+                        single large pre-positioned battery and on
+                        continuous fuel supply by distributing stored
+                        energy across many small, man-portable units
+                        that can be carried, cached, swapped and
+                        scavenged as tactical conditions allow. It
+                        changes the critical dependency from heavy
+                        pre-emplacement logistics to the more routine
+                        movement of squad-load batteries that already
+                        fits infantry and small-unit patterns,
+                        improving survivability as lines shift and
+                        positions are abandoned or overrun. It does
+                        not remove the need for upstream charging
+                        capacity somewhere in the force, and in
+                        periods of extreme isolation with no movement
+                        in or out and poor environmental energy the
+                        swarm’s total energy will still exhaust after
+                        several days, at which point communications
+                        and drone operations will cease until new
+                        charged modules arrive.
+risk:                   |
+                        The swarm can fail if too few battery modules
+                        arrive at or remain with the frontline
+                        position, leaving the aggregated energy below
+                        what is needed for multi-day autonomy despite
+                        the hub’s management. If commanders or
+                        logisticians under-procure modules or fail to
+                        allocate them to units likely to be cut off,
+                        the concept collapses to a handful of ad hoc
+                        spare batteries, and terminals will again die
+                        within hours once generators stop. Poor
+                        discipline in module tracking and rotation can
+                        strand charged modules in rear areas while
+                        forward positions run flat, especially if
+                        identification and accountability processes
+                        break down under stress. The hub presents a
+                        single point of failure for power management;
+                        if it is destroyed, lost or suffers an
+                        electronic fault, attached modules cannot
+                        easily be combined, and users may lack cables
+                        and knowledge to improvise safe direct
+                        connections. Enemy action or environmental
+                        damage can still destroy multiple co-located
+                        modules at once, for example from artillery,
+                        sharply reducing available energy. Modules
+                        taken away for recharging may not return in
+                        time due to casualties, route interdiction or
+                        prioritisation of other tasks, creating
+                        unplanned energy gaps. Weight and bulk of
+                        extra modules, if misjudged, could burden
+                        troops and lead them to discard or under-use
+                        them. Interoperability risks remain if
+                        different module generations or coalition
+                        partners’ systems are not compatible, reducing
+                        the effective swarm size. Finally, inaccurate
+                        or overly optimistic runtime estimates from
+                        the hub could lead operators to overcommit
+                        drone sorties or communications, depleting the
+                        swarm faster than intended and bringing on
+                        abrupt loss of power before new charged
+                        modules arrive.
+
+candidate_requirement:
+
+  cr_output_power_continuous_dc:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_output_power_continuous_dc
+    guid_self:          crq_d53105958efc43c9ae07399573bd6398
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide at least 500 watts continuous DC
+                        output power at 24 volts nominal for connected
+                        loads.
+    rationale:          |
+                        A 500 W continuous output supports
+                        simultaneous operation of a terminal, radios
+                        and multiple drone chargers at the expected
+                        duty cycle.
+    category:           function
+    relation:           []
+
+  cr_output_surge_capability:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_output_surge_capability
+    guid_self:          crq_2ff3fcac4e2149ddb396eb1b2539ab9e
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        tolerate short-duration surge loads up to 1000
+                        watts for at least 5 seconds without shutdown.
+    rationale:          |
+                        Surge capability prevents nuisance trips when
+                        chargers and equipment start up with inrush
+                        currents.
+    category:           function
+    relation:           []
+
+  cr_dc_output_connectors:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_dc_output_connectors
+    guid_self:          crq_a1efa02c439c4f8cb6579d623e636b75
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide DC output connectors using the
+                        standard agreed field power interface type for
+                        the force with at least three independent
+                        output circuits.
+    rationale:          |
+                        Standard connectors and multiple circuits
+                        improve interoperability and allow separation
+                        of critical and non-critical loads.
+    category:           fit
+    relation:           []
+
+  cr_status_display_accuracy:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_status_display_accuracy
+    guid_self:          crq_5623ef1ac3854f95a88d4cb1aafc63cd
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        display remaining usable aggregated energy and
+                        estimated runtime for the current load within
+                        an error of plus or minus 15 percent.
+    rationale:          |
+                        Accurate energy information enables planning
+                        of drone sorties and communications schedules
+                        during isolation.
+    category:           function
+    relation:           []
+
+  cr_scavenger_protection:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_scavenger_protection
+    guid_self:          crq_90eda326575c4d53b92fec21be239c26
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide reverse-polarity, overvoltage and
+                        overcurrent protection on all external
+                        charging interfaces in accordance with IEC
+                        60950-1 or successor standard.
+    rationale:          |
+                        Protection on charging ports reduces risk of
+                        damage from misconnection and supports safe ad
+                        hoc use.
+    category:           compliance
+    relation:           []
+
+  cr_environmental_protection_enclosure:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_environmental_protection_enclosure
+    guid_self:          crq_c6ffee4f946e496e8268d907972192ce
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        achieve at least ingress protection rating
+                        IP65 for the hub and each battery module
+                        enclosure.
+    rationale:          |
+                        IP65 provides dust-tight construction and
+                        resistance to water jets suitable for harsh
+                        field environments.
+    category:           quality
+    relation:           []
+
+  cr_operating_temperature_range:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_operating_temperature_range
+    guid_self:          crq_e2c895008ce74a0c9ae28e3ea24df120
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        operate within specified performance limits
+                        over an ambient temperature range from minus
+                        20 degrees Celsius to plus 45 degrees Celsius.
+    rationale:          |
+                        This range aligns with common requirements for
+                        deployed military electronics and many
+                        operational theatres.
+    category:           quality
+    relation:           []
+
+  cr_acoustic_signature_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_acoustic_signature_limit
+    guid_self:          crq_70e45b4644c747fa809ef8b96c1b5ea6
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall,
+                        when operating without connected external
+                        generators or vehicles, produce a continuous
+                        noise level not exceeding 25 dBA at a distance
+                        of 5 metres in still air.
+    rationale:          |
+                        A very low acoustic signature reduces
+                        detection risk compared to combustion
+                        generators in quiet environments.
+    category:           quality
+    relation:           []
+
+  cr_thermal_signature_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_thermal_signature_limit
+    guid_self:          crq_b0d977ab37e045d9b8e48a6c3bafb8b4
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        limit external surface temperature of the hub
+                        and modules to no more than 15 degrees Celsius
+                        above ambient during steady-state operation at
+                        300 watts output.
+    rationale:          |
+                        Constraining surface temperature rise reduces
+                        thermal signature and risk of burns to users.
+    category:           quality
+    relation:           []
+
+  cr_training_time_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_training_time_limit
+    guid_self:          crq_27e52d2ee76b44d097e576fbd4f74863
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide all routine user controls as labelled
+                        physical switches and indicators such that
+                        basic operation can be learned in less than 2
+                        hours of instruction.
+    rationale:          |
+                        Simple controls ensure frontline personnel can
+                        use the system effectively without extensive
+                        technical training.
+    category:           fit
+    relation:           []
+
+  cr_safety_protection_outputs:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_safety_protection_outputs
+    guid_self:          crq_79c0ec46bc9e4bd89fe26b2e4a1df0df
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide overcurrent, overvoltage,
+                        short-circuit and thermal protection on all
+                        user-accessible power outputs in accordance
+                        with IEC 60950-1 or successor standard.
+    rationale:          |
+                        Comprehensive protection prevents equipment
+                        damage and reduces risk of fire or injury.
+    category:           compliance
+    relation:           []
+
+  cr_emc_compliance_standard:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_emc_compliance_standard
+    guid_self:          crq_dde7f8eed49248dc89fedd8a421e0ba7
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        meet electromagnetic compatibility
+                        requirements of MIL-STD-461G for emissions and
+                        susceptibility on relevant ports.
+    rationale:          |
+                        EMC compliance prevents interference with
+                        radios and other sensitive frontline
+                        electronics.
+    category:           compliance
+    relation:           []
+
+  cr_energy_capacity_per_module:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_energy_capacity_per_module
+    guid_self:          crq_828ea56760dd4664b30d9470a67d17cd
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        provide at least 400 watt-hours of usable
+                        electrical energy per battery module at full
+                        charge.
+    rationale:          |
+                        This design point balances mass and capacity
+                        so that each module is worth carrying yet
+                        remains man-portable while allowing several
+                        modules to cover multi-day needs when pooled.
+    category:           function
+    relation:           []
+
+  cr_module_mass_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_module_mass_limit
+    guid_self:          crq_5cf70adb692b49b7b72d2c651c9d4920
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        limit the mass of each battery module to no
+                        more than 4.5 kilograms including enclosure
+                        and electronics.
+    rationale:          |
+                        A mass under 4.5 kg per module allows one or
+                        two modules to be carried by a soldier as
+                        additional load without excessive impact on
+                        mobility.
+    category:           form
+    relation:           []
+
+  cr_hub_mass_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_hub_mass_limit
+    guid_self:          crq_a32b7abd895e48088429dad7cc341607
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        limit the mass of the hub unit to no more than
+                        6 kilograms including enclosure and
+                        electronics.
+    rationale:          |
+                        Keeping the hub lightweight ensures it can be
+                        emplaced, moved or evacuated quickly by a
+                        single person under fire.
+    category:           form
+    relation:           []
+
+  cr_maximum_modules_supported:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_maximum_modules_supported
+    guid_self:          crq_052db0d6cc904da4b3267cb910187f50
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        accept simultaneous connection of at least 12
+                        battery modules to one hub.
+    rationale:          |
+                        Support for at least 12 modules enables
+                        aggregation of 4.8 kWh or more, meeting
+                        several days of power at the assumed demand
+                        profile.
+    category:           function
+    relation:           []
+
+  cr_module_hot_swap:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_module_hot_swap
+    guid_self:          crq_d5ea4d3ea4dd4542ba98391e77f9fb35
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall,
+                        while powering loads, permit any single
+                        battery module to be disconnected or connected
+                        without interrupting power to the DC outputs.
+    rationale:          |
+                        Hot-swapping modules allows continuous
+                        operation while rotating charged and depleted
+                        modules to and from the position.
+    category:           function
+    relation:           []
+
+  cr_priority_load_profiles:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_priority_load_profiles
+    guid_self:          crq_d69f910dee704eb589e15535f7268601
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        enforce at least three user-selectable load
+                        priority profiles that allocate available
+                        power between terminal, communications
+                        equipment and drone chargers.
+    rationale:          |
+                        Configurable priorities allow operators to
+                        preserve communications by curtailing less
+                        critical loads during shortages.
+    category:           function
+    relation:           []
+
+  cr_automatic_low_energy_shedding:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_automatic_low_energy_shedding
+    guid_self:          crq_b49e2c36d28c420580c881c8e5a7b61e
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall,
+                        when remaining usable aggregated energy falls
+                        below 20 percent, automatically disconnect the
+                        lowest-priority output circuit while
+                        maintaining power to higher-priority circuits.
+    rationale:          |
+                        Automatic shedding near depletion provides
+                        graceful degradation and avoids sudden loss of
+                        all systems.
+    category:           function
+    relation:           []
+
+  cr_setup_time_limit:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_setup_time_limit
+    guid_self:          crq_514c20861b2342e78f93eeb9462e8ad3
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        permit a trained operator to connect up to
+                        eight battery modules and all load outputs and
+                        bring the hub to operational state within 5
+                        minutes without tools.
+    rationale:          |
+                        Rapid setup reduces exposure time and makes
+                        the system practical when positions are
+                        established or relocated under threat.
+    category:           fit
+    relation:           []
+
+  cr_drop_resistance_modules:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_drop_resistance_modules
+    guid_self:          crq_4f40d96096064d93a767a49206efce1f
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        withstand a drop of each battery module from 1
+                        metre onto concrete on any face without loss
+                        of safety or function.
+    rationale:          |
+                        Drop resistance reflects typical handling
+                        accidents in the field and supports robustness
+                        of distributed modules.
+    category:           quality
+    relation:           []
+
+  cr_drop_resistance_hub:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_drop_resistance_hub
+    guid_self:          crq_f93205b631564602868e2156b072d44a
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        withstand a drop of the hub unit from 0.5
+                        metres onto concrete on any face without loss
+                        of safety or function.
+    rationale:          |
+                        The hub is a critical component and must
+                        resist common handling shocks to avoid
+                        system-wide failure.
+    category:           quality
+    relation:           []
+
+  cr_module_self_discharge_control:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_module_self_discharge_control
+    guid_self:          crq_1d139e5c992742798e6c605a47ddd941
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        limit battery self-discharge such that stored
+                        usable energy in any module decreases by no
+                        more than 10 percent over 30 days at 25
+                        degrees Celsius when not in use.
+    rationale:          |
+                        Low self-discharge allows pre-charged modules
+                        to remain ready in caches and with units
+                        without frequent top-up.
+    category:           quality
+    relation:           []
+
+  cr_scavenger_dc_input_range:
+    id_self:            crq_hybrid_solar_buffered_tactical_power_pod.cr_scavenger_dc_input_range
+    guid_self:          crq_cf9edcc8940e4303995713a2f3e7493a
+    statement:          |
+                        The Man_Portable_Modular_Battery_Swarm shall
+                        allow each battery module to be recharged from
+                        an external DC source over a voltage range
+                        from 18 volts to 32 volts at up to 250 watts.
+    rationale:          |
+                        This range covers common 24 V vehicle and
+                        generator accessory outputs, enabling flexible
+                        recharging away from the hub.
+    category:           function
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  mission_duration_without_resupply:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.mission_duration_without_resupply
+    guid_self:          asm_e38a91c101da4df5a2607b17e74a5c49
+    statement:          |
+                        Frontline positions experiencing blocked fuel
+                        runs may need to maintain terminal and charger
+                        power for three to five days with only limited
+                        opportunities for personnel rotation or
+                        small-package resupply.
+    evidence:           |
+                        The observation mentions three nights without
+                        grid power and desire for power that lasts
+                        days, and public reporting on sieges and
+                        encirclements in recent conflicts describes
+                        multi-day periods of constrained logistics,
+                        though exact distributions of duration are not
+                        available here.
+    relation:           []
+
+  squad_load_battery_feasibility:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.squad_load_battery_feasibility
+    guid_self:          asm_fa8e72cd717c4742ba4db3971ed899d9
+    statement:          |
+                        Frontline personnel can each carry one or two
+                        additional 300–500 Wh rugged battery modules
+                        as part of their combat load without
+                        unacceptable impact on mobility for the
+                        durations relevant to reaching or rotating
+                        through frontline positions.
+    evidence:           |
+                        Modern infantry commonly carry 3–7 kg of
+                        batteries for radios and optics; commercial
+                        and military portable battery packs in the
+                        300–500 Wh, 2–4 kg range are in service as of
+                        2024. The trade between added mass and
+                        improved power resilience is routinely made in
+                        equipment planning, though exact acceptable
+                        weight is doctrine-dependent.
+    relation:           []
+
+  modular_energy_pooling:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.modular_energy_pooling
+    guid_self:          asm_f82f66e91f534258ab18354a6c395370
+    statement:          |
+                        Aggregating several smaller battery modules
+                        into a common DC bus via a hub can provide
+                        equivalent usable energy and power to a single
+                        large pack for terminals and chargers, within
+                        the needed range of several kilowatt-hours.
+    evidence:           |
+                        Battery systems for industrial tools, e-bikes
+                        and some military radios already implement
+                        multi-pack parallel operation with pack-level
+                        battery management. Power electronics for safe
+                        current sharing and pack identification are
+                        established engineering practice, even if
+                        specific hub and module designs require
+                        development.
+    relation:           []
+
+  distributed_logistics_patterns:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.distributed_logistics_patterns
+    guid_self:          asm_c40f3d733982446caad804507c0afeb7
+    statement:          |
+                        Logistics units and small formations can
+                        distribute charged battery modules
+                        opportunistically via personnel, small
+                        vehicles or unmanned platforms, even when
+                        heavy vehicles cannot safely reach a position,
+                        enabling partial energy resupply in contested
+                        environments.
+    evidence:           |
+                        Recent conflicts show widespread use of small
+                        quadcopters, light vehicles and dismounted
+                        couriers for ammunition, medical and
+                        electronics delivery when roads are under
+                        fire. Batteries are lighter and less bulky
+                        than fuel drums or generators, making them
+                        suitable for such movement, though systematic
+                        evidence on scale and reliability is limited.
+    relation:           []
+
+  energy_demand_profile_frontline:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.energy_demand_profile_frontline
+    guid_self:          asm_59b6da2506ae42ac911a31918d781487
+    statement:          |
+                        The combined average power demand of the
+                        frontline terminal, essential communications
+                        equipment and drone chargers can be
+                        constrained through operating discipline to an
+                        average of at or below 250 watts continuous
+                        equivalent over multi-day isolation periods.
+    evidence:           |
+                        Typical rugged laptops draw 30–60 W average,
+                        multi-band radios 10–30 W combined, and drone
+                        chargers have high peaks but can be
+                        duty-cycled. The observation describes loss of
+                        power in a single evening from a small
+                        generator and existing batteries, implying
+                        previous energy management was not optimised;
+                        with deliberate rationing, 250 W is a
+                        plausible design point but not directly
+                        confirmed by the account.
+    relation:           []
+
+  hub_operational_simplicity:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.hub_operational_simplicity
+    guid_self:          asm_2be45fbf0db94fe0bc78a4f819431464
+    statement:          |
+                        Frontline personnel can operate a simple hub
+                        interface that automatically manages modules
+                        while exposing only basic controls and
+                        indicators, without needing to understand
+                        pack-level balancing or DC bus details.
+    evidence:           |
+                        Users already manage generators and radio
+                        battery swaps with simple controls.
+                        Consumer-grade power stations and soldier
+                        power managers demonstrate that complex power
+                        electronics can be abstracted behind basic
+                        user interfaces; no specific training trials
+                        for this concept are available yet.
+    relation:           []
+
+  module_charging_in_rear_areas:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.module_charging_in_rear_areas
+    guid_self:          asm_cd845d95c3c84ac6b027bc8e6c39f66e
+    statement:          |
+                        Rear or intermediate positions retain enough
+                        access to grid power or generators to recharge
+                        battery modules between rotations, even when
+                        direct fuel runs to the forward position are
+                        disrupted.
+    evidence:           |
+                        The observation’s road-under-fire scenario
+                        blocks fuel at a particular stretch but does
+                        not imply complete collapse of power
+                        generation in all rear areas. In most
+                        operations, command posts and logistics hubs
+                        maintain generator or grid access, but in
+                        extreme encirclement this might not hold.
+    relation:           []
+
+  low_signature_per_module:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.low_signature_per_module
+    guid_self:          asm_07c868ec7c474aef9f29a442974672d9
+    statement:          |
+                        Individual battery modules and the small hub
+                        can operate with negligible acoustic and
+                        minimal thermal or electromagnetic signature
+                        compared to combustion generators, reducing
+                        detection risk at the frontline position.
+    evidence:           |
+                        Passive batteries have no moving parts and
+                        only modest heat generation at the power
+                        levels in question; emissions are dominated by
+                        attached electronics, which can be shielded.
+                        Existing battery-powered field equipment is
+                        considered low-signature compared to
+                        generators.
+    relation:           []
+
+  trickle_sources_as_endurance_bonus:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.trickle_sources_as_endurance_bonus
+    guid_self:          asm_ec0b5552170b45adb62d8f2918b597ee
+    statement:          |
+                        Environmental trickle sources such as
+                        low-profile solar strips or kinetic harvesters
+                        can occasionally supply tens of watt-hours per
+                        day in many positions without requiring large
+                        exposed panels, but are not required to meet
+                        the basic multi-day autonomy from stored
+                        energy.
+    evidence:           |
+                        The observation does not discuss solar, but
+                        buildings, trenches and vehicles often provide
+                        small exposed surfaces. Commercial low-profile
+                        PV and kinetic tiles show technical
+                        feasibility. However, actual usable energy
+                        will vary widely, so treating them as a bonus
+                        rather than a dependency addresses this
+                        uncertainty.
+    relation:           []
+
+  dynamic_reallocation_as_lines_shift:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.dynamic_reallocation_as_lines_shift
+    guid_self:          asm_2d84b152437749068ac97ff989352855
+    statement:          |
+                        Because modules are individually portable,
+                        units can abandon some or all modules with the
+                        hub when positions are overrun while carrying
+                        away remaining charged modules to reconstitute
+                        swarms elsewhere, rather than losing the
+                        entire energy asset.
+    evidence:           |
+                        Infantry commonly evacuate with what they can
+                        carry and abandon heavy assets under sudden
+                        pressure. Smaller modules fit into existing
+                        patterns of hasty withdrawal better than
+                        single heavy packs, but operational data tying
+                        this to battery systems specifically is not
+                        yet available.
+    relation:           []
+
+  compatible_dc_charging_interfaces:
+    id_self:            asm_hybrid_solar_buffered_tactical_power_pod.compatible_dc_charging_interfaces
+    guid_self:          asm_508223df0bb04f6ab04584e807161cb2
+    statement:          |
+                        The force can standardise a simple DC charging
+                        interface so that vehicle alternators, small
+                        generators and stationary chargers can
+                        recharge modules without bespoke equipment per
+                        platform.
+    evidence:           |
+                        Many militaries are moving towards standard 24
+                        V vehicle systems and NATO-standard power
+                        connectors; commercial ecosystems for 18–60 V
+                        DC tool packs also exist. The observation is
+                        silent on this, so it remains a design and
+                        policy choice rather than a confirmed fact.
+    relation:           []
+
+resolution:             |
+                        The challenge to the prior concept states that
+                        relying on a single high-mass pre-positioned
+                        battery assumes idealised logistics that may
+                        not hold at a dynamic frontline and that, if
+                        such emplacement fails, the system collapses
+                        to a finite store no better than a bulk cache.
+                        It questions evidence for reliably moving and
+                        placing 140 kg energy stores at precise points
+                        before roads are cut, raises the difficulty of
+                        repositioning such units under fire, and notes
+                        that if caches are compromised or lost as
+                        lines shift, users will again be left without
+                        power and the conceptual improvement
+                        evaporates.
+
+                        The new concept revises that dependency by
+                        removing any requirement for a single heavy
+                        pack at a specific position. Instead, it
+                        distributes energy across multiple 300–500 Wh
+                        modules that are each backpack-weight and
+                        designed to move with personnel, so logistics
+                        depends on the same mechanisms that already
+                        move soldiers, their radios and personal
+                        batteries, rather than on dedicated vehicle
+                        access for a 140 kg object. This directly
+                        addresses the criticism that emplacement of a
+                        large static cache is unproven: squads and
+                        small units can bring modules forward as part
+                        of routine rotation, and resupply can occur by
+                        individuals, light vehicles or unmanned ground
+                        systems that would be infeasible or
+                        inefficient for a large pack. The concept
+                        concedes that this does not eliminate
+                        dependency on logistics entirely; if too few
+                        modules are procured, charged or sent forward,
+                        the position will still run dry. The risk
+                        field now states that under-allocation or poor
+                        rotation of modules can cause failure, making
+                        the dependency explicit rather than idealised.
+
+                        On the risk of caches being compromised or
+                        lost as lines move, the swarm design reduces
+                        but does not eliminate that hazard. Because
+                        modules are individually portable, units
+                        breaking contact can carry away some or all
+                        charged modules, and a position that is
+                        suddenly overrun is less likely to contain the
+                        entirety of the force’s energy in one place.
+                        Some modules and the hub will sometimes be
+                        abandoned or destroyed under fire, which the
+                        risk field recognises, but the loss profile is
+                        more graceful than the all-or-nothing loss of
+                        a single heavy pack. The system remains
+                        finite, as the challenge notes, and is still
+                        not a continuous source like a generator; the
+                        difference is that the finite store is no
+                        longer tied to a single vulnerable
+                        emplacement.
+
+                        The challenge also argues that, without strong
+                        evidence of reliable pre-emplacement, the
+                        prior concept provides no more operational
+                        value than “a bulk battery cache”. The swarm
+                        responds by explicitly aligning with that
+                        reality: it is in effect a structured,
+                        portable battery cache with a management hub.
+                        It does not claim to be a true substitute for
+                        a generator in the sense of unlimited energy;
+                        rather, it aims to make that finite cache more
+                        compatible with how units already move and
+                        fight, removing the narrow dependency on
+                        heavy-pack logistics that the challenge
+                        identified. Where the prior design assumed
+                        that a large pack could and would be placed
+                        wherever fuel once went, this design assumes
+                        only that soldiers can carry extra 2–4 kg
+                        modules and that command will allocate enough
+                        of them, which is a different and arguably
+                        more modest logistical claim.
+
+                        In summary, the concept concedes that the
+                        earlier reliance on a 140 kg pre-positioned
+                        battery was weakly evidenced and that a static
+                        cache is fragile in a fluid frontline. It
+                        revises the position by decentralising stored
+                        energy into man-portable modules that move
+                        with units, accepting new dependencies on
+                        module allocation and discipline but no longer
+                        depending on heavy pre-emplacement or
+                        repositioning under fire. The system’s value
+                        is framed as extending multi-day autonomy
+                        under realistic small-unit logistics, not as
+                        eliminating the fundamental need for upstream
+                        charging capacity or as guaranteeing power
+                        where no movement of people or supplies is
+                        possible at all.
+challenge:              |
+                        The concept assumes that frontline personnel
+                        can reliably carry one or two 4.5 kg modules
+                        as additional load and that enough modules
+                        will be allocated, charged, rotated, and
+                        delivered to the forward position to maintain
+                        multi-day autonomy. This presumes that squad
+                        loads, personnel rotations, and small-vehicle
+                        logistics continue to function even when roads
+                        are blocked by fire and movement is hazardous.
+                        The need’s evidence describes loss of all
+                        power by the evening of the generator running
+                        dry, implying that reserve or spare batteries
+                        already present (whether carried in or left in
+                        situ) were insufficient. The concept's
+                        effectiveness depends on disciplined,
+                        continuous movement of charged modules to the
+                        frontline despite the same contested
+                        conditions that block fuel. If movement in or
+                        out becomes impossible or is severely degraded
+                        by enemy activity, casualties, or
+                        prioritisation of other logistics, modules
+                        will not arrive and power will still fail
+                        after a few days. The hub is also a single
+                        point of failure: if it is destroyed, lost, or
+                        malfunctions under stress, the system reverts
+                        to unmanaged loose modules that many users
+                        will not be able to connect safely or at all.
+                        The aggregate risk is that the system’s
+                        resilience is no greater than the unit’s real
+                        logistics capacity under isolation—precisely
+                        where the need’s context is most severe—and
+                        the solution may simply distribute the same
+                        failure (total loss of power in two days) over
+                        more objects rather than remove the root
+                        cause. If logistics discipline, physical
+                        security, or personnel movement cannot be
+                        guaranteed in the conditions described in the
+                        need, the concept will not deliver multi-day
+                        power any more effectively than the prior ad
+                        hoc batteries and will fail to meet the need’s
+                        outcome.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_frontline_multiday_offgrid_power
+    guid_target:        need_0faac913d77d46468f29830da1b94a1d
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_dependency
+    guid_target:        frame_ee2dea2f9dd24e8d93ef54e8dde5c83d

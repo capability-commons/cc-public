@@ -39,6 +39,7 @@ allOf:
 
     required:
       - title
+      - brief
       - entity
       - operation
       - architecture
@@ -55,6 +56,11 @@ allOf:
         pattern:        ^[^\n]+$
         description:    |
                         The unique name of the concept.
+
+      brief:
+        type:           string
+        minLength:      1
+        description:    "The concept in two or three sentences, as a reader with little time meets it.\n"
 
       entity:
         type:           string
@@ -109,8 +115,8 @@ allOf:
 
       candidate_requirement:
         type:           object
-        minProperties:  3
-        maxProperties:  12
+        minProperties:  10
+        maxProperties:  30
 
         propertyNames:
           pattern:      ^[a-z][a-z0-9_]*$
@@ -121,9 +127,9 @@ allOf:
         description:    |
                         The obligations proposed on the entity, as
                         entries with identities of their own: at least
-                        three and at most twelve, so that what is
-                        explicit is what guides an implementation and
-                        the small things stay implicit.
+                        ten and at most thirty, enough to guide an
+                        implementation, with the small things left
+                        implicit.
 
       challenge:
         type:           string

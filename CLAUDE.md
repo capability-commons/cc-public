@@ -200,8 +200,15 @@ Pixi tasks
   wf_promote_concept --deployment dep_promote_local --bind
   promote.input.concept=cpt_…` makes a proposed requirement item from each
   candidate, deriving from the concept and its need; then `check --eval
-  --id-item 'req_<concept>_.*'` judges them. The whole chain, with a
-  readme and the capture, is `/Users/wtp/dev/cc/demo/frontline_power/`.
+  --id-item 'req_<concept>_.*'` judges them. A concept's feasibility is an
+  assessment item (`asmt_`, in `assessment/`, `r_assesses` the concept):
+  `run wf_assess_concept --deployment dep_assess_local` with concept, need
+  and guide bound makes one by a model, without references; `run
+  wf_research_concept --deployment dep_research_local` parks for an agent
+  with tools, who captures references as observations (`observe`), makes
+  the assessment citing them by `r_cites`, and resumes (`ddr_assessment`).
+  The whole chain, with a readme and the capture, is
+  `/Users/wtp/dev/cc/demo/frontline_power/`.
   An output port
   links by `link: {relation: [input ports]}` (`ddr_port_link`); a type
   entry may name its `home` directory so a workflow can make the first item

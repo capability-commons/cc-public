@@ -52,6 +52,15 @@ REL_FRAMED      = 'r_is_framed_by'
 REL_BINDS       = 'r_binds'
 REL_RAN_UNDER   = 'r_ran_under'
 REL_DEPLOYS     = 'r_deploys'
+REL_ASSESSES    = 'r_assesses'
+REL_CITES       = 'r_cites'
+PREFIX_ASSESS   = 'asmt'
+KEY_DIMENSION   = 'dimension'
+KEY_PRODUCT     = 'product'
+WF_RESEARCH     = 'wf_research_concept'
+WF_ASSESS       = 'wf_assess_concept'
+VERDICT_ORDER   = ('feasible_now', 'feasible_with_development', 'speculative', 'not_feasible')
+RATING_STRONG   = 'strong'
 PREFIX_NEED     = 'need'
 PREFIX_CONCEPT  = 'cpt'
 PREFIX_REQ      = 'req'
@@ -86,6 +95,9 @@ def dossier(tree, id_observation, report = None):
         entry = _need(need)
         for concept in index.deriving(need[KEY_GUID_SELF], PREFIX_CONCEPT):
             one = _concept(index, concept)
+            pointing = index.pointing(concept[KEY_GUID_SELF], REL_ASSESSES, PREFIX_ASSESS)
+            one['assessment'] = [_assessment(index, a) for a in pointing]
+            _settle_verdict(one)
             for req in index.deriving(concept[KEY_GUID_SELF], PREFIX_REQ):
                 row = _requirement(req, one['id'], list_gap, findings)
                 one['requirement'].append(row)
@@ -98,11 +110,16 @@ def dossier(tree, id_observation, report = None):
                 row = _requirement(req, None, list_gap, findings)
                 entry['requirement'].append(row)
                 list_req.append(row)
+        entry['concept'].sort(key = _rank)
         list_need.append(entry)
 
+    list_cpt.sort(key = _rank)
+    list_asm = [a for c in list_cpt for a in c['assessment']]
     list_exe = index.executions_of([obs] + [index.document(n['id']) for n in list_need]
                                    + [index.document(c['id']) for c in list_cpt]
-                                   + [index.document(r['id']) for r in list_req])
+                                   + [index.document(r['id']) for r in list_req]
+                                   + [index.document(a['id']) for a in list_asm])
+    _label_assessments(list_asm, list_exe)
 
     return {'generated_at':  datetime.datetime.now(datetime.UTC).strftime('%-d %B %Y, %H:%M UTC'),
             'revision':      _revision(tree),
@@ -111,6 +128,8 @@ def dossier(tree, id_observation, report = None):
             'concept':       list_cpt,
             'requirement':   list_req,
             'execution':     list_exe,
+            'assessment':    list_asm,
+            'reference':     _references(index, list_cpt),
             'finding_count': sum(len(r['finding']) for r in list_req),
             'graph':         _graph(obs, list_need),
             'identity':      _identities(obs, list_need)}
@@ -148,6 +167,22 @@ class _Index:
         return sorted([d for d in list_doc
                        if d is not None and d[KEY_ID_SELF].split(SEPARATOR, 1)[0] == prefix],
                       key = lambda d: d[KEY_ID_SELF])
+
+    def pointing(self, guid, id_relation, prefix):
+        list_doc = [self.by_guid(g) for g in self.incoming.get((guid, id_relation), [])]
+        return sorted([d for d in list_doc
+                       if d is not None and d[KEY_ID_SELF].split(SEPARATOR, 1)[0] == prefix],
+                      key = lambda d: d[KEY_ID_SELF])
+
+    def cited(self, document):
+        """The observations an item's edges cite, as (id, title)."""
+        out = []
+        for edge in document.get(KEY_RELATION) or []:
+            if edge.get(KEY_ID_REL) == REL_CITES:
+                doc = self.by_guid(edge.get('guid_target'))
+                if doc is not None:
+                    out.append({'id': doc[KEY_ID_SELF], 'title': doc.get('title', '')})
+        return out
 
     def target(self, document, id_relation):
         for edge in document.get(KEY_RELATION) or []:
@@ -230,6 +265,7 @@ def _concept(index, doc):
     return {'id':           doc[KEY_ID_SELF],
             'guid':         doc[KEY_GUID_SELF],
             'title':        doc.get('title'),
+            'brief':        doc.get('brief', ''),
             'entity':       doc.get('entity'),
             'framing':      {'id': framing.get(KEY_ID_SELF), 'title': framing.get('title'),
                              'brief': framing.get('brief', '')},
@@ -249,6 +285,82 @@ def _concept(index, doc):
             'status':       doc.get('status'),
             'requirement':  [],
             'promoted':     False}
+
+
+def _assessment(index, doc):
+    return {'id':        doc[KEY_ID_SELF],
+            'guid':      doc[KEY_GUID_SELF],
+            'title':     doc.get('title'),
+            'assessor':  doc.get('assessor'),
+            'made_by':   None,
+            'verdict':   doc.get('verdict'),
+            'summary':   doc.get('summary', ''),
+            'status':    doc.get('status'),
+            'dimension': [{'key': k, 'rating': v.get('rating'), 'rationale': v.get('rationale', ''),
+                           'cited': index.cited(v)}
+                          for (k, v) in (doc.get(KEY_DIMENSION) or {}).items()],
+            'product':   [{'key': k, 'name': v.get('name'), 'role': v.get('role', ''),
+                           'maturity': v.get('maturity'), 'support': v.get('support', ''),
+                           'cited': index.cited(v)}
+                          for (k, v) in (doc.get(KEY_PRODUCT) or {}).items()],
+            'cited':     index.cited(doc)}
+
+
+def _settle_verdict(concept):
+    """The assessment a document leads with: the one with references, else the first."""
+    list_asm = concept['assessment']
+    lead     = next((a for a in list_asm if a['cited'] or a['assessor']),
+                    list_asm[0] if list_asm else None)
+    concept['lead']    = lead
+    concept['verdict'] = lead['verdict'] if lead else None
+
+
+def _rank(concept):
+    """Most directly feasible first: by verdict, then by strong ratings, then by name."""
+    lead  = concept.get('lead')
+    order = VERDICT_ORDER.index(lead['verdict']) if lead and lead['verdict'] in VERDICT_ORDER \
+            else len(VERDICT_ORDER)
+    strong = -sum(1 for d in (lead['dimension'] if lead else []) if d['rating'] == RATING_STRONG)
+    return (order, strong, concept['title'] or '')
+
+
+def _label_assessments(list_asm, list_exe):
+    """Say how each assessment was made: by the research agent, by a model, or by hand."""
+    for a in list_asm:
+        runs = [e for e in list_exe if a['id'] in e['bound']]
+        if any(e['workflow'] == WF_RESEARCH for e in runs):
+            a['made_by'] = 'agent'
+        elif any(e['workflow'] == WF_ASSESS for e in runs):
+            a['made_by'] = 'model'
+            a['assessor'] = a['assessor'] or next(e['model'] for e in runs
+                                                  if e['workflow'] == WF_ASSESS)
+        else:
+            a['made_by'] = 'person' if a['assessor'] else 'unknown'
+
+
+def _references(index, list_cpt):
+    """Every observation an assessment, dimension or product cites, most cited first."""
+    count = {}
+    for c in list_cpt:
+        for a in c['assessment']:
+            cited = list(a['cited'])
+            for d in a['dimension']:
+                cited += d['cited']
+            for pr in a['product']:
+                cited += pr['cited']
+            for ref in cited:
+                count.setdefault(ref['id'], {'id': ref['id'], 'title': ref['title'],
+                                             'count': 0})
+                count[ref['id']]['count'] += 1
+    out = []
+    for ref in sorted(count.values(), key = lambda r: (-r['count'], r['id'])):
+        doc = index.document(ref['id'])
+        out.append({**ref, 'attribution': doc.get('attribution'),
+                    'source_uri': doc.get('source_uri'),
+                    'published_at': doc.get('published_at'), 'observed_at': doc.get('observed_at'),
+                    'source_kind': doc.get('source_kind', '').replace(SEPARATOR, ' '),
+                    'digest': doc.get('content_digest'), 'content': doc.get('content', '')})
+    return out
 
 
 def _requirement(doc, id_concept, list_gap, findings):
@@ -299,18 +411,18 @@ def _revision(tree):
 
 # -----------------------------------------------------------------------------
 def _graph(obs, list_need):
-    """The derivations as dot and as mermaid, labelled by title."""
+    """The derivations as dot and as mermaid, labelled by title; a concept carries its
+    requirement count rather than a box per requirement."""
     nodes = [(obs['id_self'], obs.get('title', ''), 'observation')]
     edges = []
     for need in list_need:
         nodes.append((need['id'], need['title'], 'need'))
         edges.append((need['id'], obs['id_self']))
         for c in need['concept']:
-            nodes.append((c['id'], c['title'], 'concept'))
+            count = len(c['requirement'])
+            label = c['title'] + (' ({n} requirements)'.format(n = count) if count else '')
+            nodes.append((c['id'], label, 'concept'))
             edges.append((c['id'], need['id']))
-            for r in c['requirement']:
-                nodes.append((r['id'], r['title'], 'requirement'))
-                edges.append((r['id'], c['id']))
         for r in need['requirement']:
             nodes.append((r['id'], r['title'], 'requirement'))
             edges.append((r['id'], need['id']))
@@ -350,6 +462,7 @@ def _identities(obs, list_need):
         out.append(('need', need['id'], need['guid']))
         for c in need['concept']:
             out.append(('concept', c['id'], c['guid']))
+            out.extend(('assessment', a['id'], a['guid']) for a in c['assessment'])
             out.extend(('requirement', r['id'], r['guid']) for r in c['requirement'])
         out.extend(('requirement', r['id'], r['guid']) for r in need['requirement'])
     return out

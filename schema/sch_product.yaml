@@ -1,0 +1,83 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_product.yaml
+id_self:                sch_product
+guid_self:              sch_4a9c9fd8eccc43289b3423350b0115f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Off-the-shelf product schema
+brief:                  |
+                        Schema for an off-the-shelf candidate named by
+                        an assessment: a product, standard or
+                        component class, its role, maturity and
+                        support.
+description:            |
+                        Composes identity. A product entry names
+                        something that exists, or is claimed to, that
+                        the concept could use as it is: what it is,
+                        the role it would play, how mature it is, and
+                        what supports the claim, with references cited
+                        by r_cites edges to observations. A claim with
+                        no reference says so.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - name
+      - role
+      - maturity
+      - support
+
+    properties:
+
+      name:
+        type:           string
+        minLength:      1
+        maxLength:      120
+        pattern:        ^[^\n]+$
+        description:    |
+                        The product, standard or component class.
+
+      role:
+        type:           string
+        minLength:      1
+        description:    |
+                        What it would do in the concept.
+
+      maturity:
+        type:           string
+
+        enum:
+          - fielded
+          - commercial
+          - demonstrated
+          - developmental
+          - unknown
+
+        description:    |
+                        fielded in service, commercial off the shelf,
+                        demonstrated, developmental, or unknown.
+
+      support:
+        type:           string
+        minLength:      1
+        description:    |
+                        What supports the claim: the references cited,
+                        or that nothing yet does.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false

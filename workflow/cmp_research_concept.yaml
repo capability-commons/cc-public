@@ -1,0 +1,97 @@
+id_self:                cmp_research_concept
+guid_self:              cmp_9cbf750daeca44e9bf0a35b08c14e41e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Research a concept
+brief:                  |
+                        Have an agent with tools research the
+                        feasibility of a concept: real off-the-shelf
+                        options, each reference captured as an
+                        observation and cited, and an assessment
+                        written from them.
+description:            |
+                        Performed by an agent, a person or a coding
+                        tool with web access, in a session of its own.
+                        The run parks with a brief; the performer
+                        finds products, standards and component
+                        classes the concept could use, captures each
+                        source as an observation with cctool observe,
+                        makes the assessment with the seven dimensions
+                        and the products citing those observations by
+                        r_cites, names themselves in assessor, and
+                        links it r_assesses to the concept. The run
+                        resumes when an assessment pointing at the
+                        concept exists. The assessment to trust, since
+                        its claims have references.
+
+output:
+
+  assessment:
+    id_self:            prt_research_concept.assessment
+    guid_self:          prt_0d5f9fc2c2f6477cb22b87d6d531da84
+    title:              Assessment
+    brief:              |
+                        The feasibility assessment with its
+                        references, found by its r_assesses edge.
+    id_type:            t_assessment
+    guid_type:          t_f17bb0f6fb6347e38eb8fabf6a1b7eed
+
+    found:
+      port:             concept
+      relation:         r_assesses
+      direction:        in
+
+    prompt:             |
+                        Research the feasibility of the concept on
+                        concept as an answer to the need on need, with
+                        your tools: find real products, standards and
+                        component classes the concept could use as
+                        they are, from vendors, standards bodies,
+                        defence procurement records and reputable
+                        reporting. Capture each source you rely on as
+                        an observation with cctool observe, from a
+                        capture file holding its text, locator,
+                        attribution and time; capture nothing you did
+                        not read. Make the assessment with cctool new
+                        t_assessment: title, verdict, summary, the
+                        seven dimensions each with a rating and a
+                        rationale that names its references, and the
+                        products each with role, maturity and support;
+                        link each product and the assessment r_cites
+                        to the observations it rests on, and the
+                        assessment r_assesses to the concept; write
+                        yourself and your tools in assessor. Rate
+                        unknown where you found nothing, never weak.
+                        Then run the checks, commit, and resume.
+    relation:           []
+
+performer:              agent
+relation:               []
+
+input:
+
+  concept:
+    id_self:            prt_research_concept.concept
+    guid_self:          prt_c30699359f0440a191afa2b768e67a33
+    title:              Concept
+    brief:              |
+                        The concept to research.
+    id_type:            t_concept
+    guid_type:          t_cf7be428e5bb442b90cc501d5b59a61d
+    relation:           []
+
+  need:
+    id_self:            prt_research_concept.need
+    guid_self:          prt_596b90a0bfc64e29ae5f1fc2c212ac3c
+    title:              Need
+    brief:              |
+                        The need the concept answers.
+    id_type:            t_need
+    guid_type:          t_e2252072b81d4aac8ee8f267b42d34be
+    relation:           []
