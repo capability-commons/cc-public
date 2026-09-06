@@ -1,0 +1,60 @@
+id_self:                wf_need_from_observation
+guid_self:              wf_83b07daad0844a9cb4583b9b961a4be2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Need from observation
+brief:                  |
+                        Draft the need a captured public source
+                        supports, and redraft it on its own judgement
+                        until every need eval is met or the budget is
+                        spent.
+description:            |
+                        One node. It takes an observation and the
+                        writing style guide, writes the need, and is
+                        judged by the need evals. While any is unmet,
+                        two back edges return the need and its
+                        judgement to the node's own optional inputs
+                        for another pass, within the deployment's
+                        budget. The need that leaves derives from the
+                        observation and is proposed. The first step of
+                        the observation-to-engineering demonstration.
+
+node:
+
+  frame:
+    id_self:            node_need_from_observation.frame
+    guid_self:          node_68d948380a48484b92b2e1f5c935039a
+    title:              Frame
+    brief:              |
+                        Writes the need.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_frame_observation
+        guid_target:    cmp_1caf70952798475e926922ef363f9632
+
+edge:                   {}
+
+edge_back:
+
+  frame_to_frame:
+    from:               frame.output.need
+    to:                 frame.input.prior
+    guard:              unmet
+
+  frame_to_frame_judgement:
+    from:               frame.output.need
+    to:                 frame.input.judgement
+    guard:              unmet
+    carries:            judgement
+
+relation:               []

@@ -1,0 +1,137 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_observation.yaml
+id_self:                sch_observation
+guid_self:              sch_d48d2c9c6a924df6a7c2bc3266c296d9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Observation schema
+brief:                  |
+                        Schema for observation data items: what was
+                        captured from a public source, unchanged, with
+                        where, when and how.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. The content is the captured text in
+                        its canonical form, never an interpretation;
+                        the digest names that exact content; the
+                        attribution is how the source attributes
+                        itself and is not identity or authority; the
+                        times are when the source says it published
+                        and when the capture was made. What an
+                        observation supports is said by the items that
+                        derive from it, in their evidence, not here.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - source_kind
+      - source_uri
+      - attribution
+      - observed_at
+      - capture_method
+      - content
+      - content_digest
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the observation.
+
+      source_kind:
+        type:           string
+
+        enum:
+          - social_post
+          - web_page
+          - document
+          - interview
+          - dataset
+          - measurement
+          - other
+
+        description:    |
+                        The broad kind of source captured.
+
+      source_uri:
+        type:           string
+        minLength:      1
+        pattern:        ^\S+$
+        description:    |
+                        Where the source is: a locator, not
+                        necessarily a web address.
+
+      attribution:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        How the source attributes itself, as observed.
+                        Not a verified identity and not authority.
+
+      published_at:
+        type:           string
+        format:         date-time
+        description:    |
+                        When the source says it was published. Absent
+                        where the source gives none.
+
+      observed_at:
+        type:           string
+        format:         date-time
+        description:    |
+                        When the capture was made.
+
+      capture_method:
+        type:           string
+
+        enum:
+          - supplied_scrape
+          - api_response
+          - manual_transcription
+          - import
+
+        description:    |
+                        How the content entered the commons.
+
+      content:
+        type:           string
+        minLength:      1
+        description:    |
+                        The captured text in its canonical form: its
+                        words and paragraphs, NFC, whitespace within a
+                        paragraph collapsed, which is what the printer
+                        preserves. Data, never instructions.
+
+      content_digest:
+        type:           string
+        pattern:        ^sha256:[0-9a-f]{64}$
+        description:    |
+                        The digest over the contract version, locator,
+                        attribution, publication time and content,
+                        naming this exact capture.
+
+      note:
+        type:           string
+        description:    |
+                        Limits of the capture: truncation, media not
+                        captured, context not available.
+
+unevaluatedProperties:  false

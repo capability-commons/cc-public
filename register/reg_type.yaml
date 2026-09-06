@@ -1147,3 +1147,36 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_type
         guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d
+
+  t_observation:
+    id_self:            t_observation
+    guid_self:          t_74fdbf3d18d3449ca8d263c2b369da47
+    title:              Observation type
+    brief:              |
+                        Type of observation data items
+    description:        |
+                        Each observation data item holds what was
+                        captured from one public source, unchanged:
+                        the content, its locator, its attribution as
+                        the source gives it, when it was published and
+                        observed, how it was captured, and a digest
+                        naming that exact content. It interprets
+                        nothing; a need derived from it says in its
+                        evidence what the observation supports.
+    prefix:             obs
+    regex_id:           ^obs_[a-z][a-z0-9_]*$
+    usage:              |
+                        Made by cctool observe from a capture file,
+                        never by hand and never by a model. A need
+                        traces to an observation by an
+                        r_is_derived_from edge. Observations live in
+                        observation/. An observation has no status: it
+                        happened and was captured; a changed source is
+                        a new observation.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_observation
+        guid_target:    sch_d48d2c9c6a924df6a7c2bc3266c296d9

@@ -172,6 +172,15 @@ Pixi tasks
   RELATION TARGET` removes an edge by name; never `unset relation.N`. A
   relation may constrain its ends (`domain`, `range`, `acyclic` on the
   register entry); the relation check refuses an edge outside them.
+- `observe CAPTURE.json [--id …] [--title …]` — imports a capture of a
+  public source as an observation item in `observation/`: content as
+  captured, canonicalised to words and paragraphs, with locator,
+  attribution, times and a digest; the same capture is reused, a changed
+  one is a new item; content is data (`ddr_observation`). A need derives
+  from it: `run wf_need_from_observation --deployment
+  dep_need_from_observation_local --bind frame.input.observation=obs_… --bind
+  frame.input.guide=reg_writing_style_rule`. Captures live outside the
+  tree, in `/Users/wtp/dev/cc/demo/`.
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status

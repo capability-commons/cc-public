@@ -44,6 +44,7 @@ import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
 import cc_public.edit.new
+import cc_public.edit.observe
 import cc_public.edit.rename
 import cc_public.edit.tree
 import cc_public.eval.case
@@ -320,3 +321,43 @@ def rename(name, id_new, list_root):
         click.echo(str(filepath))
     for (filepath, path) in report.list_mention:
         click.echo('mention  {file}  {path}'.format(file = filepath, path = path))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command(name = 'observe')
+@click.argument('path_capture', type = click.Path(exists = True, dir_okay = False,
+                                                  path_type = pathlib.Path))
+@click.option('--id', 'id_self', default = None,
+              help = 'The readable id of the observation. Default: the platform '
+                     'and post id from the capture.')
+@click.option('--title', default = None, help = 'Its title. Default: kind, author, date.')
+@click.option('--out', 'dirpath_out', default = None,
+              type = click.Path(file_okay = False, path_type = pathlib.Path),
+              help = 'Where to put it. Default: observation/ under the root.')
+@cc_public.cli.group.OPTION_ROOT
+def observe_(path_capture, id_self, title, dirpath_out, list_root):
+    """
+    Import a capture of a public source as an observation item: the
+    content as captured, its locator, attribution, times and digest.
+    A capture already observed is reused, not duplicated.
+
+    """
+
+    import json
+
+    tree = cc_public.cli.group.tree(list_root)
+
+    try:
+        capture = json.loads(path_capture.read_text(encoding = 'utf-8'))
+    except ValueError as err:
+        cc_public.cli.group.fail('{path} is not JSON: {err}'.format(path = path_capture,
+                                                                     err = err))
+
+    try:
+        (item, is_new) = cc_public.edit.observe.observe(tree, capture, id_self, title,
+                                                        dirpath_out)
+    except cc_public.edit.tree.ErrorItem as err:
+        cc_public.cli.group.fail(err)
+
+    click.echo('{what} {id}  {path}'.format(what = 'observed' if is_new else 'reused',
+                                            id = item.id_self, path = item.filepath))

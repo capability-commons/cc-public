@@ -1,0 +1,161 @@
+id_self:                ddr_observation
+guid_self:              ddr_9fa3ce2c62634ae0a4a58614052a1171
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  'Observations: captured sources as items'
+brief:                  |
+                        A captured public source is an item with a
+                        digest, imported deterministically, that needs
+                        derive from.
+context:                |
+                        The demonstration for Brave1 begins with
+                        public information, a social media post, and
+                        ends with proposed engineering items. Needs
+                        carry evidence as prose, and nothing in the
+                        tree stood for the captured source itself, so
+                        a need's derivation began at the model's
+                        interpretation rather than at what was seen.
+                        The opportunity-formation proposal
+                        distinguishes source, observation, claim,
+                        evidence relation and provenance; the
+                        demonstrator design proposes one small
+                        observation item for now.
+decision:               |
+                        An observation is an item of type
+                        t_observation, prefix obs, living in
+                        observation/. It holds what was captured,
+                        unchanged: the content as a block scalar, the
+                        source kind, the locator, the attribution as
+                        the source attributes itself, the publication
+                        time where the source gives one, the
+                        observation time, the capture method, and a
+                        digest over the canonical content. It is
+                        imported by cctool observe from a capture file
+                        in a platform-neutral form; no model takes
+                        part in capture, digest, time or marking. The
+                        content is canonicalised before it is digested
+                        and stored, to its words and paragraphs:
+                        Unicode NFC, a run of whitespace within a
+                        paragraph, newlines included, made one space,
+                        paragraphs kept apart by a blank line; that is
+                        what the printer preserves, so the stored
+                        content digests as the capture did. A capture
+                        whose digest an observation already carries is
+                        reused, not duplicated; a changed source is a
+                        new observation. A need derives from an
+                        observation by r_is_derived_from, whose range
+                        grows to include the type. An observation has
+                        no status. The content is data: the importer
+                        does nothing the content says, and a prompt
+                        that reads an observation says it is untrusted
+                        material to analyse.
+rationale:              |
+                        The graph should begin at what was captured,
+                        so that anyone can ask what exactly was seen,
+                        where and when, and which parts of the
+                        engineering interpretation came from it. A
+                        digest makes the observation an exact revision
+                        that later claims can bind to. Reuse by digest
+                        keeps a retried import from looking like
+                        independent corroboration. Combining source
+                        and observation in one item is the smallest
+                        shape that serves the demonstration; the cases
+                        that would split them, several passages from
+                        one source or a source that cannot be copied,
+                        have not arisen. Recording attribution as
+                        observed, and saying so in the schema, keeps a
+                        handle from being read as a verified identity
+                        or an authority to speak.
+alternative:            |
+                        Keeping the post in the need's evidence prose:
+                        rejected, since the source then has no
+                        identity, no digest and no neighbourhood in
+                        the graph. Separate source, observation, claim
+                        and provenance items: deferred until a case
+                        needs them. Letting the importer fetch the
+                        post: rejected, since scraping is
+                        platform-specific and a fetched page is not a
+                        reviewed capture. A status on observations:
+                        rejected; a correction is a new observation.
+consequence:            |
+                        A new type, schema and directory; the
+                        derivation relation's range grows; a command
+                        that writes one item from a file; a test that
+                        the digest is stable under whitespace and
+                        newline variation and that stored content
+                        canonicalises to the capture. A hard line
+                        break inside a paragraph is not kept, which a
+                        post that is a poem would notice. A need's
+                        evidence still says in prose what the
+                        observation supports, which the observation
+                        cannot say for itself.
+
+question:
+
+  split:
+    id_self:            qst_observation.split
+    guid_self:          qst_cc3a7d8d4850407080a285a60d4a2507
+    question:           |
+                        When source, observation, claim and provenance
+                        need items of their own: several passages from
+                        one source, a source observed at several
+                        times, or a protected source referenced by
+                        digest and custodian.
+    relation:           []
+
+  supersession:
+    id_self:            qst_observation.supersession
+    guid_self:          qst_415ce4b4d5e64f00a3dd18a6172ecf3b
+    question:           |
+                        How a changed source relates to its earlier
+                        observation, which is a new item today with no
+                        edge between them.
+    relation:           []
+
+  reach:
+    id_self:            qst_observation.reach
+    guid_self:          qst_1f9b22a97b38444e9d12b9df7665ad2c
+    question:           |
+                        Whether items other than needs may derive from
+                        an observation, such as a concept drawn from a
+                        source that states a solution, or an
+                        assumption's evidence.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_observation
+    guid_target:        sch_d48d2c9c6a924df6a7c2bc3266c296d9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_observation
+    guid_target:        t_74fdbf3d18d3449ca8d263c2b369da47
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.observe
+    guid_target:        pym_58694ae0420845bdb2b9df2929ec658d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_derived_from
+    guid_target:        r_a8017d991f8a4e63a84d1eec5a2d6051
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_frame_observation
+    guid_target:        cmp_1caf70952798475e926922ef363f9632
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_need_from_observation
+    guid_target:        wf_83b07daad0844a9cb4583b9b961a4be2
