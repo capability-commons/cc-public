@@ -52,7 +52,8 @@ def set_field(tree, name, path, value = None, prose = None):
     stored as prose where the schema says the field is prose: a string
     the schema leaves unbounded, with no length, pattern, enumeration
     or format, is prose, and one it bounds is a datum. Where the schema
-    says nothing of the field, a string holding a line break is prose.
+    says nothing of the field, a string holding a line break is prose,
+    and a field already held as prose stays prose.
 
     """
 
@@ -72,8 +73,20 @@ def set_field(tree, name, path, value = None, prose = None):
 
     document = tree.document(item)
 
-    cc_public.path.write(document, cc_public.path.concat(item.path, path),
-                         content)
+    path_full = cc_public.path.concat(item.path, path)
+    cc_public.path.write(document, path_full, content)
+
+    # A field already held as prose stays prose: the round trip keeps
+    # the block style over a plain string put in its place. What it
+    # does not keep is the final newline every block here ends with.
+    #
+    node = document
+    for step in cc_public.path.split(path_full):
+        node = node[int(step)] if isinstance(node, list) else node[step]
+    if isinstance(node, ruamel.yaml.scalarstring.LiteralScalarString) \
+            and not node.endswith('\n'):
+        cc_public.path.write(document, path_full,
+                             ruamel.yaml.scalarstring.LiteralScalarString(node + '\n'))
 
     _relation_last(document, item.path, path)
     cc_public.edit.tree.save(item.location, document)

@@ -623,6 +623,7 @@ def test_set_stores_a_string_as_prose_where_the_schema_says_so(tree, tmp_path):
     assert 'prefix:             qry\n' in (tmp_path / 'register' / 'reg_type.yaml').read_text()
     cc_public.edit.field.set_field(tree, 'sch_deployment', 'allOf.2.properties.confirm.description',
                                    value = 'One line, no break.')
-    assert re.search(r'description:\s+One line, no break\.\n',
+    # a field already prose stays prose, with the final newline every block has
+    assert re.search(r'description:\s+\|\n\s+One line, no break\.\n\n',
                      (tmp_path / 'schema' / 'sch_deployment.yaml').read_text())
     assert clean(tmp_path) == []
