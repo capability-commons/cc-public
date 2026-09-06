@@ -1,0 +1,87 @@
+id_self:                cmp_implement_requirement
+guid_self:              cmp_29a7bd09f4dd47e99056a1d3999c1a17
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Implement a requirement
+brief:                  |
+                        Have an agent write the code and the test for
+                        a requirement, and link both.
+description:            |
+                        Performed by an agent: a person, or a coding
+                        tool such as Claude Code or Codex, in a
+                        session of its own. The run parks at this node
+                        with a brief and resumes when the tree holds
+                        what the outputs say: the requirement, now
+                        implemented, and a test function that verifies
+                        it. Whether the work is complete is decided by
+                        the checks and the trace, which the accept
+                        node that follows runs.
+
+output:
+
+  implemented:
+    id_self:            prt_implement_requirement.implemented
+    guid_self:          prt_a556e97400fb424dba1310b3b006dde6
+    title:              Implemented requirement
+    brief:              |
+                        The same requirement, linked to the code
+                        responsible for it.
+    id_type:            t_textual_requirement
+    guid_type:          t_ca3efb2ddd534838844c500aa92c848c
+    revises:            requirement
+    prompt:             |
+                        Implement the requirement bound on
+                        requirement. Make or find the code responsible
+                        for it, make that code an item where it is not
+                        one, with new t_python_function or new
+                        t_python_module, and link the requirement
+                        r_is_implemented_by to it. Keep to the layered
+                        architecture and the house style, and run the
+                        lint.
+    relation:           []
+
+  test:
+    id_self:            prt_implement_requirement.test
+    guid_self:          prt_e10661cc6d6141179e27733dde4bcfcf
+    title:              Verifying test
+    brief:              |
+                        A test function that proves the requirement,
+                        found by its r_verifies edge.
+    id_type:            t_python_function
+    guid_type:          t_92b7b832d3c7419f9252f7eb3339f94b
+
+    found:
+      port:             requirement
+      relation:         r_verifies
+      direction:        in
+
+    prompt:             |
+                        Write one test function that proves the
+                        requirement from its statement alone and fails
+                        where it is not met. Make it an item with new
+                        t_python_function and link it r_verifies to
+                        the requirement. Run the tests so that
+                        evidence is recorded, then commit.
+    relation:           []
+
+performer:              agent
+relation:               []
+
+input:
+
+  requirement:
+    id_self:            prt_implement_requirement.requirement
+    guid_self:          prt_5d65e40a46fa4516acfd127d067b637f
+    title:              Requirement to implement
+    brief:              |
+                        A proposed textual requirement with no code or
+                        test yet.
+    id_type:            t_textual_requirement
+    guid_type:          t_ca3efb2ddd534838844c500aa92c848c
+    relation:           []

@@ -1,0 +1,202 @@
+id_self:                ddr_performer
+guid_self:              ddr_a854575e92d7460e93a4509adda5f9be
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Three performers and the run as state
+brief:                  |
+                        A component is performed by a function, a
+                        model or an agent; an agent node parks the
+                        run, whose state is its execution record, and
+                        resume continues it.
+context:                |
+                        The executor ran a component either on
+                        prompts, asking a model once per output port,
+                        or in code, calling a function once per node.
+                        Both finish within the call, so a run was a
+                        process: its bindings and pass counts lived in
+                        memory, and the ledger put the tree back on a
+                        stop. The loop that turns a need into accepted
+                        requirements has a third kind of step: code
+                        and tests written by a coding agent, such as
+                        Claude Code or Codex, in a session of its own
+                        that lasts minutes or hours, edits the working
+                        tree directly, may need a decision, and may
+                        fail. No node could wait for it, and nothing
+                        it did passed through the ledger.
+
+                        Mechanical checks, model calls and agents are
+                        the three kinds of computation this system
+                        orchestrates: cheap, exact and blind to
+                        meaning; costly, measured and able to read;
+                        and costliest, least predictable and able to
+                        act. The intent is to move work from the last
+                        two kinds to the first wherever it can go.
+decision:               |
+                        A component declares its performer: function,
+                        model or agent. A function is named by an
+                        r_is_implemented_by edge to a function item. A
+                        model is asked the prompt on each output port.
+                        An agent is given the prompt on each output
+                        port as its task, and each output port says
+                        how its item is found once the work is done:
+                        it revises an input, or it is found from an
+                        input by a relation in a direction, the first
+                        by identifier where several are found. The
+                        executor never takes an output from the
+                        performer's report; it reads the graph.
+
+                        A run is a state, not a process. Its execution
+                        record is the state: the bindings made so far,
+                        the nodes still queued, the passes taken.
+                        Function and model nodes run within one call,
+                        a segment. At an agent node the run parks: the
+                        record is written with the outcome waiting,
+                        the node and a brief for the performer, and
+                        the run returns. cctool resume continues from
+                        the record: it finds the agent node's outputs,
+                        checks the tree, delivers along the edges and
+                        goes on to the next agent node or the end. A
+                        parked execution is a to-do for whoever
+                        performs it: a person, an agent in a session,
+                        or a tool launched on it. All are given the
+                        same brief and held to the same checks.
+
+                        Restore covers a segment: what a segment wrote
+                        is put back on a stop, and what a performer
+                        committed stands. A stop in a resumed segment
+                        leaves the record waiting with the same brief
+                        and reports what was lacking, which is the
+                        next performer's brief. A deployment that
+                        commits per node commits the park, so that the
+                        performer starts from a clean tree.
+rationale:              |
+                        One contract with three performers keeps the
+                        workflow as it is: typed ports, guards, back
+                        edges and budgets are untouched, and only how
+                        a node's work gets done varies. Making the
+                        record the state is what lets a node take
+                        hours or days: nothing is held in memory
+                        across the wait, and a run survives the
+                        session that started it, which an unmanned
+                        system needs. Reading outputs from the graph
+                        rather than from the agent puts the boundary
+                        of trust where the checks are: an agent has
+                        succeeded when the tree holds what the port
+                        says, judged by the same mechanical checks
+                        that judge everything else. That is the
+                        migration principle applied at the boundary.
+                        Keeping restore to a segment avoids resetting
+                        a working tree that a performer may have
+                        changed for reasons of its own. The brief is
+                        rendered from the ports and the bound items
+                        rather than written by hand, so the same node
+                        reads the same to every performer.
+alternative:            |
+                        Running the agent as a subprocess and waiting:
+                        rejected, since a run then lasts as long as
+                        the agent, dies with the session, and cannot
+                        be picked up by another performer. A separate
+                        executor for agents beside the workflow
+                        executor: rejected, since the loop needs all
+                        three kinds in one graph under one set of
+                        guards. Asking the agent to report its outputs
+                        by port: rejected, since a report is the
+                        agent's word and the graph is evidence.
+                        Restoring by git to the last node commit:
+                        rejected for now, since it discards a
+                        performer's work on the run's judgement rather
+                        than the performer's.
+consequence:            |
+                        The execution schema gains the outcome
+                        waiting, a state and a brief, and a record can
+                        be read to know what a run is waiting for and
+                        on whom. cctool run prints the brief and
+                        returns at an agent node, and cctool resume
+                        takes an execution. The workflow check holds
+                        each performer to its form. Every component
+                        declares its performer, and the three that ran
+                        on prompts now say model. The first agent
+                        component implements a requirement: its
+                        outputs are the requirement revised and the
+                        test found by r_verifies. A launcher that
+                        finds waiting executions and runs a configured
+                        agent tool on them is the step after this one.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_component
+    guid_target:        sch_f1095fd235ef479085522c2373b9c6c6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_port
+    guid_target:        sch_e73720cf21904fed82cb7941bfb9cdbe
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_execution
+    guid_target:        sch_1030485e4a494715ba5afaf52c44779b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.workflow.run
+    guid_target:        pym_7cb6d25c271a4a1487f6367760bc8d63
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_implement_requirement
+    guid_target:        cmp_29a7bd09f4dd47e99056a1d3999c1a17
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_implement_requirement
+    guid_target:        wf_aa6eb2d34bf54d72854ad3e15f4df8dc
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_implement_local
+    guid_target:        dep_32158c1ea23642779f4df176cb497e3e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_performer
+    guid_target:        term_461ec7ef7f95432d9c29a6213b14e2e5
+
+question:
+
+  budget:
+    id_self:            qst_performer.budget
+    guid_self:          qst_bc3376a1ac2e419a986d9d25e929596d
+    question:           |
+                        What the budget of an agent node is, in time,
+                        tokens or attempts, and where it is recorded;
+                        passes are the budget of a model node and mean
+                        little for an agent.
+    relation:           []
+
+  launcher:
+    id_self:            qst_performer.launcher
+    guid_self:          qst_0cdbdd93431f4fa0bf549948160321de
+    question:           |
+                        Which tool performs a waiting node when nobody
+                        is at the keyboard, how it is named on the
+                        deployment, and how it is launched: the last
+                        piece of unmanned operation.
+    relation:           []
+
+  several:
+    id_self:            qst_performer.several
+    guid_self:          qst_0e8e1de81b124593b8aa0728a7b21238
+    question:           |
+                        Whether an output port that finds several
+                        items should bind a set item rather than the
+                        first by identifier.
+    relation:           []

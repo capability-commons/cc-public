@@ -1,0 +1,64 @@
+id_self:                wf_implement_requirement
+guid_self:              wf_aa6eb2d34bf54d72854ad3e15f4df8dc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Implement and accept a requirement
+brief:                  |
+                        An agent implements and tests a requirement;
+                        then it is accepted, or the run says what it
+                        lacks.
+description:            |
+                        Two nodes. The first is performed by an agent
+                        and parks the run with a brief: write the code
+                        and the test, link both, record evidence. On
+                        resume the second accepts the requirement
+                        through the same path as the accept command,
+                        or stops saying what is lacking, which is the
+                        brief for the next attempt. The
+                        per-requirement half of the requirements loop.
+
+node:
+
+  implement:
+    id_self:            node_implement_requirement.implement
+    guid_self:          node_8ef3ef19c9504ffba3a6faf79bb27f8a
+    title:              Implement
+    brief:              |
+                        An agent writes the code and the test.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_implement_requirement
+        guid_target:    cmp_29a7bd09f4dd47e99056a1d3999c1a17
+
+  accept:
+    id_self:            node_implement_requirement.accept
+    guid_self:          node_01b2fb6d99af44eb992ecb25ededfeb3
+    title:              Accept
+    brief:              |
+                        Accepts the requirement.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_accept_requirement
+        guid_target:    cmp_469a5534091a49f2b3a0d7532e17907b
+
+edge:
+
+  implement_to_accept:
+    from:               implement.output.implemented
+    to:                 accept.input.requirement
+
+relation:               []

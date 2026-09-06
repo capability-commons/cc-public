@@ -88,4 +88,32 @@ properties:
     items:
       $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
 
+  found:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - port
+      - relation
+      - direction
+
+    properties:
+
+      port:
+        type:           string
+        pattern:        ^[a-z][a-z0-9_]*$
+
+      relation:
+        type:           string
+        pattern:        ^r_[a-z][a-z0-9_]*$
+
+      direction:
+        type:           string
+
+        enum:
+          - out
+          - in
+
+    description:        "Optional, on an output of an agent component. How the item on this port is found once the performer has finished: from the item bound on the named input port, by an edge of the relation, out from it or in to it, keeping items of this port's type. Where several are found the first by identifier is bound.\n"
+
 unevaluatedProperties:  false

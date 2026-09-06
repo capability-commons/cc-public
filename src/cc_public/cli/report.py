@@ -412,6 +412,20 @@ def write_run(report):
 
 
 # -----------------------------------------------------------------------------
+def _write_halt(e):
+    """
+    Print why a node did not run: skipped on this pass, or waiting for
+    a performer, with the brief.
+
+    """
+
+    if e.get('skipped'):
+        click.echo('    skipped  {why}'.format(why = e['skipped']))
+    for line in (e.get('waiting') or '').splitlines():
+        click.echo('    waiting  ' + line if line else '')
+
+
+# -----------------------------------------------------------------------------
 def _write_pass(e):
     """
     Print one node's entry of a run report: what it would do on a dry
@@ -428,8 +442,7 @@ def _write_pass(e):
     click.echo('  {node}{n}'.format(node = e['node'],
                                     n = '' if e.get('pass', 1) == 1 else
                                         '  pass {n}'.format(n = e['pass'])))
-    if e.get('skipped'):
-        click.echo('    skipped  {why}'.format(why = e['skipped']))
+    _write_halt(e)
     for (label, items) in (('made    ', e['made']), ('revised ', e['revised'])):
         for i in items:
             click.echo('    {label} {i}'.format(label = label, i = i))

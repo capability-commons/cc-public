@@ -14,7 +14,7 @@ protective_mark:
 title:                  Running command
 brief:                  |
                         run: one run of a dataflow workflow under a
-                        deployment.
+                        deployment; resume: continue one that waits.
 description:            |
                         Builds the generator and the judge the
                         deployment names, hands them to the executor
@@ -123,3 +123,67 @@ def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
 
     raise SystemExit(cc_public.cli.group.EXIT_NONCONFORMITY if report['stopped']
                      else cc_public.cli.group.EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command(name = 'resume')
+@click.argument('id_execution')
+@click.option('--judge-model', 'id_model_judge', default = None,
+              envvar = cc_public.eval.runner.NAME_ENV_MODEL, show_envvar = True,
+              help = 'The model that judges what the run produces. Needed '
+                     'unless the deployment judges nothing.')
+@click.option('--trailer', 'list_trailer', multiple = True,
+              help = 'A trailer line for any commit the run makes.')
+@click.option('--format', 'id_format', default = 'text',
+              type = click.Choice(['text', 'json']), show_default = True)
+@click.option('--root', 'root', default = pathlib.Path('.'),
+              type = click.Path(path_type = pathlib.Path))
+def resume_(id_execution, id_model_judge, list_trailer, id_format, root):
+    """
+    Continue a run that is waiting at an agent node, once the work its
+    brief asks for is in the tree.
+
+    """
+
+    import json
+
+    tree = cc_public.cli.group.tree([root])
+
+    try:
+        record = tree.context.map_document[tree.resolve(id_execution).location]
+        dep    = _deployment_of(tree, record)
+        generator = cc_public.workflow.generate.build(dep.get('model'))
+        generator_challenge = (cc_public.workflow.generate.build(dep['model_challenge'])
+                               if dep.get('model_challenge') else None)
+        runner = None
+        if dep.get('judge', 'always') != 'never' and id_model_judge:
+            runner = cc_public.eval.runner.build(id_model_judge)
+        report = cc_public.workflow.run.resume(root, id_execution, generator, runner,
+                                               list_trailer,
+                                               generator_challenge = generator_challenge)
+    except (cc_public.workflow.run.Stop, cc_public.workflow.graph.ErrorGraph,
+            cc_public.edit.tree.ErrorItem, cc_public.commit.ErrorCommit) as err:
+        cc_public.cli.group.fail(err)
+
+    if id_format == 'json':
+        click.echo(json.dumps(report, indent = 2, default = str))
+    else:
+        cc_public.cli.report.write_run(report)
+
+    raise SystemExit(cc_public.cli.group.EXIT_NONCONFORMITY if report['stopped']
+                     else cc_public.cli.group.EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+def _deployment_of(tree, record):
+    """
+    Return the deployment document an execution ran under.
+
+    """
+
+    for edge in record.get('relation') or []:
+        if edge.get('id_relation') == cc_public.workflow.run.REL_RAN_UNDER:
+            return tree.context.map_document[tree.resolve(edge['id_target']).location]
+
+    raise cc_public.edit.tree.ErrorItem(
+            '{exe} names no deployment.'.format(exe = record.get('id_self')))

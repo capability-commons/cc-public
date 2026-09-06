@@ -33,6 +33,7 @@ import pytest
 import cc_public.check
 import cc_public.edit.field
 import cc_public.edit.link
+import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.control
 import cc_public.eval.measure
@@ -588,3 +589,104 @@ def test_a_component_in_code_names_a_function_and_carries_no_prompt(repo):
     faults = clean(repo)
     assert any('is not a function' in f for f in faults), faults
     assert any('not both' in f for f in faults), faults
+
+
+def perform(repo, req):
+    """
+    Do what the implement node's brief asks, as a performer would: put
+    a function into the tree, make it an item, and link it as the
+    requirement's verifier with evidence that it passed.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.new.new(tree, 't_python_module', 'pym_cc_public.probe', tree.defaults())
+    for (field, text) in (('title', 'Probe'), ('brief', 'A stand-in.'),
+                          ('description', 'Holds a stand-in for a test.')):
+        cc_public.edit.field.set_field(tree, 'pym_cc_public.probe', field, value = text)
+    path = repo / 'src' / 'cc_public' / 'probe.py'
+    path.write_text(path.read_text() + '\n\ndef test_probe():\n    """\n    Proves it.\n\n    """\n')
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.probe.test_probe',
+                           tree.defaults())
+    cc_public.edit.field.set_field(tree, 'pyf_cc_public.probe.test_probe', 'title',
+                                   value = 'Probe')
+    cc_public.edit.field.set_field(tree, 'pyf_cc_public.probe.test_probe', 'description',
+                                   prose = 'A stand-in for a test.')
+    cc_public.edit.link.link(tree, 'pyf_cc_public.probe.test_probe', 'r_verifies', req)
+    cc_public.evidence.from_pytest(repo, {'src/cc_public/probe.py::test_probe': 'passed'}, 'x')
+
+
+def test_an_agent_node_parks_the_run_and_resume_reads_its_outputs_from_the_tree(repo):
+    """
+    The implement workflow parks at its agent node with a brief and its
+    state on the record; resumed too soon it stops and stays waiting;
+    once the tree holds the test the brief asked for, resume finds it,
+    accepts the requirement and closes the record.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    req  = 'req_committer_writes_record'
+    cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'proposed')
+    bind = {'implement.input.requirement': req}
+
+    r = cc_public.workflow.run.run(repo, 'wf_implement_requirement', 'dep_implement_local',
+                                   bind, Scripted(), Judge())
+    assert r['stopped'] is None and r['outcome'] == 'waiting'
+    (entry,) = r['node']
+    assert entry['node'] == 'implement' and 'cctool resume' in entry['waiting']
+    assert git(repo, 'status', '--porcelain') == ''            # the park is committed
+    tree = cc_public.edit.tree.Tree([repo])
+    exe  = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
+    assert exe['outcome'] == 'waiting' and exe['waiting']['node'] == 'implement'
+    assert exe['state']['queue'] == ['accept'] and exe['state']['pass'] == {'implement': 1,
+                                                                            'accept': 0}
+    assert [(b['port'], b['id_item']) for b in exe['state']['bound']] == \
+           [('implement.input.requirement', req)]
+
+    # Too soon: nothing verifies the requirement, so the run stops and
+    # the record is as it was.
+    r2 = cc_public.workflow.run.resume(repo, r['execution'], Scripted(), Judge())
+    assert r2['stopped'] and 'finds nothing' in r2['stopped']
+    assert cc_public.load.from_file(tree.resolve(r['execution']).filepath)['outcome'] == 'waiting'
+    assert git(repo, 'status', '--porcelain') == ''
+
+    perform(repo, req)
+    git(repo, 'add', '-A')
+    git(repo, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'performed')
+
+    r3 = cc_public.workflow.run.resume(repo, r['execution'], Scripted(), Judge())
+    assert r3['stopped'] is None, r3['stopped']
+    assert [e['node'] for e in r3['node']] == ['implement', 'accept']
+    assert r3['node'][0]['revised'] == [req]
+    assert r3['node'][0]['made'] == ['pyf_cc_public.probe.test_probe']
+    assert r3['node'][0]['fired'] == ['accept.input.requirement']
+    assert r3['outcome'] == 'completed'
+    assert cc_public.load.from_file(repo / 'requirement' / (req + '.yaml'))['status'] == 'accepted'
+    exe = cc_public.load.from_file(tree.resolve(r['execution']).filepath)
+    assert exe['outcome'] == 'completed' and 'waiting' not in exe and 'state' not in exe
+    assert git(repo, 'status', '--porcelain') == ''
+    assert clean(repo) == []
+
+    with pytest.raises(cc_public.workflow.run.Stop):     # not waiting any more
+        cc_public.workflow.run.resume(repo, r['execution'], Scripted(), Judge())
+
+
+def test_each_performer_is_held_to_its_form(repo):
+    """
+    The workflow check reports a model's output that says how it is
+    found, an agent's output that says neither, and a prompt missing
+    where a performer is asked one.
+
+    """
+    tree = cc_public.edit.tree.Tree([repo])
+    cc_public.edit.field.set_field(tree, 'prt_draft_design_decision.decision', 'found',
+                                   value = {'port': 'subject', 'relation': 'r_decides',
+                                            'direction': 'out'})
+    cc_public.edit.field.unset_field(tree, 'prt_implement_requirement.implemented', 'revises')
+    cc_public.edit.field.unset_field(tree, 'prt_implement_requirement.test', 'prompt')
+    faults = clean(repo)
+    assert any("only an agent's output does" in f for f in faults), faults
+    assert any('says neither what it revises nor how' in f for f in faults), faults
+    assert any('test carries no prompt' in f for f in faults), faults

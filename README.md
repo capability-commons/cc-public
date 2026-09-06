@@ -18,7 +18,7 @@ mechanically before it is committed.
 | `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules |
 | `eval/`          | criteria a language model judges items against, with the control cases that measure them |
 | `workflow/`      | components, dataflow workflows and deployments                               |
-| `execution/`     | one record per workflow run, binding every port on every pass                |
+| `execution/`     | one record per workflow run, binding every port on every pass; a waiting one holds the run's state and a brief for its performer |
 | `evidence/`      | what pytest and attestations observed about each requirement, stamped with what they saw |
 | `query/`         | questions about the graph kept as SQL over its facts, with what a row means               |
 | `src/cc_public/` | `cctool`, which checks, edits, runs and commits                              |
@@ -98,8 +98,8 @@ tests.
 design decisions in `ddr/` say why things are as they are; start with
 `ddr_design_decision`, `ddr_check_architecture`, `ddr_fail_closed`,
 `ddr_layered_architecture`, `ddr_eval_measurement`,
-`ddr_implementation_trace`, `ddr_verification_evidence` and
-`ddr_workflow_execution`.
+`ddr_implementation_trace`, `ddr_verification_evidence`,
+`ddr_workflow_execution` and `ddr_performer`.
 
 ## Limitations
 

@@ -49,6 +49,7 @@ allOf:
         enum:
           - completed
           - exhausted
+          - waiting
 
         description:    |
                         How the run ended. completed: every back edge
@@ -61,6 +62,8 @@ allOf:
                         stopped removes its execution, unless it
                         committed after every node. Absent on
                         executions recorded before this field.
+                        waiting: the run parked at an agent node and
+                        holds its state; cctool resume continues it.
 
       relation:
         type:           array
@@ -72,5 +75,73 @@ allOf:
 
             id_relation:
               const:    r_ran_under
+
+      state:
+        type:           object
+        additionalProperties:  false
+
+        required:
+          - queue
+          - pass
+          - bound
+
+        properties:
+
+          queue:
+            type:       array
+
+            items:
+              type:     string
+
+          pass:
+            type:       object
+
+            additionalProperties:
+              type:     integer
+              minimum:  0
+
+          bound:
+            type:       array
+
+            items:
+              type:     object
+              additionalProperties:  false
+
+              required:
+                - port
+                - id_item
+                - guid_item
+
+              properties:
+
+                port:
+                  type:  string
+
+                id_item:
+                  $ref:  https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+                guid_item:
+                  $ref:  https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+
+        description:    "The state of a parked run: the nodes still queued, in order, the passes each node has taken, and what is bound on every port, as node.side.port. Present while the outcome is waiting.\n"
+
+      waiting:
+        type:           object
+        additionalProperties:  false
+
+        required:
+          - node
+          - brief
+
+        properties:
+
+          node:
+            type:       string
+
+          brief:
+            type:       string
+            minLength:  1
+
+        description:    "The node the run waits at and the brief for whoever performs it, rendered from the node's ports and bound items. Present while the outcome is waiting.\n"
 
 unevaluatedProperties:  false

@@ -52,6 +52,7 @@ import cc_public.eval.select
 import cc_public.path
 import cc_public.workflow
 import cc_public.workflow.graph
+import cc_public.workflow.agent
 import cc_public.workflow.code
 import cc_public.workflow.produce
 
@@ -73,6 +74,14 @@ KEY_OUTCOME    = 'outcome'
 
 OUTCOME_COMPLETED = 'completed'
 OUTCOME_EXHAUSTED = 'exhausted'
+OUTCOME_WAITING   = 'waiting'
+KEY_PERFORMER     = 'performer'
+PERFORMER_AGENT   = 'agent'
+KEY_STATE         = 'state'
+SIDE_INPUT        = 'input'
+SIDE_OUTPUT       = 'output'
+KEY_WAITING       = 'waiting'
+REL_DEPLOYS       = 'r_deploys'
 
 REL_JUDGED_BY  = 'r_is_judged_by'
 REL_RAN_UNDER  = 'r_ran_under'
@@ -122,6 +131,8 @@ class State:
         self.id_exe              = None
         self.bound               = {}
         self.map_pass            = {}
+        self.resumed   = None       # the agent node a resumed segment starts at
+
 
     # -------------------------------------------------------------------------
     def generator_for(self, local):
@@ -243,49 +254,205 @@ def _bound(tree, graph, map_bind):
 # -----------------------------------------------------------------------------
 def _execute(state, report, id_deployment, list_trailer):
     """
-    Walk the nodes, and commit as the policy says.
-
-    The forward order is walked once; a back edge that fires puts the
-    nodes from its target to its source back on the front of the queue
-    for another pass, while the target's budget allows.
+    Make the execution record, then walk the nodes.
 
     """
 
     state.id_exe        = _execution(state, report['workflow'], id_deployment)
     report['execution'] = state.id_exe
-    order               = report['order']
-    queue               = list(order)
-    state.map_pass      = dict.fromkeys(order, 0)
+    state.map_pass      = dict.fromkeys(report['order'], 0)
+    _walk(state, report, list(report['order']), id_deployment, list_trailer)
+
+
+# -----------------------------------------------------------------------------
+def _walk(state, report, queue, id_deployment, list_trailer):
+    """
+    Walk the queued nodes, and commit as the policy says.
+
+    The forward order is walked once; a back edge that fires puts the
+    nodes from its target to its source back on the front of the queue
+    for another pass, while the target's budget allows. An agent node
+    parks the run: its state goes on the record and the walk returns,
+    for resume to take up.
+
+    """
 
     while queue:
         local = queue.pop(0)
         state.map_pass[local] += 1
         entry = _node(state, local)
-        report['node'].append(entry)
 
-        if entry['back']:
-            node_dst = min(entry['back'], key = order.index)
-            queue    = order[order.index(node_dst):order.index(local) + 1] + queue
+        if entry.get('waiting'):
+            _park(state, report, local, queue, entry, list_trailer)
+            return
 
-        if state.policy['commit'] == COMMIT_NODE:
-            entry['commit'] = _commit(state, 'Run {wf}: {node}'.format(
-                                                wf = report['workflow'], node = local),
-                                      [entry], list_trailer)
+        _after(state, report, local, entry, queue, list_trailer)
 
-    # How the run ended is a field, so that a run the budget cut short
-    # cannot be read as one the guards let finish.
-    #
+    _finish(state, report, id_deployment, list_trailer)
+
+
+# -----------------------------------------------------------------------------
+def _after(state, report, local, entry, queue, list_trailer):
+    """
+    Record a node's entry, requeue for a back edge that fired, and
+    commit the node as the policy says.
+
+    """
+
+    order = report['order']
+    report['node'].append(entry)
+
+    if entry['back']:
+        node_dst = min(entry['back'], key = order.index)
+        queue[:0] = order[order.index(node_dst):order.index(local) + 1]
+
+    if state.policy['commit'] == COMMIT_NODE:
+        entry['commit'] = _commit(state, 'Run {wf}: {node}'.format(
+                                            wf = report['workflow'], node = local),
+                                  [entry], list_trailer)
+
+
+# -----------------------------------------------------------------------------
+def _finish(state, report, id_deployment, list_trailer):
+    """
+    Close the record: how the run ended is a field, so that a run the
+    budget cut short cannot be read as one the guards let finish.
+
+    """
+
     report['outcome'] = OUTCOME_EXHAUSTED if any(e['exhausted'] for e in report['node']) \
                         else OUTCOME_COMPLETED
+    for key in (KEY_STATE, KEY_WAITING):
+        if key in state.tree.context.map_document[state.tree.resolve(state.id_exe).location]:
+            cc_public.edit.field.unset_field(state.tree, state.id_exe, key)
     cc_public.edit.field.set_field(state.tree, state.id_exe, KEY_OUTCOME,
                                    value = report['outcome'])
     cc_public.edit.field.set_field(state.tree, state.id_exe, 'description',
                                    prose = _summary(report['node']))
 
+    # A deployment that commits per node has committed every node; the
+    # closing of the record is the last thing left to commit.
+    #
     if state.policy['commit'] == COMMIT_RUN:
         report['commit'] = _commit(state, 'Run {wf} under {dep}'.format(
                                             wf = report['workflow'], dep = id_deployment),
                                    report['node'], list_trailer)
+    elif state.policy['commit'] == COMMIT_NODE:
+        report['commit'] = _commit(state, 'Run {wf}: {outcome}'.format(
+                                            wf = report['workflow'], outcome = report['outcome']),
+                                   report['node'], list_trailer)
+
+
+# -----------------------------------------------------------------------------
+def _park(state, report, local, queue, entry, list_trailer):
+    """
+    Put the run's state on the record and mark it waiting at the node,
+    committing where the policy commits at all, so that the performer
+    starts from a clean tree.
+
+    """
+
+    tree = state.tree
+    report['node'].append(entry)
+    report['outcome'] = OUTCOME_WAITING
+    _bind(state, local, state.map_pass[local], (SIDE_INPUT,))
+
+    bound = [{'port': f'{node}.input.{port}', 'id_item': id_item,
+              'guid_item': tree.resolve(id_item).guid_self}
+             for ((node, port), id_item) in sorted(state.bound.items())]
+    cc_public.edit.field.set_field(tree, state.id_exe, KEY_STATE,
+                                   value = {'queue': list(queue),
+                                            'pass':  dict(state.map_pass),
+                                            'bound': bound})
+    cc_public.edit.field.set_field(tree, state.id_exe, KEY_WAITING,
+                                   value = {'node': local, 'brief': entry['waiting']})
+    cc_public.edit.field.set_field(tree, state.id_exe, KEY_OUTCOME, value = OUTCOME_WAITING)
+    cc_public.edit.field.set_field(tree, state.id_exe, 'description',
+                                   prose = 'Waiting at {node}.'.format(node = local))
+
+    if state.policy['commit'] != COMMIT_NEVER:
+        entry['commit'] = _commit(state, 'Run {wf}: waiting at {node}'.format(
+                                            wf = report['workflow'], node = local),
+                                  [entry], list_trailer)
+
+
+# -----------------------------------------------------------------------------
+def resume(root, id_execution, generator, runner, list_trailer = (),
+           generator_challenge = None):
+    """
+    Continue a waiting run from its execution record and return the
+    report: the agent node's outputs are read from the tree, and the
+    walk goes on from there.
+
+    """
+
+    root   = pathlib.Path(root).resolve()
+    tree   = cc_public.edit.tree.Tree([root])
+    record = tree.context.map_document[tree.resolve(id_execution).location]
+
+    if record.get(KEY_OUTCOME) != OUTCOME_WAITING:
+        raise Stop('{exe} is not waiting; its outcome is {o}.'.format(
+                        exe = id_execution, o = record.get(KEY_OUTCOME)))
+
+    id_deployment = _target(record, REL_RAN_UNDER)
+    dep           = tree.context.map_document[tree.resolve(id_deployment).location]
+    id_workflow   = _target(dep, REL_DEPLOYS)
+    graph         = cc_public.workflow.graph.Graph(tree, id_workflow)
+    state         = State(root, tree, graph, _policy(dep, graph), generator,
+                          generator_challenge or generator, runner)
+    local         = record[KEY_WAITING]['node']
+    report        = {'workflow': graph.id_self, 'deployment': id_deployment,
+                     'policy': state.policy, 'order': graph.order(), 'node': [],
+                     'execution': id_execution, 'commit': None, 'stopped': None,
+                     'outcome': None, 'resumed': local}
+
+    state.id_exe   = id_execution
+    state.resumed  = local
+    state.map_pass = dict(record[KEY_STATE]['pass'])
+    state.bound    = {tuple(b['port'].split('.')[::2]): b['id_item']
+                      for b in record[KEY_STATE]['bound']}
+    report['bound'] = {f'{n}.input.{p}': i for ((n, p), i) in state.bound.items()}
+    state.policy['budget'] = _budget(tree, dep, state.bound.values())
+
+    if state.policy['commit'] != COMMIT_NEVER and cc_public.commit.changed(root):
+        raise Stop('The working tree is not clean, and this deployment '
+                   'commits. Commit or stash first.')
+
+    # The record is this segment's to change, and a stop puts it back
+    # to waiting with the brief it had.
+    #
+    state.ledger.note_modify(tree.resolve(id_execution).filepath)
+
+    try:
+        entry = _node(state, local)
+        _after(state, report, local, entry, queue := list(record[KEY_STATE]['queue']),
+               list_trailer)
+        _walk(state, report, queue, id_deployment, list_trailer)
+    except Stop as stop:
+        state.ledger.restore()
+        report['stopped'] = str(stop)
+        report['outcome'] = OUTCOME_WAITING
+    except Exception:
+        state.ledger.restore()
+        raise
+
+    return report
+
+
+# -----------------------------------------------------------------------------
+def _target(document, id_relation):
+    """
+    Return the readable id at the end of the document's edge of the
+    relation.
+
+    """
+
+    for edge in document.get(KEY_RELATION) or []:
+        if edge.get(KEY_ID_REL) == id_relation:
+            return edge['id_target']
+
+    raise Stop('{id} carries no {rel} edge.'.format(id = document.get('id_self'),
+                                                    rel = id_relation))
 
 
 # -----------------------------------------------------------------------------
@@ -399,36 +566,52 @@ def _node(state, local):
     n_pass    = state.map_pass[local]
     entry     = {'node': local, 'pass': n_pass, 'made': [], 'revised': [],
                  'verdict': {}, 'fired': [], 'declined': [], 'back': [],
-                 'exhausted': [], 'note': [], 'commit': None, 'skipped': None}
+                 'exhausted': [], 'note': [], 'commit': None, 'skipped': None,
+                 'waiting': None}
     map_id = _inputs(state, local, entry)
 
     if map_id is None:
         return entry
 
-    # A component in code runs once for the node and fills every output
-    # port; one on prompts is asked once per port, with its inputs
-    # rendered as prose.
+    # A function runs once for the node and fills every output port; a
+    # model is asked once per port, with its inputs rendered as prose;
+    # an agent parks the run, and on resume its outputs are read from
+    # the tree.
     #
-    found = cc_public.workflow.code.implementation(state.tree, state.graph.component[local])
+    component = state.graph.component[local]
+    is_agent  = component.get(KEY_PERFORMER) == PERFORMER_AGENT
+    found     = cc_public.workflow.code.implementation(state.tree, component)
 
-    if found is not None:
-        (map_output, set_new) = cc_public.workflow.code.call(state, local, found, map_id)
+    outputs = state.graph.outputs(local)
+
+    if is_agent and state.resumed != local:
+        entry['waiting'] = cc_public.workflow.agent.brief(state, local, state.id_exe, map_id)
+        return entry
+    if is_agent:
+        map_output    = cc_public.workflow.agent.outputs(state, local, map_id)
+        state.resumed = None
+    elif found is not None:
+        (raw, set_new) = cc_public.workflow.code.call(state, local, found, map_id)
+        map_output     = {port: cc_public.workflow.code.output(state, local, port, spec,
+                                                               raw, set_new)
+                          for (port, spec) in outputs.items()}
     else:
-        map_input = {port: cc_public.workflow.produce.render(state.tree, id_item)
-                     for (port, id_item) in map_id.items()}
+        map_output = None
+        map_input  = {port: cc_public.workflow.produce.render(state.tree, id_item)
+                      for (port, id_item) in map_id.items()}
 
-    for (port, spec) in state.graph.outputs(local).items():
+    for (port, spec) in outputs.items():
         was_bound = spec.get(KEY_REVISES) and (local, spec[KEY_REVISES]) in state.bound
-        if found is not None:
-            id_item = cc_public.workflow.code.output(state, local, port, spec,
-                                                    map_output, set_new)
-        else:
-            id_item = cc_public.workflow.produce.produce(state, local, port, spec,
-                                                        map_input, entry)
+        id_item   = (map_output[port] if map_output is not None else
+                     cc_public.workflow.produce.produce(state, local, port, spec,
+                                                        map_input, entry))
         state.bound[(local, port)] = id_item
         entry['revised' if was_bound else 'made'].append(id_item)
 
-    map_bnd = _bind(state, local, n_pass)
+    # A park bound the inputs of an agent node already.
+    #
+    map_bnd = _bind(state, local, n_pass, (SIDE_OUTPUT,) if is_agent
+                                          else (SIDE_INPUT, SIDE_OUTPUT))
     refusal = cc_public.check.refusal(cc_public.check.check(list_path = [state.root]))
 
     if refusal is not None:
@@ -520,10 +703,10 @@ def _deliver(state, local, port, spec, entry, id_bnd):
 
 
 # -----------------------------------------------------------------------------
-def _bind(state, local, n_pass):
+def _bind(state, local, n_pass, sides = (SIDE_INPUT, SIDE_OUTPUT)):
     """
-    Put a binding on the execution for every bound port of the node.
-    Return {(side, port): id_binding}.
+    Put a binding on the execution for every bound port of the node on
+    the sides given. Return {(side, port): id_binding}.
 
     """
 
@@ -531,8 +714,10 @@ def _bind(state, local, n_pass):
     node = state.graph.node[local]
     out  = {}
 
-    for (side, ports) in (('input', state.graph.inputs(local)),
-                          ('output', state.graph.outputs(local))):
+    for (side, ports) in ((SIDE_INPUT, state.graph.inputs(local)),
+                          (SIDE_OUTPUT, state.graph.outputs(local))):
+        if side not in sides:
+            continue
         for (port, spec) in ports.items():
             id_item = state.bound.get((local, port))
             if id_item is None:
@@ -627,6 +812,10 @@ def _summary(list_entry):
     lines = []
 
     for e in list_entry:
+        if e.get('waiting'):
+            lines.append('{node}, pass {n}: parked for a performer.'.format(
+                            node = e['node'], n = e.get('pass', 1)))
+            continue
         if e.get('skipped'):
             lines.append('{node}, pass {n}: skipped, {why}'.format(
                             node = e['node'], n = e.get('pass', 1), why = e['skipped']))

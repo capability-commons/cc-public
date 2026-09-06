@@ -94,7 +94,17 @@ Running and committing
   called once per node as `f(tree, ledger, {port: id})` and returns an id
   per output port; the tool's own live in `cc_public.workflow.component`
   (`ddr_code_component`). `wf_accept_requirement` with `dep_accept_local`
-  accepts a requirement that way.
+  accepts a requirement that way. Every component declares its `performer`:
+  `function`, `model` or `agent` (`ddr_performer`). A node performed by an
+  agent parks the run: the execution record holds the run's state and a
+  brief, `run` prints the brief and returns with outcome `waiting`.
+- `resume EXECUTION` — continues a waiting run once the tree holds what
+  the brief asked for. An agent output is read from the graph, never from
+  a report: it `revises` an input, or is `found` from one by a relation in
+  a direction. A resume that finds nothing stops and leaves the record
+  waiting. `wf_implement_requirement` with `dep_implement_local` is the
+  first: implement, then accept. When you are the performer, do the brief
+  through the tool, commit, then resume.
 - `commit TITLE [--brief …] [--description …] [--link REL ITEM]` — runs the
   checks and the lint, refuses on a critical or lint finding unless
   `--checkpoint` and on an incomplete analysis always, writes a commit

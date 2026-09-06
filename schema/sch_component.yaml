@@ -33,6 +33,7 @@ allOf:
     required:
       - description
       - output
+      - performer
 
     properties:
 
@@ -54,5 +55,15 @@ allOf:
 
         additionalProperties:
           $ref:         https://capability-commons.org/schema/sch_port.yaml
+
+      performer:
+        type:           string
+
+        enum:
+          - function
+          - model
+          - agent
+
+        description:    "Who does the work of a node instantiating this component. function: the function named by r_is_implemented_by, called once per node. model: the prompt on each output port, asked once per port. agent: the prompt on each output port is the task of a performer who edits the tree in a session of its own, and the run parks until resumed (ddr_performer).\n"
 
 unevaluatedProperties:  false

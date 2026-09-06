@@ -76,6 +76,15 @@ REL_JUDGED_BY    = 'r_is_judged_by'
 REL_IMPLEMENTED  = 'r_is_implemented_by'
 PREFIX_FUNCTION  = 'pyf'
 KEY_PROMPT       = 'prompt'
+KEY_PERFORMER    = 'performer'
+ID_REG_RELATION  = 'reg_relation'
+KEY_TABLE        = 'table'
+KEY_FOUND        = 'found'
+KEY_PORT         = 'port'
+PERFORMER_FUNCTION = 'function'
+PERFORMER_MODEL    = 'model'
+PERFORMER_AGENT    = 'agent'
+PERFORMERS         = (PERFORMER_FUNCTION, PERFORMER_MODEL, PERFORMER_AGENT)
 
 SIDE_OUTPUT     = 'output'
 SIDE_INPUT      = 'input'
@@ -147,7 +156,7 @@ def _inspect(filepath, document, map_by_guid):
         map_component[name] = component
         list_bad.extend(_type_agreement(filepath, name, component, map_by_guid))
         list_bad.extend(_revises(filepath, name, component))
-        list_bad.extend(_implementation(filepath, name, component, map_by_guid))
+        list_bad.extend(_performer(filepath, name, component, map_by_guid))
 
         if not _has_eval(component):
             list_note.append(cc_public.check.result.Note(
@@ -323,40 +332,120 @@ def _type_agreement(filepath, name, component, map_by_guid):
 
 
 # -----------------------------------------------------------------------------
-def _implementation(filepath, name, component, map_by_guid):
+def _performer(filepath, name, component, map_by_guid):
     """
-    Return the faults of a component in code: it names a function, and
-    its output ports carry no prompt, since a component runs on one or
-    the other.
+    Return the faults of a component against its performer: a function
+    names one function item and no prompt; a model carries a prompt on
+    every output and no implementation; an agent carries a prompt on
+    every output and says how each output's item is found.
 
     """
+
+    performer = component.get(KEY_PERFORMER)
+    if performer not in PERFORMERS:
+        return []                     # the schema check reports it
 
     list_edge = [e for e in component.get(KEY_RELATION) or []
                    if isinstance(e, dict) and e.get(KEY_ID_REL) == REL_IMPLEMENTED]
+    outputs   = [(port, spec) for (port, spec) in (component.get(KEY_OUTPUT) or {}).items()
+                              if isinstance(spec, dict)]
+    where     = f'node.{name}'
 
-    if not list_edge:
-        return []
+    if performer == PERFORMER_FUNCTION:
+        list_message = _function_form(component, list_edge, outputs, map_by_guid)
+    else:
+        list_message = _prompt_form(component, performer, list_edge, outputs)
+    list_message.extend(_found_form(component, performer, outputs, map_by_guid))
 
+    return [_fault(filepath, where, message) for message in list_message]
+
+
+# -----------------------------------------------------------------------------
+def _function_form(component, list_edge, outputs, map_by_guid):
+    """
+    Return the faults of a component performed by a function.
+
+    """
+
+    id_cmp   = component[KEY_ID_SELF]
     list_bad = []
-    where    = f'node.{name}'
 
+    if len(list_edge) != 1:
+        list_bad.append('{c} is performed by a function and names {n} by '
+                        'r_is_implemented_by; it names exactly one.'.format(
+                                c = id_cmp, n = len(list_edge)))
     for edge in list_edge:
         target = map_by_guid.get(edge.get(KEY_GUID_TARGET))
-        if target is None:
-            continue                      # the reference check reports it
-        if str(target.get(KEY_ID_SELF, '')).split('_', 1)[0] != PREFIX_FUNCTION:
-            list_bad.append(_fault(filepath, where,
-                    '{component} is implemented by {target}, which is not a '
-                    'function. A component in code names a function at module '
-                    'level.'.format(component = component[KEY_ID_SELF],
-                                    target    = target.get(KEY_ID_SELF))))
+        if target is not None \
+                and str(target.get(KEY_ID_SELF, '')).split('_', 1)[0] != PREFIX_FUNCTION:
+            list_bad.append('{c} is implemented by {t}, which is not a function. A '
+                            'component in code names a function at module level.'.format(
+                                    c = id_cmp, t = target.get(KEY_ID_SELF)))
+    for (port, spec) in outputs:
+        if spec.get(KEY_PROMPT):
+            list_bad.append('{c} is implemented in code and its output {p} carries a '
+                            'prompt. A component runs on prompts or on code, not '
+                            'both.'.format(c = id_cmp, p = port))
 
-    for (port, spec) in (component.get(KEY_OUTPUT) or {}).items():
-        if isinstance(spec, dict) and spec.get(KEY_PROMPT):
-            list_bad.append(_fault(filepath, where,
-                    '{component} is implemented in code and its output {port} '
-                    'carries a prompt. A component runs on prompts or on code, '
-                    'not both.'.format(component = component[KEY_ID_SELF], port = port)))
+    return list_bad
+
+
+# -----------------------------------------------------------------------------
+def _prompt_form(component, performer, list_edge, outputs):
+    """
+    Return the faults of a component performed by a model or an agent:
+    a prompt on every output, and no implementation.
+
+    """
+
+    id_cmp   = component[KEY_ID_SELF]
+    list_bad = []
+
+    if list_edge:
+        list_bad.append('{c} is performed by a {who} and names an implementation; '
+                        'only a function does.'.format(c = id_cmp, who = performer))
+    for (port, spec) in outputs:
+        if not spec.get(KEY_PROMPT):
+            list_bad.append('{c} is performed by a {who} and its output {p} carries no '
+                            'prompt.'.format(c = id_cmp, who = performer, p = port))
+
+    return list_bad
+
+
+# -----------------------------------------------------------------------------
+def _found_form(component, performer, outputs, map_by_guid):
+    """
+    Return the faults in how outputs say their item is found: only an
+    agent's output does, and every agent's output does, from an input
+    of the component, by a relation in the register.
+
+    """
+
+    id_cmp    = component[KEY_ID_SELF]
+    inputs    = set(component.get(KEY_INPUT) or {})
+    register  = next((d for d in map_by_guid.values()
+                        if d.get(KEY_ID_SELF) == ID_REG_RELATION), {})
+    relations = set(register.get(KEY_TABLE) or {})
+    list_bad  = []
+
+    for (port, spec) in outputs:
+        found = spec.get(KEY_FOUND)
+        if performer != PERFORMER_AGENT:
+            if found:
+                list_bad.append('{c}.output.{p} says how its item is found, which only an '
+                                'agent\'s output does.'.format(c = id_cmp, p = port))
+            continue
+        if not found and not spec.get(KEY_REVISES):
+            list_bad.append('{c}.output.{p} is an agent\'s output and says neither what it '
+                            'revises nor how its item is found.'.format(c = id_cmp, p = port))
+        if found and found.get(KEY_PORT) not in inputs:
+            list_bad.append('{c}.output.{p} is found from {i}, which is not an input of '
+                            'the component.'.format(c = id_cmp, p = port,
+                                                    i = found.get(KEY_PORT)))
+        if found and found.get(KEY_RELATION) not in relations:
+            list_bad.append('{c}.output.{p} is found by {r}, which is not in the relation '
+                            'register.'.format(c = id_cmp, p = port,
+                                               r = found.get(KEY_RELATION)))
 
     return list_bad
 
