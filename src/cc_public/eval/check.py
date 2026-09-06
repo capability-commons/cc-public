@@ -31,6 +31,7 @@ relation:               []
 
 
 import functools
+import re
 import sys
 
 import cc_public.check.confidence
@@ -46,6 +47,10 @@ TITLE        = 'Items meet their evals'
 NOUN         = 'judgement'
 
 KEY_SEVERITY = 'severity'
+KEY_ID_SELF  = 'id_self'
+KEY_TABLE    = 'table'
+PREFIX_RULE  = 'rule'
+RE_RULE      = re.compile(r'\brule_[a-z0-9_]+')
 
 
 # -----------------------------------------------------------------------------
@@ -105,6 +110,7 @@ def check(context):
     list_note          = []
     list_nonconformity = []
     count_verdict      = 0
+    set_rule           = _rules(context.map_document)
     map_known          = {}
     set_unmeasured     = set()
 
@@ -183,13 +189,45 @@ def check(context):
                 severity = task.document_eval.get(
                                 KEY_SEVERITY,
                                 cc_public.check.result.SEVERITY_ADVISORY),
-                message  = verdict.feedback))
+                message  = _rules_named(verdict.feedback, set_rule)))
 
     return cc_public.check.result.Result(
                         count_item         = count_verdict,
                         list_nonconformity = list_nonconformity,
                         list_note          = list_note,
                         detail             = _detail(runner, context, count_verdict))
+
+
+# -----------------------------------------------------------------------------
+def _rules(map_document):
+    """
+    Return the id of every requirement rule the tree declares, from the
+    tables of its registers.
+
+    """
+
+    return {str(entry.get(KEY_ID_SELF))
+            for document in map_document.values() if isinstance(document, dict)
+            for entry in (document.get(KEY_TABLE) or {}).values()
+            if isinstance(entry, dict)
+               and str(entry.get(KEY_ID_SELF, '')).split('_', 1)[0] == PREFIX_RULE}
+
+
+# -----------------------------------------------------------------------------
+def _rules_named(feedback, set_rule):
+    """
+    Return the feedback with a sentence added for every rule it names
+    that the tree does not declare, so that a judge's invented rule is
+    read as such and not as a rule.
+
+    """
+
+    unknown = sorted({name for name in RE_RULE.findall(feedback)
+                      if name not in set_rule})
+    if not unknown:
+        return feedback
+    return feedback.rstrip() + ' No rule named {names} is in the register.'.format(
+                                                    names = ', '.join(unknown))
 
 
 # -----------------------------------------------------------------------------

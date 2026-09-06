@@ -10,43 +10,54 @@ protective_mark:
 
 title:                  Conditions explicit
 brief:                  |
-                        The condition under which the statement
-                        applies is stated in the statement, in its own
-                        clause, and no qualifier comes between the
-                        verb and its object. Rules
+                        The condition under which the obligation
+                        applies is stated as the opening clause, and
+                        what follows the object is performance or
+                        manner in its own place. Rules
                         rule_r11_separate_clauses,
-                        rule_r27_explicit_conditions.
+                        rule_r27_explicit_conditions,
+                        rule_s17_incomplete_conditions.
 criterion:              |
                         MET when the statement either applies at all
-                        times and says nothing conditional, or states
-                        its trigger, state or condition explicitly in
-                        a clause of its own, with the main verb beside
-                        its object and each performance in its own
-                        clause.
+                        times and says nothing conditional, or opens
+                        with the trigger, state or period under which
+                        the obligation applies, with the main verb
+                        beside its object and the performance after.
 
-                        UNMET when an action plainly applies only
-                        under a condition that the statement does not
-                        state; or when a performance or condition
-                        phrase is wedged between the verb and its
+                        UNMET when the obligation plainly applies only
+                        under a trigger or state the statement does
+                        not open with, as an unlock, an alarm or a
+                        message that waits on an event does; when a
+                        condition is wedged between the verb and its
                         object so that it is unclear what it
-                        qualifies.
+                        qualifies; or when a condition is stated and
+                        the statement leaves the other case, the
+                        condition not holding, to another requirement
+                        that would need writing.
 
-                        The object is the noun the verb acts on,
-                        directly after the verb. A phrase after that
-                        object, whether an indirect object such as to
-                        each Maritime_User, a condition, or a
-                        performance such as at an accuracy of 20
-                        meters or for greater than 30 minutes, is in
-                        its own place and is not wedged. Wedged means
-                        standing between the verb and the noun it acts
-                        on.
+                        A condition decides whether the obligation
+                        applies at all. A phrase after the object that
+                        says how well, how, by what means or to what
+                        measure, within 5 minutes, without tools, for
+                        the current load, at 10 000 lux, is
+                        performance or manner, is in its own place,
+                        and is not a condition. A place or a recipient
+                        after the object, to each Maritime_User, in
+                        Harbor_Approach, says to whom or where, not
+                        when, and is not a condition either.
+
+                        Wedged means standing between the verb and the
+                        noun it acts on.
 
                         The subject opens with a label line: three
-                        hyphens, the item's id, and the field name
-                        statement. Labels are presentation, not prose.
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose. The
+                        statement is composed from the slots shown
+                        beside it; where no slots are shown, judge the
+                        statement alone.
 
                         When UNMET, quote the words at fault and name
-                        the rule.
+                        the rule by one of the ids above.
 severity:               advisory
 
 example:
@@ -86,32 +97,74 @@ example:
                         Applies at all times; nothing conditional is
                         implied.
 
+  - input:              |
+                        statement: The Battery_Hub shall connect up to
+                        eight Battery_Modules within 5 minutes without
+                        tools. qualifier: within 5 minutes without
+                        tools
+    verdict:            met
+    feedback:           |
+                        Performance and manner after the object, in
+                        their own place; nothing conditional is
+                        implied.
+
+  - input:              |
+                        statement: If a Library_Item is not reserved,
+                        the Library_System shall continue the Loan.
+                        condition_kind: logic condition: a
+                        Library_Item is not reserved
+    verdict:            unmet
+    feedback:           |
+                        The other case, the item reserved, is left
+                        unwritten. rule_s17_incomplete_conditions.
+
+  - input:              |
+                        statement: The Alarm_Unit shall sound the
+                        Evacuation_Tone for 30 seconds.
+    verdict:            unmet
+    feedback:           |
+                        Sounded when? An evacuation tone waits on an
+                        event, and the trigger is missing.
+                        rule_r27_explicit_conditions.
+
+  - input:              |
+                        statement: The Beacon shall send the
+                        Position_Report to each Vessel in the
+                        Approach_Zone at an interval of 10 seconds.
+    verdict:            met
+    feedback:           |
+                        To whom, where and how often follow the
+                        object; nothing conditional is implied.
+
 scope:
 
   include:
     - statement
+    - condition_kind
+    - condition
+    - qualifier
 
 confidence:
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             written
     cases:              7
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
-    unanimous:          0.857
-    digest:             33ba990d
+    unanimous:          1.0
+    digest:             1f716c31
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             all
     cases:              7
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
-    unanimous:          0.857
-    digest:             33ba990d
+    unanimous:          1.0
+    digest:             1f716c31
 
 relation:
 

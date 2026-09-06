@@ -11,30 +11,47 @@ protective_mark:
 title:                  Concise
 brief:                  |
                         The statement carries the obligation and
-                        nothing else: no superfluous infinitive, no
-                        purpose phrase, no parenthesis. Rules
+                        nothing else: no padding on the verb beyond
+                        the form the activity gives it, no purpose
+                        phrase, no parenthesis. Rules
                         rule_r10_superfluous_infinitives,
                         rule_r20_purpose_phrases,
-                        rule_r21_parentheses.
+                        rule_r21_parentheses,
+                        rule_s14_irrelevant_clauses,
+                        rule_s15_redundancy.
 criterion:              |
                         MET when every word of the statement is part
                         of the obligation, its condition or its
                         performance.
 
-                        UNMET when the verb is padded with be able to,
-                        be capable of, be designed to, provide the
-                        capability to; when a phrase says why, such as
-                        so that, in order to, thus allowing, for the
-                        purpose of; or when parentheses or brackets
-                        hold subordinate text. Square brackets marking
-                        a logical expression are not subordinate text.
+                        UNMET when the verb is padded with be capable
+                        of, be designed to, provide the capability to,
+                        or be able to where the activity is not
+                        interface; when a phrase says why, such as so
+                        that, in order to, thus allowing, for the
+                        purpose of, to prevent; when parentheses or
+                        brackets hold subordinate text; or when words
+                        repeat what other words already say. Square
+                        brackets marking a logical expression are not
+                        subordinate text.
+
+                        The template gives an activity its form, and
+                        the form is not padding: an interaction reads
+                        provide the <Actor> with the ability to
+                        <verb>, an interface reads be able to <verb>,
+                        and provide as the main verb with an object of
+                        its own, provide a status display, is the
+                        obligation itself.
 
                         The subject opens with a label line: three
-                        hyphens, the item's id, and the field name
-                        statement. Labels are presentation, not prose.
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose. The
+                        statement is composed from the slots shown
+                        beside it; where no slots are shown, judge the
+                        statement alone.
 
                         When UNMET, quote the words at fault and name
-                        the rule.
+                        the rule by one of the ids above.
 severity:               advisory
 
 example:
@@ -73,32 +90,52 @@ example:
     feedback:           |
                         A parenthesis. rule_r21_parentheses.
 
+  - input:              |
+                        statement: The Power_Pod shall be able to
+                        accept charging input from a vehicle DC source
+                        supplying between 20 volts and 32 volts.
+                        activity: interface
+    verdict:            met
+    feedback:           |
+                        The interface form; be able to is the
+                        template, not padding.
+
+  - input:              |
+                        statement: The Battery_Crate shall provide a
+                        status display readable in full daylight at 10
+                        000 lux. activity: autonomous
+    verdict:            met
+    feedback:           |
+                        Provide is the main verb, with an object of
+                        its own.
+
 scope:
 
   include:
     - statement
+    - activity
 
 confidence:
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             written
     cases:              9
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             45ce51c2
+    digest:             4c86811f
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             all
     cases:              9
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             45ce51c2
+    digest:             4c86811f
 
 relation:
 

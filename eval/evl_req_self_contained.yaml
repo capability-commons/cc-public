@@ -10,42 +10,57 @@ protective_mark:
 
 title:                  Self contained
 brief:                  |
-                        The statement can be read alone: terms in
-                        their glossary form, the definite article, no
-                        pronoun, no reliance on a heading. Rules
+                        Every noun in the statement names one definite
+                        thing: no pronoun, no vague noun, the definite
+                        article on what is defined, and no reliance on
+                        a heading. Rules rule_s12_vague_nouns,
                         rule_r04_defined_terms,
                         rule_r05_definite_articles, rule_r24_pronouns,
                         rule_r25_headings.
 criterion:              |
-                        MET when every entity, state, item and
-                        quantity the statement names is named in full,
-                        in the form a glossary gives it, such as
-                        Current_Time or Inlet_Valve, with the definite
-                        article, and nothing in the statement points
-                        outside it.
+                        MET when every noun names one definite set of
+                        things a reader can tell: which data, which
+                        user, which output, and nothing in the
+                        statement points outside it.
 
                         UNMET when a pronoun such as it, this, they,
-                        his stands for a noun; when an indefinite
-                        article makes any one of what is meant, such
-                        as a user or a time display; when a term that
-                        needs defining is written as ordinary words,
-                        such as the current time; or when a section
-                        number or heading is needed to know what the
-                        statement is about.
+                        its stands for a noun; when a noun names a set
+                        that cannot be told, such as the data, the
+                        user, the information, values, appropriate
+                        resources, relevant systems, without saying
+                        which; when an indefinite article makes any
+                        one of what is meant where one definite thing
+                        is meant, a user, a time display; or when a
+                        section number or heading is needed to know
+                        what the statement is about.
 
-                        An indefinite article is not a fault where
-                        what follows defines the thing: an accuracy of
-                        1 meter, an alert having the characteristics
-                        defined in a named standard, an Audible_Alarm.
-                        The fault is an indefinite article on
-                        something left undefined.
+                        A word in Capitalised_Snake_Case, such as the
+                        Subject or the Confirmed_Verdict, is a defined
+                        term and is never vague. A noun written in
+                        ordinary words is not at fault for being
+                        ordinary: the enclosure of the hub, all
+                        outputs, the primary power control name
+                        definite things. The fault is a noun whose set
+                        a reader cannot tell, not a noun that is not
+                        in Capitalised_Snake_Case. An indefinite
+                        article is not a fault where what follows
+                        defines the thing: an accuracy of 1 meter, a
+                        mass not exceeding 8 kilograms, an alert
+                        having the characteristics defined in a named
+                        standard, an Audible_Alarm. A named standard
+                        or document, Alert_Standard xyz, ICD 12, is a
+                        definite reference and not a fault.
 
                         The subject opens with a label line: three
-                        hyphens, the item's id, and the field name
-                        statement. Labels are presentation, not prose.
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose. The
+                        statement is composed from the slots shown
+                        beside it; where no slots are shown, judge the
+                        statement alone.
 
-                        When UNMET, quote the words at fault and name
-                        the rule.
+                        When UNMET, quote the words at fault, ask the
+                        question that would define them, and name the
+                        rule by one of the ids above.
 severity:               advisory
 
 example:
@@ -81,6 +96,31 @@ example:
     feedback:           |
                         It needs the heading. rule_r25_headings.
 
+  - input:              |
+                        statement: The Battery_Hub shall limit the
+                        mass of the enclosure and electronics to no
+                        more than 8 kilograms.
+    verdict:            met
+    feedback:           |
+                        Ordinary words naming definite things: the
+                        enclosure, the electronics, one mass.
+
+  - input:              |
+                        statement: The Library_System shall display
+                        the data to the user.
+    verdict:            unmet
+    feedback:           |
+                        Which data, which user. rule_s12_vague_nouns.
+
+  - input:              |
+                        statement: If the Screening_Judgement of the
+                        Subject is unmet, the Judge shall report the
+                        Confirmed_Verdict of the Subject.
+    verdict:            met
+    feedback:           |
+                        Every noun is a defined term; the Subject is
+                        the one under judgement.
+
 scope:
 
   include:
@@ -89,34 +129,34 @@ scope:
 confidence:
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             written
     cases:              9
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             1d5d9e78
+    digest:             68032fe1
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             suppressed
     cases:              1
     samples:            5
-    false_positive:     1.0
+    false_positive:     0.0
     false_negative:     null
     unanimous:          1.0
-    digest:             1d5d9e78
+    digest:             68032fe1
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-06'
     origin:             all
     cases:              10
     samples:            5
-    false_positive:     0.167
+    false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             1d5d9e78
+    digest:             68032fe1
 
 relation:
 

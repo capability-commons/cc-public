@@ -176,3 +176,14 @@ def test_a_process_word_is_seen_from_its_own_segment_and_its_consumers_only(tree
     cc_public.edit.field.set_field(tree, 'req_inner_counts', 'rationale', prose = 'A verb of its own.')
     cc_public.edit.link.link(tree, 'req_inner_counts', 'r_is_derived_from', 'need_runs_bounded')
     assert _found(tmp_path)['nonconformity'] == []
+
+
+def test_a_finding_that_names_a_rule_the_register_lacks_says_so(tree):
+    import cc_public.eval.check
+    set_rule = cc_public.eval.check._rules(tree.context.map_document)
+    assert 'rule_r05_definite_articles' in set_rule and 'rule_s12_vague_nouns' in set_rule
+    text = 'Relevant leaves the choice to the reader. rule_r07_vague_terms.'
+    assert cc_public.eval.check._rules_named(text, set_rule) == text
+    text = 'Hub is ordinary. rule_r05_definite_articles / rule_r06_undefined_terms.'
+    assert cc_public.eval.check._rules_named(text, set_rule).endswith(
+        'No rule named rule_r06_undefined_terms is in the register.')

@@ -10,39 +10,50 @@ protective_mark:
 
 title:                  Entity, shall, active
 brief:                  |
-                        The statement is on the entity: the entity is
-                        the subject, the verb is active and one the
-                        entity performs, and the modal is shall. Rules
-                        rule_r01_structured_statements,
-                        rule_r02_active_voice,
-                        rule_r03_appropriate_subject_verb.
+                        The main verb names a process the entity
+                        performs and can be verified to perform: not a
+                        state it is in, not a permission it grants,
+                        not a management word. Rules
+                        rule_r03_appropriate_subject_verb,
+                        rule_s02_main_verb, rule_s13_possibility,
+                        rule_r02_active_voice.
 criterion:              |
-                        MET when the grammatical subject of the main
-                        clause is the entity under specification, the
-                        modal is shall, and the main verb is an action
-                        that entity performs, in the active voice. A
-                        condition clause may precede the subject.
+                        MET when the main verb names an observable
+                        process the entity performs on the object,
+                        such as display, report, store, disconnect,
+                        isolate, withstand, and the actor of every
+                        verb in the statement is named.
 
-                        UNMET when the statement is passive, shall be
-                        followed by a past participle with the actor
-                        absent or trailing; when the subject is a
-                        user, operator, characteristic or activity
-                        rather than the entity; or when the modal is
-                        will, should, must, may or is absent.
+                        UNMET when the main verb names a state or a
+                        fulfilment rather than a process: meet, have,
+                        be, comply with, achieve, ensure, satisfy;
+                        when it grants a possibility and hides what
+                        makes it possible: allow, permit, enable, let;
+                        when it is a management word no performance
+                        can be verified against: support, handle,
+                        manage, process, track, monitor, flag; or when
+                        a verb inside the object is passive with its
+                        actor absent, such as to be recharged.
 
-                        UNMET also when the main verb is one no
-                        performance can be verified against: support,
-                        handle, manage, process, track, monitor, flag,
-                        and their like. Such a verb suits a need; a
-                        requirement names the function the entity
-                        performs.
+                        The entity as subject, the modal and the
+                        active main clause are given by the template
+                        and are not in question. Provide with an
+                        object of its own is a process; provide the
+                        <Actor> with the ability to <verb> is the
+                        interaction form and the verb to judge is the
+                        one after to.
 
                         The subject opens with a label line: three
-                        hyphens, the item's id, and the field name
-                        statement. Labels are presentation, not prose.
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose. The
+                        statement is composed from the slots shown
+                        beside it; where no slots are shown, judge the
+                        statement alone.
 
-                        When UNMET, quote the words at fault and name
-                        the rule.
+                        When UNMET, quote the verb at fault, say what
+                        the entity does in its place if that can be
+                        told, and name the rule by one of the ids
+                        above.
 severity:               advisory
 
 example:
@@ -79,10 +90,43 @@ example:
                         The subject is the user, not the entity.
                         rule_r03_appropriate_subject_verb.
 
+  - input:              |
+                        statement: The Power_Pod shall support full
+                        basic operation using no more than one primary
+                        control. process: support activity: autonomous
+    verdict:            unmet
+    feedback:           |
+                        Support names no process the entity performs;
+                        what does the entity do, power loads, show
+                        energy status. rule_s02_main_verb.
+
+  - input:              |
+                        statement: The Battery_Hub shall allow each
+                        Battery_Module to be recharged from an
+                        external DC source. process: allow activity:
+                        autonomous
+    verdict:            unmet
+    feedback:           |
+                        Allow hides what makes recharging possible,
+                        and to be recharged has no actor.
+                        rule_s13_possibility, rule_r02_active_voice.
+
+  - input:              |
+                        statement: The Library_System shall provide
+                        the Librarian with the ability to print the
+                        Statistics. process: print activity:
+                        interaction
+    verdict:            met
+    feedback:           |
+                        The interaction form; print is a process the
+                        entity performs for the actor.
+
 scope:
 
   include:
     - statement
+    - process
+    - activity
 
 confidence:
 
@@ -94,7 +138,7 @@ confidence:
     false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             f4875a95
+    digest:             ba52b639
 
   - model:              openai/gpt-5.1
     date:               '2026-09-06'
@@ -104,7 +148,7 @@ confidence:
     false_positive:     0.0
     false_negative:     null
     unanimous:          1.0
-    digest:             f4875a95
+    digest:             ba52b639
 
   - model:              openai/gpt-5.1
     date:               '2026-09-06'
@@ -114,7 +158,7 @@ confidence:
     false_positive:     0.0
     false_negative:     0.0
     unanimous:          1.0
-    digest:             f4875a95
+    digest:             ba52b639
 
 relation:
 
