@@ -83,8 +83,13 @@ import cc_public.workflow.run
 @click.option('--root', 'root', default = pathlib.Path('.'),
               type = click.Path(path_type = pathlib.Path),
               help = 'The repository. Defaults to the working directory.')
+@click.option('--path', 'list_path', multiple = True,
+              type = click.Path(path_type = pathlib.Path),
+              help = 'A further tree the checks read beside the repository: '
+                     'the core a consumer segment names. Checked, not '
+                     'committed. May be given more than once.')
 def commit(title, brief, description, is_checkpoint, id_execution,
-           list_trailer, list_link, root):
+           list_trailer, list_link, root, list_path):
     """
     Commit what has changed, with a commit record in the message.
 
@@ -97,7 +102,7 @@ def commit(title, brief, description, is_checkpoint, id_execution,
     try:
         (hash, id_self) = cc_public.commit.commit(
                     root, title, brief, description, is_checkpoint,
-                    id_execution, list_trailer, list_link)
+                    id_execution, list_trailer, list_link, list_path)
     except (cc_public.commit.ErrorCommit, cc_public.edit.tree.ErrorItem) as err:
         cc_public.cli.group.fail(err)
 

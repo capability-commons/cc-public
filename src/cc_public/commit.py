@@ -128,7 +128,7 @@ def changed(root):
 # -----------------------------------------------------------------------------
 def commit(root, title, brief = None, description = None,
            is_checkpoint = False, id_execution = None, list_trailer = (),
-           list_link = ()):
+           list_link = (), list_path = ()):
     """
     ---
 
@@ -150,7 +150,10 @@ def commit(root, title, brief = None, description = None,
                             Runs the checks and the linters, refuses on
                             what refusal says, mints and validates the
                             record, stages the root and commits with the
-                            message.
+                            message. The checks read the root and every
+                            further path given, since a consumer segment
+                            is checked beside the core it names; only the
+                            root is committed.
     relation:               []
 
     ...
@@ -167,7 +170,7 @@ def commit(root, title, brief = None, description = None,
     if not list_changed:
         raise ErrorCommit('Nothing has changed, so there is nothing to commit.')
 
-    report  = cc_public.check.check(list_path = [root])
+    report  = cc_public.check.check(list_path = [root, *list_path])
     refusal = cc_public.check.refusal(report, is_checkpoint)
 
     if refusal is not None:
@@ -188,7 +191,7 @@ def commit(root, title, brief = None, description = None,
                'critical': summary['count_critical'],
                'advisory': summary['count_advisory']}
 
-    tree     = cc_public.edit.tree.Tree([root])
+    tree     = cc_public.edit.tree.Tree([root, *list_path])
     document = record(tree, title, brief, description,
                       STATUS_CHECKPT if is_checkpoint else STATUS_CLEAN,
                       count, id_execution, list_link)

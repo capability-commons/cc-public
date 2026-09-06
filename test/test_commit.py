@@ -30,6 +30,7 @@ import pytest
 
 import cc_public.commit
 import cc_public.edit.field
+import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.load.git
@@ -195,3 +196,32 @@ def test_commit_refuses_an_import_against_the_layers(repo):
     assert 'lint' in str(caught.value)
     assert 'cc_public.check.upward -> cc_public.workflow' in str(caught.value)
     assert git(repo, 'rev-list', '--count', 'HEAD').strip() == '1'
+
+
+def test_commit_checks_a_consumer_beside_the_core_it_names(repo, tmp_path):
+    consumer = tmp_path.parent / (tmp_path.name + '-consumer')   # beside the core, not in it
+    consumer.mkdir()
+    (consumer / 'pyproject.toml').write_text(
+        '[tool.cctool.new]\ncopyright = "Copyright 2026 William Payne"\n'
+        'license = "Apache-2.0"\nid_mark = "mark_public"\n')
+    git(consumer, 'init', '-q')
+    tree = cc_public.edit.tree.Tree([consumer, repo])
+    cc_public.edit.new.new(tree, 't_segment', 'seg_consumer', tree.defaults(),
+                           dirpath_out = consumer / 'segment')
+    for (field, value) in (('title', 'A consumer'), ('role', 'segment')):
+        cc_public.edit.field.set_field(tree, 'seg_consumer', field, value = value)
+    for (field, value) in (('brief', 'A segment beside the core, consuming it.'),
+                           ('description', 'It holds nothing but itself.')):
+        cc_public.edit.field.set_field(tree, 'seg_consumer', field, prose = value)
+    cc_public.edit.link.link(tree, 'seg_consumer', 'r_consumes', 'seg_cc_public')
+
+    with pytest.raises(cc_public.commit.ErrorCommit, match = 'did not complete'):
+        cc_public.commit.commit(consumer, 'Declare the segment')   # no type register here
+
+    (hash, id_self) = cc_public.commit.commit(consumer, 'Declare the segment',
+                                              list_path = [repo])
+    assert git(consumer, 'status', '--porcelain') == ''
+    c = next(cc_public.load.git.iter_commit(consumer, 1))
+    assert c.hash == hash and c.document['id_self'] == id_self
+    assert c.document['check']['critical'] == 0
+    assert git(repo, 'status', '--porcelain') == ''                 # the core is untouched

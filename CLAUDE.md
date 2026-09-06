@@ -299,7 +299,9 @@ types, relations, registers and evals. A consumer holds its own items and
 in time its own schemas, usable from it and from anything consuming it,
 never from here. A consumer's gate names both roots and asserts the union
 closed; this repository's gate names only itself, so a consumer's content
-is never checked here and its own gate must run. The Brave1 demonstration
+is never checked here and its own gate must run. A consumer commits with
+`cctool commit … --root . --path ../cc-public`: the checks read both, the
+root alone is committed. The Brave1 demonstration
 is `../cc-brave1-demo`.
 
 ## Where things are
