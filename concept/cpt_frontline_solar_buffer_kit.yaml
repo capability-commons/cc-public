@@ -1,0 +1,466 @@
+id_self:                cpt_frontline_solar_buffer_kit
+guid_self:              cpt_9ac006ce54d042ad8a6f1f363c883419
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fly‑in battery and solar cache for suddenly cut‑off positions
+entity:                 Frontline_Flyin_Power_Cache
+operation:              |
+                        Personnel at a frontline position normally run
+                        their terminal and chargers from grid or a
+                        generator. Supply pre‑positions compact power
+                        cache kits at company or battalion level
+                        instead of trying to bury large stores at
+                        every post. Each kit is a rugged case holding
+                        high‑capacity batteries, folding low‑signature
+                        solar panels, and cables for the terminal and
+                        chargers. When a position becomes suddenly cut
+                        off and fuel runs fail, higher command assigns
+                        one or more kits to that position and delivers
+                        them by low‑signature means that avoid the
+                        blocked road, such as small cargo drones or
+                        man‑portable teams using covered routes. On
+                        receipt, personnel set the cache inside cover
+                        and connect the terminal and chargers
+                        immediately for power from the internal
+                        batteries. When exposure permits, they briefly
+                        deploy the small folding panels in a nearby
+                        defilade, on a roof edge, or out a window or
+                        loophole to trickle‑recharge the cache, then
+                        stow them again; if movement is impossible,
+                        they leave the panels folded and run purely
+                        from stored energy. Simple indicators on the
+                        cache show remaining energy and charge rate so
+                        loads can be rationed. When isolation ends,
+                        the cache is recovered to the supply node,
+                        recharged, checked and held for the next
+                        emergency deployment.
+architecture:           |
+                        The Frontline_Flyin_Power_Cache is a modular
+                        system built around a sealed battery and power
+                        management unit packaged in an airdroppable,
+                        backpack‑portable case, plus a set of compact,
+                        camouflaged folding solar panels and a minimal
+                        logistics interface. The battery unit contains
+                        high‑energy cells, battery management, DC‑DC
+                        converters to the voltages needed by the
+                        terminal and chargers, overcurrent and surge
+                        protection, and clear state‑of‑charge and
+                        runtime displays. External ports accept
+                        standardised DC charging from the folding
+                        panels or from any available generator when
+                        present. The folding panels connect with a
+                        single rugged cable and are sized to extend
+                        endurance rather than provide full load in
+                        poor conditions; their surfaces use
+                        non‑reflective finishes and can be laid low to
+                        ground or structure. A logistics side
+                        interface allows rapid bulk charging and
+                        health testing at rear nodes. The whole kit is
+                        dimensioned and shock‑protected for carriage
+                        by small cargo drones, light vehicles or a
+                        two‑person team, with tie‑downs and beacons as
+                        needed for precise drop or handoff.
+effect:                 |
+                        The concept treats electrical power as an
+                        emergency‑deployable resource that can be
+                        flown or carried in after a position is
+                        already cut off, removing the dependence on
+                        perfect advance prediction of which posts to
+                        stock. It supplies several days of power from
+                        stored energy alone and can stretch that
+                        endurance with opportunistic solar input
+                        whenever short exposures outside cover are
+                        possible, supporting continued communications
+                        and drone operations through multi‑day
+                        isolation. It reduces, but does not eliminate,
+                        exposure: panel deployment and cache recovery
+                        still need some movement under cover, and if
+                        no safe window exists for either, endurance is
+                        limited to what the carried batteries hold. It
+                        also does not address cases where weather or
+                        tactical conditions prevent any solar use and
+                        isolation lasts significantly longer than the
+                        battery capacity planned into each kit.
+risk:                   |
+                        The concept can fail if cargo drones or covert
+                        resupply routes are not available or are
+                        denied by enemy action or weather, leaving
+                        isolated positions with no way to receive a
+                        kit once cut off. The energy capacity of a
+                        portable cache may still be insufficient for
+                        the actual load and duration, especially if
+                        additional unplanned devices are attached or
+                        isolation exceeds planning assumptions,
+                        leading to earlier power loss. Reliance on
+                        opportunistic solar input may be defeated by
+                        persistent overcast, snow, dust, heavy canopy
+                        or constant observation, so panels cannot
+                        safely be deployed and endurance does not
+                        extend beyond the initial battery stock. Small
+                        caches and panels may be lost, damaged or
+                        captured during flight or movement, wasting
+                        limited reserves. Incorrect use, such as
+                        connecting incompatible equipment or leaving
+                        panels exposed in an unsafe location, could
+                        lead to damage or compromise the position.
+                        Central stockpiles of charged kits must be
+                        maintained and rotated; if logistics fails to
+                        keep enough kits charged and available, some
+                        cut‑off positions will not be served in time.
+
+candidate_requirement:
+
+  portable_energy_capacity:
+    id_self:            crq_frontline_solar_buffer_kit.portable_energy_capacity
+    guid_self:          crq_4260325a72f4431eb48beb45e5f25bd3
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall supply a
+                        specified typical terminal or charger load for
+                        at least 72 hours when fully charged.
+    rationale:          |
+                        The need describes three nights without power,
+                        so a three‑day endurance without resupply is a
+                        relevant design point for the stored energy
+                        capacity of each kit.
+    category:           function
+    relation:           []
+
+  cargo_delivery_compatibility:
+    id_self:            crq_frontline_solar_buffer_kit.cargo_delivery_compatibility
+    guid_self:          crq_74651e2aefd54949a402971f56398267
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall limit
+                        the mass of each complete kit to a design
+                        point compatible with carriage by specified
+                        small cargo drones or a two‑person team.
+    rationale:          |
+                        The concept relies on delivering kits to
+                        cut‑off positions without road access using
+                        small aerial or man‑portable means, which
+                        imposes mass constraints.
+    category:           fit
+    relation:           []
+
+  standard_dc_output_interface:
+    id_self:            crq_frontline_solar_buffer_kit.standard_dc_output_interface
+    guid_self:          crq_738e512d02a8413a9557851d5d07a3d6
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall provide
+                        user‑accessible DC outputs using a specified
+                        standard electrical interface compatible with
+                        the terminal and chargers.
+    rationale:          |
+                        Standardised outputs reduce adapters and allow
+                        direct connection of the key loads that must
+                        be powered during isolation.
+    category:           function
+    relation:           []
+
+  integrated_state_of_charge_display:
+    id_self:            crq_frontline_solar_buffer_kit.integrated_state_of_charge_display
+    guid_self:          crq_613faf09594e49359fcafd07b9e08cfe
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall present
+                        a clear indication of remaining energy and
+                        estimated runtime under current load on the
+                        unit.
+    rationale:          |
+                        Operators need simple feedback to ration power
+                        and avoid unexpected shutdowns over several
+                        days.
+    category:           function
+    relation:           []
+
+  opportunistic_solar_charging:
+    id_self:            crq_frontline_solar_buffer_kit.opportunistic_solar_charging
+    guid_self:          crq_cace0f42c2a749b6b288da61fcc1d9d8
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall accept
+                        recharge from its supplied folding solar
+                        panels to extend runtime beyond the initial
+                        stored energy.
+    rationale:          |
+                        Opportunistic solar input allows endurance to
+                        stretch when short safe exposure windows
+                        exist, improving resilience without relying
+                        solely on prediction.
+    category:           function
+    relation:           []
+
+  low_signature_panel_design:
+    id_self:            crq_frontline_solar_buffer_kit.low_signature_panel_design
+    guid_self:          crq_0c54aca78acd4d1eb175edeef63eb45d
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall provide
+                        folding solar panels with non‑reflective
+                        surfaces and a form factor that permits
+                        low‑profile deployment close to ground or
+                        structure.
+    rationale:          |
+                        Low‑signature design reduces detection and
+                        targeting risk when panels are briefly exposed
+                        near a cut‑off position.
+    category:           quality
+    relation:           []
+
+  environmental_resilience:
+    id_self:            crq_frontline_solar_buffer_kit.environmental_resilience
+    guid_self:          crq_dc7630e7a837452898aa0ad69912c5db
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall operate
+                        within its specified performance over the
+                        temperature, dust, moisture and shock
+                        conditions expected at frontline positions.
+    rationale:          |
+                        Kits may be airdropped or man‑carried into
+                        harsh environments and must function reliably
+                        during isolation periods.
+    category:           quality
+    relation:           []
+
+  rear_area_charge_test_interface:
+    id_self:            crq_frontline_solar_buffer_kit.rear_area_charge_test_interface
+    guid_self:          crq_4ebeafcad4d447a592a3edbf24e2c7fc
+    statement:          |
+                        The Frontline_Flyin_Power_Cache shall accept
+                        recharge and health testing from a rear‑area
+                        charging system using a specified standard
+                        electrical interface.
+    rationale:          |
+                        Maintaining a pool of ready kits requires
+                        quick turnaround at logistics nodes with
+                        standard equipment.
+    category:           function
+    relation:           []
+
+status:                 proposed
+
+assumption:
+
+  position_power_loads_limited:
+    id_self:            asm_frontline_solar_buffer_kit.position_power_loads_limited
+    guid_self:          asm_c1c2cdf9524340dbae50e28da381ad16
+    statement:          |
+                        The electrical loads at a typical frontline
+                        position that needs this support are limited
+                        to a terminal and several drone battery
+                        chargers, with no large continuous power
+                        draws.
+    evidence:           |
+                        The observation mentions only a terminal and
+                        drone batteries going flat; no heavy loads
+                        such as heaters or large radios are cited, so
+                        sizing for those loads is a reasonable reading
+                        but not confirmed.
+    relation:           []
+
+  multiday_energy_in_portable_form:
+    id_self:            asm_frontline_solar_buffer_kit.multiday_energy_in_portable_form
+    guid_self:          asm_2f7d1ab1fdf04ac0a5014a21338051b3
+    statement:          |
+                        High energy density batteries can store
+                        several days of power for the stated loads in
+                        a form that remains man‑portable or suitable
+                        for carriage by small cargo drones.
+    evidence:           |
+                        Commercial and military lithium systems for
+                        field communications and sensor kits already
+                        offer multi‑day runtimes for tens to hundreds
+                        of watts in backpack‑sized units, though exact
+                        sizing for this use is not given in the
+                        observation.
+    relation:           []
+
+  small_cargo_drone_or_covert_resupply_available:
+    id_self:            asm_frontline_solar_buffer_kit.small_cargo_drone_or_covert_resupply_available
+    guid_self:          asm_127906f96e404537b48dc80eeac1d463
+    statement:          |
+                        Frontline forces have access to small cargo
+                        drones or other covert resupply means that can
+                        reach positions even when roads are under
+                        fire.
+    evidence:           |
+                        Many recent conflicts have seen rapid adoption
+                        of small unmanned aerial systems for
+                        logistics; the observation does not state
+                        their presence here, so this extrapolates from
+                        broader practice rather than direct evidence.
+    relation:           []
+
+  short_exposure_windows_occur:
+    id_self:            asm_frontline_solar_buffer_kit.short_exposure_windows_occur
+    guid_self:          asm_8488a561dea547c3b06bf1add1077006
+    statement:          |
+                        Even when a road is under fire and movement is
+                        dangerous, there are intermittent short
+                        windows or defiladed spots where personnel can
+                        briefly deploy small, low‑profile solar panels
+                        without prohibitive risk.
+    evidence:           |
+                        The observation notes the road is under fire
+                        but does not describe all local cover;
+                        assuming some micro‑terrain or structural
+                        cover is common in defensive positions but is
+                        not guaranteed by the text.
+    relation:           []
+
+  rear_nodes_can_stock_and_turnaround_kits:
+    id_self:            asm_frontline_solar_buffer_kit.rear_nodes_can_stock_and_turnaround_kits
+    guid_self:          asm_195b82d3805b48a6ae91de4d95b6103b
+    statement:          |
+                        Rear‑area logistics nodes can procure, charge,
+                        test and hold a pool of fly‑in power cache
+                        kits at higher echelons without needing to
+                        predict exactly which specific frontline
+                        position will need them.
+    evidence:           |
+                        The need context implies existing logistics
+                        for generators and fuel operating at larger
+                        scales than individual positions; holding
+                        modular charged kits centrally shifts
+                        prediction from per‑position pre‑stocking to
+                        maintaining a reserve, which is a standard
+                        logistics pattern but not described in the
+                        observation.
+    relation:           []
+
+  standardised_connectors_for_terminals_and_chargers:
+    id_self:            asm_frontline_solar_buffer_kit.standardised_connectors_for_terminals_and_chargers
+    guid_self:          asm_6e793b875eb7461081dbc666a7c3925b
+    statement:          |
+                        The terminals and drone chargers in use at
+                        frontline positions can accept power through a
+                        small set of standardised DC interfaces
+                        provided by the cache.
+    evidence:           |
+                        The observation notes that terminals and drone
+                        chargers already operate from generator or
+                        grid power, implying they either use adapters
+                        or common standards; it does not confirm what
+                        those standards are.
+    relation:           []
+
+  personnel_can_operate_simple_power_kits:
+    id_self:            asm_frontline_solar_buffer_kit.personnel_can_operate_simple_power_kits
+    guid_self:          asm_713845581677497ea5307dc103535aaf
+    statement:          |
+                        Frontline personnel can be trained to unpack
+                        the cache, connect loads, read simple
+                        indicators, and deploy or stow panels without
+                        specialist electrical skills.
+    evidence:           |
+                        Personnel already operate generators and
+                        electronic equipment at the position,
+                        suggesting familiarity with basic power
+                        handling; no explicit training details are
+                        given.
+    relation:           []
+
+challenge:              |
+                        The concept assumes that "frontline forces
+                        have access to small cargo drones or other
+                        covert resupply means that can reach positions
+                        even when roads are under fire," but the
+                        need’s evidence does not support this and
+                        notes that the scale, duration, and
+                        operational constraints of such access are not
+                        established. The observation details a
+                        situation where "road access for resupply is
+                        blocked by incoming fire" and no alternative
+                        resupply method is confirmed to be available
+                        or effective. If this assumption is false—if
+                        cargo drones cannot penetrate to the position
+                        due to enemy air defense, electronic attack,
+                        weather, or lack of assets—then no kit is
+                        delivered, and the same loss of power,
+                        communications, and drone support reported in
+                        the need occurs. The outcome fails for any
+                        position cut off without a viable non-road
+                        delivery route, making the concept serve only
+                        those posts with both warning, access to a
+                        resupply drone or covert team, and the absence
+                        of enemy countermeasures. If these conditions
+                        do not hold in practice, a large fraction of
+                        positions will experience the same failure as
+                        before, so the concept does not reliably
+                        achieve the need’s outcome in its operational
+                        context.
+resolution:             |
+                        The challenge to the prior concept is that it
+                        rests on the assumption that “rear‑area
+                        logistics can procure, charge, test and
+                        transport battery caches to frontline units
+                        before they are fully cut off,” and notes
+                        there is “no evidence that logistics can
+                        reliably predict which positions must be
+                        stocked in time,” especially when positions
+                        become isolated more suddenly than logistics
+                        cycles allow. If this assumption is wrong, any
+                        position not pre‑stocked with buried caches
+                        still fails in exactly the way described in
+                        the need, with communications and drone
+                        operations lost after fuel exhaustion.
+
+                        The new concept revises that dependency rather
+                        than standing on it. It removes the
+                        requirement to predict in advance exactly
+                        which specific frontline position will be cut
+                        off and stocked, and instead assumes only that
+                        higher‑level nodes can hold and maintain a
+                        pool of charged kits, which is a looser and
+                        more standard logistics task. Kits are not
+                        tied to particular positions ahead of time;
+                        they are dispatched “just in time” to whatever
+                        post unexpectedly loses fuel and road access,
+                        using delivery paths that bypass the blocked
+                        road, such as small cargo drones or covert
+                        man‑portable routes. This directly answers the
+                        challenge’s concern about per‑position
+                        prediction: the system no longer fails
+                        outright when planners guess wrong about which
+                        location will be isolated.
+
+                        The challenge also implies that when positions
+                        become cut off faster than logistics cycles,
+                        any solution that depends on large, static
+                        pre‑emplacement will miss them. The fly‑in
+                        cache concept concedes that static buried
+                        stores share this weakness and instead designs
+                        for rapid, flexible deployment after the fact.
+                        It stands on a different, narrower assumption:
+                        that at least one alternative delivery method
+                        can reach the area even when the main road is
+                        under fire. If that narrower assumption does
+                        not hold in a given theatre, then both the
+                        prior and the new concepts are constrained,
+                        and local doctrine would need to adapt, for
+                        example by co‑locating caches at platoon
+                        strongpoints rather than individual positions.
+
+                        In sum, the position of depending on accurate
+                        advance stocking at every vulnerable position
+                        is revised. The new concept addresses the
+                        challenge by shifting stored energy to mobile,
+                        centrally held kits and by enabling delivery
+                        to whichever positions actually become cut
+                        off, accepting a remaining dependency on some
+                        form of non‑road resupply but no longer on
+                        perfect per‑position prediction.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_frontline_multiday_offgrid_power
+    guid_target:        need_0faac913d77d46468f29830da1b94a1d
+
+  - id_relation:        r_is_framed_by
+    guid_relation:      r_f855153d193b4901bd409d8ec11044fd
+    id_target:          frame_supply
+    guid_target:        frame_08a4855abf0c47b7b8f744f6ed1ba3ba
