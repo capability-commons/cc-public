@@ -360,6 +360,17 @@ def test_a_neighbourhood_is_drawn_in_dot_and_in_mermaid(tree, tmp_path):
     mermaid = cc_public.query.drawing(step, 'mermaid')
     assert mermaid.startswith('graph LR') and mermaid.count('-->') == len(step) - 1
     assert '|r_is_derived_from|' in mermaid
+
+    # Every edge of the neighbourhood is drawn, not only the edges the
+    # walk reached each item by: the two judge requirements of one need
+    # share their functions, which a walk reaches once, by one of them.
+    step  = db.walk('need_trustworthy_judgement', 2)
+    among = db.edges_among(step)
+    ids   = {s.id_self for s in step}
+    assert all(a in ids and b in ids for (a, b, _) in among)
+    for req in ('req_judge_confirms_unmet', 'req_judge_reports_confirmed_verdict'):
+        assert (req, 'pyf_cc_public.eval.check.check', 'r_is_implemented_by') in among
+    assert cc_public.query.drawing(step, 'dot', among).count('->') == len(among) > len(step) - 1
     out = run('walk', '--root', str(tmp_path), 'need_layout_stable', '--format', 'mermaid')
     assert out.exit_code == 0 and out.output.startswith('graph LR')
     out = run('path', '--root', str(tmp_path), 'need_layout_stable', 'pym_cc_public.layout')

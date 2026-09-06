@@ -68,11 +68,11 @@ def walk(name, depth, list_relation, direction, id_format, list_root):
             cc_public.cli.group.tree(list_root).context.map_document) as db:
         step = db.walk(name, depth, list_relation,
                        cc_public.query.DIRECTION_ALL if direction == 'both' else (direction,))
+        if step is None:
+            cc_public.cli.group.fail('Nothing in this tree is named {name}.'.format(name = name))
+        list_edge = db.edges_among(step) if id_format in ('dot', 'mermaid') else None
 
-    if step is None:
-        cc_public.cli.group.fail('Nothing in this tree is named {name}.'.format(name = name))
-
-    cc_public.cli.report.write_walk(step, id_format)
+    cc_public.cli.report.write_walk(step, id_format, list_edge)
 
 
 # -----------------------------------------------------------------------------

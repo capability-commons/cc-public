@@ -332,6 +332,26 @@ class Database:
         return (list_item, list_relation)
 
     # -------------------------------------------------------------------------
+    def edges_among(self, list_step):
+        """
+        Return every edge whose two ends are among the steps given, as
+        (id of the holder, id of the target, relation): the edges of
+        the neighbourhood, not only those a walk reached each item by.
+
+        """
+
+        self.db.execute('CREATE TEMP TABLE picked (guid TEXT PRIMARY KEY)')
+        self.db.executemany('INSERT OR IGNORE INTO picked VALUES (?)',
+                            [(s.guid,) for s in list_step])
+        (_, rows) = self.run(
+            'SELECT guid_source, guid_target, id_relation FROM edge '
+            'WHERE guid_source IN (SELECT guid FROM picked) '
+            '  AND guid_target IN (SELECT guid FROM picked)')
+        self.db.execute('DROP TABLE picked')
+
+        return sorted((self.id_of(a), self.id_of(b), rel) for (a, b, rel) in rows)
+
+    # -------------------------------------------------------------------------
     def _adjacent(self, guid, list_relation, list_direction):
         """
         Yield (guid, relation, direction) for every edge at guid in the
@@ -391,7 +411,7 @@ def named(map_document, name):
 
 
 # -----------------------------------------------------------------------------
-def drawing(list_step, id_format):
+def drawing(list_step, id_format, list_edge = None):
     """
     ---
 
@@ -410,18 +430,28 @@ def drawing(list_step, id_format):
                             Return the steps of a walk as a drawing: dot
                             for Graphviz, or mermaid.
     description:            |
-                            The steps of a walk as a drawing: one node per
-                            item and one edge labelled with its relation
-                            per step that reached an item, in Graphviz dot
-                            or in mermaid.
+                            The steps of a walk as a drawing, in Graphviz
+                            dot or in mermaid: one node per item, and one
+                            edge labelled with its relation for each edge
+                            of the neighbourhood, given by the database as
+                            the edges among the items reached; where none
+                            are given, the edges the walk reached each
+                            item by. The first drawing showed only the
+                            reaching edges and hid what two requirements
+                            shared, which the requirement had asked for
+                            and the test had not.
     relation:               []
 
     ...
     """
 
-    edges = [(s.id_from, s.id_self) if s.direction == 'out' else (s.id_self, s.id_from)
-             for s in list_step if s.id_from is not None]
-    labels = [s.id_relation for s in list_step if s.id_from is not None]
+    if list_edge is None:
+        list_edge = [(s.id_from, s.id_self, s.id_relation) if s.direction == 'out'
+                     else (s.id_self, s.id_from, s.id_relation)
+                     for s in list_step if s.id_from is not None]
+
+    edges  = [(a, b) for (a, b, _) in list_edge]
+    labels = [rel for (_, _, rel) in list_edge]
 
     if id_format == 'mermaid':
         lines = ['graph LR']

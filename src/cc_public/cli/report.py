@@ -477,15 +477,16 @@ def write_neighbourhood(found, id_format):
 
 
 # -----------------------------------------------------------------------------
-def write_walk(list_step, id_format):
+def write_walk(list_step, id_format, list_edge = None):
     """
     Write the steps of a walk or a path: as text, as json, or as a
-    drawing in dot or mermaid.
+    drawing in dot or mermaid with the edges given, or those the walk
+    reached each item by.
 
     """
 
     if id_format in ('dot', 'mermaid'):
-        click.echo(cc_public.query.drawing(list_step, id_format), nl = False)
+        click.echo(cc_public.query.drawing(list_step, id_format, list_edge), nl = False)
         return
 
     if id_format == 'json':
