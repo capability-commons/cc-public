@@ -60,3 +60,26 @@ properties:
                         Whether the edges of this relation must form
                         no cycle, an edge from an item to itself
                         included. Absent means cycles are not checked.
+
+  transitive:
+    type:               boolean
+    description:        |
+                        Whether a chain of edges of this relation is
+                        one edge of it. A check or a query may follow
+                        the chain as far as it runs. Absent means a
+                        chain is a chain and nothing more.
+
+  incompatible:
+    type:               array
+    minItems:           1
+    uniqueItems:        true
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+    description:        |
+                        The relations, by readable id, that may not
+                        hold between the same pair of items as this
+                        one. The constraint means the same read from
+                        either end, so one entry of a pair carries it.
+                        Absent means no relation is excluded.

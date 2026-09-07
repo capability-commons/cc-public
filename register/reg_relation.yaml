@@ -668,3 +668,54 @@ table:
       - t_textual_requirement
 
     relation:           []
+
+  r_is_narrower_than:
+    id_self:            r_is_narrower_than
+    guid_self:          r_3963b47d6a7149cca3271a23b3612441
+    title:              Is narrower than relation
+    brief:              |
+                        SUBJ is narrower than OBJ
+    description:        |
+                        The concept identified by SUBJ is included in
+                        the wider concept identified by OBJ. A python
+                        module is narrower than a source item. Every
+                        instance of the narrower concept is an
+                        instance of the wider one, which is what tells
+                        this relation from r_is_part_of.
+
+    domain:
+      - t_term
+
+    range:
+      - t_term
+
+    acyclic:            true
+    transitive:         true
+
+    incompatible:
+      - r_is_part_of
+
+    relation:           []
+
+  r_is_part_of:
+    id_self:            r_is_part_of
+    guid_self:          r_27e63aad1a0d4f349396478498d8f511
+    title:              Is part of relation
+    brief:              |
+                        SUBJ is part of OBJ
+    description:        |
+                        The concept identified by SUBJ is a part of
+                        the concept identified by OBJ. An entry is
+                        part of a register. An instance of the part is
+                        not an instance of the whole, which is what
+                        tells this relation from r_is_narrower_than.
+
+    domain:
+      - t_term
+
+    range:
+      - t_term
+
+    acyclic:            true
+    transitive:         true
+    relation:           []

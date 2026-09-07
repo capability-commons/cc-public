@@ -14,15 +14,22 @@ protective_mark:
 title:                  Relation check
 brief:                  |
                         Check that every edge runs between the kinds
-                        of thing its relation allows.
+                        of thing its relation allows, and that the
+                        semantics the relation declares hold.
 description:            |
                         A relation entry may constrain the types at
-                        its two ends and forbid cycles. An edge that
+                        its two ends, forbid cycles, declare itself
+                        transitive, and name the relations that may
+                        not hold between the same pair. An edge that
                         breaks a constraint is a critical fault at the
-                        edge, and a constraint naming a type that does
-                        not exist is a fault at the entry. A target
-                        that does not resolve is left to the reference
-                        check. An absent constraint says nothing.
+                        edge, and a constraint naming a type or a
+                        relation that does not exist is a fault at the
+                        entry. An edge of a transitive relation that a
+                        chain of its own edges already implies is
+                        advisory, since it states nothing false. A
+                        target that does not resolve is left to the
+                        reference check. An absent constraint says
+                        nothing.
 relation:               []
 
 ...
@@ -51,6 +58,8 @@ KEY_TABLE      = 'table'
 KEY_DOMAIN     = 'domain'
 KEY_RANGE      = 'range'
 KEY_ACYCLIC    = 'acyclic'
+KEY_TRANSITIVE = 'transitive'
+KEY_INCOMPAT   = 'incompatible'
 
 ID_TYPE_REL    = 't_relation'
 REL_HELD_IN    = 'r_is_held_in_registry'
@@ -80,9 +89,9 @@ def check(context):
     map_declaration    = cc_public.check.reference.map_declaration(context)
     (filepath_register, table) = _relation_register(map_document, document_type)
 
-    list_bad  = _bad_constraint(filepath_register, table, set_type)
-    map_graph = collections.defaultdict(list)
-    count     = 0
+    list_bad = _bad_constraint(filepath_register, table, set_type)
+    map_edge = collections.defaultdict(list)
+    count    = 0
 
     for (filepath, document) in sorted(map_document.items()):
 
@@ -112,13 +121,18 @@ def check(context):
                                     name    = holder.get(KEY_ID_SELF) if end == 'from'
                                               else id_target)))
 
-            if entry.get(KEY_ACYCLIC):
-                map_graph[edge.get(KEY_ID_REL)].append(
-                        (holder.get(KEY_GUID_SELF), edge.get(KEY_GUID_TGT),
-                         filepath, path))
+            map_edge[edge.get(KEY_ID_REL)].append(
+                    (holder.get(KEY_GUID_SELF), edge.get(KEY_GUID_TGT),
+                     filepath, path))
 
-    for (id_relation, list_edge) in sorted(map_graph.items()):
-        list_bad.extend(_cycle(id_relation, list_edge, map_declaration))
+    for (id_relation, list_edge) in sorted(map_edge.items()):
+        entry = table.get(id_relation) or {}
+        if entry.get(KEY_ACYCLIC):
+            list_bad.extend(_cycle(id_relation, list_edge, map_declaration))
+        if entry.get(KEY_TRANSITIVE):
+            list_bad.extend(_redundant(id_relation, list_edge, map_declaration))
+
+    list_bad.extend(_incompatible(table, map_edge, map_declaration))
 
     return cc_public.check.result.Result(count_item         = count,
                                          list_nonconformity = list_bad,
@@ -148,23 +162,31 @@ def _relation_register(map_document, document_type):
 # -----------------------------------------------------------------------------
 def _bad_constraint(filepath, table, set_type):
     """
-    Return a fault for each constraint naming a type that is not one.
+    Return a fault for each constraint naming a type or a relation that
+    is not one.
 
     """
 
     out = []
 
     for (key_entry, entry) in sorted(table.items()):
+
         if not isinstance(entry, dict):
             continue
-        for key in (KEY_DOMAIN, KEY_RANGE):
-            for id_type in entry.get(key) or []:
-                if id_type not in set_type:
+
+        for (key, known, noun, id_register) in ((KEY_DOMAIN,   set_type,  'type',
+                                                 'the type register'),
+                                                (KEY_RANGE,    set_type,  'type',
+                                                 'the type register'),
+                                                (KEY_INCOMPAT, set(table), 'relation',
+                                                 'this register')):
+            for name in entry.get(key) or []:
+                if name not in known:
                     out.append(_fault(filepath,
                             cc_public.path.join(cc_public.path.join(KEY_TABLE, key_entry), key),
-                            'Names {id_type}, which is not a type in the type '
-                            'register, so nothing could satisfy it.'.format(
-                                                            id_type = id_type)))
+                            'Names {name}, which is not a {noun} in {id_register}, so '
+                            'nothing could satisfy it.'.format(
+                                    name = name, noun = noun, id_register = id_register)))
 
     return out
 
@@ -239,6 +261,117 @@ def _cycle(id_relation, list_edge, map_declaration):
 
 
 # -----------------------------------------------------------------------------
+def _redundant(id_relation, list_edge, map_declaration):
+    """
+    Return a question for each asserted edge of a transitive relation
+    that a chain of its own edges already implies.
+
+    A transitive relation makes a chain one edge, so the edge alongside
+    the chain says what the chain says. It is not false, which is why
+    it is advisory.
+
+    """
+
+    map_out = collections.defaultdict(set)
+
+    for (source, target, _, _) in list_edge:
+        map_out[source].add(target)
+
+    out = []
+
+    for (source, target, filepath, path) in list_edge:
+
+        if not _reaches(map_out, source, target):
+            continue
+
+        out.append(_question(filepath, path,
+                '{rel} is transitive, and a chain of its edges runs from {source} to '
+                '{target} already, so this edge says what the chain says.'.format(
+                        rel    = id_relation,
+                        source = _name(map_declaration, source),
+                        target = _name(map_declaration, target))))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _reaches(map_out, source, target):
+    """
+    Return whether target is reachable from source by a chain of two
+    edges or more.
+
+    The direct edge is left out of the first step, so what is found is
+    a chain and never the edge being asked about.
+
+    """
+
+    seen  = set()
+    stack = [node for node in map_out.get(source, ()) if node != target]
+
+    while stack:
+
+        node = stack.pop()
+
+        if node == target:
+            return True
+
+        if node in seen:
+            continue
+
+        seen.add(node)
+        stack.extend(map_out.get(node, ()))
+
+    return False
+
+
+# -----------------------------------------------------------------------------
+def _incompatible(table, map_edge, map_declaration):
+    """
+    Return a fault for each pair of items two incompatible relations
+    both hold between, reported at the edge of the relation that
+    declares the incompatibility.
+
+    """
+
+    out = []
+
+    for (id_relation, entry) in sorted(table.items()):
+
+        if not isinstance(entry, dict):
+            continue
+
+        for id_other in entry.get(KEY_INCOMPAT) or []:
+
+            held = {frozenset((source, target))
+                    for (source, target, _, _) in map_edge.get(id_other, ())}
+
+            for (source, target, filepath, path) in map_edge.get(id_relation, ()):
+
+                if frozenset((source, target)) not in held:
+                    continue
+
+                out.append(_fault(filepath, path,
+                        '{rel} and {other} may not both hold between a pair, and both hold '
+                        'between {source} and {target}.'.format(
+                                rel    = id_relation,
+                                other  = id_other,
+                                source = _name(map_declaration, source),
+                                target = _name(map_declaration, target))))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _name(map_declaration, guid):
+    """
+    Return the readable id a guid declares, or the guid.
+
+    """
+
+    return map_declaration.get(guid, (None, guid))[1] or guid
+
+
+# -----------------------------------------------------------------------------
 def _type_of(identifier, map_prefix):
     """
     Return the type id an identifier's prefix names, or None.
@@ -274,4 +407,19 @@ def _fault(filepath, path, message):
                 filepath = str(filepath),
                 path     = path,
                 severity = cc_public.check.result.SEVERITY_CRITICAL,
+                message  = message)
+
+
+# -----------------------------------------------------------------------------
+def _question(filepath, path, message):
+    """
+    Return one advisory nonconformity: a question to the author rather
+    than a fault.
+
+    """
+
+    return cc_public.check.result.Nonconformity(
+                filepath = str(filepath),
+                path     = path,
+                severity = cc_public.check.result.SEVERITY_ADVISORY,
                 message  = message)

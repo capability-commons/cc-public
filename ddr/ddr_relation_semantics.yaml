@@ -1,0 +1,204 @@
+id_self:                ddr_relation_semantics
+guid_self:              ddr_48f7870d3bfb4108a9d1ca80ed007121
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared relation semantics and computed inference
+brief:                  |
+                        A relation entry declares transitivity and
+                        incompatibility beside domain, range and
+                        acyclic. Inference is computed from the
+                        asserted edges and is never written to the
+                        tree.
+context:                |
+                        ddr_term_ontology_checks decides that the
+                        semantics supporting inference are data in the
+                        relation register, and that a checker derives
+                        no property from a relation's readable name or
+                        its prose. It leaves open how those semantics
+                        are represented, and whether an inferred edge
+                        is materialized or computed for each use.
+
+                        ddr_term_concept_identity permits an edge
+                        between two term entries and leaves open which
+                        concept relations are admitted first.
+
+                        The relation register expresses domain, range
+                        and acyclic, and the relation check enforces
+                        the three. Nothing else about what a relation
+                        means is data.
+
+                        The glossary now holds a term for every type.
+                        Four of them are kinds of source item and two
+                        are kinds of component. Six entries already
+                        stand in a relation the register cannot
+                        express.
+decision:               |
+                        A relation entry may declare transitive. A
+                        chain of its edges is then one edge for a
+                        check or a query that follows it.
+
+                        A relation entry may declare incompatible, the
+                        relations that may not hold between the same
+                        pair of items. The declaration means the same
+                        read from either end, so one entry of a pair
+                        carries it.
+
+                        Symmetry is not represented. No admitted
+                        relation is symmetric.
+
+                        An inverse relation is not represented. A pair
+                        of opposite relations is one relation. walk,
+                        show and the graph query read an edge from
+                        both of its ends already.
+
+                        Inference is computed on every use. No
+                        inferred edge is written to the tree.
+
+                        Two concept relations are admitted.
+                        r_is_narrower_than runs from a concept to the
+                        wider concept that includes it. r_is_part_of
+                        runs from a concept to the concept it is a
+                        part of. Both take t_term as domain and as
+                        range, both are acyclic and transitive, and
+                        each names the other under incompatible.
+
+                        The relation check reports an edge between a
+                        pair an incompatible relation also holds
+                        between, and an asserted edge of a transitive
+                        relation that the closure of its own relation
+                        already implies.
+rationale:              |
+                        Two properties, because two are what the first
+                        two relations need. A property no relation
+                        declares has no edge to be measured against,
+                        and ddr_term_ontology_checks asks for the
+                        semantics that support the inference actually
+                        drawn, not for a vocabulary of the semantics
+                        that could be.
+
+                        Computed rather than materialized, because the
+                        tree derives its fact tables from the
+                        documents on every use already, and a stored
+                        inference is a second copy able to go stale.
+                        The provenance of a computed edge is the chain
+                        it was computed from, which a query returns
+                        with it.
+
+                        One relation for a pair of opposites, because
+                        two would let a tree assert one direction and
+                        omit the other. The checker would then either
+                        repair the omission, which asserts what no
+                        author wrote, or report a gap that means
+                        nothing.
+
+                        Incompatibility between relations rather than
+                        disjointness between concepts, because the
+                        fault it catches is a confusion of relations.
+                        A wheel is part of a car and is not a kind of
+                        car.
+alternative:            |
+                        An ontology language, an OWL profile or SKOS,
+                        named by the register. Rejected: it brings a
+                        vocabulary far past what any relation here
+                        declares, and every property in it needs a
+                        checker before it means anything.
+
+                        Materializing an inferred edge with its
+                        provenance. Rejected: a derived edge in the
+                        tree is a copy able to go stale, and the
+                        printer, the checks and every reader would
+                        have to tell an asserted edge from a derived
+                        one wherever an edge appears.
+
+                        Widening r_is_a_form_of, which runs from a
+                        type to a type, to hold concepts as well.
+                        Rejected: its domain and range would then
+                        permit an edge from a type to a concept, which
+                        is the pairing id_term carries.
+
+                        Admitting a symmetric relation,
+                        r_is_related_to, at the same time. Rejected:
+                        nothing needs it yet. It is the relation an
+                        author reaches for when the sharper one is
+                        harder to name, so it is admitted when a case
+                        for it exists.
+consequence:            |
+                        The glossary gains its first edges, and a
+                        reader walks from python module to source item
+                        without reading either description.
+
+                        A transitive relation that is not acyclic has
+                        a closure that does not terminate by itself.
+                        Both admitted relations are acyclic. A closure
+                        over any other bounds itself or is not
+                        computed.
+
+                        An incompatible declaration names a relation,
+                        so the check that a constraint names something
+                        real now covers relations as well as types.
+
+                        A concept relation crossing a segment boundary
+                        follows the segment rule, like every other
+                        reference. A consumer's concept may be
+                        narrower than one in the core, and not the
+                        other way.
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_term_ontology_checks.semantics
+    guid_target:        qst_7e1a92cead79413f806196175c9b8455
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_term_ontology_checks.inference
+    guid_target:        qst_c844cb523eb3422aafbbe93670bc537d
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_term_concept_identity.relations
+    guid_target:        qst_4730b72bd56a4266a00c415fbae77504
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_relation
+    guid_target:        reg_512fbf5c51be4efaa4517b52310ddf80
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_relation
+    guid_target:        sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.relation
+    guid_target:        pym_02a9a99732d544069897b6f7b090c9c5
+
+question:
+
+  closure:
+    id_self:            qst_relation_semantics.closure
+    guid_self:          qst_faae664b8cc140908f6e709d099ad024
+    question:           |
+                        Whether transitivity licenses a structured
+                        item check to hold a concept-valued field
+                        within a subtree of the concept hierarchy, and
+                        what computing that closure costs on every
+                        check.
+    relation:           []
+
+  redundancy:
+    id_self:            qst_relation_semantics.redundancy
+    guid_self:          qst_7ffbe2b6f53248b08dffe6e311296a90
+    question:           |
+                        Whether an asserted edge that the closure
+                        already implies is a finding or a note, given
+                        that it states nothing false.
+    relation:           []
