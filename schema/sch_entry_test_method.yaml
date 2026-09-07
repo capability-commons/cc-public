@@ -1,0 +1,325 @@
+id_self:                sch_entry_test_method
+guid_self:              sch_bf06a73a7a054940b50429c1e4c77981
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test method entry schema
+brief:                  |
+                        What a test method entry carries beyond the
+                        shape every register entry carries.
+description:            |
+                        The common envelope, and exactly one execution
+                        form. The envelope says what the method is
+                        for, what to do, what to observe and how to
+                        read a verdict, and names the schema that
+                        governs the configuration a test case supplies
+                        to it. Title, brief, description, alias and
+                        status come from sch_entry.
+
+                        The execution form is a keyed object holding
+                        exactly one of automated, evaluated_inspection
+                        and manual. Each form closes over its own
+                        fields, so a field of one form written under
+                        another is refused where it is written.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_test_method.yaml
+usage:                  |
+                        Composed with sch_entry by sch_reg_test_method
+                        as the shape of every entry in the test method
+                        register.
+type:                   object
+
+required:
+  - version
+  - verification_class
+  - procedure
+  - observation
+  - verdict_rule
+  - id_schema_case
+  - guid_schema_case
+  - execution_form
+
+properties:
+
+  version:
+    type:               string
+    pattern:            ^[0-9]+(\.[0-9]+)*$
+    description:        |
+                        The version of this method, as a dotted
+                        numeric string. A method whose procedure,
+                        observation or verdict rule changes takes a
+                        new version, since a result observed under the
+                        old one describes a procedure that no longer
+                        exists.
+
+  verification_class:
+    type:               string
+
+    enum:
+      - test
+      - demonstration
+      - inspection
+      - analysis
+
+    description:        |
+                        The class of verification this method
+                        performs, in the terms a textual requirement
+                        and verification evidence already use.
+
+  applicability:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What this method is for and where it
+                        applies.
+
+  prerequisite:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What must hold before the procedure
+                        begins.
+
+  procedure:
+    type:               string
+    minLength:          1
+    description:        |
+                        What is done, in order, in enough detail to be
+                        followed.
+
+  observation:
+    type:               string
+    minLength:          1
+    description:        |
+                        What is observed and recorded while the
+                        procedure runs.
+
+  verdict_rule:
+    type:               string
+    minLength:          1
+    description:        |
+                        How an observation is read as a conformance
+                        result.
+
+  id_schema_case:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+    description:        |
+                        Readable id of the schema governing the
+                        configuration a test case supplies.
+
+  guid_schema_case:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+    description:        |
+                        Guid of the schema governing the configuration
+                        a test case supplies.
+
+  evidence_required:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What artifacts a run of this method
+                        must keep.
+
+  limitation:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What this method does not establish.
+
+  execution_form:
+    type:               object
+    minProperties:      1
+    maxProperties:      1
+
+    propertyNames:
+
+      enum:
+        - automated
+        - evaluated_inspection
+        - manual
+
+    properties:
+
+      automated:
+        $ref:           '#/$defs/form_automated'
+
+      evaluated_inspection:
+        $ref:           '#/$defs/form_evaluated_inspection'
+
+      manual:
+        $ref:           '#/$defs/form_manual'
+
+    description:        |
+                        Exactly one of the three forms, under its own
+                        key. A method takes one form; a manual and an
+                        automated realisation of one technique are two
+                        methods.
+
+$defs:
+
+  form_automated:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - id_adapter
+      - guid_adapter
+
+    description:        |
+                        A method an installed adapter carries out. The
+                        adapter is named by identity. No field here
+                        carries a command or a path for the runtime to
+                        execute.
+
+    properties:
+
+      id_adapter:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the installed adapter that
+                        carries this method out.
+
+      guid_adapter:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the installed adapter that carries
+                        this method out.
+
+      capability:
+        type:           array
+        minItems:       1
+
+        items:
+          type:         string
+          minLength:    1
+
+        description:    |
+                        Optional. What the tool and environment must
+                        provide for the adapter to run.
+
+      timeout_second:
+        type:           integer
+        minimum:        1
+        description:    |
+                        Optional. How long a run may take before it is
+                        an execution error rather than a result.
+
+  form_evaluated_inspection:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - id_eval
+      - guid_eval
+
+    description:        |
+                        A method a judge carries out against an eval
+                        criterion. A judgement that the criterion is
+                        unmet and an inability to reach a judge are
+                        different outcomes.
+
+    properties:
+
+      id_eval:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the eval whose criterion is
+                        judged.
+
+      guid_eval:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the eval whose criterion is judged.
+
+      population:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Which items this method is applied
+                        to, where the eval reaches more than the
+                        method is for.
+
+      count_confirm:
+        type:           integer
+        minimum:        1
+        description:    |
+                        Optional. How many times an adverse verdict is
+                        judged again before it is reported.
+
+      condition:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What the judge must satisfy before
+                        its verdict is used, and what is done when a
+                        judgement is indeterminate, no judge is
+                        reachable, or the tool fails.
+
+  form_manual:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - instruction
+
+    description:        |
+                        A method a person carries out. What the person
+                        needs in order to carry it out the same way
+                        twice is stated here rather than assumed.
+
+    properties:
+
+      instruction:
+        type:           string
+        minLength:      1
+        description:    |
+                        The steps, in the order they are performed.
+
+      equipment:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The equipment and fixtures the steps
+                        need.
+
+      environment:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The conditions the steps are
+                        performed under.
+
+      calibration:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What must be calibrated, and to
+                        what.
+
+      competence:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What the person must be qualified to
+                        do, and whether a witness is required.
+
+      recording:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How an observation is recorded.
+
+      safety:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The constraints that keep the person
+                        safe.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_entry.yaml

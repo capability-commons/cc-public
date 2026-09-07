@@ -1,0 +1,43 @@
+id_self:                sch_reg_test_method
+guid_self:              sch_664e9b26de15449bbcba3e0df551ac1b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test method register schema
+brief:                  |
+                        The shape of the register whose entries are
+                        test methods.
+description:            |
+                        Composes sch_register with
+                        sch_entry_test_method in the pattern every
+                        register schema uses. Each entry is the common
+                        register entry shape and the test method shape
+                        together, closed to anything neither declares.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_test_method.yaml
+usage:                  |
+                        Named by reg_test_method as its schema.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_entry.yaml
+            - $ref:     https://capability-commons.org/schema/sch_entry_test_method.yaml
+
+          unevaluatedProperties:  false
+
+unevaluatedProperties:  false
