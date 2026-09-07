@@ -28,6 +28,7 @@ relation:               []
 
 
 import jsonschema
+import jsonschema.validators
 import referencing
 import referencing.jsonschema
 
@@ -55,6 +56,7 @@ KEY_ID_TARGET = 'id_target'       # the edge's far end
 SEPARATOR     = '_'
 
 KEYWORD_UNEVALUATED = 'unevaluatedProperties'
+KEYWORD_PATTERN     = 'pattern'
 
 
 # -----------------------------------------------------------------------------
@@ -312,6 +314,36 @@ def _list_id_schema(mapping):
 
 
 # -----------------------------------------------------------------------------
+def _pattern(validator, value, instance, schema):
+    """
+    Apply pattern as the draft defines it, and refuse a line break.
+
+    A pattern constrains a datum, and a datum holds no line break
+    (ddr_layout_convention). The check is needed because the draft
+    reads a regular expression by ECMA-262, where $ matches at the end
+    of the string, while Python matches it before a final newline as
+    well. A value written as a block scalar carries that newline, so a
+    pattern anchored with $ accepts it and says nothing.
+
+    """
+
+    yield from KEYWORD_PATTERN_DRAFT(validator, value, instance, schema)
+
+    if isinstance(instance, str) and '\n' in instance:
+        yield jsonschema.ValidationError(
+                '{value!r} is constrained by a pattern, so it holds a datum, and a '
+                'datum holds no line break. It is written as a block scalar, and the '
+                'line break is part of the value.'.format(value = instance))
+
+
+KEYWORD_PATTERN_DRAFT = jsonschema.Draft202012Validator.VALIDATORS[KEYWORD_PATTERN]
+
+Validator             = jsonschema.validators.extend(
+                                jsonschema.Draft202012Validator,
+                                {KEYWORD_PATTERN: _pattern})
+
+
+# -----------------------------------------------------------------------------
 def validate(document, id_schema, map_schema, reg = None):
     """
     Return [(path, message)] for every way document fails the schema
@@ -322,7 +354,7 @@ def validate(document, id_schema, map_schema, reg = None):
 
     """
 
-    validator = jsonschema.Draft202012Validator(map_schema[id_schema],
+    validator = Validator(map_schema[id_schema],
                                                 registry = reg if reg is not None
                                                            else registry(map_schema))
     list_error = sorted(validator.iter_errors(document),
