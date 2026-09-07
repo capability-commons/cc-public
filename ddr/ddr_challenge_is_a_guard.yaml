@@ -1,0 +1,128 @@
+id_self:                ddr_challenge_is_a_guard
+guid_self:              ddr_7bb7a1cbeb9c40dbba434f404f14c5b0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The challenge loop guards the node that writes it
+brief:                  |
+                        evl_challenge_answered judges the output of
+                        the two challenge components and sweeps
+                        nothing, because a challenge is a property of
+                        the workflow that produced a record and not of
+                        every record.
+context:                |
+                        evl_challenge_answered is named by two ports,
+                        the output of cmp_challenge_concept and the
+                        output of cmp_challenge_decomposition. There
+                        it judges what a challenging node on a second
+                        model has just written, and its criterion
+                        holds: the node's whole work was to write a
+                        challenge, so an absent challenge is that node
+                        failing.
+
+                        It also carried two schema anchors, to sch_ddr
+                        and sch_concept, which made it judge every
+                        design decision and every concept in the tree.
+                        In that role it reported that eighty three
+                        hand-written records lack a challenge.
+
+                        ddr_design_decision says a design decision MAY
+                        carry a challenge and a resolution, and
+                        sch_ddr makes both optional. An eval reporting
+                        their absence as a fault contradicts the
+                        record that governs the field.
+
+                        The eval was measured on six control cases and
+                        every one carries a challenge, all drawn from
+                        a decomposition a workflow produced. Its
+                        confidence describes the population it guards
+                        and says nothing about a record written by
+                        hand.
+decision:               |
+                        evl_challenge_answered holds no anchor. It is
+                        invoked by the ports that name it and sweeps
+                        nothing.
+
+                        A challenge and a resolution are what a
+                        workflow writes when a challenging node runs.
+                        They are not a property every design decision
+                        carries, and their absence from a record is
+                        not a finding.
+
+                        The criterion is unchanged. Where the eval is
+                        used, absence of a challenge remains unmet,
+                        because there the node was asked for one.
+rationale:              |
+                        The anchor removed rather than the criterion
+                        changed, because the criterion is right in the
+                        one place the eval is used and was measured
+                        there. Changing it would weaken a guard that
+                        works in order to quiet a sweep that should
+                        not have run.
+
+                        The confidence stays as measured. The digest
+                        covers criterion, example and scope and the
+                        control cases, not the edges an eval holds, so
+                        removing an anchor leaves every row current.
+                        Nothing has to be judged again.
+
+                        A guard rather than a sweep, because a
+                        challenge is produced by an act. Something has
+                        to have challenged, and a record nothing
+                        challenged is not defective for saying nothing
+                        about it.
+alternative:            |
+                        Changing the criterion so that an absent
+                        challenge is met. Rejected: it would weaken
+                        the guard on the two ports, where an absent
+                        challenge is exactly the failure worth
+                        catching.
+
+                        Narrowing by subject.include_type. Rejected: a
+                        record a workflow produced and a record
+                        written by hand are both t_ddr, so no type
+                        tells them apart.
+
+                        Adopting the practice and challenging every
+                        record. Rejected here as a decision that
+                        belongs with the argumentation framework, not
+                        with an eval's reach. See
+                        ddr_argumentation_framework.
+
+                        Withdrawing the eval. Rejected: it guards two
+                        ports, is calibrated, and its rates are good.
+consequence:            |
+                        The eval reaches nothing in a sweep. Eighty
+                        nine design decisions stop carrying an
+                        advisory that told a reader to add a field the
+                        schema makes optional.
+
+                        A change to the challenge components or their
+                        prompts is still held to this eval at the
+                        port, which is where a regression would show.
+
+                        An eval may exist to guard a port and reach
+                        nothing otherwise. That is now a shape the
+                        repository has, and an eval with no anchor is
+                        not therefore dead.
+
+                        Whether the argumentation framework keeps a
+                        single challenge and a single resolution on a
+                        record is open, and is that record's question.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_challenge_answered
+    guid_target:        evl_63a94938fe014899b093e1ed560d599a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_challenge
+    guid_target:        term_a79c6abfc47f49829bc156c854a83703
