@@ -31,6 +31,7 @@ relation:               []
 import datetime
 import pathlib
 
+import cc_public.decision
 import cc_public.facts
 import cc_public.load.git
 import cc_public.need
@@ -62,6 +63,18 @@ WF_RESEARCH     = 'wf_research_concept'
 WF_ASSESS       = 'wf_assess_concept'
 VERDICT_ORDER   = ('feasible_now', 'feasible_with_development', 'speculative', 'not_feasible')
 RATING_STRONG   = 'strong'
+VERDICT_LABEL   = {'feasible_now':              'buildable from existing parts',
+                   'feasible_with_development': 'needs development',
+                   'speculative':               'speculative',
+                   'not_feasible':              'not feasible'}
+REL_ADMITTED    = 'r_is_admitted_by'
+REL_INCLUDES    = 'r_includes'
+PREFIX_DECISION = 'dcn'
+PREFIX_EXE      = 'exe'
+PREFIX_SET      = 'rqs'
+OUTCOME_LEAD    = 'lead'
+CLASSES         = ('normal', 'abnormal', 'misuse', 'maintenance', 'deployment', 'safety', 'budget')
+COUNT_GROUP     = 8
 PREFIX_NEED     = 'need'
 PREFIX_CONCEPT  = 'cpt'
 PREFIX_REQ      = 'req'
@@ -73,7 +86,7 @@ WIDTH_LABEL     = 28
 
 
 # -----------------------------------------------------------------------------
-def dossier(tree, id_observation, report = None):
+def dossier(tree, id_observation, report = None, request = None):
     """
     Return the dossier rooted at an observation, as plain data with
     nothing of layout in it: the observation, each need drawn from it
@@ -98,12 +111,14 @@ def dossier(tree, id_observation, report = None):
             one = _concept(index, concept)
             pointing = index.pointing(concept[KEY_GUID_SELF], REL_ASSESSES, PREFIX_ASSESS)
             one['assessment'] = [_assessment(index, a) for a in pointing]
-            _settle_verdict(one)
+            _settle_verdict(one, index)
             for req in index.deriving(concept[KEY_GUID_SELF], PREFIX_REQ):
                 row = _requirement(req, one['id'], list_gap, findings)
                 one['requirement'].append(row)
                 list_req.append(row)
-            one['promoted'] = bool(one['requirement'])
+            one['promoted']  = bool(one['requirement'])
+            one['admission'] = _admission(index, one)
+            one['coverage']  = _coverage(index, one)
             entry['concept'].append(one)
             list_cpt.append(one)
         for req in index.deriving(need[KEY_GUID_SELF], PREFIX_REQ):
@@ -123,6 +138,10 @@ def dossier(tree, id_observation, report = None):
     _label_assessments(list_asm, list_exe)
 
     return {'generated_at':  datetime.datetime.now(datetime.UTC).strftime('%-d %B %Y, %H:%M UTC'),
+            'request':       request,
+            'state':         _state(obs, list_need, list_cpt, list_req, list_asm),
+            'finding_group': _finding_group(list_req),
+            'decision':      _decisions(index),
             'revision':      _revision(tree),
             'observation':   _observation(obs),
             'need':          list_need,
@@ -267,6 +286,7 @@ def _concept(index, doc):
             'guid':         doc[KEY_GUID_SELF],
             'title':        doc.get('title'),
             'brief':        doc.get('brief', ''),
+            'brief_short':  _first(doc.get('brief', '')),
             'entity':       doc.get('entity'),
             'framing':      {'id': framing.get(KEY_ID_SELF), 'title': framing.get('title'),
                              'brief': framing.get('brief', '')},
@@ -295,6 +315,7 @@ def _assessment(index, doc):
             'assessor':  doc.get('assessor'),
             'made_by':   None,
             'verdict':   doc.get('verdict'),
+            'verdict_label': VERDICT_LABEL.get(doc.get('verdict'), doc.get('verdict')),
             'summary':   doc.get('summary', ''),
             'status':    doc.get('status'),
             'dimension': [{'key': k, 'rating': v.get('rating'), 'rationale': v.get('rationale', ''),
@@ -307,13 +328,66 @@ def _assessment(index, doc):
             'cited':     index.cited(doc)}
 
 
-def _settle_verdict(concept):
-    """The assessment a document leads with: the one with references, else the first."""
+def _settle_verdict(concept, index):
+    """
+    The assessment a document leads with: the one a lead decision that
+    still holds names; else the one with references; else the first.
+    Which rule chose it is said, so that the reader knows.
+
+    """
     list_asm = concept['assessment']
-    lead     = next((a for a in list_asm if a['cited'] or a['assessor']),
-                    list_asm[0] if list_asm else None)
+    map_guid = cc_public.decision.index(index.tree.context.map_document)
+    named    = {s.get('guid_item')
+                for d in index.tree.context.map_document.values()
+                if cc_public.decision.is_decision(d)
+                   and d.get(cc_public.decision.KEY_OUTCOME) == OUTCOME_LEAD
+                   and cc_public.decision.holds(d, map_guid)
+                for s in d.get(cc_public.decision.KEY_SUBJECT) or []}
+    lead = next((a for a in list_asm if a['guid'] in named), None)
+    by   = 'decision' if lead else None
+    if lead is None:
+        lead = next((a for a in list_asm if a['cited']), None)
+        by   = 'references' if lead else None
+    if lead is None and list_asm:
+        (lead, by) = (list_asm[0], 'only')
     concept['lead']    = lead
+    concept['lead_by'] = by
     concept['verdict'] = lead['verdict'] if lead else None
+    concept['verdict_label'] = VERDICT_LABEL.get(concept['verdict'], concept['verdict'])
+
+
+def _admission(index, concept):
+    """
+    What admitted the concept's requirements: the run in which its
+    challenge concluded, a waiver that decided it, or nothing.
+
+    """
+    for r in concept['requirement']:
+        for id_target in r['admitted']:
+            if id_target.split(SEPARATOR, 1)[0] == PREFIX_DECISION:
+                doc = index.document(id_target)
+                return {'kind': 'waived', 'id': id_target, 'expiry': doc.get('expiry'),
+                        'actor': doc.get('actor'), 'condition': doc.get('condition', '')}
+            if id_target.split(SEPARATOR, 1)[0] == PREFIX_EXE:
+                return {'kind': 'concluded', 'id': id_target}
+    return {'kind': 'none'}
+
+
+def _coverage(index, concept):
+    """
+    What the set of the concept's requirements covers, class by class,
+    from the first set including one of them; nothing where no set is
+    reviewed.
+
+    """
+    for r in concept['requirement']:
+        for doc in index.pointing(r['guid'], REL_INCLUDES, PREFIX_SET):
+            table = doc.get('coverage')
+            if not isinstance(table, dict):
+                continue
+            return [{'class': c, 'status': (table.get(c) or {}).get('status', 'unknown'),
+                     'note': (table.get(c) or {}).get('note', '')} for c in CLASSES]
+    return []
 
 
 def _rank(concept):
@@ -387,8 +461,75 @@ def _requirement(doc, id_concept, list_gap, findings):
             'claim':     doc.get('claim'),
             'status':    doc.get('status'),
             'concept':   id_concept,
+            'admitted':  [e.get(KEY_ID_TARGET) for e in doc.get(KEY_RELATION) or []
+                          if isinstance(e, dict) and e.get(KEY_ID_REL) == REL_ADMITTED],
             'gap':       [g for (guid, g) in list_gap if guid == doc[KEY_GUID_SELF]],
             'finding':   findings.get(doc[KEY_ID_SELF], [])}
+
+
+def _first(text):
+    """The first sentence of a text, for a cell that must stay short."""
+    words = ' '.join(str(text or '').split())
+    head  = words.split('. ', 1)[0]
+    return head if head.endswith('.') or not head else head + '.'
+
+
+def _state(obs, list_need, list_cpt, list_req, list_asm):
+    """
+    Where the dossier stands, in counts: what came in, what was done,
+    what was found, and what is open. For the brief.
+
+    """
+    framings   = {c['framing']['id'] for c in list_cpt}
+    concluded  = sum(1 for c in list_cpt if c['admission']['kind'] == 'concluded')
+    waived     = sum(1 for c in list_cpt if c['admission']['kind'] == 'waived')
+    researched = sum(1 for a in list_asm if a['cited'])
+    reviewed   = [c for c in list_cpt if c['coverage']]
+    open_class = [{'concept': c['title'], 'class': e['class'], 'note': _first(e['note'])}
+                  for c in reviewed for e in c['coverage'] if e['status'] == 'uncovered']
+    return {'source_kind':   str(obs.get('source_kind', '')).replace(SEPARATOR, ' '),
+            'attribution':   obs.get('attribution'),
+            'evidence':      _first(list_need[0]['evidence']) if list_need else '',
+            'need':          len(list_need),
+            'framing':       len(framings),
+            'concept':       len(list_cpt),
+            'concluded':     concluded,
+            'waived':        waived,
+            'requirement':   len(list_req),
+            'evidential':    sum(1 for r in list_req if r['claim'] == 'evidential'),
+            'accepted':      sum(1 for r in list_req if r['status'] == 'accepted'),
+            'assessment':    len(list_asm),
+            'researched':    researched,
+            'reviewed':      len(reviewed),
+            'open':          open_class,
+            'finding':       sum(len(r['finding']) for r in list_req)}
+
+
+def _finding_group(list_req):
+    """The findings by eval and the rule they name, largest first."""
+    count = {}
+    for r in list_req:
+        for f in r['finding']:
+            rule  = next((w.strip('.,;:()') for w in f['message'].split()
+                          if w.startswith('rule_') and 'No rule named' not in f['message']), '')
+            key   = (f['eval'], rule)
+            count[key] = count.get(key, 0) + 1
+    return [{'eval': k[0], 'rule': k[1], 'count': n}
+            for (k, n) in sorted(count.items(), key = lambda kv: (-kv[1], kv[0]))]
+
+
+def _decisions(index):
+    """Every decision in the tree, as a row."""
+    out = []
+    for doc in index.tree.context.map_document.values():
+        if cc_public.decision.is_decision(doc):
+            out.append({'id': doc[KEY_ID_SELF], 'title': doc.get('title'),
+                        'outcome': doc.get('outcome'), 'actor': doc.get('actor'),
+                        'role': doc.get('role'), 'authority': doc.get('authority'),
+                        'brief': doc.get('brief', ''), 'condition': doc.get('condition', ''),
+                        'expiry': doc.get('expiry'),
+                        'subject': [s.get('id_item') for s in doc.get('subject') or []]})
+    return sorted(out, key = lambda d: d['id'])
 
 
 # -----------------------------------------------------------------------------

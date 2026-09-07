@@ -141,7 +141,7 @@ def test_the_dossier_projects_a_demonstration_and_renders_both_documents(repo, t
     briefing = cc_public.render.html.briefing(d)
     appendix = cc_public.render.html.appendix(d, svg)
     assert 'Proposed solutions' in briefing and need['title'] in briefing
-    assert 'feasible now' in briefing and '<script' not in briefing
+    assert 'buildable from existing parts' in briefing and '<script' not in briefing
     assert 'rule_r19_combinators' in appendix and '<svg' in appendix
     assert 'How this was made' in appendix
     assert 'rule_r19_combinators' not in briefing        # findings live in the appendix
@@ -154,3 +154,19 @@ def test_a_dossier_needs_an_item_the_tree_holds(repo):
     tree = cc_public.edit.tree.Tree([repo])
     with pytest.raises(cc_public.edit.tree.ErrorItem):
         cc_public.render.dossier.dossier(tree, 'obs_nowhere')
+
+
+def test_the_brief_carries_the_state_the_label_and_what_admitted_each_concept(repo, tmp_path):
+    tree = built(repo)
+    d = cc_public.render.dossier.dossier(tree, ID_OBSERVATION, None, request = 'Read and correct the need.')
+    state = d['state']
+    assert state['concept'] == 1 and state['concluded'] == 1 and state['waived'] == 0
+    assert state['requirement'] == 10 and state['accepted'] == 0 and state['researched'] == 1
+    concept = d['concept'][0]
+    assert concept['verdict_label'] == 'buildable from existing parts' and concept['lead_by'] == 'references'
+    assert concept['admission']['kind'] == 'concluded' and concept['admission']['id'].startswith('exe_')
+    assert concept['coverage'] == [] and d['decision'] == []
+    briefing = cc_public.render.html.briefing(d)
+    assert 'The brief' in briefing and 'argued through' in briefing and 'Read and correct the need.' in briefing
+    assert 'buildable from existing parts' in briefing
+    assert 'knowledge alone' not in briefing

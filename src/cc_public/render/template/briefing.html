@@ -14,55 +14,60 @@
     <tr><td>Candidate solutions</td><td class="id">{% for c in d.concept %}{{ c.id }}{% if not loop.last %} · {% endif %}{% endfor %}</td></tr>
     <tr><td>Tree revision</td><td class="id">{{ d.revision or 'unknown' }}</td></tr>
     <tr><td>Drawn</td><td>{{ d.generated_at }}</td></tr>
-    <tr><td>Companion</td><td>Technical appendix: every item, finding, run and reference in full.</td></tr>
+    <tr><td>Standing</td><td>{{ d.state.concept }} solution{{ 's' if d.state.concept != 1 }} proposed from one {{ d.state.source_kind }}; {{ d.state.requirement }} requirements proposed, {{ d.state.accepted }} accepted. Every item, run and finding is in the technical appendix.</td></tr>
   </table>
 </div>
 
 <div class="chapter summary">
-<h2>Summary</h2>
+<h2>The brief</h2>
 {% if need %}
 <div class="box"><p class="statement">{{ need.statement|words }}</p></div>
-<h4>Evidence</h4>
-{{ need.evidence|prose }}
 {% endif %}
+<table class="small">
+  <tr><th style="width:18%">Input</th><td>One {{ d.state.source_kind }}, {{ d.observation.attribution }}{% if d.observation.published_at %}, {{ d.observation.published_at[:10] }}{% endif %}, captured as posted. {{ d.state.evidence }}</td></tr>
+  <tr><th>Done</th><td>The need was stated and {{ d.state.concept }} solution{{ 's' if d.state.concept != 1 }} proposed under {{ d.state.framing }} framing{{ 's' if d.state.framing != 1 }}, each argued against by a second model: {{ d.state.concluded }} argued through, {{ d.state.waived }} let through on a recorded waiver. {{ d.state.requirement }} requirements were drawn from them and judged by {{ '11' }} writing rules{% if d.state.assessment %}; feasibility was assessed {{ d.state.assessment }} time{{ 's' if d.state.assessment != 1 }}, {{ d.state.researched }} with references{% endif %}{% if d.state.reviewed %}; {{ d.state.reviewed }} requirement set{{ 's were' if d.state.reviewed != 1 else ' was' }} reviewed for what {{ 'they cover' if d.state.reviewed != 1 else 'it covers' }}{% endif %}.</td></tr>
+  <tr><th>Found</th><td>{% for c in d.concept %}{{ c.title }}: {{ c.verdict_label or 'not assessed' }}{% if not loop.last %}; {% endif %}{% endfor %}. The solutions are ranked below, most directly buildable first.</td></tr>
+  {% if d.state.open %}<tr><th>Open</th><td><ul class="plain">{% for o in d.state.open[:6] %}<li><strong>{{ o.class|capitalize }}</strong>, {{ o.concept|lower }}: {{ o.note }}</li>{% endfor %}</ul></td></tr>{% endif %}
+  {% if d.request %}<tr><th>Asked</th><td>{{ d.request }}</td></tr>{% endif %}
+</table>
 <h4>The source</h4>
 <blockquote class="capture">
   {{ d.observation.content|prose }}
   <p class="meta">{{ d.observation.attribution }}{% if d.observation.published_at %} · {{ d.observation.published_at }}{% endif %} · <span class="id">{{ d.observation.source_uri }}</span></p>
 </blockquote>
-<h4>Top external references</h4>
 {% if d.reference %}
+<h4>References</h4>
 <ol class="refs">
-  {% for r in d.reference[:8] %}
-  <li>{{ r.title }} · {{ r.attribution }}{% if r.published_at %} · {{ r.published_at[:10] }}{% endif %} · <span class="id">{{ r.source_uri }}</span> · cited {{ r.count }} time{{ 's' if r.count != 1 }}</li>
+  {% for r in d.reference[:6] %}
+  <li>{{ r.title }} · {{ r.attribution }}{% if r.published_at %} · {{ r.published_at[:10] }}{% endif %} · <span class="id">{{ r.source_uri }}</span></li>
   {% endfor %}
 </ol>
-{% else %}
-<p class="small">No external reference is cited yet: the assessments below rest on their assessor's knowledge, and say so. References captured by the research workflow appear here.</p>
 {% endif %}
 </div>
 
 <div class="chapter">
 <h2>Proposed solutions</h2>
-<p class="small">Sorted with the most directly feasible first, by the leading assessment's verdict and then by its strong ratings.</p>
 <table class="toc">
-  <tr><th style="width:4%">#</th><th style="width:26%">Solution</th><th>Concept</th><th style="width:16%">Feasibility</th><th class="page">Page</th></tr>
+  <tr><th style="width:4%">#</th><th style="width:20%">Solution</th><th>Concept</th><th style="width:13%">Feasibility</th><th style="width:8%">Basis</th><th style="width:9%">Challenge</th><th class="page">Page</th></tr>
   {% for c in d.concept %}
   <tr>
     <td class="n">{{ loop.index }}</td>
     <td><a href="#{{ c.id }}">{{ c.title }}</a></td>
-    <td class="small">{{ c.brief|words }}</td>
-    <td>{% if c.verdict %}<span class="verdict {{ c.verdict }}">{{ c.verdict|replace('_', ' ') }}</span>{% else %}<span class="verdict">not assessed</span>{% endif %}</td>
+    <td class="small">{{ c.brief_short }}</td>
+    <td>{% if c.verdict %}<span class="verdict {{ c.verdict }}">{{ c.verdict_label }}</span>{% else %}<span class="verdict">not assessed</span>{% endif %}</td>
+    <td class="small">{% if c.lead %}{% if c.lead.cited %}references{% elif c.lead.made_by == 'model' %}model{% else %}{{ c.lead.assessor or 'assessor' }}{% endif %}{% endif %}</td>
+    <td class="small">{% if c.admission.kind == 'concluded' %}argued through{% elif c.admission.kind == 'waived' %}waived{% endif %}</td>
     <td class="page"><a href="#{{ c.id }}"></a></td>
   </tr>
   {% endfor %}
 </table>
+<p class="meta">Most directly buildable first: by the leading assessment's verdict, then by its strong ratings. The appendix says how each assessment was made and which leads.</p>
 </div>
 
 {% for c in d.concept %}
 <div class="chapter" id="{{ c.id }}">
 <h2>{{ loop.index }}. {{ c.title }}</h2>
-<p class="meta">Under the framing <em>{{ c.framing.title or c.framing.id }}</em> · entity <span class="id">{{ c.entity }}</span>{% if c.verdict %} · <span class="verdict {{ c.verdict }}">{{ c.verdict|replace('_', ' ') }}</span>{% endif %}</p>
+<p class="meta">Under the framing <em>{{ c.framing.title or c.framing.id }}</em> · entity <span class="id">{{ c.entity }}</span>{% if c.verdict %} · <span class="verdict {{ c.verdict }}">{{ c.verdict_label }}</span>{% endif %}{% if c.admission.kind == 'concluded' %} · challenge argued through{% elif c.admission.kind == 'waived' %} · challenge open, waived by {{ c.admission.actor }}{% if c.admission.expiry %} until {{ c.admission.expiry }}{% endif %}{% endif %}</p>
 {{ c.brief|prose }}
 <h4>What it does</h4>
 {{ c.effect|prose }}
@@ -76,6 +81,11 @@
   {% endfor %}
 </table>
 <p class="meta">{{ c.requirement|length }} proposed requirements on {{ c.entity }}; their rationale and the findings of the requirement evals are in the appendix.</p>
+{% if c.coverage %}
+<h4>What they cover</h4>
+<p class="small">Covered: {% for e in c.coverage if e.status == 'covered' %}{{ e.class }}{% if not loop.last %}, {% endif %}{% endfor %}.{% set na = c.coverage|selectattr('status', 'equalto', 'not_applicable')|list %}{% if na %} Not applicable: {% for e in na %}{{ e.class }}{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+{% set open = c.coverage|selectattr('status', 'equalto', 'uncovered')|list %}{% if open %}<ul class="small">{% for e in open %}<li><strong>{{ e.class|capitalize }}.</strong> {{ e.note|words }}</li>{% endfor %}</ul>{% endif %}
+{% endif %}
 {% else %}
 <table>
   <tr><th style="width:4%">#</th><th>Candidate statement</th><th style="width:11%">Category</th></tr>
@@ -89,7 +99,7 @@
 <h3>Feasibility</h3>
 {% if c.lead %}
 {% set a = c.lead %}
-<p class="madeby">Assessed by {% if a.made_by == 'agent' %}an agent with tools{% elif a.made_by == 'model' %}a model without references{% else %}{{ a.assessor or 'an unnamed assessor' }}{% endif %}{% if a.assessor and a.made_by != 'model' %}: {{ a.assessor }}{% endif %}. Verdict <span class="verdict {{ a.verdict }}">{{ a.verdict|replace('_', ' ') }}</span>.</p>
+<p class="madeby">Assessed by {% if a.made_by == 'agent' %}an agent with tools{% elif a.made_by == 'model' %}a model without references{% else %}{{ a.assessor or 'an unnamed assessor' }}{% endif %}{% if a.assessor and a.made_by != 'model' %}: {{ a.assessor }}{% endif %}. Verdict <span class="verdict {{ a.verdict }}">{{ a.verdict_label }}</span>.</p>
 {{ a.summary|prose }}
 <table>
   <tr><th style="width:22%">Dimension</th><th style="width:11%">Rating</th><th>Rationale</th></tr>
@@ -105,7 +115,6 @@
   <tr><td>{{ pr.name }}</td><td>{{ pr.maturity }}</td><td class="small">{{ pr.role|words }}</td>{% if cited_any %}<td class="small">{% for ref in pr.cited %}<span class="id">[{{ ref.id }}]</span> {% endfor %}</td>{% endif %}</tr>
   {% endfor %}
 </table>
-{% if not cited_any %}<p class="meta">No reference is cited for these: they are the assessor's knowledge alone. The appendix says, for each, what would confirm it.</p>{% endif %}
 {% if c.assessment|length > 1 %}<p class="meta">{{ c.assessment|length }} assessments of this concept exist; the appendix shows each.</p>{% endif %}
 {% else %}
 <p>Not yet assessed.</p>

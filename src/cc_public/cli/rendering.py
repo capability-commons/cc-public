@@ -53,8 +53,10 @@ NAMES    = ('briefing', 'appendix')
                      'findings the appendix lists against each requirement.')
 @click.option('--format', 'id_format', default = 'both', type = click.Choice(FORMATS),
               show_default = True)
+@click.option('--request', 'request', default = None,
+              help = 'What the reader is asked to do, printed on the brief.')
 @cc_public.cli.group.OPTION_ROOT
-def render_(id_observation, dirpath_out, path_report, id_format, list_root):
+def render_(id_observation, dirpath_out, path_report, id_format, request, list_root):
     """
     Render the dossier rooted at an observation as two documents, a
     briefing and a technical appendix. Reads the tree and a findings
@@ -75,7 +77,7 @@ def render_(id_observation, dirpath_out, path_report, id_format, list_root):
     report = json.loads(path_report.read_text(encoding = 'utf-8')) if path_report else None
 
     try:
-        projection = cc_public.render.dossier.dossier(tree, id_observation, report)
+        projection = cc_public.render.dossier.dossier(tree, id_observation, report, request)
     except cc_public.edit.tree.ErrorItem as err:
         cc_public.cli.group.fail(err)
 

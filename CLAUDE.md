@@ -89,6 +89,7 @@ Rendering
   and a technical appendix, drawn from the graph: needs, concepts,
   promoted requirements, runs, the findings in a report from `check --eval
   --format json --out FILE`, trace gaps, the derivations drawn by Graphviz.
+  `--request TEXT` prints what the reader is asked to do on the brief.
   Writes into DIR, never into the tree (`ddr_dossier`). The projection is
   `cc_public.render.dossier.dossier(tree, id, report)`, plain data; the
   templates are beside `cc_public.render.html`.

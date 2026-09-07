@@ -6,10 +6,10 @@
   <div class="kicker">Capability Commons · technical appendix</div>
   <h1>{{ need.title if need else d.observation.title }}</h1>
   <div class="sub">Every item, every finding, every run</div>
-  <p class="meta">Drawn from the tree at revision {{ d.revision or 'unknown' }} on {{ d.generated_at }}. Identities are stable: each item is named by a readable id and a guid, listed in section G. Everything is <span class="standing">proposed</span>.</p>
+  <p class="meta">Drawn from the tree at revision {{ d.revision or 'unknown' }} on {{ d.generated_at }}. Identities are stable: each item is named by a readable id and a guid, listed in section J.</p>
   <h4>Contents</h4>
   <ul class="plain small">
-    <li>A. The observation</li><li>B. The need</li><li>C. The concepts, one section each: in full, with assumptions, candidates, challenge, assessments and runs</li><li>D. The proposed requirements and their findings</li><li>E. The derivations, drawn</li><li>F. References</li><li>G. The runs</li><li>H. How this was made, and what it does not claim</li><li>I. Identities</li>
+    <li>A. The observation</li><li>B. The need</li><li>C. The concepts, one section each: in full, with assumptions, candidates, challenge, assessments and runs</li><li>D. The proposed requirements and their findings</li><li>E. The derivations, drawn</li><li>F. References</li><li>G. The runs</li><li>H. Decisions</li><li>I. How this was made, and what it does not claim</li><li>J. Identities</li>
   </ul>
 </div>
 
@@ -92,7 +92,7 @@
 {% endfor %}
 {% for a in c.assessment %}
 <h4>Assessment: {{ a.title }}</h4>
-<p class="madeby">Made by {% if a.made_by == 'agent' %}an agent with tools{% elif a.made_by == 'model' %}a model, without references{% else %}{{ a.assessor or 'an unnamed assessor' }}{% endif %}{% if a.assessor %} · {{ a.assessor }}{% endif %} · <span class="id">{{ a.id }}</span> · verdict <span class="verdict {{ a.verdict }}">{{ a.verdict|replace('_', ' ') }}</span>{% if a.status %} · <span class="standing">{{ a.status }}</span>{% endif %}</p>
+<p class="madeby">Made by {% if a.made_by == 'agent' %}an agent with tools{% elif a.made_by == 'model' %}a model, without references{% else %}{{ a.assessor or 'an unnamed assessor' }}{% endif %}{% if a.assessor %} · {{ a.assessor }}{% endif %} · <span class="id">{{ a.id }}</span> · verdict <span class="verdict {{ a.verdict }}">{{ a.verdict_label }}</span>{% if a.status %} · <span class="standing">{{ a.status }}</span>{% endif %}</p>
 {{ a.summary|prose }}
 <table>
   <tr><th style="width:20%">Dimension</th><th style="width:10%">Rating</th><th>Rationale</th></tr>
@@ -113,6 +113,8 @@
 <h2>D. The proposed requirements and their findings</h2>
 {% if d.requirement %}
 <p>Each derives from its concept and from the need, is proposed, and was judged by the requirement evals: {{ d.finding_count }} findings in all, each naming the rule it applies and quoting the phrase at fault. The trace reports each as a leaf nothing implements or verifies.</p>
+{% if d.finding_group %}<table><tr><th style="width:30%">Eval</th><th>Rule named</th><th style="width:10%">Findings</th></tr>
+{% for g in d.finding_group %}<tr><td class="id">{{ g.eval }}</td><td class="id">{{ g.rule }}</td><td class="n">{{ g.count }}</td></tr>{% endfor %}</table>{% endif %}
 {% for r in d.requirement %}
 <div class="keep">
 <h3>D{{ loop.index }}. {{ r.title }} <span class="meta">({{ r.concept }})</span></h3>
@@ -160,13 +162,26 @@
 </div>
 
 <div class="section">
-<h2>H. How this was made, and what it does not claim</h2>
+<h2>H. Decisions</h2>
+{% if d.decision %}
+<p class="small">Each decision is an act by a named actor over items at their digests; the decision check reports one whose subject has changed since or whose expiry has passed.</p>
+<table>
+  <tr><th style="width:12%">Outcome</th><th style="width:22%">By</th><th>Over</th><th style="width:30%">Condition</th><th style="width:10%">Until</th></tr>
+  {% for dc in d.decision %}<tr><td>{{ dc.outcome }}</td><td class="small">{{ dc.actor }}, {{ dc.role }}; authority: {{ dc.authority }}</td><td class="id">{{ dc.subject|join(', ') }}</td><td class="small">{{ dc.condition|words }}</td><td>{{ dc.expiry or '' }}</td></tr>{% endfor %}
+</table>
+{% else %}<p>No decision is recorded.</p>{% endif %}
+</div>
+
+<div class="section">
+<h2>I. How this was made, and what it does not claim</h2>
 <ol class="moves">
   <li><strong>The capture.</strong> One public {{ d.observation.source_kind }}, attributed as it attributes itself, preserved unchanged with its locator, times and digest, imported by a deterministic command. No model took part.</li>
   <li><strong>The need.</strong> A model wrote what the post supports, stated without a product, with evidence that says what one post does and does not establish; five need evals judged it as it was written, redrafting on an unmet verdict within a budget.</li>
   <li><strong>The concepts.</strong> The same need was seen through {{ d.concept|map(attribute='framing.id')|unique|list|length }} framings; under each a model proposed a candidate solution with its assumptions and their evidence, its risks and its candidate requirements, and a second model attacked it for up to three rounds; the last challenge and the resolution before it are in section C.</li>
   <li><strong>Promotion.</strong> Each concept's candidate requirements became proposed requirement items by a function, deriving from the concept and the need, and the eleven requirement evals judged them: {{ d.finding_count }} findings, in section D.</li>
-  <li><strong>Assessment.</strong> Each concept's feasibility was assessed, by an agent with tools that captured its references, or by a model without references; each assessment says which, and the briefing leads with the referenced one where it exists.</li>
+  <li><strong>Admission.</strong> A concept's candidates were promoted where its challenge concluded, or under a recorded waiver naming who takes the risk and until when; each requirement names what admitted it.</li>
+  <li><strong>Assessment.</strong> Each concept's feasibility was assessed, by an agent with tools that captured its references, or by a model without references; each assessment says which. The briefing leads with the assessment a lead decision names, else the referenced one where it exists, else the only one.</li>
+  <li><strong>Coverage.</strong> The requirements of each concept were gathered into a set and a model said which of seven scenario classes they oblige the entity in; the classes left uncovered are the open questions on the brief.</li>
 </ol>
 <h4>Standing</h4>
 <p>Every item in these documents is <span class="standing">proposed</span>. The trace reports, for each proposed requirement, that nothing implements it and nothing verifies it. Acceptance is refused until derivation, code, verification and current evidence are all present.</p>
@@ -175,7 +190,7 @@
 </div>
 
 <div class="section">
-<h2>I. Identities</h2>
+<h2>J. Identities</h2>
 <table>
   <tr><th style="width:14%">Kind</th><th>Readable id</th><th>Guid</th></tr>
   {% for (kind, id_self, guid) in d.identity %}
