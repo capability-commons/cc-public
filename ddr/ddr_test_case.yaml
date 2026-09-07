@@ -1,0 +1,169 @@
+id_self:                ddr_test_case
+guid_self:              ddr_02c77264805244b2b372f0e0d128a53a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test case is what a method is run with, and binds no implementation
+brief:                  |
+                        A test case supplies the configuration, inputs
+                        and expected observations for one test method,
+                        names what it verifies, and leaves the item
+                        under test to the execution.
+context:                |
+                        A python test function points at the
+                        requirement it verifies. The function is the
+                        only statement of what is tried and what is
+                        expected, so both live in code, and neither
+                        can be reused against a second implementation
+                        or read by anyone who does not read python.
+
+                        A test method settles the procedure. What a
+                        run of that procedure is given, and what it
+                        should produce, is what the method leaves
+                        open.
+
+                        The glossary already holds control case, which
+                        is an item held to a verdict for an eval. The
+                        two are different concepts sharing a word.
+decision:               |
+                        A test case is an item of t_test_case with
+                        prefix tc, held in test_case/ and shaped by
+                        sch_test_case.
+
+                        A case names exactly one test method, and one
+                        or more textual requirements or interface
+                        members that it verifies. It carries its own
+                        configuration, its inputs, the observations
+                        expected of them, and the tolerances by which
+                        an observation is compared.
+
+                        A case does not name the item under test. That
+                        binding belongs to the execution, so one case
+                        applies to several implementations and to
+                        several revisions of one.
+
+                        The configuration a case supplies is governed
+                        by a schema its method names. A check resolves
+                        the method, reads the schema and validates the
+                        payload against it. Neither the case nor the
+                        method carries an ungoverned mapping.
+
+                        A case may refer to a vector held outside the
+                        repository. The reference carries its locator,
+                        its digest and the algorithm, its media type,
+                        its size, where it came from and how long it
+                        is kept. The repository does not become a
+                        store of binary artifacts.
+
+                        An executable case names the python test
+                        function that automates it by
+                        r_is_implemented_by. The function is how the
+                        case is run and is not the case.
+rationale:              |
+                        The item under test bound at execution and not
+                        on the case, because what is tried is
+                        independent of what it is tried against. A
+                        case that named its implementation would be
+                        copied once per implementation, and the copies
+                        would drift.
+
+                        Exactly one method, because a case is the
+                        configuration of a procedure. Two procedures
+                        with one configuration is two cases, and
+                        saying so keeps the pair resolvable without a
+                        rule for which method wins.
+
+                        A schema named by the method rather than
+                        fields on the case, because what a case must
+                        supply depends on the procedure. A common
+                        shape would be either too wide to check or too
+                        narrow to use.
+
+                        A digest on an external vector, because a
+                        vector that changes silently makes every
+                        result that cited it wrong, and nothing in the
+                        repository would show it.
+alternative:            |
+                        The python test function as the case.
+                        Rejected: it cannot be applied to a second
+                        implementation, it states its expectation in
+                        code, and it cannot be read by a reviewer who
+                        does not read python. The function remains, as
+                        what implements the case.
+
+                        A case that names its item under test.
+                        Rejected: see the rationale.
+
+                        An open configuration mapping validated by
+                        nothing. Rejected: it is the ungoverned
+                        payload the plan warns against.
+
+                        Holding external vectors in the repository.
+                        Rejected: it makes the core a binary store,
+                        which is out of scope, and a digest gives the
+                        same assurance.
+consequence:            |
+                        t_test_case, sch_test_case and the test_case/
+                        home are added in the next milestone, and tc
+                        is claimed as a prefix. case is already the
+                        prefix of a control case, which is why the
+                        case is tc.
+
+                        A check must resolve a method from a case,
+                        read the schema the method names and validate
+                        the payload. That check does not yet exist.
+
+                        Two representations of verification trace
+                        exist while the model is tried: a python test
+                        function pointing at a requirement, and a case
+                        pointing at a requirement with a function
+                        implementing it. Both are read until one is
+                        chosen.
+
+                        Whether a case may name a second method for a
+                        different verification class, such as an
+                        inspection of the same requirement, is not
+                        settled here.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_test_case
+    guid_target:        term_be402ef769c34db9a96ac41bd7a147d7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_case_configuration
+    guid_target:        term_c2e18b96478745cbbb139aeca95488db
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_item_under_test
+    guid_target:        term_0f974577538d41f4b5df52997a7f1d41
+
+question:
+
+  class:
+    id_self:            qst_test_case.class
+    guid_self:          qst_64a5b610fd14483fba25a8ba323fe192
+    question:           |
+                        Whether one test case may name a second test
+                        method of a different verification class for
+                        the same requirement, or whether that is a
+                        second case.
+    relation:           []
+
+  vectors:
+    id_self:            qst_test_case.vectors
+    guid_self:          qst_b4ea21e7c38840238f81ed59f9cb1384
+    question:           |
+                        Where an external test vector is held, who
+                        keeps it, and what a check does when its
+                        digest no longer matches.
+    relation:           []

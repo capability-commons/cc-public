@@ -2380,3 +2380,73 @@ table:
       - runner
 
     relation:           []
+
+  term_test_case:
+    id_self:            term_test_case
+    guid_self:          term_be402ef769c34db9a96ac41bd7a147d7
+    title:              Test case
+    brief:              |
+                        The particular configuration, inputs and
+                        expected observations used with a test method.
+    description:        |
+                        An item of t_test_case in test_case/, naming
+                        exactly one test method and one or more
+                        requirements or interface members. It binds no
+                        item under test, so one case applies to
+                        several implementations.
+
+                        A control case holds an item to a verdict for
+                        an eval. A test case is the logical case a
+                        test method is run with.
+    term:               test case
+
+    avoid:
+      - test
+      - test script
+      - test vector
+
+    relation:           []
+
+  term_case_configuration:
+    id_self:            term_case_configuration
+    guid_self:          term_c2e18b96478745cbbb139aeca95488db
+    title:              Case configuration
+    brief:              |
+                        The parameters a test case supplies to its
+                        test method, governed by a schema the method
+                        names.
+    description:        |
+                        The method names the schema; a check resolves
+                        the method and validates the case payload
+                        against it. A method-specific schema may be
+                        shared by methods whose contracts are the
+                        same.
+    term:               case configuration
+
+    avoid:
+      - parameters
+      - settings
+      - options
+
+    relation:           []
+
+  term_item_under_test:
+    id_self:            term_item_under_test
+    guid_self:          term_0f974577538d41f4b5df52997a7f1d41
+    title:              Item under test
+    brief:              |
+                        The item a test execution observes, bound at
+                        execution rather than by the case.
+    description:        |
+                        A source item, a candidate revision, or
+                        anything else a method can observe. Binding it
+                        at execution is what lets one case be applied
+                        to several implementations or revisions.
+    term:               item under test
+
+    avoid:
+      - subject
+      - target
+      - unit under test
+
+    relation:           []
