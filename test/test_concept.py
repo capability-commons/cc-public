@@ -54,6 +54,7 @@ SLOT = {'entity': 'Field_Power_Cell', 'obligation': 'shall', 'activity': 'autono
 CANDIDATES = [
     dict(SLOT, key = 'endurance', process = 'power', object = 'a terminal and two chargers',
          qualifier = 'for 72 hours without refuelling', claim = 'evidential',
+         quote = 'Third night without grid power.',
          rationale = 'The post reports three nights without power.', category = 'function'),
     dict(SLOT, key = 'carry', process = 'be carried', object = 'by two people over 500 metres',
          rationale = 'Resupply roads are under fire, so it moves on foot.', category = 'fit'),
@@ -218,9 +219,11 @@ def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_
         assert 'statement' not in req and req['claim'] == entry['claim']
         assert cc_public.requirement.statement(req) == cc_public.requirement.statement(entry)
         assert len(req['title']) <= 80 and req['title'][0].isupper()
-        assert sorted((e['id_relation'], e['id_target']) for e in req['relation']) == [
+        assert sorted((e['id_relation'], e['id_target']) for e in req['relation']
+                      if e['id_relation'] == 'r_is_derived_from') == [
             ('r_is_derived_from', concept),
             ('r_is_derived_from', ID_NEED)]
+        assert [e['id_relation'] for e in req['relation']].count('r_is_admitted_by') == 1
     assert clean(repo) == []
 
     before = sorted(p.name for p in (repo / 'requirement').iterdir())

@@ -515,17 +515,23 @@ table:
                         SUBJ rests on the captured source OBJ.
     description:        |
                         The item identified by SUBJ, an assessment,
-                        one of its dimensions, a product it names, or
-                        an assumption, names the observation
-                        identified by OBJ as a reference for what it
-                        claims. A claim with no r_cites edge rests on
-                        its author alone, and says so.
+                        one of its dimensions, a product it names, an
+                        assumption, or an evidential candidate or
+                        requirement, names the observation identified
+                        by OBJ as a reference for what it claims. A
+                        claim with no r_cites edge rests on its author
+                        alone, and says so. An evidential requirement
+                        cites with a quote, the span of the
+                        observation it rests on, which the promotion
+                        checks is there.
 
     domain:
       - t_assessment
       - t_dimension
       - t_product
       - t_assumption
+      - t_candidate_requirement
+      - t_textual_requirement
 
     range:
       - t_observation
@@ -609,5 +615,31 @@ table:
 
     range:
       - t_requirement_rule
+
+    relation:           []
+
+  r_is_admitted_by:
+    id_self:            r_is_admitted_by
+    guid_self:          r_656a9741c7124810b9d60d40cb326e29
+    title:              Is admitted by
+    brief:              |
+                        SUBJ was admitted to the specification by OBJ.
+    description:        |
+                        The requirement identified by SUBJ was
+                        promoted on the strength of OBJ: the execution
+                        in which its concept's challenge concluded, or
+                        the decision that waived a challenge that did
+                        not. A requirement with no such edge was made
+                        by a person or before admission was required,
+                        and its defense is not on record.
+    status:             proposed
+    alias:              []
+
+    domain:
+      - t_textual_requirement
+
+    range:
+      - t_execution
+      - t_decision
 
     relation:           []

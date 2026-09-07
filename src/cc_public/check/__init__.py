@@ -35,6 +35,7 @@ import typing
 import cc_public.load
 
 from cc_public.check import confidence as check_confidence
+from cc_public.check import decision   as check_decision
 from cc_public.check import evidence   as check_evidence
 from cc_public.check import identifier as check_identifier
 from cc_public.check import identity   as check_identity
@@ -63,6 +64,7 @@ CHECK      = (check_parse,
               check_relation,
               check_schema,
               check_requirement,
+              check_decision,
               check_layout,
               check_workflow,
               check_trace,

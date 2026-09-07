@@ -217,6 +217,16 @@ Pixi tasks
   links by `link: {relation: [input ports]}` (`ddr_port_link`); a type
   entry may name its `home` directory so a workflow can make the first item
   of a type.
+- `decide OUTCOME --on ITEM… --by ACTOR --role ROLE --authority TEXT --brief TEXT
+  [--condition …] [--expiry YYYY-MM-DD]` — records a decision (`dcn_`, in
+  `decision/`): `waive` admits a concept whose challenge did not conclude to
+  promotion, `select` chooses a concept, `accept` a requirement, `lead` the
+  assessment a report opens with. Each subject is stamped with the digest of
+  its whole document; the decision check reports a subject changed since or an
+  expiry passed (`ddr_decision`). Promotion is an admission: it needs the
+  concept's challenge run to have `completed`, or a waiver that still holds,
+  and an evidential candidate needs a `quote` found in an observation behind
+  the concept's need; the requirement carries `r_is_admitted_by` and `r_cites`.
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status
@@ -310,6 +320,6 @@ is `../cc-brave1-demo`.
 
 ## Where things are
 
-`ddr/` design decisions · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing, methodology, document and process word registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

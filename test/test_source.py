@@ -119,8 +119,9 @@ def test_a_source_item_shows_its_source_where_an_eval_asks(tree, tmp_path):
     ctx = cc_public.check.context([tmp_path])[0]
     sel = cc_public.eval.select.Selector(id_eval = ('evl_record_and_code_agree',))
     tasks = list(cc_public.eval.select.select(ctx, sel))
-    assert [t.id_subject for t in tasks] == [('ddr_fail_closed', 'pyf_cc_public.check.refusal')]
-    text = tasks[0].text_input
+    assert ('ddr_fail_closed', 'pyf_cc_public.check.refusal') in [t.id_subject for t in tasks]
+    (task,) = [t for t in tasks if t.id_subject == ('ddr_fail_closed', 'pyf_cc_public.check.refusal')]
+    text = task.text_input
     assert 'decision:' in text and 'source:' in text
     assert 'def refusal(report, is_checkpoint = False):' in text
     assert 'class Refusal' not in text                    # its own definition, not its module

@@ -40,6 +40,7 @@ import cc_public.cli.report
 import cc_public.commit
 import cc_public.control
 import cc_public.edit.accept
+import cc_public.edit.decide
 import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
@@ -361,3 +362,50 @@ def observe_(path_capture, id_self, title, dirpath_out, list_root):
 
     click.echo('{what} {id}  {path}'.format(what = 'observed' if is_new else 'reused',
                                             id = item.id_self, path = item.filepath))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('outcome', type = click.Choice(cc_public.edit.decide.OUTCOMES))
+@click.option('--on', 'list_name', multiple = True, required = True, metavar = 'ITEM',
+              help = 'An item decided over, by readable id or guid. May be given '
+                     'more than once.')
+@click.option('--by', 'actor', required = True,
+              help = 'Who decides: a person, an organisation, or a tool and its version.')
+@click.option('--role', 'role', required = True,
+              help = 'In what role the actor decides.')
+@click.option('--authority', 'authority', required = True,
+              help = 'What gives the actor the right, or that nothing does.')
+@click.option('--brief', 'brief', required = True,
+              help = 'Why it is decided so.')
+@click.option('--condition', 'condition', default = None,
+              help = 'What the decision permits and no more.')
+@click.option('--expiry', 'expiry', default = None, metavar = 'YYYY-MM-DD',
+              help = 'The day after which the decision no longer holds.')
+@click.option('--id', 'id_self', default = None,
+              help = 'The readable id to give it, where the derived one is not wanted.')
+@cc_public.cli.group.OPTION_ROOT
+def decide(outcome, list_name, actor, role, authority, brief, condition, expiry,
+           id_self, list_root):
+    """
+    Record a decision: OUTCOME over the items named, by an actor in a
+    role under an authority, stamped with the digest of each item as it
+    stands.
+
+    waive admits a concept whose challenge did not conclude to
+    promotion, as a named risk. select chooses a concept among its
+    alternatives. accept accepts a requirement. lead names the
+    assessment a report leads with. An edit to any subject afterwards
+    makes the decision stale, and the decision check says so.
+
+    """
+
+    try:
+        item = cc_public.edit.decide.decide(
+                    cc_public.cli.group.tree(list_root), outcome, list_name,
+                    {'actor': actor, 'role': role, 'authority': authority},
+                    brief, condition, expiry, id_self)
+    except cc_public.edit.tree.ErrorItem as err:
+        cc_public.cli.group.fail(err)
+
+    click.echo('{path}  {id_self}'.format(path = item.filepath, id_self = item.id_self))

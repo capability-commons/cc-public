@@ -32,6 +32,8 @@ relation:               []
 
 import importlib.metadata
 
+import cc_public.control
+import cc_public.decision
 import cc_public.edit.accept
 import cc_public.edit.field
 import cc_public.edit.link
@@ -52,6 +54,7 @@ KEY_RELATION     = 'relation'
 KEY_ID_REL       = 'id_relation'
 KEY_ID_TARGET    = 'id_target'
 KEY_STATUS       = 'status'
+KEY_ID_SELF      = 'id_self'
 STATUS_PROPOSED  = 'proposed'
 TYPE_REQUIREMENT = 't_textual_requirement'
 
@@ -68,11 +71,27 @@ FIELD_COPIED     = (cc_public.requirement.KEY_CONDITION_KIND,
                     cc_public.requirement.KEY_PROCESS,
                     cc_public.requirement.KEY_OBJECT,
                     cc_public.requirement.KEY_QUALIFIER,
-                    'claim', 'category')
+                    'claim', 'category', 'quote')
 PREFIX_REQ       = 'req'
 REL_DERIVED      = 'r_is_derived_from'
 WIDTH_TITLE      = 80
 PREFIX_KEY       = ('cr', 'crq', 'req')
+REL_ADMITTED     = 'r_is_admitted_by'
+REL_CITES        = 'r_cites'
+REL_RAN_UNDER    = 'r_ran_under'
+REL_DEPLOYS      = 'r_deploys'
+REL_BINDS        = 'r_binds'
+WF_CONCEPT       = 'wf_concept_from_need'
+PREFIX_EXECUTION = 'exe'
+PREFIX_OBS       = 'obs'
+OUTCOME_COMPLETE = 'completed'
+KEY_BINDING      = 'binding'
+KEY_GUID_TARGET  = 'guid_target'
+KEY_OUTCOME      = 'outcome'
+KEY_CLAIM        = 'claim'
+KEY_QUOTE        = 'quote'
+KEY_CONTENT      = 'content'
+CLAIM_EVIDENTIAL = 'evidential'
 REL_VERIFIES     = 'r_verifies'
 PREFIX_FUNCTION  = 'pyf'
 SEPARATOR        = '_'
@@ -262,6 +281,7 @@ def promote(tree, ledger, map_input):
     concept    = tree.context.map_document[tree.resolve(id_concept).location]
     id_need    = _target_of(concept, REL_DERIVED)
     stem       = id_concept.split(SEPARATOR, 1)[1]
+    id_admit   = _admission(tree, id_concept)
 
     for (key, entry) in (concept.get(KEY_CANDIDATE) or {}).items():
 
@@ -271,6 +291,8 @@ def promote(tree, ledger, map_input):
             raise cc_public.edit.tree.ErrorItem(
                     '{id} exists already; {concept} was promoted before.'.format(
                             id = id_requirement, concept = id_concept))
+
+        id_cited = _citation(tree, id_concept, key, entry)
 
         ledger.note_create(cc_public.edit.new.new(tree, TYPE_REQUIREMENT, id_requirement,
                                                   tree.defaults()))
@@ -286,8 +308,161 @@ def promote(tree, ledger, map_input):
                                        value = STATUS_PROPOSED)
         cc_public.edit.link.link(tree, id_requirement, REL_DERIVED, id_concept)
         cc_public.edit.link.link(tree, id_requirement, REL_DERIVED, id_need)
+        cc_public.edit.link.link(tree, id_requirement, REL_ADMITTED, id_admit)
+        if id_cited is not None:
+            cc_public.edit.link.link(tree, id_requirement, REL_CITES, id_cited)
 
     return {PORT_PROMOTED: id_concept}
+
+
+# -----------------------------------------------------------------------------
+def _admission(tree, id_concept):
+    """
+    Return the id of what admits the concept to promotion: the latest
+    run of the concept workflow that bound it, where its challenge
+    concluded; else the latest waiver decision that still holds over
+    it. Refuse where there is neither, saying what is lacking.
+
+    """
+
+    guid    = tree.resolve(id_concept).guid_self
+    latest  = None
+
+    for document in tree.context.map_document.values():
+        if not isinstance(document, dict) or str(
+                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] != PREFIX_EXECUTION:
+            continue
+        if not _binds(document, guid) or _workflow_of(tree, document) != WF_CONCEPT:
+            continue
+        if latest is None or document[KEY_ID_SELF] > latest[KEY_ID_SELF]:
+            latest = document
+
+    if latest is not None and latest.get(KEY_OUTCOME) == OUTCOME_COMPLETE:
+        return latest[KEY_ID_SELF]
+
+    map_guid = cc_public.decision.index(tree.context.map_document)
+    waiver   = None
+
+    for document in tree.context.map_document.values():
+        is_waiver = (cc_public.decision.is_decision(document)
+                     and document.get(cc_public.decision.KEY_OUTCOME)
+                             == cc_public.decision.OUTCOME_WAIVE)
+        if not is_waiver \
+                or not any(s.get(cc_public.decision.KEY_GUID_ITEM) == guid
+                           for s in document.get(cc_public.decision.KEY_SUBJECT) or []) \
+                or not cc_public.decision.holds(document, map_guid):
+            continue
+        if waiver is None or document[KEY_ID_SELF] > waiver[KEY_ID_SELF]:
+            waiver = document
+
+    if waiver is not None:
+        return waiver[KEY_ID_SELF]
+
+    ended = ('its challenge ended {outcome}'.format(outcome = latest.get(KEY_OUTCOME))
+             if latest is not None else 'no run of {wf} bound it'.format(wf = WF_CONCEPT))
+    raise cc_public.edit.tree.ErrorItem(
+            '{concept} is not admitted to promotion: {ended}, and no waiver decision '
+            'that still holds is over it. Record one with cctool decide waive --on '
+            '{concept}, naming who takes the risk and until when.'.format(
+                                                    concept = id_concept, ended = ended))
+
+
+# -----------------------------------------------------------------------------
+def _citation(tree, id_concept, key, entry):
+    """
+    Return the id of the observation an evidential candidate cites,
+    having checked that its quote is there, or None for a design
+    candidate. The candidate may name the observation by an r_cites
+    edge; otherwise the observations behind the concept's need are
+    searched for the quote. Refuse an evidential candidate with no
+    quote, or a quote no observation holds.
+
+    """
+
+    if entry.get(KEY_CLAIM) != CLAIM_EVIDENTIAL:
+        return None
+
+    where = '{concept}.{key}'.format(concept = id_concept, key = key)
+    quote = cc_public.control.normalise(str(entry.get(KEY_QUOTE) or ''))
+
+    if not quote:
+        raise cc_public.edit.tree.ErrorItem(
+                '{where} is an evidential claim with no quote: an evidential claim is '
+                'defended by quoting the span of a captured source it rests on, word '
+                'for word, or it is a design claim.'.format(where = where))
+
+    cited = [edge[KEY_ID_TARGET] for edge in entry.get(KEY_RELATION) or []
+             if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_CITES]
+
+    for id_observation in cited or _observations_behind(tree, id_concept):
+        content = tree.context.map_document[tree.resolve(id_observation).location] \
+                      .get(KEY_CONTENT, '')
+        if quote in cc_public.control.normalise(str(content)):
+            return id_observation
+
+    raise cc_public.edit.tree.ErrorItem(
+            '{where} quotes words that {which} holds: the quote is the span of the '
+            'source, word for word.'.format(
+                    where = where,
+                    which = ('none of ' + ', '.join(cited)) if cited
+                            else 'no observation behind the concept'))
+
+
+# -----------------------------------------------------------------------------
+def _observations_behind(tree, id_concept):
+    """
+    Return the ids of the observations the concept's need derives from,
+    and any the concept derives from itself.
+
+    """
+
+    out = []
+
+    for id_item in (id_concept, _target_of(
+                        tree.context.map_document[tree.resolve(id_concept).location],
+                        REL_DERIVED)):
+        document = tree.context.map_document[tree.resolve(id_item).location]
+        for edge in document.get(KEY_RELATION) or []:
+            if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_DERIVED \
+                    and str(edge.get(KEY_ID_TARGET, '')).split(SEPARATOR, 1)[0] == PREFIX_OBS:
+                out.append(edge[KEY_ID_TARGET])
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _binds(execution, guid):
+    """
+    Return whether any binding of the execution binds the item with
+    this guid.
+
+    """
+
+    for binding in (execution.get(KEY_BINDING) or {}).values():
+        for edge in (binding.get(KEY_RELATION) or []) if isinstance(binding, dict) else []:
+            if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_BINDS \
+                    and edge.get(KEY_GUID_TARGET) == guid:
+                return True
+
+    return False
+
+
+# -----------------------------------------------------------------------------
+def _workflow_of(tree, execution):
+    """
+    Return the id of the workflow an execution ran, through the
+    deployment it ran under, or None where that cannot be told.
+
+    """
+
+    try:
+        id_deployment = _target_of(execution, REL_RAN_UNDER)
+        if id_deployment not in tree.map_id:
+            return None
+        deployment = tree.context.map_document[tree.resolve(id_deployment).location]
+        return _target_of(deployment, REL_DEPLOYS)
+    except cc_public.edit.tree.ErrorItem:
+        return None
 
 
 # -----------------------------------------------------------------------------
