@@ -1,0 +1,171 @@
+id_self:                ddr_icd_implementation
+guid_self:              ddr_c6bb6784b8704fea946c27e5f2181375
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An interface member is verified by a test case through the relations that exist
+brief:                  |
+                        The interface control document is implemented
+                        as its accepted record describes, its members
+                        are addressable, and verification reaches a
+                        member through r_verifies rather than through
+                        a relation of its own.
+context:                |
+                        ddr_interface_control_document is accepted and
+                        settles the type, the prefix icd, the schema,
+                        versioning, the surface model and addressable
+                        members. It leaves three things open, which
+                        are now its questions: the relation connecting
+                        successive versions, the vocabulary
+                        specification and conformance may need, and
+                        the facts a check establishes rather than the
+                        schema.
+
+                        The repository already holds r_verifies, from
+                        a python test function to a textual
+                        requirement, and r_is_implemented_by, from a
+                        requirement or a component to source. A test
+                        case and an interface member are new ends for
+                        both.
+decision:               |
+                        t_interface_control_document takes the prefix
+                        icd and names sch_interface_control_document.
+                        An interface member is an embedded addressable
+                        item of t_interface_member with prefix icm,
+                        and its type names its schema.
+
+                        r_verifies is extended rather than joined by a
+                        conformance relation of its own. A test case
+                        verifies a textual requirement or an interface
+                        member. The meaning is unchanged: the subject
+                        establishes that the object holds. A python
+                        test function keeps its place in the domain
+                        while both representations of trace are read.
+
+                        r_is_implemented_by is extended so that a test
+                        method, a test case and an interface member
+                        may name what implements them.
+
+                        Two relations are added because nothing
+                        existing means what they mean.
+                        r_uses_test_method runs from a test case or a
+                        test execution to the method it is run with.
+                        r_tests runs from a test execution to the item
+                        under test it observed.
+
+                        The first specimen is icd_cc_public_query,
+                        covering the bounded python surface the plan
+                        names, with each member linked to the source
+                        item that implements it and to the accepted
+                        requirement it serves.
+rationale:              |
+                        r_verifies extended rather than a conformance
+                        relation added, because the sentence is the
+                        same one. A test case establishes that an
+                        interface member holds, exactly as it
+                        establishes that a requirement holds, and a
+                        second relation would divide one meaning by
+                        the type at its far end. The relation check
+                        already holds the ends to their declared
+                        types, so the extension is stated where it is
+                        enforced.
+
+                        Two relations added, because neither existing
+                        relation says which procedure a case is run
+                        with, nor what an execution observed. Both are
+                        bindings a reader must follow and neither is a
+                        form of verification.
+
+                        A prefix of its own for a member, because a
+                        requirement, a test case and an execution all
+                        point at one, and a thing that is pointed at
+                        needs an identity that is not its position in
+                        a document.
+
+                        The first specimen bounded to one python
+                        surface, because the risk the plan names first
+                        is stalling in ontology work, and one surface
+                        with four accepted requirements is enough to
+                        show whether a reader can walk the chain.
+alternative:            |
+                        A conformance relation of its own, such as
+                        r_conforms_to. Rejected: see the rationale. It
+                        would be added only if r_verifies could not
+                        honestly describe member level verification,
+                        and it can.
+
+                        An interface member identified by its key
+                        within its surface. Rejected: a key is a
+                        presentation name, and a reference to a member
+                        would then have to name the document and walk
+                        into it.
+
+                        A specimen covering every surface form the
+                        record permits. Rejected: the record itself
+                        scopes the first schema to software APIs and
+                        dataflow steps, and a specimen that exercised
+                        all of them would take longer than it would
+                        teach.
+
+                        Deferring the two new relations until an
+                        execution exists. Rejected: a case names its
+                        method before anything runs, and the check
+                        that resolves a case needs the edge to follow.
+consequence:            |
+                        reg_relation gains r_uses_test_method and
+                        r_tests, each declaring the types at its ends.
+                        r_verifies and r_is_implemented_by gain ends.
+
+                        t_interface_control_document and
+                        t_interface_member are added, claiming icd and
+                        icm.
+
+                        A requirement may be verified by a python test
+                        function and by a test case at once while both
+                        representations are read. The trace projection
+                        must accept both, and a requirement is not
+                        reported as untraced because it has one and
+                        not the other.
+
+                        Which relation connects an interface control
+                        document to the version it supersedes is still
+                        open, and is that record's question.
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_interface_control_document.vocabulary
+    guid_target:        qst_67f719bd31b94b16b7b076586e65e349
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_interface_control_document
+    guid_target:        term_c7337b38a470424d97b6851d3e881b47
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_interface_member
+    guid_target:        term_7aad4561c84d487f8fdb978913a3aa7c
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_interface_surface
+    guid_target:        term_c60a768dab0847b2abdad87ba4a42d53
+
+question:
+
+  dual:
+    id_self:            qst_icd_implementation.dual
+    guid_self:          qst_a1c77b4e761c42b0ad9a909229545f93
+    question:           |
+                        How the trace projection reads a requirement
+                        verified by a python test function and by a
+                        test case at once, and what it reports when
+                        the two disagree.
+    relation:           []

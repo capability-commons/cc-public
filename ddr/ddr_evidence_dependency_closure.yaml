@@ -1,0 +1,161 @@
+id_self:                ddr_evidence_dependency_closure
+guid_self:              ddr_fbae9189ff22406789e26e3b4affe7e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Current evidence is bound to the closure it depends on
+brief:                  |
+                        Verification evidence stays the current
+                        projection, and a row carries a digest over
+                        everything its observation consequentially
+                        depends on, computed from the graph and never
+                        stored.
+context:                |
+                        ddr_verification_evidence makes
+                        t_verification_evidence the current assurance
+                        projection, stamped with a digest of the
+                        requirement, its implementation and the test.
+                        A test method, a test case, an item under test
+                        and an interface member now sit between those
+                        three, and a change to any of them can make an
+                        observation describe a procedure that no
+                        longer exists.
+
+                        ddr_relation_semantics decides that a relation
+                        may declare itself transitive, that inference
+                        is computed on every use, and that no inferred
+                        edge is written to the tree. A dependency
+                        closure is a transitive computation, so the
+                        repository either expresses it that way or
+                        implements closure a second time.
+decision:               |
+                        t_verification_evidence remains the current
+                        projection of what is true now. It does not
+                        become the immutable history; a test execution
+                        is that, and sits underneath.
+
+                        An evidence row is extended additively. A row
+                        may name the test method, the test case, the
+                        execution and its result, the item under test,
+                        the requirement and the interface member it
+                        concerns. A row written before these fields
+                        existed stays readable and is not rewritten to
+                        gain them.
+
+                        A row carries one digest over the closure its
+                        observation consequentially depends on: the
+                        requirement, the applicable interface member,
+                        the item under test, the method, the case, and
+                        the executable case and adapter where there is
+                        one. A change within the closure makes the row
+                        stale. A change outside it does not.
+
+                        The closure is computed from the graph on
+                        every use and is never written to the tree, as
+                        ddr_relation_semantics decides for every other
+                        inference.
+
+                        A row is written only from a result that is
+                        schema valid, whose method and case bindings
+                        resolve, that applies to the requirement, and
+                        whose execution did not fail. A failed
+                        conformance result may be recorded as the
+                        current state. Whether an accepted requirement
+                        lacks passing current evidence stays the
+                        evidence check's question.
+rationale:              |
+                        One digest over a closure rather than a field
+                        per dependency, because a reader asks one
+                        question, whether this row still describes
+                        what exists, and a field per dependency
+                        answers it several times and can disagree with
+                        itself.
+
+                        Computed rather than stored, because a stored
+                        closure is a second copy able to go stale,
+                        which is the argument ddr_relation_semantics
+                        already made. The closure is small and the
+                        tree derives its facts on every use already.
+
+                        Additive extension rather than a new type,
+                        because what a reader wants from evidence is
+                        unchanged: what is true now, for this
+                        requirement. The richer references say how it
+                        came to be true, and the execution holds the
+                        rest.
+
+                        Legacy rows readable, because a bulk rewrite
+                        would restamp observations nobody made again,
+                        and a row that predates a field is honestly
+                        missing it.
+alternative:            |
+                        Making evidence the history and dropping the
+                        projection. Rejected: a reader would compute
+                        the current state on every read, and the check
+                        that an accepted requirement has current
+                        evidence would have to recompute it too.
+
+                        Replacing evidence with workflow execution
+                        records. Rejected: they record what a workflow
+                        did, not what is currently true of a
+                        requirement.
+
+                        A digest per dependency. Rejected: see the
+                        rationale.
+
+                        Rewriting every existing row to the new shape.
+                        Rejected: it asserts references that were
+                        never observed.
+consequence:            |
+                        An adapter must report enough for the
+                        projection to compute the closure: which
+                        method, case and item under test the result
+                        observed.
+
+                        The evidence schema, cc_public.evidence and
+                        the evidence check are changed in the
+                        milestone that adds the projection, and the
+                        digest replaces the narrower stamp on new rows
+                        only.
+
+                        Which relations are consequential, and whether
+                        they say so by declaring themselves transitive
+                        in the relation register, is not settled here.
+                        The first closure is written when the first
+                        digest is computed, and that is where the
+                        declaration earns its cost.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_verification_evidence
+    guid_target:        t_b84cb711e3d444a0a44962e748cef7e2
+
+question:
+
+  consequential:
+    id_self:            qst_evidence_dependency_closure.consequential
+    guid_self:          qst_f319d12d59f64b72bbf0c5abb126ed4d
+    question:           |
+                        Which relations carry a consequential
+                        dependency, and whether the relation register
+                        declares them transitive so that the closure
+                        is computed from declared semantics rather
+                        than from a list in code.
+    relation:           []
+
+  legacy:
+    id_self:            qst_evidence_dependency_closure.legacy
+    guid_self:          qst_80e13c2d2c4b41eba1e15541d19189ea
+    question:           |
+                        When a row written before the richer
+                        references is refreshed, and whether a row
+                        that carries the narrower stamp is reported as
+                        stale or as merely older.
+    relation:           []
