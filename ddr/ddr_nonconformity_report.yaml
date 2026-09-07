@@ -1,0 +1,150 @@
+id_self:                ddr_nonconformity_report
+guid_self:              ddr_66121c4588ea4cb68772d7437e436bae
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A nonconformity report is one observed failure, and is transient by default
+brief:                  |
+                        A nonconformity report states one observed
+                        failure to meet an expectation, in a shape
+                        shared by a check, a test and an eval, and is
+                        written to the repository only when asked for.
+context:                |
+                        Three things in the tool report a failure and
+                        none of them shares a shape. A check returns a
+                        Nonconformity tuple that lives for the length
+                        of a run. An eval returns a judgement. A test
+                        would return something else again. A reader
+                        who wants to know what is wrong has to read
+                        three formats and know which produced which.
+
+                        term_finding already holds nonconformity as an
+                        accepted word for what a check reports. A
+                        report of one observed failure, carrying the
+                        expectation, the observation and what produced
+                        it, is a second concept.
+
+                        t_finding_group aggregates recurring eval
+                        findings so that a rule can be proposed from
+                        them. It is a shape for improving the process,
+                        not a statement about a product.
+decision:               |
+                        A nonconformity report is an item of
+                        t_nonconformity_report with prefix ncr, shaped
+                        by sch_nonconformity_report. It states one
+                        observed failure to meet one applicable
+                        expectation: what was expected, what was
+                        observed, the subject or item under test, what
+                        produced it, the requirement or interface
+                        member affected, where in the subject it sits,
+                        its severity in the critical and advisory
+                        terms already used, when it was detected, and
+                        the content identities the observation depends
+                        on.
+
+                        The type says what a report means. It does not
+                        say that a report is kept. A report may be
+                        returned in memory, serialised in a command
+                        result, written outside the tree, or written
+                        to the repository when a process or a person
+                        asks for it. The default is that nothing is
+                        written.
+
+                        A normaliser shared by the check, test and
+                        eval adapters produces the shape, and each
+                        report keeps the origin it came from.
+
+                        These do not become reports: a harness or tool
+                        error, a test that did not run, a skipped
+                        test, an inconclusive observation, missing
+                        evidence, and a criterion that does not apply.
+                        Each is a state of the execution or the result
+                        and is recorded there.
+
+                        A report is not a ticket. It has no open,
+                        resolved, reopened or waived lifecycle, and
+                        nothing here groups two reports into one
+                        finding.
+rationale:              |
+                        One shape across the three, because a reader
+                        should not have to know which mechanism found
+                        a fault in order to read what the fault is.
+                        The origin is kept on the report, so nothing
+                        is lost by sharing the shape.
+
+                        Transient by default, because a repository
+                        that gains an item for every failure observed
+                        during development fills with history nobody
+                        reads, and the failures that matter are the
+                        ones a person chose to keep.
+
+                        The excluded outcomes, because each of them is
+                        an absence of observation rather than an
+                        observation of failure. A tool that could not
+                        run has found nothing, and a report saying
+                        otherwise is a false statement about the
+                        product.
+
+                        No lifecycle, because a lifecycle is what
+                        turns a report into a second issue tracker,
+                        and the primitive is worth having before that
+                        question is asked.
+alternative:            |
+                        Reusing t_finding_group. Rejected: it
+                        aggregates eval findings by rule so that a
+                        rule may be proposed. It is about the process,
+                        and a report is about a product.
+
+                        Making the check's Nonconformity tuple the
+                        type. Rejected: it is a transient structure in
+                        code with no identity, and giving it one would
+                        make every finding of every run an item.
+
+                        Persisting every report. Rejected: see the
+                        rationale.
+
+                        An open and resolved lifecycle now. Rejected:
+                        it is the second issue tracker the plan warns
+                        against, and it can be added to a report that
+                        exists.
+consequence:            |
+                        t_nonconformity_report and
+                        sch_nonconformity_report are added in the next
+                        milestone, claiming ncr.
+
+                        A command that reports failures gains an
+                        option to write or serialise them. Without it
+                        nothing is written, so the default operation
+                        of every existing command is unchanged.
+
+                        The word nonconformity now names two concepts:
+                        what a check reports, which term_finding
+                        holds, and the report itself. Their entries
+                        say which is which.
+
+                        Whether a persisted report is ever superseded,
+                        and by what, is not settled here.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_nonconformity_report
+    guid_target:        term_d503cfc624e34d18b1bb903a03f0fd1a
+
+question:
+
+  supersession:
+    id_self:            qst_nonconformity_report.supersession
+    guid_self:          qst_ca49be10aecd49d1ad25692ee743aa29
+    question:           |
+                        Whether a persisted nonconformity report is
+                        superseded when the same failure is observed
+                        again, and what identifies two observations as
+                        the same failure.
+    relation:           []
