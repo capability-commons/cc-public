@@ -1,0 +1,155 @@
+id_self:                ddr_test_execution
+guid_self:              ddr_22eda79d92534ad38110ae7c726bb1e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An execution outcome and a conformance result are two things
+brief:                  |
+                        A test execution records the binding of
+                        method, case and item under test with their
+                        digests, and separates whether it ran from
+                        what it found.
+context:                |
+                        Evidence today says that a requirement passed.
+                        It does not say what procedure was followed,
+                        against what, or whether the run completed at
+                        all. A test that could not run and a test that
+                        ran and found a fault are both absent from it.
+
+                        A method and a case are content. Either can
+                        change after a run, and a result that does not
+                        say which content it observed cannot be told
+                        from one that is stale.
+decision:               |
+                        A test execution is an item of
+                        t_test_execution with prefix tex, held in
+                        execution/ beside the workflow runs it sits
+                        next to and shaped by sch_test_execution. The
+                        prefix exe is already the workflow
+                        execution's.
+
+                        An execution records what was bound and what
+                        came back: the method and its digest, the case
+                        and its digest, the item under test and its
+                        content or revision identity, what was
+                        evaluated, the adapter and its version, the
+                        environment, the times it started and
+                        finished, and its results.
+
+                        A result is an embedded addressable item of
+                        t_test_result with prefix tres, whose type
+                        names its schema.
+
+                        Two outcomes are recorded and they are not
+                        one. The EXECUTION OUTCOME is completed,
+                        error, not_run or cancelled, and says whether
+                        the procedure ran. The CONFORMANCE RESULT is
+                        passed, failed, inconclusive or
+                        not_applicable, and says what the procedure
+                        found. A completed execution may hold a failed
+                        result. An execution that did not complete
+                        holds no passing result.
+
+                        A completed execution record does not change.
+                        Only a governed run is kept; a development run
+                        updates the current evidence and writes no
+                        execution item.
+rationale:              |
+                        Two outcomes, because a tool that could not
+                        run is not a product that failed. Reporting
+                        them as one dimension makes assurance say
+                        something false in the direction that matters
+                        most, and it is the risk the plan names.
+
+                        Digests of the method and the case on the
+                        execution, because the execution is the only
+                        place that knows what content it observed. A
+                        later reader comparing the digest to the item
+                        sees at once whether the result still
+                        describes the procedure that exists.
+
+                        Immutability, because a record of what
+                        happened that can be edited is not a record of
+                        what happened.
+
+                        Persistence only for a governed run, because a
+                        permanent item per development run fills the
+                        repository with history nobody reads, and the
+                        current projection already answers what is
+                        true now.
+alternative:            |
+                        One outcome field with error among the
+                        conformance values. Rejected: it makes a tool
+                        failure indistinguishable from a product
+                        failure at the point where the difference
+                        matters.
+
+                        An execution item for every pytest run.
+                        Rejected: see the rationale. The current
+                        evidence projection already carries what a
+                        development run establishes.
+
+                        A standalone result item. Rejected: a result
+                        has no meaning apart from the execution that
+                        produced it, and an embedded addressable item
+                        is already how this repository holds such a
+                        thing.
+
+                        Reusing exe by qualifying it. Rejected: a
+                        prefix is the one point of coordination across
+                        the federation, and two types may not claim
+                        one.
+consequence:            |
+                        t_test_execution and t_test_result are added
+                        in the next milestone, claiming tex and tres.
+
+                        Evidence rows may name an execution and a
+                        result, so a reader can walk from what is
+                        currently true to the run that established it.
+
+                        An adapter must report enough to fill an
+                        execution: the tool version, the duration, the
+                        identity of what it observed and whether the
+                        tree was dirty.
+
+                        Whether a cancelled execution is kept at all,
+                        and who cancels one, is not settled here.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_test_execution
+    guid_target:        term_66db9e1ef2374b53840bf69fb06e4cba
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_test_result
+    guid_target:        term_a72c61356c62435d90b0e88762fa6f51
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_execution_outcome
+    guid_target:        term_26ee9089dafc4d0c83917daf183129d5
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_conformance_result
+    guid_target:        term_e73fde3b5a4b403cb5fe6ac2857d01b5
+
+question:
+
+  cancellation:
+    id_self:            qst_test_execution.cancellation
+    guid_self:          qst_165d91206e134e9884f26250218af6ff
+    question:           |
+                        Whether a cancelled test execution is kept,
+                        who cancels one, and what a cancelled
+                        execution says about the evidence that stood
+                        before it.
+    relation:           []

@@ -2450,3 +2450,85 @@ table:
       - unit under test
 
     relation:           []
+
+  term_test_execution:
+    id_self:            term_test_execution
+    guid_self:          term_66db9e1ef2374b53840bf69fb06e4cba
+    title:              Test execution
+    brief:              |
+                        One binding of a test method, a test case and
+                        an item under test, with what came back.
+    description:        |
+                        An item of t_test_execution in execution/. It
+                        records the digests of the method and the case
+                        it observed, so a reader can tell a current
+                        result from a stale one. A completed record
+                        does not change.
+
+                        An execution of a dataflow workflow is a
+                        different concept, held as term_execution.
+    term:               test execution
+
+    avoid:
+      - test run
+      - test job
+
+    relation:           []
+
+  term_test_result:
+    id_self:            term_test_result
+    guid_self:          term_a72c61356c62435d90b0e88762fa6f51
+    title:              Test result
+    brief:              |
+                        What one test execution found, as an embedded
+                        addressable item.
+    description:        |
+                        It carries the conformance result and the
+                        observations behind it. A result has no
+                        meaning apart from the execution that produced
+                        it.
+    term:               test result
+
+    avoid:
+      - outcome
+      - verdict
+
+    relation:           []
+
+  term_execution_outcome:
+    id_self:            term_execution_outcome
+    guid_self:          term_26ee9089dafc4d0c83917daf183129d5
+    title:              Execution outcome
+    brief:              |
+                        Whether a test execution ran: completed,
+                        error, not_run or cancelled.
+    description:        |
+                        It says nothing about what the procedure
+                        found. An execution that did not complete
+                        holds no passing conformance result.
+    term:               execution outcome
+
+    avoid:
+      - status
+      - result
+
+    relation:           []
+
+  term_conformance_result:
+    id_self:            term_conformance_result
+    guid_self:          term_e73fde3b5a4b403cb5fe6ac2857d01b5
+    title:              Conformance result
+    brief:              |
+                        What a test execution found: passed, failed,
+                        inconclusive or not_applicable.
+    description:        |
+                        It says nothing about whether the procedure
+                        ran. A completed execution may hold a failed
+                        conformance result.
+    term:               conformance result
+
+    avoid:
+      - outcome
+      - pass or fail
+
+    relation:           []
