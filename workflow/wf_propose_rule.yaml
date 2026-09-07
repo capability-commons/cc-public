@@ -1,0 +1,44 @@
+id_self:                wf_propose_rule
+guid_self:              wf_503c73f77bca464ab26cd388c888f169
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Propose a rule from a sweep
+brief:                  |
+                        A model reads what a sweep found and proposes
+                        one rule a check could apply.
+description:            |
+                        One node, on a model. It takes a sweep, the
+                        rule register and the guide, and writes a rule
+                        proposal deriving from the sweep. Run once per
+                        sweep; run again for the next shape once a
+                        proposal is accepted or rejected. The
+                        improvement loop: a defect found downstream of
+                        a gate is evidence the gate is too weak, and a
+                        shape found repeatedly is evidence a rule is
+                        missing.
+
+node:
+
+  propose:
+    id_self:            node_propose_rule.propose
+    guid_self:          node_df272ede807b429ba83af1d52c918141
+    title:              Propose
+    brief:              |
+                        Writes the proposal.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_propose_rule
+        guid_target:    cmp_b99d974fca654c8f8a3e13a798388452
+
+edge:                   {}
+relation:               []

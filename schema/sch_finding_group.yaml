@@ -1,0 +1,82 @@
+id_self:                sch_finding_group
+guid_self:              sch_e1798a27b9974a2bbcfb19919647e950
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Finding group entry schema
+brief:                  |
+                        Schema for a finding group: the findings of
+                        one sweep that one eval raised under one rule.
+description:            |
+                        An entry with an identity of its own under
+                        group on a sweep, keyed by the eval and the
+                        rule. It counts the findings, names the items
+                        they fell on, and keeps a few of the messages
+                        as they were written, so that a recurring
+                        shape can be read without the report.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_finding_group.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - id_eval
+      - count
+      - item
+      - sample
+
+    properties:
+
+      id_eval:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        The eval that raised the findings.
+
+      rule:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The rule the findings name, where
+                        they name one the register holds.
+
+      count:
+        type:           integer
+        minimum:        1
+        description:    |
+                        How many findings.
+
+      item:
+        type:           string
+        minLength:      1
+        description:    |
+                        The ids of the items the findings fell on,
+                        space separated.
+
+      sample:
+        type:           string
+        minLength:      1
+        description:    |
+                        Up to three of the messages, as the judge
+                        wrote them.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false

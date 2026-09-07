@@ -240,6 +240,15 @@ Pixi tasks
   check reports a member on another entity, a duplicated obligation, an
   unreviewed set and each uncovered class; `evl_set_consistent` judges
   conflict and repetition across the members (`ddr_requirement_set`).
+- `sweep REPORT.json --id swp_… [--title …] [--brief …]` — makes a sweep
+  (`swp_`, in `sweep/`) from a `check --eval --format json --out` report: the
+  findings grouped by eval and rule, largest first, with items and sample
+  messages. `run wf_propose_rule --deployment dep_propose_rule_local --bind
+  propose.input.sweep=swp_… --bind propose.input.rules=reg_requirement_rule
+  --bind propose.input.guide=reg_writing_style_rule` has a model propose one
+  rule a check over the slots could apply, as a proposal (`rlp_`, in
+  `proposal/`) deriving from the sweep; a person enters it in the register or
+  rejects it. Nothing but a person writes the register (`ddr_improvement_loop`).
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status
@@ -333,6 +342,6 @@ is `../cc-brave1-demo`.
 
 ## Where things are
 
-`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `requirement_set/` sets of them · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `requirement_set/` sets of them · `sweep/` what the evals found · `proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing, methodology, document and process word registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

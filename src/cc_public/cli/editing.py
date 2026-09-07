@@ -48,6 +48,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.observe
 import cc_public.edit.rename
+import cc_public.edit.sweep
 import cc_public.edit.tree
 import cc_public.eval.case
 import cc_public.eval.check
@@ -441,3 +442,35 @@ def gather(id_concept, id_self, entity, title, list_root):
 
     click.echo('{path}  {id_self}  {n} included'.format(
                     path = item.filepath, id_self = item.id_self, n = len(added)))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('path_report', type = click.Path(exists = True, dir_okay = False,
+                                                 path_type = pathlib.Path))
+@click.option('--id', 'id_self', required = True,
+              help = 'The readable id to give the sweep, swp_….')
+@click.option('--title', 'title', default = None,
+              help = 'The title of the sweep. Defaults to one counting the findings.')
+@click.option('--brief', 'brief', default = None,
+              help = 'What was swept. Defaults to the counts and the report\'s name.')
+@cc_public.cli.group.OPTION_ROOT
+def sweep(path_report, id_self, title, brief, list_root):
+    """
+    Make a sweep item (swp_, in sweep/) from a check report written by
+    check --eval --format json --out FILE: the findings grouped by eval
+    and rule, largest first, with the items and a sample of the
+    messages.
+
+    A sweep is what wf_propose_rule reads to propose a rule a check
+    could apply, which is the improvement loop.
+
+    """
+
+    try:
+        item = cc_public.edit.sweep.sweep(cc_public.cli.group.tree(list_root),
+                                          path_report, id_self, title, brief)
+    except (cc_public.edit.tree.ErrorItem, OSError, ValueError) as err:
+        cc_public.cli.group.fail(err)
+
+    click.echo('{path}  {id_self}'.format(path = item.filepath, id_self = item.id_self))

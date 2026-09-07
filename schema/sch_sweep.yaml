@@ -1,0 +1,94 @@
+id_self:                sch_sweep
+guid_self:              sch_8991785fa5ad4ba68e2ae71cf3d92e10
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Sweep schema
+brief:                  |
+                        Schema for sweep data items: the findings of
+                        one eval sweep, aggregated by eval and rule.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A sweep is what one run of the
+                        evals over a set of items found, reduced to
+                        groups: for each eval and rule, how many
+                        findings, on which items, and a sample of the
+                        messages. The judge and the counts of
+                        judgements and findings say how much the sweep
+                        covers. A sweep is the input of the
+                        improvement loop, which reads groups and not
+                        findings.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_sweep.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - brief
+      - judge
+      - count_judgement
+      - count_finding
+      - group
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the sweep, one line.
+
+      brief:
+        type:           string
+        minLength:      1
+        description:    |
+                        What was swept, when, and from which report.
+
+      judge:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        The model that judged.
+
+      count_judgement:
+        type:           integer
+        minimum:        0
+        description:    |
+                        How many judgements the sweep made.
+
+      count_finding:
+        type:           integer
+        minimum:        0
+        description:    |
+                        How many findings it raised.
+
+      group:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_finding_group.yaml
+
+        description:    |
+                        The findings by eval and rule, largest first
+                        as written.
+
+unevaluatedProperties:  false

@@ -1,0 +1,105 @@
+id_self:                sch_rule_proposal
+guid_self:              sch_5fa1c357eebc429d961a2b165ad10026
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rule proposal schema
+brief:                  |
+                        Schema for rule proposal data items: a rule a
+                        model proposes from a recurring shape of
+                        finding.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A proposal has the shape of a
+                        requirement rule, the rule as its brief, the
+                        reasoning as its description, a statement that
+                        follows it and one that breaks it, and says in
+                        check how a mechanical check would find the
+                        defect, or that only a judge can. It derives
+                        from the sweep it was read from and stays
+                        proposed until a person accepts it by entering
+                        the rule in the register, or rejects it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_rule_proposal.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - brief
+      - description
+      - follows
+      - breaks
+      - check
+      - status
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the proposed rule, one
+                        line.
+
+      brief:
+        type:           string
+        minLength:      1
+        description:    |
+                        The rule, in one or two sentences.
+
+      description:
+        type:           string
+        minLength:      1
+        description:    |
+                        Why: the recurring shape it answers, named by
+                        group, and what the rule catches that the
+                        existing rules do not.
+
+      follows:
+        type:           string
+        minLength:      1
+        description:    |
+                        A statement that follows the rule.
+
+      breaks:
+        type:           string
+        minLength:      1
+        description:    |
+                        The same statement written so that it breaks
+                        the rule.
+
+      check:
+        type:           string
+        minLength:      1
+        description:    |
+                        How a mechanical check would find the defect,
+                        in terms of the slots; or that only a judge
+                        can, and why.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - rejected
+
+        description:    |
+                        proposed until a person enters the rule in the
+                        register or declines to.
+
+unevaluatedProperties:  false

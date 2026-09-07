@@ -1521,3 +1521,92 @@ table:
     status:             proposed
     alias:              []
     relation:           []
+
+  t_finding_group:
+    id_self:            t_finding_group
+    guid_self:          t_9dfef47c55234793a7b189f71d481519
+    title:              Finding group type
+    brief:              |
+                        Type of finding group data items
+    description:        |
+                        Each finding group data item holds the
+                        findings of one sweep that one eval raised
+                        under one rule: their count, their items and a
+                        sample of their messages.
+    prefix:             fgp
+    regex_id:           ^fgp_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    usage:              |
+                        Finding groups are read by the improvement
+                        loop, which proposes a rule from a shape that
+                        recurs.
+    note:               |
+                        Finding groups exist only under group on a
+                        sweep, keyed by eval and rule; the sweep's
+                        schema governs them through sch_finding_group.
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  t_sweep:
+    id_self:            t_sweep
+    guid_self:          t_ca9f74d7403542ea84a1b1add507e034
+    title:              Sweep type
+    brief:              |
+                        Type of sweep data items
+    description:        |
+                        Each sweep data item holds what one run of the
+                        evals found, aggregated by eval and rule: the
+                        counts, the items and a sample of the
+                        messages, with the judge that judged.
+    prefix:             swp
+    regex_id:           ^swp_[a-z][a-z0-9_]*$
+    home:               sweep
+    usage:              |
+                        A sweep is made by cctool sweep from a check
+                        report and bound to the propose node of
+                        wf_propose_rule.
+    note:               |
+                        A sweep is a record of findings as data, so
+                        that a defect shape can be seen across items
+                        and runs rather than fixed one item at a time.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_sweep
+        guid_target:    sch_8991785fa5ad4ba68e2ae71cf3d92e10
+
+  t_rule_proposal:
+    id_self:            t_rule_proposal
+    guid_self:          t_b64ad7fdf0cb48dcb5b31f992070ee43
+    title:              Rule proposal type
+    brief:              |
+                        Type of rule proposal data items
+    description:        |
+                        Each rule proposal data item holds a rule a
+                        model proposed from a recurring shape of
+                        finding, in the shape of a requirement rule,
+                        with how a mechanical check would find the
+                        defect.
+    prefix:             rlp
+    regex_id:           ^rlp_[a-z][a-z0-9_]*$
+    home:               proposal
+    usage:              |
+                        A proposal is made by wf_propose_rule from a
+                        sweep and stays proposed until a person enters
+                        the rule in the register or rejects it.
+    note:               |
+                        A proposal is not a rule: only the register
+                        holds rules, and only a person writes there.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_rule_proposal
+        guid_target:    sch_5fa1c357eebc429d961a2b165ad10026

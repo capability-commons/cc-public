@@ -1,0 +1,125 @@
+id_self:                cmp_propose_rule
+guid_self:              cmp_b99d974fca654c8f8a3e13a798388452
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Propose a rule from a sweep
+brief:                  |
+                        Read the recurring shapes of finding in a
+                        sweep and propose one rule that would catch
+                        the largest of them mechanically, by a model.
+description:            |
+                        Given a sweep, the requirement rule register
+                        and the writing style guide, a model reads the
+                        finding groups, picks the largest shape the
+                        register does not already name as a rule a
+                        check could apply, and writes a rule proposal
+                        in the shape of a register entry: the rule,
+                        the reasoning with the groups it answers, a
+                        statement each way, and how a check on the
+                        slots would find the defect. The proposal is
+                        not a rule; a person enters it in the register
+                        or rejects it. Follows
+                        method_admissible_claims: process improvement
+                        is the migration of checks down the cost
+                        hierarchy.
+
+output:
+
+  proposal:
+    id_self:            prt_propose_rule.proposal
+    guid_self:          prt_e6c722aa8b2f410bbee0f9b1ca9b16a4
+    title:              Rule proposal
+    brief:              |
+                        The rule proposed, deriving from the sweep.
+    id_type:            t_rule_proposal
+    guid_type:          t_b64ad7fdf0cb48dcb5b31f992070ee43
+
+    link:
+
+      r_is_derived_from:
+        - sweep
+
+    field:
+      - title
+      - brief
+      - description
+      - follows
+      - breaks
+      - check
+
+    prompt:             |
+                        The sweep on sweep lists under group what a
+                        run of the requirement evals found, by eval
+                        and by rule: how many findings, on which
+                        items, and a sample of the messages. The
+                        register on rules holds the rules a
+                        requirement is judged by. Find the largest
+                        group whose findings share one shape that a
+                        mechanical check over the slots of a
+                        requirement, condition, entity, obligation,
+                        activity, actor, process, object and
+                        qualifier, could find without a judge, and
+                        that no rule on rules already states in that
+                        form; where the largest group is a judgement
+                        no check could make, say so in check and take
+                        the next. In title, name the rule in a few
+                        words. In brief, state the rule in one or two
+                        sentences, as a rule of the register is
+                        stated. In description, say which groups it
+                        answers by their keys and counts, what shape
+                        the findings share, and what the rule catches
+                        that the existing rules do not. In follows,
+                        write one requirement statement that follows
+                        the rule; in breaks, the same statement
+                        written so that it breaks it. In check, say
+                        how a check over the slots would find the
+                        defect, which slot, which words or pattern, or
+                        say that only a judge can and why. Propose
+                        nothing the sample does not show. The rules on
+                        guide say how to write; follow them and do not
+                        mention them. Plain prose, no headings, no
+                        markup.
+    relation:           []
+
+performer:              model
+relation:               []
+
+input:
+
+  sweep:
+    id_self:            prt_propose_rule.sweep
+    guid_self:          prt_37a059e291214d188ff91c0a62ed8438
+    title:              Sweep
+    brief:              |
+                        The sweep whose groups are read.
+    id_type:            t_sweep
+    guid_type:          t_ca9f74d7403542ea84a1b1add507e034
+    relation:           []
+
+  rules:
+    id_self:            prt_propose_rule.rules
+    guid_self:          prt_874e9ef83e4d40af8c3deefa5cfa2629
+    title:              Requirement rule register
+    brief:              |
+                        The register of rules, so that the proposal is
+                        one the register lacks.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []
+
+  guide:
+    id_self:            prt_propose_rule.guide
+    guid_self:          prt_4cca611baff1471ca9a25a617f3f8f62
+    title:              Writing style guide
+    brief:              |
+                        The register of writing style rules the prose
+                        follows.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []

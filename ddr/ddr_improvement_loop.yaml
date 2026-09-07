@@ -1,0 +1,212 @@
+id_self:                ddr_improvement_loop
+guid_self:              ddr_ee9ed6c33bb24cc4bd989908eec4f8f5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Findings become data, and a recurring shape proposes a rule
+brief:                  |
+                        A sweep item holds what one run of the evals
+                        found, grouped by eval and rule with counts,
+                        items and sample messages; a workflow on a
+                        model reads the groups and proposes one rule a
+                        mechanical check over the slots could apply,
+                        as a rule proposal item deriving from the
+                        sweep; a person accepts it by entering the
+                        rule in the register, or rejects it.
+context:                |
+                        The admissible claims position says process
+                        improvement is the migration of checks down
+                        the cost hierarchy, from a judge to a rule,
+                        and that a defect shape found repeatedly is
+                        evidence a rule is missing, which needs a step
+                        whose input is findings aggregated across
+                        items and runs and whose output is a change to
+                        the rule set and never to a claim. Findings
+                        were a report a command wrote and a person
+                        read once: the two demonstration sweeps raised
+                        four hundred and sixty-nine and four hundred
+                        and four, and the shapes in them, a hundred
+                        and twenty-seven citations of one rule, twenty
+                        invented rule ids, the template forms faulted
+                        as padding, were found by reading samples by
+                        hand. The register of rules is written only by
+                        a person, on the position's third human duty,
+                        ratifying rule changes.
+decision:               |
+                        A SWEEP is a data item of type t_sweep, held
+                        in sweep/, made by cctool sweep from a check
+                        report: the judge, the counts of judgements
+                        and findings, and under group one finding
+                        group per eval and rule, largest first, each
+                        with its count, the ids of the items it fell
+                        on and up to three messages as the judge wrote
+                        them. A finding naming a rule the register
+                        lacks groups under its eval alone, since the
+                        name is the judge's invention.
+
+                        wf_propose_rule, one node on a model, takes a
+                        sweep, the rule register and the guide, and
+                        writes a RULE PROPOSAL of type
+                        t_rule_proposal, held in proposal/, deriving
+                        from the sweep: the rule as a register entry
+                        states it, the groups it answers, a statement
+                        that follows it and one that breaks it, and in
+                        check how a check over the slots would find
+                        the defect or that only a judge can. It is
+                        proposed until a person enters the rule in the
+                        register and marks it accepted, or marks it
+                        rejected. Nothing writes to the register but a
+                        person.
+rationale:              |
+                        Findings as an item rather than a report,
+                        because a report is read once and a shape is
+                        seen only across items and runs; the sweep is
+                        the aggregate the position asks for, and a
+                        sweep of a later run beside an earlier one is
+                        how a rule is seen to have worked.
+
+                        Groups rather than findings, because a group
+                        is what the loop reads: a count, the items, a
+                        sample; the findings stay in the report the
+                        sweep names.
+
+                        A proposal item rather than a register entry
+                        written by the model, because the register is
+                        the gate for every future claim, and the
+                        position gives ratifying its changes to a
+                        person; the proposal is the model's draft in
+                        the register's shape, so that accepting it is
+                        an insert and a status.
+
+                        The prompt asks for a shape a check over the
+                        slots could find, because the loop's purpose
+                        is to move a judgement down to a rule, and a
+                        rule a judge must apply moves nothing.
+alternative:            |
+                        The model inserting the rule into the register
+                        with status proposed. Rejected: a proposed
+                        entry in the register is still an entry an
+                        eval may cite.
+
+                        Findings kept as items, one each. Rejected:
+                        hundreds of items that say one thing each,
+                        where the loop reads shapes.
+
+                        A mechanical proposal, the largest group named
+                        as a rule to write. Rejected as the whole: the
+                        aggregation is mechanical and is the sweep;
+                        what the shape is, and how a check would find
+                        it, is a reading.
+consequence:            |
+                        The sweep command and the proposing workflow
+                        exist and are tested with a scripted model: a
+                        report of four findings becomes three groups,
+                        the invented rule grouping under its eval, and
+                        the workflow writes a proposal deriving from
+                        the sweep.
+
+                        The demonstration's sweep after the eval
+                        rewrite is an item, and the first proposal is
+                        run on it; what it proposes, and whether a
+                        check over the slots can find it, is the first
+                        turn of the loop and is read before anything
+                        enters the register.
+
+                        Accepting a proposal is an insert into the
+                        register and a status by hand; a command that
+                        does both, and links the rule to the proposal
+                        it came from, is the next step.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_sweep
+    guid_target:        sch_8991785fa5ad4ba68e2ae71cf3d92e10
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_finding_group
+    guid_target:        sch_e1798a27b9974a2bbcfb19919647e950
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_rule_proposal
+    guid_target:        sch_5fa1c357eebc429d961a2b165ad10026
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_sweep
+    guid_target:        t_ca9f74d7403542ea84a1b1add507e034
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_finding_group
+    guid_target:        t_9dfef47c55234793a7b189f71d481519
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_rule_proposal
+    guid_target:        t_b64ad7fdf0cb48dcb5b31f992070ee43
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_propose_rule
+    guid_target:        cmp_b99d974fca654c8f8a3e13a798388452
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_propose_rule
+    guid_target:        wf_503c73f77bca464ab26cd388c888f169
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_propose_rule_local
+    guid_target:        dep_327310a107b043ae84adde37dad4fc47
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.sweep
+    guid_target:        pym_36ed66d741044859a43fd8ce08d95f15
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_template_aware_evals.adjudication
+    guid_target:        qst_2dae760c339c4790936ea208ab2de194
+
+question:
+
+  ratify:
+    id_self:            qst_improvement_loop.ratify
+    guid_self:          qst_9d4db8b268ef475aa8d98769b36e7adc
+    question:           |
+                        How a person accepts a proposal: a command
+                        that inserts the rule into the register, marks
+                        the proposal accepted and links the rule to
+                        it, and whether the eval that would implement
+                        the rule is made in the same act.
+    relation:           []
+
+  worked:
+    id_self:            qst_improvement_loop.worked
+    guid_self:          qst_211b3682f81b4ec88a0cfcfde7860266
+    question:           |
+                        How a later sweep shows a rule worked: the
+                        group it answers shrinking, and whether the
+                        sweep records the register revision it was
+                        judged under.
+    relation:           []
+
+  mechanical:
+    id_self:            qst_improvement_loop.mechanical
+    guid_self:          qst_2895d8f127054f43b0ef2653d81419c7
+    question:           |
+                        Which proposals become code: a check over the
+                        slots the proposal describes, and where such a
+                        check lives beside the requirement check.
+    relation:           []
