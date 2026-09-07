@@ -15,12 +15,20 @@ title:                  Schema check
 brief:                  |
                         Check that items conform to their schema.
 description:            |
-                        Resolves a schema for each item, from the item
-                        own edge where it has one and otherwise from
-                        its type, and validates against it. Cross
-                        schema references resolve from a registry
-                        built locally, so no reference is ever
-                        retrieved over the network.
+                        Selects a schema for each item, by the schema
+                        the item names or the schema its type names,
+                        and validates against it. A pattern constrains
+                        a datum, and a datum holds no line break; the
+                        draft reads a regular expression by ECMA-262,
+                        where a dollar anchors the end of the string,
+                        while Python matches it before a final newline
+                        as well, so the check refuses the line break
+                        itself. An item held within another is
+                        validated against the schema its type names,
+                        for that one rule, which the container pass
+                        does not state of it. Cross document facts a
+                        schema cannot express are left to their own
+                        checks.
 relation:               []
 
 ...
@@ -57,6 +65,7 @@ SEPARATOR     = '_'
 
 KEYWORD_UNEVALUATED = 'unevaluatedProperties'
 KEYWORD_PATTERN     = 'pattern'
+MESSAGE_DATUM       = 'is constrained by a pattern, so it holds a datum'
 
 
 # -----------------------------------------------------------------------------
@@ -142,6 +151,8 @@ def check(context):
                                                  path     = path,
                                                  message  = message)
                 for (path, message) in list_error)
+
+        list_nonconformity.extend(_datum(filepath, document, map_prefix, map_by_id, reg))
 
     return cc_public.check.result.Result(
                             count_item         = count_valid,
@@ -314,6 +325,65 @@ def _list_id_schema(mapping):
 
 
 # -----------------------------------------------------------------------------
+def _datum(filepath, document, map_prefix, map_schema, reg):
+    """
+    Return a Nonconformity for every item held within document whose
+    datum is written as a block scalar.
+
+    The rule reaches an item at a location through its own schema, and
+    an item held within one only here: the extension that carries the
+    rule is lost where the container follows a reference into the entry
+    schema, so the container pass never states it of an entry. Only
+    that one message is kept, so nothing the container already reports
+    is reported twice.
+
+    """
+
+    out = []
+
+    for (path, item) in _iter_embedded(document):
+
+        (id_schema, _) = select_schema(item, map_prefix, is_embedded = True)
+
+        if id_schema is None or id_schema not in map_schema:
+            continue
+
+        out.extend(cc_public.check.result.Nonconformity(
+                            filepath = str(filepath),
+                            path     = cc_public.path.join(path, path_error),
+                            message  = message)
+                   for (path_error, message) in validate(item, id_schema, map_schema, reg)
+                   if MESSAGE_DATUM in message)
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _iter_embedded(node, path = ''):
+    """
+    Yield (path, item) for every item held within the node, the node
+    itself excepted.
+
+    """
+
+    if isinstance(node, dict):
+
+        for (key, value) in node.items():
+            path_child = cc_public.path.join(path, key)
+            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
+                yield (path_child, value)
+            yield from _iter_embedded(value, path_child)
+
+    elif isinstance(node, list):
+
+        for (index, value) in enumerate(node):
+            path_child = cc_public.path.join(path, index)
+            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
+                yield (path_child, value)
+            yield from _iter_embedded(value, path_child)
+
+
+# -----------------------------------------------------------------------------
 def _pattern(validator, value, instance, schema):
     """
     Apply pattern as the draft defines it, and refuse a line break.
@@ -331,9 +401,9 @@ def _pattern(validator, value, instance, schema):
 
     if isinstance(instance, str) and '\n' in instance:
         yield jsonschema.ValidationError(
-                '{value!r} is constrained by a pattern, so it holds a datum, and a '
-                'datum holds no line break. It is written as a block scalar, and the '
-                'line break is part of the value.'.format(value = instance))
+                '{value!r} {message}, and a datum holds no line break. It is written as '
+                'a block scalar, and the line break is part of the value.'.format(
+                                        value = instance, message = MESSAGE_DATUM))
 
 
 KEYWORD_PATTERN_DRAFT = jsonschema.Draft202012Validator.VALIDATORS[KEYWORD_PATTERN]

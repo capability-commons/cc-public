@@ -66,3 +66,12 @@ def test_a_value_that_breaks_the_pattern_is_still_refused(tree, tmp_path):
     report   = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
     (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
     assert any('does not match' in n['message'] for n in found['nonconformity'])
+
+
+def test_the_rule_reaches_an_item_held_within_another(tree, tmp_path):
+    cc_public.edit.field.set_field(tree, 'term_performer', 'term', prose = 'performer')
+    report   = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
+    entry    = [n for n in found['nonconformity'] if 'holds a datum' in n['message']]
+    (one,)   = entry                                     # once, not once per pass
+    assert one['path'] == 'table.term_performer.term'
