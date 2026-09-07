@@ -120,8 +120,8 @@ table:
                         carrying its type prefix.
     description:        |
                         Chosen by an author rather than minted. An
-                        advisory copy travels beside every guid so
-                        that a reference stays legible in a diff.
+                        advisory copy travels beside every guid, so a
+                        reference carries both.
     term:               readable id
 
     also:
@@ -175,10 +175,9 @@ table:
                         An item holding a keyed table of entries, and
                         the source of truth for a vocabulary.
     description:        |
-                        Entries are keyed by readable id, so
-                        duplicates are structurally impossible. A
-                        register may name a schema of its own for its
-                        entries.
+                        Entries are keyed by readable id, so a key
+                        appears once. A register may name a schema of
+                        its own for its entries.
     term:               register
     alias:              []
 
@@ -302,11 +301,8 @@ table:
                         Context, decision, rationale, alternative,
                         consequence, and what is left open. A design
                         decision decides items by r_decides edges. Its
-                        type prefix, ddr, is an identifier and stays;
-                        the word record is dropped from the name
-                        because every item is a record of something,
-                        and the phrase said nothing the shorter one
-                        does not.
+                        type prefix is ddr, and the item is a design
+                        decision rather than a design decision record.
     term:               design decision
 
     also:
@@ -541,10 +537,10 @@ table:
                         A mechanical rule run by cctool, deterministic
                         and exact.
     description:        |
-                        Contrast an eval, which is judged and
-                        fallible. A check is code and does not travel
-                        across the federation; an eval is data and
-                        does.
+                        A check is code and runs in the tool. An eval
+                        is data and holds a criterion a model judges.
+                        A check travels with the tool; an eval travels
+                        with the vocabulary.
     term:               check
     alias:              []
 
@@ -1740,9 +1736,8 @@ table:
                         the tree.
     description:        |
                         One module in the foundations computes it, and
-                        the trace check and cctool trace both read it,
-                        so that they cannot disagree. The reverse, the
-                        impact of a change to one item, is the same
+                        the trace check and cctool trace both read it.
+                        The impact of a change to one item is the same
                         projection asked the other way.
     term:               trace projection
 
@@ -1799,8 +1794,8 @@ table:
                         means.
     description:        |
                         Run by cctool query, which loads the facts and
-                        reports the rows; the useful questions
-                        accumulate in query/ rather than in scripts.
+                        reports the rows. A question asked twice is
+                        kept as a qry_ item in query/.
     term:               query
 
     also:
@@ -2317,5 +2312,71 @@ table:
       - measure
       - dimension
       - metric
+
+    relation:           []
+
+  term_test_method:
+    id_self:            term_test_method
+    guid_self:          term_bca4066c614f47169af58509b9255f0f
+    title:              Test method
+    brief:              |
+                        A reusable procedure concrete enough to run,
+                        held as an entry of the test method register.
+    description:        |
+                        It settles what to do, what to observe and how
+                        to read a verdict, and takes one of three
+                        execution forms. A check is mechanical and
+                        exact. An eval is a criterion a model judges.
+                        A test method is the procedure a person or an
+                        adapter follows to observe an item under test.
+    term:               test method
+
+    avoid:
+      - test procedure
+      - test technique
+      - methodology
+
+    relation:           []
+
+  term_execution_form:
+    id_self:            term_execution_form
+    guid_self:          term_8b8a463a9c6d49c6b2e636cb4461690b
+    title:              Execution form
+    brief:              |
+                        Which of the three ways a test method is
+                        carried out: automated, evaluated inspection,
+                        or manual.
+    description:        |
+                        The forms are closed, and a method takes
+                        exactly one. A manual and an automated
+                        realisation of one technique are two methods.
+    term:               execution form
+
+    avoid:
+      - execution type
+      - method kind
+
+    relation:           []
+
+  term_adapter:
+    id_self:            term_adapter
+    guid_self:          term_17c486d9a1b84e5e82e8b120bd435aff
+    title:              Adapter
+    brief:              |
+                        Installed code that carries out an automated
+                        test method, named by identity from the
+                        method.
+    description:        |
+                        An adapter resolves a method and a case into
+                        something it runs, and returns a normalised
+                        result. A method names an adapter and never a
+                        command, so no data item is a way to run
+                        arbitrary code.
+    term:               adapter
+
+    avoid:
+      - driver
+      - plugin
+      - runner
 
     relation:           []

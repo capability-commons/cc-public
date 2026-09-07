@@ -1,0 +1,174 @@
+id_self:                ddr_test_method
+guid_self:              ddr_841295f0067440929003443c5324f487
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test method is a reusable procedure concrete enough to run
+brief:                  |
+                        A test method is an entry of its own register,
+                        carrying a common envelope and one of three
+                        execution forms, and it names an installed
+                        adapter rather than a command.
+context:                |
+                        The repository verifies a requirement by a
+                        test function that points at it. Nothing
+                        states the procedure that function follows, so
+                        a procedure cannot be reused, cited, or told
+                        apart from the code that happens to run it.
+
+                        reg_methodology holds the established ways of
+                        analysing needs and writing requirements, such
+                        as INCOSE and SOPHIST. Its entries are named
+                        so that a component can say it follows one. A
+                        procedure concrete enough to run has a
+                        different shape, a different use and a
+                        different lifecycle.
+
+                        The glossary rejects test as a word for a
+                        check and for an eval. A check is mechanical
+                        and exact; an eval is a criterion a model
+                        judges. Neither is what a test method
+                        describes, and the three have to stay apart in
+                        the words as well as in the types.
+decision:               |
+                        A test method is an entry of reg_test_method,
+                        of type t_test_method with prefix tm, shaped
+                        by sch_entry_test_method composed with
+                        sch_entry, which t_test_method names by
+                        r_is_specified_by_schema.
+
+                        A test method carries a common envelope closed
+                        to undeclared fields: what it is, its version,
+                        its verification class, its purpose and
+                        applicability, its prerequisites, its
+                        procedure, what to observe, how to read a
+                        verdict, the schema governing the
+                        configuration a case supplies, what evidence
+                        it requires, its limitations and its status.
+                        The verification class is the classification
+                        textual requirements and verification evidence
+                        already use.
+
+                        A test method takes exactly one of three
+                        execution forms, and the three are closed:
+                        automated, evaluated inspection, and manual. A
+                        manual and an automated realisation of one
+                        technique are two methods.
+
+                        An automated method names an adapter installed
+                        in code, by identity. A method never carries a
+                        command for the runtime to execute, and never
+                        a path the runtime resolves.
+
+                        A method concrete enough to run is what a
+                        schedule may name. An abstract technique is a
+                        classification or a cited document, not a
+                        method.
+rationale:              |
+                        A register of its own rather than
+                        reg_methodology, because the entries answer
+                        different questions. A methodology says how a
+                        need is analysed. A test method says what to
+                        do, with what, and how to read what comes
+                        back. Broadening the register would put two
+                        lifecycles in one table and make an entry's
+                        meaning depend on which kind it is.
+
+                        An adapter by identity rather than a command,
+                        because a data item that carries a command
+                        makes the repository an execution boundary.
+                        Anyone who can write an item could then run
+                        anything the runtime can run. An identity
+                        resolves to code that is installed, reviewed
+                        and versioned with the tool.
+
+                        Three forms and not a general one, because
+                        each of the three needs different fields and
+                        each is checkable. A single form with an open
+                        configuration would accept anything and check
+                        nothing.
+
+                        One envelope over all three, because what a
+                        method is, what it is for and how its verdict
+                        reads do not depend on who performs it.
+alternative:            |
+                        Broadening reg_methodology. Rejected: see the
+                        rationale. The plan this record implements
+                        rejected it for the same reason.
+
+                        A method that carries a shell command.
+                        Rejected: it makes data an execution-injection
+                        boundary, which is the risk the plan names
+                        first.
+
+                        An open configuration mapping on the method.
+                        Rejected: it is the universal workflow
+                        language the plan warns against, and nothing
+                        could check it.
+
+                        Naming the concept a test procedure rather
+                        than a test method. Rejected: procedure is one
+                        field of the entry, and naming the whole after
+                        one of its parts would leave that field
+                        nameless.
+consequence:            |
+                        reg_test_method, t_test_method,
+                        sch_entry_test_method and sch_reg_test_method
+                        are added in the next milestone, and tm is
+                        claimed as a prefix.
+
+                        An installed adapter is a named thing that has
+                        to exist before an automated method can be
+                        written, so the first method and the first
+                        adapter arrive together.
+
+                        The word test now names a concept in the
+                        glossary while remaining a form to avoid for a
+                        check and for an eval. term_test_method says
+                        what tells the three apart.
+
+                        Whether an abstract technique is a document in
+                        reg_document or a classification on the method
+                        is not settled here.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_test_method
+    guid_target:        term_bca4066c614f47169af58509b9255f0f
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_execution_form
+    guid_target:        term_8b8a463a9c6d49c6b2e636cb4461690b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_adapter
+    guid_target:        term_17c486d9a1b84e5e82e8b120bd435aff
+
+question:
+
+  technique:
+    id_self:            qst_test_method.technique
+    guid_self:          qst_8c8c6e62d3fd453eadfd0cdaf66015e0
+    question:           |
+                        Whether an abstract technique is a document in
+                        reg_document that a method cites, or a
+                        classification field on the method itself.
+    relation:           []
+
+  schedule:
+    id_self:            qst_test_method.schedule
+    guid_self:          qst_4b39f19fe5f244d2b38ef49c8e5e4554
+    question:           |
+                        What makes a method concrete enough for a
+                        schedule to name it, and whether that is a
+                        check or a judgement.
+    relation:           []
