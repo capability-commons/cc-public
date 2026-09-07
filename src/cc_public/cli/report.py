@@ -18,10 +18,12 @@ description:            |
                         Writes a check report as text for a person, or
                         as JSON, YAML or XML for a program, and
                         renders what the other commands show: a run, a
-                        trace, an impact, an item and its edges.
-                        Findings go to standard output in every
-                        format; standard error is reserved for
-                        failures of the analysis itself.
+                        trace, an impact, an item and its edges, and
+                        the glossary as a list, a lookup, a sense
+                        report or a gap report. Findings go to
+                        standard output in every format; standard
+                        error is reserved for failures of the analysis
+                        itself.
 relation:               []
 
 ...
@@ -42,6 +44,7 @@ import cc_public.query
 
 FORMAT_TEXT = 'text'
 FORMAT_JSON = 'json'
+LIMIT_GAP   = 40
 FORMAT_YAML = 'yaml'
 FORMAT_XML  = 'xml'
 FORMAT_ALL  = (FORMAT_TEXT, FORMAT_JSON, FORMAT_YAML, FORMAT_XML)
@@ -532,3 +535,123 @@ def write_rows(names, rows, id_format):
     for row in rows:
         click.echo('  '.join(str(v).ljust(w) for (v, w) in zip(row, width, strict = True)))
     click.echo('{n} row(s).'.format(n = len(rows)))
+
+
+# -----------------------------------------------------------------------------
+def write_glossary(list_term, id_format):
+    """
+    Write every term, as text or as json.
+
+    """
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps([t._asdict() for t in list_term], indent = 2))
+        return
+
+    for term in list_term:
+        click.echo('{id:40} {word}'.format(id = term.id_self, word = term.term))
+
+    click.echo('{n} term(s).'.format(n = len(list_term)))
+
+
+# -----------------------------------------------------------------------------
+def write_glossary_lookup(word, found, id_format):
+    """
+    Write the entries that claim a word and the entries that reject it,
+    as text or as json.
+
+    """
+
+    (accepted, avoided) = found
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps({'word':     word,
+                               'accepted': [t._asdict() for t in accepted],
+                               'avoided':  [t._asdict() for t in avoided]}, indent = 2))
+        return
+
+    for term in accepted:
+        _write_term(term)
+
+    for term in avoided:
+        click.echo('{id}  rejects {word}: write {term}.'.format(
+                        id = term.id_self, word = word, term = term.term))
+        click.echo('    {brief}'.format(brief = term.brief))
+
+    if len(accepted) > 1:
+        click.echo('{word} names {n} concepts. An occurrence of it names one of '
+                   'them.'.format(word = word, n = len(accepted)))
+    elif not accepted and not avoided:
+        click.echo('No glossary in this tree holds {word}.'.format(word = word))
+
+
+# -----------------------------------------------------------------------------
+def _write_term(term):
+    """
+    Write one term entry.
+
+    """
+
+    click.echo('{id}  {word}'.format(id = term.id_self, word = term.term))
+    click.echo('    {brief}'.format(brief = term.brief))
+
+    for (label, value) in (('also', ', '.join(term.also)),
+                           ('avoid', ', '.join(term.avoid)),
+                           ('decided by', ', '.join(term.decider))):
+        if value:
+            click.echo('    {label:11} {value}'.format(label = label, value = value))
+
+
+# -----------------------------------------------------------------------------
+def write_glossary_senses(found, id_format):
+    """
+    Write the words more than one entry claims, and the readable ids
+    that number a sense, as text or as json.
+
+    """
+
+    (shared, numbered) = found
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps({'shared':   [{'word': w, 'id_self': list(ids)}
+                                            for (w, ids) in shared],
+                               'numbered': list(numbered)}, indent = 2))
+        return
+
+    for (word, list_id) in shared:
+        click.echo('{word:24} {ids}'.format(word = word, ids = ', '.join(list_id)))
+
+    for id_self in numbered:
+        click.echo('{id}  numbers a sense. A readable id distinguishes one in '
+                   'words.'.format(id = id_self))
+
+    click.echo('{n} word(s) named by more than one concept.'.format(n = len(shared)))
+
+
+# -----------------------------------------------------------------------------
+def write_glossary_gaps(found, minimum, id_format):
+    """
+    Write the words and pairs of words prose uses that no glossary
+    holds, and the terms no record decides, as text or as json.
+
+    """
+
+    (list_word, list_pair, undecided) = found
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps({'word':      [{'phrase': p, 'count_item': n}
+                                             for (p, n) in list_word],
+                               'pair':      [{'phrase': p, 'count_item': n}
+                                             for (p, n) in list_pair],
+                               'undecided': list(undecided)}, indent = 2))
+        return
+
+    for (title, rows) in (('Pairs', list_pair), ('Words', list_word)):
+        click.echo(title)
+        for (phrase, count) in rows[:LIMIT_GAP]:
+            click.echo('    {count:5}  {phrase}'.format(count = count, phrase = phrase))
+        click.echo('    {n} in all.'.format(n = len(rows)))
+
+    click.echo('{n} term(s) no record decides.'.format(n = len(undecided)))
+    click.echo('A candidate is a word used by {m} item(s) or more that no glossary holds. '
+               'It is not a finding.'.format(m = minimum))

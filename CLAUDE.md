@@ -56,6 +56,14 @@ Assurance
   every item in the files changed since a commit may affect. Reads the
   same projection (`cc_public.trace`) as the trace check. Proposed gaps are
   advisory; accepted ones critical (`ddr_implementation_trace`).
+- `glossary [WORD] [--gaps] [--senses] [--min N] [--format json]` — read the
+  term registers. WORD returns every entry that claims it, since a word may
+  name several concepts, and every entry that rejects it; with no WORD, every
+  term. `--senses` names the words more than one entry claims and the readable
+  ids that number a sense rather than distinguishing it in words. `--gaps`
+  counts the words and pairs of words that the prose of N items or more uses
+  and no glossary holds, and the terms no record decides. A gap is a candidate
+  for a person, never a finding (`ddr_glossary`, `ddr_term_concept_identity`).
 - `show ITEM [--format json]` — one item: where it is, title and brief,
   every edge it holds and every edge pointing at it. Use it before
   grepping for a guid.

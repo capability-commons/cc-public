@@ -13,9 +13,10 @@ protective_mark:
 
 title:                  Assurance commands
 brief:                  |
-                        questions, trace, show and attest: what is
-                        open, what a requirement rests on, what an
-                        item is, and what a person observed.
+                        questions, trace, glossary, show and attest:
+                        what is open, what a requirement rests on,
+                        what a word means, what an item is, and what a
+                        person observed.
 description:            |
                         Each reads a projection from the foundations
                         and renders it through the report module,
@@ -23,6 +24,9 @@ description:            |
                         through the evidence module. trace shows a
                         requirement, a source item's impact, or what
                         the files changed since a commit may affect.
+                        glossary reads a word, the words more than one
+                        concept claims, or the words prose uses that
+                        no glossary holds.
 relation:               []
 
 ...
@@ -53,6 +57,7 @@ import cc_public.eval.select
 import cc_public.evidence
 import cc_public.layout
 import cc_public.load.git
+import cc_public.glossary
 import cc_public.question
 import cc_public.trace
 import cc_public.workflow.generate
@@ -157,6 +162,50 @@ def trace(list_requirement, list_source, ref, is_gaps_only, is_closed_world,
         list_record = [r for r in list_record if r.gap]
 
     cc_public.cli.report.write_trace(list_record, id_format)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('word', required = False)
+@click.option('--gaps', 'is_gaps', is_flag = True,
+              help = 'The words prose uses that no glossary defines.')
+@click.option('--senses', 'is_senses', is_flag = True,
+              help = 'The words more than one entry claims.')
+@click.option('--min', 'minimum', type = int, default = cc_public.glossary.MINIMUM,
+              show_default = True, metavar = 'N',
+              help = 'For --gaps, the number of items a word must appear in.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True,
+              help = 'text for a person; json for a program.')
+@cc_public.cli.group.OPTION_ROOT
+def glossary(word, is_gaps, is_senses, minimum, id_format, list_root):
+    """
+    Read the glossaries: one word, the words two entries claim, or the
+    words no entry holds.
+
+    WORD returns every entry that claims it, since a word may name
+    several concepts, and every entry that rejects it. With no WORD and
+    no option, every term.
+
+    """
+
+    if word is not None and (is_gaps or is_senses):
+        cc_public.cli.group.fail('Give a word or an option, not both.')
+
+    map_document = cc_public.cli.group.tree(list_root).context.map_document
+
+    if is_gaps:
+        cc_public.cli.report.write_glossary_gaps(
+                        cc_public.glossary.gaps(map_document, minimum), minimum, id_format)
+    elif is_senses:
+        cc_public.cli.report.write_glossary_senses(
+                        cc_public.glossary.senses(map_document), id_format)
+    elif word is not None:
+        cc_public.cli.report.write_glossary_lookup(
+                        word, cc_public.glossary.lookup(map_document, word), id_format)
+    else:
+        cc_public.cli.report.write_glossary(
+                        cc_public.glossary.terms(map_document), id_format)
 
 
 # -----------------------------------------------------------------------------
