@@ -29,8 +29,9 @@ decision:               |
                         A test execution is an item of
                         t_test_execution with prefix tex, held in
                         execution/ beside the workflow runs it sits
-                        next to and shaped by sch_test_execution. The
-                        prefix exe is already the workflow
+                        next to and shaped by sch_test_execution.
+
+                        The prefix exe is already the workflow
                         execution's.
 
                         An execution records what was bound and what
@@ -39,11 +40,11 @@ decision:               |
                         content or revision identity, what was
                         evaluated, the adapter and its version, the
                         environment, the times it started and
-                        finished, and its results.
-
-                        A result is an embedded addressable item of
-                        t_test_result with prefix tres, whose type
-                        names its schema.
+                        finished, and its results. A result is an
+                        embedded addressable item of t_test_result
+                        with prefix tres, shaped by sch_test_result,
+                        which t_test_result names by
+                        r_is_specified_by_schema.
 
                         Two outcomes are recorded and they are not
                         one. The EXECUTION OUTCOME is completed,
@@ -120,6 +121,18 @@ consequence:            |
                         Whether a cancelled execution is kept at all,
                         and who cancels one, is not settled here.
 
+question:
+
+  cancellation:
+    id_self:            qst_test_execution.cancellation
+    guid_self:          qst_165d91206e134e9884f26250218af6ff
+    question:           |
+                        Whether a cancelled test execution is kept,
+                        who cancels one, and what a cancelled
+                        execution says about the evidence that stood
+                        before it.
+    relation:           []
+
 relation:
 
   - id_relation:        r_decides
@@ -141,15 +154,3 @@ relation:
     guid_relation:      r_4aefda84f8894e02aede8729ced91732
     id_target:          term_conformance_result
     guid_target:        term_e73fde3b5a4b403cb5fe6ac2857d01b5
-
-question:
-
-  cancellation:
-    id_self:            qst_test_execution.cancellation
-    guid_self:          qst_165d91206e134e9884f26250218af6ff
-    question:           |
-                        Whether a cancelled test execution is kept,
-                        who cancels one, and what a cancelled
-                        execution says about the evidence that stood
-                        before it.
-    relation:           []

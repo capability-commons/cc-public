@@ -34,10 +34,12 @@ context:                |
                         both.
 decision:               |
                         t_interface_control_document takes the prefix
-                        icd and names sch_interface_control_document.
-                        An interface member is an embedded addressable
-                        item of t_interface_member with prefix icm,
-                        and its type names its schema.
+                        icd, is held in interface/ and names
+                        sch_interface_control_document. An interface
+                        member is an embedded addressable item of
+                        t_interface_member with prefix icm, shaped by
+                        sch_interface_member, which t_interface_member
+                        names by r_is_specified_by_schema.
 
                         r_verifies is extended rather than joined by a
                         conformance relation of its own. A test case
@@ -136,6 +138,18 @@ consequence:            |
                         document to the version it supersedes is still
                         open, and is that record's question.
 
+question:
+
+  dual:
+    id_self:            qst_icd_implementation.dual
+    guid_self:          qst_a1c77b4e761c42b0ad9a909229545f93
+    question:           |
+                        How the trace projection reads a requirement
+                        verified by a python test function and by a
+                        test case at once, and what it reports when
+                        the two disagree.
+    relation:           []
+
 relation:
 
   - id_relation:        r_answers
@@ -157,15 +171,3 @@ relation:
     guid_relation:      r_4aefda84f8894e02aede8729ced91732
     id_target:          term_interface_surface
     guid_target:        term_c60a768dab0847b2abdad87ba4a42d53
-
-question:
-
-  dual:
-    id_self:            qst_icd_implementation.dual
-    guid_self:          qst_a1c77b4e761c42b0ad9a909229545f93
-    question:           |
-                        How the trace projection reads a requirement
-                        verified by a python test function and by a
-                        test case at once, and what it reports when
-                        the two disagree.
-    relation:           []
