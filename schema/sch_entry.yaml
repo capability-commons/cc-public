@@ -1,0 +1,114 @@
+id_self:                sch_entry
+guid_self:              sch_91757d88f90a40088de864b3a7ab4787
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register entry schema
+brief:                  |
+                        The shape every register entry carries,
+                        whatever the register controls.
+description:            |
+                        Identity and the descriptive fields, a
+                        required description, an optional status,
+                        optional aliases and optional edges. An entry
+                        is addressable and describable but is not a
+                        standalone item, so it composes those two
+                        traits rather than sch_base. It has no rights
+                        of its own; it is covered by the rights of the
+                        register holding it.
+
+                        Composed by every entry schema, and by
+                        sch_register as the shape of a value in a
+                        register's table. Held apart from sch_register
+                        so that an entry has a schema to be specified
+                        by, which is what tells a checker and an eval
+                        what an entry is.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry.yaml
+usage:                  |
+                        Composed via allOf by each sch_entry schema,
+                        and referenced by sch_register as the shape of
+                        every value in table.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_descriptive.yaml
+
+required:
+  - description
+
+properties:
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        Full statement of what this entry means.
+
+  relation:
+    type:               array
+    description:        |
+                        Optional. Outgoing traceability edges from
+                        this entry.
+
+                        Optional rather than required because an entry
+                        that points at nothing has nothing to say
+                        here, and requiring an empty array of every
+                        such entry buys no safety. Where it is
+                        present, each edge is the same shape as an
+                        edge anywhere else -- the definition is
+                        referenced from sch_relation.yaml rather than
+                        restated, so the two cannot drift.
+
+                        Note that this property alone does NOT compose
+                        sch_relation.yaml, which would make relation
+                        required on every entry in every register.
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+  status:
+    $ref:               '#/$defs/entry_status'
+    description:        |
+                        Optional. Lifecycle status of this entry.
+
+  alias:
+    type:               array
+    description:        |
+                        Optional. Alternate keys that MUST resolve to
+                        this entry -- historical spellings this entry
+                        has been renamed away from, and legacy strings
+                        appearing in imported data.
+
+                        This is how rename safety is had without
+                        fusing an allocated number into the
+                        identifier: a retired key moves here and
+                        stored data keeps resolving. Aliases occupy
+                        the same key namespace as live entries.
+
+                        Use an empty array when there are none.
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+$defs:
+
+  entry_status:
+    type:               string
+
+    enum:
+      - proposed
+      - accepted
+      - deprecated
+
+    description:        |
+                        Lifecycle status of an individual entry.
+                        Deprecated entries remain resolvable for
+                        historical data; new writes should prefer any
+                        replacement named in note.

@@ -1,0 +1,184 @@
+id_self:                ddr_embedded_item_schema
+guid_self:              ddr_2e7e8e866e174055bb9307deba067110
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An embedded item has the schema its type names
+brief:                  |
+                        An item held within another is specified by
+                        the schema its type names, and an eval reaches
+                        it as it reaches any other item.
+context:                |
+                        An eval names its subjects by an anchor: a
+                        type, a schema the subject composes, or a
+                        relation joining two items. The selector read
+                        one item at each location, so no item held
+                        within another was ever a subject. Nine
+                        hundred and sixty two items are held within
+                        another, and three hundred and forty of them
+                        are register entries carrying a title, a brief
+                        and a description that no eval has read.
+
+                        The composition those three evals anchor to is
+                        present already. sch_register shaped an entry
+                        through a definition within itself, and that
+                        definition composes sch_descriptive. The
+                        entries are descriptive items. Nothing could
+                        say so of an entry, because the shape had no
+                        identity of its own and a type could not name
+                        it.
+
+                        r_is_specified_by_schema is read two ways. On
+                        a document it says what shapes that document.
+                        On an entry of the type register it says what
+                        shapes the items the entry describes. The
+                        schema selector read the second as the first,
+                        so thirteen type entries took the schema of
+                        their items rather than the schema of an
+                        entry.
+decision:               |
+                        The shape of a register entry is a schema of
+                        its own, sch_entry, held where every schema is
+                        held. sch_register references it as the shape
+                        of a value in table, and each entry schema
+                        composes it. An entry type names its entry
+                        schema by r_is_specified_by_schema, as any
+                        type names the schema of its items.
+
+                        An embedded item is specified by the schema
+                        its type names. Its own
+                        r_is_specified_by_schema edge is passed over,
+                        because on a register entry that edge names
+                        the schema of what the entry describes. A
+                        document may still name its own schema, which
+                        is how two registers sharing the reg prefix
+                        are told apart.
+
+                        The eval selector reads every item at a
+                        location: the item written there and every
+                        item held within it. An embedded item is an
+                        item. It has an identity, a schema and prose
+                        of its own, and an anchor reaches it on the
+                        same terms as anything else.
+rationale:              |
+                        A schema of its own rather than a definition
+                        within sch_register, because a shape that
+                        cannot be named cannot be pointed at. A type
+                        names the schema of its items through a
+                        relation, and the relation needs an item at
+                        its far end.
+
+                        The type's schema rather than the item's own
+                        edge, because the two readings of that edge
+                        cannot both be honoured on one entry, and the
+                        type reading is the one the register was
+                        written under. A type entry naming the schema
+                        of its items is what makes the type register
+                        useful; reading that as the entry's own shape
+                        makes a type entry claim to be whatever it
+                        describes.
+
+                        Reading every item at a location rather than
+                        naming the kinds that may be embedded, because
+                        the selector already knows what an item is: an
+                        identity with a schema. A list of embeddable
+                        kinds would need extending whenever a new one
+                        appeared, and would be a second statement of
+                        what the type register states.
+alternative:            |
+                        Leaving the entries unjudged. Rejected: three
+                        hundred and forty entries of authored prose
+                        stand outside every eval the repository runs,
+                        and nothing recorded that as a choice.
+
+                        Giving an embedded item the schema of the
+                        document holding it. Rejected: a question held
+                        in a design decision would take sch_ddr, and
+                        the evals anchored there would judge each
+                        question as though it were a decision record.
+
+                        Composing sch_descriptive into each entry
+                        schema instead of extracting sch_entry.
+                        Rejected: it states in eight places what
+                        sch_register already states in one, and the
+                        eight could drift from it.
+
+                        Narrowing the change to the term register.
+                        Rejected: the defect is in the selector and in
+                        the schema model, not in the glossary, and the
+                        other eleven registers hold the same unjudged
+                        prose.
+consequence:            |
+                        Three evals reach three hundred and forty more
+                        subjects, which is a thousand and twenty
+                        judgements more in a full run, from one
+                        thousand seven hundred and fifteen to two
+                        thousand seven hundred and thirty five.
+
+                        Their confidence is not stale. The digest
+                        covers an eval's criterion, examples, scope
+                        and cases, and none of them change. What
+                        changes is the population the eval meets. The
+                        confidence was measured on control cases drawn
+                        from documents and is not evidence about
+                        entries, which is the bound ddr_eval_migration
+                        names.
+
+                        An eval anchored to a type now reaches the
+                        embedded items of that type. No eval is
+                        anchored to a type today.
+
+                        Whether an embedded item that is not a
+                        register entry -- a question, a port, a
+                        binding, a control case -- should take a
+                        schema and be judged is open. Each is reached
+                        the moment its type names a schema.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry
+    guid_target:        sch_91757d88f90a40088de864b3a7ab4787
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_register
+    guid_target:        sch_a4620d79fab546b3be6c756f0325e069
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.schema
+    guid_target:        pym_dc70a7fa709c4eaaab6b18f0eadd5fb0
+
+question:
+
+  embeddable:
+    id_self:            qst_embedded_item_schema.embeddable
+    guid_self:          qst_562d6327ef4b40b5a2e3821fedae3f04
+    question:           |
+                        Which embedded items beyond a register entry
+                        take a schema their type names, and what each
+                        of them costs an eval anchored to
+                        sch_descriptive.
+    relation:           []
+
+  overload:
+    id_self:            qst_embedded_item_schema.overload
+    guid_self:          qst_08036cfd73df4a4ba36a809f75909e24
+    question:           |
+                        Whether r_is_specified_by_schema on a type
+                        entry should be a relation of its own, since
+                        it names the schema of the items the entry
+                        describes and not the schema of the entry.
+    relation:           []

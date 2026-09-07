@@ -190,19 +190,25 @@ def registry(map_schema):
 
 
 # -----------------------------------------------------------------------------
-def select_schema(document, map_prefix):
+def select_schema(document, map_prefix, is_embedded = False):
     """
     Return (id_schema, reason) for document. One or the other is None.
 
-    An item may name its own schema, and that wins over the schema
+    A document may name its own schema, and that wins over the schema
     named by its type. Without this, every item of a type would be
     validated identically, and two registers sharing the reg prefix
     could not be told apart -- yet the type register and the relation
     register hold different kinds of entry and want different schemas.
 
+    is_embedded says the item is held within another. Its own edge is
+    then passed over, because on an entry of the type register that
+    edge names the schema of the items the entry describes and not the
+    schema of the entry. An embedded item takes the schema its type
+    names, always.
+
     """
 
-    id_schema = _id_schema(document)
+    id_schema = None if is_embedded else _id_schema(document)
 
     if id_schema is not None:
         return (id_schema, None)

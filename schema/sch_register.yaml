@@ -92,79 +92,7 @@ allOf:
 $defs:
 
   register_entry:
-    type:               object
-    description:        |
-                        Fields carried by every register entry.
-                        Deliberately open -- concrete registers add
-                        their own subject specific fields alongside
-                        these.
-
-                        An entry is addressable and describable but is
-                        not a standalone item, so it composes those
-                        two traits rather than sch_base.yaml. It has
-                        no rights of its own; it is covered by the
-                        rights of the register holding it.
-
-    allOf:
-      - $ref:           https://capability-commons.org/schema/sch_identity.yaml
-      - $ref:           https://capability-commons.org/schema/sch_descriptive.yaml
-
-    required:
-      - description
-
-    properties:
-
-      description:
-        type:           string
-        minLength:      1
-        description:    |
-                        Full statement of what this entry means.
-
-      relation:
-        type:           array
-        description:    |
-                        Optional. Outgoing traceability edges from
-                        this entry.
-
-                        Optional rather than required because an entry
-                        that points at nothing has nothing to say
-                        here, and requiring an empty array of every
-                        such entry buys no safety. Where it is
-                        present, each edge is the same shape as an
-                        edge anywhere else -- the definition is
-                        referenced from sch_relation.yaml rather than
-                        restated, so the two cannot drift.
-
-                        Note that this property alone does NOT compose
-                        sch_relation.yaml, which would make relation
-                        required on every entry in every register.
-
-        items:
-          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
-
-      status:
-        $ref:           '#/$defs/entry_status'
-        description:    |
-                        Optional. Lifecycle status of this entry.
-
-      alias:
-        type:           array
-        description:    |
-                        Optional. Alternate keys that MUST resolve to
-                        this entry -- historical spellings this entry
-                        has been renamed away from, and legacy strings
-                        appearing in imported data.
-
-                        This is how rename safety is had without
-                        fusing an allocated number into the
-                        identifier: a retired key moves here and
-                        stored data keeps resolving. Aliases occupy
-                        the same key namespace as live entries.
-
-                        Use an empty array when there are none.
-
-        items:
-          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+    $ref:               https://capability-commons.org/schema/sch_entry.yaml
 
   register_status:
     type:               string
@@ -179,19 +107,5 @@ $defs:
     description:        |
                         Lifecycle status of a register relative to
                         review and use.
-
-  entry_status:
-    type:               string
-
-    enum:
-      - proposed
-      - accepted
-      - deprecated
-
-    description:        |
-                        Lifecycle status of an individual entry.
-                        Deprecated entries remain resolvable for
-                        historical data; new writes should prefer any
-                        replacement named in note.
 
 unevaluatedProperties:  false

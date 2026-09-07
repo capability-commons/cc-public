@@ -18,9 +18,11 @@ description:            |
                         Resolves the three anchors, being items of a
                         type, items a schema specifies transitively
                         through composition, and pairs of items joined
-                        by a relation. Narrows the result by selector.
-                        Run alone, it reports what would be judged and
-                        at what cost.
+                        by a relation. Reads every item at a location,
+                        the item written there and every item held
+                        within it. Narrows the result by selector. Run
+                        alone, it reports what would be judged and at
+                        what cost.
 relation:               []
 
 ...
@@ -300,8 +302,9 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
     for (id_self, document, location) in _iter_item(context):
 
-        (id_selected, _) = cc_public.check.schema.select_schema(document,
-                                                                map_prefix)
+        (id_selected, _) = cc_public.check.schema.select_schema(
+                                document, map_prefix,
+                                is_embedded = document is not context.map_document[location])
 
         if id_selected is None:
             continue
@@ -360,7 +363,13 @@ def _subject_of_join(edge, context, map_prefix, selector,
 def _iter_item(context):
     """
     Yield (id_self, document, location) for every item that is not
-    itself an eval.
+    itself an eval: the item at each location, and every item embedded
+    in it.
+
+    An embedded item is an item. It has an identity, a schema its type
+    names, and prose of its own, so an anchor reaches it as it reaches
+    any other. Reading only the item at each location left every
+    register entry, question and port unjudged.
 
     """
 
@@ -369,10 +378,29 @@ def _iter_item(context):
         if not isinstance(document, dict) or _is_eval(document):
             continue
 
-        id_self = document.get(KEY_ID_SELF)
+        yield from _iter_identified(document, location)
 
-        if isinstance(id_self, str):
-            yield (id_self, document, location)
+
+# -----------------------------------------------------------------------------
+def _iter_identified(node, location):
+    """
+    Yield (id_self, document, location) for the node and for every
+    item held anywhere within it.
+
+    """
+
+    if isinstance(node, dict):
+
+        if isinstance(node.get(KEY_ID_SELF), str):
+            yield (node[KEY_ID_SELF], node, location)
+
+        for value in node.values():
+            yield from _iter_identified(value, location)
+
+    elif isinstance(node, list):
+
+        for value in node:
+            yield from _iter_identified(value, location)
 
 
 # -----------------------------------------------------------------------------
