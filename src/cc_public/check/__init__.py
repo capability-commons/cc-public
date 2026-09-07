@@ -48,6 +48,7 @@ from cc_public.check import result    as check_result
 from cc_public.check import schema    as check_schema
 from cc_public.check import segment    as check_segment
 from cc_public.check import source    as check_source
+from cc_public.check import statement  as check_statement
 from cc_public.check import trace     as check_trace
 from cc_public.check import workflow  as check_workflow
 
@@ -64,6 +65,7 @@ CHECK      = (check_parse,
               check_relation,
               check_schema,
               check_requirement,
+              check_statement,
               check_decision,
               check_layout,
               check_workflow,

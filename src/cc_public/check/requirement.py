@@ -37,6 +37,8 @@ relation:               []
 """
 
 
+import re
+
 import cc_public.check.result
 import cc_public.check.segment
 import cc_public.requirement
@@ -63,6 +65,7 @@ KEY_ENTITY      = 'entity'
 KEY_COVERAGE    = 'coverage'
 REL_INCLUDES    = 'r_includes'
 STATUS_UNCOVERED = 'uncovered'
+ARTICLES        = frozenset(('a', 'an', 'the'))
 CLASSES         = ('normal', 'abnormal', 'misuse', 'maintenance', 'deployment', 'safety', 'budget')
 PREFIX_VERB     = 'verb'
 STATUS_ACCEPTED = 'accepted'
@@ -94,7 +97,7 @@ def check(context):
     count    = 0
     list_bad = []
 
-    for (location, path, document) in _iter_subject(context.map_document):
+    for (location, path, document) in iter_subject(context.map_document):
 
         count += 1
         id_segment = cc_public.check.segment.segment_of(location.filepath, segments)
@@ -167,12 +170,11 @@ def _check_set(location, document, map_guid):
                         id = edge.get(KEY_ID_TARGET), other = member.get(KEY_ENTITY),
                         entity = entity)))
         key = (' '.join(str(member.get(KEY_PROCESS) or '').split()),
-               ' '.join(str(member.get(cc_public.requirement.KEY_OBJECT) or '')
-                        .split()).lower())
+               normalised(member.get(cc_public.requirement.KEY_OBJECT)))
         if key in seen:
             out.append(advise('{id} and {other} oblige the entity to {process} the same '
-                              'object; one of them is the obligation, or their conditions '
-                              'differ and should say so.'.format(
+                              'object, read without articles and case; one of them is the '
+                              'obligation, or their conditions differ and should say so.'.format(
                         id = edge.get(KEY_ID_TARGET), other = seen[key], process = key[0])))
         else:
             seen[key] = edge.get(KEY_ID_TARGET)
@@ -207,6 +209,22 @@ def _coverage_findings(coverage):
 
 
 # -----------------------------------------------------------------------------
+def normalised(text):
+    """
+    Return an object slot as it compares: lower case, articles and
+    punctuation dropped, whitespace collapsed, so that two statements
+    of one obligation that differ in a determiner or a comma compare
+    equal.
+
+    """
+
+    words = [w for w in re.findall(r"[a-z0-9]+", str(text or '').lower())
+             if w not in ARTICLES]
+
+    return ' '.join(words)
+
+
+# -----------------------------------------------------------------------------
 def _by_guid(map_document):
     """
     Return {guid: document} over every top level document.
@@ -219,7 +237,7 @@ def _by_guid(map_document):
 
 
 # -----------------------------------------------------------------------------
-def _iter_subject(map_document):
+def iter_subject(map_document):
     """
     Yield (location, path, document) for every textual requirement and
     every candidate requirement embedded in a concept.

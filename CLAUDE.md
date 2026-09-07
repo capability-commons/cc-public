@@ -311,6 +311,11 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
   item's segment can see (`register/reg_process_word.yaml` in the core); the
   requirement check reports a verb none defines, advisory while proposed and
   critical once accepted (`ddr_process_word`).
+  The statement check reads the object and qualifier: a number needs a unit
+  from `register/reg_unit.yaml` or a thing it counts, a point value asks for
+  its bound, an acronym needs a glossary term, a process word whose entry has
+  a `kind` other than process, a light verb, or an object opening with a noun
+  made from a defined verb is a question (`ddr_mechanical_form`).
 - Prose in an item describes; argument goes in a design decision. Create
   one only for a genuine decision with real alternatives. The item is a
   design decision, never a "design decision record": every item is a
@@ -344,5 +349,5 @@ is `../cc-brave1-demo`.
 ## Where things are
 
 `ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `requirement_set/` sets of them · `sweep/` what the evals found · `proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
-term, style, rule, characteristic, framing, methodology, document and process word registers · `eval/` evals and control sets · `workflow/` components,
+term, style, rule, characteristic, framing, methodology, document, process word and unit registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

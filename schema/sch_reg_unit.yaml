@@ -1,0 +1,37 @@
+id_self:                sch_reg_unit
+guid_self:              sch_1c8023cd9f664636bfbdcc3d83578615
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unit register schema
+brief:                  |
+                        The unit register specifically: a register
+                        whose entries are additionally units.
+description:            |
+                        Composes the general register schema with the
+                        unit entry schema, in the pattern
+                        sch_reg_term.yaml uses.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_unit.yaml
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      table:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_register.yaml#/$defs/register_entry
+            - $ref:     https://capability-commons.org/schema/sch_entry_unit.yaml
+
+          unevaluatedProperties:  false

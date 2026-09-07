@@ -10,42 +10,45 @@ protective_mark:
 
 title:                  Quantities with units and ranges
 brief:                  |
-                        Every quantity in the statement carries its
-                        unit and a range or limit, with no
-                        unachievable absolute and one decimal format.
-                        Rules rule_r06_common_units,
-                        rule_r26_absolutes, rule_r33_range_of_values,
-                        rule_r40_decimal_format.
+                        No quantity is an unachievable absolute, and
+                        one decimal format is used. Rules
+                        rule_r26_absolutes, rule_r40_decimal_format.
+                        Units and bounds are the statement check's.
 criterion:              |
-                        MET when each number has a unit of measure
-                        appropriate to what it counts, each
-                        performance quantity is a range, a tolerance
-                        or a bound rather than a single exact point,
-                        no absolute such as 100 percent, always or
-                        never is required, and decimal numbers share
-                        one format. A statement with no quantity is
-                        MET.
+                        MET when no quantity or quantifier claims an
+                        absolute that cannot be achieved, and every
+                        decimal is written one way.
 
-                        UNMET when a number has no unit or an
-                        incomplete one; when a quantity is a single
-                        exact value the entity must hold or a
-                        verification cannot measure; when an absolute
-                        is required; or when decimal formats differ.
+                        UNMET when the statement claims 100 percent,
+                        always, never, all conditions, zero failures
+                        or the like where verification could not show
+                        it; or when a decimal point and a decimal
+                        comma are both used as the decimal mark,
+                        9.499,99 beside 3.5. A comma between groups of
+                        three digits, 9,499.99, is a thousands mark
+                        and one format.
 
-                        A count of discrete things or repetitions has
-                        its unit in what is counted, such as 4
-                        satellites or 3 times, and may be exact, since
-                        a count is met exactly. A named parameter
-                        standing for such a count, such as
-                        Confirm_Count times, is a defined quantity and
-                        is MET.
+                        A number with no unit, 30 degrees, a unit the
+                        register lacks, and a point value with no
+                        bound, 100 liters per second, are found by a
+                        check and are not this eval's to judge: a
+                        statement with such a fault and no absolute is
+                        MET here. Each, every member of a named set,
+                        and a statement with no quantity at all, are
+                        MET: an absolute is a claim no verification
+                        could show, 100 percent, always, never, zero,
+                        under all conditions, not a quantifier over a
+                        set.
 
                         The subject opens with a label line: three
-                        hyphens, the item's id, and the field name
-                        statement. Labels are presentation, not prose.
+                        hyphens, the item's id, and a field name.
+                        Labels are presentation, not prose. The
+                        statement is composed from the slots shown
+                        beside it; where no slots are shown, judge the
+                        statement alone.
 
                         When UNMET, quote the words at fault and name
-                        the rule.
+                        the rule by one of the ids above.
 severity:               advisory
 
 example:
@@ -82,6 +85,39 @@ example:
                         Exact point values with no tolerance.
                         rule_r33_range_of_values.
 
+  - input:              |
+                        statement: The Circuit_Board shall stay below
+                        a temperature of 30 degrees.
+    verdict:            met
+    feedback:           |
+                        No unit, which the statement check finds; no
+                        absolute, so met here.
+
+  - input:              |
+                        statement: The Operation_Logger shall record
+                        each Warning_Message.
+    verdict:            met
+    feedback:           |
+                        Each names every member of a set; no quantity,
+                        no absolute.
+
+  - input:              |
+                        statement: The Pumping_Station shall maintain
+                        the flow of water at 100 liters per second for
+                        30 minutes.
+    verdict:            met
+    feedback:           |
+                        A point value, which the statement check
+                        questions; no absolute, so met here.
+
+  - input:              |
+                        statement: The Radio shall have an MTBF of
+                        greater than or equal to 9,499.99 hours.
+    verdict:            met
+    feedback:           |
+                        A thousands comma and a decimal point: one
+                        format.
+
 scope:
 
   include:
@@ -90,24 +126,24 @@ scope:
 confidence:
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-07'
     origin:             written
     cases:              11
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
-    unanimous:          0.909
-    digest:             d4e592ac
+    unanimous:          1.0
+    digest:             58a86dcb
 
   - model:              openai/gpt-5.1
-    date:               '2026-09-05'
+    date:               '2026-09-07'
     origin:             all
     cases:              11
     samples:            5
     false_positive:     0.0
     false_negative:     0.0
-    unanimous:          0.909
-    digest:             d4e592ac
+    unanimous:          1.0
+    digest:             58a86dcb
 
 relation:
 
