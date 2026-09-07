@@ -1,0 +1,298 @@
+id_self:                ddr_interface_control_document
+guid_self:              ddr_924d7ac33ced412395d3b29b73d2aa07
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface control documents describe versioned software boundaries
+brief:                  |
+                        An interface control document is a versioned,
+                        addressable contract made of language-specific
+                        API surfaces or runtime dataflow-step
+                        surfaces, with shared data declarations and
+                        explicit behavioural obligations.
+context:                |
+                        The requirement rule register already
+                        recommends referring to an interface control
+                        document where an interface is too complex to
+                        state well in one requirement, but the
+                        repository has no type or schema for the
+                        document itself.
+
+                        The first uses are software interfaces. A
+                        function API may be presented through a Python
+                        package or module, a C header and library, or
+                        a C++ namespace or module. An object API adds
+                        classes, constructors, methods, properties and
+                        attributes. The same boundary may have more
+                        than one language binding.
+
+                        Stableflow also presents named inputs and
+                        outputs, but its nodes run a step function
+                        over runtime data. Each model step reads a
+                        fixed set of inputs, writes a fixed set of
+                        outputs and reads and writes persistent state.
+                        Capability Commons workflows have a similar
+                        visible graph shape, but their ports carry
+                        addressable Capability Commons data items
+                        between transformations and their executions
+                        produce repository artifacts. Similar shape
+                        does not make the two concepts or contracts
+                        the same.
+
+                        An interface needs more than source syntax.
+                        Callers and providers also depend on error
+                        behaviour, ownership, mutability, lifetime,
+                        state persistence, ordering, concurrency,
+                        initialization, termination and compatibility.
+                        Requirements and evidence may apply to one
+                        operation or port rather than to the document
+                        as a whole, so the contract needs addressable
+                        parts.
+decision:               |
+                        Define t_interface_control_document, with
+                        prefix icd, as the type of a standalone
+                        controlled contract for one explicitly
+                        versioned interface. Define
+                        sch_interface_control_document as its schema.
+                        The schema composes the base and relation
+                        traits and is closed to undeclared properties.
+
+                        An ICD carries a required interface version
+                        and lifecycle status. A proposed version may
+                        be edited in place. Once baselined, a
+                        materially changed contract is a new ICD item
+                        with a new identity and version; it does not
+                        silently alter the baselined item. The
+                        relation used to connect successive versions
+                        is to be settled with the relation vocabulary.
+
+                        An ICD contains one or more keyed SURFACES.
+                        One ICD may therefore hold related bindings of
+                        the same boundary. Each native API surface
+                        names exactly one implementation language and
+                        its relevant dialect or standard. Python, C
+                        and C++ are the initial languages. Shared
+                        semantic declarations may be used across
+                        surfaces, but language-native names and
+                        spellings belong to their one surface rather
+                        than to a supposedly language-neutral
+                        signature.
+
+                        The initial surface forms are NATIVE API and
+                        DATAFLOW STEP. A native API surface may
+                        declare packages, modules, namespaces,
+                        constants, named data types, free functions
+                        and classes. Classes may declare inheritance,
+                        constructors, destructors, methods, properties
+                        and attributes. Callables describe ordered
+                        parameters, an optional return, errors and
+                        behavioural obligations. Parameter
+                        descriptions may state type, input, output or
+                        input-output mode, optionality, default,
+                        variadic form, nullability, mutability,
+                        ownership and lifetime. Types are optional and
+                        may combine a reference to a declaration
+                        shared within the ICD with the spelling used
+                        by the surface language. Runtime types are not
+                        Capability Commons item types and therefore do
+                        not use the id_type and guid_type fields of
+                        sch_port.
+
+                        A dataflow-step surface declares fixed keyed
+                        tables of read-only input ports, write-only
+                        output ports and read-write persistent state.
+                        It also states the execution semantics on
+                        which compatibility depends, including
+                        initialization and finalization, invocation,
+                        state persistence, atomicity, input
+                        availability, output cardinality, ordering,
+                        blocking or back-pressure, concurrency,
+                        determinism, failure and retry where
+                        applicable.
+
+                        A Stableflow dataflow-step surface is not a
+                        Capability Commons component, port or workflow
+                        form. It does not compose sch_component or
+                        sch_port, and t_interface_control_document
+                        does not claim r_is_a_form_of t_component. Any
+                        correspondence between a runtime interface and
+                        a Capability Commons component is explicit
+                        traceability, never inferred from shared field
+                        names or graph shape.
+
+                        Every surface and every externally meaningful
+                        declaration within it is an addressable
+                        embedded item with id_self and guid_self. Add
+                        an embedded interface-member type to the type
+                        register for these entries, on the precedent
+                        of ports and nodes. Local keys remain concise
+                        presentation names; identity is what allows a
+                        requirement, implementation, test or later
+                        decision to point to one member without
+                        pointing only to the whole ICD.
+
+                        The first schema is deliberately scoped to
+                        software APIs and runtime dataflow steps. Its
+                        common envelope and surface discriminator
+                        permit later surface forms, such as callbacks
+                        and events, streams, messages, services,
+                        serialized data or physical interfaces, to be
+                        added deliberately. Unknown structures are not
+                        accepted merely as extension data.
+rationale:              |
+                        A document with several surfaces represents a
+                        boundary that is exposed in several ways
+                        without conflating those ways. One language
+                        per native surface keeps Python, C and C++
+                        rules honest: ownership in C, overloads in C++
+                        and positional or keyword calling in Python do
+                        not become optional interpretations of one
+                        ambiguous signature. Shared declarations still
+                        allow the surfaces to say that their
+                        differently spelled values mean the same
+                        thing.
+
+                        Separating native APIs from runtime dataflow
+                        steps preserves the common facts while keeping
+                        their execution models explicit. Both have
+                        named values crossing a boundary, but a call
+                        and return is not a Kahn process step, and
+                        neither is the production of a Capability
+                        Commons item by a workflow component. Reusing
+                        sch_port would incorrectly say that runtime
+                        values are repository data items and would
+                        import workflow production semantics into an
+                        interface contract.
+
+                        Addressable members follow the repository rule
+                        that anything another item needs to name has
+                        an identity. Document-only identity would make
+                        a requirement on one method, a test of one
+                        port or a decision about one state value
+                        resolvable only through prose or a fragile
+                        path.
+
+                        A structured semantic type reference plus an
+                        optional native spelling gives tools something
+                        stable to compare without attempting to
+                        reproduce complete Python, C and C++ compiler
+                        type systems in JSON Schema. Behavioural and
+                        compatibility fields make the result a
+                        contract rather than a generated symbol index.
+
+                        Closing the schema while extending it by
+                        explicit surface forms matches the repository
+                        preference for declared structure. Flexibility
+                        comes from a small common model and deliberate
+                        variants, not from accepting arbitrary
+                        properties that different consumers interpret
+                        differently.
+alternative:            |
+                        One language-neutral signature with Python, C
+                        and C++ annotations was considered. Rejected:
+                        constructs such as C output parameters, C++
+                        overloads and Python keyword-only parameters
+                        have incompatible semantics, and a single
+                        permissive signature would not say which rules
+                        a consumer may rely on.
+
+                        One ICD per language binding was considered.
+                        Rejected as the only model: it makes related
+                        views of one controlled boundary separate
+                        documents even where they must be reviewed and
+                        versioned together. Separate ICDs remain
+                        possible where the bindings have independent
+                        ownership or lifecycle.
+
+                        Using sch_component and sch_port for
+                        Stableflow nodes was considered. Rejected:
+                        those schemas describe transformations over
+                        Capability Commons items and workflow
+                        execution, not fixed runtime values and
+                        persistent model state. The resemblance is
+                        useful for readers but insufficient for type
+                        identity or schema reuse.
+
+                        Leaving functions, classes and ports as
+                        unaddressed nested mappings was considered.
+                        Rejected: relations could then identify only
+                        the complete ICD, defeating granular
+                        requirements, implementation and verification
+                        traceability.
+
+                        An open extension mapping accepting arbitrary
+                        future interface forms was considered.
+                        Rejected: it would validate spelling while
+                        leaving meaning to private consumer
+                        conventions. A new form should extend the
+                        declared surface union or, if it differs too
+                        greatly, introduce another type and schema.
+
+                        A complete language abstract syntax tree was
+                        considered. Rejected: it would duplicate
+                        compilers, make simple contracts burdensome
+                        and still fail to express behavioural
+                        obligations. Native spelling is retained where
+                        precise language detail matters.
+consequence:            |
+                        The type register will gain
+                        t_interface_control_document with prefix icd
+                        and an r_is_specified_by_schema edge to
+                        sch_interface_control_document. It will also
+                        need an embedded interface-member type and
+                        prefix so that surface declarations can carry
+                        stable identities.
+
+                        The schema will require an interface version,
+                        lifecycle status and at least one surface. Its
+                        definitions will include shared type
+                        references, constants and behavioural
+                        obligations; native API declarations for
+                        functions and classes; and dataflow
+                        declarations for input, output, state and step
+                        execution. Examples should cover a C function
+                        API, a Python or C++ object API, a Stableflow
+                        step, and an ICD with more than one language
+                        surface.
+
+                        Schema validation can enforce shapes, required
+                        fields and surface discrimination. Companion
+                        checks will be needed for facts JSON Schema
+                        cannot conveniently establish: local type
+                        references resolve, identities and keys agree,
+                        member names are unique in their language
+                        scope, modes are legal for a given language, a
+                        baselined version is not silently changed, and
+                        dataflow input, output and state roles do not
+                        conflict.
+
+                        No automatic relation exists merely because an
+                        ICD member resembles a Python source item or a
+                        Capability Commons component. Implementations,
+                        requirements and verification evidence must be
+                        joined by explicit relations with suitable
+                        domain and range rules. The relation
+                        vocabulary may need additions for
+                        specification, conformance and supersession.
+
+                        The initial scope excludes message protocols,
+                        network services, files, databases and
+                        physical interfaces except as prose. Adding
+                        one requires a deliberate surface form or a
+                        separate type. This keeps the first
+                        implementation bounded, at the cost that some
+                        conventional systems-engineering ICDs cannot
+                        yet be represented structurally.
+status:                 accepted
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_type
+    guid_target:        reg_c377bd8e87ec4b1ca2bd398488392a3d

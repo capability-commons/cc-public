@@ -1,0 +1,141 @@
+id_self:                ddr_eval_migration
+guid_self:              ddr_698b2acd3be94e05ab95410a499ef414
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Moving a rule from an eval to a check
+brief:                  |
+                        A check takes over part of an eval's criterion
+                        when it reproduces every control case held
+                        unmet for that part and reports nothing on a
+                        case held met.
+context:                |
+                        ddr_term_ontology_checks decides that the
+                        deterministic part of an eval moves to a
+                        mechanical check where the distinction can be
+                        stated as an ontology relation or constraint.
+                        qst_term_ontology_checks.migration asks what
+                        evidence shows that the move loses nothing.
+
+                        ddr_mechanical_form made the move once, for
+                        units, bounds, acronyms and process verbs. It
+                        was made by reading the criterion and writing
+                        the check. No record states what was compared.
+
+                        An eval already carries the evidence such a
+                        comparison needs. A control case holds an item
+                        to a verdict with an origin. measure judges
+                        the control set and records false positives,
+                        false negatives and unanimity as confidence.
+                        ddr_eval_admission refuses a guard to a judge
+                        whose confidence is absent or stale.
+decision:               |
+                        A check takes over part of an eval's criterion
+                        when, over that eval's control set, it reports
+                        a finding on every case held unmet for the
+                        part being moved, and reports nothing on any
+                        case held met.
+
+                        The disagreement is the evidence. A case held
+                        unmet that the check passes is what the check
+                        does not yet find. A case held met that the
+                        check reports is a false positive the eval did
+                        not have.
+
+                        A case whose subject the check does not read
+                        is not counted against the check. The record
+                        that makes the move names those cases.
+
+                        The criterion is then narrowed to what a check
+                        cannot tell. Narrowing it makes the eval's
+                        confidence stale, so the eval is measured
+                        again before it guards anything.
+rationale:              |
+                        The control set, because it is evidence the
+                        repository already holds and a person already
+                        fixed. Reproducing it is a claim about the
+                        items the eval was measured on, not about a
+                        corpus assembled for the occasion.
+
+                        Both directions, because a check that finds
+                        less than the eval loses cases, and a check
+                        that finds more introduces a false positive no
+                        measurement covers. The pair is what says the
+                        move is safe.
+
+                        Narrowing the criterion rather than retiring
+                        the eval, because a distinction divides into a
+                        deterministic part and an interpretive one.
+                        Only the first part moves.
+alternative:            |
+                        A person's reading of the criterion, as
+                        ddr_mechanical_form was done. Rejected: it
+                        leaves no record of what was compared, and a
+                        case the check misses is found by whoever next
+                        writes the prose that breaks it.
+
+                        Running the eval and the check over the whole
+                        tree and comparing their findings. Rejected:
+                        it measures agreement on what the tree happens
+                        to hold, and a judge's verdict on an item no
+                        person held to one is not evidence.
+
+                        Requiring the check to reproduce the eval on
+                        every case. Rejected: a check that must match
+                        a judge on an interpretive case cannot be
+                        written, which is why the eval keeps a
+                        criterion at all.
+consequence:            |
+                        An eval with no control set gives up no part
+                        of its criterion until it has one.
+
+                        The comparison judges nothing. It runs the
+                        check, reads the eval's cases, and reports two
+                        lists.
+
+                        A check that a control set licensed may still
+                        be wrong about an item no case covers. The
+                        comparison bounds the move by what was
+                        measured, and not by what the check will meet.
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_term_ontology_checks.migration
+    guid_target:        qst_899e1508179a41eebbbd77b4fb34de1a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_control_set
+    guid_target:        t_7d1ac066f3e049f383b100340374a80a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_eval
+    guid_target:        t_33c451d43a2748ddba39060ecc7c013e
+
+question:
+
+  comparison:
+    id_self:            qst_eval_migration.comparison
+    guid_self:          qst_572a3f360cd841e8af9e73f850302378
+    question:           |
+                        Whether the comparison of a check against an
+                        eval's control set is a command of its own or
+                        an option on measure.
+    relation:           []
+
+  record:
+    id_self:            qst_eval_migration.record
+    guid_self:          qst_db47282f4f9b4a32af0cda422fdfe568
+    question:           |
+                        Whether the evidence for a migration is held
+                        as an item, or only in the design decision
+                        that narrows the criterion.
+    relation:           []

@@ -1,0 +1,196 @@
+id_self:                ddr_term_concept_identity
+guid_self:              ddr_babb68f0b35b4b3baa56b273c84dcdd3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Term entries identify concepts
+brief:                  |
+                        A term entry identifies one concept; its term,
+                        also and avoid values are words used for that
+                        concept.
+context:                |
+                        A glossary presently records a surface form
+                        and its accepted and rejected alternatives on
+                        each term entry. The design says that the
+                        register holds a term for each concept, but it
+                        does not state what the identity of the entry
+                        denotes. It also says that keying prevents
+                        duplicate terms, although the table is keyed
+                        by readable id rather than by surface form.
+
+                        A word does not identify a concept. One
+                        concept may have several names, and one word
+                        may name several concepts. The second case
+                        matters to machine processing: finding a known
+                        spelling does not say which sense an
+                        occurrence carries.
+
+                        Term entries are already addressable items,
+                        may carry relation edges, and are included in
+                        the graph projection. Their identities can
+                        therefore ground words in prose and act as the
+                        nodes of a concept model without another kind
+                        of item.
+decision:               |
+                        Each term entry identifies exactly one
+                        concept. Its guid_self is the stable identity
+                        used to ground that concept within and across
+                        repositories. The term field is its preferred
+                        surface form, also holds other accepted
+                        surface forms, and avoid holds forms that
+                        should not be used for that concept.
+
+                        Two concepts named by the same word are
+                        separate term entries with distinct readable
+                        ids and guids. They may carry the same value
+                        in term. Several accepted words for one
+                        concept stay on one entry, under term and
+                        also.
+
+                        A relation edge from one term entry to another
+                        states a relation between their concepts, not
+                        between their spellings. The relation is
+                        declared in the relation register like every
+                        other edge meaning. A connected term register
+                        is a concept ontology as well as a controlled
+                        vocabulary.
+
+                        The term identities visible in a given scope
+                        and register revision form the closed
+                        vocabulary for grounding there. A decorated
+                        occurrence selects one of those identities. An
+                        occurrence for which none or more than one
+                        remains possible is ungrounded or ambiguous; a
+                        tool does not silently select one.
+rationale:              |
+                        The identity must belong to the concept
+                        because spelling is neither unique nor stable.
+                        Keeping synonyms on one entry preserves one
+                        identity for one meaning. Giving each sense
+                        its own entry prevents a shared spelling from
+                        collapsing unlike meanings.
+
+                        Semantic relations provide context for
+                        selecting among senses and permit a consumer
+                        to reason over grounded prose. The existing
+                        relation mechanism supplies stable labels,
+                        endpoint constraints, graph extraction and
+                        queries, so the ontology needs no second edge
+                        representation.
+
+                        Closing grounding over the visible revision
+                        makes the result reproducible. A consumer
+                        either names one admitted concept or reports
+                        that it cannot. The register may still evolve;
+                        closed describes one grounding operation, not
+                        the permanent extent of the vocabulary.
+alternative:            |
+                        One entry per surface form was rejected. It
+                        would make a polysemous word one item standing
+                        for several concepts, so a reference to that
+                        item would not resolve the ambiguity it was
+                        meant to remove.
+
+                        A separate concept register with lexical
+                        entries pointing to it was deferred. It
+                        separates concepts from words more strictly,
+                        but duplicates identity, registration and
+                        federation machinery before any requirement
+                        needs language-specific lexical data
+                        independent of a concept.
+
+                        Grounding an occurrence to its spelling was
+                        rejected. The spelling is already present in
+                        the prose and carries no decision about its
+                        sense.
+
+                        Selecting the first matching entry was
+                        rejected. Register order has no semantic
+                        meaning, and the same input could acquire a
+                        different sense after an unrelated insertion.
+consequence:            |
+                        Duplicate readable ids remain impossible
+                        within a register. Duplicate values of term
+                        are permitted and are required when one word
+                        names several concepts. A readable id should
+                        distinguish the sense in words rather than by
+                        an unexplained number.
+
+                        A lexical index for recognition is one to many
+                        from a normalized surface form to term
+                        identities. The current known-word check may
+                        continue to use a set because it asks only
+                        whether a spelling is present. Grounding must
+                        retain every candidate and either select
+                        exactly one from context or report ambiguity.
+
+                        Relations between term entries can grow the
+                        flat glossary into an ontology. Relations
+                        intended only for concepts should constrain
+                        both domain and range to t_term; order-like
+                        relations may also forbid cycles.
+
+                        The representation of occurrence decorations,
+                        the first semantic relation vocabulary, and
+                        the way an item selects among several visible
+                        term registers remain to be decided.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_term
+    guid_target:        t_e0d624b5a7a6406581eda544e5213cb1
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_term
+    guid_target:        sch_62e63ec5ebe24650856fe2d275be3b4b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_term
+    guid_target:        reg_bcba1ab65d824ac2b2f7af2ded66835a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_ontology_concept
+    guid_target:        term_92b926acd1da4360bbd315ee8fc9a742
+
+question:
+
+  decoration:
+    id_self:            qst_term_concept_identity.decoration
+    guid_self:          qst_9cafd7db00b54cbc998fd0065d8773bd
+    question:           |
+                        How a grounded occurrence records its
+                        location, literal surface form, selected term
+                        identity and provenance without making
+                        ordinary prose hard to read or making
+                        annotations fail after an edit.
+    relation:           []
+
+  relations:
+    id_self:            qst_term_concept_identity.relations
+    guid_self:          qst_4730b72bd56a4266a00c415fbae77504
+    question:           |
+                        Which concept relations are admitted first,
+                        and which are transitive, symmetric, inverse
+                        or otherwise support inference beyond
+                        following the recorded edges.
+    relation:           []
+
+  scope:
+    id_self:            qst_term_concept_identity.scope
+    guid_self:          qst_9ff9802246f34a4cafc7ba32e11155d2
+    question:           |
+                        How an item chooses its grounding vocabulary
+                        when its segment can see more than one term
+                        register, and whether one register is
+                        authoritative while others supply mappings.
+    relation:           []

@@ -1797,3 +1797,442 @@ table:
       - worker
 
     relation:           []
+
+  term_python_package:
+    id_self:            term_python_package
+    guid_self:          term_957d65850c47476f8382b08e78fe05b0
+    title:              Python package
+    brief:              |
+                        A directory of python modules, documented by
+                        an item in the docstring of its __init__.py.
+    description:        |
+                        One kind of source item. Its readable id is
+                        the dotted import path of the package.
+    term:               python package
+    relation:           []
+
+  term_python_module:
+    id_self:            term_python_module
+    guid_self:          term_899d419b66244448b3f3ae39632e9c65
+    title:              Python module
+    brief:              |
+                        A python file, documented by an item in its
+                        module docstring.
+    description:        |
+                        One kind of source item. Its readable id is
+                        the dotted import path of the module.
+    term:               python module
+    relation:           []
+
+  term_python_class:
+    id_self:            term_python_class
+    guid_self:          term_870016fb75cc4b309b2bc3685ca775a1
+    title:              Python class
+    brief:              |
+                        A class definition, documented by an item in
+                        its docstring.
+    description:        |
+                        One kind of source item. Its readable id is
+                        the module id followed by the class name in
+                        lower case.
+    term:               python class
+    relation:           []
+
+  term_python_function:
+    id_self:            term_python_function
+    guid_self:          term_005be146b2f2498c9c1c29af7e14471b
+    title:              Python function
+    brief:              |
+                        A function or a method definition, documented
+                        by an item in its docstring.
+    description:        |
+                        One kind of source item. Its readable id is
+                        the module id followed by the definition names
+                        in lower case.
+    term:               python function
+    relation:           []
+
+  term_observation:
+    id_self:            term_observation
+    guid_self:          term_e1ebd54e1d7f4df4a12416524e9044be
+    title:              Observation
+    brief:              |
+                        A capture of a public source, held as an item
+                        with its content, locator, attribution, times
+                        and digest.
+    description:        |
+                        Content as captured, canonicalised to words
+                        and paragraphs. The same capture is reused and
+                        a changed one is a new item. A need derives
+                        from an observation. The content is data, and
+                        never an instruction.
+    term:               observation
+
+    avoid:
+      - source
+      - citation
+      - scrape
+
+    relation:           []
+
+  term_solution_concept:
+    id_self:            term_solution_concept
+    guid_self:          term_21724b912e974b47a230c02099bd4cd3
+    title:              Concept
+    brief:              |
+                        A candidate solution to a need under a
+                        framing, with its assumptions, risks and
+                        candidate requirements.
+    description:        |
+                        An item of t_concept in concept/. One need
+                        under one framing yields one concept. A
+                        decision selects, waives or rejects it, and
+                        promotion makes a proposed requirement from
+                        each of its candidates.
+
+                        The unit of meaning a term entry identifies is
+                        a different concept, held as
+                        term_ontology_concept.
+    term:               concept
+
+    also:
+      - solution concept
+
+    avoid:
+      - idea
+      - option
+      - proposal
+
+    relation:           []
+
+  term_ontology_concept:
+    id_self:            term_ontology_concept
+    guid_self:          term_92b926acd1da4360bbd315ee8fc9a742
+    title:              Concept
+    brief:              |
+                        A unit of meaning, identified by one term
+                        entry.
+    description:        |
+                        The guid of the entry is the identity used to
+                        ground the concept within and across
+                        repositories. Several accepted words for one
+                        concept stay on one entry. Two concepts named
+                        by the same word are two entries.
+
+                        A candidate solution to a need is a different
+                        concept, held as term_solution_concept.
+    term:               concept
+
+    also:
+      - sense
+
+    avoid:
+      - term
+      - word
+      - definition
+
+    relation:           []
+
+  term_candidate_requirement:
+    id_self:            term_candidate_requirement
+    guid_self:          term_abb127cde9224d73b3ba238324e70047
+    title:              Candidate requirement
+    brief:              |
+                        A requirement in a concept, written in slots,
+                        before promotion makes an item of it.
+    description:        |
+                        An entry embedded in a concept, three to
+                        twelve of them. Promotion makes a proposed
+                        requirement item from each, deriving from the
+                        concept and its need.
+    term:               candidate requirement
+
+    avoid:
+      - draft requirement
+      - proto-requirement
+
+    relation:           []
+
+  term_assessment:
+    id_self:            term_assessment
+    guid_self:          term_445c548660bd45c1bbbdef2a9e83afe1
+    title:              Assessment
+    brief:              |
+                        A judgement of a concept's feasibility, held
+                        as an item that assesses it.
+    description:        |
+                        An item of t_assessment in assessment/,
+                        holding a dimension for each aspect judged and
+                        each off-the-shelf product considered. A model
+                        makes one without references, or an agent
+                        makes one citing observations.
+    term:               assessment
+
+    avoid:
+      - evaluation
+      - appraisal
+      - review
+
+    relation:           []
+
+  term_assessment_dimension:
+    id_self:            term_assessment_dimension
+    guid_self:          term_98ae34a967a34679b65e76dc935d595b
+    title:              Assessment dimension
+    brief:              |
+                        One aspect of a concept an assessment judges,
+                        with the finding it reached.
+    description:        |
+                        An entry embedded in an assessment.
+    term:               dimension
+
+    also:
+      - assessment dimension
+
+    avoid:
+      - axis
+      - factor
+      - criterion
+
+    relation:           []
+
+  term_product:
+    id_self:            term_product
+    guid_self:          term_67e963f60c9641618950a77bb715caa7
+    title:              Off-the-shelf product
+    brief:              |
+                        An existing product an assessment weighs as a
+                        way of meeting the need.
+    description:        |
+                        An entry embedded in an assessment.
+    term:               product
+
+    also:
+      - off-the-shelf product
+
+    avoid:
+      - tool
+      - solution
+      - package
+
+    relation:           []
+
+  term_segment:
+    id_self:            term_segment
+    guid_self:          term_14fdc790c68648719825199774e3ba1d
+    title:              Segment
+    brief:              |
+                        A repository's declaration of itself: the
+                        directory it governs, and the segments its
+                        items may refer into.
+    description:        |
+                        One item of t_segment in segment/. A reference
+                        may run within its segment or into one the
+                        segment consumes, never the other way. This
+                        repository is seg_cc_public, the core, which
+                        consumes nothing.
+    term:               segment
+
+    avoid:
+      - project
+      - workspace
+      - partition
+
+    relation:           []
+
+  term_document:
+    id_self:            term_document
+    guid_self:          term_0e8117dd34c24e21ae2f5e389bac0ed4
+    title:              Document
+    brief:              |
+                        An external work a rule or a requirement is
+                        taken from, held as an entry so that it can be
+                        cited.
+    description:        |
+                        An entry of reg_document. A requirement rule
+                        names the document it is taken from by
+                        r_is_taken_from.
+    term:               document
+
+    avoid:
+      - reference
+      - source
+      - standard
+
+    relation:           []
+
+  term_process_word:
+    id_self:            term_process_word
+    guid_self:          term_b1bfc66fca904cf19934e65a7b44e9e8
+    title:              Process word
+    brief:              |
+                        A verb a requirement's process slot may name,
+                        with the kind of thing it denotes.
+    description:        |
+                        An entry of reg_process_word. The requirement
+                        check reports a process slot naming a verb no
+                        register the segment can see defines, advisory
+                        while the requirement is proposed and critical
+                        once it is accepted.
+    term:               process word
+
+    avoid:
+      - action word
+      - doing word
+
+    relation:           []
+
+  term_decision:
+    id_self:            term_decision
+    guid_self:          term_0f7ef6ed690342fea945ca60a12f6481
+    title:              Decision
+    brief:              |
+                        A record of a choice a person made, naming the
+                        actor, the role, the authority and the items
+                        it is made on.
+    description:        |
+                        An item of t_decision in decision/. Waive,
+                        select, accept and lead are its outcomes. Each
+                        subject is stamped with the digest of its
+                        whole document, and the decision check reports
+                        a subject changed since or an expiry passed.
+
+                        A design decision is a different concept, held
+                        as term_design_decision.
+    term:               decision
+
+    avoid:
+      - approval
+      - sign-off
+      - ruling
+
+    relation:           []
+
+  term_requirement_set:
+    id_self:            term_requirement_set
+    guid_self:          term_d6fcaa6275934178b325ee44971d8e64
+    title:              Requirement set
+    brief:              |
+                        The requirements gathered from one concept,
+                        reviewed for coverage as a whole.
+    description:        |
+                        An item of t_requirement_set in
+                        requirement_set/, including each member by
+                        r_includes. A set is shown to a judge or a
+                        model with its members projected as composed
+                        statements.
+    term:               requirement set
+
+    avoid:
+      - requirements list
+      - collection
+      - group
+
+    relation:           []
+
+  term_scenario_coverage:
+    id_self:            term_scenario_coverage
+    guid_self:          term_f90ac4f5f9874863ad98853d0007123e
+    title:              Scenario coverage
+    brief:              |
+                        A scenario class a requirement set is reviewed
+                        against, and what in the set covers it.
+    description:        |
+                        An entry embedded in a requirement set, one
+                        for each scenario class. The requirement check
+                        reports an unreviewed set and each uncovered
+                        class.
+    term:               coverage
+
+    also:
+      - scenario coverage
+
+    avoid:
+      - code coverage
+      - test coverage
+      - completeness
+
+    relation:           []
+
+  term_finding_group:
+    id_self:            term_finding_group
+    guid_self:          term_3265f2d09a394050ae7d981e3f511dbd
+    title:              Finding group
+    brief:              |
+                        The findings of one eval and rule in a sweep,
+                        with their count, the items they fell on and
+                        sample messages.
+    description:        |
+                        An entry embedded in a sweep, largest first. A
+                        finding naming a rule the register lacks
+                        groups under its eval alone, since the name is
+                        the judge's invention.
+    term:               finding group
+
+    avoid:
+      - cluster
+      - bucket
+
+    relation:           []
+
+  term_sweep:
+    id_self:            term_sweep
+    guid_self:          term_06bac932cfd84fd29b263e3b84ba8f1a
+    title:              Sweep
+    brief:              |
+                        What the evals found in one run, grouped by
+                        eval and by rule.
+    description:        |
+                        An item of t_sweep in sweep/, made by cctool
+                        sweep from a check report. A rule proposal
+                        derives from a sweep.
+    term:               sweep
+
+    avoid:
+      - scan
+      - survey
+
+    relation:           []
+
+  term_rule_proposal:
+    id_self:            term_rule_proposal
+    guid_self:          term_60f36aea570f47f1bd6ad428711af8d8
+    title:              Rule proposal
+    brief:              |
+                        A rule a model proposes from a sweep, for a
+                        person to enter in the register or to reject.
+    description:        |
+                        An item of t_rule_proposal in proposal/,
+                        deriving from the sweep it answers. It states
+                        the rule as a register entry states one, the
+                        groups it answers, a statement that follows it
+                        and one that breaks it. Nothing writes to the
+                        register but a person.
+    term:               rule proposal
+
+    avoid:
+      - suggestion
+      - recommendation
+
+    relation:           []
+
+  term_unit:
+    id_self:            term_unit
+    guid_self:          term_9cd287e3e8ae4d2b96334e95c54ccc63
+    title:              Unit
+    brief:              |
+                        A unit of measure a requirement's quantities
+                        are stated in.
+    description:        |
+                        An entry of reg_unit, carrying the symbol and
+                        the spellings the unit is also known by. The
+                        statement check reports a number no unit
+                        follows and a unit the register lacks.
+    term:               unit
+
+    avoid:
+      - measure
+      - dimension
+      - metric
+
+    relation:           []

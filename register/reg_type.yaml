@@ -66,6 +66,16 @@ table:
                         Each entry in this register is a type data
                         item. Most types are data item types, but
                         other specialised types can also exist.
+    status:             proposed
+    alias:              []
+    prefix:             t
+    regex_id:           ^t_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_schema - Schema type
+    #
+    id_term:            term_type
+    guid_term:          term_0d0e04ed926841818a9ef3a06243a4fa
 
     relation:
 
@@ -74,14 +84,6 @@ table:
         id_target:      reg_type
         guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d
 
-    status:             proposed
-    alias:              []
-    prefix:             t
-    regex_id:           ^t_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_schema - Schema type
-  #
   t_schema:
     id_self:            t_schema
     guid_self:          t_a4fb6d3ae5ff4452a45804e2f57b06a2
@@ -108,6 +110,16 @@ table:
                         type can be inferred either from the schema
                         filename or by looking it up in the type
                         register (this document).
+    status:             proposed
+    alias:              []
+    prefix:             sch
+    regex_id:           ^sch_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_eval - Eval type
+    #
+    id_term:            term_schema
+    guid_term:          term_3ce8de2f2d6f422fb6b31309884e798d
 
     relation:
 
@@ -116,14 +128,6 @@ table:
         id_target:      sch_schema
         guid_target:    sch_19b746511dc84ae1b822a98afa81a196
 
-    status:             proposed
-    alias:              []
-    prefix:             sch
-    regex_id:           ^sch_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_eval - Eval type
-  #
   t_eval:
     id_self:            t_eval
     guid_self:          t_33c451d43a2748ddba39060ecc7c013e
@@ -140,6 +144,16 @@ table:
     note:               |
                         Not every data item will have a corresponding
                         eval, but some may have more than one.
+    status:             proposed
+    alias:              []
+    prefix:             evl
+    regex_id:           ^evl_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_register — Register type
+    #
+    id_term:            term_eval
+    guid_term:          term_e98ae195f05e4f678ad8e3995b56cbf0
 
     relation:
 
@@ -148,14 +162,6 @@ table:
         id_target:      sch_eval
         guid_target:    sch_a7edf040404f4294bcbcc2294955775f
 
-    status:             proposed
-    alias:              []
-    prefix:             evl
-    regex_id:           ^evl_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_register — Register type
-  #
   t_register:
     id_self:            t_register
     guid_self:          t_dcd4c5f697c945829094914ff868a43b
@@ -175,6 +181,16 @@ table:
                         controlled set of data item types as well as a
                         means of looking up metadata associated with
                         each type.
+    status:             proposed
+    alias:              []
+    prefix:             reg
+    regex_id:           ^reg_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_relation — Relation type
+    #
+    id_term:            term_register
+    guid_term:          term_374dca1dc078449f89c61caae71611e1
 
     relation:
 
@@ -183,14 +199,6 @@ table:
         id_target:      sch_register
         guid_target:    sch_a4620d79fab546b3be6c756f0325e069
 
-    status:             proposed
-    alias:              []
-    prefix:             reg
-    regex_id:           ^reg_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_relation — Relation type
-  #
   t_relation:
     id_self:            t_relation
     guid_self:          t_250febd9728346e98029ef9b587304f1
@@ -210,6 +218,16 @@ table:
                         Relations are directional. Where a relation is
                         invertible, the inverse is considered to be a
                         distinct relation.
+    status:             proposed
+    alias:              []
+    prefix:             r
+    regex_id:           ^r_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_ddr — Design decision type
+    #
+    id_term:            term_relation
+    guid_term:          term_58ca7869cf9443168d8d96d8d70b972c
 
     relation:
 
@@ -218,14 +236,6 @@ table:
         id_target:      reg_relation
         guid_target:    reg_512fbf5c51be4efaa4517b52310ddf80
 
-    status:             proposed
-    alias:              []
-    prefix:             r
-    regex_id:           ^r_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_ddr — Design decision type
-  #
   t_ddr:
     id_self:            t_ddr
     guid_self:          t_5751ab6c7b0c44e8b4ed8f6c882192d8
@@ -246,6 +256,16 @@ table:
                         what they decide, since a decision commonly
                         settles matters across several directories at
                         once.
+    status:             proposed
+    alias:              []
+    prefix:             ddr
+    regex_id:           ^ddr_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_protective_mark — Protective mark type
+    #
+    id_term:            term_design_decision
+    guid_term:          term_f05757bd13f84c77adfda058c67b0eb5
 
     relation:
 
@@ -254,14 +274,6 @@ table:
         id_target:      sch_ddr
         guid_target:    sch_d801523ec4814494be182b54dd62e8e3
 
-    status:             proposed
-    alias:              []
-    prefix:             ddr
-    regex_id:           ^ddr_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_protective_mark — Protective mark type
-  #
   t_protective_mark:
     id_self:            t_protective_mark
     guid_self:          t_d0fe8b855eb4467fb00f238fe180225b
@@ -282,6 +294,16 @@ table:
                         own, so this type names no schema. The
                         register names one, and that schema governs
                         its entries.
+    status:             proposed
+    alias:              []
+    prefix:             mark
+    regex_id:           ^mark_[a-z][a-z0-9_]*$
+
+    # ---------------------------------------------------------------------------
+    # t_python_package — Python package type
+    #
+    id_term:            term_protective_mark
+    guid_term:          term_547c4fe6a53547e98ed177520f3f6968
 
     relation:
 
@@ -290,14 +312,6 @@ table:
         id_target:      reg_protective_mark
         guid_target:    reg_0653174dda274015aa95754a37073797
 
-    status:             proposed
-    alias:              []
-    prefix:             mark
-    regex_id:           ^mark_[a-z][a-z0-9_]*$
-
-  # ---------------------------------------------------------------------------
-  # t_python_package — Python package type
-  #
   t_python_package:
     id_self:            t_python_package
     guid_self:          t_8d37421f029f4e13a7d99ee80028d6fb
@@ -316,6 +330,16 @@ table:
                         name, so that the thing it names can be found
                         by that name -- imported for introspection, or
                         located by walking the source tree.
+    status:             proposed
+    alias:              []
+    prefix:             pyp
+    regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+    # ---------------------------------------------------------------------------
+    # t_python_module — Python module type
+    #
+    id_term:            term_python_package
+    guid_term:          term_957d65850c47476f8382b08e78fe05b0
 
     relation:
 
@@ -324,14 +348,6 @@ table:
         id_target:      sch_python_package
         guid_target:    sch_87d9bd39240144e88ed06cc43b680bff
 
-    status:             proposed
-    alias:              []
-    prefix:             pyp
-    regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
-
-  # ---------------------------------------------------------------------------
-  # t_python_module — Python module type
-  #
   t_python_module:
     id_self:            t_python_module
     guid_self:          t_186408f897d541588a1bb9c495fcec71
@@ -349,6 +365,16 @@ table:
                         name, so that the thing it names can be found
                         by that name -- imported for introspection, or
                         located by walking the source tree.
+    status:             proposed
+    alias:              []
+    prefix:             pym
+    regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+    # ---------------------------------------------------------------------------
+    # t_python_class — Python class type
+    #
+    id_term:            term_python_module
+    guid_term:          term_899d419b66244448b3f3ae39632e9c65
 
     relation:
 
@@ -357,14 +383,6 @@ table:
         id_target:      sch_python_module
         guid_target:    sch_a20d9cb1c7b547019069e2277d375500
 
-    status:             proposed
-    alias:              []
-    prefix:             pym
-    regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
-
-  # ---------------------------------------------------------------------------
-  # t_python_class — Python class type
-  #
   t_python_class:
     id_self:            t_python_class
     guid_self:          t_47a7dfb0248642d589333f5d5298bdf2
@@ -391,6 +409,16 @@ table:
                         Resolving the identifier back to the class
                         needs a case insensitive lookup, which nothing
                         provides yet because nothing needs it.
+    status:             proposed
+    alias:              []
+    prefix:             pyc
+    regex_id:           ^pyc_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+
+    # ---------------------------------------------------------------------------
+    # t_python_function — Python function type
+    #
+    id_term:            term_python_class
+    guid_term:          term_870016fb75cc4b309b2bc3685ca775a1
 
     relation:
 
@@ -399,14 +427,6 @@ table:
         id_target:      sch_python_class
         guid_target:    sch_d77b33d22fd84c70bbf797b2abc49517
 
-    status:             proposed
-    alias:              []
-    prefix:             pyc
-    regex_id:           ^pyc_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
-
-  # ---------------------------------------------------------------------------
-  # t_python_function — Python function type
-  #
   t_python_function:
     id_self:            t_python_function
     guid_self:          t_92b7b832d3c7419f9252f7eb3339f94b
@@ -424,6 +444,12 @@ table:
                         name, so that the thing it names can be found
                         by that name -- imported for introspection, or
                         located by walking the source tree.
+    status:             proposed
+    alias:              []
+    prefix:             pyf
+    regex_id:           ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_term:            term_python_function
+    guid_term:          term_005be146b2f2498c9c1c29af7e14471b
 
     relation:
 
@@ -431,11 +457,6 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_python_function
         guid_target:    sch_cea99c1b69374a8baf2fc9909b058e78
-
-    status:             proposed
-    alias:              []
-    prefix:             pyf
-    regex_id:           ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
 
   t_component:
     id_self:            t_component
@@ -457,6 +478,12 @@ table:
                         -- workflows -- say they are component forms
                         by r_is_a_form_of, and their ports are derived
                         from their nodes.
+    status:             proposed
+    alias:              []
+    prefix:             cmp
+    regex_id:           ^cmp_[a-z][a-z0-9_]*$
+    id_term:            term_component
+    guid_term:          term_ef2b95714f5045a4950f10109ceba743
 
     relation:
 
@@ -464,11 +491,6 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_component
         guid_target:    sch_f1095fd235ef479085522c2373b9c6c6
-
-    status:             proposed
-    alias:              []
-    prefix:             cmp
-    regex_id:           ^cmp_[a-z][a-z0-9_]*$
 
   t_port:
     id_self:            t_port
@@ -493,11 +515,13 @@ table:
                         the component name and the port name, so that
                         two components may each have a port with the
                         same local name.
-    relation:           []
     status:             proposed
     alias:              []
     prefix:             prt
     regex_id:           ^prt_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_term:            term_port
+    guid_term:          term_74e84886ebe44148a73cf6328af05ee8
+    relation:           []
 
   t_workflow_dataflow:
     id_self:            t_workflow_dataflow
@@ -520,6 +544,12 @@ table:
                         incoming forward edge and outputs with no
                         outgoing forward edge. Back edges do not bind
                         a port.
+    status:             proposed
+    alias:              []
+    prefix:             wf
+    regex_id:           ^wf_[a-z][a-z0-9_]*$
+    id_term:            term_workflow
+    guid_term:          term_7e24b23fa3cf46989c3d11325c664319
 
     relation:
 
@@ -532,11 +562,6 @@ table:
         guid_relation:  r_20f5b5423123410cb63b0ef9cffc906f
         id_target:      t_component
         guid_target:    t_f4187ed188c44f199786b7b46edc9720
-
-    status:             proposed
-    alias:              []
-    prefix:             wf
-    regex_id:           ^wf_[a-z][a-z0-9_]*$
 
   t_node:
     id_self:            t_node
@@ -556,11 +581,13 @@ table:
                         Held in a workflow rather than standing alone,
                         and validated by the schema of the workflow
                         holding it.
-    relation:           []
     status:             proposed
     alias:              []
     prefix:             node
     regex_id:           ^node_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_term:            term_node
+    guid_term:          term_e469c67fe5d44ecc846f4614ef92e673
+    relation:           []
 
   t_deployment:
     id_self:            t_deployment
@@ -581,6 +608,12 @@ table:
                         Reusable. A hundred runs under one
                         configuration are a hundred edges to one
                         deployment.
+    status:             proposed
+    alias:              []
+    prefix:             dep
+    regex_id:           ^dep_[a-z][a-z0-9_]*$
+    id_term:            term_deployment
+    guid_term:          term_d0991e776f3942e3b4566ca907296d8b
 
     relation:
 
@@ -588,11 +621,6 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_deployment
         guid_target:    sch_17ba23d4628842b19533d1ab38fb67c0
-
-    status:             proposed
-    alias:              []
-    prefix:             dep
-    regex_id:           ^dep_[a-z][a-z0-9_]*$
 
   t_execution:
     id_self:            t_execution
@@ -619,6 +647,8 @@ table:
     alias:              []
     prefix:             exe
     regex_id:           ^exe_[0-9]{14}_[0-9a-f]{6}$
+    id_term:            term_execution
+    guid_term:          term_36b127f301794d37866e735218e0ab38
 
     relation:
 
@@ -650,6 +680,8 @@ table:
     alias:              []
     prefix:             bnd
     regex_id:           ^bnd_[a-z0-9][a-z0-9_]*(\.[a-z0-9_][a-z0-9_]*)*$
+    id_term:            term_binding
+    guid_term:          term_1b2812b241404a77a3f516087081c0ff
     relation:           []
 
   t_term:
@@ -672,6 +704,12 @@ table:
                         register, never as documents of their own, so
                         this type names no schema. The register names
                         one, and that schema governs its entries.
+    status:             proposed
+    alias:              []
+    prefix:             term
+    regex_id:           ^term_[a-z][a-z0-9_]*$
+    id_term:            term_term
+    guid_term:          term_820f9604e6134b9fbefd5a75146d4c40
 
     relation:
 
@@ -679,11 +717,6 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_term
         guid_target:    reg_bcba1ab65d824ac2b2f7af2ded66835a
-
-    status:             proposed
-    alias:              []
-    prefix:             term
-    regex_id:           ^term_[a-z][a-z0-9_]*$
 
   t_control_set:
     id_self:            t_control_set
@@ -709,6 +742,8 @@ table:
                         eval cannot be measured against its own
                         prompt.
     status:             proposed
+    id_term:            term_control_set
+    guid_term:          term_c7943c02fb304bec967413e44a2acd64
 
     relation:
 
@@ -743,6 +778,8 @@ table:
                         questions and must not be pooled without
                         saying so.
     status:             proposed
+    id_term:            term_control_case
+    guid_term:          term_55af5cf2c12d4a94883248fcc0bcd223
     relation:           []
 
   t_question:
@@ -770,6 +807,8 @@ table:
                         has; when it was asked is known to the
                         repository's history.
     status:             proposed
+    id_term:            term_question
+    guid_term:          term_d558794250a74c32a77bd29ae9ef1059
     relation:           []
 
   t_commit:
@@ -799,6 +838,8 @@ table:
                         The identifier sorts by time: the prefix, a
                         UTC timestamp, and six characters of the guid.
     status:             proposed
+    id_term:            term_commit_record
+    guid_term:          term_9821bcb3e39c4731bcbc0ece24cf5235
 
     relation:
 
@@ -832,6 +873,8 @@ table:
                         schema governs its entries.
     status:             proposed
     alias:              []
+    id_term:            term_writing_style_rule
+    guid_term:          term_4c23b1dfc6974fadb122852cdbe5093c
 
     relation:
 
@@ -866,6 +909,8 @@ table:
                         sentence.
     status:             proposed
     alias:              []
+    id_term:            term_requirement
+    guid_term:          term_eb9fe7b16976457d975b6fd1dbefb6c8
 
     relation:
 
@@ -905,6 +950,8 @@ table:
                         writing a requirement is a writing rule.
     status:             proposed
     alias:              []
+    id_term:            term_requirement_rule
+    guid_term:          term_f2a5edb807e94c95a17cb41818987866
 
     relation:
 
@@ -939,6 +986,8 @@ table:
                         this type names no schema.
     status:             proposed
     alias:              []
+    id_term:            term_requirement_characteristic
+    guid_term:          term_2971c81557f54d9dba4830f79b5583cc
 
     relation:
 
@@ -973,6 +1022,8 @@ table:
                         See ddr_need.
     status:             proposed
     alias:              []
+    id_term:            term_need
+    guid_term:          term_0e437e13ce67461a86a5fcccf107ce8f
 
     relation:
 
@@ -1007,6 +1058,8 @@ table:
                         sch_assumption. See ddr_need_to_requirement.
     status:             proposed
     alias:              []
+    id_term:            term_assumption
+    guid_term:          term_7c0412f1bc0b44bcb1186f7deb01a49d
     relation:           []
 
   t_framing:
@@ -1037,6 +1090,8 @@ table:
                         each time, on the precedent of problem frames.
     status:             proposed
     alias:              []
+    id_term:            term_framing
+    guid_term:          term_cbdb5c8991d04c0fb84ceac521cac9ad
 
     relation:
 
@@ -1067,6 +1122,8 @@ table:
                         methodology register.
     status:             proposed
     alias:              []
+    id_term:            term_methodology
+    guid_term:          term_4fa9f7162b4e4ef18d3b58bc445d9118
 
     relation:
 
@@ -1102,6 +1159,8 @@ table:
                         declaration; r_verifies says what is meant to
                         verify, and a row says what did.
     status:             proposed
+    id_term:            term_evidence
+    guid_term:          term_283a168e6be842b38c23a1d44def37ea
 
     relation:
 
@@ -1137,6 +1196,8 @@ table:
                         Reads the facts and writes nothing. See
                         ddr_graph_query.
     status:             proposed
+    id_term:            term_query
+    guid_term:          term_1365de6bc47f45e693ec7022251df2f0
 
     relation:
 
@@ -1176,6 +1237,8 @@ table:
                         happened and was captured; a changed source is
                         a new observation.
     home:               observation
+    id_term:            term_observation
+    guid_term:          term_e1ebd54e1d7f4df4a12416524e9044be
 
     relation:
 
@@ -1209,6 +1272,8 @@ table:
                         the alternatives; selecting one is a recorded
                         decision.
     home:               concept
+    id_term:            term_solution_concept
+    guid_term:          term_21724b912e974b47a230c02099bd4cd3
 
     relation:
 
@@ -1238,6 +1303,8 @@ table:
                         concept's name and the entry's key. The
                         requirement evals judge the textual
                         requirement promoted from it, not the entry.
+    id_term:            term_candidate_requirement
+    guid_term:          term_abb127cde9224d73b3ba238324e70047
 
     relation:
 
@@ -1270,6 +1337,8 @@ table:
                         made one names its model; an agent or a person
                         names themselves in assessor.
     home:               assessment
+    id_term:            term_assessment
+    guid_term:          term_445c548660bd45c1bbbdef2a9e83afe1
 
     relation:
 
@@ -1294,6 +1363,8 @@ table:
     usage:              |
                         Held in an assessment's dimension table under
                         one of the seven fixed keys.
+    id_term:            term_assessment_dimension
+    guid_term:          term_98ae34a967a34679b65e76dc935d595b
 
     relation:
 
@@ -1320,6 +1391,8 @@ table:
                         Held in an assessment's product table. Cites
                         its references by r_cites edges to
                         observations.
+    id_term:            term_product
+    guid_term:          term_67e963f60c9641618950a77bb715caa7
 
     relation:
 
@@ -1349,6 +1422,8 @@ table:
                         the r_consumes edges declare. A repository
                         that declares none is passed over, so segments
                         can be adopted one repository at a time.
+    id_term:            term_segment
+    guid_term:          term_14fdc790c68648719825199774e3ba1d
 
     relation:
 
@@ -1382,6 +1457,8 @@ table:
                         one, and that schema governs its entries.
     status:             proposed
     alias:              []
+    id_term:            term_document
+    guid_term:          term_0e8117dd34c24e21ae2f5e389bac0ed4
 
     relation:
 
@@ -1417,6 +1494,8 @@ table:
                         register of the same type.
     status:             proposed
     alias:              []
+    id_term:            term_process_word
+    guid_term:          term_b1bfc66fca904cf19934e65a7b44e9e8
 
     relation:
 
@@ -1454,6 +1533,8 @@ table:
                         that has changed since.
     status:             proposed
     alias:              []
+    id_term:            term_decision
+    guid_term:          term_0f7ef6ed690342fea945ca60a12f6481
 
     relation:
 
@@ -1488,6 +1569,8 @@ table:
                         members at these digests.
     status:             proposed
     alias:              []
+    id_term:            term_requirement_set
+    guid_term:          term_d6fcaa6275934178b325ee44971d8e64
 
     relation:
 
@@ -1520,6 +1603,8 @@ table:
                         sch_coverage.
     status:             proposed
     alias:              []
+    id_term:            term_scenario_coverage
+    guid_term:          term_f90ac4f5f9874863ad98853d0007123e
     relation:           []
 
   t_finding_group:
@@ -1545,6 +1630,8 @@ table:
                         schema governs them through sch_finding_group.
     status:             proposed
     alias:              []
+    id_term:            term_finding_group
+    guid_term:          term_3265f2d09a394050ae7d981e3f511dbd
     relation:           []
 
   t_sweep:
@@ -1571,6 +1658,8 @@ table:
                         and runs rather than fixed one item at a time.
     status:             proposed
     alias:              []
+    id_term:            term_sweep
+    guid_term:          term_06bac932cfd84fd29b263e3b84ba8f1a
 
     relation:
 
@@ -1603,6 +1692,8 @@ table:
                         holds rules, and only a person writes there.
     status:             proposed
     alias:              []
+    id_term:            term_rule_proposal
+    guid_term:          term_60f36aea570f47f1bd6ad428711af8d8
 
     relation:
 
@@ -1633,6 +1724,8 @@ table:
                         one.
     status:             proposed
     alias:              []
+    guid_term:          term_9cd287e3e8ae4d2b96334e95c54ccc63
+    id_term:            term_unit
 
     relation:
 

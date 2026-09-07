@@ -1,0 +1,156 @@
+id_self:                ddr_concept_reference
+guid_self:              ddr_59b53758fd0e475abc788badc2dbad16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept references in structured fields
+brief:                  |
+                        A field whose value is a concept names a term
+                        entry by identity. A type register entry names
+                        the term for the concept its items
+                        instantiate.
+context:                |
+                        ddr_term_concept_identity makes a term entry
+                        the identity of one concept.
+                        ddr_term_ontology_checks permits a structured
+                        item to constrain a concept-valued field, and
+                        leaves the first such field to be chosen.
+
+                        Sixteen entries in reg_type name concepts
+                        reg_term does not hold. Nothing reports this.
+                        A tool can pair t_segment with term_segment
+                        only by taking the readable ids apart, which
+                        the identity fields exist to avoid. The
+                        pairing fails wherever a concept is named by
+                        another word: the concept of t_ddr is design
+                        decision, and the concept of
+                        t_verification_evidence is evidence.
+
+                        qst_glossary.c6549a807 asks whether a term
+                        should name the thing it stands for by a
+                        relation of its own.
+decision:               |
+                        A field whose value is a concept names a term
+                        entry by id_term and guid_term, the identity
+                        field pair ddr_identity_field_naming defines.
+                        The reference runs from the item to the
+                        concept.
+
+                        A type register entry names the term for the
+                        concept its items instantiate. The field is
+                        required. The entries that lacked a term are
+                        written first, in the change that introduces
+                        the field, so that the tree never holds an
+                        entry the field refuses.
+
+                        The reference check resolves the identity, the
+                        schema check shapes the field and reports an
+                        entry that carries none, and the segment check
+                        holds the reference within the segments the
+                        entry can see. The concept reference adds no
+                        check of its own.
+
+                        A concept relation is not this. A concept
+                        relation is an edge between two term entries,
+                        and its domain and range are t_term. A concept
+                        reference runs from an item that is not a term
+                        to the concept it names.
+rationale:              |
+                        The reference runs from the item because the
+                        segment rule permits that direction. A
+                        consumer's type entry may name a term in the
+                        core. A core term naming a consumer's type
+                        would be refused, and the core would change
+                        whenever a consumer named a concept.
+
+                        The identity field pair, because a concept
+                        reference is a reference. The tool already
+                        mints, resolves and reports one. A relation
+                        edge would carry the same fact and would put a
+                        non-concept at one end of the term ontology,
+                        where domain and range hold both ends to
+                        t_term.
+
+                        A field that is absent rather than a naming
+                        convention, because a readable id
+                        distinguishes a sense in words under
+                        ddr_term_concept_identity. t_scope and
+                        term_scope_of_an_eval do not pair by their
+                        spelling.
+alternative:            |
+                        An edge from the term to the type, r_names.
+                        Rejected: it points the way a federation
+                        refuses, and it mixes concept relations with
+                        grounding.
+
+                        A check pairing readable ids, t_foo with
+                        term_foo. Rejected: it reads meaning from a
+                        spelling, which ddr_term_ontology_checks
+                        refuses for a relation, and which a term entry
+                        naming a sense breaks.
+
+                        A field left optional. Rejected: an optional
+                        reference is written by whoever remembers it,
+                        and a type entry that names no concept is the
+                        state this record exists to end. The field is
+                        made required once the entries that lacked a
+                        term carry one.
+consequence:            |
+                        Every type in reg_type names a term entry.
+                        Twenty needed one written. The glossary gained
+                        twenty-one, since concept names two: the
+                        candidate solution to a need, and the unit of
+                        meaning a term entry identifies.
+
+                        The pattern extends. A process word entry, a
+                        unit entry and a requirement slot each name
+                        concepts, and each may take a concept
+                        reference where the stronger contract earns
+                        its cost.
+
+                        A concept reference is a reference like any
+                        other, so a term entry gains incoming edges
+                        and orphans reports one that nothing names.
+
+question:
+
+  required:
+    id_self:            qst_concept_reference.required
+    guid_self:          qst_a9650a61007a4cffad5206f3f7e3bda0
+    question:           |
+                        Whether a concept reference is required of the
+                        other entries that name concepts -- a process
+                        word, a unit, a requirement characteristic --
+                        or of a type entry alone.
+    relation:           []
+
+  plurality:
+    id_self:            qst_concept_reference.plurality
+    guid_self:          qst_2177696bfa0e4a2d90d8bec11a84baf8
+    question:           |
+                        Whether a concept-valued field may name more
+                        than one concept, and what a list of
+                        identities means where one is expected.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_glossary.c6549a807
+    guid_target:        qst_f7dc50b2c8124f43b7de2d557746429e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_type
+    guid_target:        sch_4a17e1ea6a1143c59c0a634b38f902bc
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_type
+    guid_target:        reg_c377bd8e87ec4b1ca2bd398488392a3d
