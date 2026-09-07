@@ -635,7 +635,7 @@ def _node(state, local):
     #
     map_bnd = _bind(state, local, n_pass, (SIDE_OUTPUT,) if is_agent
                                           else (SIDE_INPUT, SIDE_OUTPUT))
-    refusal = cc_public.check.refusal(cc_public.check.check(list_path = [state.root]))
+    refusal = cc_public.check.refusal(cc_public.check.check(list_path = state.tree.list_root))
 
     if refusal is not None:
         raise Stop('After {node}, {why}'.format(node = local, why = refusal.message))

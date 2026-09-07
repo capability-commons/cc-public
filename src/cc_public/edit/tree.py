@@ -104,7 +104,8 @@ class Tree:
         if not list_root:
             raise ErrorItem('A tree needs at least one root.')
 
-        self.root = pathlib.Path(list_root[0]).resolve()
+        self.root      = pathlib.Path(list_root[0]).resolve()
+        self.list_root = [pathlib.Path(root).resolve() for root in list_root]
 
         (self.context, list_error) = cc_public.check.context(
                                             [pathlib.Path(p) for p in list_root])
