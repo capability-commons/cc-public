@@ -36,6 +36,7 @@ import json
 import re
 import uuid
 
+import cc_public.decision
 import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.link
@@ -147,7 +148,8 @@ def render(tree, id_item):
     for step in cc_public.path.split(item.path):       # an embedded item
         node = node[int(step)] if isinstance(node, list) else node[step]
 
-    return cc_public.eval.select.render(((id_item, node, item.location),), {})
+    return cc_public.eval.select.render(((id_item, node, item.location),), {},
+                                        cc_public.decision.index(tree.context.map_document))
 
 
 # -----------------------------------------------------------------------------

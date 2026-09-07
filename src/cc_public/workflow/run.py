@@ -40,6 +40,7 @@ import uuid
 import cc_public.check
 import cc_public.check.confidence
 import cc_public.commit
+import cc_public.decision
 import cc_public.edit.field
 import cc_public.edit.insert
 import cc_public.edit.ledger
@@ -152,7 +153,10 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
     """
     Run the workflow and return the report.
 
-    map_bind maps 'node.input.port' to the readable id of the item
+    root is the repository run in, where items are made and the record
+    is written, or a list of roots of which that is the first and the
+    rest are the trees it consumes. map_bind maps 'node.input.port' to
+    the readable id of the item
     bound there. runner judges; it may be None where the deployment
     judges nothing. generator_challenge is what a challenging node
     runs on; absent, the generator, which a deployment naming two
@@ -160,8 +164,8 @@ def run(root, id_workflow, id_deployment, map_bind, generator, runner,
 
     """
 
-    root   = pathlib.Path(root).resolve()
-    tree   = cc_public.edit.tree.Tree([root])
+    (root, list_root) = _roots(root)
+    tree   = cc_public.edit.tree.Tree(list_root)
     graph  = cc_public.workflow.graph.Graph(tree, id_workflow)
     dep    = tree.context.map_document[tree.resolve(id_deployment).location]
     state  = State(root, tree, graph, _policy(dep, graph), generator,
@@ -377,6 +381,20 @@ def _park(state, report, local, queue, entry, list_trailer):
 
 
 # -----------------------------------------------------------------------------
+def _roots(root):
+    """
+    Return (root, list_root) for a root given as one path or as a list
+    of paths: the first is where the run writes, the rest are read.
+
+    """
+
+    list_root = [pathlib.Path(r).resolve()
+                 for r in (root if isinstance(root, (list, tuple)) else [root])]
+
+    return (list_root[0], list_root)
+
+
+# -----------------------------------------------------------------------------
 def resume(root, id_execution, generator, runner, list_trailer = (),
            generator_challenge = None):
     """
@@ -386,8 +404,8 @@ def resume(root, id_execution, generator, runner, list_trailer = (),
 
     """
 
-    root   = pathlib.Path(root).resolve()
-    tree   = cc_public.edit.tree.Tree([root])
+    (root, list_root) = _roots(root)
+    tree   = cc_public.edit.tree.Tree(list_root)
     record = tree.context.map_document[tree.resolve(id_execution).location]
 
     if record.get(KEY_OUTCOME) != OUTCOME_WAITING:
@@ -781,7 +799,9 @@ def _judge(state, spec, id_item, is_gated):
                         id_subject    = (id_item,),
                         filepath      = str(item.filepath),
                         text_input    = cc_public.eval.select.render(
-                                                ((id_item, doc, item.location),), doc_ev))
+                                                ((id_item, doc, item.location),), doc_ev,
+                                                cc_public.decision.index(
+                                                    state.tree.context.map_document)))
         verdict = runner.run(task)
         if verdict.verdict == VERDICT_UNMET:
             verdict = runner.confirm(task, verdict, state.policy['confirm'])

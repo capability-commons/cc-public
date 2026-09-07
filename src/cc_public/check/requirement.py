@@ -43,7 +43,7 @@ import cc_public.requirement
 
 
 ID_CHECK        = 'requirement'
-TITLE           = 'Requirements compose and their process words are defined'
+TITLE           = 'Requirements compose, name defined process words, and sets cover'
 NOUN            = 'requirement'
 
 KEY_ID_SELF     = 'id_self'
@@ -54,6 +54,16 @@ KEY_CANDIDATE   = 'candidate_requirement'
 KEY_PROCESS     = cc_public.requirement.KEY_PROCESS
 PREFIX_REQ      = cc_public.requirement.PREFIX_REQUIREMENT
 PREFIX_CONCEPT  = 'cpt'
+PREFIX_SET      = 'rqs'
+KEY_RELATION    = 'relation'
+KEY_ID_REL      = 'id_relation'
+KEY_ID_TARGET   = 'id_target'
+KEY_GUID_TGT    = 'guid_target'
+KEY_ENTITY      = 'entity'
+KEY_COVERAGE    = 'coverage'
+REL_INCLUDES    = 'r_includes'
+STATUS_UNCOVERED = 'uncovered'
+CLASSES         = ('normal', 'abnormal', 'misuse', 'maintenance', 'deployment', 'safety', 'budget')
 PREFIX_VERB     = 'verb'
 STATUS_ACCEPTED = 'accepted'
 SEPARATOR       = '_'
@@ -114,9 +124,98 @@ def check(context):
             severity = (cc_public.check.result.SEVERITY_CRITICAL if is_accepted
                         else cc_public.check.result.SEVERITY_ADVISORY)))
 
+    map_guid = _by_guid(context.map_document)
+
+    for (location, document) in sorted(context.map_document.items(), key = lambda kv: str(kv[0])):
+        if isinstance(document, dict) and str(
+                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_SET:
+            count += 1
+            list_bad.extend(_check_set(location, document, map_guid))
+
     return cc_public.check.result.Result(count_item         = count,
                                          list_nonconformity = list_bad,
                                          list_note          = [])
+
+
+# -----------------------------------------------------------------------------
+def _check_set(location, document, map_guid):
+    """
+    Return the findings on one requirement set: a member on another
+    entity, two members with one process and object, a class the
+    review left uncovered, and a set not yet reviewed. All advisory:
+    each is a question the set puts to its author.
+
+    """
+
+    def advise(message):
+        return cc_public.check.result.Nonconformity(
+                    filepath = str(location.filepath), path = '', message = message,
+                    severity = cc_public.check.result.SEVERITY_ADVISORY)
+
+    out    = []
+    entity = document.get(KEY_ENTITY)
+    seen   = {}
+
+    for edge in document.get(KEY_RELATION) or []:
+        if not isinstance(edge, dict) or edge.get(KEY_ID_REL) != REL_INCLUDES:
+            continue
+        member = map_guid.get(edge.get(KEY_GUID_TGT))
+        if member is None:
+            continue                              # the reference check says
+        if member.get(KEY_ENTITY) != entity:
+            out.append(advise('{id} is on {other}, and the set is on {entity}.'.format(
+                        id = edge.get(KEY_ID_TARGET), other = member.get(KEY_ENTITY),
+                        entity = entity)))
+        key = (' '.join(str(member.get(KEY_PROCESS) or '').split()),
+               ' '.join(str(member.get(cc_public.requirement.KEY_OBJECT) or '')
+                        .split()).lower())
+        if key in seen:
+            out.append(advise('{id} and {other} oblige the entity to {process} the same '
+                              'object; one of them is the obligation, or their conditions '
+                              'differ and should say so.'.format(
+                        id = edge.get(KEY_ID_TARGET), other = seen[key], process = key[0])))
+        else:
+            seen[key] = edge.get(KEY_ID_TARGET)
+
+    out.extend(advise(text) for text in _coverage_findings(document.get(KEY_COVERAGE)))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _coverage_findings(coverage):
+    """
+    Return the messages a set's coverage table earns: not reviewed, a
+    class the review passed over, and each class left uncovered.
+
+    """
+
+    if not isinstance(coverage, dict):
+        return ['Not yet reviewed for coverage: run wf_review_set on it.']
+
+    out = []
+
+    for name in CLASSES:
+        entry = coverage.get(name)
+        if not isinstance(entry, dict):
+            out.append('The review says nothing of the {name} class.'.format(name = name))
+        elif entry.get(KEY_STATUS) == STATUS_UNCOVERED:
+            out.append('Uncovered: {name}. {note}'.format(
+                    name = name, note = ' '.join(str(entry.get('note') or '').split())))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _by_guid(map_document):
+    """
+    Return {guid: document} over every top level document.
+
+    """
+
+    return {document.get('guid_self'): document
+            for document in map_document.values()
+            if isinstance(document, dict) and document.get('guid_self')}
 
 
 # -----------------------------------------------------------------------------

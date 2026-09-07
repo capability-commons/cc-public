@@ -79,10 +79,12 @@ import cc_public.workflow.run
               help = 'A trailer line for any commit the run makes.')
 @click.option('--format', 'id_format', default = 'text',
               type = click.Choice(['text', 'json']), show_default = True)
-@click.option('--root', 'root', default = pathlib.Path('.'),
-              type = click.Path(path_type = pathlib.Path))
+@click.option('--root', 'list_root', multiple = True,
+              type = click.Path(path_type = pathlib.Path),
+              help = 'The repository run in, then the trees it consumes. May be '
+                     'given more than once; the first is where items are made.')
 def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
-         list_trailer, id_format, root):
+         list_trailer, id_format, list_root):
     """
     Run a dataflow workflow once under a deployment.
 
@@ -97,7 +99,8 @@ def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
         (k, v) = pair.split('=', 1)
         map_bind[k.strip()] = v.strip()
 
-    tree = cc_public.cli.group.tree([root])
+    root = list(list_root) or [pathlib.Path('.')]
+    tree = cc_public.cli.group.tree(root)
 
     try:
         dep       = tree.context.map_document[tree.resolve(id_deployment).location]
@@ -136,9 +139,11 @@ def run_(id_workflow, id_deployment, list_bind, is_dry, id_model_judge,
               help = 'A trailer line for any commit the run makes.')
 @click.option('--format', 'id_format', default = 'text',
               type = click.Choice(['text', 'json']), show_default = True)
-@click.option('--root', 'root', default = pathlib.Path('.'),
-              type = click.Path(path_type = pathlib.Path))
-def resume_(id_execution, id_model_judge, list_trailer, id_format, root):
+@click.option('--root', 'list_root', multiple = True,
+              type = click.Path(path_type = pathlib.Path),
+              help = 'The repository resumed in, then the trees it consumes. May be '
+                     'given more than once; the first is where items are made.')
+def resume_(id_execution, id_model_judge, list_trailer, id_format, list_root):
     """
     Continue a run that is waiting at an agent node, once the work its
     brief asks for is in the tree.
@@ -147,7 +152,8 @@ def resume_(id_execution, id_model_judge, list_trailer, id_format, root):
 
     import json
 
-    tree = cc_public.cli.group.tree([root])
+    root = list(list_root) or [pathlib.Path('.')]
+    tree = cc_public.cli.group.tree(root)
 
     try:
         record = tree.context.map_document[tree.resolve(id_execution).location]

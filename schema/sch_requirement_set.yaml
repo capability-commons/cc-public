@@ -1,0 +1,113 @@
+id_self:                sch_requirement_set
+guid_self:              sch_7014423032bd4041a7a1b998e3fa28bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requirement set schema
+brief:                  |
+                        Schema for requirement set data items: the
+                        requirements on one entity taken together,
+                        with what they cover.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A set names its entity and includes
+                        its members by r_includes edges; the members
+                        are shown, each as its composed statement,
+                        wherever the set is shown, so that a judge or
+                        a model reads the set and not a list of ids.
+                        Coverage is a table with one entry per
+                        scenario class, written by the review
+                        workflow, that says which classes the members
+                        oblige the entity in and which they leave out.
+                        What a single requirement cannot be judged
+                        for, completeness, consistency and uniqueness,
+                        is judged on the set.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_requirement_set.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - brief
+      - entity
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the set, one line.
+
+      brief:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the set is: the requirements on which
+                        entity, from where, as of when.
+
+      entity:
+        type:           string
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z0-9][A-Za-z0-9]*)*$
+        maxLength:      80
+        description:    |
+                        The entity every member is on, in
+                        Capitalised_Snake_Case.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - baselined
+
+        description:    |
+                        Optional. proposed until a decision baselines
+                        it.
+
+      coverage:
+        type:           object
+
+        propertyNames:
+
+          enum:
+            - normal
+            - abnormal
+            - misuse
+            - maintenance
+            - deployment
+            - safety
+            - budget
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_coverage.yaml
+
+        description:    |
+                        Optional. One entry per scenario class,
+                        written by the review workflow: normal, the
+                        intended operation; abnormal, degraded
+                        operation and failure of what the entity
+                        depends on; misuse, wrong or hostile use;
+                        maintenance, repair, inspection and
+                        replacement; deployment, transport, setup and
+                        removal; safety, hazard to people and
+                        compliance; budget, the mass, power, time,
+                        cost and interface limits the entity must
+                        keep. Absent until reviewed, which the
+                        requirement check says.
+
+unevaluatedProperties:  false

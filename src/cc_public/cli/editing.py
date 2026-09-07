@@ -42,6 +42,7 @@ import cc_public.control
 import cc_public.edit.accept
 import cc_public.edit.decide
 import cc_public.edit.field
+import cc_public.edit.gather
 import cc_public.edit.insert
 import cc_public.edit.link
 import cc_public.edit.new
@@ -409,3 +410,34 @@ def decide(outcome, list_name, actor, role, authority, brief, condition, expiry,
         cc_public.cli.group.fail(err)
 
     click.echo('{path}  {id_self}'.format(path = item.filepath, id_self = item.id_self))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('id_concept')
+@click.option('--id', 'id_self', default = None,
+              help = 'The readable id to give the set, where the derived one is not wanted.')
+@click.option('--entity', 'entity', default = None,
+              help = 'The entity the set is on. Defaults to the concept\'s.')
+@click.option('--title', 'title', default = None,
+              help = 'The title of the set. Defaults to one naming the entity.')
+@cc_public.cli.group.OPTION_ROOT
+def gather(id_concept, id_self, entity, title, list_root):
+    """
+    Make a requirement set (rqs_, in requirement_set/) holding every
+    requirement derived from ID_CONCEPT, or add to one that exists.
+
+    The set is what the set-level rules judge: run wf_review_set on it
+    for coverage, and the set eval for consistency.
+
+    """
+
+    try:
+        (item, added) = cc_public.edit.gather.gather(
+                            cc_public.cli.group.tree(list_root), id_concept, id_self,
+                            entity, title)
+    except cc_public.edit.tree.ErrorItem as err:
+        cc_public.cli.group.fail(err)
+
+    click.echo('{path}  {id_self}  {n} included'.format(
+                    path = item.filepath, id_self = item.id_self, n = len(added)))

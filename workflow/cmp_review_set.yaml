@@ -1,0 +1,101 @@
+id_self:                cmp_review_set
+guid_self:              cmp_e970b2d85ad946c9800ad27e5d4c8991
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Review a requirement set for coverage
+brief:                  |
+                        Say, for each scenario class, whether the
+                        members of a requirement set oblige the entity
+                        in it, by a model.
+description:            |
+                        Given a requirement set with its members shown
+                        as composed statements, a model writes the
+                        coverage table: one entry per class, covered,
+                        uncovered or not applicable, with the members
+                        that cover it or the obligation that is
+                        missing. What it writes is a reading of the
+                        set, not a judgement on it; the requirement
+                        check reports the uncovered classes it names.
+                        Follows method_sophist, S16 and S18, and
+                        INCOSE C10.
+
+output:
+
+  reviewed:
+    id_self:            prt_review_set.reviewed
+    guid_self:          prt_7f2b7d226259403793e0e9329b1ddcfc
+    title:              Reviewed set
+    brief:              |
+                        The same set, carrying its coverage.
+    id_type:            t_requirement_set
+    guid_type:          t_3b6635871aef471bb9df8d15ec08762b
+    revises:            set
+
+    field:
+      - coverage
+
+    prompt:             |
+                        The requirement set on set lists its members
+                        under member, each one requirement on the
+                        entity, with its id. In coverage, say for each
+                        of seven scenario classes whether the members
+                        cover it, as a JSON list of objects with a
+                        key, a status and a note, the keys exactly
+                        normal, abnormal, misuse, maintenance,
+                        deployment, safety and budget, in that order
+                        and all seven. normal is the intended
+                        operation; abnormal is degraded operation and
+                        the failure of what the entity depends on;
+                        misuse is wrong or hostile use; maintenance is
+                        repair, inspection and replacement; deployment
+                        is transport, setup and removal; safety is
+                        hazard to people and compliance; budget is the
+                        mass, power, time, cost and interface limits
+                        the entity must keep. The status is covered
+                        where at least one member obliges the entity
+                        in that class, uncovered where none does and
+                        the class applies to this entity, and
+                        not_applicable where the class cannot apply to
+                        it. In the note, name by id the members that
+                        cover the class; or say in one sentence what
+                        obligation is missing, as the question SOPHIST
+                        asks, what happens when the entity cannot, who
+                        repairs it, how it is carried; or say why the
+                        class does not apply. Read the members as they
+                        are and add nothing they do not say. The rules
+                        on guide say how to write; follow them and do
+                        not mention them. Plain prose, no headings, no
+                        markup.
+    relation:           []
+
+performer:              model
+relation:               []
+
+input:
+
+  set:
+    id_self:            prt_review_set.set
+    guid_self:          prt_a62e72d900904237a8d067e06260f6b5
+    title:              Requirement set
+    brief:              |
+                        The set to review, with its members.
+    id_type:            t_requirement_set
+    guid_type:          t_3b6635871aef471bb9df8d15ec08762b
+    relation:           []
+
+  guide:
+    id_self:            prt_review_set.guide
+    guid_self:          prt_c750846012834d74b9bd76d8a62b20fb
+    title:              Writing style guide
+    brief:              |
+                        The register of writing style rules the prose
+                        follows.
+    id_type:            t_register
+    guid_type:          t_dcd4c5f697c945829094914ff868a43b
+    relation:           []

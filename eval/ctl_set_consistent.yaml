@@ -1,0 +1,169 @@
+id_self:                ctl_set_consistent
+guid_self:              ctl_0fcaa8b3dc1b42b794724592aff7af48
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set for evl_set_consistent
+brief:                  |
+                        Cases with known verdicts for
+                        evl_set_consistent.
+description:            |
+                        Each case holds a subject as the judge is
+                        shown it, a requirement set with its entity
+                        and its members, the verdict a person holds it
+                        to, and where the case came from.
+
+case:
+
+  cfcd98ba0:
+    id_self:            case_set_consistent.cfcd98ba0
+    guid_self:          case_bc42b81c07914ac79ada47fcd6733a6a
+    verdict:            met
+    subject:            |
+                        --- rqs_x entity: Battery_Crate
+
+                        member: req_a: The Battery_Crate shall store
+                        at least 4 kWh of usable energy at beginning
+                        of life. req_b: The Battery_Crate shall limit
+                        its mass to no more than 40 kilograms. req_c:
+                        If the Battery_Crate cannot connect to the
+                        Charger, the Battery_Crate shall display the
+                        message Charger_Absent to the Operator. req_d:
+                        As long as the Battery_Crate is charging, the
+                        Battery_Crate shall show the Operator the
+                        state of charge as a percentage.
+    origin:             written
+    note:               |
+                        Three obligations on three things.
+    relation:           []
+
+  cab1ecda9:
+    id_self:            case_set_consistent.cab1ecda9
+    guid_self:          case_cf878cc928944e4ea2176f4836a63e62
+    verdict:            met
+    subject:            |
+                        --- rqs_x entity: Threat_Coach
+
+                        member: req_a: The Threat_Coach shall display
+                        the Risk_Band for the unit area. req_b: If the
+                        Threat_Coach has received no observation for
+                        30 minutes, the Threat_Coach shall display the
+                        Risk_Band as stale. req_c: The Threat_Coach
+                        shall record each posture decision in the
+                        on-device log.
+    origin:             written
+    note:               |
+                        A member narrowing another under a condition
+                        is not a repeat.
+    relation:           []
+
+  cc54f5945:
+    id_self:            case_set_consistent.cc54f5945
+    guid_self:          case_bbcf7986af1a4c13a15b574f5bda4231
+    verdict:            met
+    subject:            |
+                        --- rqs_x entity: Alarm_Puck
+
+                        member: req_a: As soon as the Alarm_Puck
+                        detects an aircraft, the Alarm_Puck shall
+                        sound the Audible_Alert. req_b: As soon as the
+                        Alarm_Puck detects an aircraft, the Alarm_Puck
+                        shall flash the Visual_Alert. req_c: The
+                        Alarm_Puck shall arm from the safe state with
+                        a single physical action.
+    origin:             written
+    note:               |
+                        Different obligations in the same class do not
+                        conflict.
+    relation:           []
+
+  c3e09ff6d:
+    id_self:            case_set_consistent.c3e09ff6d
+    guid_self:          case_e44ed79f0047480c85155020c8e3ca03
+    verdict:            unmet
+    subject:            |
+                        --- rqs_x entity: Battery_Crate
+
+                        member: req_a: The Battery_Crate shall limit
+                        its mass to no more than 40 kilograms. req_b:
+                        The Battery_Crate shall limit the mass of the
+                        complete crate to no more than 45 kilograms.
+                        req_c: The Battery_Crate shall store at least
+                        4 kWh of usable energy.
+    origin:             written
+    note:               |
+                        One mass, two limits.
+                        rule_r36_consistent_terms_and_units.
+    relation:           []
+
+  c069142f3:
+    id_self:            case_set_consistent.c069142f3
+    guid_self:          case_6b0ee1d41e6a4a15bc4b453ef10c94f1
+    verdict:            unmet
+    subject:            |
+                        --- rqs_x entity: Battery_Crate
+
+                        member: req_a: The Battery_Crate shall display
+                        the remaining energy to the Operator. req_b:
+                        The Battery_Crate shall limit its mass to no
+                        more than 40 kilograms. req_c: The
+                        Battery_Crate shall show the Operator how much
+                        energy remains.
+    origin:             written
+    note:               |
+                        req_c restates req_a.
+                        rule_r30_unique_expression.
+    relation:           []
+
+  c2e10e97a:
+    id_self:            case_set_consistent.c2e10e97a
+    guid_self:          case_3afcf019ff864e4597bba49a19c334e2
+    verdict:            unmet
+    subject:            |
+                        --- rqs_x entity: Power_Pod
+
+                        member: req_a: If the remaining runtime falls
+                        below 1 hour, the Power_Pod shall disconnect
+                        every output. req_b: If the remaining runtime
+                        falls below 1 hour, the Power_Pod shall keep
+                        the priority output energised. req_c: The
+                        Power_Pod shall display the remaining runtime
+                        in hours.
+    origin:             written
+    note:               |
+                        Incompatible behaviour in one state: power off
+                        and keep powering.
+                        rule_r36_consistent_terms_and_units.
+    relation:           []
+
+  c458dbc7e:
+    id_self:            case_set_consistent.c458dbc7e
+    guid_self:          case_83bd54d83b9c410098184b63b9a27263
+    verdict:            unmet
+    subject:            |
+                        --- rqs_x entity: Battery_Hub
+
+                        member: req_a: The Battery_Hub shall accept up
+                        to twelve Battery_Modules. req_b: The
+                        Battery_Hub shall report the state of charge
+                        of each module to the Controller_Unit. req_c:
+                        The Battery_Hub shall report the state of
+                        charge of each module to the Hub_Controller.
+    origin:             written
+    note:               |
+                        One thing under two names, the Hub and the
+                        Controller.
+                        rule_r36_consistent_terms_and_units.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_measures
+    guid_relation:      r_5e895eb6d5e9433e94a9db3f24b498bb
+    id_target:          evl_set_consistent
+    guid_target:        evl_df4f4196592f47d6b06933e06225618e

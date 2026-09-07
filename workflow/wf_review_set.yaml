@@ -1,0 +1,41 @@
+id_self:                wf_review_set
+guid_self:              wf_1705b22cff834980883ec18a729410e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Review a requirement set
+brief:                  |
+                        A model reads a requirement set and writes
+                        what it covers.
+description:            |
+                        One node, on a model. It takes a requirement
+                        set and writes its coverage table, one entry
+                        per scenario class. Run once per set, and
+                        again after the set changes; the requirement
+                        check reports the classes it leaves uncovered
+                        and a set not yet reviewed.
+
+node:
+
+  review:
+    id_self:            node_review_set.review
+    guid_self:          node_3edfeccbf6a944f5987a09468211d023
+    title:              Review
+    brief:              |
+                        Writes the coverage.
+    config:             {}
+
+    relation:
+
+      - id_relation:    r_instantiates
+        guid_relation:  r_335c008f9bea4580ba63e4d6def980d3
+        id_target:      cmp_review_set
+        guid_target:    cmp_e970b2d85ad946c9800ad27e5d4c8991
+
+edge:                   {}
+relation:               []

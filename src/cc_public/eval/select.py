@@ -34,6 +34,7 @@ import typing
 import ruamel.yaml
 
 import cc_public.check.identifier
+import cc_public.decision
 import cc_public.check.register
 import cc_public.load.python
 import cc_public.need
@@ -65,6 +66,9 @@ KEY_EXCLUDE   = 'exclude'
 
 
 KEY_SOURCE    = 'source'
+KEY_MEMBER    = 'member'
+KEY_GUID_TGT  = 'guid_target'
+REL_INCLUDES  = 'r_includes'
 SUFFIX_PYTHON = '.py'
 
 # -----------------------------------------------------------------------------
@@ -125,6 +129,7 @@ def select(context, selector = None):
     map_prefix = cc_public.check.register.map_prefix(
                     cc_public.check.register.find_type(context.map_document)[1])
     map_compose = _map_compose(map_schema)
+    map_guid    = cc_public.decision.index(context.map_document)
 
     list_task = []
 
@@ -140,7 +145,8 @@ def select(context, selector = None):
                                                       context,
                                                       map_prefix,
                                                       map_compose,
-                                                      selector):
+                                                      selector,
+                                                      map_guid):
             if not text_input.strip():
                 continue
             list_task.append(Task(id_eval       = document[KEY_ID_SELF],
@@ -215,7 +221,8 @@ def _iter_anchor(document, id_rel):
 
 
 # -----------------------------------------------------------------------------
-def _iter_subject(document_eval, context, map_prefix, map_compose, selector):
+def _iter_subject(document_eval, context, map_prefix, map_compose, selector,
+                  map_guid = None):
     """
     Yield (id_subject, text_input) for everything this eval applies to.
 
@@ -223,15 +230,15 @@ def _iter_subject(document_eval, context, map_prefix, map_compose, selector):
 
     for edge in _iter_anchor(document_eval, ID_REL_TYPE):
         yield from _subject_of_type(edge, context, map_prefix, selector,
-                                    document_eval)
+                                    document_eval, map_guid)
 
     for edge in _iter_anchor(document_eval, ID_REL_SCHEMA):
         yield from _subject_of_schema(edge, context, map_prefix, map_compose,
-                                      selector, document_eval)
+                                      selector, document_eval, map_guid)
 
     for edge in _iter_anchor(document_eval, ID_REL_JOIN):
         yield from _subject_of_join(edge, context, map_prefix, selector,
-                                    document_eval)
+                                    document_eval, map_guid)
 
 
 # -----------------------------------------------------------------------------
@@ -259,7 +266,8 @@ def _wanted_type(id_self, document_eval, map_prefix):
     return entry.get(KEY_ID_SELF) in include
 
 # -----------------------------------------------------------------------------
-def _subject_of_type(edge, context, map_prefix, selector, document_eval):
+def _subject_of_type(edge, context, map_prefix, selector, document_eval,
+                     map_guid = None):
     """
     Yield every item whose type is the one the edge names.
 
@@ -276,12 +284,13 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval):
         if id_self.split(SEPARATOR, 1)[0] == prefix \
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), render(((id_self, document, location),), document_eval))
+            yield ((id_self,), render(((id_self, document, location),), document_eval,
+                                      map_guid))
 
 
 # -----------------------------------------------------------------------------
 def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
-                       document_eval):
+                       document_eval, map_guid = None):
     """
     Yield every item the named schema specifies, composition included.
 
@@ -302,12 +311,13 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
         if _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
-            yield ((id_self,), render(((id_self, document, location),), document_eval))
+            yield ((id_self,), render(((id_self, document, location),), document_eval,
+                                      map_guid))
 
 
 # -----------------------------------------------------------------------------
 def _subject_of_join(edge, context, map_prefix, selector,
-                     document_eval):
+                     document_eval, map_guid = None):
     """
     Yield every pair of items joined by an edge of the named relation.
 
@@ -343,7 +353,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
                 yield ((id_self, id_far),
                        render(((id_self, document, location),
                                (id_far, document_far, location_far)),
-                              document_eval))
+                              document_eval, map_guid))
 
 
 # -----------------------------------------------------------------------------
@@ -473,7 +483,7 @@ def ids_in(map_document, set_filepath):
 
 
 # -----------------------------------------------------------------------------
-def render(tuple_item, document_eval):
+def render(tuple_item, document_eval, map_guid = None):
     """
     Return the text a judge would be given for these items.
 
@@ -481,7 +491,8 @@ def render(tuple_item, document_eval):
     item where its criterion concerns a few fields answers unreliably,
     the verdict resting on weighing everything present rather than on
     the passage in question. The renderer does not decide what to give;
-    the eval says.
+    the eval says. map_guid, where given, is every document by guid, so
+    that a requirement set shows its members as their statements.
 
     """
 
@@ -497,6 +508,7 @@ def render(tuple_item, document_eval):
                         cc_public.need.compose(item))     # shows its statement
         if KEY_SOURCE in include and rest:                # a source item shows its source
             document = _with_source(document, rest[0])
+        document = _with_members(document, map_guid)      # a set shows its members
         selected = cc_public.path.select(document, include, exclude)
         if selected is cc_public.path.DROP:
             selected = {}
@@ -541,6 +553,43 @@ def _with_source(document, location):
 
     out = dict(document)
     out[KEY_SOURCE] = text
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _with_members(document, map_guid):
+    """
+    Return a copy of document carrying, under member, one line per
+    requirement it includes, the id and the statement composed from
+    its slots; else document as it is. A member that cannot be found
+    is shown by its id alone.
+
+    Membership is edges, and the statements are never stored on the
+    set: they are projected so that a judge or a model reads the set
+    as requirements and not as a list of ids.
+
+    """
+
+    list_edge = [edge for edge in document.get(KEY_RELATION) or []
+                 if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_INCLUDES]
+
+    if not list_edge or KEY_MEMBER in document:
+        return document
+
+    list_line = []
+
+    for edge in list_edge:
+        member = (map_guid or {}).get(edge.get(KEY_GUID_TGT))
+        try:
+            text = cc_public.requirement.statement(member) if member else ''
+        except cc_public.requirement.ErrorSlot:
+            text = ''
+        list_line.append('{id}: {text}'.format(id   = edge.get(KEY_ID_TARGET),
+                                                text = text).rstrip(': '))
+
+    out = dict(document)
+    out[KEY_MEMBER] = '\n'.join(list_line) + '\n'
 
     return out
 

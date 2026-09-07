@@ -1,0 +1,238 @@
+id_self:                ddr_requirement_set
+guid_self:              ddr_28c84db23d9140e79e60caa016817d08
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A requirement set is an item, and what a sentence cannot show is judged on it
+brief:                  |
+                        The requirements on one entity are gathered
+                        into a requirement set item that includes them
+                        by edge and is shown to a judge or a model
+                        with its members as their composed statements.
+                        A review workflow writes what the set covers,
+                        class by class; the requirement check reports
+                        a member on another entity, a duplicated
+                        obligation, an unreviewed set and an uncovered
+                        class; and a set eval judges consistency and
+                        uniqueness across the members.
+context:                |
+                        Every check and eval so far judged one
+                        requirement, and the faults the outside review
+                        and the admissible claims position weigh most
+                        are set faults: missing coverage of abnormal,
+                        misuse, maintenance and deployment cases,
+                        duplicates, contradictions, budgets that do
+                        not close. INCOSE C10 to C14 and R30 and R36
+                        are entered in the rule register and
+                        implemented by nothing, since no set was an
+                        item. SOPHIST S16 and S18, exceptions and
+                        implicit assumptions, ask what other
+                        requirement exists, which is a question on the
+                        set. The demonstration holds a hundred and
+                        forty-two requirements in six concepts and
+                        nothing says what any six of them cover
+                        together. A judge is shown one item, and a set
+                        item holding only edges would show a judge a
+                        list of ids.
+decision:               |
+                        A REQUIREMENT SET is a data item of type
+                        t_requirement_set, held in requirement_set/,
+                        naming its entity and including each member by
+                        an r_includes edge. cctool gather makes one
+                        from the requirements derived from a concept,
+                        and adds to it what is new on a second gather.
+                        Wherever a set is shown, to a judge by the
+                        eval renderer or to a model by the producer,
+                        its members are projected under member, one
+                        line each, the id and the statement composed
+                        from the member's slots; nothing of the
+                        members is stored on the set.
+
+                        COVERAGE is a table on the set with one entry
+                        per scenario class, normal, abnormal, misuse,
+                        maintenance, deployment, safety and budget,
+                        each covered, uncovered or not applicable with
+                        a note naming the members or the missing
+                        obligation. wf_review_set, one model node,
+                        writes it from the members. The requirement
+                        check reports, as advisory, a member on
+                        another entity, two members with one process
+                        and one object, a set not yet reviewed, a
+                        class the review passed over, and each class
+                        left uncovered with the note the review wrote.
+
+                        evl_set_consistent judges the set for
+                        conflict, repetition and a thing under two
+                        names, anchored on the set schema with entity
+                        and member in its scope.
+rationale:              |
+                        Membership as edges rather than a query over
+                        derivation, because what a decision baselines
+                        is exactly these members at their digests, and
+                        because a set may leave a derived requirement
+                        out or take one from elsewhere.
+
+                        Members projected rather than stored, on the
+                        precedent of the composed statement and the
+                        projected source: a copy drifts, a projection
+                        cannot.
+
+                        Coverage written by a model and reported by a
+                        check, rather than judged by an eval, because
+                        a class left uncovered is a question to the
+                        author and the note is the question; the check
+                        makes it a finding without a judgement, and
+                        the seven classes are SOPHIST's and the
+                        position's checklist.
+
+                        Consistency judged by an eval, because a
+                        conflict between two sentences is a reading no
+                        substring finds; the duplicate of one process
+                        and one object is found mechanically first so
+                        that the judge is not asked what a comparison
+                        can tell.
+alternative:            |
+                        The set as the concept, with the set-level
+                        evals anchored on the candidate table.
+                        Rejected: a concept is a proposal and a set is
+                        what was admitted, and a set may span
+                        concepts.
+
+                        Members listed on the set as statements.
+                        Rejected: a stored statement drifts from its
+                        slots.
+
+                        A coverage eval, MET or UNMET on the whole
+                        checklist. Rejected: a binary verdict over
+                        seven classes says which not, and the note is
+                        the finding.
+
+                        S16 and S18 as evals on the set. Deferred: the
+                        coverage note asks the same questions, what
+                        happens when the entity cannot and what is
+                        assumed, and the answers are new requirements,
+                        which is the review loop.
+consequence:            |
+                        The gather command, the review workflow, the
+                        set checks and the set eval exist and are
+                        tested with a scripted model: a set of ten
+                        members gathered once, the members shown to
+                        the judge and the producer as statements, the
+                        checks reporting another entity and a
+                        duplicate, and the review filling seven
+                        entries of which one uncovered is reported
+                        with its note.
+
+                        The set eval carries examples and no control
+                        cases yet; its cases are written from the
+                        demonstration's sets and it is measured before
+                        its findings are weighed.
+
+                        The improvement loop, a sweep item aggregating
+                        findings across runs and a proposal of a rule
+                        from the recurring shapes, is the next step
+                        and is not part of this decision.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_requirement_set
+    guid_target:        sch_7014423032bd4041a7a1b998e3fa28bd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_coverage
+    guid_target:        sch_6a86bcfc1211454aa47fef17d507546b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_requirement_set
+    guid_target:        t_3b6635871aef471bb9df8d15ec08762b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_coverage
+    guid_target:        t_234e4fe84b594e4885d0dc5b1e42d0c6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_includes
+    guid_target:        r_ded83f0d76b24c6eb056548f80807161
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          cmp_review_set
+    guid_target:        cmp_e970b2d85ad946c9800ad27e5d4c8991
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          wf_review_set
+    guid_target:        wf_1705b22cff834980883ec18a729410e7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          dep_review_set_local
+    guid_target:        dep_6e335281618147c487eaa4ec5fd49797
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          evl_set_consistent
+    guid_target:        evl_df4f4196592f47d6b06933e06225618e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.gather
+    guid_target:        pym_7ce2dfe42b444418859833885b385a35
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.requirement
+    guid_target:        pym_ad3bc6ced85b419aa3b2b131c595dfd6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_template_aware_evals.sophist_set
+    guid_target:        qst_a11e7254950946b5a0e73e97490e8d49
+
+question:
+
+  baseline:
+    id_self:            qst_requirement_set.baseline
+    guid_self:          qst_d5f2052c42024bfbacf83957c2c9a603
+    question:           |
+                        What baselining a set means: a decision of
+                        outcome select or accept over the set and its
+                        members at their digests, and what an edit to
+                        a member does to the baseline.
+    relation:           []
+
+  budget:
+    id_self:            qst_requirement_set.budget
+    guid_self:          qst_076ef78c61a6458995909401c05501a0
+    question:           |
+                        Whether the budget class becomes a
+                        calculation: members that set mass, power and
+                        time limits gathered into a budget the check
+                        sums, so that a set whose limits cannot close
+                        is found without a judge.
+    relation:           []
+
+  span:
+    id_self:            qst_requirement_set.span
+    guid_self:          qst_69190d0c9a5a459cb595373d09b813df
+    question:           |
+                        Whether a set may include requirements from
+                        several concepts or needs, and what the entity
+                        of such a set is.
+    relation:           []

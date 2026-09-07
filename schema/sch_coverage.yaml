@@ -1,0 +1,69 @@
+id_self:                sch_coverage
+guid_self:              sch_6a86bcfc1211454aa47fef17d507546b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage entry schema
+brief:                  |
+                        Schema for a coverage entry: whether a
+                        requirement set covers one class of scenario,
+                        and by which members.
+description:            |
+                        An entry with an identity of its own under
+                        coverage on a requirement set, keyed by the
+                        scenario class. The status says whether at
+                        least one member obliges the entity in that
+                        class, whether none does and the class
+                        applies, or whether the class cannot apply to
+                        the entity. The note names the members that
+                        cover it, or the obligation that is missing,
+                        or why the class does not apply.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_coverage.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - status
+      - note
+
+    properties:
+
+      status:
+        type:           string
+
+        enum:
+          - covered
+          - uncovered
+          - not_applicable
+
+        description:    |
+                        covered: a member obliges the entity in this
+                        class. uncovered: none does and the class
+                        applies. not_applicable: the class cannot
+                        apply to this entity.
+
+      note:
+        type:           string
+        minLength:      1
+        description:    |
+                        The members that cover the class, by id; or
+                        the obligation that is missing; or why the
+                        class does not apply.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false

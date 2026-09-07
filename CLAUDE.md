@@ -109,6 +109,9 @@ Running and committing
   `function`, `model` or `agent` (`ddr_performer`). A node performed by an
   agent parks the run: the execution record holds the run's state and a
   brief, `run` prints the brief and returns with outcome `waiting`.
+  `run` and `resume` take `--root` more than once: the first is the
+  repository run in, where items are made and the record is written; the
+  rest are the trees it consumes, read only.
 - `resume EXECUTION` — continues a waiting run once the tree holds what
   the brief asked for. An agent output is read from the graph, never from
   a report: it `revises` an input, or is `found` from one by a relation in
@@ -227,6 +230,16 @@ Pixi tasks
   concept's challenge run to have `completed`, or a waiver that still holds,
   and an evidential candidate needs a `quote` found in an observation behind
   the concept's need; the requirement carries `r_is_admitted_by` and `r_cites`.
+- `gather CONCEPT [--id …] [--entity …]` — makes a requirement set (`rqs_`, in
+  `requirement_set/`) including by `r_includes` every requirement derived from
+  the concept, or adds to one that exists. A set is shown to a judge or a
+  model with its members projected under `member` as composed statements.
+  `run wf_review_set --deployment dep_review_set_local --bind
+  review.input.set=rqs_… --bind review.input.guide=reg_writing_style_rule`
+  writes its `coverage` table, one entry per scenario class; the requirement
+  check reports a member on another entity, a duplicated obligation, an
+  unreviewed set and each uncovered class; `evl_set_consistent` judges
+  conflict and repetition across the members (`ddr_requirement_set`).
 - `accept REQUIREMENT` — the only path to `status: accepted`: judged as
   accepted in a closed world, the trace must show no gap and the evidence
   check nothing, or it refuses saying what is lacking. Never `set … status
@@ -320,6 +333,6 @@ is `../cc-brave1-demo`.
 
 ## Where things are
 
-`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
+`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `requirement_set/` sets of them · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
 term, style, rule, characteristic, framing, methodology, document and process word registers · `eval/` evals and control sets · `workflow/` components,
 workflows, deployments · `execution/` runs · `src/cc_public/` the tool.

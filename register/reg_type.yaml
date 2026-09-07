@@ -1461,3 +1461,63 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_decision
         guid_target:    sch_399470c3c37c4bd8959571ca36eb948b
+
+  t_requirement_set:
+    id_self:            t_requirement_set
+    guid_self:          t_3b6635871aef471bb9df8d15ec08762b
+    title:              Requirement set type
+    brief:              |
+                        Type of requirement set data items
+    description:        |
+                        Each requirement set data item takes the
+                        requirements on one entity together: its
+                        members by r_includes, and the scenario
+                        classes they cover. The unit the set-level
+                        rules and evals judge.
+    prefix:             rqs
+    regex_id:           ^rqs_[a-z][a-z0-9_]*$
+    home:               requirement_set
+    usage:              |
+                        Made by cctool gather from the requirements
+                        derived from a concept, reviewed for coverage
+                        by wf_review_set, judged for consistency by
+                        the set eval, and baselined by a decision.
+    note:               |
+                        A set is a chosen membership, not a query:
+                        what a decision baselines is exactly these
+                        members at these digests.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_requirement_set
+        guid_target:    sch_7014423032bd4041a7a1b998e3fa28bd
+
+  t_coverage:
+    id_self:            t_coverage
+    guid_self:          t_234e4fe84b594e4885d0dc5b1e42d0c6
+    title:              Coverage type
+    brief:              |
+                        Type of coverage data items
+    description:        |
+                        Each coverage data item says whether a
+                        requirement set covers one scenario class, and
+                        by which members, or why the class does not
+                        apply.
+    prefix:             cov
+    regex_id:           ^cov_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    usage:              |
+                        Coverage entries are written by the review
+                        workflow and read by the requirement check,
+                        which reports an uncovered class.
+    note:               |
+                        Coverage entries exist only under coverage on
+                        a requirement set, keyed by the class; the
+                        set's schema governs them through
+                        sch_coverage.
+    status:             proposed
+    alias:              []
+    relation:           []

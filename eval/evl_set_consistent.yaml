@@ -1,0 +1,126 @@
+id_self:                evl_set_consistent
+guid_self:              evl_df4f4196592f47d6b06933e06225618e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Set consistent and unique
+brief:                  |
+                        No two members of a requirement set conflict,
+                        and no two state the same obligation. Rules
+                        rule_r30_unique_expression,
+                        rule_r36_consistent_terms_and_units, toward
+                        characteristic C11.
+criterion:              |
+                        You are given a requirement set: its entity,
+                        and under member its members, one per line,
+                        each an id and the requirement composed from
+                        its slots.
+
+                        MET when no two members conflict and no two
+                        state the same obligation: no two set
+                        different values for one quantity under the
+                        same condition, no two oblige incompatible
+                        behaviour in the same state, no term names two
+                        things and no thing is named by two terms, and
+                        no member restates another in other words.
+
+                        UNMET when two members conflict, or one
+                        repeats another, or one thing goes by two
+                        names. Two members that oblige different
+                        things in the same class, an audible alarm and
+                        a visual alarm, do not conflict; two that set
+                        the same quantity to different values, 40
+                        kilograms and 45 kilograms, do. A member that
+                        narrows another under a stated condition does
+                        not repeat it.
+
+                        The subject opens with a label line: three
+                        hyphens and the set's id, then the fields by
+                        name. Labels are presentation, not prose.
+
+                        When UNMET, name both members by id and quote
+                        the words at fault.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        entity: Battery_Crate member: req_a: The
+                        Battery_Crate shall store at least 4 kWh of
+                        usable energy. req_b: The Battery_Crate shall
+                        limit its mass to no more than 40 kilograms.
+                        req_c: If the Battery_Crate cannot connect to
+                        the Charger, the Battery_Crate shall display
+                        the message Charger_Absent.
+    verdict:            met
+    feedback:           |
+                        Three obligations on three things; nothing
+                        repeats or conflicts.
+
+  - input:              |
+                        entity: Battery_Crate member: req_a: The
+                        Battery_Crate shall limit its mass to no more
+                        than 40 kilograms. req_b: The Battery_Crate
+                        shall limit the mass of the complete crate to
+                        no more than 45 kilograms.
+    verdict:            unmet
+    feedback:           |
+                        req_a and req_b set one mass to 40 and to 45
+                        kilograms.
+                        rule_r36_consistent_terms_and_units.
+
+  - input:              |
+                        entity: Battery_Crate member: req_a: The
+                        Battery_Crate shall display the remaining
+                        energy to the Operator. req_b: The
+                        Battery_Crate shall show the Operator how much
+                        energy remains.
+    verdict:            unmet
+    feedback:           |
+                        req_b restates req_a.
+                        rule_r30_unique_expression.
+
+scope:
+
+  include:
+    - entity
+    - member
+
+subject:
+
+  include_type:
+    - t_requirement_set
+
+confidence:
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-07'
+    origin:             written
+    cases:              7
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+    digest:             26a7dc17
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-07'
+    origin:             all
+    cases:              7
+    samples:            5
+    false_positive:     0.0
+    false_negative:     0.0
+    unanimous:          1.0
+    digest:             26a7dc17
+
+relation:
+
+  - id_relation:        r_evaluates_items_specified_by_schema
+    guid_relation:      r_3096106ed2b84a05a46a9aa8bd0254be
+    id_target:          sch_requirement_set
+    guid_target:        sch_7014423032bd4041a7a1b998e3fa28bd
