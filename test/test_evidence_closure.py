@@ -80,7 +80,8 @@ def test_the_closure_reaches_what_a_verdict_rests_on(tree):
 
 
 def test_a_passing_result_makes_the_requirement_evidence_current(tree):
-    assert cc_public.evidence.from_execution(tree, _execution(tree, 'passed')) is not None
+    assert cc_public.evidence.from_execution(
+                tree, _execution(tree, 'passed'), is_kept = True) is not None
     row = _row(tree)
     assert row['outcome']      == 'passed'
     assert row['digest']       == _digest(tree)
@@ -94,9 +95,10 @@ def test_a_failing_result_makes_the_current_evidence_say_so(tree):
 
 
 def test_a_run_that_did_not_complete_establishes_nothing(tree):
+    before = _row(tree)
     assert cc_public.evidence.from_execution(
                 tree, _execution(tree, None, 'error')) is None
-    assert _row(tree) is None
+    assert _row(tree) == before
 
 
 def test_an_observation_that_is_not_a_verdict_establishes_nothing(tree):
@@ -144,10 +146,20 @@ def test_a_change_outside_the_closure_does_not_stale_the_evidence(tree):
 
 
 def test_a_row_written_before_the_richer_references_stays_readable(tree):
-    cc_public.evidence.from_execution(tree, _execution(tree, 'passed'))
+    cc_public.evidence.from_execution(tree, _execution(tree, 'passed'), is_kept = True)
     row = _row(tree)
     for key in ('id_method', 'id_execution', 'id_under_test'):
         del row[key]
         del row['guid' + key[2:]]
     assert row['id_requirement'] == ID_REQ
     assert row['digest'] == _digest(tree)
+
+
+def test_a_row_names_the_execution_only_where_the_execution_is_kept(tree):
+    # A development run updates the current evidence and writes no execution
+    # item, so a row from one names none: it could not be followed to it.
+    cc_public.evidence.from_execution(tree, _execution(tree, 'passed'))
+    assert 'id_execution' not in _row(tree)
+
+    cc_public.evidence.from_execution(tree, _execution(tree, 'passed'), is_kept = True)
+    assert _row(tree)['id_execution'] == 'tex_20260908000000_abcdef'

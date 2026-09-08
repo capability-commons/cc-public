@@ -431,7 +431,7 @@ def _blocks(one):
 
 
 # -----------------------------------------------------------------------------
-def from_execution(tree, document):
+def from_execution(tree, document, is_kept = False):
     """
     Turn one test execution into current evidence and write it. Return
     the file written, or None where the execution establishes nothing.
@@ -440,6 +440,11 @@ def from_execution(tree, document):
     case verifies. A run that did not complete establishes nothing,
     since a harness that could not run has observed nothing about the
     item under test.
+
+    is_kept says whether the execution is in the tree. A row names it
+    only where it is: a development run updates the current evidence
+    and writes no execution item, and a row naming one that is not
+    there could not be followed to it.
 
     """
 
@@ -469,15 +474,17 @@ def from_execution(tree, document):
             if item is None:
                 continue
 
+            kept = {'id_execution':   document.get(KEY_ID_SELF),
+                    'guid_execution': document.get(KEY_GUID_SELF)} if is_kept else {}
+
             list_row.append(row(tree, item.guid_self, outcome,
                                 document.get(KEY_GUID_CASE),
                                 id_case         = id_case,
                                 id_method       = document.get(KEY_ID_METHOD),
                                 guid_method     = document.get(KEY_GUID_METHOD),
-                                id_execution    = document.get(KEY_ID_SELF),
-                                guid_execution  = document.get(KEY_GUID_SELF),
                                 id_under_test   = document.get(KEY_ID_UNDER),
-                                guid_under_test = document.get(KEY_GUID_UNDER)))
+                                guid_under_test = document.get(KEY_GUID_UNDER),
+                                **kept))
 
     if not list_row:
         return None

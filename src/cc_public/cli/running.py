@@ -258,10 +258,13 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
         # keeps that too. A report about a run the tree does not hold
         # could not be followed back to what was observed.
         #
-        if is_record or (is_report and list_report):
+        is_kept = is_record or (is_report and list_report)
+
+        if is_kept:
             written.append(cc_public.adapter.record(tree, document))
 
-        if is_evidence and cc_public.evidence.from_execution(tree, document) is not None:
+        if is_evidence and cc_public.evidence.from_execution(
+                                    tree, document, is_kept) is not None:
             written.append(cc_public.evidence.ID_PYTEST)
 
         if is_report:

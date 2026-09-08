@@ -213,9 +213,13 @@ def test_evidence_brings_the_current_evidence_up_to_what_was_observed(tmp_path):
     loaded = ruamel.yaml.YAML(typ = 'safe').load(
                     (tmp_path / 'evidence' / 'evd_pytest.yaml').read_text())
     (row,) = [one for one in loaded['case'].values() if one.get('id_case') == ID_CASE]
-    assert row['outcome']    == 'passed'
-    assert row['id_method']  == 'tm_pytest_function'
-    assert row['id_execution'].startswith('tex_')
+    assert row['outcome']       == 'passed'
+    assert row['id_method']     == 'tm_pytest_function'
+    assert row['id_under_test'] == ID_UNDER
+    # --evidence keeps no execution, so the row names none: it could not be
+    # followed to one the tree does not hold.
+    assert 'id_execution' not in row
+    assert list((tmp_path / 'execution').glob('tex_*.yaml')) == []
 
 
 def test_keeping_a_report_keeps_the_execution_it_names(tmp_path):

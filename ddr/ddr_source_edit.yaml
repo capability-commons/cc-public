@@ -1,0 +1,195 @@
+id_self:                ddr_source_edit
+guid_self:              ddr_fb479aa4108f4f968066dc3b9ff648e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An edit to code names the definition, not the text
+brief:                  |
+                        A source edit is made by naming the definition
+                        it changes and is kept only where the file
+                        still parses and the items in its docstrings
+                        survive. Until a command does that, an edit
+                        matches an exact and unique string and fails
+                        loudly.
+context:                |
+                        ddr_edit_commands settles that an item is
+                        made, a field set or two items linked by
+                        naming the items and not the files holding
+                        them, and that every write goes out through
+                        the printer. It covers a data item. Code has
+                        no such command: an edit to a python file is
+                        made by matching text.
+
+                        Four faults in one working session came of
+                        that, and none was a mistake about what the
+                        change should be.
+
+                        A constant was inserted after the first line
+                        matching its own name, which was inside a
+                        function body, and the function was split. The
+                        tool reported a syntax error at once.
+
+                        A slice took indices computed in the wrong
+                        order and duplicated a hundred and twenty
+                        lines rather than removing them. The code
+                        parsed, the linter passed and the tests
+                        passed; only the diff showed it.
+
+                        A repair removed the first occurrence of a
+                        statement rather than the one it had inserted,
+                        and broke a function nothing was meant to
+                        touch.
+
+                        A statement was inserted before a docstring,
+                        which stopped the docstring being a docstring,
+                        so the item it held left the tree. The run
+                        that followed reported that the item did not
+                        exist, which looked like a fault in the
+                        product.
+
+                        This repository keeps data items in
+                        docstrings, so an edit to code is an edit to
+                        items. Nothing writes code the way cctool set
+                        writes an item.
+decision:               |
+                        An edit to a python source file is made by
+                        naming what it changes: the source item whose
+                        definition it is, and the part of that
+                        definition. It is not made by matching text,
+                        computing an offset, or replacing the first
+                        occurrence of something.
+
+                        Before such an edit is kept, the file parses,
+                        every docstring document it held is still a
+                        docstring document, and each such item still
+                        declares the identity that matches where it
+                        sits.
+
+                        An edit that cannot be expressed by naming
+                        what it changes is refused rather than
+                        approximated.
+
+                        Until a command does this, a source edit is
+                        made with a tool that matches an exact and
+                        unique string and fails where it does not
+                        match.
+rationale:              |
+                        Naming the definition rather than the text,
+                        because every one of the four faults was the
+                        text matching where the structure did not. A
+                        name that resolves to one definition cannot
+                        match inside another.
+
+                        Checking that the docstring documents survive,
+                        because they are items, and an edit that
+                        removes one removes an item from the tree
+                        without saying so. The checks report the
+                        absence later and elsewhere, as a reference
+                        that does not resolve, which is a long way
+                        from the edit that caused it.
+
+                        Refusing rather than approximating, because an
+                        approximate edit to code is the fault this
+                        record is about. Of the four faults above, the
+                        two that were caught were caught because
+                        something refused, and the two that were not
+                        produced text that parsed.
+
+                        The syntax tree rather than the file, because
+                        the repository already reads it:
+                        cc_public.load.python parses a file, yields
+                        every definition with the run of names down to
+                        it, and returns the source and the code of
+                        one. An operator over definitions is a short
+                        way from what exists.
+
+                        Work on automated program repair edits the
+                        syntax tree with operators over statements and
+                        judges each candidate by a suite, rather than
+                        editing text and hoping. Both halves apply
+                        here: the operator should name structure, and
+                        what it produces should be judged by the
+                        checks and the tests before it is kept.
+alternative:            |
+                        Keeping to text edits that match an exact and
+                        unique string. Not rejected, and it is what is
+                        used until there is better: it fails loudly,
+                        which the offset arithmetic and the
+                        first-occurrence replacement did not. It
+                        cannot say that the result parses, cannot
+                        follow a name across files, and does not know
+                        that a docstring item moved.
+
+                        A general refactoring tool. Rejected as more
+                        than is needed: what is wanted is an edit that
+                        names a definition and a guarantee about what
+                        survives, not a catalogue of transformations.
+
+                        Applying an edit and letting the checks find
+                        the damage. Rejected: two of the four faults
+                        produced code that parsed, linted and passed
+                        its tests. A check finds what it looks for,
+                        and nothing was looking for a hundred and
+                        twenty duplicated lines.
+
+                        Forbidding edits to source except through a
+                        person. Rejected: the repository is written
+                        this way, and the answer to a tool that is too
+                        blunt is a better tool.
+consequence:            |
+                        A command is wanted that takes a source item,
+                        says what part of its definition to change,
+                        and writes it only where the file parses and
+                        the items in it survive. It does not exist.
+
+                        rename refuses a source item today, since the
+                        name belongs to the code. Renaming a
+                        definition is the same kind of operation as
+                        this one and would be settled with it.
+
+                        Until then a source edit is made with an exact
+                        and unique match, and a change that spans more
+                        than one place in a file is made one match at
+                        a time rather than by a script.
+
+                        A diff is read after any edit to source made
+                        by other means. Two of the four faults were
+                        visible only there.
+
+question:
+
+  operator:
+    id_self:            qst_source_edit.operator
+    guid_self:          qst_7a9a9c5f9e11492e9883772c093ea8dd
+    question:           |
+                        Which operations over a definition an edit is
+                        made of, and whether they are enough to write
+                        the code this repository is written by.
+    relation:           []
+
+  candidate:
+    id_self:            qst_source_edit.candidate
+    guid_self:          qst_79da59cb1cb545719f2836c5286ad370
+    question:           |
+                        Whether an edit is applied and then verified,
+                        or offered as a candidate the checks and the
+                        tests judge before it is kept, as work on
+                        automated program repair does.
+    relation:           []
+
+  rename:
+    id_self:            qst_source_edit.rename
+    guid_self:          qst_12cf9d5ce3f14c7395e9cb7fe2245c62
+    question:           |
+                        Whether renaming a definition belongs to this
+                        command or to rename, which refuses a source
+                        item today because the name belongs to the
+                        code.
+    relation:           []
+
+relation:               []
