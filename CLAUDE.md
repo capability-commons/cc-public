@@ -368,6 +368,16 @@ is `../cc-brave1-demo`.
 
 ## Where things are
 
-`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/` requirements · `requirement_set/` sets of them · `sweep/` what the evals found · `proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas · `register/` type, relation, mark,
-term, style, rule, characteristic, framing, methodology, document, process word and unit registers · `eval/` evals and control sets · `workflow/` components,
-workflows, deployments · `execution/` runs · `src/cc_public/` the tool.
+`ddr/` design decisions · `decision/` decisions by people · `specimen/` decisions a
+workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/`
+requirements · `requirement_set/` sets of them · `sweep/` what the evals found ·
+`proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas ·
+`register/` type, relation, mark, term, style, rule, characteristic, framing, methodology,
+document, process word, unit and test method registers · `eval/` evals and control sets ·
+`workflow/` components, workflows, deployments · `execution/` runs of a workflow and of a
+test · `interface/` interface control documents · `test_case/` test cases ·
+`nonconformity/` reports that were kept · `segment/` this repository's declaration of
+itself · `test/` the tests · `src/cc_public/` the tool.
+
+A directory exists once something lives in it: a type's `home` says where its items go,
+and several homes above are named before anything occupies them.
