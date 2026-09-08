@@ -1,0 +1,217 @@
+id_self:                sch_nonconformity_report
+guid_self:              sch_69ebae5dbdc44ecf96526260ef313647
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Nonconformity report schema
+brief:                  |
+                        The shape of one observed failure to meet one
+                        applicable expectation.
+description:            |
+                        Identity, rights, the descriptive fields and
+                        edges come from sch_base and sch_relation.
+                        Beyond them a report states what was expected,
+                        what was observed, what it was observed of,
+                        what produced it, what it affects, where in
+                        the subject it sits, how severe it is, when it
+                        was detected, and the content identities the
+                        observation depends on.
+
+                        The expectation and the observation are both
+                        required. A report that states one without the
+                        other says that something is wrong without
+                        saying what would have been right, or the
+                        reverse, and neither can be acted on.
+
+                        The type says what a report means. Whether a
+                        report is written to the repository is a
+                        matter for the process that made it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_nonconformity_report.yaml
+usage:                  |
+                        Named by t_nonconformity_report as the schema
+                        of every item of that type. A report that is
+                        kept is held in nonconformity/; one that is
+                        not has the same shape in memory or in a
+                        command result.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - expected
+      - observed
+      - origin
+      - severity
+      - time_detected
+
+    properties:
+
+      expected:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the subject was required to do or to be.
+
+      observed:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the subject did or was instead.
+
+      origin:
+        type:           string
+
+        enum:
+          - check
+          - test
+          - eval
+
+        description:    |
+                        What observed the failure. A report keeps its
+                        origin, so that one shape across the three
+                        loses nothing.
+
+      id_subject:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the item the failure was
+                        observed of.
+
+      guid_subject:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the item the failure was observed of.
+
+      id_execution:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the test execution that
+                        produced this report. Optional, and absent
+                        where a check or an eval did.
+
+      guid_execution:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the test execution that produced this
+                        report. Optional, and absent where a check or
+                        an eval did.
+
+      id_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the test method in use.
+                        Optional.
+
+      guid_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the test method in use. Optional.
+
+      id_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the test case in use. Optional.
+
+      guid_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the test case in use. Optional.
+
+      id_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the textual requirement the
+                        failure is against. Optional.
+
+      guid_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the textual requirement the failure is
+                        against. Optional.
+
+      id_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the interface member the
+                        failure is against. Optional.
+
+      guid_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the interface member the failure is
+                        against. Optional.
+
+      id_check:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the check or eval that observed
+                        the failure. Optional.
+
+      guid_check:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the check or eval that observed the
+                        failure. Optional.
+
+      path:
+        type:           string
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. Where in the subject the failure
+                        sits, as a dot path.
+
+      severity:
+        type:           string
+
+        enum:
+          - critical
+          - advisory
+
+        description:    |
+                        How severe the failure is, in the terms every
+                        other finding in the repository uses.
+
+      time_detected:
+        type:           string
+        format:         date-time
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$
+        description:    |
+                        When the failure was observed.
+
+      digest_subject:
+        type:           string
+        pattern:        ^[0-9a-f]+$
+        description:    |
+                        Optional. The digest of the subject as it was
+                        when the failure was observed.
+
+      diagnostic:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What a reader needs in order to act
+                        on the report.
+
+      artifact:
+        type:           array
+        minItems:       1
+
+        items:
+          type:         string
+          minLength:    1
+          pattern:      ^[^\n]+$
+
+        description:    |
+                        Optional. Where the evidence behind the report
+                        is held.
+
+unevaluatedProperties:  false
