@@ -31,6 +31,7 @@ import pathlib
 
 import click
 
+import cc_public.adapter
 import cc_public.check
 import cc_public.check.schema
 import cc_public.cli.group
@@ -193,3 +194,48 @@ def _deployment_of(tree, record):
 
     raise cc_public.edit.tree.ErrorItem(
             '{exe} names no deployment.'.format(exe = record.get('id_self')))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command(name = 'test')
+@click.argument('name_case')
+@click.option('--under-test', 'name_under_test', required = True,
+              help = 'The item the run observes, by readable id or guid.')
+@click.option('--record', 'is_record', is_flag = True,
+              help = 'Write the execution to the tree. Without it nothing is written.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True,
+              help = 'text for a person; json for a program.')
+@cc_public.cli.group.OPTION_ROOT
+def test_(name_case, name_under_test, is_record, id_format, list_root):
+    """
+    Run the test case NAME_CASE against the item under test.
+
+    The case names the method, the method names the adapter, and the
+    adapter is one installed with the tool. Nothing the case carries
+    reaches a shell.
+
+    An execution is written only where --record asks for it. Without
+    it the run leaves the repository as it found it.
+
+    """
+
+    tree = cc_public.cli.group.tree(list_root)
+
+    (document, list_problem) = cc_public.adapter.execute(tree, name_case, name_under_test)
+
+    if document is None:
+        cc_public.cli.group.fail('\n'.join(list_problem))
+
+    if is_record and not list_problem:
+        cc_public.edit.new.new(tree, 't_test_execution', document['id_self'],
+                               tree.defaults(), guid = document['guid_self'])
+        for (key, value) in document.items():
+            if key not in ('id_self', 'guid_self', 'relation'):
+                cc_public.edit.field.set_field(tree, document['id_self'], key,
+                                               value = value)
+        for edge in document['relation']:
+            cc_public.edit.link.link(tree, document['id_self'], edge['id_relation'],
+                                     edge['id_target'])
+
+    cc_public.cli.report.write_execution_test(document, list_problem, is_record, id_format)

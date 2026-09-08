@@ -121,6 +121,13 @@ Running and committing
   `run` and `resume` take `--root` more than once: the first is the
   repository run in, where items are made and the record is written; the
   rest are the trees it consumes, read only.
+- `test CASE --under-test ITEM [--record] [--format json]` — runs one test case
+  against one item. The case names its method by `r_uses_test_method`, the method
+  names an installed adapter by identity, and the adapter derives what to run from
+  that identity, so no data item carries a command or a path. Prints the execution
+  outcome and the conformance result, which are two things: an execution that did
+  not complete carries no result at all. Writes nothing unless `--record`
+  (`ddr_test_execution`).
 - `resume EXECUTION` — continues a waiting run once the tree holds what
   the brief asked for. An agent output is read from the graph, never from
   a report: it `revises` an input, or is `found` from one by a relation in

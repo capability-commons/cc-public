@@ -655,3 +655,40 @@ def write_glossary_gaps(found, minimum, id_format):
     click.echo('{n} term(s) no record decides.'.format(n = len(undecided)))
     click.echo('A candidate is a word used by {m} item(s) or more that no glossary holds. '
                'It is not a finding.'.format(m = minimum))
+
+
+# -----------------------------------------------------------------------------
+def write_execution_test(document, list_problem, is_record, id_format):
+    """
+    Write what one test run observed, as text or as json.
+
+    """
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps({'execution': document,
+                               'problem':   list_problem,
+                               'recorded':  bool(is_record and not list_problem)},
+                              indent = 2, default = str))
+        return
+
+    result = document['result']['main']
+
+    click.echo('{id_self}  {outcome}'.format(id_self = document['id_self'],
+                                             outcome = document['execution_outcome']))
+    click.echo('    {label:15} {value}'.format(label = 'case',
+                                               value = document['id_case']))
+    click.echo('    {label:15} {value}'.format(label = 'method',
+                                               value = document['id_method']))
+    click.echo('    {label:15} {value}'.format(label = 'under test',
+                                               value = document['id_under_test']))
+    click.echo('    {label:15} {value}'.format(
+                        label = 'result',
+                        value = result.get('conformance_result', 'none, it did not run')))
+
+    for line in result['observation'].strip().splitlines()[:12]:
+        click.echo('        ' + line)
+
+    for problem in list_problem:
+        click.echo('    PROBLEM         ' + problem)
+
+    click.echo('Recorded.' if is_record and not list_problem else 'Nothing was written.')

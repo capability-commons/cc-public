@@ -30,6 +30,14 @@ relation:               []
 """
 
 
+import contextlib
+import os
+import pathlib
+import time
+import typing
+
+import pytest
+
 import cc_public.testing
 
 
@@ -41,6 +49,18 @@ PREFIX_TEST   = 'pyf'
 SEPARATOR     = '_'
 DELIM         = '.'
 DELIM_NODE    = '::'
+
+# What pytest is run with: quiet, no header, and no cache written beside
+# the tree it reads.
+#
+ARGUMENT      = ('-q', '--no-header', '-p', 'no:cacheprovider')
+
+# Set while pytest runs, so that a conftest of the tree being read knows
+# it is an adapter running one node and not a session establishing
+# evidence. What an execution does to the current evidence is decided by
+# ddr_evidence_dependency_closure, not by a side effect here.
+#
+VARIABLE      = 'CCTOOL_ADAPTER'
 
 
 # -----------------------------------------------------------------------------
@@ -112,3 +132,155 @@ def _split(id_test, map_item):
         return (None, [])
 
     return (prefix + best, stem[len(best) + 1:].split(DELIM))
+
+
+OUTCOME_COMPLETED = 'completed'
+OUTCOME_ERROR     = 'error'
+OUTCOME_NOT_RUN   = 'not_run'
+
+RESULT_PASSED     = 'passed'
+RESULT_FAILED     = 'failed'
+RESULT_SKIPPED    = 'not_applicable'
+
+WHEN_CALL         = 'call'
+
+
+# -----------------------------------------------------------------------------
+class Observation(typing.NamedTuple):
+    """
+    What one run of this adapter observed.
+
+    conformance_result is None where the execution did not complete. A
+    test that could not be collected, or whose setup failed, has
+    observed nothing about the item under test, and saying otherwise
+    would make a fault in the harness look like a fault in the product.
+
+    """
+
+    execution_outcome:  str
+    conformance_result: str | None
+    observation:        str
+    node:               str | None
+    version:            str
+    second:             float
+
+
+# -----------------------------------------------------------------------------
+def run(map_document, configuration, dirpath = None):
+    """
+    Run the one test function a case names, and return what was
+    observed.
+
+    The node id is derived from the identity the case names, so nothing
+    a case carries reaches a shell. pytest is run with a plugin that
+    keeps its reports, so the outcome is read from what pytest reported
+    rather than from what it printed.
+
+    """
+
+    (node, list_problem) = specify(map_document, configuration)
+
+    if node is None:
+        return Observation(execution_outcome  = OUTCOME_NOT_RUN,
+                           conformance_result = None,
+                           observation        = ' '.join(list_problem),
+                           node               = None,
+                           version            = pytest.__version__,
+                           second             = 0.0)
+
+    collector = _Collector()
+    started   = time.monotonic()
+
+    with _announced():
+        pytest.main([*ARGUMENT, str(pathlib.Path(dirpath or '.') / node)],
+                    plugins = [collector])
+
+    return _observation(collector, node, time.monotonic() - started)
+
+
+# -----------------------------------------------------------------------------
+@contextlib.contextmanager
+def _announced():
+    """
+    Set the variable that says an adapter is running, and put it back.
+
+    """
+
+    before = os.environ.get(VARIABLE)
+    os.environ[VARIABLE] = '1'
+
+    try:
+        yield
+    finally:
+        if before is None:
+            del os.environ[VARIABLE]
+        else:
+            os.environ[VARIABLE] = before
+
+
+# -----------------------------------------------------------------------------
+def _observation(collector, node, second):
+    """
+    Return what the collected reports say, as one Observation.
+
+    An error in setup or teardown is an execution error and no
+    conformance result. Only what the call phase reported is a result
+    about the item under test.
+
+    """
+
+    def made(outcome, result, text):
+        return Observation(execution_outcome  = outcome,
+                           conformance_result = result,
+                           observation        = text.strip() or 'Nothing was reported.',
+                           node               = node,
+                           version            = pytest.__version__,
+                           second             = round(second, 3))
+
+    if collector.list_collect:
+        return made(OUTCOME_ERROR, None,
+                    'pytest could not collect the node. ' + collector.list_collect[0])
+
+    for (when, outcome, text) in collector.list_report:
+        if when != WHEN_CALL and outcome == 'failed':
+            return made(OUTCOME_ERROR, None,
+                        'pytest reported an error in {when}. {text}'.format(when = when,
+                                                                            text = text))
+
+    for (when, outcome, text) in collector.list_report:
+
+        if when != WHEN_CALL:
+            continue
+
+        if outcome == 'passed':
+            return made(OUTCOME_COMPLETED, RESULT_PASSED,
+                        'pytest reported the node passed.')
+
+        if outcome == 'failed':
+            return made(OUTCOME_COMPLETED, RESULT_FAILED, text)
+
+    for (_, outcome, text) in collector.list_report:
+        if outcome == 'skipped':
+            return made(OUTCOME_COMPLETED, RESULT_SKIPPED,
+                        'pytest reported the node skipped. ' + text)
+
+    return made(OUTCOME_NOT_RUN, None, 'pytest ran no test for the node.')
+
+
+# -----------------------------------------------------------------------------
+class _Collector:
+    """
+    A pytest plugin that keeps what pytest reports.
+
+    """
+
+    def __init__(self):
+        self.list_report  = []
+        self.list_collect = []
+
+    def pytest_runtest_logreport(self, report):
+        self.list_report.append((report.when, report.outcome, str(report.longrepr or '')))
+
+    def pytest_collectreport(self, report):
+        if report.failed:
+            self.list_collect.append(str(report.longrepr or ''))

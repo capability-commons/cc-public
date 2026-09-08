@@ -33,6 +33,7 @@ relation:               []
 """
 
 
+import os
 import pathlib
 import shutil
 import subprocess
@@ -156,6 +157,13 @@ def pytest_sessionfinish(session, exitstatus):
     # reaches the controller; the controller alone writes, once.
     #
     if hasattr(session.config, 'workerinput'):
+        return
+
+    # An adapter running one node is a test execution, not a session that
+    # establishes evidence. What an execution does to the current evidence
+    # is ddr_evidence_dependency_closure's, and is not a side effect here.
+    #
+    if os.environ.get('CCTOOL_ADAPTER'):
         return
 
     reporter = session.config.pluginmanager.get_plugin('terminalreporter')
