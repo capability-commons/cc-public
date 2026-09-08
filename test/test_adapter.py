@@ -29,6 +29,10 @@ relation:               []
 """
 
 
+import shutil
+
+import conftest
+
 import cc_public.adapter
 import cc_public.adapter.pytest_function as adapter
 import cc_public.edit.tree
@@ -149,3 +153,26 @@ def test_recording_an_execution_writes_it_and_the_tree_still_checks(tree, tmp_pa
                 for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
                 for n in c['nonconformity'] if n['severity'] == 'critical']
     assert critical == []
+
+
+def test_the_run_reads_the_code_of_the_tree_it_was_given(tmp_path):
+    # A whole copy, the tests included, since the case names one of them.
+    conftest.copy_tree(tmp_path)
+    shutil.copytree(conftest.ROOT / 'test', tmp_path / 'test')
+
+    # Break the candidate in the copy. A run that read the installed package
+    # instead would pass, and the execution would name an item under test it
+    # never observed.
+    filepath = tmp_path / 'src' / 'cc_public' / 'query.py'
+    text     = filepath.read_text()
+    head     = text.index('    def path(self, name_from, name_to):')
+    close    = text.index('"""', text.index('"""', head) + 3) + 3
+    body     = text.index('\n', close) + 1
+    filepath.write_text(text[:body] + '        return None\n' + text[body:])
+
+    tree = cc_public.edit.tree.Tree([tmp_path])
+    (document, problem) = cc_public.adapter.execute(tree, ID_CASE, ID_UNDER)
+
+    assert problem == []
+    assert document['execution_outcome'] == 'completed'
+    assert document['result']['main']['conformance_result'] == 'failed'

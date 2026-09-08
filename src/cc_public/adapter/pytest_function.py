@@ -23,6 +23,16 @@ description:            |
                         the names carry the case the source spells
                         them with and the readable id does not.
 
+                        The run is made in a process of its own, with
+                        the source of the tree being read first on the
+                        path, so what runs is the code that tree
+                        holds. Reading one tree and running another
+                        tree's code would let an execution name an
+                        item under test it never observed. The reports
+                        come back as one line of json, so the outcome
+                        is read from what pytest reported and not from
+                        what it printed.
+
                         Neither the method nor the case carries a
                         command or a path, so a case names something
                         this tree resolves and asks for nothing but a
@@ -34,8 +44,11 @@ relation:               []
 
 
 import contextlib
+import json
 import os
 import pathlib
+import subprocess
+import sys
 import time
 import typing
 
@@ -63,6 +76,34 @@ ARGUMENT      = ('-q', '--no-header', '-p', 'no:cacheprovider')
 # ddr_evidence_dependency_closure, not by a side effect here.
 #
 VARIABLE      = 'CCTOOL_ADAPTER'
+DIRECTORY_SOURCE = 'src'
+MARKER        = '--- cctool adapter '
+
+# The program the run is made by. It runs in a process of its own, with
+# the source of the tree being read first on the path, so that what runs
+# is the code that tree holds and not the code this process imported.
+# The reports are handed back as one line of json, so the outcome is
+# still read from what pytest reported and not from what it printed.
+#
+RUNNER        = """
+import json, sys, pytest
+
+class Collector:
+    def __init__(self):
+        self.report  = []
+        self.collect = []
+    def pytest_runtest_logreport(self, report):
+        self.report.append([report.when, report.outcome, str(report.longrepr or '')])
+    def pytest_collectreport(self, report):
+        if report.failed:
+            self.collect.append(str(report.longrepr or ''))
+
+collector = Collector()
+pytest.main(['-q', '--no-header', '-p', 'no:cacheprovider', sys.argv[1]],
+            plugins = [collector])
+print('--- cctool adapter ' + json.dumps({'report':  collector.report,
+                                          'collect': collector.collect}))
+"""
 
 
 # -----------------------------------------------------------------------------
@@ -162,34 +203,60 @@ def run(map_document, configuration, dirpath = None):
                            version            = pytest.__version__,
                            second             = 0.0)
 
-    collector = _Collector()
-    started   = time.monotonic()
+    root    = pathlib.Path(dirpath or '.').resolve()
+    started = time.monotonic()
+    done    = subprocess.run([sys.executable, '-c', RUNNER, node],       # noqa: S603
+                             cwd            = str(root),
+                             env            = _environment(root),
+                             capture_output = True,
+                             text           = True,
+                             check          = False)
 
-    with _announced():
-        pytest.main([*ARGUMENT, str(pathlib.Path(dirpath or '.') / node)],
-                    plugins = [collector])
-
-    return _observation(collector, node, time.monotonic() - started)
+    return _observation(_collected(done), node, time.monotonic() - started)
 
 
 # -----------------------------------------------------------------------------
-@contextlib.contextmanager
-def _announced():
+def _environment(root):
     """
-    Set the variable that says an adapter is running, and put it back.
+    Return the environment the run is made in.
+
+    The source of the tree being read comes first on the path, so what
+    runs is the code that tree holds. Reading one tree and running
+    another's code would let an execution name an item under test it
+    never observed.
 
     """
 
-    before = os.environ.get(VARIABLE)
-    os.environ[VARIABLE] = '1'
+    out            = dict(os.environ)
+    out[VARIABLE]  = '1'
+    out['PYTHONPATH'] = os.pathsep.join(
+                            [str(root / DIRECTORY_SOURCE),
+                             *([out['PYTHONPATH']] if out.get('PYTHONPATH') else [])])
 
-    try:
-        yield
-    finally:
-        if before is None:
-            del os.environ[VARIABLE]
-        else:
-            os.environ[VARIABLE] = before
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _collected(done):
+    """
+    Return the collector the run reported, or one holding why it could
+    not be read.
+
+    """
+
+    collector = _Collector()
+
+    for line in done.stdout.splitlines():
+        if line.startswith(MARKER):
+            reported = json.loads(line[len(MARKER):])
+            collector.list_report  = [tuple(one) for one in reported['report']]
+            collector.list_collect = reported['collect']
+            return collector
+
+    collector.list_collect = ['pytest reported nothing this adapter could read. '
+                              + (done.stderr.strip() or done.stdout.strip())[:2000]]
+
+    return collector
 
 
 # -----------------------------------------------------------------------------
