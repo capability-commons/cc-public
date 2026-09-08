@@ -50,6 +50,7 @@ from cc_public.check import schema    as check_schema
 from cc_public.check import segment    as check_segment
 from cc_public.check import source    as check_source
 from cc_public.check import statement  as check_statement
+from cc_public.check import testing   as check_testing
 from cc_public.check import trace     as check_trace
 from cc_public.check import workflow  as check_workflow
 
@@ -71,6 +72,7 @@ CHECK      = (check_parse,
               check_layout,
               check_workflow,
               check_interface,
+              check_testing,
               check_trace,
               check_evidence,
               check_confidence)
@@ -179,16 +181,11 @@ def refusal(report, is_checkpoint = False):
                             report must stop for, or None where the report
                             may be acted on.
     description:            |
-                            The one place the policy lives, so that the
-                            committer, the executor and the gate cannot
-                            disagree about it. An analysis that failed to
-                            run refuses always: no claim about the data
-                            can be made from a report that did not look at
-                            all of it, and a checkpoint, which records a
-                            known nonconformity, does not cover an unknown
-                            one. A critical finding refuses unless a
-                            checkpoint is asked for. Advisories never
-                            refuse.
+                            The one place the policy lives, read by the
+                            committer, the executor and the gate. An
+                            analysis that failed to run refuses, and a
+                            critical finding refuses. ddr_fail_closed
+                            decides the policy.
     relation:               []
 
     ...

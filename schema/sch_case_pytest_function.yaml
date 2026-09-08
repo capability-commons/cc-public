@@ -1,0 +1,46 @@
+id_self:                sch_case_pytest_function
+guid_self:              sch_77a5cbc420384eb7948f0fbae89b6451
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pytest function case configuration schema
+brief:                  |
+                        What a test case supplies to the pytest
+                        function method: the identity of the test
+                        function to run.
+description:            |
+                        One field, and it is an identity. The adapter
+                        derives the pytest node id from the item it
+                        names, so a case cannot supply a path or a
+                        command and cannot ask for anything but a test
+                        this tree holds to be run.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_case_pytest_function.yaml
+usage:                  |
+                        Named by tm_pytest_function as the schema of
+                        the configuration its cases supply.
+type:                   object
+
+required:
+  - id_test
+  - guid_test
+
+additionalProperties:   false
+
+properties:
+
+  id_test:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+    description:        |
+                        Readable id of the python function item that
+                        is the test to run.
+
+  guid_test:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+    description:        |
+                        Guid of that item. The resolvable reference.

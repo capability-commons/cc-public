@@ -377,12 +377,19 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
                  if n['path'] == 'relation' and n['message'].startswith('Derives from nothing')]
     assert [n['severity'] for n in derived] == ['advisory']
     assert 'req_executor_honours_budget' in derived[0]['filepath']
-    # This copy holds no tests, so every requirement verified by test says
-    # no test names it; the tree itself says otherwise.
+    # This copy holds no tests, so a requirement verified by test says no test
+    # names it -- unless a test case does, since a case lives in test_case/ and
+    # carries the trace a python function would otherwise carry alone.
     verified = [n for n in trace['nonconformity'] if n['path'] == 'verification']
+    by_case  = {t for d in tree.context.map_document.values()
+                  if isinstance(d, dict)
+                  and str(d.get('id_self', '')).startswith('tc_')
+                  for t in (e.get('id_target') for e in d.get('relation') or []
+                            if e.get('id_relation') == 'r_verifies')}
     count_test = sum(1 for d in tree.context.map_document.values()
                      if isinstance(d, dict) and str(d.get('id_self', '')).startswith('req_')
-                     and d.get('verification') == 'test')
+                     and d.get('verification') == 'test'
+                     and d.get('id_self') not in by_case)
     assert len(verified) == count_test and all(n['severity'] == 'advisory' for n in verified)
 
 

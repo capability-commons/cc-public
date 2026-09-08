@@ -1,0 +1,108 @@
+id_self:                reg_test_method
+guid_self:              reg_49ad3e9171154caf844fa8ac1ded18f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Test method register
+brief:                  |
+                        The controlled test methods: the reusable
+                        procedures concrete enough to run.
+description:            |
+                        One entry per procedure, keyed by readable id.
+                        A method settles what to do, what to observe
+                        and how to read a verdict, and takes one of
+                        three execution forms.
+usage:                  |
+                        A test case names the method it configures. An
+                        abstract technique is cited as a document
+                        rather than entered here.
+note:                   |
+                        A method that changes its procedure, its
+                        observation or its verdict rule takes a new
+                        version, since a result observed under the old
+                        one describes a procedure that no longer
+                        exists.
+
+table:
+
+  tm_pytest_function:
+    id_self:            tm_pytest_function
+    guid_self:          tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+    title:              Pytest function
+    brief:              |
+                        Run one pytest test function and read its
+                        outcome as a conformance result.
+    description:        |
+                        The procedure a case configures by naming the
+                        test function to run. The adapter derives the
+                        pytest node id from that item and runs it
+                        alone.
+    version:            '1.0'
+    verification_class:  test
+    procedure:          |
+                        Resolve the test function the case names into
+                        a pytest node id. Run pytest over that node id
+                        alone, in the environment the tool runs in.
+                        Collect what pytest reports for that node.
+    observation:        |
+                        What pytest reported for the node: whether it
+                        was collected, whether setup succeeded, and
+                        the outcome it gave, with the text of any
+                        failure.
+    verdict_rule:       |
+                        Passed where pytest reports the node passed.
+                        Failed where it reports the node failed. Not
+                        applicable where it reports the node skipped.
+                        A node pytest could not collect, or whose
+                        setup errored, is an execution error and no
+                        conformance result at all.
+    id_schema_case:     sch_case_pytest_function
+    guid_schema_case:   sch_77a5cbc420384eb7948f0fbae89b6451
+
+    execution_form:
+
+      automated:
+        id_adapter:     pym_cc_public.adapter.pytest_function
+        guid_adapter:   pym_c62e5f399bae4c6fb04593696c3d2c04
+
+        capability:
+          - pytest
+
+        timeout_second:  600
+
+    applicability:      |
+                        A requirement or an interface member whose
+                        behaviour one python test function observes.
+    prerequisite:       |
+                        The tree is installed and its test environment
+                        is available. The test function is an item of
+                        this tree.
+    evidence_required:  |
+                        What pytest reported for the node, kept as the
+                        observation of the result.
+    limitation:         |
+                        It observes one test function. What that
+                        function itself covers is what the function
+                        says, and this method neither knows nor states
+                        it.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_implemented_by
+        guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+        id_target:      pym_cc_public.adapter.pytest_function
+        guid_target:    pym_c62e5f399bae4c6fb04593696c3d2c04
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_test_method
+    guid_target:        sch_664e9b26de15449bbcba3e0df551ac1b
