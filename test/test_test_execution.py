@@ -40,13 +40,13 @@ import cc_public.check.schema
 
 ID_SCHEMA = 'sch_test_execution'
 
-RESULT = {'id_self':            'tres_probe.main',
+RESULT = {'id_self':            'tres_20260908000000_abcdef.main',
           'guid_self':          'tres_' + '4' * 32,
           'conformance_result': 'passed',
           'observation':        'The shortest path was reported.\n'}
 
 EXECUTION = {
-    'id_self':          'tex_probe',
+    'id_self':          'tex_20260908000000_abcdef',
     'guid_self':        'tex_' + '0' * 32,
     'title':            'A probe execution',
     'brief':            'An execution written to try the schema.\n',
@@ -143,3 +143,19 @@ def test_a_field_the_schema_does_not_declare_is_refused(validate):
     execution['command'] = 'pytest -q'
     messages = [message for (_, message) in validate(execution)]
     assert any('command' in message for message in messages)
+
+
+@pytest.mark.parametrize('outcome', ['error', 'not_run', 'cancelled'])
+def test_a_result_of_an_execution_that_did_not_complete_needs_no_conformance(validate,
+                                                                             outcome):
+    execution = copy.deepcopy(EXECUTION)
+    execution['execution_outcome'] = outcome
+    del execution['result']['main']['conformance_result']
+    assert validate(execution) == []
+
+
+def test_a_completed_execution_states_a_conformance_result(validate):
+    execution = copy.deepcopy(EXECUTION)
+    del execution['result']['main']['conformance_result']
+    messages = [message for (_, message) in validate(execution)]
+    assert any('conformance_result' in message for message in messages)

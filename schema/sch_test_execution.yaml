@@ -206,4 +206,31 @@ allOf:
                         observed nothing, and a passing result would
                         say otherwise about the item under test.
 
+  - if:
+      type:             object
+
+      properties:
+
+        execution_outcome:
+          const:        completed
+
+      required:
+        - execution_outcome
+
+    then:
+
+      properties:
+
+        result:
+
+          additionalProperties:
+
+            required:
+              - conformance_result
+
+      description:      |
+                        A completed execution holds a conformance
+                        result for each thing it found. The procedure
+                        ran, so it reached one.
+
 unevaluatedProperties:  false

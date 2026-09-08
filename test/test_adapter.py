@@ -118,3 +118,34 @@ def test_an_item_the_tree_lacks_yields_no_execution():
     (document, problem) = cc_public.adapter.execute(tree, ID_CASE, 'pyf_absent.absent')
     assert document is None
     assert 'nothing to observe' in problem[0]
+
+
+def test_recording_an_execution_writes_it_and_the_tree_still_checks(tree, tmp_path):
+    import cc_public.check
+    import test_test_execution
+
+    document = dict(test_test_execution.EXECUTION)
+    document['id_method']       = 'tm_pytest_function'
+    document['guid_method']     = tree.resolve('tm_pytest_function').guid_self
+    document['id_case']         = ID_CASE
+    document['guid_case']       = tree.resolve(ID_CASE).guid_self
+    document['id_under_test']   = ID_UNDER
+    document['guid_under_test'] = tree.resolve(ID_UNDER).guid_self
+    document['relation']        = [
+        {'id_relation':   'r_uses_test_method',
+         'guid_relation': tree.resolve('r_uses_test_method').guid_self,
+         'id_target':     'tm_pytest_function',
+         'guid_target':   tree.resolve('tm_pytest_function').guid_self},
+        {'id_relation':   'r_tests',
+         'guid_relation': tree.resolve('r_tests').guid_self,
+         'id_target':     ID_UNDER,
+         'guid_target':   tree.resolve(ID_UNDER).guid_self}]
+
+    id_self = cc_public.adapter.record(tree, document)
+
+    assert (tmp_path / 'execution' / (id_self + '.yaml')).is_file()
+
+    critical = [(c['id_check'], n['message'])
+                for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
+                for n in c['nonconformity'] if n['severity'] == 'critical']
+    assert critical == []

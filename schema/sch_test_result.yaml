@@ -14,15 +14,17 @@ brief:                  |
                         execution: what the procedure found, and about
                         what.
 description:            |
-                        An embedded addressable item. It carries the
-                        conformance result, what was observed to reach
-                        it, and the requirement or interface member
-                        the observation was about.
+                        An embedded addressable item. It carries what
+                        was observed, the conformance result where the
+                        procedure reached one, and the requirement or
+                        interface member the observation was about.
 
                         The conformance result says what the procedure
                         found. Whether the procedure ran is the
                         execution outcome, which the execution
-                        carries.
+                        carries. A result of an execution that did not
+                        complete carries no conformance result,
+                        because the procedure found nothing.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_test_result.yaml
 usage:                  |
@@ -35,7 +37,6 @@ allOf:
   - type:               object
 
     required:
-      - conformance_result
       - observation
 
     properties:

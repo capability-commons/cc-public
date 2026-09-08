@@ -35,6 +35,9 @@ import sys
 import uuid
 
 import cc_public.check.schema
+import cc_public.edit.field
+import cc_public.edit.link
+import cc_public.edit.new
 import cc_public.decision
 import cc_public.load.git
 import cc_public.testing
@@ -49,6 +52,13 @@ from cc_public.adapter import pytest_function
 ADAPTER       = {'pym_cc_public.adapter.pytest_function': pytest_function}
 
 ID_SCHEMA     = 'sch_test_execution'
+ID_TYPE       = 't_test_execution'
+KEY_RELATION  = 'relation'
+
+# What record does not set: the identity new mints, and the edges link
+# makes.
+#
+SKIP          = ('id_self', 'guid_self', 'relation')
 
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
@@ -217,3 +227,29 @@ def _text(when):
     """
 
     return when.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+# -----------------------------------------------------------------------------
+def record(tree, document):
+    """
+    Write an execution to the tree, and return its readable id.
+
+    A run keeps nothing unless it is asked to. This is what asking
+    does: the identity is the one the run minted, so the record a
+    reader was shown and the record the tree holds are one.
+
+    """
+
+    id_self = document[KEY_ID_SELF]
+
+    cc_public.edit.new.new(tree, ID_TYPE, id_self, tree.defaults(),
+                           guid = document[KEY_GUID_SELF])
+
+    for (key, value) in document.items():
+        if key not in SKIP:
+            cc_public.edit.field.set_field(tree, id_self, key, value = value)
+
+    for edge in document.get(KEY_RELATION) or []:
+        cc_public.edit.link.link(tree, id_self, edge['id_relation'], edge['id_target'])
+
+    return id_self

@@ -228,14 +228,6 @@ def test_(name_case, name_under_test, is_record, id_format, list_root):
         cc_public.cli.group.fail('\n'.join(list_problem))
 
     if is_record and not list_problem:
-        cc_public.edit.new.new(tree, 't_test_execution', document['id_self'],
-                               tree.defaults(), guid = document['guid_self'])
-        for (key, value) in document.items():
-            if key not in ('id_self', 'guid_self', 'relation'):
-                cc_public.edit.field.set_field(tree, document['id_self'], key,
-                                               value = value)
-        for edge in document['relation']:
-            cc_public.edit.link.link(tree, document['id_self'], edge['id_relation'],
-                                     edge['id_target'])
+        cc_public.adapter.record(tree, document)
 
     cc_public.cli.report.write_execution_test(document, list_problem, is_record, id_format)
