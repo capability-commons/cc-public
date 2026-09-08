@@ -173,7 +173,6 @@ table:
       - t_component
 
     cardinality:
-      minimum:          1
       maximum:          1
 
   r_is_judged_by:
@@ -204,20 +203,20 @@ table:
     title:              Is implemented by relation
     brief:              SUBJ is implemented by OBJ
     description:        |
-                        The requirement or component identified by
-                        SUBJ is carried out by the source item
-                        identified by OBJ: a package, module, class or
-                        function. For a component, that is what runs
-                        in place of a prompt, and a component names
-                        one or the other. For a requirement, it places
-                        responsibility: the code named is where the
-                        requirement is met or is not. It does not show
-                        that the requirement is met; evidence does
-                        that.
+                        The item identified by SUBJ is realised in the
+                        source identified by OBJ. A requirement and a
+                        component are realised by the code that
+                        carries them out; a test method by its
+                        adapter, a test case by the function that
+                        automates it, and an interface member by the
+                        definition that presents it.
 
     domain:
       - t_textual_requirement
       - t_component
+      - t_test_method
+      - t_test_case
+      - t_interface_member
 
     range:
       - t_python_package
@@ -436,22 +435,23 @@ table:
     title:              Verifies
     brief:              SUBJ verifies OBJ
     description:        |
-                        The test identified by SUBJ is evidence that
-                        the requirement identified by OBJ is met: it
-                        exercises what the requirement asks for and
-                        fails where it is not met. A requirement
-                        verified by test with no such edge is a
-                        requirement nothing verifies, which the trace
-                        check reports.
+                        The item identified by SUBJ establishes that
+                        the item identified by OBJ holds. A test case
+                        establishes that a textual requirement or an
+                        interface member holds, and a python test
+                        function does the same while both
+                        representations of trace are read.
     status:             proposed
     alias:              []
 
     domain:
       - t_python_module
       - t_python_function
+      - t_test_case
 
     range:
       - t_textual_requirement
+      - t_interface_member
 
     relation:           []
 
@@ -709,6 +709,53 @@ table:
 
     acyclic:            true
     transitive:         true
+    relation:           []
+
+  r_uses_test_method:
+    id_self:            r_uses_test_method
+    guid_self:          r_1648a1a264024cf8b2882d377c7235d2
+    title:              Uses test method relation
+    brief:              |
+                        SUBJ uses test method OBJ
+    description:        |
+                        The test case or test execution identified by
+                        SUBJ is run with the test method identified by
+                        OBJ. A case names the procedure it configures;
+                        an execution names the procedure it ran.
+
+    domain:
+      - t_test_case
+      - t_test_execution
+
+    range:
+      - t_test_method
+
+    cardinality:
+      minimum:          1
+      maximum:          1
+
+    relation:           []
+
+  r_tests:
+    id_self:            r_tests
+    guid_self:          r_b1f83e718fe0488bb0d6831c727db361
+    title:              Tests relation
+    brief:              |
+                        SUBJ tests OBJ
+    description:        |
+                        The test execution identified by SUBJ observed
+                        the item identified by OBJ. The item under
+                        test is bound at execution and not by the
+                        case, so one case is applied to several
+                        implementations and revisions.
+
+    domain:
+      - t_test_execution
+
+    cardinality:
+      minimum:          1
+      maximum:          1
+
     relation:           []
 
 relation:

@@ -79,8 +79,11 @@ def test_an_item_holding_more_edges_than_a_relation_allows_is_reported(tree, tmp
 
 
 def test_an_item_holding_fewer_than_a_relation_requires_is_reported(tree, tmp_path):
-    node = 'node_accept_requirement.accept'
-    cc_public.edit.link.unlink(tree, node, 'r_instantiates', 'cmp_accept_requirement')
+    # r_instantiates declares a maximum and no minimum: a node naming no
+    # component is what the workflow check reports, and one fault is not
+    # reported twice. r_deploys declares both.
+    cc_public.edit.link.unlink(tree, 'dep_accept_local', 'r_deploys',
+                               'wf_accept_requirement')
     ((severity, message),) = _findings(tmp_path)
     assert severity == 'critical'
-    assert 'holds 0 r_instantiates edge' in message and 'at least 1' in message
+    assert 'holds 0 r_deploys edge' in message and 'at least 1' in message

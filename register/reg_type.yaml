@@ -99,9 +99,8 @@ table:
                         Each schema data item defines the structure of
                         a data item type, either in part of in whole.
     usage:              |
-                        Schema data items are used to validate the
-                        structure of data items, improving the
-                        reliability of data item generation.
+                        A schema data item validates the structure of
+                        the data items its type covers.
     note:               |
                         A number of trait schemas exist to hold common
                         elements such as data primitives. This means
@@ -256,9 +255,9 @@ table:
                         Each design decision data item holds the
                         reasoning behind one design decision.
     usage:              |
-                        Design decision data items are used to hold
-                        the reasoning that produced an artifact, so
-                        that the artifact itself need not carry it.
+                        A design decision data item holds the
+                        reasoning behind an artifact. The artifact
+                        does not carry it.
     note:               |
                         One record per decision, where a decision is
                         one thing that could later be revised on its
@@ -409,11 +408,10 @@ table:
                         class, which holds its metadata in its own
                         docstring.
     usage:              |
-                        Optional. Written only where something needs
-                        to name the class -- a design decision
-                        deciding it, or an eval judging it. Requiring
-                        one of every class would cost more in header
-                        than the code is worth.
+                        Optional. Written where something needs to
+                        name the class, such as a design decision
+                        deciding it or an eval judging it. Not
+                        required of every class.
     note:               |
                         The identifier carries the fully qualified
                         name, so that the thing it names can be found
@@ -764,9 +762,9 @@ table:
                         Type of control set data items
     description:        |
                         Each control set data item holds cases with
-                        known verdicts for one eval, so that the eval
-                        can be measured and a finding it raises can be
-                        answered.
+                        known verdicts for one eval. The eval is
+                        measured against them, and a finding it raises
+                        is answered by one.
     prefix:             ctl
     regex_id:           ^ctl_[a-z][a-z0-9_]*$
     usage:              |
@@ -912,9 +910,9 @@ table:
     prefix:             style
     regex_id:           ^style_[a-z][a-z0-9_]*$
     usage:              |
-                        Writing style rule data items are bound into
-                        writing prompts as context, and cited by the
-                        evals that judge prose.
+                        A writing style rule is bound into a writing
+                        prompt as context, and cited by the evals that
+                        judge prose.
     note:               |
                         Writing style rules exist only as entries in a
                         writing style rule register, never as
@@ -992,9 +990,9 @@ table:
     prefix:             rule
     regex_id:           ^rule_[a-z][a-z0-9_]*$
     usage:              |
-                        Requirement rules are cited by the evals that
-                        implement them, and their examples are the
-                        first control cases of those evals.
+                        A requirement rule is cited by the eval that
+                        implements it, and its examples are the first
+                        control cases of that eval.
     note:               |
                         Requirement rules exist only as entries in a
                         requirement rule register, never as documents
@@ -1144,7 +1142,7 @@ table:
                         looking at a need for analysis: what it treats
                         as in scope, what it makes salient, and what
                         kinds of response it admits. A framing is
-                        reusable; its application to a need is a
+                        reusable, and its application to a need is a
                         decomposition.
     prefix:             frame
     regex_id:           ^frame_[a-z][a-z0-9_]*$
@@ -1270,9 +1268,7 @@ table:
     regex_id:           ^qry_[a-z][a-z0-9_]*$
     usage:              |
                         A question about the graph worth asking twice
-                        is kept as a query and run by cctool query;
-                        the useful questions accumulate in the tree
-                        rather than in scripts.
+                        is kept as a query and run by cctool query.
     note:               |
                         Reads the facts and writes nothing. See
                         ddr_graph_query.
@@ -1841,3 +1837,197 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_entry_unit
         guid_target:    sch_979e37227f3549d39009379b02297250
+
+  t_test_method:
+    id_self:            t_test_method
+    guid_self:          t_0f99da319677450396ea38f5e734c45d
+    title:              Test method type
+    brief:              |
+                        Type of test method entries held in a test
+                        method register.
+    description:        |
+                        A test method is a reusable procedure concrete
+                        enough to run. Its entries are held in
+                        reg_test_method, keyed by readable id, rather
+                        than in a directory.
+    prefix:             tm
+    regex_id:           ^tm_[a-z][a-z0-9_]*$
+    id_term:            term_test_method
+    guid_term:          term_bca4066c614f47169af58509b9255f0f
+    usage:              |
+                        One entry per concrete procedure. An abstract
+                        technique is cited rather than entered.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_entry_test_method
+        guid_target:    sch_bf06a73a7a054940b50429c1e4c77981
+
+  t_test_case:
+    id_self:            t_test_case
+    guid_self:          t_62955c10444b484686af3a5341eccc70
+    title:              Test case type
+    brief:              |
+                        Type of test case data items.
+    description:        |
+                        A test case supplies the configuration, inputs
+                        and expected observations used with one test
+                        method. It names no item under test.
+    prefix:             tc
+    regex_id:           ^tc_[a-z][a-z0-9_]*$
+    id_term:            term_test_case
+    guid_term:          term_be402ef769c34db9a96ac41bd7a147d7
+    usage:              |
+                        One item per logical case, in test_case/. A
+                        python test function that automates a case is
+                        named by r_is_implemented_by and is not the
+                        case.
+    home:               test_case
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_test_case
+        guid_target:    sch_d1bb9266b1f24add9e719860c35f72d1
+
+  t_test_execution:
+    id_self:            t_test_execution
+    guid_self:          t_30a6f3f7d74c40a2ab43de1657eeec70
+    title:              Test execution type
+    brief:              |
+                        Type of test execution data items.
+    description:        |
+                        A test execution records one binding of a test
+                        method, a test case and an item under test,
+                        with the digest of each, and what came back. A
+                        completed record does not change.
+    prefix:             tex
+    regex_id:           ^tex_[a-z][a-z0-9_]*$
+    id_term:            term_test_execution
+    guid_term:          term_66db9e1ef2374b53840bf69fb06e4cba
+    usage:              |
+                        Written for a governed run, in execution/
+                        beside the workflow runs. An ordinary
+                        development run updates the current evidence
+                        and writes none.
+    home:               execution
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_test_execution
+        guid_target:    sch_ccbfa690cb90423690743a4858c78a95
+
+  t_test_result:
+    id_self:            t_test_result
+    guid_self:          t_6cbc2d2152ae44888e8233225bf15906
+    title:              Test result type
+    brief:              |
+                        Type of test result entries embedded in a test
+                        execution.
+    description:        |
+                        A test result carries the conformance result
+                        and what was observed to reach it. It has no
+                        meaning apart from the execution holding it.
+    prefix:             tres
+    regex_id:           ^tres_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_term:            term_test_result
+    guid_term:          term_a72c61356c62435d90b0e88762fa6f51
+    usage:              |
+                        One entry per thing the execution found, keyed
+                        by a short local name.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_test_result
+        guid_target:    sch_42d2f46edb0e4c5a806670a48672ad05
+
+  t_nonconformity_report:
+    id_self:            t_nonconformity_report
+    guid_self:          t_4b164e7c497d402c9ff19920814716e2
+    title:              Nonconformity report type
+    brief:              |
+                        Type of nonconformity report data items.
+    description:        |
+                        A nonconformity report states one observed
+                        failure to meet one applicable expectation, in
+                        a shape a check, a test and an eval all
+                        produce.
+    prefix:             ncr
+    regex_id:           ^ncr_[a-z][a-z0-9_]*$
+    id_term:            term_nonconformity_report
+    guid_term:          term_d503cfc624e34d18b1bb903a03f0fd1a
+    usage:              |
+                        The type says what a report means and not
+                        whether it is written. A report that is kept
+                        is held in nonconformity/; one that is not has
+                        the same shape in memory or in a command
+                        result.
+    home:               nonconformity
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_nonconformity_report
+        guid_target:    sch_69ebae5dbdc44ecf96526260ef313647
+
+  t_interface_control_document:
+    id_self:            t_interface_control_document
+    guid_self:          t_f61b8536b8d14f5587b1d55cd25efdec
+    title:              Interface control document type
+    brief:              |
+                        Type of interface control document data items.
+    description:        |
+                        An interface control document is a versioned
+                        controlled contract for one interface, made of
+                        keyed surfaces with addressable members.
+    prefix:             icd
+    regex_id:           ^icd_[a-z][a-z0-9_]*$
+    id_term:            term_interface_control_document
+    guid_term:          term_c7337b38a470424d97b6851d3e881b47
+    usage:              |
+                        One item per interface, in interface/. A
+                        materially changed baselined contract is a new
+                        item with a new version.
+    home:               interface
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_interface_control_document
+        guid_target:    sch_79c0dbfe449f4aa9b7f6d0b850b7c20e
+
+  t_interface_member:
+    id_self:            t_interface_member
+    guid_self:          t_024a2ad873884028a618d7ed0a837efd
+    title:              Interface member type
+    brief:              |
+                        Type of interface member entries embedded in
+                        an interface control document.
+    description:        |
+                        An interface member is one addressable
+                        declaration within a surface: a function, a
+                        class, a parameter, an error, a port.
+    prefix:             icm
+    regex_id:           ^icm_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_term:            term_interface_member
+    guid_term:          term_7aad4561c84d487f8fdb978913a3aa7c
+    usage:              |
+                        A requirement, a test case or an execution
+                        names one member rather than the document
+                        holding it.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_interface_member
+        guid_target:    sch_ff9775d1021b46119300ebd6eb0b3772

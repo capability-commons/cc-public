@@ -48,8 +48,11 @@ decision:               |
                         The relation check reports both, naming the
                         relation, the item and what it holds.
 
-                        r_instantiates, r_deploys and r_ran_under each
-                        declare a minimum and a maximum of one.
+                        r_deploys and r_ran_under each declare a
+                        minimum and a maximum of one. r_instantiates
+                        declares a maximum alone, because a node
+                        naming no component is what the workflow check
+                        reports, and one fault is not reported twice.
                         r_is_derived_from declares nothing, since a
                         requirement deriving from more than one thing
                         is not yet known to be wrong.
@@ -101,10 +104,12 @@ consequence:            |
                         relation check reads it beside domain, range,
                         acyclic, transitive and incompatible.
 
-                        Three relations declare it and the tree holds.
-                        A fourth, r_verifies, and the two the plan
-                        adds may declare it when their ends are
-                        settled.
+                        Two relations declare both bounds and a third
+                        declares a maximum, and the tree holds. A
+                        relation declares a bound only where nothing
+                        already reports the fault it would report. A
+                        fourth, r_verifies, and the two the plan adds
+                        may declare it when their ends are settled.
 
                         A minimum makes the relation check read every
                         item in the domain rather than every edge,
