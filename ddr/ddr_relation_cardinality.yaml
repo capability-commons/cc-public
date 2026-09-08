@@ -1,0 +1,124 @@
+id_self:                ddr_relation_cardinality
+guid_self:              ddr_7bf44fc4084c4f6980ff99a421451c24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A relation says how many edges of it an item holds
+brief:                  |
+                        A relation entry may declare a minimum and a
+                        maximum, and the relation check reports an
+                        item outside them, so a cardinality is stated
+                        once where the relation is defined.
+context:                |
+                        ddr_relation_semantics gave a relation entry
+                        two properties, transitive and incompatible,
+                        because two were what the first two relations
+                        needed. A third is now needed.
+
+                        A test case names exactly one test method.
+                        Written as a JSON Schema contains constraint
+                        on the relation array it is enforced, and the
+                        message a reader gets is that the array does
+                        not contain items matching the given schema,
+                        which names neither the relation nor the case.
+
+                        Four relations in the repository are already
+                        one per item and nothing says so:
+                        r_instantiates over fifteen nodes, r_deploys
+                        over eleven deployments, r_ran_under over
+                        seven executions, and r_is_derived_from over
+                        nineteen requirements.
+decision:               |
+                        A relation entry may declare cardinality, a
+                        minimum and a maximum for the edges of that
+                        relation one item holds.
+
+                        A maximum is read against every item that
+                        holds an edge of the relation. A minimum is a
+                        claim about every item the relation may run
+                        from, so it is read only where domain says
+                        which items those are, and is passed over
+                        where it does not.
+
+                        The relation check reports both, naming the
+                        relation, the item and what it holds.
+
+                        r_instantiates, r_deploys and r_ran_under each
+                        declare a minimum and a maximum of one.
+                        r_is_derived_from declares nothing, since a
+                        requirement deriving from more than one thing
+                        is not yet known to be wrong.
+rationale:              |
+                        The relation register rather than the schema
+                        of each item that holds the edge, because a
+                        cardinality is a property of the relation and
+                        is the same wherever the relation is used.
+                        Stated per schema it would be restated for
+                        every type in the domain and could disagree
+                        with itself.
+
+                        Declared data rather than a rule per relation
+                        in code, because ddr_term_ontology_checks
+                        refuses a checker that derives a property from
+                        a relation's name, and because a partner's
+                        relation is then checkable by the same code.
+
+                        A minimum only where domain says what it
+                        applies to, because a minimum without a domain
+                        is a claim about every item in the tree, and
+                        no relation means that.
+
+                        The check rather than JSON Schema, because a
+                        contains constraint says that an array does
+                        not contain items matching the given schema.
+                        The fault is legible only if the message names
+                        the relation and the item, and only the check
+                        knows both.
+alternative:            |
+                        A contains constraint in each item's schema.
+                        Rejected: see the rationale. It was written
+                        first and its message was the reason to move
+                        it.
+
+                        A cardinality of exactly one, rather than a
+                        minimum and a maximum separately. Rejected: at
+                        most one and at least one are different
+                        claims, and a relation may want the first
+                        without the second.
+
+                        Leaving cardinality to the check that resolves
+                        a binding, in the milestone that adds it.
+                        Rejected: it would hold for a test case and
+                        not for a node, and the four relations that
+                        are already one per item would stay unstated.
+consequence:            |
+                        sch_entry_relation gains cardinality, and the
+                        relation check reads it beside domain, range,
+                        acyclic, transitive and incompatible.
+
+                        Three relations declare it and the tree holds.
+                        A fourth, r_verifies, and the two the plan
+                        adds may declare it when their ends are
+                        settled.
+
+                        A minimum makes the relation check read every
+                        item in the domain rather than every edge,
+                        which is the first constraint there that costs
+                        a pass over the items.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_relation
+    guid_target:        sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.relation
+    guid_target:        pym_02a9a99732d544069897b6f7b090c9c5

@@ -1,0 +1,199 @@
+id_self:                sch_test_case
+guid_self:              sch_d1bb9266b1f24add9e719860c35f72d1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test case schema
+brief:                  |
+                        The shape of a test case: what a test method
+                        is run with, and what is expected of it.
+description:            |
+                        Identity, rights, the descriptive fields and
+                        edges come from sch_base and sch_relation.
+                        Beyond them a case carries its version, the
+                        configuration it supplies to its method, what
+                        it is given, what is expected of that, and the
+                        tolerance by which the two are compared. It
+                        may refer to a vector held outside the
+                        repository by locator and digest.
+
+                        The configuration is the one place a schema
+                        here does not say what the fields are. What a
+                        case must supply depends on its method, and
+                        the method names the schema that governs it. A
+                        check resolves the method and validates the
+                        payload against that schema.
+
+                        That a case names exactly one test method is
+                        declared as the cardinality of
+                        r_uses_test_method and reported by the
+                        relation check.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_test_case.yaml
+usage:                  |
+                        Named by t_test_case as the schema of every
+                        item in test_case/.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - version
+      - input
+      - expectation
+      - status
+
+    properties:
+
+      version:
+        type:           string
+        pattern:        ^[0-9]+(\.[0-9]+)*$
+        description:    |
+                        The version of this case, as a dotted numeric
+                        string. A case whose inputs or expectations
+                        change takes a new version.
+
+      configuration:
+        type:           object
+        description:    |
+                        The parameters this case supplies to its
+                        method. The fields are not declared here: what
+                        a case must supply depends on its method, and
+                        the method names the schema that governs it. A
+                        check resolves the method and validates this
+                        against that schema, so the payload is
+                        governed although it is not governed here.
+
+      precondition:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What must hold for this case beyond
+                        what its method already requires.
+
+      input:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the method is given.
+
+      expectation:
+        type:           string
+        minLength:      1
+        description:    |
+                        What is expected of the observation, in terms
+                        the verdict rule of the method can read.
+
+      tolerance:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How closely an observation must
+                        match the expectation.
+
+      artifact:
+        type:           array
+        minItems:       1
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - locator
+            - digest
+            - digest_algorithm
+
+          description:  |
+                        One vector held outside the repository. The
+                        digest is what makes a result that cited it
+                        checkable later, since a vector that changed
+                        silently would leave every result about it
+                        wrong and nothing here would show it.
+
+          properties:
+
+            locator:
+              type:     string
+              minLength:  1
+              pattern:  ^[^\n]+$
+              description:  |
+                        Where the vector is, as one line.
+
+            digest:
+              type:     string
+              pattern:  ^[0-9a-f]+$
+              description:  |
+                        The digest of the vector, in lower case
+                        hexadecimal.
+
+            digest_algorithm:
+              type:     string
+              minLength:  1
+              pattern:  ^[^\n]+$
+              description:  |
+                        What computed the digest, for example sha256.
+
+            media_type:
+              type:     string
+              pattern:  ^[a-z]+/[A-Za-z0-9.+-]+$
+              description:  |
+                        Optional. The media type of the vector.
+
+            size_byte:
+              type:     integer
+              minimum:  0
+              description:  |
+                        Optional. The size of the vector.
+
+            revision:
+              type:     string
+              minLength:  1
+              pattern:  ^[^\n]+$
+              description:  |
+                        Optional. The revision the vector was taken
+                        from, or the time it was retrieved.
+
+            retention:
+              type:     string
+              minLength:  1
+              description:  |
+                        Optional. How long the vector is kept and by
+                        whom.
+
+            id_mark:
+              $ref:     https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+              description:  |
+                        Optional. Readable id of the protective mark
+                        the vector carries.
+
+            guid_mark:
+              $ref:     https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+              description:  |
+                        Optional. Guid of the protective mark.
+
+        description:    |
+                        Optional. The vectors this case refers to that
+                        are held outside the repository.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - superseded
+          - withdrawn
+
+        description:    |
+                        The lifecycle status of this case.
+
+unevaluatedProperties:  false

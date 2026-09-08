@@ -19,17 +19,20 @@ brief:                  |
 description:            |
                         A relation entry may constrain the types at
                         its two ends, forbid cycles, declare itself
-                        transitive, and name the relations that may
-                        not hold between the same pair. An edge that
+                        transitive, name the relations that may not
+                        hold between the same pair, and say how many
+                        of its edges one item holds. An edge that
                         breaks a constraint is a critical fault at the
                         edge, and a constraint naming a type or a
                         relation that does not exist is a fault at the
                         entry. An edge of a transitive relation that a
                         chain of its own edges already implies is
                         advisory, since it states nothing false. A
-                        target that does not resolve is left to the
-                        reference check. An absent constraint says
-                        nothing.
+                        minimum cardinality is read against every item
+                        the domain names, and is passed over where a
+                        relation declares no domain. A target that
+                        does not resolve is left to the reference
+                        check. An absent constraint says nothing.
 relation:               []
 
 ...
@@ -60,6 +63,9 @@ KEY_RANGE      = 'range'
 KEY_ACYCLIC    = 'acyclic'
 KEY_TRANSITIVE = 'transitive'
 KEY_INCOMPAT   = 'incompatible'
+KEY_CARDINAL   = 'cardinality'
+KEY_MINIMUM    = 'minimum'
+KEY_MAXIMUM    = 'maximum'
 
 ID_TYPE_REL    = 't_relation'
 REL_HELD_IN    = 'r_is_held_in_registry'
@@ -133,6 +139,7 @@ def check(context):
             list_bad.extend(_redundant(id_relation, list_edge, map_declaration))
 
     list_bad.extend(_incompatible(table, map_edge, map_declaration))
+    list_bad.extend(_cardinality(table, map_edge, map_declaration, map_prefix, context))
 
     return cc_public.check.result.Result(count_item         = count,
                                          list_nonconformity = list_bad,
@@ -359,6 +366,116 @@ def _incompatible(table, map_edge, map_declaration):
                                 target = _name(map_declaration, target))))
 
     return out
+
+
+# -----------------------------------------------------------------------------
+def _cardinality(table, map_edge, map_declaration, map_prefix, context):
+    """
+    Return a fault for each item holding more edges of one relation
+    than its entry allows, and for each item in a relation's domain
+    holding fewer than it requires.
+
+    A minimum is a claim about every item the relation may run from, so
+    it is read only where domain says which items those are.
+
+    """
+
+    out = []
+
+    for (id_relation, entry) in sorted(table.items()):
+
+        if not isinstance(entry, dict):
+            continue
+
+        bound = entry.get(KEY_CARDINAL)
+
+        if not isinstance(bound, dict):
+            continue
+
+        map_count = collections.defaultdict(list)
+
+        for (source, _, filepath, path) in map_edge.get(id_relation, ()):
+            map_count[source].append((filepath, path))
+
+        maximum = bound.get(KEY_MAXIMUM)
+
+        if maximum is not None:
+            for (source, list_at) in sorted(map_count.items()):
+                if len(list_at) > maximum:
+                    (filepath, path) = list_at[maximum]
+                    out.append(_fault(filepath, path,
+                            'An item holds at most {n} {rel} edge(s), and {name} holds '
+                            '{held}.'.format(n = maximum, rel = id_relation,
+                                             name = _name(map_declaration, source),
+                                             held = len(list_at))))
+
+        minimum = bound.get(KEY_MINIMUM)
+        domain  = entry.get(KEY_DOMAIN)
+
+        if minimum:
+            for (id_self, location) in _iter_domain(context, domain, map_prefix):
+                guid = map_declaration_guid(map_declaration, id_self)
+                if len(map_count.get(guid, ())) < minimum:
+                    out.append(_fault(location, KEY_RELATION,
+                            '{name} holds {held} {rel} edge(s), and an item of its kind '
+                            'holds at least {n}.'.format(
+                                    name = id_self, held = len(map_count.get(guid, ())),
+                                    rel = id_relation, n = minimum)))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def map_declaration_guid(map_declaration, id_self):
+    """
+    Return the guid a readable id declares, or None.
+
+    """
+
+    return next((guid for (guid, (_, name)) in map_declaration.items()
+                 if name == id_self), None)
+
+
+# -----------------------------------------------------------------------------
+def _iter_domain(context, domain, map_prefix):
+    """
+    Yield (id_self, location) for every item whose type the domain
+    names. An absent domain yields nothing, since a minimum without one
+    is a claim about everything.
+
+    """
+
+    if not domain:
+        return
+
+    prefix = {p for (p, entry) in map_prefix.items()
+              if isinstance(entry, dict) and entry.get(KEY_ID_SELF) in domain}
+
+    for (location, document) in sorted(context.map_document.items(), key = str):
+        for (id_self, _) in _iter_identified(document):
+            if id_self.split(SEPARATOR, 1)[0] in prefix:
+                yield (id_self, location)
+
+
+# -----------------------------------------------------------------------------
+def _iter_identified(node):
+    """
+    Yield (id_self, node) for the node and every item held within it.
+
+    """
+
+    if isinstance(node, dict):
+
+        if isinstance(node.get(KEY_ID_SELF), str):
+            yield (node[KEY_ID_SELF], node)
+
+        for value in node.values():
+            yield from _iter_identified(value)
+
+    elif isinstance(node, list):
+
+        for value in node:
+            yield from _iter_identified(value)
 
 
 # -----------------------------------------------------------------------------

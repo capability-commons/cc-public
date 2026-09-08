@@ -26,16 +26,10 @@ usage:                  |
                         register. The content of this register defines
                         the semantics of that edge.
 note:                   |
-                        The relation register gives us a single
-                        mechanism for taking any pair of items that
-                        have identifiers
-
-relation:
-
-  - id_relation:        r_is_specified_by_schema
-    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
-    id_target:          sch_reg_relation
-    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
+                        The register holds one mechanism for labelling
+                        an edge between any pair of items that carry
+                        identifiers. A relation is added here before
+                        an edge uses it.
 
 table:
 
@@ -103,20 +97,15 @@ table:
     title:              Evaluates items specified by schema relation
     brief:              SUBJ evaluates items specified by schema OBJ
     description:        |
-                        It is intended that the eval identified by
-                        SUBJ be applied to every data item specified
-                        by the schema identified by OBJ.
-
-                        SPECIFIED BY is transitive, as it already is
-                        in r_is_specified_by_schema: a schema
+                        The eval identified by SUBJ is applied to
+                        every data item specified by the schema
+                        identified by OBJ. Specified by is transitive,
+                        as it is in r_is_specified_by_schema: a schema
                         specifies an item through everything it
-                        composes, which is what validation does. So an
-                        item specified by sch_ddr is equally specified
-                        by sch_base and sch_descriptive, and an eval
-                        anchored on a trait reaches everything
-                        carrying that trait -- including item types
-                        not yet invented -- without being restated for
-                        each.
+                        composes. An item specified by sch_ddr is
+                        equally specified by sch_base and
+                        sch_descriptive, and an eval anchored on a
+                        trait reaches every item carrying that trait.
 
     # ---------------------------------------------------------------------------
     # r_evaluates_items_joined_by_relation — Evaluates items joined by relation
@@ -133,16 +122,13 @@ table:
     title:              Evaluates items joined by relation relation
     brief:              SUBJ evaluates items joined by relation OBJ
     description:        |
-                        It is intended that the eval identified by
-                        SUBJ be applied to every PAIR of data items
-                        joined by an edge labelled with the relation
-                        identified by OBJ.
-
-                        For a criterion that is not about an item at
-                        all but about the fit between two of them --
+                        The eval identified by SUBJ is applied to
+                        every pair of data items joined by an edge
+                        labelled with the relation identified by OBJ.
+                        It carries a criterion about the fit between
+                        two items rather than about one, such as
                         whether a design decision and the thing it
-                        decides actually agree, say. Such a criterion
-                        has no single item to anchor to.
+                        decides agree.
 
     # ---------------------------------------------------------------------------
     # r_decides — Decides relation
@@ -159,15 +145,11 @@ table:
     title:              Decides relation
     brief:              SUBJ decides OBJ
     description:        |
-                        It is intended that the design of the item
-                        identified by OBJ be settled by the design
-                        design decision identified by SUBJ.
-
-                        Recorded on the record rather than on the
-                        item, so that an item need not point back at
-                        the reasoning behind it. A reader of the item
-                        finds that reasoning by looking for what
-                        decides it.
+                        The design of the item identified by OBJ is
+                        settled by the design decision identified by
+                        SUBJ. The edge is held on the record. A reader
+                        of the item finds the reasoning behind it by
+                        looking for what decides it.
 
     domain:
       - t_ddr
@@ -190,6 +172,10 @@ table:
     range:
       - t_component
 
+    cardinality:
+      minimum:          1
+      maximum:          1
+
   r_is_judged_by:
     id_self:            r_is_judged_by
     guid_self:          r_2ad95cd22e3e45beb317f3e082386a96
@@ -200,11 +186,9 @@ table:
                         judged by the eval identified by OBJ. Where
                         SUBJ is a component rather than a port, the
                         eval judges an input and an output of that
-                        component together.
-
-                        This is how an eval is anchored to a port. The
-                        eval keeps its own criterion and examples; the
-                        edge says only where it applies.
+                        component together. The eval holds its own
+                        criterion and examples, and the edge says
+                        where it applies.
 
     domain:
       - t_port
@@ -248,11 +232,10 @@ table:
     brief:              SUBJ is a form of OBJ
     description:        |
                         The type identified by SUBJ shares the
-                        interface of the type identified by OBJ. Used
-                        from a composite component type to the atomic
-                        component type, so that the component forms
-                        can be enumerated and a policy binding all of
-                        them can be checked.
+                        interface of the type identified by OBJ. It
+                        runs from a composite component type to the
+                        atomic component type, so that the component
+                        forms are enumerable.
 
     domain:
       - t_type
@@ -279,6 +262,10 @@ table:
     range:
       - t_workflow_dataflow
 
+    cardinality:
+      minimum:          1
+      maximum:          1
+
   r_ran_under:
     id_self:            r_ran_under
     guid_self:          r_acbf8f7c3dea40249e7b9aa27ad6cdc3
@@ -295,6 +282,10 @@ table:
 
     range:
       - t_deployment
+
+    cardinality:
+      minimum:          1
+      maximum:          1
 
   r_binds:
     id_self:            r_binds
@@ -719,3 +710,10 @@ table:
     acyclic:            true
     transitive:         true
     relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6

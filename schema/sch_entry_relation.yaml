@@ -14,14 +14,14 @@ brief:                  |
                         the general register entry.
 description:            |
                         The kinds of item an edge of this relation may
-                        run from and to, and whether its edges may
-                        form a cycle. Each is optional, and an absent
-                        constraint says nothing rather than permitting
-                        nothing: a relation that plainly ends at one
-                        kind of thing says so, and one that ends at
-                        anything a decision can settle does not. The
-                        relation check reads these and reports an edge
-                        that breaks them.
+                        run from and to, whether its edges may form a
+                        cycle, whether a chain of them is one edge,
+                        which relations may not hold between the same
+                        pair, and how many edges of it one item holds.
+                        Each is optional, and an absent constraint
+                        says nothing rather than permitting nothing.
+                        The relation check reads these and reports an
+                        edge or an item that breaks them.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_entry_relation.yaml
 type:                   object
@@ -83,6 +83,34 @@ properties:
                         one. The constraint means the same read from
                         either end, so one entry of a pair carries it.
                         Absent means no relation is excluded.
+
+  cardinality:
+    type:               object
+    additionalProperties:  false
+    minProperties:      1
+
+    properties:
+
+      minimum:
+        type:           integer
+        minimum:        0
+        description:    |
+                        How many edges of this relation an item in its
+                        domain holds at least. Checked only where
+                        domain says which items those are.
+
+      maximum:
+        type:           integer
+        minimum:        1
+        description:    |
+                        How many edges of this relation one item may
+                        hold at most.
+
+    description:        |
+                        How many edges of this relation one item
+                        holds. Absent means any number. A minimum is a
+                        claim about every item in the domain, so it
+                        needs one.
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_entry.yaml

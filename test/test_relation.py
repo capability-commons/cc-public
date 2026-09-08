@@ -68,3 +68,19 @@ def test_incompatibility_holds_whichever_way_the_other_edge_runs(tree, tmp_path)
     ((severity, message),) = _findings(tmp_path)          # r_is_part_of declares nothing
     assert severity == 'critical'
     assert 'r_is_narrower_than and r_is_part_of' in message
+
+
+def test_an_item_holding_more_edges_than_a_relation_allows_is_reported(tree, tmp_path):
+    node = 'node_accept_requirement.accept'
+    cc_public.edit.link.link(tree, node, 'r_instantiates', 'cmp_assess_concept')
+    ((severity, message),) = _findings(tmp_path)
+    assert severity == 'critical'
+    assert 'at most 1 r_instantiates edge' in message and 'holds 2' in message
+
+
+def test_an_item_holding_fewer_than_a_relation_requires_is_reported(tree, tmp_path):
+    node = 'node_accept_requirement.accept'
+    cc_public.edit.link.unlink(tree, node, 'r_instantiates', 'cmp_accept_requirement')
+    ((severity, message),) = _findings(tmp_path)
+    assert severity == 'critical'
+    assert 'holds 0 r_instantiates edge' in message and 'at least 1' in message
