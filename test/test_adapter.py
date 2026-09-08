@@ -176,3 +176,70 @@ def test_the_run_reads_the_code_of_the_tree_it_was_given(tmp_path):
     assert problem == []
     assert document['execution_outcome'] == 'completed'
     assert document['result']['main']['conformance_result'] == 'failed'
+
+
+def _run(tmp_path, *option):
+    import click.testing
+    import cc_public.cli.group
+    import cc_public.cli.running                              # noqa: F401 -- registers
+    return click.testing.CliRunner().invoke(
+                cc_public.cli.group.main,
+                ['test', ID_CASE, '--under-test', ID_UNDER, '--root', str(tmp_path),
+                 *option])
+
+
+def _whole(tmp_path):
+    import shutil
+    import conftest
+    conftest.copy_tree(tmp_path)
+    shutil.copytree(conftest.ROOT / 'test', tmp_path / 'test')
+
+
+def test_a_run_writes_nothing_unless_it_is_asked_to(tmp_path):
+    _whole(tmp_path)
+    done = _run(tmp_path)
+    assert done.exit_code == 0
+    assert 'Nothing was written.' in done.output
+    assert not (tmp_path / 'nonconformity').exists()
+
+
+def test_evidence_brings_the_current_evidence_up_to_what_was_observed(tmp_path):
+    import ruamel.yaml
+    _whole(tmp_path)
+    done = _run(tmp_path, '--evidence')
+    assert done.exit_code == 0
+    assert 'evd_pytest' in done.output
+
+    loaded = ruamel.yaml.YAML(typ = 'safe').load(
+                    (tmp_path / 'evidence' / 'evd_pytest.yaml').read_text())
+    (row,) = [one for one in loaded['case'].values() if one.get('id_case') == ID_CASE]
+    assert row['outcome']    == 'passed'
+    assert row['id_method']  == 'tm_pytest_function'
+    assert row['id_execution'].startswith('tex_')
+
+
+def test_keeping_a_report_keeps_the_execution_it_names(tmp_path):
+    _whole(tmp_path)
+
+    # Break the candidate, so the run has a failure to report.
+    filepath = tmp_path / 'src' / 'cc_public' / 'query.py'
+    text     = filepath.read_text()
+    head     = text.index('    def path(self, name_from, name_to):')
+    close    = text.index('"""', text.index('"""', head) + 3) + 3
+    body     = text.index('\n', close) + 1
+    filepath.write_text(text[:body] + '        return None\n' + text[body:])
+
+    done = _run(tmp_path, '--report')
+    assert done.exit_code == 0
+
+    (report,)    = list((tmp_path / 'nonconformity').iterdir())
+    list_kept    = list((tmp_path / 'execution').glob('tex_*.yaml'))
+    assert report.name.startswith('ncr_')
+    assert len(list_kept) == 1
+
+    # A report names the execution that produced it, and that execution is
+    # in the tree, so nothing dangles.
+    critical = [n['message']
+                for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
+                for n in c['nonconformity'] if n['severity'] == 'critical']
+    assert critical == []

@@ -45,6 +45,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.rename
 import cc_public.edit.tree
+import cc_public.nonconformity
 import cc_public.eval.case
 import cc_public.eval.check
 import cc_public.eval.measure
@@ -58,6 +59,10 @@ import cc_public.trace
 import cc_public.workflow.generate
 import cc_public.workflow.graph
 import cc_public.workflow.run
+
+
+ID_TYPE_REPORT  = 't_nonconformity_report'
+KEY_EXPECTATION = 'expectation'
 
 
 # -----------------------------------------------------------------------------
@@ -202,12 +207,18 @@ def _deployment_of(tree, record):
 @click.option('--under-test', 'name_under_test', required = True,
               help = 'The item the run observes, by readable id or guid.')
 @click.option('--record', 'is_record', is_flag = True,
-              help = 'Write the execution to the tree. Without it nothing is written.')
+              help = 'Write the execution to the tree.')
+@click.option('--evidence', 'is_evidence', is_flag = True,
+              help = 'Update the current verification evidence from the result.')
+@click.option('--report', 'is_report', is_flag = True,
+              help = 'Write a nonconformity report for each failed result, and '
+                     'the execution it came from.')
 @click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
               default = 'text', show_default = True,
               help = 'text for a person; json for a program.')
 @cc_public.cli.group.OPTION_ROOT
-def test_(name_case, name_under_test, is_record, id_format, list_root):
+def test_(name_case, name_under_test, is_record, is_evidence, is_report,
+          id_format, list_root):
     """
     Run the test case NAME_CASE against the item under test.
 
@@ -215,8 +226,12 @@ def test_(name_case, name_under_test, is_record, id_format, list_root):
     adapter is one installed with the tool. Nothing the case carries
     reaches a shell.
 
-    An execution is written only where --record asks for it. Without
-    it the run leaves the repository as it found it.
+    A failed result is shown as the report it makes, whatever the
+    options. Nothing is written unless it is asked for: --record keeps
+    the execution, --evidence brings the current evidence up to what
+    was observed, and --report keeps the reports, and with them the
+    execution they name. Without any of them the run leaves the
+    repository as it found it.
 
     """
 
@@ -227,7 +242,32 @@ def test_(name_case, name_under_test, is_record, id_format, list_root):
     if document is None:
         cc_public.cli.group.fail('\n'.join(list_problem))
 
-    if is_record and not list_problem:
-        cc_public.adapter.record(tree, document)
+    defaults = dict(tree.defaults())
+    defaults['guid_mark'] = tree.resolve(defaults['id_mark']).guid_self
+    case     = tree.context.map_document[tree.resolve(name_case).location]
 
-    cc_public.cli.report.write_execution_test(document, list_problem, is_record, id_format)
+    list_report = cc_public.nonconformity.from_execution(
+                        tree.context.map_document, document, defaults,
+                        case.get(KEY_EXPECTATION))
+
+    written = []
+
+    if not list_problem:
+
+        # A report names the execution that produced it, so keeping one
+        # keeps that too. A report about a run the tree does not hold
+        # could not be followed back to what was observed.
+        #
+        if is_record or (is_report and list_report):
+            written.append(cc_public.adapter.record(tree, document))
+
+        if is_evidence and cc_public.evidence.from_execution(tree, document) is not None:
+            written.append(cc_public.evidence.ID_PYTEST)
+
+        if is_report:
+            written.extend(cc_public.edit.new.from_document(
+                                    tree, ID_TYPE_REPORT, report)
+                           for report in list_report)
+
+    cc_public.cli.report.write_execution_test(document, list_report, list_problem,
+                                              written, id_format)

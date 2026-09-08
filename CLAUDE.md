@@ -121,13 +121,18 @@ Running and committing
   `run` and `resume` take `--root` more than once: the first is the
   repository run in, where items are made and the record is written; the
   rest are the trees it consumes, read only.
-- `test CASE --under-test ITEM [--record] [--format json]` — runs one test case
-  against one item. The case names its method by `r_uses_test_method`, the method
-  names an installed adapter by identity, and the adapter derives what to run from
-  that identity, so no data item carries a command or a path. Prints the execution
-  outcome and the conformance result, which are two things: an execution that did
-  not complete carries no result at all. Writes nothing unless `--record`
-  (`ddr_test_execution`).
+- `test CASE --under-test ITEM [--record] [--evidence] [--report] [--format json]`
+  — runs one test case against one item. The case names its method by
+  `r_uses_test_method`, the method names an installed adapter by identity, and the
+  adapter derives what to run from that identity, so no data item carries a command
+  or a path. The run is made in a process whose path holds the tree's own `src`, so
+  what runs is the code that tree holds. Prints the execution outcome and the
+  conformance result, which are two things: an execution that did not complete
+  carries no result at all, and a failed one is shown as the report it makes.
+  Writes nothing unless asked: `--record` keeps the execution, `--evidence` brings
+  the current evidence up to what was observed, and `--report` keeps the reports and
+  the execution they name (`ddr_test_execution`, `ddr_nonconformity_report`,
+  `ddr_evidence_dependency_closure`).
 - `resume EXECUTION` — continues a waiting run once the tree holds what
   the brief asked for. An agent output is read from the graph, never from
   a report: it `revises` an input, or is `found` from one by a relation in

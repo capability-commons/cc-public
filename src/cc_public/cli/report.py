@@ -658,16 +658,18 @@ def write_glossary_gaps(found, minimum, id_format):
 
 
 # -----------------------------------------------------------------------------
-def write_execution_test(document, list_problem, is_record, id_format):
+def write_execution_test(document, list_report, list_problem, written, id_format):
     """
-    Write what one test run observed, as text or as json.
+    Write what one test run observed, the reports a failure makes, and
+    what of it was kept, as text or as json.
 
     """
 
     if id_format == FORMAT_JSON:
         click.echo(json.dumps({'execution': document,
-                               'problem':   list_problem,
-                               'recorded':  bool(is_record and not list_problem)},
+                               'report':    list(list_report),
+                               'problem':   list(list_problem),
+                               'written':   list(written)},
                               indent = 2, default = str))
         return
 
@@ -675,20 +677,24 @@ def write_execution_test(document, list_problem, is_record, id_format):
 
     click.echo('{id_self}  {outcome}'.format(id_self = document['id_self'],
                                              outcome = document['execution_outcome']))
-    click.echo('    {label:15} {value}'.format(label = 'case',
-                                               value = document['id_case']))
-    click.echo('    {label:15} {value}'.format(label = 'method',
-                                               value = document['id_method']))
-    click.echo('    {label:15} {value}'.format(label = 'under test',
-                                               value = document['id_under_test']))
-    click.echo('    {label:15} {value}'.format(
-                        label = 'result',
-                        value = result.get('conformance_result', 'none, it did not run')))
+
+    for (label, value) in (('case',       document['id_case']),
+                           ('method',     document['id_method']),
+                           ('under test', document['id_under_test']),
+                           ('result',     result.get('conformance_result',
+                                                     'none, it did not run'))):
+        click.echo('    {label:15} {value}'.format(label = label, value = value))
 
     for line in result['observation'].strip().splitlines()[:12]:
         click.echo('        ' + line)
 
+    for report in list_report:
+        click.echo('    {label:15} {brief}'.format(label = 'report',
+                                                   brief = report['brief'].strip()))
+        click.echo('        expected  ' + report['expected'].strip().splitlines()[0])
+
     for problem in list_problem:
         click.echo('    PROBLEM         ' + problem)
 
-    click.echo('Recorded.' if is_record and not list_problem else 'Nothing was written.')
+    click.echo('Wrote {what}.'.format(what = ', '.join(written)) if written
+               else 'Nothing was written.')
