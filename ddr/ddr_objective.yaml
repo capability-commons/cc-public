@@ -1,0 +1,207 @@
+id_self:                ddr_objective
+guid_self:              ddr_0db580932e364a6d8c5f5a0b6fae3bfd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An objective is an item, and conformance is claimed against it
+brief:                  |
+                        An objective states one thing an external
+                        standard requires. A criticality level
+                        requires objectives by naming them, and
+                        whatever satisfies an objective, of any kind,
+                        points at it.
+context:                |
+                        ddr_verification_standard decides that
+                        conformance is claimed for an objective and
+                        never for a standard as a whole. That is
+                        prose, and nothing can check it: there is no
+                        objective to claim, and no way to ask which
+                        are claimed and which are not.
+
+                        ddr_criticality needs each level to say what
+                        it requires, and each requirement to be able
+                        to say at what maturity it becomes required.
+
+                        Both want the same thing, which is an
+                        objective that can be named. A check
+                        identifier written into a register entry would
+                        do neither: it says which mechanism runs, and
+                        nothing about what the standard asked for,
+                        whether anything else also serves it, or
+                        whether the standard is served at all where no
+                        check exists.
+
+                        A process mapping exercise will in time trace
+                        the parts of this system and this process to
+                        the clauses of the standards they satisfy. It
+                        has not been done, and this record must not
+                        assume it.
+decision:               |
+                        An objective is an item of t_objective with
+                        prefix obj, held in objective/ and shaped by
+                        sch_objective.
+
+                        An objective states one thing a standard
+                        requires, in the words of this repository, and
+                        names the document it is taken from. Where the
+                        process mapping has been done it also names
+                        the clause. It need not, and until that
+                        exercise is done it will not.
+
+                        What satisfies an objective points at it, by
+                        an edge, and may be an item of any kind: a
+                        check, an eval, a workflow, a register, a
+                        design decision, a procedure or the recorded
+                        activity of a person. An objective satisfied
+                        by nothing says so, and that is the useful
+                        statement rather than an absence.
+
+                        A criticality register entry requires an
+                        objective by naming it, and each such
+                        reference says at what maturity the objective
+                        becomes required.
+
+                        An objective carries no criticality of its
+                        own. Which levels require it is written on the
+                        levels, so that reading a level says what it
+                        demands and reading an objective says who
+                        demands it.
+rationale:              |
+                        An item rather than an identifier in a
+                        register, because an objective is a thing this
+                        repository has a position on. It is cited, it
+                        is claimed, it is reported on, and something
+                        may satisfy it that no check could. A bare
+                        check identifier can hold none of that, and
+                        would make the tool the only place the
+                        standard is written down.
+
+                        Satisfied by an item of any kind, because the
+                        mapping runs to the whole of the system and
+                        the process. A design decision satisfies an
+                        objective about recording rationale, a
+                        register satisfies one about controlled
+                        vocabulary, a workflow satisfies one about a
+                        review being performed, and a person's
+                        attestation satisfies one that no mechanism
+                        can. Restricting it to checks would record the
+                        automatable part of conformance and quietly
+                        drop the rest.
+
+                        An objective satisfied by nothing saying so,
+                        because that is the sentence an auditor and an
+                        engineer both want first, and a blank field is
+                        indistinguishable from an unasked question.
+
+                        Required by a level rather than carrying one,
+                        because an objective is one thing and may be
+                        demanded by several levels in both dimensions.
+                        Writing the demand on the level keeps one
+                        place to look for what a level asks, which is
+                        what makes the level a lever.
+
+                        A maturity on each reference rather than on
+                        the objective, because the same objective may
+                        be required from the outset at a high
+                        criticality and only later at a low one.
+
+                        The clause left open, because the process
+                        mapping is a separate exercise over the whole
+                        system, and an objective that cannot be
+                        written until its clause is known is one that
+                        will not be written.
+alternative:            |
+                        A check identifier in the criticality register
+                        entry. Rejected: see the rationale. It was the
+                        recommendation until the objective's other
+                        uses were counted.
+
+                        Prose in the register entry describing what is
+                        required. Rejected: it cannot be pointed at,
+                        so nothing can claim it, satisfy it or report
+                        it unmet.
+
+                        Import every clause of every cited standard as
+                        an objective. Rejected: it would fill the
+                        repository with hundreds of objectives this
+                        repository has no position on, and a claim is
+                        worth something only where it was chosen.
+
+                        Let only a check satisfy an objective.
+                        Rejected: it records the automatable part of
+                        conformance and drops the rest, which is most
+                        of it.
+
+                        Give an objective a criticality of its own and
+                        require every objective at or below a level.
+                        Rejected: it forces the objectives into a
+                        single order, and they do not have one.
+consequence:            |
+                        t_objective, sch_objective and the objective/
+                        home are added, and obj is claimed as a
+                        prefix.
+
+                        A relation is needed for what satisfies an
+                        objective, running from an item of any kind to
+                        an objective. reg_relation gains it, and its
+                        domain is wide by intent rather than by
+                        omission.
+
+                        r_is_taken_from must admit an objective at its
+                        subject end, as it must already admit a design
+                        decision.
+
+                        A criticality register entry references
+                        objectives, so ddr_criticality and this record
+                        land together. Neither is useful alone.
+
+                        The first objectives to write are the ones the
+                        plan already names: a requirement whose test
+                        function verifies more than one requirement, a
+                        requirement whose normal, boundary and error
+                        conditions are separately expected,
+                        requirements-based coverage analysis, and the
+                        accounting for a verification tool.
+
+                        The process mapping over the whole system and
+                        process, to the clauses of the cited
+                        standards, is not done and is not required
+                        yet. Every objective written before it will
+                        need a clause added afterwards.
+relation:               []
+
+question:
+
+  mapping:
+    id_self:            qst_objective.mapping
+    guid_self:          qst_225d3eca2e6e4675b9fda7ad84f25fba
+    question:           |
+                        What the process mapping exercise covers, in
+                        what order, and what records that a part of
+                        the system or the process has been traced to
+                        the clause it satisfies.
+    relation:           []
+
+  partial:
+    id_self:            qst_objective.partial
+    guid_self:          qst_b4c3901cf29c4b19aa32e73fc93044fa
+    question:           |
+                        Whether an objective may be partly satisfied,
+                        and how a claim says so without saying either
+                        that it is met or that it is not.
+    relation:           []
+
+  report:
+    id_self:            qst_objective.report
+    guid_self:          qst_9130c0c8d97143779c0dc3163606acfb
+    question:           |
+                        What reads the objectives and reports what is
+                        claimed, what satisfies each and what is
+                        unmet, and whether that is a check, a
+                        projection or a dossier.
+    relation:           []

@@ -43,14 +43,14 @@ context:                |
                         these standards can read what is here and
                         recognise it.
 decision:               |
-                        Verification here takes its objectives from
-                        DO-178C first, from the INCOSE systems
-                        engineering handbook and the INCOSE guide to
-                        writing requirements next, and from the
-                        ISO/IEC/IEEE standards, chiefly 29119 and
-                        29148, last. Where two conflict, the earlier
-                        in that order is followed and the departure is
-                        recorded.
+                        Software verification here takes its
+                        objectives from DO-178C first, from the INCOSE
+                        systems engineering handbook and the INCOSE
+                        guide to writing requirements next, and from
+                        the ISO, IEC and IEEE standards, chiefly 29119
+                        and 29148, last. Where two conflict, the
+                        earlier in that order is followed and the
+                        departure is recorded.
 
                         The order governs objectives and definitions,
                         not vocabulary. Where a standard's word would
@@ -66,6 +66,20 @@ decision:               |
                         for a standard as a whole. A claim says which
                         objective, what satisfies it, and what does
                         not yet.
+
+                        That order governs the objectives of software
+                        verification, which is one question among
+                        several, and it does not reach every
+                        dimension. The security dimension of
+                        ddr_criticality takes its objectives from ISO
+                        and SAE 21434 and from IEC 62443, on which
+                        DO-178C is silent, so the order has nothing to
+                        arbitrate there. The operational risk
+                        assessment for unmanned aircraft published by
+                        JARUS and adopted by EASA informs how a safety
+                        level is arrived at for an operation, and is
+                        not a source of verification objectives at
+                        all.
 rationale:              |
                         DO-178C first, because it is the most
                         prescriptive of the three about what
@@ -101,6 +115,16 @@ rationale:              |
                         queried cannot be reviewed, and prose naming a
                         document is not a reference the tool can
                         follow.
+
+                        The order scoped to software verification,
+                        because it was chosen for that and holds only
+                        there. DO-178C says nothing about information
+                        security, and the vehicles this repository
+                        serves make security a dimension of its own
+                        rather than a corner of safety, so a
+                        precedence that put DO-178C first over a
+                        question it does not address would resolve
+                        nothing and read as though it had.
 alternative:            |
                         One standard alone. Rejected: none of them
                         covers what this repository needs. DO-178C
@@ -124,12 +148,20 @@ alternative:            |
 
                         Citation in prose only. Rejected: see the
                         rationale.
+
+                        Extend the order to cover every dimension,
+                        putting DO-178C first throughout. Rejected: it
+                        is silent on information security, and an
+                        order whose head has no opinion is not an
+                        order.
 consequence:            |
                         The document register gains entries for
                         DO-178C, the INCOSE systems engineering
-                        handbook, and ISO/IEC/IEEE 29119. Whether ISO
-                        26262 and the ECSS verification standard are
-                        cited or merely consulted is not settled.
+                        handbook, ISO/IEC/IEEE 29119, ISO and SAE
+                        21434, IEC 62443 and the JARUS operational
+                        risk assessment for unmanned aircraft. Whether
+                        ISO 26262 and the ECSS verification standard
+                        are cited or merely consulted is not settled.
 
                         r_is_taken_from runs today from a requirement
                         rule, a requirement characteristic or a
@@ -156,7 +188,14 @@ consequence:            |
                         themselves unaccounted for. The pytest adapter
                         decides every conformance result and nothing
                         verifies the adapter.
-relation:               []
+
+                        Tracing the parts of this system and this
+                        process to the clauses of the cited standards
+                        is a process mapping exercise that has not
+                        been done. Until it is, a claim names a
+                        document and not a clause, and ddr_objective
+                        is written so that a clause can be added later
+                        without the objectives being rewritten.
 
 question:
 
@@ -189,3 +228,5 @@ question:
                         that requirement, and whether anything short
                         of reading both can show it.
     relation:           []
+
+relation:               []

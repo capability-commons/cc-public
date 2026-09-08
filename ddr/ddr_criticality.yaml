@@ -41,48 +41,81 @@ context:                |
                         here, because maturity needs a lifecycle with
                         named stages and there is none.
 decision:               |
-                        A requirement may declare a criticality. The
-                        field is optional, and absent means the base
-                        level, so nothing already written changes.
+                        A criticality has a dimension and a level.
+                        There are two dimensions, safety and security,
+                        and five levels in each, so the register holds
+                        ten entries: crit_safety_10 through
+                        crit_safety_90 and crit_security_10 through
+                        crit_security_90.
 
-                        The levels are entries in a register of their
-                        own, named by their place on a scale from zero
-                        to one hundred: crit_10, crit_40, crit_60,
-                        crit_80 and crit_90. There are five,
-                        corresponding one for one with the design
-                        assurance levels of DO-178C, from crit_10
-                        where failure has no effect to crit_90 where
-                        it is catastrophic. crit_40 is a minor
-                        consequence, crit_60 a major one and crit_80 a
-                        hazardous one.
+                        A requirement may declare a criticality for
+                        each dimension. A dimension it does not
+                        declare is at the base level of that
+                        dimension, so nothing already written changes.
 
-                        The numbers are spaced rather than
-                        consecutive, so that a level may be put
-                        between two that exist without renaming
-                        either, and the widest spaces are at the low
-                        end, where most of what is built here will sit
-                        and where the finer distinctions will
-                        therefore be wanted. A name that is a number
-                        also carries its own order, so the greatest of
-                        several criticalities is well defined without
-                        a rank written beside it.
+                        The levels are named by their place on a scale
+                        from zero to one hundred. The numbers are
+                        spaced rather than consecutive, so that a
+                        level may be put between two that exist
+                        without renaming either, and the widest spaces
+                        are at the low end, where most of what is
+                        built here will sit and where the finer
+                        distinctions will therefore be wanted. A name
+                        that is a number also carries its own order,
+                        so the greatest of several criticalities is
+                        well defined without a rank written beside it.
+
+                        The lowest level of each dimension is a null
+                        level: it stands for a consequence of no
+                        effect and requires nothing beyond the base.
+                        It corresponds to design assurance level E on
+                        the safety dimension and to no assurance level
+                        at all on the security dimension.
+
+                        On the safety dimension the consequence is
+                        harm to a third party, because these are
+                        unmanned vehicles and the people at risk are
+                        outside them. crit_safety_90 is death or
+                        serious injury to a third party;
+                        crit_safety_80 serious injury to one person,
+                        major environmental or asset loss, or loss of
+                        control over a populated area; crit_safety_60
+                        minor injury, significant asset loss, or a
+                        mission failure with commercial consequence;
+                        crit_safety_40 no injury and a recoverable
+                        operational disruption; crit_safety_10 no
+                        safety consequence. They correspond to design
+                        assurance levels A, B, C, D and E by the
+                        strength of what they require, not by the
+                        words, which DO-178C writes about the
+                        occupants of an aircraft.
+
+                        On the security dimension crit_security_90 is
+                        a compromise that enables loss of control or
+                        physical harm; crit_security_80 a compromise
+                        of command and control, or of protected
+                        personal data at scale; crit_security_60
+                        disclosure of protected or commercially
+                        sensitive information; crit_security_40
+                        disclosure with no protected content;
+                        crit_security_10 no security consequence. The
+                        four above the null level correspond to
+                        security levels 1 to 4 of IEC 62443 and to
+                        cybersecurity assurance levels 1 to 4 of ISO
+                        and SAE 21434.
 
                         Each entry says what consequence of failure it
-                        stands for, which design assurance level it
-                        corresponds to, and which objectives it
-                        requires. The correspondence lets the
-                        objective tables of DO-178C be indexed. It is
-                        not a claim that a safety assessment has been
-                        made. What crit_10 requires already exceeds
-                        what DO-178C asks of design assurance level E,
-                        which is nothing.
+                        stands for, which level of which external
+                        scale it corresponds to, and which objectives
+                        it requires. An objective is an item of its
+                        own, and ddr_objective decides it.
 
                         A data item or a source item declares no
                         criticality. Its effective criticality is
-                        derived, and is the greatest criticality among
-                        the requirements that reach it in a closed
-                        world along the relations that declare
-                        responsibility.
+                        derived, one level for each dimension, and
+                        each is the greatest among the requirements
+                        that reach it in a closed world along the
+                        relations that declare responsibility.
 
                         Responsibility is declared on a relation in
                         the relation register, beside domain, range
@@ -96,9 +129,17 @@ decision:               |
                         carries a level in its code.
 
                         The base level requires what is required
-                        today. Every item here is at the base level,
-                        so the lever changes nothing on the day it is
-                        installed.
+                        today. Every item here is at the base level of
+                        both dimensions, so the lever changes nothing
+                        on the day it is installed.
+
+                        This repository is a tool and not vehicle
+                        software. It takes no level from this rule,
+                        and what accounts for it is tool
+                        qualification, which DO-178C treats separately
+                        and for its own reasons. The lever is for the
+                        segments that hold what is built with the
+                        tool.
 
                         Maturity is decided separately, in
                         ddr_maturity, and is not built yet.
@@ -113,6 +154,48 @@ rationale:              |
                         level, and INCOSE does the same through the
                         verification matrix.
 
+                        Two dimensions rather than one, because every
+                        neighbouring domain has found one number
+                        insufficient and split them the same way:
+                        automotive holds an automotive safety
+                        integrity level beside a cybersecurity
+                        assurance level, aviation holds a design
+                        assurance level beside an airworthiness
+                        security process, and industrial and maritime
+                        practice holds a safety integrity level beside
+                        a security level. The vehicles this repository
+                        serves make the reason concrete. A survey
+                        vessel far offshore has no third party near it
+                        and carries commercially sensitive data. A
+                        policing aircraft has people beneath it and
+                        carries protected personal data. One number
+                        puts those at the same level for opposite
+                        reasons, and each then attracts the objectives
+                        the other needed.
+
+                        Two and not more, because operational safety
+                        is safety, and a dimension earns its place by
+                        requiring objectives the others do not. A
+                        third is cheap to add once the register holds
+                        what a dimension means.
+
+                        The consequences written about third parties,
+                        because these vehicles are unmanned. The harm
+                        is to people outside them, which is what an
+                        operational risk assessment for an unmanned
+                        aircraft reasons about and what a design
+                        assurance level, written for the occupants of
+                        an aircraft, does not.
+
+                        A null level at the bottom of each dimension,
+                        because both scales this model corresponds to
+                        have one: design assurance level E requires no
+                        objectives, and an item with no security
+                        consequence attracts no security level. Making
+                        it explicit keeps the five slots aligned
+                        across both dimensions and gives the base
+                        something to be.
+
                         Derived on everything else rather than
                         declared there, because a level written by
                         hand on each module drifts from the
@@ -123,10 +206,12 @@ rationale:              |
                         reason.
 
                         The greatest rather than the least or the
-                        nearest, because an item that serves a
+                        nearest, and taken for each dimension
+                        separately, because an item that serves a
                         critical requirement and a trivial one is as
-                        critical as the work it does for the first.
-                        Rigour cannot be averaged away.
+                        critical as the work it does for the first,
+                        and because a high safety level says nothing
+                        about what security asks of it.
 
                         In a closed world, because in an open one a
                         consuming segment's critical requirement is
@@ -142,10 +227,10 @@ rationale:              |
                         putting it in code makes the tool the place
                         people go to learn what the model means.
 
-                        Five levels, because a smaller set cannot be
-                        joined to the DO-178C objective tables without
-                        losing rows, and the tables are the reason for
-                        having levels at all.
+                        Five levels in each dimension, because a
+                        smaller set cannot be joined to the external
+                        tables without losing rows, and the tables are
+                        the reason for having levels at all.
 
                         Numbered rather than lettered, because a
                         number carries its order, leaves room between
@@ -164,6 +249,27 @@ rationale:              |
                         be installed without a migration, and every
                         ratchet after that is deliberate and local.
 alternative:            |
+                        One dimension, taking the greater of what
+                        safety and security ask. Rejected: it applies
+                        each dimension's objectives to items that only
+                        the other made critical, which is the
+                        undifferentiated rigour this record exists to
+                        end.
+
+                        Three dimensions or more, separating
+                        operational safety from safety. Rejected for
+                        now: operational safety requires no objective
+                        that safety does not, and a dimension that
+                        changes nothing is a field to maintain.
+
+                        Adopt the specific assurance level of an
+                        operational risk assessment directly as the
+                        safety dimension. Rejected: that level is the
+                        output of an assessment of one operation, not
+                        a property of a requirement. It informs which
+                        level a requirement is given and is not itself
+                        the level.
+
                         Declare criticality on each module, as earlier
                         work declared maturity. Rejected for
                         criticality: it duplicates what the trace
@@ -209,9 +315,14 @@ alternative:            |
                         cannot be written here.
 consequence:            |
                         A criticality register, its type, its entry
-                        schema and the crit prefix are added, and
+                        schema and the crit prefix are added, holding
+                        ten entries: five levels in each of two
+                        dimensions.
+
                         sch_textual_requirement gains an optional
-                        criticality.
+                        criticality, which is a level for each
+                        dimension rather than a single value, and a
+                        dimension left out is at its base level.
 
                         reg_relation gains a responsibility
                         declaration beside domain, range and
@@ -221,11 +332,17 @@ consequence:            |
 
                         The trace projection must compute the
                         effective criticality of every data item and
-                        source item, in a closed world, and report it.
+                        source item, one level for each dimension, in
+                        a closed world, and report it.
+
+                        An objective is an item of its own type, so a
+                        register entry requires objectives by naming
+                        them. ddr_objective decides what an objective
+                        is and must land with this.
 
                         No check varies by criticality today, so the
-                        enum is inert until at least one does. The
-                        first entries to write are what each level
+                        levels are inert until at least one does. The
+                        first objectives to write are what each level
                         demands of a requirement whose test function
                         verifies more than one requirement, and of one
                         whose normal, boundary and error conditions
@@ -241,20 +358,15 @@ consequence:            |
 
                         Nothing already written changes, because
                         everything already written is at the base
-                        level.
+                        level of both dimensions.
 
                         The verification tooling is not reached by the
                         derivation, since no requirement is
-                        implemented by the adapter. A tool takes no
-                        criticality from this rule and needs its own
-                        account, which is what DO-178C says about
+                        implemented by the adapter, and this
+                        repository is tooling throughout. A tool takes
+                        no criticality from this rule and needs its
+                        own account, which is what DO-178C says about
                         tools and why it says it separately.
-
-                        What a level is a level of remains unsettled.
-                        DO-178C reads it from a system safety
-                        assessment. This repository models no system,
-                        so something must say what consequence a level
-                        stands for and who judges it.
 
 question:
 
@@ -262,10 +374,9 @@ question:
     id_self:            qst_criticality.consequence
     guid_self:          qst_fe6ddfe7cea54f9b97de7890e4304ba6
     question:           |
-                        What consequence of failure a criticality
-                        level stands for, given that this repository
-                        models no system, and who judges which level a
-                        requirement carries.
+                        Who judges which criticality a requirement
+                        carries, by what assessment, and what records
+                        that the judgement was made.
     relation:           []
 
   maturity:
