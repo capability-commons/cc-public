@@ -261,10 +261,9 @@ table:
     note:               |
                         One record per decision, where a decision is
                         one thing that could later be revised on its
-                        own. Records live in ddr/ rather than beside
-                        what they decide, since a decision commonly
-                        settles matters across several directories at
-                        once.
+                        own. Records live in ddr/ and not beside what
+                        they decide. ddr_design_decision weighs the
+                        alternative.
     status:             proposed
     alias:              []
     prefix:             ddr
@@ -341,9 +340,9 @@ table:
                         Required of every package.
     note:               |
                         The identifier carries the fully qualified
-                        name, so that the thing it names can be found
-                        by that name -- imported for introspection, or
-                        located by walking the source tree.
+                        name, in lower case, so the name locates what
+                        it names. ddr_source_identifier decides the
+                        form.
     status:             proposed
     alias:              []
     prefix:             pyp
@@ -376,9 +375,9 @@ table:
                         Required of every module.
     note:               |
                         The identifier carries the fully qualified
-                        name, so that the thing it names can be found
-                        by that name -- imported for introspection, or
-                        located by walking the source tree.
+                        name, in lower case, so the name locates what
+                        it names. ddr_source_identifier decides the
+                        form.
     status:             proposed
     alias:              []
     prefix:             pym
@@ -414,14 +413,11 @@ table:
                         required of every class.
     note:               |
                         The identifier carries the fully qualified
-                        name, so that the thing it names can be found
-                        by that name -- imported for introspection, or
-                        located by walking the source tree.
-
-                        Lowercased, though a python class name is not.
-                        Resolving the identifier back to the class
+                        name, in lower case, although a python class
+                        name is not. Resolving one back to a class
                         needs a case insensitive lookup, which nothing
-                        provides yet because nothing needs it.
+                        provides. ddr_source_identifier decides the
+                        form.
     status:             proposed
     alias:              []
     prefix:             pyc
@@ -454,9 +450,9 @@ table:
                         Optional, on the same terms as a python class.
     note:               |
                         The identifier carries the fully qualified
-                        name, so that the thing it names can be found
-                        by that name -- imported for introspection, or
-                        located by walking the source tree.
+                        name, in lower case, so the name locates what
+                        it names. ddr_source_identifier decides the
+                        form.
     status:             proposed
     alias:              []
     prefix:             pyf
@@ -773,10 +769,9 @@ table:
                         cases; cctool case adds one from a live
                         finding.
     note:               |
-                        Cases are never shown to the judge. They are
-                        held apart from an eval's examples so that an
-                        eval cannot be measured against its own
-                        prompt.
+                        Cases are never shown to the judge, and are
+                        held apart from an eval's examples.
+                        ddr_eval_measurement says why.
     status:             proposed
     id_term:            term_control_set
     guid_term:          term_c7943c02fb304bec967413e44a2acd64
@@ -914,11 +909,13 @@ table:
                         prompt as context, and cited by the evals that
                         judge prose.
     note:               |
-                        Writing style rules exist only as entries in a
-                        writing style rule register, never as
-                        documents of their own, so this type names no
-                        schema. The register names one, and that
-                        schema governs its entries.
+                        A writing style rule exists as an entry of a
+                        writing style rule register and never as a
+                        document of its own. The type names the schema
+                        that shapes an entry, as
+                        ddr_embedded_item_schema requires of every
+                        embedded type, and the register names the
+                        schema that shapes the register.
     status:             proposed
     alias:              []
     id_term:            term_writing_style_rule
@@ -994,13 +991,12 @@ table:
                         implements it, and its examples are the first
                         control cases of that eval.
     note:               |
-                        Requirement rules exist only as entries in a
-                        requirement rule register, never as documents
-                        of their own, so this type names no schema.
-                        The register names one, and that schema
-                        governs its entries; the entry shape is the
+                        A requirement rule exists as an entry of a
+                        requirement rule register and never as a
+                        document of its own. Its entry shape is the
                         writing style rule shape, since a rule for
-                        writing a requirement is a writing rule.
+                        writing a requirement is a writing rule, so
+                        the two types name one entry schema.
     status:             proposed
     alias:              []
     id_term:            term_requirement_rule
@@ -1153,10 +1149,10 @@ table:
                         decomposing the same need under different
                         framings.
     note:               |
-                        Framings exist only as entries in the framing
-                        register. The register is the catalogue the
-                        analysis draws on rather than inventing a lens
-                        each time, on the precedent of problem frames.
+                        A framing exists as an entry of the framing
+                        register and never as a document of its own.
+                        The register is the catalogue an analysis
+                        draws on.
     status:             proposed
     alias:              []
     id_term:            term_framing

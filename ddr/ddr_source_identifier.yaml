@@ -1,0 +1,132 @@
+id_self:                ddr_source_identifier
+guid_self:              ddr_ae15055746a24db6b8906e1daaef00ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A source item is named by the fully qualified name, in lower case
+brief:                  |
+                        The readable id of a python package, module,
+                        class or function item carries the dotted path
+                        that reaches the definition, lower cased, so
+                        that the name locates the thing it names.
+context:                |
+                        ddr_source_item makes a definition in code a
+                        data item, held in the docstring of the thing
+                        it documents. ddr_prefixed_identifier gives
+                        every item a readable id carrying its type
+                        prefix. Neither says what the rest of a source
+                        item's readable id is.
+
+                        A source item is unlike the other items in one
+                        way that matters. The thing it names exists
+                        outside the tree and is reached by a name the
+                        language already gives it: an import path, a
+                        class, a definition within one. A readable id
+                        chosen freely would be a second name for
+                        something already named.
+decision:               |
+                        The readable id of a source item is its type
+                        prefix and the fully qualified name of the
+                        definition, in lower case, with the parts
+                        separated by dots.
+                        pyf_cc_public.query.database.path names the
+                        path method of the Database class in the
+                        cc_public.query module.
+
+                        Lower case throughout, though a python class
+                        name is not written that way. A readable id is
+                        lower case everywhere in this repository, and
+                        a source item is not an exception to that.
+
+                        The source check refuses a source item whose
+                        readable id is not where the item sits, and
+                        rename refuses to change one, since the name
+                        belongs to the code.
+rationale:              |
+                        The fully qualified name, so that the
+                        identifier locates what it names. A reader
+                        importing it for introspection, or walking the
+                        source tree to find it, uses the identifier as
+                        it stands and needs no index from identifiers
+                        to definitions.
+
+                        Lower case, because the readable id form is
+                        lower case for every type, and a form that
+                        varies by type is one more rule to know. The
+                        cost is that resolving an identifier back to a
+                        class needs a case insensitive lookup, which
+                        nothing provides because nothing has needed
+                        it.
+
+                        The check rather than trust, because a source
+                        item and the definition it documents are in
+                        the same file and can be moved apart by an
+                        ordinary edit.
+alternative:            |
+                        A short name, such as pyf_path. Rejected: it
+                        collides across modules, and nothing in it
+                        says where the definition is.
+
+                        Preserving the case of the definition, so that
+                        pyf_cc_public.query.Database names the class
+                        as python writes it. Rejected: it makes the
+                        readable id form depend on the type, and it
+                        makes two identifiers differing only in case
+                        possible.
+
+                        An index from identifier to definition, held
+                        in the tree. Rejected: it is a second copy of
+                        what the identifier already says, able to go
+                        stale.
+consequence:            |
+                        Resolving a readable id back to a python class
+                        needs a case insensitive lookup. Nothing
+                        provides one, because nothing yet resolves in
+                        that direction.
+
+                        A definition that moves takes its item with
+                        it, and the source check reports the item
+                        whose id no longer says where it sits.
+
+                        An interface member naming a source item names
+                        it by this identifier, which is how a reader
+                        walks from a contract to the definition
+                        presenting it.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_python_package
+    guid_target:        t_8d37421f029f4e13a7d99ee80028d6fb
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_python_module
+    guid_target:        t_186408f897d541588a1bb9c495fcec71
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_python_class
+    guid_target:        t_47a7dfb0248642d589333f5d5298bdf2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_python_function
+    guid_target:        t_92b7b832d3c7419f9252f7eb3339f94b
+
+question:
+
+  lookup:
+    id_self:            qst_source_identifier.lookup
+    guid_self:          qst_65841abef01143f7b97624b61f51eec7
+    question:           |
+                        What provides the case insensitive lookup from
+                        a readable id back to a python class, and what
+                        needs it first.
+    relation:           []
