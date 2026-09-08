@@ -1,0 +1,374 @@
+id_self:                icd_cc_public_query
+guid_self:              icd_d98da03aafb14fec9683fb1df40f8999
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 proposed
+title:                  Query interface
+brief:                  |
+                        The python surface by which the graph of the
+                        tree is queried: a shortest path, a
+                        neighbourhood, a query over the facts, a named
+                        query and a drawing.
+version_interface:      '1.0'
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.14
+
+      module:
+
+        query:
+          id_self:      icm_cc_public_query.module
+          guid_self:    icm_b0a4d195ad4c41a396e43830f7a0ac9b
+          name:         cc_public.query
+          brief:        |
+                        The module presenting this surface.
+
+          relation:
+
+            - id_relation:  r_is_implemented_by
+              guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+              id_target:  pym_cc_public.query
+              guid_target:  pym_c51a761be6c14f958655cf7edebcabbf
+
+      class:
+
+        database:
+          id_self:      icm_cc_public_query.database
+          guid_self:    icm_9e23ffe175914a709e2f699d90b84a29
+          name:         Database
+          brief:        |
+                        The facts of a tree, in memory, with the
+                        queries that read them.
+          obligation:   |
+                        The facts are derived from the documents when
+                        the Database is made and are not reread. A
+                        Database made from one tree says nothing about
+                        another.
+
+          method:
+
+            path:
+              id_self:  icm_cc_public_query.database.path
+              guid_self:  icm_9cbc38b42bdb4bc788b6f741af0a29f6
+              name:     path
+              brief:    |
+                        Return a shortest path from one item to
+                        another as a list of Steps, the first at depth
+                        zero.
+              obligation:  |
+                        An empty list is returned where the two items
+                        are joined by no path. None is returned where
+                        either name is unknown, which is not the same
+                        as no path.
+
+              parameter:
+
+                - id_self:  icm_cc_public_query.database.path.name_from
+                  guid_self:  icm_5965a97c57c04575b7d582b87638656c
+                  name:  name_from
+                  brief:  |
+                        The readable id or guid the path starts at.
+
+                  type:
+                    spelling:  str
+
+                  mode:  input
+
+                - id_self:  icm_cc_public_query.database.path.name_to
+                  guid_self:  icm_4188d962db7b4a2589cfeb53b2eb3c3b
+                  name:  name_to
+                  brief:  |
+                        The readable id or guid the path ends at.
+
+                  type:
+                    spelling:  str
+
+                  mode:  input
+
+              returns:
+
+                type:
+                  spelling:  list[Step] | None
+
+                brief:  |
+                        The steps along a shortest path, an empty list
+                        where none joins them, or None where a name is
+                        unknown.
+
+              relation:
+
+                - id_relation:  r_is_implemented_by
+                  guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+                  id_target:  pyf_cc_public.query.database.path
+                  guid_target:  pyf_2d6ec8ed72c84bb785b8536d7712b4f4
+
+            walk:
+              id_self:  icm_cc_public_query.database.walk
+              guid_self:  icm_50deab060b5c4e32b0f949ba0bd9d236
+              name:     walk
+              brief:    |
+                        Return the Steps within a depth of one item,
+                        breadth first, each item once at the depth it
+                        is first reached.
+              obligation:  |
+                        An item is reported once, at the depth it is
+                        first reached, with the edge that reached it.
+                        The order is breadth first, so a caller may
+                        rely on depth not decreasing.
+
+              parameter:
+
+                - id_self:  icm_cc_public_query.database.walk.name
+                  guid_self:  icm_2e9fc1e9a6e648d48b5d89ac9300907a
+                  name:  name
+                  brief:  |
+                        The readable id or guid the walk starts at.
+
+                  type:
+                    spelling:  str
+
+                  mode:  input
+
+                - id_self:  icm_cc_public_query.database.walk.depth
+                  guid_self:  icm_c22a88ac9b4146a3a9b4aecfffe4e944
+                  name:  depth
+                  brief:  |
+                        How far to walk.
+
+                  type:
+                    spelling:  int
+
+                  mode:  input
+                  optional:  true
+                  default:  '1'
+
+                - id_self:  icm_cc_public_query.database.walk.list_relation
+                  guid_self:  icm_4afc0acd20224531abe177ebd8f66828
+                  name:  list_relation
+                  brief:  |
+                        The relations to follow, or every relation
+                        where empty.
+
+                  type:
+                    spelling:  tuple[str, ...]
+
+                  mode:  input
+                  optional:  true
+                  default:  ()
+
+                - id_self:  icm_cc_public_query.database.walk.list_direction
+                  guid_self:  icm_89a3068987c84e7f9afcfa32951b2202
+                  name:  list_direction
+                  brief:  |
+                        Which way to follow an edge.
+
+                  type:
+                    spelling:  tuple[str, ...]
+
+                  mode:  input
+                  optional:  true
+                  default:  ('out', 'in')
+
+              returns:
+
+                type:
+                  spelling:  list[Step]
+
+                brief:  |
+                        The steps of the neighbourhood, breadth first.
+
+              relation:
+
+                - id_relation:  r_is_implemented_by
+                  guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+                  id_target:  pyf_cc_public.query.database.walk
+                  guid_target:  pyf_100de10c70814fca80c132c66d1e6890
+
+            run:
+              id_self:  icm_cc_public_query.database.run
+              guid_self:  icm_12b82527bb49480d97cd254c4fcc53f9
+              name:     run
+              brief:    |
+                        Return the column names and the rows of a
+                        query over the facts.
+              obligation:  |
+                        The query is read only. Parameters are bound
+                        rather than written into the text, so a value
+                        carrying a quotation mark is a value and not
+                        syntax.
+
+              parameter:
+
+                - id_self:  icm_cc_public_query.database.run.sql
+                  guid_self:  icm_8a2bc9a720fe4866bb2f11fa8accdd6d
+                  name:  sql
+                  brief:  |
+                        The SQL to run.
+
+                  type:
+                    spelling:  str
+
+                  mode:  input
+
+                - id_self:  icm_cc_public_query.database.run.parameters
+                  guid_self:  icm_f164dd270f0945c190695bcf851bea83
+                  name:  parameters
+                  brief:  |
+                        The values to bind into it.
+
+                  type:
+                    spelling:  tuple
+
+                  mode:  input
+                  optional:  true
+                  default:  ()
+
+              returns:
+
+                type:
+                  spelling:  tuple[list[str], list[tuple]]
+
+                brief:  |
+                        The column names, and one tuple per row.
+
+              relation:
+
+                - id_relation:  r_is_implemented_by
+                  guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+                  id_target:  pyf_cc_public.query.database.run
+                  guid_target:  pyf_02ebd9a3cfb34863bd2716945a09e578
+
+      function:
+
+        named:
+          id_self:      icm_cc_public_query.named
+          guid_self:    icm_c4119df064e44526b83b2d7db1e73ba3
+          name:         named
+          brief:        |
+                        Return the SQL of the named query item, or
+                        None where the tree holds none.
+
+          parameter:
+
+            - id_self:  icm_cc_public_query.named.map_document
+              guid_self:  icm_24e8f34336d249bb950306e101fc0b9a
+              name:     map_document
+              brief:    |
+                        The documents of the tree, by location.
+
+              type:
+                spelling:  dict
+
+              mode:     input
+
+            - id_self:  icm_cc_public_query.named.name
+              guid_self:  icm_29655f6a637d4d5ab8564c8465742fe9
+              name:     name
+              brief:    |
+                        The readable id of the query item.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  str | None
+
+            brief:      |
+                        The SQL, or None where no query item carries
+                        that name.
+
+          relation:
+
+            - id_relation:  r_is_implemented_by
+              guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+              id_target:  pyf_cc_public.query.named
+              guid_target:  pyf_3065b021018c4b30a3f48f57a0b5ead6
+
+        drawing:
+          id_self:      icm_cc_public_query.drawing
+          guid_self:    icm_56117d7b40e44188857f0903cf0ee6ff
+          name:         drawing
+          brief:        |
+                        Return the steps of a walk as a drawing, in
+                        dot for Graphviz or in mermaid.
+
+          parameter:
+
+            - id_self:  icm_cc_public_query.drawing.list_step
+              guid_self:  icm_f05405acfb1740ceb690e17cd0ac3e7a
+              name:     list_step
+              brief:    |
+                        The steps to draw.
+
+              type:
+                spelling:  list[Step]
+
+              mode:     input
+
+            - id_self:  icm_cc_public_query.drawing.id_format
+              guid_self:  icm_bf5f4660ea25462a8e406c22a490c037
+              name:     id_format
+              brief:    |
+                        Which drawing to return, dot or mermaid.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_cc_public_query.drawing.list_edge
+              guid_self:  icm_2dbc87a0eea641e2a69a5e71aafa5a32
+              name:     list_edge
+              brief:    |
+                        The edges to draw between the steps.
+
+              type:
+                spelling:  list | None
+
+              mode:     input
+              optional:  true
+              default:  None
+
+          returns:
+
+            type:
+              spelling:  str
+
+            brief:      |
+                        The drawing, as text.
+
+          relation:
+
+            - id_relation:  r_is_implemented_by
+              guid_relation:  r_f9975465bdd64371ba4d59ed5563477e
+              id_target:  pyf_cc_public.query.drawing
+              guid_target:  pyf_e9351a12dedb4d3a8c4715ea7168b9ac
+
+description:            |
+                        The bounded surface cc_public.query presents
+                        to a caller inside the tool and to a consumer
+                        of it. It covers what the accepted
+                        requirements about querying are about, and not
+                        the whole module.
+
+                        Each member names the source item that
+                        presents it, so a reader walks from a
+                        requirement to the source that implements it
+                        and from that source to the member of this
+                        contract that states it.
+relation:               []

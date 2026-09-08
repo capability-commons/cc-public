@@ -83,5 +83,19 @@ properties:
                         Optional. The lifecycle status of this
                         declaration within the interface.
 
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+    description:        |
+                        Optional. The edges this declaration holds,
+                        most often to the source that presents it. The
+                        definition is referenced from sch_relation
+                        rather than restated, and the property alone
+                        does not compose that schema, which would make
+                        an edge required of every declaration.
+
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_identity.yaml
