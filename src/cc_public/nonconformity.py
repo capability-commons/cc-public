@@ -103,6 +103,10 @@ def from_report(map_document, report, defaults):
                 'title':      'What {id_check} found in {where}'.format(
                                     id_check = id_check,
                                     where    = id_subject or finding.get(KEY_FILEPATH)),
+                'brief':      '{where} does not meet what the {id_check} check '
+                              'expects.'.format(
+                                    id_check = id_check,
+                                    where    = id_subject or finding.get(KEY_FILEPATH)),
                 'id_subject': id_subject,
                 'path':       finding.get(KEY_PATH) or None,
                 'diagnostic': 'Reported by the {id_check} check at {filepath}.'.format(
@@ -145,6 +149,9 @@ def from_execution(map_document, document, defaults, expectation = None):
             'title':          'What {case} found in {subject}'.format(
                                 case    = document.get('id_case'),
                                 subject = document.get('id_under_test')),
+            'brief':          '{subject} does not meet what {case} expects of '
+                              'it.'.format(subject = document.get('id_under_test'),
+                                           case    = document.get('id_case')),
             'id_subject':     document.get('id_under_test'),
             'digest_subject': document.get('digest_under_test'),
             'diagnostic':     'Observed by {method} through {case}.'.format(
@@ -185,8 +192,7 @@ def _document(defaults, map_document, field):
         'protective_mark': [{'id_mark':   defaults.get('id_mark'),
                              'guid_mark': defaults.get('guid_mark')}],
         'title':          field['title'],
-        'brief':          _prose(observed.strip().splitlines()[0]
-                                 if observed.strip() else 'Nothing was observed.'),
+        'brief':          _prose(field['brief']),
         'expected':       _prose(expected),
         'observed':       _prose(observed),
         'origin':         field['origin'],

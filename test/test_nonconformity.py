@@ -163,3 +163,18 @@ def test_a_report_is_written_only_when_it_is_asked_for(tree, tmp_path):
                                      ['report']['check']
                 for n in c['nonconformity'] if n['severity'] == 'critical']
     assert critical == []
+
+
+def test_a_brief_says_what_failed_and_not_the_first_line_of_a_traceback(tree):
+    execution = _execution(tree, 'failed')
+    execution['result']['main']['observation'] = (
+            'tree = <cc_public.edit.tree.Tree object at 0x106b58690>\n'
+            'E   assert [] == [Step()]\n')
+
+    (made,) = cc_public.nonconformity.from_execution(tree.context.map_document, execution,
+                                                     _defaults(tree))
+
+    assert '0x' not in made['brief']
+    assert made['brief'].strip() == ('pyf_cc_public.query.database.path does not meet '
+                                     'what tc_path_reported expects of it.')
+    assert '0x106b58690' in made['observed']       # the evidence is kept whole
