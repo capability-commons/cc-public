@@ -39,6 +39,7 @@ from cc_public.check import decision   as check_decision
 from cc_public.check import evidence   as check_evidence
 from cc_public.check import identifier as check_identifier
 from cc_public.check import identity   as check_identity
+from cc_public.check import interface as check_interface
 from cc_public.check import layout     as check_layout
 from cc_public.check import parse     as check_parse
 from cc_public.check import reference as check_reference
@@ -69,6 +70,7 @@ CHECK      = (check_parse,
               check_decision,
               check_layout,
               check_workflow,
+              check_interface,
               check_trace,
               check_evidence,
               check_confidence)
