@@ -2060,3 +2060,32 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_objective
         guid_target:    sch_c0dc7c189d5e4091a128840937b7155a
+
+  t_criticality:
+    id_self:            t_criticality
+    guid_self:          t_e3b7ea0648be4734bc016d16c23876aa
+    title:              Criticality type
+    brief:              |
+                        Type of criticality entries held in a
+                        criticality register.
+    description:        |
+                        A criticality is a dimension and a level: how
+                        bad it is if an obligation on that dimension
+                        is not met. Its entries are held in
+                        reg_criticality, keyed by readable id, rather
+                        than in a directory.
+    prefix:             crit
+    regex_id:           ^crit_(safety|security)_[0-9]{1,3}$
+    id_term:            term_criticality
+    guid_term:          term_caba9c4c66b44b0abddbf4b8f11809af
+    usage:              |
+                        One entry per level per dimension. A
+                        requirement declares one for each dimension;
+                        everything else derives it.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_entry_criticality
+        guid_target:    sch_d0460dbd9ebc4391b7fd44fa43511917

@@ -105,6 +105,9 @@ def questions(is_open_only, list_root):
                      'branch, may affect: every item in them that implements '
                      'or verifies a requirement. Potentially affected; a '
                      'static edge claims no more.')
+@click.option('--criticality', 'is_criticality', is_flag = True,
+              help = 'The effective criticality of every item a requirement '
+                     'reaches, on each dimension.')
 @click.option('--gaps', 'is_gaps_only', is_flag = True,
               help = 'Show only requirements that lack something.')
 @click.option('--closed-world', 'is_closed_world', is_flag = True,
@@ -115,8 +118,8 @@ def questions(is_open_only, list_root):
               default = 'text', show_default = True,
               help = 'text for a person; json for a program, in a stable order.')
 @cc_public.cli.group.OPTION_ROOT
-def trace(list_requirement, list_source, ref, is_gaps_only, is_closed_world,
-          id_format, list_root):
+def trace(list_requirement, list_source, ref, is_criticality, is_gaps_only,
+          is_closed_world, id_format, list_root):
     """
     Show what each requirement derives from, what implements it, what
     verifies it, and what it lacks; or, for a source item, what it may
@@ -137,6 +140,11 @@ def trace(list_requirement, list_source, ref, is_gaps_only, is_closed_world,
         cc_public.cli.report.write_impact(
             cc_public.trace.impact_of_files(map_document, set_filepath, is_closed_world),
             id_format)
+        return
+
+    if is_criticality:
+        cc_public.cli.report.write_criticality(
+                cc_public.trace.criticality(map_document), id_format)
         return
 
     if list_source:

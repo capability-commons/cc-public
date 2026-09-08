@@ -1,0 +1,481 @@
+id_self:                reg_criticality
+guid_self:              reg_ca17ceaef2264860b4eeb5e6d0213590
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Criticality register
+brief:                  |
+                        The controlled criticality levels: how bad it
+                        is if an obligation is not met, on each of two
+                        dimensions.
+description:            |
+                        Ten entries, five levels on each of two
+                        dimensions, keyed by readable id. An entry
+                        says what consequence of failure it stands
+                        for, which level of an external scale it
+                        corresponds to, and which objectives it
+                        requires.
+
+                        The safety dimension is written about harm to
+                        a third party, because the vehicles this
+                        serves are unmanned and the people at risk are
+                        outside them. The security dimension is
+                        written about compromise of control and of
+                        information.
+usage:                  |
+                        A requirement declares a level for each
+                        dimension. A data item or a source item
+                        declares none: its effective criticality is
+                        the greatest reaching it, in a closed world,
+                        along the relations that declare
+                        responsibility.
+note:                   |
+                        A level is a multiple of ten and the levels in
+                        use are spaced, widest apart at the low end,
+                        so that one may be put between two that exist
+                        without renaming either.
+
+table:
+
+  crit_safety_90:
+    id_self:            crit_safety_90
+    guid_self:          crit_1fbff1d3b533421e8e9e358d100d4ba3
+    title:              Safety, catastrophic
+    brief:              |
+                        The safety dimension where the consequence of
+                        failure is: death or serious injury to a third
+                        party.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          safety
+    level:              90
+    consequence:        |
+                        Death or serious injury to a third party.
+    correspondence:     DO-178C design assurance level A
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_safety_80:
+    id_self:            crit_safety_80
+    guid_self:          crit_ce88201d8cd0418fa1f082aede1691a7
+    title:              Safety, hazardous
+    brief:              |
+                        The safety dimension where the consequence of
+                        failure is: serious injury to one person,
+                        major environmental or asset loss, or loss of
+                        control over a populated area.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          safety
+    level:              80
+    consequence:        |
+                        Serious injury to one person, major
+                        environmental or asset loss, or loss of
+                        control over a populated area.
+    correspondence:     DO-178C design assurance level B
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_safety_60:
+    id_self:            crit_safety_60
+    guid_self:          crit_8c98e85cd950470ea9c30b99f8c681a8
+    title:              Safety, major
+    brief:              |
+                        The safety dimension where the consequence of
+                        failure is: minor injury, significant asset
+                        loss, or a mission failure with commercial
+                        consequence.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          safety
+    level:              60
+    consequence:        |
+                        Minor injury, significant asset loss, or a
+                        mission failure with commercial consequence.
+    correspondence:     DO-178C design assurance level C
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_safety_40:
+    id_self:            crit_safety_40
+    guid_self:          crit_525e573d83ca45ec830e59943e0f30c9
+    title:              Safety, minor
+    brief:              |
+                        The safety dimension where the consequence of
+                        failure is: no injury, and an operational
+                        disruption that is recovered from.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          safety
+    level:              40
+    consequence:        |
+                        No injury, and an operational disruption that
+                        is recovered from.
+    correspondence:     DO-178C design assurance level D
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+    relation:           []
+
+  crit_safety_10:
+    id_self:            crit_safety_10
+    guid_self:          crit_dd12f70d829f49ef86fba6510afcdec3
+    title:              Safety, no effect
+    brief:              |
+                        The safety dimension where the consequence of
+                        failure is: no safety consequence.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          safety
+    level:              10
+    consequence:        |
+                        No safety consequence.
+    correspondence:     DO-178C design assurance level E
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+    relation:           []
+
+  crit_security_90:
+    id_self:            crit_security_90
+    guid_self:          crit_3c68a2c3f6d841c98ae81b2eac82d602
+    title:              Security, control
+    brief:              |
+                        The security dimension where the consequence
+                        of failure is: a compromise that enables loss
+                        of control of a vehicle, or physical harm.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          security
+    level:              90
+    consequence:        |
+                        A compromise that enables loss of control of a
+                        vehicle, or physical harm.
+    correspondence:     IEC 62443 security level 4; ISO/SAE 21434 cybersecurity assurance level 4
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_security_80:
+    id_self:            crit_security_80
+    guid_self:          crit_1cf56265a0f34512a3e72b9e4058ed6f
+    title:              Security, command
+    brief:              |
+                        The security dimension where the consequence
+                        of failure is: a compromise of command and
+                        control, or of protected personal data at
+                        scale.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          security
+    level:              80
+    consequence:        |
+                        A compromise of command and control, or of
+                        protected personal data at scale.
+    correspondence:     IEC 62443 security level 3; ISO/SAE 21434 cybersecurity assurance level 3
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_security_60:
+    id_self:            crit_security_60
+    guid_self:          crit_145bf7803af74bdea791f75642c96342
+    title:              Security, protected
+    brief:              |
+                        The security dimension where the consequence
+                        of failure is: disclosure of protected or
+                        commercially sensitive information.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          security
+    level:              60
+    consequence:        |
+                        Disclosure of protected or commercially
+                        sensitive information.
+    correspondence:     IEC 62443 security level 2; ISO/SAE 21434 cybersecurity assurance level 2
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+      - id_objective:   obj_verdict_per_requirement
+        guid_objective:  obj_26b7e105da03488db6031facc7422c0e
+
+      - id_objective:   obj_case_per_condition
+        guid_objective:  obj_304549a92e9d49ca96e523743897a909
+
+      - id_objective:   obj_method_not_code
+        guid_objective:  obj_5c949b221e2f40e993a6aec7659a83bb
+
+      - id_objective:   obj_tool_accounted
+        guid_objective:  obj_8fd2a89590e744b2ad120aa31b2edb71
+
+    relation:           []
+
+  crit_security_40:
+    id_self:            crit_security_40
+    guid_self:          crit_f1448355508b4dd980e6c5bba5305b46
+    title:              Security, open
+    brief:              |
+                        The security dimension where the consequence
+                        of failure is: disclosure of information that
+                        is neither protected nor sensitive.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          security
+    level:              40
+    consequence:        |
+                        Disclosure of information that is neither
+                        protected nor sensitive.
+    correspondence:     IEC 62443 security level 1; ISO/SAE 21434 cybersecurity assurance level 1
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+      - id_objective:   obj_coverage_analysed
+        guid_objective:  obj_d4ff4410e99c40a082ffbabcf8b6d223
+
+    relation:           []
+
+  crit_security_10:
+    id_self:            crit_security_10
+    guid_self:          crit_e6bc2a52aa524667b78e37db4efd578a
+    title:              Security, no effect
+    brief:              |
+                        The security dimension where the consequence
+                        of failure is: no security consequence.
+    description:        |
+                        What this level requires is written here and
+                        read by every check that varies by
+                        criticality. Nothing varies by it yet.
+    dimension:          security
+    level:              10
+    consequence:        |
+                        No security consequence.
+    correspondence:     No security level; nothing beyond the base is required.
+    status:             proposed
+
+    requires:
+
+      - id_objective:   obj_verification_per_requirement
+        guid_objective:  obj_daff88a03d004002864bc8dc94d271b2
+
+      - id_objective:   obj_expected_result_stated
+        guid_objective:  obj_a055d8642b5a4688820e3f05c98d333a
+
+      - id_objective:   obj_evidence_current
+        guid_objective:  obj_e401c1b6c97f41dea1766c299d85d3cf
+
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_criticality
+    guid_target:        sch_c3f441de9c6d4407b9cc88a47849cfd6
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_rigour_selected_by_level
+    guid_target:        obj_fdb25dbb7ef649e4828274fc1680409f

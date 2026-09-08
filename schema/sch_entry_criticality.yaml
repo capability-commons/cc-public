@@ -1,0 +1,130 @@
+id_self:                sch_entry_criticality
+guid_self:              sch_d0460dbd9ebc4391b7fd44fa43511917
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Criticality entry schema
+brief:                  |
+                        What a criticality entry carries beyond the
+                        shape every register entry carries.
+description:            |
+                        A dimension, a level on the scale from zero to
+                        one hundred, the consequence of failure the
+                        level stands for, the external level it
+                        corresponds to, and the objectives it
+                        requires. Title, brief, description, alias and
+                        status come from sch_entry.
+
+                        The level is any multiple of ten rather than
+                        one of five named values, so that a level may
+                        be put between two that exist without this
+                        schema changing. Each objective required may
+                        name the maturity at which it becomes
+                        required, which nothing writes yet and
+                        ddr_maturity will.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_criticality.yaml
+type:                   object
+usage:                  |
+                        Composed with sch_entry by sch_reg_criticality
+                        as the shape of every entry in the criticality
+                        register.
+
+required:
+  - dimension
+  - level
+  - consequence
+  - correspondence
+
+properties:
+
+  dimension:
+    type:               string
+
+    enum:
+      - safety
+      - security
+
+    description:        |
+                        What kind of consequence this level is a level
+                        of. Safety is harm to a third party, since
+                        these vehicles are unmanned and the people at
+                        risk are outside them. Security is compromise
+                        of control or of information.
+
+  level:
+    type:               integer
+    minimum:            0
+    maximum:            100
+    multipleOf:         10
+    description:        |
+                        The place of this level on a scale from zero
+                        to one hundred. The levels in use are spaced
+                        rather than consecutive, widest apart at the
+                        low end, so that one may be put between two
+                        that exist without renaming either. A greater
+                        number is a graver consequence, so the name
+                        carries the order.
+
+  consequence:
+    type:               string
+    minLength:          1
+    description:        |
+                        The consequence of failure this level stands
+                        for.
+
+  correspondence:
+    type:               string
+    maxLength:          120
+    description:        |
+                        The level of an external scale this
+                        corresponds to, by the strength of what it
+                        requires. A correspondence is for indexing the
+                        objectives of that standard and is not a claim
+                        that its assessment has been made.
+
+  requires:
+    type:               array
+
+    items:
+      type:             object
+
+      required:
+        - id_objective
+        - guid_objective
+
+      properties:
+
+        id_objective:
+          type:         string
+          description:  |
+                        The readable id of an objective this level
+                        requires.
+
+        guid_objective:
+          type:         string
+          description:  |
+                        The guid of that objective.
+
+        from_maturity:
+          type:         integer
+          minimum:      0
+          maximum:      100
+          multipleOf:   10
+          description:  |
+                        The maturity at which the objective becomes
+                        required. Absent means required from the
+                        outset. Nothing writes this yet; ddr_maturity
+                        decides what fills it.
+
+      additionalProperties:  false
+
+    description:        |
+                        The objectives this level requires. An
+                        objective is an item, so a level names what it
+                        demands rather than describing it.

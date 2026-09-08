@@ -698,3 +698,43 @@ def write_execution_test(document, list_report, list_problem, written, id_format
 
     click.echo('Wrote {what}.'.format(what = ', '.join(written)) if written
                else 'Nothing was written.')
+
+
+# -----------------------------------------------------------------------------
+def write_criticality(record, id_format):
+    """
+    Write the effective criticality of every item a requirement
+    reaches, as text or as json.
+
+    An item absent from the derivation is at the base of every
+    dimension, and so is a dimension absent from an item that carries
+    another.
+
+    """
+
+    if id_format == FORMAT_JSON:
+        click.echo(json.dumps({'base':    record.base,
+                               'derived': record.derived}, indent = 2))
+        return
+
+    dimension = sorted(record.base)
+
+    click.echo('base  ' + '  '.join('{d} {n}'.format(d = d, n = record.base[d])
+                                    for d in dimension))
+
+    if not record.derived:
+        click.echo('Nothing declares a criticality, so every item is at the base.')
+        return
+
+    click.echo('')
+
+    for name in sorted(record.derived):
+        level = record.derived[name]
+        click.echo('  {name:<52}{level}'.format(
+                    name  = name,
+                    level = '  '.join(
+                        '{d} {n}'.format(d = d, n = level.get(d, record.base.get(d)))
+                        for d in dimension)))
+
+    click.echo('')
+    click.echo('{n} item(s) a requirement reaches.'.format(n = len(record.derived)))

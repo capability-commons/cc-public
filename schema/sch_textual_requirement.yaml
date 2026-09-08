@@ -261,4 +261,63 @@ allOf:
         description:    |
                         Optional. Lifecycle status of the requirement.
 
+      criticality:
+        type:           object
+
+        properties:
+
+          safety:
+            type:       object
+
+            required:
+              - id_criticality
+              - guid_criticality
+
+            properties:
+
+              id_criticality:
+                type:   string
+                description:  |
+                        The readable id of the criticality entry,
+                        which names the same dimension as the key.
+
+              guid_criticality:
+                type:   string
+                description:  |
+                        The guid of that entry.
+
+            additionalProperties:  false
+
+          security:
+            type:       object
+
+            required:
+              - id_criticality
+              - guid_criticality
+
+            properties:
+
+              id_criticality:
+                type:   string
+                description:  |
+                        The readable id of the criticality entry,
+                        which names the same dimension as the key.
+
+              guid_criticality:
+                type:   string
+                description:  |
+                        The guid of that entry.
+
+            additionalProperties:  false
+
+        additionalProperties:  false
+        description:    |
+                        How bad it is if this requirement is not met,
+                        on each dimension. Optional, and a dimension
+                        left out sits at the base level of that
+                        dimension. Only a requirement declares one: a
+                        data item or a source item takes the greatest
+                        reaching it along the relations that declare
+                        responsibility.
+
 unevaluatedProperties:  false

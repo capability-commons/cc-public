@@ -48,6 +48,13 @@ KEY_STATUS        = 'status'
 KEY_VERIFICATION  = 'verification'
 KEY_CRITERIA      = 'success_criteria'
 
+KEY_TABLE         = 'table'
+KEY_CRITICALITY   = 'criticality'
+KEY_DIMENSION     = 'dimension'
+KEY_LEVEL         = 'level'
+KEY_ID_CRIT       = 'id_criticality'
+KEY_RESPONSIBLE   = 'responsibility'
+
 PREFIX_REQ        = 'req'
 SEPARATOR         = '_'
 
@@ -406,3 +413,169 @@ def _name(guid, map_by_guid, unresolved):
         return guid
 
     return item.get(KEY_ID_SELF) or guid
+
+
+# -----------------------------------------------------------------------------
+class Criticality(typing.NamedTuple):
+    """
+    The effective criticality of every item a requirement reaches.
+
+    derived holds one entry per item reached, mapping a dimension to
+    the greatest level reaching it. base holds the lowest level each
+    dimension defines, which is what an item nothing reaches carries.
+
+    The answer is only as closed as the tree it was read from. Where a
+    consuming segment holds a requirement that reaches an item here,
+    that requirement must be loaded for the item's criticality to be
+    right, which is what --closed-world and a second --path are for.
+
+    """
+
+    derived: dict
+    base:    dict
+
+
+# -----------------------------------------------------------------------------
+def responsibility(map_document):
+    """
+    Return the readable ids of every relation declaring that its target
+    is responsible for meeting its source.
+
+    Read from the relation register, so a relation a partner brings is
+    followed by the same derivation without this module knowing its
+    name.
+
+    """
+
+    out = set()
+
+    for document in map_document.values():
+
+        if not isinstance(document, dict) \
+                or not isinstance(document.get(KEY_TABLE), dict):
+            continue
+
+        for entry in document[KEY_TABLE].values():
+            if isinstance(entry, dict) and entry.get(KEY_RESPONSIBLE) \
+                    and isinstance(entry.get(KEY_ID_SELF), str):
+                out.add(entry[KEY_ID_SELF])
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _level(map_document):
+    """
+    Return (id -> (dimension, level), dimension -> lowest level) read
+    from the criticality register.
+
+    """
+
+    map_level = {}
+
+    for document in map_document.values():
+
+        if not isinstance(document, dict) \
+                or not isinstance(document.get(KEY_TABLE), dict):
+            continue
+
+        for entry in document[KEY_TABLE].values():
+            if not isinstance(entry, dict):
+                continue
+            dimension = entry.get(KEY_DIMENSION)
+            level     = entry.get(KEY_LEVEL)
+            if isinstance(dimension, str) and isinstance(level, int) \
+                    and isinstance(entry.get(KEY_ID_SELF), str):
+                map_level[entry[KEY_ID_SELF]] = (dimension, level)
+
+    base = {}
+    for (dimension, level) in map_level.values():
+        if dimension not in base or level < base[dimension]:
+            base[dimension] = level
+
+    return (map_level, base)
+
+
+# -----------------------------------------------------------------------------
+def _declared(document, map_level):
+    """
+    Return dimension -> level for what a requirement declares, reading
+    the level from the register rather than from the requirement.
+
+    """
+
+    out     = {}
+    carried = document.get(KEY_CRITICALITY)
+
+    if not isinstance(carried, dict):
+        return out
+
+    for reference in carried.values():
+        if not isinstance(reference, dict):
+            continue
+        found = map_level.get(reference.get(KEY_ID_CRIT))
+        if found is not None:
+            (dimension, level) = found
+            out[dimension] = max(level, out.get(dimension, level))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def criticality(map_document):
+    """
+    Return the effective criticality of every item a requirement
+    reaches, as a Criticality.
+
+    A requirement declares its own. Everything responsible for meeting
+    it takes it, and an item reached by several takes the greatest on
+    each dimension separately, so that a critical requirement is never
+    diluted by a trivial one sharing the same code.
+
+    Which edges are followed is read from the relation register, not
+    written here.
+
+    """
+
+    (map_by_guid, map_edge) = _index(map_document)
+    (map_level, base)       = _level(map_document)
+    set_relation            = responsibility(map_document)
+
+    derived = {}
+
+    for (guid, item) in map_by_guid.items():
+
+        if not is_requirement(item):
+            continue
+
+        declared = _declared(item, map_level)
+
+        if not declared:
+            continue
+
+        # Every item the requirement reaches, however far, takes what
+        # the requirement declares. A cycle is walked once.
+        #
+        seen    = {guid}
+        pending = [guid]
+
+        while pending:
+            for edge in map_edge.get(pending.pop(), ()):
+                if edge.get(KEY_ID_REL) not in set_relation:
+                    continue
+                target = edge.get(KEY_GUID_TGT)
+                if not isinstance(target, str) or target in seen:
+                    continue
+                seen.add(target)
+                pending.append(target)
+                reached = map_by_guid.get(target)
+                if reached is None:
+                    continue
+                name = reached.get(KEY_ID_SELF)
+                if not isinstance(name, str):
+                    continue
+                held = derived.setdefault(name, {})
+                for (dimension, level) in declared.items():
+                    held[dimension] = max(level, held.get(dimension, level))
+
+    return Criticality(derived = derived, base = base)
