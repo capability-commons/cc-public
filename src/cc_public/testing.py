@@ -59,6 +59,8 @@ REL_USES        = 'r_uses_test_method'
 REL_VERIFIES    = 'r_verifies'
 
 PREFIX_CASE     = 'tc'
+PREFIX_RELATION = 'r'
+KEY_DEPENDENCY  = 'dependency'
 SEPARATOR       = '_'
 
 
@@ -234,3 +236,71 @@ def _target(item, id_relation):
             for edge in item.get(KEY_RELATION) or []
             if isinstance(edge, dict) and edge.get(KEY_ID_REL) == id_relation
             and edge.get(KEY_ID_TARGET) is not None]
+
+
+# -----------------------------------------------------------------------------
+def dependency(map_document):
+    """
+    Return the readable ids of every relation declaring that following
+    it reaches something the source rests on.
+
+    Read from the relation register, so a relation a partner brings is
+    followed by the same closure without this module knowing its name.
+
+    """
+
+    out = set()
+
+    for document in map_document.values():
+
+        if not isinstance(document, dict) or not isinstance(document.get(KEY_TABLE), dict):
+            continue
+
+        for entry in document[KEY_TABLE].values():
+            if isinstance(entry, dict) and entry.get(KEY_DEPENDENCY) \
+                    and str(entry.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] \
+                                                                == PREFIX_RELATION:
+                out.add(entry[KEY_ID_SELF])
+
+    return frozenset(out)
+
+
+# -----------------------------------------------------------------------------
+def closure(map_document, list_id):
+    """
+    Return the readable ids of the items given and of every item
+    reachable from them by a dependency edge, in order.
+
+    A chain is followed as far as it runs and each item is reached
+    once, so a cycle terminates.
+
+    """
+
+    map_item  = index(map_document)
+    follow    = dependency(map_document)
+    seen      = []
+    set_seen  = set()
+    pending   = [name for name in list_id if name]
+
+    while pending:
+
+        name = pending.pop(0)
+
+        if name in set_seen:
+            continue
+
+        set_seen.add(name)
+        seen.append(name)
+
+        item = map_item.get(name)
+
+        if item is None:
+            continue
+
+        pending.extend(edge[KEY_ID_TARGET]
+                       for edge in item.get(KEY_RELATION) or []
+                       if isinstance(edge, dict)
+                       and edge.get(KEY_ID_REL) in follow
+                       and edge.get(KEY_ID_TARGET) is not None)
+
+    return tuple(seen)

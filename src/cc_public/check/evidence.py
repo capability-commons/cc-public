@@ -17,11 +17,16 @@ brief:                  |
                         evidence that is a pass and is current.
 description:            |
                         Computes the digest evidence is stamped with,
-                        over the requirement as claimed, the source of
-                        every item implementing it and the source of
-                        the case, and compares each accepted
-                        requirement's evidence to it. Absent, or
-                        observed and not a pass, is critical in a
+                        over the requirement as claimed and the
+                        content of every item its closure reaches, and
+                        compares each accepted requirement's evidence
+                        to it. The closure follows the relations that
+                        declare a dependency, so what the digest
+                        covers is read from the relation register.
+                        What merely describes an item is removed
+                        before it is covered, as a docstring is
+                        removed from code. Absent evidence, or
+                        evidence that is not a pass, is critical in a
                         closed world and advisory in an open one;
                         stale is advisory, since a tree being edited
                         is ordinarily ahead of its last observation.
@@ -38,6 +43,7 @@ import cc_public.check.result
 import cc_public.control
 import cc_public.load.python
 import cc_public.requirement
+import cc_public.testing
 import cc_public.trace
 
 
@@ -72,36 +78,59 @@ OUTCOME_PASSED    = 'passed'
 # it, and the source of the case that observed it.
 #
 FIELD_CLAIMED     = ('statement', 'success_criteria', 'verification')
+
+# What merely describes an item, and so says nothing about what it does.
+# Removed before an item is covered, as a docstring is removed from code,
+# so that rewording stales nothing.
+#
+FIELD_DESCRIBED   = ('title', 'brief', 'description', 'usage', 'note')
+KEY_TABLE         = 'table'
 LENGTH_DIGEST     = cc_public.control.LENGTH_KEY
 
 
 # -----------------------------------------------------------------------------
-def digest(map_document, guid_requirement, guid_case = None):
+def digest(map_document, guid_requirement, guid_case = None, list_guid = ()):
     """
     Return the digest evidence for guid_requirement is stamped with,
-    observed by the case guid_case where there is one.
+    observed by the case guid_case where there is one and resting on
+    whatever else the row names.
 
     Covers what a verdict depends on and nothing else: the requirement
-    as claimed, the code of every item implementing it, and the code of
-    the case. Code is the syntax tree of the definition with its
-    docstrings removed, so that a change to prose or to layout stales
-    nothing and a change to what runs stales everything that rests on
-    it. A change to anything else, the evidence itself included, does
-    not.
+    as claimed, and the content of every item its closure reaches. The
+    closure follows the relations that declare a dependency, so what
+    the digest covers is read from the relation register rather than
+    listed here, and a relation a partner brings is followed too
+    (ddr_dependency_closure).
+
+    The content of a python item is the syntax tree of its definition
+    with the docstrings removed, so a change to prose or to layout
+    stales nothing and a change to what runs stales everything resting
+    on it. The requirement itself is covered as claimed rather than as
+    written, for the same reason.
 
     """
 
-    index = _index(map_document)
-    (location_req, document_req) = index.get(guid_requirement, (None, {}))
+    index    = _index(map_document)
+    map_guid = {document.get(KEY_ID_SELF): guid
+                for (guid, (_, document)) in index.items()
+                if isinstance(document.get(KEY_ID_SELF), str)}
 
-    implementation = [_source(index, edge.get(KEY_GUID_TGT))
-                      for edge in (document_req.get(KEY_RELATION) or [])
-                      if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENTED]
+    (_, document_req) = index.get(guid_requirement, (None, {}))
+    id_requirement    = document_req.get(KEY_ID_SELF)
+
+    list_id = [index[guid][1].get(KEY_ID_SELF)
+               for guid in (guid_requirement, guid_case, *list_guid)
+               if guid is not None and guid in index]
 
     claimed = cc_public.requirement.compose(document_req)
-    plain = {'claimed':        {f: claimed.get(f) for f in FIELD_CLAIMED},
-             'implementation': implementation,
-             'case':           _source(index, guid_case) if guid_case else None}
+    plain   = {'claimed':  {field: claimed.get(field) for field in FIELD_CLAIMED},
+               # Sorted, so that the digest covers what the closure reaches
+               # and not the order the caller happened to name it in.
+               #
+               'rests_on': [_source(index, map_guid[name])
+                            for name in sorted(cc_public.testing.closure(map_document,
+                                                                         list_id))
+                            if name != id_requirement and name in map_guid]}
 
     return hashlib.sha256(json.dumps(plain, sort_keys = True, default = str)
                                  .encode('utf-8')).hexdigest()[:LENGTH_DIGEST]
@@ -195,13 +224,43 @@ def _rows(map_document):
 # -----------------------------------------------------------------------------
 def _index(map_document):
     """
-    Return guid -> (location, document) for every document declaring one.
+    Return guid -> (location, document) for every item declaring one,
+    the items held within another included.
+
+    A test method is an entry of a register, so a digest that read only
+    the item at each location could not see the method it rests on, and
+    a change to a procedure would stale nothing.
 
     """
 
-    return {document.get(KEY_GUID_SELF): (location, document)
-            for (location, document) in map_document.items()
-            if isinstance(document, dict) and isinstance(document.get(KEY_GUID_SELF), str)}
+    out = {}
+
+    for (location, document) in map_document.items():
+        for item in _iter_identified(document):
+            out[item[KEY_GUID_SELF]] = (location, item)
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _iter_identified(node):
+    """
+    Yield the node and every item held anywhere within it.
+
+    """
+
+    if isinstance(node, dict):
+
+        if isinstance(node.get(KEY_GUID_SELF), str):
+            yield node
+
+        for value in node.values():
+            yield from _iter_identified(value)
+
+    elif isinstance(node, list):
+
+        for value in node:
+            yield from _iter_identified(value)
 
 
 # -----------------------------------------------------------------------------
@@ -220,11 +279,14 @@ def _source(index, guid):
 
     (location, document) = found
 
-    if location.filepath.suffix == SUFFIX_PYTHON:
+    if location.filepath.suffix == SUFFIX_PYTHON and document is not None \
+            and location.anchor is not None and KEY_TABLE not in document:
         return cc_public.load.python.code_of(
                     location.filepath.read_text(encoding = 'utf-8'), location.anchor)
 
-    return json.loads(json.dumps(document, default = str))
+    plain = json.loads(json.dumps(document, default = str))
+
+    return {key: value for (key, value) in plain.items() if key not in FIELD_DESCRIBED}
 
 
 # -----------------------------------------------------------------------------

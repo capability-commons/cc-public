@@ -17,16 +17,15 @@ brief:                  |
                         requirement, stamped with what it was observed
                         against.
 description:            |
-                        Turns an observation into rows on an evidence
-                        item: the outcome of a case over its collected
-                        instances, the requirement it verifies, and
-                        the digest of the requirement, its
-                        implementation and the case as they were. The
-                        pytest adapter hands it a session's outcomes
-                        by node id; cctool attest hands it a person's
-                        finding. Rows replace rows for the same case
-                        and requirement, so a partial run observes
-                        only what it ran.
+                        Holds the current verification evidence: what
+                        was observed for each requirement and case,
+                        when, and the digest of everything the
+                        observation rests on. A row is made from a
+                        pytest session or from one test execution, and
+                        replaces the row for the same case and
+                        requirement, so a partial run observes only
+                        what it ran. An attestation records what a
+                        person found by a method that is not test.
 relation:               []
 
 ...
@@ -45,6 +44,7 @@ import xml.etree.ElementTree
 import ruamel.yaml.scalarstring
 
 import cc_public.check.evidence
+import cc_public.testing
 import cc_public.control
 import cc_public.edit.field
 import cc_public.edit.new
@@ -74,6 +74,26 @@ OUTCOME_FAILED   = 'failed'
 OUTCOME_ERROR    = 'error'
 OUTCOME_SKIPPED  = 'skipped'
 OUTCOME_NOT_RUN  = 'not_run'
+
+KEY_OUTCOME        = 'execution_outcome'
+KEY_RESULT         = 'result'
+KEY_CONFORMANCE    = 'conformance_result'
+KEY_ID_CASE        = 'id_case'
+KEY_GUID_CASE      = 'guid_case'
+KEY_ID_METHOD      = 'id_method'
+KEY_GUID_METHOD    = 'guid_method'
+KEY_ID_UNDER       = 'id_under_test'
+KEY_GUID_UNDER     = 'guid_under_test'
+KEY_ID_SELF        = 'id_self'
+KEY_GUID_SELF      = 'guid_self'
+KEY_ADAPTER_VERSION = 'adapter_version'
+OUTCOME_COMPLETED  = 'completed'
+REL_VERIFIES       = 'r_verifies'
+
+# What a conformance result says about a requirement. A skip and an
+# inconclusive observation establish nothing, so neither writes a row.
+#
+MAP_CONFORMANCE  = {'passed': OUTCOME_PASSED, 'failed': OUTCOME_FAILED}
 
 # What each outcome outranks: one instance that errs makes the case
 # err, one that fails makes it fail, and one skipped leaves a hole a
@@ -159,11 +179,17 @@ def row(tree, guid_requirement, outcome, guid_case = None, **extra):
     map_document = tree.context.map_document
     index        = {d.get('guid_self'): d.get('id_self') for d in map_document.values()
                     if isinstance(d, dict)}
+    # Whatever else the row names rests on things too, and the digest
+    # covers the closure of all of them.
+    #
+    list_guid    = tuple(value for (key, value) in sorted(extra.items())
+                         if key.startswith('guid_') and value)
     out          = {'id_requirement':   index.get(guid_requirement),
                     'guid_requirement': guid_requirement,
                     'outcome':          outcome,
                     'digest':           cc_public.check.evidence.digest(
-                                            map_document, guid_requirement, guid_case),
+                                            map_document, guid_requirement, guid_case,
+                                            list_guid),
                     'time':             now()}
     if guid_case is not None:
         out = {'id_case': index.get(guid_case), 'guid_case': guid_case, **out}
@@ -402,3 +428,73 @@ def _blocks(one):
     return {k: (ruamel.yaml.scalarstring.LiteralScalarString(v)
                 if isinstance(v, str) and '\n' in v else v)
             for (k, v) in one.items()}
+
+
+# -----------------------------------------------------------------------------
+def from_execution(tree, document):
+    """
+    Turn one test execution into current evidence and write it. Return
+    the file written, or None where the execution establishes nothing.
+
+    A result updates the current evidence for every requirement the
+    case verifies. A run that did not complete establishes nothing,
+    since a harness that could not run has observed nothing about the
+    item under test.
+
+    """
+
+    if document.get(KEY_OUTCOME) != OUTCOME_COMPLETED:
+        return None
+
+    map_document = tree.context.map_document
+    id_case      = document.get(KEY_ID_CASE)
+    case         = cc_public.testing.index(map_document).get(id_case)
+
+    if case is None:
+        return None
+
+    list_row = []
+
+    for result in (document.get(KEY_RESULT) or {}).values():
+
+        outcome = MAP_CONFORMANCE.get(result.get(KEY_CONFORMANCE))
+
+        if outcome is None:
+            continue
+
+        for id_requirement in _verified(case):
+
+            item = tree.map_id.get(id_requirement)
+
+            if item is None:
+                continue
+
+            list_row.append(row(tree, item.guid_self, outcome,
+                                document.get(KEY_GUID_CASE),
+                                id_case         = id_case,
+                                id_method       = document.get(KEY_ID_METHOD),
+                                guid_method     = document.get(KEY_GUID_METHOD),
+                                id_execution    = document.get(KEY_ID_SELF),
+                                guid_execution  = document.get(KEY_GUID_SELF),
+                                id_under_test   = document.get(KEY_ID_UNDER),
+                                guid_under_test = document.get(KEY_GUID_UNDER)))
+
+    if not list_row:
+        return None
+
+    return record(tree, ID_PYTEST, METHOD_TEST,
+                  document.get(KEY_ADAPTER_VERSION) or METHOD_TEST,
+                  list_row, 'Pytest evidence')
+
+
+# -----------------------------------------------------------------------------
+def _verified(case):
+    """
+    Return the readable id of every item the case verifies.
+
+    """
+
+    return [edge.get('id_target')
+            for edge in case.get('relation') or []
+            if isinstance(edge, dict) and edge.get('id_relation') == REL_VERIFIES
+            and edge.get('id_target')]

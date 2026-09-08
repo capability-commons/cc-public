@@ -1,0 +1,169 @@
+id_self:                ddr_dependency_closure
+guid_self:              ddr_21c41ff88ed94bb999809be92f4e4dda
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A relation says whether following it reaches something depended on
+brief:                  |
+                        A relation entry may declare dependency, and a
+                        closure is every item reachable by dependency
+                        edges, so what a claim rests on is computed
+                        from the register rather than from a list in
+                        code.
+context:                |
+                        ddr_evidence_dependency_closure decides that
+                        an evidence row carries one digest over the
+                        closure its observation consequentially
+                        depends on, and leaves open which relations
+                        carry such a dependency.
+
+                        A row names a requirement, a case, a method,
+                        an execution and an item under test. What each
+                        of those rests on is not in the row. A case is
+                        run by the function that automates it; a
+                        method is carried out by its adapter; a
+                        requirement is met by what implements it. A
+                        change to any of them changes what a verdict
+                        means, and a change to the record that decided
+                        the case does not.
+
+                        ddr_term_ontology_checks refuses a checker
+                        that derives a property from a relation's
+                        readable name, and asks that the semantics
+                        supporting an inference be data in the
+                        relation register, so that a partner's
+                        relation is checkable by the same code.
+
+                        The property is not the closure. A closure is
+                        drawn for a purpose; whether following an edge
+                        reaches something the source rests on is true
+                        of the relation wherever it is used.
+decision:               |
+                        A relation entry may declare dependency: an
+                        edge of it means the item at its source rests
+                        on the item at its target, so a change to the
+                        target changes what the source claims.
+
+                        A CLOSURE of an item is that item and every
+                        item reachable from it by dependency edges,
+                        followed as far as they run. Nothing declares
+                        itself transitive for this; the closure is
+                        over the union of dependency edges, which is
+                        what a chain of them means.
+
+                        r_is_implemented_by, r_uses_test_method and
+                        r_tests declare it. A requirement rests on
+                        what implements it, a case on the method it is
+                        run with and on the function that automates
+                        it, a method on its adapter, and an execution
+                        on the item it observed.
+
+                        r_verifies does not. A case does not rest on
+                        the requirement it verifies; the claim about
+                        the requirement rests on the case, and an
+                        evidence row names both, so nothing has to be
+                        reached to find them.
+
+                        A relation declares dependency where that is
+                        what an edge of it means. One whose meaning
+                        has not been examined declares nothing, and a
+                        closure passes over it.
+rationale:              |
+                        Declared rather than listed in code, because a
+                        list in cc_public.evidence would be knowledge
+                        of selected relation names held where a
+                        partner cannot reach it, which is what
+                        ddr_term_ontology_checks refuses. A partner
+                        bringing a relation that carries dependency
+                        declares it, and the same closure follows it.
+
+                        A property of its own rather than transitive,
+                        because the two say different things.
+                        Transitive says a chain of one relation is one
+                        edge of that relation, which is false of
+                        r_is_implemented_by: a requirement implemented
+                        by a module is not implemented by what that
+                        module is implemented by. Dependency says a
+                        chain of edges, of one relation or several,
+                        reaches what the source rests on, which is
+                        true.
+
+                        Three relations and not every relation that
+                        could be argued to carry a dependency, because
+                        a relation declares what an edge of it means
+                        and the three are the ones whose meaning has
+                        been examined. Declaring more would widen
+                        every closure drawn later on the strength of
+                        an argument nobody has made.
+
+                        r_verifies left out, because the direction is
+                        wrong. Following it from a case reaches what
+                        the case makes a claim about, which the row
+                        already names.
+alternative:            |
+                        A list of relation names in the module that
+                        computes the digest. Rejected: see the
+                        rationale.
+
+                        Declaring the three transitive and taking the
+                        closure of each separately. Rejected:
+                        transitive is false of them one at a time, and
+                        a closure has to cross from one relation to
+                        another to reach an adapter from a case.
+
+                        A closure that follows every relation.
+                        Rejected: a change to the record that decided
+                        a case would stale evidence about the code,
+                        and nothing about the verdict would have
+                        changed.
+
+                        Naming the property consequential, after the
+                        record that asks for it. Rejected:
+                        consequential of what is the question, and the
+                        answer varies by the claim. Whether an edge
+                        reaches something the source rests on does
+                        not.
+consequence:            |
+                        sch_entry_relation gains dependency, and the
+                        relation check reads it beside domain, range,
+                        acyclic, transitive, incompatible and
+                        cardinality.
+
+                        A closure is computable for any item, not only
+                        for evidence. What rests on what is now in the
+                        register, so a later reader asking what a
+                        change reaches has an answer.
+
+                        A relation that carries a dependency and does
+                        not declare it leaves a closure short, and
+                        nothing reports that. What a relation means is
+                        the author's to state.
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_evidence_dependency_closure.consequential
+    guid_target:        qst_f319d12d59f64b72bbf0c5abb126ed4d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_relation
+    guid_target:        sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+question:
+
+  unstated:
+    id_self:            qst_dependency_closure.unstated
+    guid_self:          qst_1f13d09b3e1245e5a3d72e4e6e1d4ff9
+    question:           |
+                        Whether a relation that carries a dependency
+                        and does not declare it can be found, or
+                        whether a closure that is short is only ever
+                        noticed by the evidence it fails to stale.
+    relation:           []

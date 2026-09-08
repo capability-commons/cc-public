@@ -14,16 +14,18 @@ brief:                  |
                         observer found about the requirements verified
                         by one method.
 description:            |
-                        Composes the base envelope and outgoing
-                        relations. One item per method and observer,
-                        holding a table of rows keyed by a digest of
-                        the case and the requirement. A row says what
-                        was observed about one requirement, by which
-                        case where the method has one, with what
-                        outcome, and carries the digest of what it was
-                        observed against, so that the evidence check
-                        can tell a current observation from a stale
-                        one.
+                        One record per method of verification, holding
+                        a row for each requirement and case observed.
+                        A row carries what was observed, when, and the
+                        digest of everything the observation rests on,
+                        so a later reader sees at once whether it
+                        still describes what exists.
+
+                        A row may name the test method, the test
+                        execution, the item under test and the
+                        interface member the observation concerns. A
+                        row written before those fields existed stays
+                        readable and is not rewritten to gain them.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_evidence.yaml
 usage:                  |
@@ -171,3 +173,38 @@ $defs:
 
       note:
         type:           string
+
+      id_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Optional. Guid of the test method the run
+                        followed.
+
+      id_execution:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_execution:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Optional. Guid of the test execution that
+                        produced this observation.
+
+      id_under_test:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_under_test:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Optional. Guid of the item the run observed.
+
+      id_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Optional. Guid of the interface member the
+                        observation is about.
