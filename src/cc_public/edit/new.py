@@ -45,6 +45,8 @@ import uuid
 import ruamel.yaml
 import ruamel.yaml.comments
 
+import cc_public.edit.field
+import cc_public.edit.link
 import cc_public.edit.tree
 import cc_public.layout
 import cc_public.load
@@ -65,6 +67,11 @@ KEY_TYPE       = 'type'
 
 REL_SPECIFIED  = 'r_is_specified_by_schema'
 SUFFIX         = '.yaml'
+
+# What from_document does not set for itself: the identity new mints,
+# and the edges link makes.
+#
+FIELD_MADE     = ('id_self', 'guid_self', 'relation')
 
 # Source items. A package or a module is a file, and a file holding
 # only a docstring is a valid one, so new can make it. A class or a
@@ -499,3 +506,30 @@ def empty(subschema):
     empty = EMPTY.get(kind, '')
 
     return empty() if callable(empty) else empty
+
+
+# -----------------------------------------------------------------------------
+def from_document(tree, id_type, document):
+    """
+    Write a whole document as a new item of id_type, and return its
+    readable id.
+
+    The identity is the one the document carries, so the document a
+    caller was shown and the item the tree holds are one thing. Edges
+    are made through link, so a relation the register does not hold is
+    refused here as anywhere.
+
+    """
+
+    id_self = document['id_self']
+
+    new(tree, id_type, id_self, tree.defaults(), guid = document['guid_self'])
+
+    for (key, value) in document.items():
+        if key not in FIELD_MADE:
+            cc_public.edit.field.set_field(tree, id_self, key, value = value)
+
+    for edge in document.get(KEY_RELATION) or []:
+        cc_public.edit.link.link(tree, id_self, edge[KEY_ID_REL], edge[KEY_ID_TARGET])
+
+    return id_self
