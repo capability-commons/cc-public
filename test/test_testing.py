@@ -136,3 +136,35 @@ def test_a_configuration_naming_something_that_is_not_a_function_is_refused(tree
                                     _map(tree), {'id_test': 'pym_test.test_query'})
     assert node is None
     assert 'is not a python function' in problem[0]
+
+
+def test_a_case_that_states_an_expectation_expects_that(tree):
+    # Prose is wrapped, so read it as words rather than as lines.
+    stated = ' '.join(cc_public.testing.expectation(
+                        tree.context.map_document,
+                        'tc_walk_reports_neighbourhood').split())
+    assert 'once, at the depth it is first reached' in stated
+
+
+def test_a_case_that_states_none_expects_the_criteria_of_what_it_verifies(tree):
+    import cc_public.edit.field
+
+    cc_public.edit.field.unset_field(tree, 'tc_path_reported', 'expectation')
+    criteria = tree.context.map_document[
+                    tree.resolve('req_path_reported').location]['success_criteria']
+    assert cc_public.testing.expectation(tree.context.map_document,
+                                         'tc_path_reported') == criteria.strip()
+
+
+def test_a_case_that_verifies_nothing_carrying_criteria_expects_nothing(tree):
+    import cc_public.edit.field
+
+    cc_public.edit.field.unset_field(tree, 'tc_path_reported', 'expectation')
+    cc_public.edit.field.unset_field(tree, 'req_path_reported', 'success_criteria')
+    assert cc_public.testing.expectation(tree.context.map_document,
+                                         'tc_path_reported') is None
+
+
+def test_a_case_the_tree_lacks_expects_nothing(tree):
+    assert cc_public.testing.expectation(tree.context.map_document,
+                                         'tc_absent') is None

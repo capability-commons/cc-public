@@ -88,11 +88,16 @@ def test_a_complete_case_conforms(validate):
 # holds it.
 
 
-def test_a_case_with_no_expectation_is_refused(validate):
+def test_a_case_may_state_no_expectation(validate):
+    # A case states an expectation where what it expects is not what the
+    # requirement already says. Where it has nothing of its own to say,
+    # the success criteria of what it verifies are the statement, and a
+    # case repeating them would be a second copy to keep current.
+    # cc_public.testing.expectation reads one or the other, and
+    # test_testing.py holds that.
     case = copy.deepcopy(CASE)
     del case['expectation']
-    messages = [message for (_, message) in validate(case)]
-    assert any('expectation' in message for message in messages)
+    assert validate(case) == []
 
 
 def test_the_configuration_takes_what_its_method_asks_for(validate):

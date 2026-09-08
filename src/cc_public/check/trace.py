@@ -35,6 +35,11 @@ relation:
     id_target:          obj_expected_result_stated
     guid_target:        obj_a055d8642b5a4688820e3f05c98d333a
 
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_verdict_per_requirement
+    guid_target:        obj_26b7e105da03488db6031facc7422c0e
+
 ...
 """
 

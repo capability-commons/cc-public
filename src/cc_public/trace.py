@@ -54,6 +54,12 @@ KEY_DIMENSION     = 'dimension'
 KEY_LEVEL         = 'level'
 KEY_ID_CRIT       = 'id_criticality'
 KEY_RESPONSIBLE   = 'responsibility'
+KEY_REQUIRES      = 'requires'
+KEY_ID_OBJECTIVE  = 'id_objective'
+KEY_CLAIM         = 'claim'
+
+CLAIM_EVIDENTIAL  = 'evidential'
+OBJ_VERDICT       = 'obj_verdict_per_requirement'
 
 PREFIX_REQ        = 'req'
 SEPARATOR         = '_'
@@ -100,6 +106,16 @@ class Requirement(typing.NamedTuple):
     no requirement in the tree derives from this one, which in an open
     world is provisional.
 
+    shared_verdict holds the verifiers this requirement shares with
+    another, and is empty where any verifier is this requirement's
+    alone. A shared verifier matters only where nothing else observes
+    the requirement on its own: a case written for it resolves the
+    ambiguity that the shared function leaves.
+
+    demands_verdict says a criticality this requirement declares
+    requires that a verdict stand for one requirement. It is read from
+    the criticality register, never from this module.
+
     """
 
     id_self:        str
@@ -114,6 +130,9 @@ class Requirement(typing.NamedTuple):
     verified_by:    tuple
     unresolved:     tuple
     gap:            tuple
+    shared_verdict: tuple = ()
+    demands_verdict: bool = False
+    claim:          str | None = None
 
 
 # -----------------------------------------------------------------------------
@@ -149,6 +168,7 @@ def projection(map_document, is_closed_world = False):
     (map_by_guid, map_edge) = _index(map_document)
     map_children  = {}
     map_verifier  = {}
+    map_verifies  = {}
 
     for (guid, edges) in map_edge.items():
         for edge in edges:
@@ -156,6 +176,9 @@ def projection(map_document, is_closed_world = False):
                 map_children.setdefault(edge.get(KEY_GUID_TGT), []).append(guid)
             if edge.get(KEY_ID_REL) == REL_VERIFIES:
                 map_verifier.setdefault(edge.get(KEY_GUID_TGT), []).append(guid)
+                map_verifies.setdefault(guid, set()).add(edge.get(KEY_GUID_TGT))
+
+    (map_level, _) = _level(map_document)
 
     list_out = []
 
@@ -176,6 +199,19 @@ def projection(map_document, is_closed_world = False):
         children    = tuple(sorted(name(g) for g in map_children.get(guid, [])))
         verifiers   = tuple(sorted(name(g) for g in map_verifier.get(guid, [])))
         status      = document.get(KEY_STATUS) or STATUS_PROPOSED
+
+        # A verifier that observes this requirement alone settles it,
+        # whatever else the others also observe.
+        #
+        list_shared = []
+        is_alone    = False
+        for verifier in map_verifier.get(guid, []):
+            other = map_verifies.get(verifier, set()) - {guid}
+            if other:
+                list_shared.extend((name(verifier), name(g)) for g in sorted(other))
+            else:
+                is_alone = True
+
         record      = Requirement(
                         id_self        = document.get(KEY_ID_SELF),
                         guid_self      = guid,
@@ -188,7 +224,11 @@ def projection(map_document, is_closed_world = False):
                         implemented_by = implemented,
                         verified_by    = verifiers,
                         unresolved     = tuple(sorted(set(unresolved))),
-                        gap            = ())
+                        gap            = (),
+                        shared_verdict = () if is_alone else tuple(list_shared),
+                        demands_verdict = _demands(document, map_level,
+                                                   OBJ_VERDICT),
+                        claim          = document.get(KEY_CLAIM))
         list_out.append(record._replace(gap = tuple(_gaps(record, is_closed_world))))
 
     return sorted(list_out, key = lambda r: r.id_self or '')
@@ -297,6 +337,37 @@ def neighbourhood(map_document, name):
 
 
 # -----------------------------------------------------------------------------
+def _demands(document, map_level, id_objective):
+    """
+    Return whether a criticality the requirement declares requires the
+    named objective.
+
+    Read from the criticality register through map_level, so that
+    raising what a level demands is editing an entry rather than
+    editing this.
+
+    """
+
+    carried = document.get(KEY_CRITICALITY)
+
+    if not isinstance(carried, dict):
+        return False
+
+    for reference in carried.values():
+        if not isinstance(reference, dict):
+            continue
+        entry = map_level.get(reference.get(KEY_ID_CRIT))
+        if entry is None:
+            continue
+        for required in entry.get(KEY_REQUIRES) or []:
+            if isinstance(required, dict) \
+                    and required.get(KEY_ID_OBJECTIVE) == id_objective:
+                return True
+
+    return False
+
+
+# -----------------------------------------------------------------------------
 def _gaps(record, is_closed_world):
     """
     Yield what the requirement lacks, given its status and the world.
@@ -345,6 +416,18 @@ def _gaps(record, is_closed_world):
                   'Verified by test, and no test names it. A test says what it '
                   'verifies by an r_verifies edge, or the requirement is '
                   'verified by nothing.')
+
+    if record.shared_verdict:
+        (verifier, other) = record.shared_verdict[0]
+        yield Gap(KEY_VERIFICATION,
+                  SEVERITY_CRITICAL if record.demands_verdict
+                  or record.claim == CLAIM_EVIDENTIAL else SEVERITY_ADVISORY,
+                  'Every verifier observes another requirement too: {v} also '
+                  'verifies {o}. One verdict then stands for two obligations, '
+                  'so a failure does not say which was unmet, and an assertion '
+                  'removed from {v} leaves both still verified. Divide it, or '
+                  'write a case for each requirement it '
+                  'observes.'.format(v = verifier, o = other))
 
 
 # -----------------------------------------------------------------------------
@@ -466,8 +549,11 @@ def responsibility(map_document):
 # -----------------------------------------------------------------------------
 def _level(map_document):
     """
-    Return (id -> (dimension, level), dimension -> lowest level) read
-    from the criticality register.
+    Return (id -> entry, dimension -> lowest level) read from the
+    criticality register.
+
+    The entry rather than the pair it declares, since a reader wants
+    the objectives it requires as often as the level it sits at.
 
     """
 
@@ -486,10 +572,11 @@ def _level(map_document):
             level     = entry.get(KEY_LEVEL)
             if isinstance(dimension, str) and isinstance(level, int) \
                     and isinstance(entry.get(KEY_ID_SELF), str):
-                map_level[entry[KEY_ID_SELF]] = (dimension, level)
+                map_level[entry[KEY_ID_SELF]] = entry
 
     base = {}
-    for (dimension, level) in map_level.values():
+    for entry in map_level.values():
+        (dimension, level) = (entry[KEY_DIMENSION], entry[KEY_LEVEL])
         if dimension not in base or level < base[dimension]:
             base[dimension] = level
 
@@ -513,9 +600,9 @@ def _declared(document, map_level):
     for reference in carried.values():
         if not isinstance(reference, dict):
             continue
-        found = map_level.get(reference.get(KEY_ID_CRIT))
-        if found is not None:
-            (dimension, level) = found
+        entry = map_level.get(reference.get(KEY_ID_CRIT))
+        if entry is not None:
+            (dimension, level) = (entry[KEY_DIMENSION], entry[KEY_LEVEL])
             out[dimension] = max(level, out.get(dimension, level))
 
     return out

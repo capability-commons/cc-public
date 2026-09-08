@@ -55,6 +55,8 @@ KEY_ID_ADAPTER  = 'id_adapter'
 KEY_ID_SCHEMA   = 'id_schema_case'
 KEY_CONFIG      = 'configuration'
 KEY_VERSION     = 'version'
+KEY_EXPECTATION = 'expectation'
+KEY_CRITERIA    = 'success_criteria'
 
 REL_USES        = 'r_uses_test_method'
 REL_VERIFIES    = 'r_verifies'
@@ -277,3 +279,44 @@ def closure(map_document, list_id):
                        and edge.get(KEY_ID_TARGET) is not None)
 
     return tuple(seen)
+
+
+# -----------------------------------------------------------------------------
+def expectation(map_document, id_case):
+    """
+    Return what a case expects, or None where nothing says.
+
+    A case states its own expectation where what it expects is not what
+    the requirement already says: over one test function that observes
+    several requirements, a case for each, expecting something
+    different of the same run.
+
+    Where the case states none, what it verifies is the statement. The
+    success criteria of a requirement are the expected result, so a
+    case repeating them would be a second copy to keep current and a
+    second thing to disagree with the first.
+
+    """
+
+    map_item = index(map_document)
+    case     = map_item.get(id_case)
+
+    if not isinstance(case, dict):
+        return None
+
+    stated = str(case.get(KEY_EXPECTATION) or '').strip()
+
+    if stated:
+        return stated
+
+    list_criteria = []
+
+    for name in _target(case, REL_VERIFIES):
+        verified = map_item.get(name)
+        if not isinstance(verified, dict):
+            continue
+        criteria = str(verified.get(KEY_CRITERIA) or '').strip()
+        if criteria:
+            list_criteria.append(criteria)
+
+    return '\n\n'.join(list_criteria) or None

@@ -55,6 +55,7 @@ import cc_public.evidence
 import cc_public.layout
 import cc_public.load.git
 import cc_public.question
+import cc_public.testing
 import cc_public.trace
 import cc_public.workflow.generate
 import cc_public.workflow.graph
@@ -248,7 +249,8 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
 
     list_report = cc_public.nonconformity.from_execution(
                         tree.context.map_document, document, defaults,
-                        case.get(KEY_EXPECTATION))
+                        cc_public.testing.expectation(tree.context.map_document,
+                                                      case.get('id_self')))
 
     written = []
 

@@ -147,3 +147,71 @@ def test_an_accepted_requirement_lacks_critically_and_the_trace_command_reads_th
     out = runner.invoke(cc_public.cli.command.main,
                         ['trace', '--root', str(tmp_path), '--gaps', '--requirement', 'req_renamer_keeps_guid'])
     assert out.exit_code == 0 and '0 requirement(s), 0 with gaps' in out.output
+
+
+# -----------------------------------------------------------------------------
+# A verdict that stands for two requirements. The fixture tree holds no
+# test/, so the verifiers here are cases, which are data and are copied.
+
+SHARED  = 'Every verifier observes another requirement too'
+ID_WALK = 'req_walk_reports_neighbourhood'
+ID_ONLY = 'req_walk_follows_named_relations'
+
+
+def _shared(tmp_path, id_requirement):
+    ctx = cc_public.check.context([tmp_path])[0]
+    by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
+    return [g for g in by[id_requirement].gap if SHARED in g.message]
+
+
+def test_a_verdict_shared_between_requirements_is_reported(tree, tmp_path):
+    # tc_walk_follows_named_relations verifies one requirement. Give it a
+    # second, and it can no longer say which of the two a verdict was about.
+    cc_public.edit.link.link(tree, 'tc_walk_follows_named_relations',
+                             'r_verifies', ID_WALK)
+
+    (gap,) = _shared(tmp_path, ID_ONLY)
+    assert gap.severity == 'advisory' and ID_WALK in gap.message
+
+    # The walk requirement keeps a case of its own, so nothing is lost
+    # for it and it is not reported.
+    assert _shared(tmp_path, ID_WALK) == []
+
+
+def test_a_criticality_that_requires_a_verdict_makes_it_critical(tree, tmp_path):
+    cc_public.edit.link.link(tree, 'tc_walk_follows_named_relations',
+                             'r_verifies', ID_WALK)
+    cc_public.edit.field.set_field(
+        tree, ID_ONLY, 'criticality',
+        value = {'safety': {
+            'id_criticality':   'crit_safety_60',
+            'guid_criticality': tree.resolve('crit_safety_60').guid_self}})
+
+    (gap,) = _shared(tmp_path, ID_ONLY)
+    assert gap.severity == 'critical'
+
+    # And the level decides it, not this test: a level that does not
+    # require the objective leaves the finding advisory.
+    cc_public.edit.field.set_field(
+        tree, ID_ONLY, 'criticality',
+        value = {'safety': {
+            'id_criticality':   'crit_safety_40',
+            'guid_criticality': tree.resolve('crit_safety_40').guid_self}})
+    assert _shared(tmp_path, ID_ONLY)[0].severity == 'advisory'
+
+
+def test_an_evidential_claim_makes_a_shared_verdict_critical(tree, tmp_path):
+    cc_public.edit.link.link(tree, 'tc_walk_follows_named_relations',
+                             'r_verifies', ID_WALK)
+    cc_public.edit.field.set_field(tree, ID_ONLY, 'claim', value = 'evidential')
+    assert _shared(tmp_path, ID_ONLY)[0].severity == 'critical'
+
+
+def test_dividing_a_shared_verdict_clears_it_and_remerging_returns_it(tree, tmp_path):
+    cc_public.edit.link.link(tree, 'tc_walk_follows_named_relations',
+                             'r_verifies', ID_WALK)
+    assert _shared(tmp_path, ID_ONLY) != []
+
+    cc_public.edit.link.unlink(tree, 'tc_walk_follows_named_relations',
+                               'r_verifies', ID_WALK)
+    assert _shared(tmp_path, ID_ONLY) == []
