@@ -213,12 +213,12 @@ def test_a_shortest_path_is_reported_or_its_absence(tree, tmp_path):
     assert db.path('nothing', 'need_layout_stable') is None
 
 
-def test_orphans_are_what_nothing_points_at_and_relations_nothing_uses(tree, tmp_path):
+def test_orphans_are_what_nothing_points_at(tree, tmp_path):
     """
     ---
 
-    id_self:                pyf_test.test_query.test_orphans_are_what_nothing_points_at_and_relations_nothing_uses
-    guid_self:              pyf_0efd48c942ae46d483c040fa9d1e7ba1
+    id_self:                pyf_test.test_query.test_orphans_are_what_nothing_points_at
+    guid_self:              pyf_99975b7fe6b148eba051aed4f49a66cc
     copyright:              Copyright 2026 William Payne
     license:                Apache-2.0
 
@@ -227,15 +227,13 @@ def test_orphans_are_what_nothing_points_at_and_relations_nothing_uses(tree, tmp
       - id_mark:            mark_public
         guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-    title:                  Orphans are what nothing points at and relations nothing uses
+    title:                  Orphans are what nothing points at
     brief:                  |
-                            Orphans are what nothing points at and
-                            relations nothing uses.
+                            Items nothing points at are listed, and stop
+                            being listed once something points at them.
     description:            |
                             Makes an item nothing points at, sees it
-                            listed, points at it and sees it gone; and
-                            asserts the unused relations are relation
-                            entries.
+                            listed, points at it and sees it gone.
 
     relation:
 
@@ -243,6 +241,44 @@ def test_orphans_are_what_nothing_points_at_and_relations_nothing_uses(tree, tmp
         guid_relation:      r_490096e908d1444cb0defb530fcf7786
         id_target:          req_unreferenced_items_listed
         guid_target:        req_c2a686dc37e340e08f4ceb8631af75d7
+
+    ...
+    """
+
+    db = cc_public.query.Database(tree.context.map_document)
+    (before_item, _) = db.orphans()
+    cc_public.edit.new.new(tree, 't_ddr', 'ddr_alone', DEFAULTS)
+    db = cc_public.query.Database(tree.context.map_document)
+    (after_item, _) = db.orphans()
+    assert 'ddr_alone' in after_item and 'ddr_alone' not in before_item
+    cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'ddr_alone')
+    db = cc_public.query.Database(tree.context.map_document)
+    assert 'ddr_alone' not in db.orphans()[0]
+
+
+def test_unused_relations_are_what_no_edge_names(tree, tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_query.test_unused_relations_are_what_no_edge_names
+    guid_self:              pyf_685a0ef345f7478889f184378f10284a
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Unused relations are what no edge names
+    brief:                  |
+                            Relations no edge uses are listed, and each
+                            listed one is a relation.
+    description:            |
+                            Reads the second half of what orphans reports
+                            and asserts every entry in it is a relation.
+
+    relation:
 
       - id_relation:        r_verifies
         guid_relation:      r_490096e908d1444cb0defb530fcf7786
@@ -253,16 +289,9 @@ def test_orphans_are_what_nothing_points_at_and_relations_nothing_uses(tree, tmp
     """
 
     db = cc_public.query.Database(tree.context.map_document)
-    (before_item, before_relation) = db.orphans()
-    cc_public.edit.new.new(tree, 't_ddr', 'ddr_alone', DEFAULTS)
-    db = cc_public.query.Database(tree.context.map_document)
-    (after_item, _) = db.orphans()
-    assert 'ddr_alone' in after_item and 'ddr_alone' not in before_item
-    cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'ddr_alone')
-    db = cc_public.query.Database(tree.context.map_document)
-    assert 'ddr_alone' not in db.orphans()[0]
-    assert isinstance(before_relation, list)
-    assert all(r.startswith('r_') for r in before_relation)
+    (_, unused) = db.orphans()
+    assert isinstance(unused, list)
+    assert all(r.startswith('r_') for r in unused)
 
 
 def test_a_named_query_runs_over_the_facts(tree, tmp_path):

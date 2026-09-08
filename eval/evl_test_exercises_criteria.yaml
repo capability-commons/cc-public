@@ -1,0 +1,90 @@
+id_self:                evl_test_exercises_criteria
+guid_self:              evl_652209282f91463799ded7da18315992
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test exercises the criteria
+brief:                  |
+                        The test that verifies a requirement would
+                        fail if what the requirement requires were
+                        untrue.
+criterion:              |
+                        You are given the success criteria of a
+                        requirement and the source of the test that
+                        verifies it.
+
+                        MET when the test exercises what the criteria
+                        require: for each thing the criteria say
+                        verification must show, the test would fail if
+                        that thing were untrue.
+
+                        UNMET when the test could pass while something
+                        the criteria require is untrue. Say which part
+                        of the criteria nothing in the test would
+                        catch.
+
+                        A test may do more than the criteria ask, and
+                        that is not a fault. It is the other direction
+                        that matters: a criterion nothing in the test
+                        would catch.
+
+                        Judge what the test would catch, not how it is
+                        written. A test that reaches the same thing by
+                        a different route than the criteria describe
+                        still catches it.
+severity:               advisory
+
+example:
+
+  - input:              "CRITERIA \"A path is reported between two items where one exists, and its absence is reported where none does.\" TEST \"def test_path(...): assert db.path('a', 'd') == ['a', 'b', 'd']; assert db.path('a', 'z') is None\""
+    verdict:            met
+    feedback:           'Both halves of the criteria are caught: a path where one exists, and the absence where none does.'
+
+  - input:              "CRITERIA \"A path is reported between two items where one exists, and its absence is reported where none does.\" TEST \"def test_path(...): assert db.path('a', 'd') == ['a', 'b', 'd']\""
+    verdict:            unmet
+    feedback:           Nothing in the test would catch the second half. Were the absence of a path reported as an empty list, or as a path of length zero, this test would still pass.
+
+  - input:              'CRITERIA "The printer writes each byte of the first pass unchanged on the second." TEST "def test_printer(...): once = layout(text); twice = layout(once); assert once == twice"'
+    verdict:            met
+    feedback:           The fixpoint the criteria describe is exactly what the assertion catches.
+
+note:                   |
+                        Anchored on r_verifies, so the judge is shown
+                        the requirement it points at and the source of
+                        the test that points at it. Without the source
+                        it would judge prose about a test rather than
+                        the test, which is the mistake
+                        evl_record_and_code_agree was anchored to
+                        avoid.
+
+                        This is the coverage analysis DO-178C asks for
+                        and nothing here did: that verification
+                        exercises the requirement was inferred from
+                        the verification existing. It is advisory and
+                        unmeasured, so it reports and does not gate
+                        until someone runs cctool measure against it.
+
+scope:
+
+  include:
+    - source
+    - success_criteria
+    - brief
+    - title
+
+relation:
+
+  - id_relation:        r_evaluates_items_joined_by_relation
+    guid_relation:      r_c7a437a455054da6bbedbced7c4bf32d
+    id_target:          r_verifies
+    guid_target:        r_490096e908d1444cb0defb530fcf7786
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_coverage_analysed
+    guid_target:        obj_d4ff4410e99c40a082ffbabcf8b6d223

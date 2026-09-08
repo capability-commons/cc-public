@@ -100,9 +100,151 @@ table:
         id_target:      pym_cc_public.adapter.pytest_function
         guid_target:    pym_c62e5f399bae4c6fb04593696c3d2c04
 
+  tm_manual_inspection:
+    id_self:            tm_manual_inspection
+    guid_self:          tm_f092b70726b84bbb9683e71ea9852d4e
+    title:              Manual inspection
+    brief:              |
+                        A person examines the item and what it is
+                        required to be, and says whether the one meets
+                        the other.
+    description:        |
+                        A method a person carries out. What the person
+                        needs in order to carry it out the same way
+                        twice is in the instruction of its execution
+                        form, not assumed. Evidence from it is an
+                        attestation, which ddr_verification_evidence
+                        already provides for.
+    version:            '1.0'
+    verification_class:  inspection
+    procedure:          |
+                        Examine the item under test and the
+                        requirement the case verifies. Read what the
+                        case was given and what it expects. Say, of
+                        each thing expected, whether the item shows
+                        it. Where a thing expected cannot be judged by
+                        reading alone, record that rather than judging
+                        it.
+    observation:        |
+                        What the person read, and for each thing
+                        expected, whether the item showed it.
+    verdict_rule:       |
+                        Passed where the item shows every thing
+                        expected. Failed where it shows none of one.
+                        Inconclusive where a thing expected could not
+                        be judged by reading alone, since an
+                        inspection that could not see is not an
+                        inspection that saw nothing wrong.
+    id_schema_case:     sch_case_manual
+    guid_schema_case:   sch_67e069f2e21f4445b4b38ff4c1f8357f
+
+    execution_form:
+
+      manual:
+        instruction:    Work from the item and the requirement alone, and do not run anything. Where a thing expected turns on behaviour rather than on what is written, it is not for this method.
+        recording:      An attestation by the person who carried it out, naming them and what they observed.
+        competence:     Able to read the item and the requirement it is judged against.
+
+    status:             proposed
+    relation:           []
+
+  tm_manual_analysis:
+    id_self:            tm_manual_analysis
+    guid_self:          tm_57037b331fc74c69b4a6cf349d0ad66e
+    title:              Manual analysis
+    brief:              |
+                        A person reasons from what is already known or
+                        measured to whether the item meets the
+                        requirement, without exercising it.
+    description:        |
+                        A method a person carries out. What the person
+                        needs in order to carry it out the same way
+                        twice is in the instruction of its execution
+                        form, not assumed. Evidence from it is an
+                        attestation, which ddr_verification_evidence
+                        already provides for.
+    version:            '1.0'
+    verification_class:  analysis
+    procedure:          |
+                        State what is taken as given, and where each
+                        given thing comes from. Reason from those to
+                        whether the requirement is met. Record the
+                        reasoning, not only its conclusion.
+    observation:        |
+                        What was taken as given, where each came from,
+                        and the reasoning from those to the
+                        conclusion.
+    verdict_rule:       |
+                        Passed where the reasoning holds and every
+                        given thing is sourced. Failed where the
+                        reasoning shows the requirement unmet.
+                        Inconclusive where a given thing has no
+                        source, since an analysis resting on an
+                        assertion is an assertion.
+    id_schema_case:     sch_case_manual
+    guid_schema_case:   sch_67e069f2e21f4445b4b38ff4c1f8357f
+
+    execution_form:
+
+      manual:
+        instruction:    Name every source before reasoning from it. An analysis whose givens are not sourced records an opinion.
+        recording:      An attestation by the person who carried it out, naming them and what they observed.
+        competence:     Able to read the item and the requirement it is judged against.
+
+    status:             proposed
+    relation:           []
+
+  tm_manual_demonstration:
+    id_self:            tm_manual_demonstration
+    guid_self:          tm_abb7fd3356f24475ad2d0b9babcf4ede
+    title:              Manual demonstration
+    brief:              |
+                        A person operates the item as it is meant to
+                        be operated and observes what it does.
+    description:        |
+                        A method a person carries out. What the person
+                        needs in order to carry it out the same way
+                        twice is in the instruction of its execution
+                        form, not assumed. Evidence from it is an
+                        attestation, which ddr_verification_evidence
+                        already provides for.
+    version:            '1.0'
+    verification_class:  demonstration
+    procedure:          |
+                        Set the item up as the case describes. Operate
+                        it as a person would. Observe what it does
+                        against what the case expects. Do not
+                        instrument it beyond what a person operating
+                        it would see.
+    observation:        |
+                        What was set up, what was done, and what was
+                        observed, in the order it happened.
+    verdict_rule:       |
+                        Passed where what was observed is what the
+                        case expects. Failed where it is not.
+                        Inconclusive where the item could not be set
+                        up or operated as the case describes.
+    id_schema_case:     sch_case_manual
+    guid_schema_case:   sch_67e069f2e21f4445b4b38ff4c1f8357f
+
+    execution_form:
+
+      manual:
+        instruction:    Operate the item as its user would, and record what was done in enough detail for another person to do the same.
+        recording:      An attestation by the person who carried it out, naming them and what they observed.
+        competence:     Able to read the item and the requirement it is judged against.
+
+    status:             proposed
+    relation:           []
+
 relation:
 
   - id_relation:        r_is_specified_by_schema
     guid_relation:      r_d70024bd40444f93b4fc1903379ded81
     id_target:          sch_reg_test_method
     guid_target:        sch_664e9b26de15449bbcba3e0df551ac1b
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_method_not_code
+    guid_target:        obj_5c949b221e2f40e993a6aec7659a83bb

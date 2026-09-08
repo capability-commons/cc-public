@@ -202,6 +202,14 @@ consequence:            |
                         evidence from a direct trace does not go stale
                         when the harness that produced it changes.
 
+                        A row is updated where a run observes it again
+                        and is never removed, so a test function that
+                        is divided or deleted leaves a row naming an
+                        item the tree no longer holds. The reference
+                        check reports it as an advisory and a person
+                        removes it. Dividing the orphans test found
+                        this, and nothing else had.
+
 question:
 
   gate:
@@ -222,6 +230,20 @@ question:
                         shipped with as an item of its own, since the
                         rewritten item loses the observation the
                         release rested on to git alone.
+    relation:           []
+
+  pruning:
+    id_self:            qst_verification_evidence.pruning
+    guid_self:          qst_c2ef10a64d4f47d3bcebf91007db38d2
+    question:           |
+                        What removes an evidence row whose test no
+                        longer exists. A session updates the rows it
+                        observed and prunes nothing, so dividing or
+                        deleting a test function leaves a row naming
+                        an item the tree no longer holds. Pruning what
+                        a run did not observe would delete good rows
+                        where the tree was read in part, so the rule
+                        is not simply to keep what was seen.
     relation:           []
 
 relation:
