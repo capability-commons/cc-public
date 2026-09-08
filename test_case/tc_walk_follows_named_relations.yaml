@@ -1,0 +1,50 @@
+id_self:                tc_walk_follows_named_relations
+guid_self:              tc_61fc35e50115480f9dbb961b7faf9ee0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 proposed
+title:                  A walk follows only the relations it is given
+brief:                  |
+                        Where a relation is named, no item reached by
+                        another relation is reported.
+version:                '1.0'
+input:                  |
+                        A tree, the readable id of an item in it, a
+                        depth, and one relation to follow.
+expectation:            |
+                        No reported item is reached by an edge
+                        labelled with another relation, and an item
+                        reachable only by other relations is absent.
+description:            |
+                        The case that observes which items a walk
+                        reports when it is given a relation to follow.
+                        It runs the same test function as
+                        tc_walk_reports_neighbourhood, and expects
+                        something else of it.
+
+configuration:
+  id_test:              pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+  guid_test:            pyf_21b4438010a1409fb36ac1cf6b0a54e2
+
+relation:
+
+  - id_relation:        r_uses_test_method
+    guid_relation:      r_1648a1a264024cf8b2882d377c7235d2
+    id_target:          tm_pytest_function
+    guid_target:        tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_walk_follows_named_relations
+    guid_target:        req_9d975348164e4650addf5f56118e4182
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+    guid_target:        pyf_21b4438010a1409fb36ac1cf6b0a54e2

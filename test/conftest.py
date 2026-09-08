@@ -41,6 +41,7 @@ import subprocess
 import pytest
 
 import cc_public.check
+import cc_public.edit.link
 import cc_public.edit.tree
 import cc_public.evidence
 
@@ -110,6 +111,25 @@ def repo(tmp_path):
     git(tmp_path, 'add', '-A')
     git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'start')
     return tmp_path
+
+
+def unverify(tree, id_requirement):
+    """
+    Remove every verification edge naming a requirement.
+
+    A test that observes what a requirement lacks must decide for
+    itself what verifies it. The copy holds no test/, so no test
+    function in it verifies anything; a test case is data, is copied,
+    and does.
+
+    """
+
+    for document in list(tree.context.map_document.values()):
+        for edge in list(document.get('relation') or []):
+            if (    edge.get('id_relation') == 'r_verifies'
+                and edge.get('id_target')   == id_requirement):
+                cc_public.edit.link.unlink(tree, document['id_self'],
+                                           'r_verifies', id_requirement)
 
 
 def clean(root):

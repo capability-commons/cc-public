@@ -1,0 +1,49 @@
+id_self:                tc_executor_honours_budget
+guid_self:              tc_37ce5a4f03e44ef79e8b5613f8112b96
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 proposed
+title:                  A run stops at its budget
+brief:                  |
+                        No node runs more times than the deployment
+                        allows.
+version:                '1.0'
+input:                  |
+                        A workflow holding a back edge, and a
+                        deployment with a budget.
+expectation:            |
+                        No node in the execution record carries a
+                        binding with a pass number greater than the
+                        budget, and the run stops rather than
+                        continuing.
+description:            |
+                        The case that observes what the executor does
+                        when a back edge would take a node past the
+                        budget of its deployment.
+
+configuration:
+  id_test:              pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+  guid_test:            pyf_f940333d706a4646904867a7cca8ab74
+
+relation:
+
+  - id_relation:        r_uses_test_method
+    guid_relation:      r_1648a1a264024cf8b2882d377c7235d2
+    id_target:          tm_pytest_function
+    guid_target:        tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_executor_honours_budget
+    guid_target:        req_a1428b3ae8ec4b5687e58895592accad
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+    guid_target:        pyf_f940333d706a4646904867a7cca8ab74

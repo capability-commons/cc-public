@@ -1,0 +1,309 @@
+id_self:                ddr_criticality
+guid_self:              ddr_0ebeb44550a942b3b94c7e488b980639
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Criticality is declared on a requirement and derived everywhere else
+brief:                  |
+                        A requirement carries a criticality level; a
+                        source item does not, and takes the greatest
+                        criticality of the requirements it implements.
+                        What a level requires is written in a
+                        register, not in a check.
+context:                |
+                        DO-178C selects which of its objectives apply
+                        by design assurance level. Nothing here
+                        carries a level, so every objective is taken
+                        up by argument, and every item is held to one
+                        standard of rigour. That standard is at once
+                        too much for something being sketched and too
+                        little for something that matters, and there
+                        is no lever between them.
+
+                        Earlier work of this author used a maturity
+                        value on the metadata of each module. Software
+                        could be written in a low maturity form and
+                        ratcheted up, gaining test coverage and lint
+                        rules as it went, so that a prototype became a
+                        product by degrees rather than being required
+                        to be finished at its inception.
+
+                        Two levers are wanted in the end and they
+                        answer different questions. Criticality asks
+                        how bad it is if the obligation is unmet.
+                        Maturity asks how far through its lifecycle
+                        the thing is. Only criticality is decided
+                        here, because maturity needs a lifecycle with
+                        named stages and there is none.
+decision:               |
+                        A requirement may declare a criticality. The
+                        field is optional, and absent means the base
+                        level, so nothing already written changes.
+
+                        The levels are entries in a register of their
+                        own, named by their place on a scale from zero
+                        to one hundred: crit_10, crit_40, crit_60,
+                        crit_80 and crit_90. There are five,
+                        corresponding one for one with the design
+                        assurance levels of DO-178C, from crit_10
+                        where failure has no effect to crit_90 where
+                        it is catastrophic. crit_40 is a minor
+                        consequence, crit_60 a major one and crit_80 a
+                        hazardous one.
+
+                        The numbers are spaced rather than
+                        consecutive, so that a level may be put
+                        between two that exist without renaming
+                        either, and the widest spaces are at the low
+                        end, where most of what is built here will sit
+                        and where the finer distinctions will
+                        therefore be wanted. A name that is a number
+                        also carries its own order, so the greatest of
+                        several criticalities is well defined without
+                        a rank written beside it.
+
+                        Each entry says what consequence of failure it
+                        stands for, which design assurance level it
+                        corresponds to, and which objectives it
+                        requires. The correspondence lets the
+                        objective tables of DO-178C be indexed. It is
+                        not a claim that a safety assessment has been
+                        made. What crit_10 requires already exceeds
+                        what DO-178C asks of design assurance level E,
+                        which is nothing.
+
+                        A data item or a source item declares no
+                        criticality. Its effective criticality is
+                        derived, and is the greatest criticality among
+                        the requirements that reach it in a closed
+                        world along the relations that declare
+                        responsibility.
+
+                        Responsibility is declared on a relation in
+                        the relation register, beside domain, range
+                        and dependency, and the derivation is computed
+                        from what the register declares rather than
+                        from a list held in code. r_is_implemented_by
+                        declares it, and nothing else does yet.
+
+                        A check that varies by criticality reads what
+                        the level requires from the register. No check
+                        carries a level in its code.
+
+                        The base level requires what is required
+                        today. Every item here is at the base level,
+                        so the lever changes nothing on the day it is
+                        installed.
+
+                        Maturity is decided separately, in
+                        ddr_maturity, and is not built yet.
+rationale:              |
+                        Declared on the requirement, because
+                        consequence of failure is a property of the
+                        obligation and not of the code that happens to
+                        meet it. It is also where both governing
+                        standards put it: DO-178C assigns a level to a
+                        function from the system safety assessment and
+                        has the software implementing it inherit that
+                        level, and INCOSE does the same through the
+                        verification matrix.
+
+                        Derived on everything else rather than
+                        declared there, because a level written by
+                        hand on each module drifts from the
+                        requirements it serves, and the edges that
+                        decide it are already in the graph. This
+                        repository already computes a dependency
+                        closure rather than listing one, for the same
+                        reason.
+
+                        The greatest rather than the least or the
+                        nearest, because an item that serves a
+                        critical requirement and a trivial one is as
+                        critical as the work it does for the first.
+                        Rigour cannot be averaged away.
+
+                        In a closed world, because in an open one a
+                        consuming segment's critical requirement is
+                        invisible from here, and an item would appear
+                        less critical than it is. The effective
+                        criticality of a shared item is a question
+                        only the union can answer.
+
+                        Responsibility as something a relation
+                        declares, because the same reasoning already
+                        governs dependency: which edges the derivation
+                        follows is a fact about the relations, and
+                        putting it in code makes the tool the place
+                        people go to learn what the model means.
+
+                        Five levels, because a smaller set cannot be
+                        joined to the DO-178C objective tables without
+                        losing rows, and the tables are the reason for
+                        having levels at all.
+
+                        Numbered rather than lettered, because a
+                        number carries its order, leaves room between
+                        the levels for one that is not needed yet, and
+                        does not claim the design assurance level that
+                        the letter names.
+
+                        Spaces widest at the bottom, because most of
+                        what will be built here is not critical, and
+                        the distinctions that will actually be wanted
+                        are between one kind of ordinary work and
+                        another.
+
+                        Absent meaning the base, because a lever that
+                        changes nothing on the day it is installed can
+                        be installed without a migration, and every
+                        ratchet after that is deliberate and local.
+alternative:            |
+                        Declare criticality on each module, as earlier
+                        work declared maturity. Rejected for
+                        criticality: it duplicates what the trace
+                        already knows and drifts from it. Noted for
+                        maturity: maturity is a property of the code
+                        and not of the obligation, so it is declared
+                        where criticality is derived, and that
+                        opposition is the point rather than an
+                        inconsistency. ddr_maturity holds it.
+
+                        Use the DO-178C letters directly. Rejected: a
+                        design assurance level is the output of a
+                        safety assessment, and writing the letter
+                        without the assessment claims something
+                        untrue.
+
+                        Number the levels consecutively, one to five.
+                        Rejected: a level put between two others
+                        renames every level above it, and every item
+                        that named one.
+
+                        Space the levels evenly, ten to ninety.
+                        Rejected: it spends as much room at the top,
+                        where another level is least likely to be
+                        wanted, as at the bottom where it is most.
+
+                        Declare criticality on a source item as well
+                        and take the greater of the two. Rejected: two
+                        places to write it is two places for it to be
+                        wrong, and no rule says which wins when they
+                        disagree.
+
+                        Take the least, or an average, where several
+                        requirements reach an item. Rejected: it lets
+                        a trivial requirement dilute a critical one.
+
+                        Hold the relations the derivation follows as a
+                        list in code. Rejected: see the rationale.
+
+                        Take the highest rigour everywhere and drop
+                        the idea of a level. Rejected: it is where the
+                        repository is now, and it is why a sketch
+                        cannot be written here.
+consequence:            |
+                        A criticality register, its type, its entry
+                        schema and the crit prefix are added, and
+                        sch_textual_requirement gains an optional
+                        criticality.
+
+                        reg_relation gains a responsibility
+                        declaration beside domain, range and
+                        dependency, and r_is_implemented_by declares
+                        it. The relation check must read it, as it
+                        reads the others.
+
+                        The trace projection must compute the
+                        effective criticality of every data item and
+                        source item, in a closed world, and report it.
+
+                        No check varies by criticality today, so the
+                        enum is inert until at least one does. The
+                        first entries to write are what each level
+                        demands of a requirement whose test function
+                        verifies more than one requirement, and of one
+                        whose normal, boundary and error conditions
+                        are separately expected.
+                        ddr_test_case_adoption defers both to this
+                        register rather than stating them itself.
+
+                        What a level requires must be able to say when
+                        it becomes required, so that maturity can
+                        phase it in later without the register being
+                        rewritten. ddr_maturity depends on that and
+                        nothing else here does.
+
+                        Nothing already written changes, because
+                        everything already written is at the base
+                        level.
+
+                        The verification tooling is not reached by the
+                        derivation, since no requirement is
+                        implemented by the adapter. A tool takes no
+                        criticality from this rule and needs its own
+                        account, which is what DO-178C says about
+                        tools and why it says it separately.
+
+                        What a level is a level of remains unsettled.
+                        DO-178C reads it from a system safety
+                        assessment. This repository models no system,
+                        so something must say what consequence a level
+                        stands for and who judges it.
+
+question:
+
+  consequence:
+    id_self:            qst_criticality.consequence
+    guid_self:          qst_fe6ddfe7cea54f9b97de7890e4304ba6
+    question:           |
+                        What consequence of failure a criticality
+                        level stands for, given that this repository
+                        models no system, and who judges which level a
+                        requirement carries.
+    relation:           []
+
+  maturity:
+    id_self:            qst_criticality.maturity
+    guid_self:          qst_610c0730fffe47ceb4e122ed461d2397
+    question:           |
+                        How maturity composes with criticality:
+                        whether the objectives a criticality requires
+                        are phased in as maturity rises, and what the
+                        stages of maturity are.
+    relation:           []
+
+  reach:
+    id_self:            qst_criticality.reach
+    guid_self:          qst_3d536853a5a6403f97390fdf12cd5cdb
+    question:           |
+                        Whether a need, a segment or an interface
+                        control document carries a criticality of its
+                        own or takes one from the requirements that
+                        derive from it, and what gives one to the
+                        verification tooling, which no requirement
+                        implements and which the derivation therefore
+                        does not reach.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_verification_standard.level
+    guid_target:        qst_b9a248734c564b989e216162f3cd4b67
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_test_case_adoption.partition
+    guid_target:        qst_c812dc2075054269a85682b0cb1b9df9
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_test_case_adoption.division
+    guid_target:        qst_b0ce0abe6f994bd79e7d5eaf908e42c5

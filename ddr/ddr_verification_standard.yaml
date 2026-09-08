@@ -1,0 +1,191 @@
+id_self:                ddr_verification_standard
+guid_self:              ddr_c206be208639410aa458dc542fef1950
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verification takes DO-178C first, INCOSE next, ISO last
+brief:                  |
+                        Verification practice here is answerable to
+                        named external standards in a stated order of
+                        precedence, and a record that takes material
+                        from one of them cites it.
+context:                |
+                        How a requirement is written here is already
+                        answerable to documents outside it: the INCOSE
+                        guide to writing requirements, the SOPHIST
+                        templates and ISO/IEC/IEEE 29148 are entries
+                        in the document register, and the rules a
+                        statement is judged by cite them. How a
+                        requirement is verified has had no such
+                        footing. The test method, case, execution and
+                        evidence items were designed from first
+                        principles and then checked against practice
+                        after the fact.
+
+                        The standards agree more than they differ.
+                        Each records verification for each
+                        requirement, permits the activity that
+                        produces it to be shared, and asks that the
+                        expected result be stated. They differ in
+                        emphasis, in what they make an objective
+                        rather than a recommendation, and occasionally
+                        in a word. Where they differ, something must
+                        say which is followed.
+
+                        This repository is not a certification project
+                        and seeks no certification credit. What it
+                        wants is that an engineer who works to one of
+                        these standards can read what is here and
+                        recognise it.
+decision:               |
+                        Verification here takes its objectives from
+                        DO-178C first, from the INCOSE systems
+                        engineering handbook and the INCOSE guide to
+                        writing requirements next, and from the
+                        ISO/IEC/IEEE standards, chiefly 29119 and
+                        29148, last. Where two conflict, the earlier
+                        in that order is followed and the departure is
+                        recorded.
+
+                        The order governs objectives and definitions,
+                        not vocabulary. Where a standard's word would
+                        displace a term already decided here, the term
+                        register decides, as it always has.
+
+                        A design decision that takes material from one
+                        of these documents cites it, as a requirement
+                        rule already does. The document register holds
+                        the entry; the record holds the edge.
+
+                        Conformance is claimed for an objective, never
+                        for a standard as a whole. A claim says which
+                        objective, what satisfies it, and what does
+                        not yet.
+rationale:              |
+                        DO-178C first, because it is the most
+                        prescriptive of the three about what
+                        verification must produce rather than how it
+                        should be organised: that test cases exist for
+                        each requirement, that coverage of the
+                        requirements is analysed rather than assumed,
+                        and that the tools relied on are themselves
+                        accounted for. Those are the objectives this
+                        repository is least able to reason itself into
+                        and most able to be audited against.
+
+                        INCOSE next, because the requirement model
+                        here is already taken from it, so its
+                        definitions are the ones already in use, and a
+                        second source for the same idea should not
+                        outrank the one the repository was built on.
+
+                        ISO last, because 29119 describes a process
+                        and a set of documents more than it sets
+                        objectives, so where it differs from DO-178C
+                        it is usually the less demanding and the less
+                        checkable of the two.
+
+                        Objectives rather than the whole standard,
+                        because a claim to conform to DO-178C entire
+                        would be false: its objectives are selected by
+                        design assurance level, and nothing here
+                        carries one.
+
+                        Citation by an edge rather than by prose,
+                        because a conformance claim that cannot be
+                        queried cannot be reviewed, and prose naming a
+                        document is not a reference the tool can
+                        follow.
+alternative:            |
+                        One standard alone. Rejected: none of them
+                        covers what this repository needs. DO-178C
+                        says little about how requirements are
+                        written, and the INCOSE guide says little
+                        about verification evidence.
+
+                        No order of precedence, resolving conflicts
+                        case by case. Rejected: it makes every
+                        conflict a fresh argument and leaves no record
+                        of which way it went.
+
+                        ISO first, as the most general and the most
+                        widely held. Rejected: it is the least
+                        prescriptive about evidence, which is the part
+                        of verification this repository is building.
+
+                        Conformance claimed for a standard as a whole.
+                        Rejected: it would be untrue, and an untrue
+                        conformance claim is worse than none.
+
+                        Citation in prose only. Rejected: see the
+                        rationale.
+consequence:            |
+                        The document register gains entries for
+                        DO-178C, the INCOSE systems engineering
+                        handbook, and ISO/IEC/IEEE 29119. Whether ISO
+                        26262 and the ECSS verification standard are
+                        cited or merely consulted is not settled.
+
+                        r_is_taken_from runs today from a requirement
+                        rule, a requirement characteristic or a
+                        methodology to a document. Its domain must
+                        admit a design decision before any record here
+                        can cite a standard.
+
+                        DO-178C selects its objectives by design
+                        assurance level and this model carries no
+                        criticality, so nothing yet says which
+                        objectives apply. Until something does, an
+                        objective is taken up because it is argued
+                        for, not because a level requires it.
+
+                        Requirements-based coverage analysis is an
+                        objective this repository does not meet:
+                        nothing here shows that the test which
+                        verifies a requirement exercises that
+                        requirement's success criteria. The coverage
+                        floor measures lines of the tool, not
+                        requirements.
+
+                        The tools relied on for verification are
+                        themselves unaccounted for. The pytest adapter
+                        decides every conformance result and nothing
+                        verifies the adapter.
+relation:               []
+
+question:
+
+  level:
+    id_self:            qst_verification_standard.level
+    guid_self:          qst_b9a248734c564b989e216162f3cd4b67
+    question:           |
+                        Whether this model needs a criticality or
+                        assurance level to select which objectives of
+                        a standard apply, and what it would be a level
+                        of.
+    relation:           []
+
+  adapter:
+    id_self:            qst_verification_standard.adapter
+    guid_self:          qst_22d3749804fe4c0fb8fd8582ff518c3f
+    question:           |
+                        What accounts for a verification tool whose
+                        verdict nothing else checks, and whether that
+                        is qualification, a control case, or a second
+                        adapter.
+    relation:           []
+
+  coverage:
+    id_self:            qst_verification_standard.coverage
+    guid_self:          qst_d3f0d6e870a54ddfafdc709a57fb632a
+    question:           |
+                        What shows that the test verifying a
+                        requirement exercises the success criteria of
+                        that requirement, and whether anything short
+                        of reading both can show it.
+    relation:           []

@@ -42,7 +42,7 @@ import cc_public.edit.link
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.load
-from conftest import clean
+from conftest import clean, unverify
 
 
 
@@ -103,6 +103,7 @@ def test_accept_is_the_only_path_and_refuses_what_lacks(repo):
 
     # A test-verified requirement whose test is not in this copy lacks its verifier.
     cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'status', value = 'proposed')
+    unverify(tree, 'req_printer_idempotent')
     out = run('accept', '--root', str(repo), 'req_printer_idempotent')
     assert out.exit_code == 2 and 'no test names it' in out.output
 

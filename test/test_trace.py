@@ -40,7 +40,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.load
 import cc_public.trace
-from conftest import DEFAULTS, clean
+from conftest import DEFAULTS, clean, unverify
 
 
 def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree, tmp_path):
@@ -48,6 +48,7 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
     # The tree's requirements are accepted; these start again from proposed.
     for req in ('req_printer_idempotent', 'req_renamer_keeps_guid', 'req_executor_honours_budget'):
         cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+        unverify(tree, req)
 
     # A requirement names code at any of the four grains, and several of them:
     # the tree already names the layout module; a function and a package join.
@@ -71,7 +72,7 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
 
     # The projection: proposed gaps are advisory; every one is a leaf; the
     # printer requirement names its code and is verified by nothing here,
-    # since the fixture tree carries no tests.
+    # since the copy holds no tests and unverify took the case away.
     ctx = cc_public.check.context([tmp_path])[0]
     by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
     printer = by['req_printer_idempotent']
@@ -92,6 +93,7 @@ def test_requirements_trace_to_code_and_the_projection_says_what_each_lacks(tree
 def test_an_accepted_requirement_lacks_critically_and_the_trace_command_reads_the_projection(tree, tmp_path):
     for req in ('req_printer_idempotent', 'req_renamer_keeps_guid', 'req_executor_honours_budget'):
         cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+        unverify(tree, req)
     cc_public.edit.new.new(tree, 't_python_function', 'pyf_cc_public.layout.format', DEFAULTS)
     for (field, value) in (('title', 'Format'), ('description', 'Lays a document out.')):
         cc_public.edit.field.set_field(tree, 'pyf_cc_public.layout.format', field, value = value)

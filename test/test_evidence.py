@@ -43,7 +43,7 @@ import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.load
-from conftest import DEFAULTS, clean
+from conftest import DEFAULTS, clean, unverify
 
 
 def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
@@ -69,6 +69,7 @@ def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
     req  = 'req_printer_idempotent'
     case = 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint'
     cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    unverify(tree, req)
     cc_public.edit.new.new(tree, 't_python_module', 'pym_test.test_layout', DEFAULTS, tmp_path / 'test')
     for (f, v) in (('title', 'Layout tests'), ('brief', 'Tests.'), ('description', 'Tests of the printer.')):
         cc_public.edit.field.set_field(tree, 'pym_test.test_layout', f, value = v)
@@ -118,6 +119,7 @@ def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for
     req  = 'req_printer_idempotent'
     case = 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint'
     cc_public.edit.field.set_field(tree, req, 'status', value = 'proposed')
+    unverify(tree, req)
     cc_public.edit.new.new(tree, 't_python_module', 'pym_test.test_layout', DEFAULTS, tmp_path / 'test')
     for (f, v) in (('title', 'Layout tests'), ('brief', 'Tests.'), ('description', 'Tests of the printer.')):
         cc_public.edit.field.set_field(tree, 'pym_test.test_layout', f, value = v)

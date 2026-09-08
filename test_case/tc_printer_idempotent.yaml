@@ -1,0 +1,48 @@
+id_self:                tc_printer_idempotent
+guid_self:              tc_e2dd76afe9b84f96b005f3da9368442f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 proposed
+title:                  The printer is a fixpoint
+brief:                  |
+                        A document laid out twice is byte identical
+                        after the first pass.
+version:                '1.0'
+input:                  |
+                        Every yaml file and every docstring document
+                        in the tree.
+expectation:            |
+                        The second pass writes each byte of the first
+                        pass unchanged, and the content the document
+                        carried is preserved.
+description:            |
+                        The case that observes the printer over every
+                        yaml file and every docstring document the
+                        repository holds.
+
+configuration:
+  id_test:              pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+  guid_test:            pyf_8b8d9a067006402c93ea0f801153b299
+
+relation:
+
+  - id_relation:        r_uses_test_method
+    guid_relation:      r_1648a1a264024cf8b2882d377c7235d2
+    id_target:          tm_pytest_function
+    guid_target:        tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_printer_idempotent
+    guid_target:        req_28a87e8cfef7443f90fb70372e7c47e8
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+    guid_target:        pyf_8b8d9a067006402c93ea0f801153b299

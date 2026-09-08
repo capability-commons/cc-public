@@ -118,34 +118,24 @@ consequence:            |
                         read the schema the method names and validate
                         the payload. That check does not yet exist.
 
-                        Two representations of verification trace
-                        exist while the model is tried: a python test
-                        function pointing at a requirement, and a case
-                        pointing at a requirement with a function
-                        implementing it. Both are read until one is
-                        chosen.
+                        Two representations of verification trace are
+                        kept, and neither outranks the other: a python
+                        test function pointing at a requirement, and a
+                        case pointing at a requirement with a function
+                        implementing it. ddr_test_case_adoption
+                        settles which is written when, and it is not a
+                        choice between them.
 
                         Whether a case may name a second method for a
                         different verification class, such as an
                         inspection of the same requirement, is not
                         settled here.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          term_test_case
-    guid_target:        term_be402ef769c34db9a96ac41bd7a147d7
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          term_case_configuration
-    guid_target:        term_c2e18b96478745cbbb139aeca95488db
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          term_item_under_test
-    guid_target:        term_0f974577538d41f4b5df52997a7f1d41
+                        The expectation a case carries is optional,
+                        and a case that states none expects the
+                        success criteria of what it verifies.
+                        ddr_test_case_adoption decides that, and
+                        sch_test_case does not yet allow it.
 
 question:
 
@@ -167,3 +157,20 @@ question:
                         keeps it, and what a check does when its
                         digest no longer matches.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_test_case
+    guid_target:        term_be402ef769c34db9a96ac41bd7a147d7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_case_configuration
+    guid_target:        term_c2e18b96478745cbbb139aeca95488db
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_item_under_test
+    guid_target:        term_0f974577538d41f4b5df52997a7f1d41

@@ -1,0 +1,214 @@
+id_self:                ddr_maturity
+guid_self:              ddr_58f08c0b1425450ba06fc5f34720d948
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity is declared on a module and may not exceed its dependencies
+brief:                  |
+                        A module declares how far through its
+                        lifecycle it is; a module whose maturity
+                        exceeds that of anything it depends on,
+                        directly or through another, does not conform.
+                        What verification is required follows from
+                        criticality and maturity together.
+context:                |
+                        Criticality says how bad it is if an
+                        obligation is unmet. It does not say how
+                        finished the thing that meets it is. A lever
+                        with only that half still asks a sketch to be
+                        complete on the day it is written, at whatever
+                        rigour its criticality demands, which is the
+                        trap ddr_criticality was written to escape.
+
+                        Earlier work of this author put a maturity
+                        value on the metadata of each module. Software
+                        could be written in a low maturity form and
+                        ratcheted up, gaining test coverage and lint
+                        rules as it went, so that a prototype became a
+                        product by degrees.
+
+                        The two levers run in opposite directions and
+                        that is correct. Criticality belongs to the
+                        obligation and is derived onto the code.
+                        Maturity belongs to the code and is derived
+                        onto nothing.
+
+                        This decision is recorded and not built. Its
+                        purpose is to state the constraint it puts on
+                        criticality before criticality is built, so
+                        that the register is not written in a way that
+                        forecloses it.
+decision:               |
+                        A module declares a maturity in its own
+                        document. Nothing derives it, and no other
+                        kind of item carries one until something says
+                        otherwise.
+
+                        Maturity travels through dependencies. A
+                        module whose declared maturity is greater than
+                        the maturity of any module it depends on,
+                        directly or through another, does not conform.
+                        The dependencies read are the imports, which
+                        the layering check already reads.
+
+                        What verification is required follows from
+                        criticality and maturity together. Criticality
+                        says what must be true in the end. Maturity
+                        says how much of that must be true now. The
+                        objectives a criticality requires are
+                        therefore phased, each becoming required at a
+                        maturity, and a criticality register entry
+                        must be able to say at which.
+
+                        Maturity is numbered on the same scale as
+                        criticality, from zero to one hundred with
+                        spaces between the levels, for the same
+                        reasons. The two scales are separate and a
+                        value of one is never compared with a value of
+                        the other.
+
+                        None of this is built. The stages of the
+                        lifecycle the levels stand for are not
+                        defined, and defining them comes first.
+rationale:              |
+                        Declared and not derived, because maturity is
+                        a fact about the work done on a module.
+                        Nothing in the obligation it serves says how
+                        finished it is, so there is nothing to derive
+                        it from.
+
+                        Bounded by its dependencies, because a module
+                        is only as trustworthy as what it rests on. A
+                        mature module resting on a sketch is the most
+                        misleading thing the repository could say
+                        about itself, since it reads as a promise the
+                        dependencies do not support.
+
+                        Transitively, because the weakness is
+                        transitive. A module two steps above a sketch
+                        rests on the sketch just as surely as one step
+                        does.
+
+                        Both levers rather than one, because they
+                        answer different questions and move
+                        independently. A prototype of something
+                        critical is low maturity and high criticality
+                        at once, and a finished thing that does not
+                        matter is the reverse. One number cannot hold
+                        both without pretending they are the same
+                        question.
+
+                        Phased objectives rather than a second set of
+                        them, because criticality already says what
+                        must eventually be true, and maturity only
+                        says how far along that is. Two independent
+                        lists of demands would have to be kept
+                        consistent with each other by hand.
+
+                        The same numbering, because the reasons hold
+                        for both: room to insert a level, and an order
+                        carried by the name.
+
+                        Recorded before it is built, because
+                        criticality is being built now and must be
+                        built to be phased later. That is a constraint
+                        on work about to start, and a constraint that
+                        arrives afterwards is a rewrite.
+alternative:            |
+                        Derive maturity as criticality is derived.
+                        Rejected: there is nothing to derive it from.
+                        The obligation says nothing about how finished
+                        its implementation is.
+
+                        One combined level for both. Rejected: it
+                        conflates how bad failure is with how far
+                        along the work is, and the two move
+                        independently, so a single number would be
+                        wrong in both directions at once.
+
+                        Let a module declare a maturity its
+                        dependencies do not support, and report it as
+                        a note. Rejected: the claim is the problem,
+                        not the report of it, and a claim that is
+                        allowed to stand is one that will be believed.
+
+                        Bound maturity by direct dependencies only.
+                        Rejected: it is evaded by one module in
+                        between.
+
+                        Declare maturity per package or per
+                        repository. Rejected: the unit that gets
+                        matured is the module, and a coarser unit
+                        means the whole of it moves at the pace of its
+                        least finished part.
+
+                        Build maturity now, alongside criticality.
+                        Rejected: it needs a lifecycle with named
+                        stages, which is a larger question, and
+                        criticality is useful without it.
+consequence:            |
+                        A criticality register entry must be able to
+                        say at what maturity each objective it
+                        requires becomes required. That is a
+                        constraint on work starting now, and it is the
+                        reason this is written before it is built.
+
+                        A lifecycle with named stages must be defined
+                        before any of this can be. The stages decide
+                        the levels, not the other way about.
+
+                        The module document gains a maturity field,
+                        and a check computes the transitive imports of
+                        each module and reports one that claims more
+                        than its dependencies support. The layering
+                        check already reads imports and is where that
+                        reading belongs.
+
+                        Whether a module may depend on one of lower
+                        maturity in another segment, which it does not
+                        govern and cannot ratchet, is not settled.
+
+                        Nothing changes until it is built, and nothing
+                        here is built.
+
+relation:
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_criticality.maturity
+    guid_target:        qst_610c0730fffe47ceb4e122ed461d2397
+
+question:
+
+  stage:
+    id_self:            qst_maturity.stage
+    guid_self:          qst_2207038c202c4775a56e4b03a8edf60a
+    question:           |
+                        What the stages of the lifecycle are that the
+                        maturity levels stand for, and what moves a
+                        module from one to the next.
+    relation:           []
+
+  compose:
+    id_self:            qst_maturity.compose
+    guid_self:          qst_f982fb483e514265a26b6cb14f75040c
+    question:           |
+                        How a criticality and a maturity compose into
+                        what is required: whether each objective names
+                        the maturity at which it becomes required, or
+                        whether the pair indexes a table.
+    relation:           []
+
+  foreign:
+    id_self:            qst_maturity.foreign
+    guid_self:          qst_9d65f37534f84257b10ddc7fa746808e
+    question:           |
+                        Whether a module may depend on one of lower
+                        maturity in a segment it does not govern, and
+                        what it may claim if it does.
+    relation:           []
