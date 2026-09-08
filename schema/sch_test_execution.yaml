@@ -1,0 +1,209 @@
+id_self:                sch_test_execution
+guid_self:              sch_ccbfa690cb90423690743a4858c78a95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test execution schema
+brief:                  |
+                        The shape of one test execution: what was
+                        bound, what came back, and whether it ran.
+description:            |
+                        Identity, rights, the descriptive fields and
+                        edges come from sch_base and sch_relation.
+                        Beyond them an execution records the method,
+                        the case and the item under test with the
+                        digest of each, the adapter and its version,
+                        the environment, the times it started and
+                        finished, its execution outcome, and its
+                        results.
+
+                        An execution that did not complete holds no
+                        passing result. A completed execution may hold
+                        a failed one.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_test_execution.yaml
+usage:                  |
+                        Named by t_test_execution as the schema of
+                        every item of that type in execution/.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - digest_method
+      - digest_case
+      - digest_under_test
+      - time_start
+      - time_finish
+      - execution_outcome
+      - result
+
+    properties:
+
+      id_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the test method this execution
+                        ran.
+
+      guid_method:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the test method this execution ran.
+
+      digest_method:
+        type:           string
+        pattern:        ^[0-9a-f]+$
+        description:    |
+                        The digest of the method as it was when it
+                        ran. A result describes the procedure of that
+                        digest and no other.
+
+      id_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the test case this execution
+                        ran.
+
+      guid_case:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the test case this execution ran.
+
+      digest_case:
+        type:           string
+        pattern:        ^[0-9a-f]+$
+        description:    |
+                        The digest of the case as it was when it ran.
+
+      id_under_test:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the item under test this
+                        execution observed.
+
+      guid_under_test:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the item under test this execution
+                        observed.
+
+      digest_under_test:
+        type:           string
+        pattern:        ^[0-9a-f]+$
+        description:    |
+                        The digest of the item under test, or of the
+                        revision observed.
+
+      id_adapter:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the adapter that carried the
+                        method out. Optional, and absent where no
+                        adapter did.
+
+      guid_adapter:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the adapter that carried the method
+                        out. Optional, and absent where no adapter
+                        did.
+
+      adapter_version:
+        type:           string
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The version of the adapter or tool,
+                        as it reported it.
+
+      environment:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What about the environment a later
+                        reader would need in order to run this again.
+
+      time_start:
+        type:           string
+        format:         date-time
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$
+        description:    |
+                        When the execution began.
+
+      time_finish:
+        type:           string
+        format:         date-time
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$
+        description:    |
+                        When the execution ended.
+
+      execution_outcome:
+        type:           string
+
+        enum:
+          - completed
+          - error
+          - not_run
+          - cancelled
+
+        description:    |
+                        Whether the procedure ran. It says nothing
+                        about what the procedure found, which each
+                        result says.
+
+      result:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_test_result.yaml
+
+        description:    |
+                        The results of this execution, keyed by a
+                        short local name.
+
+  - if:
+      type:             object
+
+      properties:
+
+        execution_outcome:
+
+          not:
+            const:      completed
+
+      required:
+        - execution_outcome
+
+    then:
+
+      properties:
+
+        result:
+
+          additionalProperties:
+
+            properties:
+
+              conformance_result:
+
+                enum:
+                  - failed
+                  - inconclusive
+                  - not_applicable
+
+      description:      |
+                        An execution that did not complete holds no
+                        passing result. A tool that could not run has
+                        observed nothing, and a passing result would
+                        say otherwise about the item under test.
+
+unevaluatedProperties:  false

@@ -1,0 +1,95 @@
+id_self:                sch_test_result
+guid_self:              sch_42d2f46edb0e4c5a806670a48672ad05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test result schema
+brief:                  |
+                        The shape of one result within a test
+                        execution: what the procedure found, and about
+                        what.
+description:            |
+                        An embedded addressable item. It carries the
+                        conformance result, what was observed to reach
+                        it, and the requirement or interface member
+                        the observation was about.
+
+                        The conformance result says what the procedure
+                        found. Whether the procedure ran is the
+                        execution outcome, which the execution
+                        carries.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_test_result.yaml
+usage:                  |
+                        Named by t_test_result as the shape of every
+                        value in the result table of a test execution.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - conformance_result
+      - observation
+
+    properties:
+
+      conformance_result:
+        type:           string
+
+        enum:
+          - passed
+          - failed
+          - inconclusive
+          - not_applicable
+
+        description:    |
+                        What the procedure found. It says nothing
+                        about whether the procedure ran, which the
+                        execution outcome says.
+
+      observation:
+        type:           string
+        minLength:      1
+        description:    |
+                        What was observed, in the terms the verdict
+                        rule of the method reads.
+
+      id_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the textual requirement this
+                        result is about. Optional.
+
+      guid_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the textual requirement this result is
+                        about. Optional.
+
+      id_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        description:    |
+                        Readable id of the interface member this
+                        result is about. Optional.
+
+      guid_member:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    |
+                        Guid of the interface member this result is
+                        about. Optional.
+
+      detail:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What a reader needs in order to act
+                        on this result.
+
+unevaluatedProperties:  false
