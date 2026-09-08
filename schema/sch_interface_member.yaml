@@ -1,0 +1,87 @@
+id_self:                sch_interface_member
+guid_self:              sch_ff9775d1021b46119300ebd6eb0b3772
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface member schema
+brief:                  |
+                        What every addressable declaration within an
+                        interface surface carries.
+description:            |
+                        An identity, the name the surface language
+                        spells it by, and what it is for. Composed by
+                        each kind of declaration a surface holds,
+                        which adds what that kind needs: a function
+                        adds its parameters, a class adds its methods,
+                        a port adds its direction.
+
+                        The identity is what lets a requirement, a
+                        test case or an execution name one declaration
+                        rather than the document that holds it. The
+                        local key is a presentation name and is not
+                        that identity.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_interface_member.yaml
+usage:                  |
+                        Composed by every declaration table in
+                        sch_interface_control_document.
+type:                   object
+
+required:
+  - name
+  - brief
+
+properties:
+
+  name:
+    type:               string
+    minLength:          1
+    pattern:            ^[^\n]+$
+    description:        |
+                        The name the surface language spells this
+                        declaration by. It is the language's name and
+                        not a local key.
+
+  brief:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this declaration is for, in one passage.
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What a caller has to know beyond the
+                        brief.
+
+  obligation:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What a provider of this declaration
+                        must do and a caller may rely on, beyond what
+                        the signature says: ordering, ownership,
+                        lifetime, concurrency, and what holds after an
+                        error.
+
+  status:
+    type:               string
+
+    enum:
+      - proposed
+      - accepted
+      - deprecated
+      - withdrawn
+
+    description:        |
+                        Optional. The lifecycle status of this
+                        declaration within the interface.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml

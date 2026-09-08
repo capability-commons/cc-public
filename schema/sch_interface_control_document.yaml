@@ -1,0 +1,854 @@
+id_self:                sch_interface_control_document
+guid_self:              sch_79c0dbfe449f4aa9b7f6d0b850b7c20e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface control document schema
+brief:                  |
+                        The shape of a versioned controlled contract
+                        for one interface, made of keyed surfaces with
+                        addressable members.
+description:            |
+                        Identity, rights, the descriptive fields and
+                        edges come from sch_base and sch_relation.
+                        Beyond them an interface control document
+                        carries its interface version, its lifecycle
+                        status, the declarations its surfaces share,
+                        and one or more keyed surfaces.
+
+                        A surface is a keyed object holding exactly
+                        one of the forms the document admits. Two are
+                        admitted: a native API surface, which names
+                        exactly one implementation language, and a
+                        dataflow step surface, which declares the
+                        ports a step reads and writes and the
+                        execution semantics compatibility depends on.
+
+                        A dataflow step surface is not a Capability
+                        Commons component, port or workflow form. It
+                        composes neither sch_component nor sch_port,
+                        and any correspondence between a runtime
+                        interface and a component is an explicit edge
+                        and never inferred from a shared field name.
+
+                        A runtime type is not a Capability Commons
+                        item type, so a type reference here does not
+                        use the id_type and guid_type fields of
+                        sch_port. It names a declaration this document
+                        shares, the spelling the surface language
+                        uses, or both.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_interface_control_document.yaml
+usage:                  |
+                        Named by t_interface_control_document as the
+                        schema of every item of that type in
+                        interface/.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - version_interface
+      - status
+      - surface
+
+    properties:
+
+      version_interface:
+        type:           string
+        pattern:        ^[0-9]+(\.[0-9]+)*$
+        description:    |
+                        The version of the interface this document
+                        states. A baselined contract that changes
+                        materially is a new document with a new
+                        version, and not this one edited.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - baselined
+          - superseded
+          - withdrawn
+
+        description:    |
+                        The lifecycle status. A proposed document may
+                        be edited in place; a baselined one may not be
+                        changed materially.
+
+      declaration:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The types this document shares
+                        across its surfaces, keyed by a short local
+                        name.
+
+      surface:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         '#/$defs/surface'
+
+        description:    |
+                        One or more surfaces, keyed by a short local
+                        name, so that one document may hold several
+                        bindings of one boundary.
+
+$defs:
+
+  type_reference:
+    type:               object
+    additionalProperties:  false
+    minProperties:      1
+    description:        |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+    properties:
+
+      declaration:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+      spelling:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The type as the surface language
+                        spells it.
+
+  parameter:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+            description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+          mode:
+            type:       string
+
+            enum:
+              - input
+              - output
+              - input_output
+
+            description:  |
+                        Optional. Whether the callee reads this
+                        parameter, writes it, or both.
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a caller may omit it.
+
+          default:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        Optional. What it is when a caller omits it.
+
+          variadic:
+            type:       boolean
+            description:  |
+                        Optional. Whether it takes any number of
+                        values.
+
+          nullable:
+            type:       boolean
+            description:  |
+                        Optional. Whether it may carry no value.
+
+          mutability:
+            type:       string
+
+            enum:
+              - immutable
+              - mutable
+
+            description:  |
+                        Optional. Whether the callee may change what
+                        it refers to.
+
+          ownership:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. Who releases what this parameter
+                        refers to, and when.
+
+          lifetime:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. How long what it refers to must
+                        remain valid.
+
+    unevaluatedProperties:  false
+
+  error:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          condition:
+            type:       string
+            minLength:  1
+            description:  |
+                        When this error is raised.
+
+          type:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+            description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+    unevaluatedProperties:  false
+
+  callable:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          parameter:
+            type:       array
+
+            items:
+              $ref:     '#/$defs/parameter'
+
+            description:  |
+                        The parameters, in the order the language
+                        takes them.
+
+          returns:
+            type:       object
+            additionalProperties:  false
+
+            properties:
+
+              type:
+                type:   object
+                additionalProperties:  false
+                minProperties:  1
+                description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+                properties:
+
+                  declaration:
+                    type:  string
+                    minLength:  1
+                    pattern:  ^[^\n]+$
+                    description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+                  spelling:
+                    type:  string
+                    minLength:  1
+                    pattern:  ^[^\n]+$
+                    description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+              brief:
+                type:   string
+                minLength:  1
+                description:  |
+                        What is returned.
+
+            description:  |
+                        Optional. Absent where it returns nothing.
+
+          error:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/error'
+
+            description:  |
+                        Optional. The errors a caller must expect,
+                        keyed by a short local name.
+
+    unevaluatedProperties:  false
+
+  attribute:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+            description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+          mutability:
+            type:       string
+
+            enum:
+              - immutable
+              - mutable
+
+            description:  |
+                        Optional. Whether a caller may write it.
+
+    unevaluatedProperties:  false
+
+  class:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          base:
+            type:       array
+            minItems:   1
+
+            items:
+              type:     string
+              minLength:  1
+              pattern:  ^[^\n]+$
+              description:  |
+                        A type this one inherits from, as the surface
+                        language spells it.
+
+            description:  |
+                        Optional. What this class inherits from.
+
+          constructor:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. How an instance is made.
+
+          destructor:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. How an instance is released, where
+                        the language says so.
+
+          method:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. The methods.
+
+          property:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/attribute'
+
+            description:  |
+                        Optional. The values reached through an
+                        accessor.
+
+          attribute:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/attribute'
+
+            description:  |
+                        Optional. The values reached directly.
+
+    unevaluatedProperties:  false
+
+  constant:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+            description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+          value:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        The value, as the surface language writes it.
+
+    unevaluatedProperties:  false
+
+  declaration:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          shape:
+            type:       string
+            minLength:  1
+            description:  |
+                        What this type is, in enough detail for a
+                        caller to use it.
+
+    unevaluatedProperties:  false
+
+  port:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+            description:  |
+                        The type of a value, as this surface states
+                        it. A runtime type is not a Capability Commons
+                        item type, so neither field here is an item
+                        reference. declaration names a type this
+                        document shares; spelling is what the surface
+                        language writes.
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The type as the surface language
+                        spells it.
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a step may run without a
+                        value here.
+
+    unevaluatedProperties:  false
+
+  surface_native:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - language
+
+    description:        |
+                        One presentation of the interface in one
+                        implementation language. A surface names
+                        exactly one language, because a name and a
+                        spelling belong to the language that writes
+                        them.
+
+    properties:
+
+      language:
+        type:           string
+
+        enum:
+          - python
+          - c
+          - cpp
+
+        description:    |
+                        The one implementation language this surface
+                        presents.
+
+      dialect:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The dialect or standard the surface
+                        is written to, such as c17 or python3.12.
+
+      package:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The packages the surface presents.
+
+      module:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The modules the surface presents.
+
+      namespace:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The namespaces the surface presents.
+
+      constant:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/constant'
+
+        description:    |
+                        Optional. The constants.
+
+      type:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The named data types.
+
+      function:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/callable'
+
+        description:    |
+                        Optional. The free functions.
+
+      class:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/class'
+
+        description:    |
+                        Optional. The classes.
+
+  surface_dataflow_step:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - invocation
+
+    description:        |
+                        One presentation of the interface as a runtime
+                        step reading a fixed set of inputs, writing a
+                        fixed set of outputs and keeping state between
+                        invocations. It is not a Capability Commons
+                        component, port or workflow form.
+
+    properties:
+
+      input:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. The ports the step reads.
+
+      output:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. The ports the step writes.
+
+      state:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. What the step reads and writes
+                        between invocations.
+
+      initialization:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What runs before the first
+                        invocation.
+
+      finalization:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What runs after the last one.
+
+      invocation:
+        type:           string
+        minLength:      1
+        description:    |
+                        When the step runs, and with what.
+
+      persistence:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What of the state survives an
+                        invocation, and what survives a restart.
+
+      atomicity:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is seen by another reader part
+                        way through an invocation.
+
+      availability:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What the step does when an input
+                        carries no value.
+
+      cardinality:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How many values an invocation writes
+                        to an output.
+
+      ordering:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What order invocations and their
+                        outputs are in.
+
+      back_pressure:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What the step does when a reader is
+                        slower than it.
+
+      concurrency:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How many invocations may run at
+                        once.
+
+      determinism:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Whether one input yields one output,
+                        always.
+
+      failure:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What the step does when an
+                        invocation fails, and whether it may be
+                        retried.
+
+  surface:
+    type:               object
+    minProperties:      1
+    maxProperties:      1
+
+    propertyNames:
+
+      enum:
+        - native
+        - dataflow_step
+
+    properties:
+
+      native:
+        $ref:           '#/$defs/surface_native'
+
+      dataflow_step:
+        $ref:           '#/$defs/surface_dataflow_step'
+
+    description:        |
+                        Exactly one form, under its own key. A form
+                        the document does not admit is refused here
+                        rather than accepted as extension data.
+
+unevaluatedProperties:  false
