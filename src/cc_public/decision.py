@@ -34,6 +34,8 @@ import datetime
 import hashlib
 import json
 
+import cc_public.item
+
 
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
@@ -86,12 +88,8 @@ def index(map_document):
 
     """
 
-    out = {}
-
-    for document in map_document.values():
-        _declare(document, out)
-
-    return out
+    return {guid: held.document
+            for (guid, held) in cc_public.item.index(map_document).by_guid.items()}
 
 
 # -----------------------------------------------------------------------------

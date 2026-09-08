@@ -41,6 +41,7 @@ relation:               []
 import typing
 
 import cc_public.decision
+import cc_public.item
 
 
 KEY_ID_SELF     = 'id_self'
@@ -179,11 +180,9 @@ def locate(map_document, id_self):
 
     """
 
-    for (location, document) in map_document.items():
-        if isinstance(document, dict) and document.get(KEY_ID_SELF) == id_self:
-            return location
+    held = cc_public.item.index(map_document).by_id.get(id_self)
 
-    return None
+    return held.location if held is not None else None
 
 
 # -----------------------------------------------------------------------------
@@ -194,34 +193,8 @@ def index(map_document):
 
     """
 
-    out = {}
-
-    for document in map_document.values():
-        for item in _iter_identified(document):
-            out[item[KEY_ID_SELF]] = item
-
-    return out
-
-
-# -----------------------------------------------------------------------------
-def _iter_identified(node):
-    """
-    Yield the node and every item held anywhere within it.
-
-    """
-
-    if isinstance(node, dict):
-
-        if isinstance(node.get(KEY_ID_SELF), str):
-            yield node
-
-        for value in node.values():
-            yield from _iter_identified(value)
-
-    elif isinstance(node, list):
-
-        for value in node:
-            yield from _iter_identified(value)
+    return {name: held.document
+            for (name, held) in cc_public.item.index(map_document).by_id.items()}
 
 
 # -----------------------------------------------------------------------------

@@ -41,6 +41,7 @@ import json
 
 import cc_public.check.result
 import cc_public.control
+import cc_public.item
 import cc_public.load.python
 import cc_public.requirement
 import cc_public.testing
@@ -233,34 +234,8 @@ def _index(map_document):
 
     """
 
-    out = {}
-
-    for (location, document) in map_document.items():
-        for item in _iter_identified(document):
-            out[item[KEY_GUID_SELF]] = (location, item)
-
-    return out
-
-
-# -----------------------------------------------------------------------------
-def _iter_identified(node):
-    """
-    Yield the node and every item held anywhere within it.
-
-    """
-
-    if isinstance(node, dict):
-
-        if isinstance(node.get(KEY_GUID_SELF), str):
-            yield node
-
-        for value in node.values():
-            yield from _iter_identified(value)
-
-    elif isinstance(node, list):
-
-        for value in node:
-            yield from _iter_identified(value)
+    return {guid: (held.location, held.document)
+            for (guid, held) in cc_public.item.index(map_document).by_guid.items()}
 
 
 # -----------------------------------------------------------------------------

@@ -44,6 +44,7 @@ import collections
 import cc_public.check.reference
 import cc_public.check.register
 import cc_public.check.result
+import cc_public.item
 import cc_public.path
 
 
@@ -452,30 +453,9 @@ def _iter_domain(context, domain, map_prefix):
               if isinstance(entry, dict) and entry.get(KEY_ID_SELF) in domain}
 
     for (location, document) in sorted(context.map_document.items(), key = str):
-        for (id_self, _) in _iter_identified(document):
-            if id_self.split(SEPARATOR, 1)[0] in prefix:
-                yield (id_self, location)
-
-
-# -----------------------------------------------------------------------------
-def _iter_identified(node):
-    """
-    Yield (id_self, node) for the node and every item held within it.
-
-    """
-
-    if isinstance(node, dict):
-
-        if isinstance(node.get(KEY_ID_SELF), str):
-            yield (node[KEY_ID_SELF], node)
-
-        for value in node.values():
-            yield from _iter_identified(value)
-
-    elif isinstance(node, list):
-
-        for value in node:
-            yield from _iter_identified(value)
+        for held in cc_public.item.iter_item(document, location):
+            if held.id_self and held.id_self.split(SEPARATOR, 1)[0] in prefix:
+                yield (held.id_self, location)
 
 
 # -----------------------------------------------------------------------------

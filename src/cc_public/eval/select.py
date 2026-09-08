@@ -37,6 +37,7 @@ import ruamel.yaml
 
 import cc_public.check.identifier
 import cc_public.decision
+import cc_public.item
 import cc_public.check.register
 import cc_public.load.python
 import cc_public.need
@@ -378,29 +379,9 @@ def _iter_item(context):
         if not isinstance(document, dict) or _is_eval(document):
             continue
 
-        yield from _iter_identified(document, location)
-
-
-# -----------------------------------------------------------------------------
-def _iter_identified(node, location):
-    """
-    Yield (id_self, document, location) for the node and for every
-    item held anywhere within it.
-
-    """
-
-    if isinstance(node, dict):
-
-        if isinstance(node.get(KEY_ID_SELF), str):
-            yield (node[KEY_ID_SELF], node, location)
-
-        for value in node.values():
-            yield from _iter_identified(value, location)
-
-    elif isinstance(node, list):
-
-        for value in node:
-            yield from _iter_identified(value, location)
+        for held in cc_public.item.iter_item(document, location):
+            if held.id_self is not None:
+                yield (held.id_self, held.document, location)
 
 
 # -----------------------------------------------------------------------------

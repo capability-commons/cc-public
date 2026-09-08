@@ -41,6 +41,8 @@ relation:               []
 import datetime
 import uuid
 
+import cc_public.item
+
 
 KEY_ID_SELF     = 'id_self'
 KEY_GUID_SELF   = 'guid_self'
@@ -202,7 +204,8 @@ def _document(defaults, map_document, field):
 
     if id_subject:
         document['id_subject']   = id_subject
-        document['guid_subject'] = _guid_of(map_document, id_subject)
+        document['guid_subject'] = _guid_of(cc_public.item.index(map_document),
+                                            id_subject)
 
     for key in ('path', 'digest_subject'):
         if field.get(key):
@@ -226,23 +229,21 @@ def _map_id(map_document):
 
     """
 
-    return {str(location): document[KEY_ID_SELF]
-            for (location, document) in map_document.items()
-            if isinstance(document, dict) and isinstance(document.get(KEY_ID_SELF), str)}
+    return {str(held.location): held.id_self
+            for held in cc_public.item.index(map_document).by_id.values()
+            if not held.path}
 
 
 # -----------------------------------------------------------------------------
-def _guid_of(map_document, id_self):
+def _guid_of(index, id_self):
     """
     Return the guid of the item called id_self, or None.
 
     """
 
-    for document in map_document.values():
-        if isinstance(document, dict) and document.get(KEY_ID_SELF) == id_self:
-            return document.get(KEY_GUID_SELF)
+    held = index.by_id.get(id_self)
 
-    return None
+    return held.guid_self if held is not None else None
 
 
 def _prose(text):

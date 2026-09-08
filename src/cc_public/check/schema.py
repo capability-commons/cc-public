@@ -41,6 +41,7 @@ import referencing
 import referencing.jsonschema
 
 import cc_public.check.register
+import cc_public.item
 import cc_public.check.result
 import cc_public.path
 
@@ -341,7 +342,10 @@ def _datum(filepath, document, map_prefix, map_schema, reg):
 
     out = []
 
-    for (path, item) in _iter_embedded(document):
+    for held in cc_public.item.iter_item(document):
+        (path, item) = (held.path, held.document)
+        if not path:
+            continue
 
         (id_schema, _) = select_schema(item, map_prefix, is_embedded = True)
 
@@ -356,31 +360,6 @@ def _datum(filepath, document, map_prefix, map_schema, reg):
                    if MESSAGE_DATUM in message)
 
     return out
-
-
-# -----------------------------------------------------------------------------
-def _iter_embedded(node, path = ''):
-    """
-    Yield (path, item) for every item held within the node, the node
-    itself excepted.
-
-    """
-
-    if isinstance(node, dict):
-
-        for (key, value) in node.items():
-            path_child = cc_public.path.join(path, key)
-            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
-                yield (path_child, value)
-            yield from _iter_embedded(value, path_child)
-
-    elif isinstance(node, list):
-
-        for (index, value) in enumerate(node):
-            path_child = cc_public.path.join(path, index)
-            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
-                yield (path_child, value)
-            yield from _iter_embedded(value, path_child)
 
 
 # -----------------------------------------------------------------------------
