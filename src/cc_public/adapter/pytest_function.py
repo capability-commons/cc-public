@@ -17,9 +17,12 @@ brief:                  |
                         running one pytest test function.
 description:            |
                         A case names the source item of the test
-                        function it runs, and the adapter derives the
-                        pytest node id from that item: the file the
-                        item sits in, then the definitions beneath it.
+                        function it runs. The node id is the file that
+                        item sits in and the definitions down to it,
+                        as the loader read them from the source, so
+                        the names carry the case the source spells
+                        them with and the readable id does not.
+
                         Neither the method nor the case carries a
                         command or a path, so a case names something
                         this tree resolves and asks for nothing but a
@@ -44,7 +47,6 @@ import cc_public.testing
 KEY_ID_TEST   = 'id_test'
 KEY_ID_SELF   = 'id_self'
 
-PREFIX_MODULE = 'pym'
 PREFIX_TEST   = 'pyf'
 SEPARATOR     = '_'
 DELIM         = '.'
@@ -64,15 +66,17 @@ VARIABLE      = 'CCTOOL_ADAPTER'
 
 
 # -----------------------------------------------------------------------------
-def specify(map_document, configuration):
+def specify(map_document, configuration, dirpath = None):
     """
     Return (node_id, [problem]) for the configuration of one case.
 
-    The node id is derived from the identity the case names and from
-    nothing else: the file the test function's module sits in, then the
-    definitions beneath it. A case that named a path or a command could
-    ask for anything to be run; one that names an identity can ask only
-    for a test this tree holds.
+    The node id is the file the item sits in and the definitions down to
+    it, as the loader read them from the source. The names carry the
+    case the source spells them with, which the readable id does not.
+
+    A case that named a path or a command could ask for anything to be
+    run; one that names an identity can ask only for a test this tree
+    holds.
 
     """
 
@@ -86,52 +90,24 @@ def specify(map_document, configuration):
         return (None, ['{name} is not a python function, so it is not a test to '
                        'run.'.format(name = id_test)])
 
-    map_item = cc_public.testing.index(map_document)
+    location = cc_public.testing.locate(map_document, id_test)
 
-    if id_test not in map_item:
+    if location is None:
         return (None, ['The configuration names {name}, which this tree does not '
                        'hold.'.format(name = id_test)])
 
-    (id_module, list_definition) = _split(id_test, map_item)
+    if not location.anchor:
+        return (None, ['{name} names a whole file and not a definition in it, so there '
+                       'is no test to run.'.format(name = id_test)])
 
-    if id_module is None:
-        return (None, ['No python module item holds {name}, so the file to run it in is '
-                       'not known.'.format(name = id_test)])
+    filepath = location.filepath
 
-    filepath = id_module.split(SEPARATOR, 1)[1].replace(DELIM, '/') + '.py'
+    if dirpath is not None:
+        with contextlib.suppress(ValueError):
+            filepath = filepath.relative_to(dirpath)
 
-    return (DELIM_NODE.join([filepath, *list_definition]), [])
+    return (DELIM_NODE.join([str(filepath), *location.anchor]), [])
 
-
-# -----------------------------------------------------------------------------
-def _split(id_test, map_item):
-    """
-    Return (id of the module holding the test, the definition names
-    beneath it), by taking the longest module id the test id begins
-    with.
-
-    A function id is its module's id and then the definitions, so the
-    module is found by looking rather than by guessing how many parts
-    it has.
-
-    """
-
-    stem   = id_test.split(SEPARATOR, 1)[1]
-    prefix = PREFIX_MODULE + SEPARATOR
-    best   = None
-
-    for name in map_item:
-        if not name.startswith(prefix):
-            continue
-        candidate = name.split(SEPARATOR, 1)[1]
-        if (stem + DELIM).startswith(candidate + DELIM) \
-                and (best is None or len(candidate) > len(best)):
-            best = candidate
-
-    if best is None:
-        return (None, [])
-
-    return (prefix + best, stem[len(best) + 1:].split(DELIM))
 
 
 OUTCOME_COMPLETED = 'completed'
@@ -171,14 +147,12 @@ def run(map_document, configuration, dirpath = None):
     Run the one test function a case names, and return what was
     observed.
 
-    The node id is derived from the identity the case names, so nothing
-    a case carries reaches a shell. pytest is run with a plugin that
-    keeps its reports, so the outcome is read from what pytest reported
-    rather than from what it printed.
+    pytest is run with a plugin that keeps its reports, so the outcome
+    is read from what pytest reported rather than from what it printed.
 
     """
 
-    (node, list_problem) = specify(map_document, configuration)
+    (node, list_problem) = specify(map_document, configuration, dirpath)
 
     if node is None:
         return Observation(execution_outcome  = OUTCOME_NOT_RUN,

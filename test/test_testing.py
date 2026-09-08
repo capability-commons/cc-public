@@ -99,12 +99,23 @@ def test_a_configuration_the_method_refuses_is_reported(tree, tmp_path):
     assert any('sch_case_pytest_function' in message for message in messages)
 
 
-def test_a_node_id_is_derived_from_the_identity_alone():
+def test_a_node_id_is_the_file_and_the_definitions_as_the_source_spells_them():
+    root = pathlib.Path(__file__).parent.parent
     (node, problem) = cc_public.adapter.pytest_function.specify(
-                                    _map_real(), {'id_test': ID_TEST})
+                                    _map_real(), {'id_test': ID_TEST}, root)
     assert problem == []
     assert node == ('test/test_query.py'
                     '::test_a_shortest_path_is_reported_or_its_absence')
+
+
+def test_a_node_id_carries_the_case_the_source_spells_a_class_with():
+    # The readable id is lower case; the loader kept the real names.
+    root = pathlib.Path(__file__).parent.parent
+    (node, problem) = cc_public.adapter.pytest_function.specify(
+                            _map_real(), {'id_test': 'pyf_cc_public.query.database.path'},
+                            root)
+    assert problem == []
+    assert node.endswith('query.py::Database::path')
 
 
 def test_a_configuration_naming_no_test_yields_no_node_id():

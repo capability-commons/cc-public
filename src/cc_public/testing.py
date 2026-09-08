@@ -166,6 +166,25 @@ def iter_case(map_document):
 
 
 # -----------------------------------------------------------------------------
+def locate(map_document, id_self):
+    """
+    Return the location of the item called id_self, or None.
+
+    A location carries the file and, for an item held in a docstring,
+    the run of definition names down to it as the source spells them.
+    The readable id spells them in lower case, so the location is what
+    a caller needing the real names asks.
+
+    """
+
+    for (location, document) in map_document.items():
+        if isinstance(document, dict) and document.get(KEY_ID_SELF) == id_self:
+            return location
+
+    return None
+
+
+# -----------------------------------------------------------------------------
 def index(map_document):
     """
     Return every item in the tree by readable id, the items held within
