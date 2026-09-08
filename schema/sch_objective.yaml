@@ -1,0 +1,83 @@
+id_self:                sch_objective
+guid_self:              sch_c0dc7c189d5e4091a128840937b7155a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Objective schema
+brief:                  |
+                        The shape of an objective: one thing a
+                        standard requires, and where it is taken from.
+description:            |
+                        Identity, rights, the descriptive fields and
+                        edges come from sch_base and sch_relation.
+                        Beyond them an objective carries the statement
+                        of what is required and, once the process
+                        mapping is done, the clause it comes from.
+
+                        What satisfies an objective is not a field. It
+                        is an edge from the thing that satisfies it,
+                        of whatever kind, so that one objective may be
+                        served by several things and one thing may
+                        serve several objectives. An objective nothing
+                        points at is unsatisfied, and saying that is
+                        the point of writing it down.
+
+                        Which criticality levels require an objective
+                        is written on the levels, not here, so that
+                        reading a level says what it demands.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_objective.yaml
+usage:                  |
+                        Named by t_objective as the schema of every
+                        item in objective/.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - statement
+      - status
+
+    properties:
+
+      statement:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the standard requires, in the words of
+                        this repository. One thing: an objective that
+                        says two is two objectives, since each may be
+                        satisfied by something different and required
+                        at a different level.
+
+      clause:
+        type:           string
+        maxLength:      64
+        description:    |
+                        The clause, section or objective number within
+                        the document this is taken from. Optional, and
+                        absent until the process mapping over this
+                        system and its process has been done.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Proposed while it is being written, accepted
+                        once this repository holds itself to it,
+                        deprecated where it no longer applies.
+
+unevaluatedProperties:  false

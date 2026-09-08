@@ -30,7 +30,18 @@ description:            |
                         closed world and advisory in an open one;
                         stale is advisory, since a tree being edited
                         is ordinarily ahead of its last observation.
-relation:               []
+
+relation:
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_verification_per_requirement
+    guid_target:        obj_daff88a03d004002864bc8dc94d271b2
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_evidence_current
+    guid_target:        obj_e401c1b6c97f41dea1766c299d85d3cf
 
 ...
 """

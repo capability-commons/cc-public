@@ -22,7 +22,18 @@ description:            |
                         it. The finding is advisory: a requirement may
                         be written before its need is, but not left
                         so.
-relation:               []
+
+relation:
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_verification_per_requirement
+    guid_target:        obj_daff88a03d004002864bc8dc94d271b2
+
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_expected_result_stated
+    guid_target:        obj_a055d8642b5a4688820e3f05c98d333a
 
 ...
 """

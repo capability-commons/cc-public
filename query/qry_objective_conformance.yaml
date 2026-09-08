@@ -1,0 +1,32 @@
+id_self:                qry_objective_conformance
+guid_self:              qry_574b263f11a1499f90072bfd709ec11d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What satisfies each objective
+brief:                  |
+                        One row per objective, with the number of
+                        things that satisfy it.
+sql:                    |
+                        SELECT i.id_self AS objective,
+                               COUNT(e.guid_source) AS satisfied_by
+                          FROM item i
+                          LEFT JOIN edge e
+                            ON e.id_target = i.id_self
+                           AND e.id_relation = 'r_satisfies'
+                         WHERE i.id_self LIKE 'obj_%'
+                         GROUP BY i.id_self
+                         ORDER BY satisfied_by DESC, i.id_self
+meaning:                |
+                        What this repository claims of itself against
+                        the standards it cites. An objective with no
+                        satisfier is adopted and unmet, which is a
+                        statement rather than an omission: the
+                        objectives that are not written down are the
+                        ones nothing has been claimed about.
+relation:               []
