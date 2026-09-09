@@ -1,0 +1,70 @@
+id_self:                sch_entry_gate_tool
+guid_self:              sch_ef4990dd62bb4e1cb15def9ead89d111
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate tool entry schema
+brief:                  |
+                        What a gate tool entry carries beyond the
+                        shape every register entry carries.
+description:            |
+                        The version relied on, what the tool examines,
+                        what its exit status means, and what it cannot
+                        see. Title, brief, description, alias and
+                        status come from sch_entry.
+
+                        Blind spots are required and not optional. A
+                        tool whose limits are unwritten is one whose
+                        exit status will be read as saying more than
+                        it does, and the whole purpose of this
+                        register is to write down how much a green run
+                        is worth.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_gate_tool.yaml
+type:                   object
+usage:                  |
+                        Composed with sch_entry by sch_reg_gate_tool
+                        as the shape of every entry in the gate tool
+                        register.
+
+required:
+  - version
+  - scope
+  - exit_status
+  - blind_spot
+
+properties:
+
+  version:
+    type:               string
+    maxLength:          64
+    description:        |
+                        The version relied on, as the tool reports it.
+
+  scope:
+    type:               string
+    minLength:          1
+    description:        |
+                        What the tool examines, and what it is not
+                        pointed at.
+
+  exit_status:
+    type:               string
+    minLength:          1
+    description:        |
+                        What a zero and a non zero exit mean. A tool
+                        that exits zero having examined nothing is
+                        saying something different from one that
+                        examined everything and found nothing.
+
+  blind_spot:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this tool cannot see, so that a green run
+                        is not read as saying more than it does.

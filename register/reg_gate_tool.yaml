@@ -1,0 +1,232 @@
+id_self:                reg_gate_tool
+guid_self:              reg_3da3fd6ab87b4712aeec722b786c1d87
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Gate tool register
+brief:                  |
+                        The tools whose exit status is relied on to
+                        decide whether work may proceed.
+description:            |
+                        One entry per tool whose failure stops the
+                        work, keyed by readable id. An entry says what
+                        the tool examines, what its exit status means,
+                        what it cannot see, and, by
+                        r_is_controlled_by, what demonstrates that a
+                        defect it is meant to catch does make it fail.
+usage:                  |
+                        Read before trusting a green run. A tool run
+                        for information is not entered here; one whose
+                        failure stops the work is.
+note:                   |
+                        A tool with no r_is_controlled_by edge is
+                        relied on without that reliance having been
+                        shown. The absent edge is the statement.
+
+table:
+
+  gt_cctool_check:
+    id_self:            gt_cctool_check
+    guid_self:          gt_d497ae22a0b0464a9961ca8ea9866921
+    title:              The repository check
+    brief:              |
+                        Eighteen mechanical checks over the data
+                        items, run with the world closed and failing
+                        on a nonconformity.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            this repository
+    scope:              |
+                        Every data item the segment governs: identity,
+                        references, schema, layout, relations,
+                        registers, trace, evidence, statements,
+                        interfaces, testing and workflows. It reads
+                        what is written and does not run anything the
+                        items describe.
+    exit_status:        |
+                        Zero where no finding is critical. Non zero on
+                        a critical finding, and with the world closed,
+                        on a reference that resolves to nothing. An
+                        advisory finding does not stop it.
+    blind_spot:         |
+                        It judges what the items say, not whether what
+                        they say is true of the code. A requirement
+                        whose implementation does the opposite of what
+                        it claims passes every one of these checks.
+                        Nor does it read python beyond the documents
+                        held in docstrings.
+    status:             proposed
+    relation:           []
+
+  gt_ruff:
+    id_self:            gt_ruff
+    guid_self:          gt_f6de11aca9ab42fb826e4426cd2369e2
+    title:              Ruff
+    brief:              |
+                        The python linter, over src and test, in the
+                        house rule set.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            0.16.6
+    scope:              |
+                        Every python file under src and test, less the
+                        execution directory and the pixi cache.
+                        Fifteen rule families are selected and seven
+                        rules are ignored for reasons written beside
+                        them.
+    exit_status:        |
+                        Zero where no selected rule fires. Non zero on
+                        any finding. It says nothing about rules that
+                        are not selected.
+    blind_spot:         |
+                        Rules that are not selected, and everything
+                        that needs types to see. It does not format:
+                        the house layout is not enforced, and a
+                        formatter run would rewrite most of the tree.
+    status:             proposed
+    relation:           []
+
+  gt_lint_imports:
+    id_self:            gt_lint_imports
+    guid_self:          gt_6925d1ac52bb4ca0b988a117d7f7eba7
+    title:              Import linter
+    brief:              |
+                        The seven tier layering contract: a package
+                        imports downward only.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            '2.15'
+    scope:              |
+                        The import graph of cc_public against the
+                        layers contract in pyproject. Tests are
+                        outside it.
+    exit_status:        |
+                        Zero where the contract is kept. Non zero
+                        where a package imports upward or a sibling
+                        imports a sibling.
+    blind_spot:         |
+                        A lazy import inside a function is still an
+                        import and is seen, but an import reached
+                        through importlib by a computed name is not.
+                        It says nothing about whether the layering is
+                        the right one.
+    status:             proposed
+    relation:           []
+
+  gt_pytest:
+    id_self:            gt_pytest
+    guid_self:          gt_8719b27a6cac41a9a45d5450546c18ff
+    title:              pytest
+    brief:              |
+                        The test runner, over test/, in parallel.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            9.1.1
+    scope:              |
+                        Files under test/ whose names match
+                        test_something. Files that do not match are
+                        collected only when named explicitly, which is
+                        how the adapter controls are reached without
+                        the suite running them.
+    exit_status:        |
+                        Zero where every collected test passed or was
+                        skipped. Non zero on a failure, an error, or a
+                        collection error. A test that was never
+                        collected cannot fail, so a green run says
+                        nothing about a file the pattern did not
+                        match.
+    blind_spot:         |
+                        What was not written. It also writes: the
+                        session hook rewrites the pytest evidence
+                        item, so a test run is not read only and the
+                        working tree may change under it.
+    status:             proposed
+    relation:           []
+
+  gt_pytest_cov:
+    id_self:            gt_pytest_cov
+    guid_self:          gt_a9090112b7144acba6a5f104259bf067
+    title:              Coverage floor
+    brief:              |
+                        Statement coverage of cc_public, failing under
+                        a floor of 87 per cent.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            pytest-cov 7.1.0, coverage 7.16.0
+    scope:              |
+                        Statements in cc_public executed during the
+                        suite. Measured at 89.55 per cent on b6cdcbc.
+    exit_status:        |
+                        Zero where the measured percentage is at or
+                        above the floor. Non zero below it. The floor
+                        is a floor and not a target.
+    blind_spot:         |
+                        A statement that ran is not a statement that
+                        was asserted about. Branches are not measured
+                        at all, so a condition taken one way only
+                        counts as covered. It says nothing about
+                        whether a test exercises what its requirement
+                        requires, which is what
+                        evl_test_exercises_criteria is for.
+    status:             proposed
+    relation:           []
+
+  gt_pytest_adapter:
+    id_self:            gt_pytest_adapter
+    guid_self:          gt_afafc1804b154b9f96fb523ea717674c
+    title:              The pytest adapter
+    brief:              |
+                        Reads a conformance result for one test case
+                        from what pytest reported.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            this repository
+    scope:              |
+                        One test function named by a case, run in a
+                        subprocess whose path holds the tree own src,
+                        so what runs is the code that tree holds.
+    exit_status:        |
+                        It returns an execution outcome and a
+                        conformance result rather than an exit status.
+                        An execution that did not complete carries no
+                        result at all, so an error cannot become a
+                        failure and neither can become a pass.
+    blind_spot:         |
+                        A node that could not be collected is told
+                        apart from the rest only against a report
+                        written by hand: a file with a syntax error
+                        cannot live in this tree, so that one path is
+                        unobserved against a real run.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_controlled_by
+        guid_relation:  r_8929d2017dec4d0cba84cf7904e94c8d
+        id_target:      pym_test.test_adapter_control
+        guid_target:    pym_52c63e1d68b54a2b80d73b9b3719431d
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_gate_tool
+    guid_target:        sch_f6cb9ae6e6794d3396d68be6c2de463c

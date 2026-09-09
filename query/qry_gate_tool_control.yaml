@@ -1,0 +1,32 @@
+id_self:                qry_gate_tool_control
+guid_self:              qry_f29eeeeea21b486b98f56d90b2cd0520
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Which gate tools are shown to fail
+brief:                  |
+                        One row per gate tool, with the number of
+                        things demonstrating that a defect it is meant
+                        to catch makes it fail.
+sql:                    |
+                        SELECT i.id_self AS gate_tool,
+                               COUNT(e.guid_target) AS shown_to_fail
+                          FROM item i
+                          LEFT JOIN edge e
+                            ON e.guid_source = i.guid
+                           AND e.id_relation = 'r_is_controlled_by'
+                         WHERE i.prefix = 'gt'
+                         GROUP BY i.id_self
+                         ORDER BY shown_to_fail DESC, i.id_self
+meaning:                |
+                        A zero says the tool is believed on the
+                        strength of having run. That is not nothing,
+                        but it is not what a green run is usually
+                        taken to mean, and the difference is what this
+                        register exists to hold.
+relation:               []

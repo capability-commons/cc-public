@@ -2089,3 +2089,30 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_entry_criticality
         guid_target:    sch_d0460dbd9ebc4391b7fd44fa43511917
+
+  t_gate_tool:
+    id_self:            t_gate_tool
+    guid_self:          t_58ef496d54e64df7983b17a05f0c6a6a
+    title:              Gate tool type
+    brief:              |
+                        Type of gate tool entries held in a gate tool
+                        register.
+    description:        |
+                        A gate tool is a tool whose exit status is
+                        relied on to decide whether work may proceed.
+                        Its entries are held in reg_gate_tool, keyed
+                        by readable id, rather than in a directory.
+    prefix:             gt
+    regex_id:           ^gt_[a-z][a-z0-9_]*$
+    id_term:            term_gate_tool
+    guid_term:          term_1cae6e4ea04b4fa29e45c6a44fd316eb
+    usage:              |
+                        One entry per tool whose failure stops the
+                        work. A tool run for information is not one.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_entry_gate_tool
+        guid_target:    sch_ef4990dd62bb4e1cb15def9ead89d111

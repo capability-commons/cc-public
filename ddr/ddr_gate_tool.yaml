@@ -1,0 +1,186 @@
+id_self:                ddr_gate_tool
+guid_self:              ddr_4a9b13b19bae495db03e917e049be8d0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What the gate believes is written down, in the tree
+brief:                  |
+                        The tools whose exit status stops the work are
+                        entries in a register, each saying what it
+                        examines, what its exit status means and what
+                        it cannot see, with the thing that shows it
+                        can fail named by an edge.
+context:                |
+                        A gate is a row of tools and a claim that
+                        their silence means something. The claim is
+                        rarely written. Six tools decide whether work
+                        proceeds here, and what each of them can and
+                        cannot see lived in the heads of the people
+                        who configured them.
+
+                        ddr_tool_verification decided that machinery a
+                        verdict rests on is an item with requirements
+                        of its own, and did not say where such items
+                        live or what they carry. A plan for adding
+                        more such tools proposed an inventory of
+                        versions, scopes and blind spots, and proposed
+                        to keep it in the planning document. That
+                        document is outside the repository, is not
+                        checked, and would be wrong the first time a
+                        version moved.
+decision:               |
+                        A tool whose exit status is relied on to
+                        decide whether work may proceed is an entry in
+                        reg_gate_tool. The entry says the version
+                        relied on, what the tool examines, what a zero
+                        and a non zero exit mean, and what the tool
+                        cannot see.
+
+                        The blind spot is required, not optional. A
+                        tool whose limits are unwritten will have its
+                        exit status read as saying more than it does,
+                        and writing down how much a green run is worth
+                        is the whole purpose.
+
+                        What demonstrates that a defect the tool is
+                        meant to catch does make it fail is named by
+                        r_is_controlled_by. Where nothing demonstrates
+                        it, the edge is absent and the tool is listed
+                        anyway. The absent edge is the statement.
+
+                        They are called gate tools. Gate is the
+                        decision to let work proceed, here or in a
+                        pipeline, and not only the pixi task of that
+                        name.
+
+                        A tool run for information is not entered. One
+                        whose failure stops the work is.
+rationale:              |
+                        A register rather than prose in a plan,
+                        because a plan outside the repository is not
+                        checked, is not queryable, and is wrong the
+                        first time a version moves. The same reasoning
+                        already put the test methods, the units, the
+                        process words and the criticality levels in
+                        registers.
+
+                        A register rather than a directory of items,
+                        because the entries are few, small and
+                        enumerable, which is what a register is for,
+                        and because reading them as a list is how they
+                        will be used.
+
+                        Not an extension of reg_test_method, for the
+                        reason ddr_test_method gives about
+                        reg_methodology: two lifecycles in one table
+                        make an entry's meaning depend on which kind
+                        it is. A test method is a procedure for
+                        verifying a requirement. A gate tool is
+                        something whose silence is trusted.
+
+                        Gate tool rather than verdict producer,
+                        because term_verdict is what a judge returns
+                        and term_test_result rejects verdict as the
+                        name for an outcome. A third sense of the word
+                        would have made the glossary say less each
+                        time it was read.
+
+                        The blind spot required, because it is the
+                        field nobody writes voluntarily and the only
+                        one that says what the tool is not.
+
+                        The control as an edge rather than a field,
+                        because its absence is then a fact a query can
+                        find, and because one control may show several
+                        tools fail while a tool may be shown to fail
+                        by several things.
+alternative:            |
+                        Keep the inventory in the planning document.
+                        Rejected: see the rationale. It was what the
+                        plan proposed and it is the reason this record
+                        exists.
+
+                        Give every gate tool a requirement and a test
+                        case now, as ddr_tool_verification eventually
+                        asks. Rejected for now: the register is what
+                        makes the set visible, and a requirement for
+                        each is a larger piece of work that the
+                        visible set will inform.
+
+                        A field naming the control rather than an
+                        edge. Rejected: a field cannot be joined
+                        against, and the useful question is which
+                        tools have nothing.
+
+                        Record only the tools this plan adds.
+                        Rejected: the tools already believed are the
+                        ones nobody has looked at.
+consequence:            |
+                        reg_gate_tool holds six entries: the
+                        repository check, ruff, the import linter,
+                        pytest, the coverage floor and the pytest
+                        adapter. One of the six is shown to fail by
+                        anything. qry_gate_tool_control reads that.
+
+                        Nothing checks that a gate tool has a control,
+                        or that the version written is the version
+                        installed. Both are hand written and will
+                        drift. A check for either does not exist.
+
+                        Every later step of the quality plan that
+                        makes a tool blocking adds an entry and, with
+                        it, the thing that shows the tool can fail.
+
+                        Whether a tool that only reports should be
+                        entered is not settled. The rule here is that
+                        it should not, which means the register will
+                        not answer what is run for information.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_gate_tool
+    guid_target:        term_1cae6e4ea04b4fa29e45c6a44fd316eb
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_rtca_do_330
+    guid_target:        doc_31d1b53f0829486ca2a797ae874734fb
+
+question:
+
+  drift:
+    id_self:            qst_gate_tool.drift
+    guid_self:          qst_89016803789f43b38beba1c94438a9ed
+    question:           |
+                        What keeps the version written on a gate tool
+                        entry the version that is installed, given
+                        that both are written by hand and nothing
+                        compares them.
+    relation:           []
+
+  control:
+    id_self:            qst_gate_tool.control
+    guid_self:          qst_fc286fd18d77470280f8e118cb7d12e9
+    question:           |
+                        Whether a gate tool with no thing
+                        demonstrating it can fail should be a finding,
+                        and at what criticality, or whether listing it
+                        is enough.
+    relation:           []
+
+  report:
+    id_self:            qst_gate_tool.report
+    guid_self:          qst_ef3195ee49924cf3a83a04ac4612a63c
+    question:           |
+                        Whether a tool that only reports belongs in
+                        the register, given that the rule here
+                        excludes it and the register therefore cannot
+                        say what is run for information.
+    relation:           []
