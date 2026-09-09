@@ -1,0 +1,139 @@
+id_self:                ddr_environment_shape
+guid_self:              ddr_5d37c9605744492085deb2d97224f97d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One environment, and the model stack stays out of what the gate imports
+brief:                  |
+                        The tools are installed in one environment
+                        rather than split into a lean one for checking
+                        and a full one for judging. What keeps the
+                        split available is that nothing the gate runs
+                        imports the model stack, and that is a
+                        property to preserve rather than an accident.
+context:                |
+                        The environment is 708 megabytes. The model
+                        stack inside it is about 152 of those: litellm
+                        at 91, botocore at 25, openai at 19,
+                        tokenizers at 9, and the transfer library at
+                        8. Every one of them is reachable only through
+                        dspy, which nothing else requires.
+
+                        Measured on 2026-09-09: the suite never loads
+                        dspy at all, not even the tests of the judging
+                        machinery, because every import of it is
+                        inside a function and the tests build a null
+                        runner. The suite does load weasyprint and
+                        jinja2, since a test renders a dossier.
+
+                        So the model stack could be taken out of what
+                        the gate installs, and the rendering stack
+                        could not.
+decision:               |
+                        One environment. The gate installs the model
+                        stack it never imports.
+
+                        Nothing that runs in the gate imports dspy at
+                        module scope. Every import of it is inside the
+                        function that needs it, which is what makes
+                        the split possible at all, and that is now a
+                        property to keep rather than a detail. A
+                        module level import of dspy anywhere the gate
+                        reaches would close the option without anybody
+                        noticing.
+
+                        The split is taken when a cold environment
+                        becomes slow enough to be felt, or when a
+                        dependency reachable only through the model
+                        stack gains a finding that is reachable here.
+                        Neither holds today.
+rationale:              |
+                        The saving is of disk and not of time. A warm
+                        solve is immediate, the pipeline restores a
+                        cached environment, and creating one is not on
+                        the critical path of a thirteen minute gate.
+                        Nothing measured showed a cost in time.
+
+                        Two environments is a cost paid every day, in
+                        keeping them in step and in remembering which
+                        command runs where, against a saving realised
+                        only when a cache is cold.
+
+                        The rendering stack cannot be split out in any
+                        case, because a test renders a dossier and
+                        loads it. Splitting would separate the smaller
+                        half of the problem.
+
+                        The one dependency finding lives in the model
+                        stack, in a cache library reached through
+                        litellm. Removing it from the environment the
+                        gate runs in would not remove it from the
+                        product, and it is already recorded as
+                        unreachable from anything here.
+
+                        Written down rather than left as a shrug,
+                        because the reason the split stays cheap is a
+                        property of the code that somebody could
+                        remove by accident in an afternoon.
+alternative:            |
+                        Split now, into a lean environment for the
+                        gate and a full one for judging. Rejected: the
+                        saving is 21 per cent of disk and nothing of
+                        time, and the maintenance is daily.
+
+                        Split only in the pipeline, leaving the
+                        developer's environment whole. Rejected: it
+                        makes the pipeline install something different
+                        from what a person runs, which is the thing
+                        the gate exists to avoid.
+
+                        Say nothing and leave the environment as it
+                        is. Rejected: the reason the split remains
+                        available is a property of the code, and a
+                        property nobody has written down is one that
+                        is removed by the next person who finds a lazy
+                        import untidy.
+consequence:            |
+                        The gate installs about 152 megabytes it never
+                        imports.
+
+                        A module level import of dspy, or of anything
+                        that pulls it, in code the gate reaches would
+                        close off the split. Nothing checks for that.
+
+                        The measurement is a snapshot. litellm is 91
+                        megabytes today and the decision turns partly
+                        on that number, so a much larger one is a
+                        reason to measure again rather than to trust
+                        this.
+
+                        Whether the pipeline should install less than
+                        a person does is not settled here, and the
+                        answer given is that it should not.
+relation:               []
+
+question:
+
+  guard:
+    id_self:            qst_environment_shape.guard
+    guid_self:          qst_87d4822f155342e68c6d7b627354c3f3
+    question:           |
+                        What keeps a module level import of the model
+                        stack out of the code the gate reaches, given
+                        that nothing checks for one and that such an
+                        import would close off the split silently.
+    relation:           []
+
+  trigger:
+    id_self:            qst_environment_shape.trigger
+    guid_self:          qst_d3d66e18191b4511be3327634e0a0850
+    question:           |
+                        How slow a cold environment has to be, or how
+                        reachable a finding in the model stack has to
+                        be, before the split is worth its maintenance.
+    relation:           []
