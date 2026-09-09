@@ -91,6 +91,17 @@ jobs:
           pixi run code-coverage-diff
           --compare-branch=origin/${{ github.event.pull_request.base.ref }}
 
+      # The dependency audit. Reports and does not block: on 2026-09-09
+      # its one finding had no released fix, and a pipeline that is red
+      # until somebody else publishes a release teaches people to stop
+      # reading it. It becomes blocking when the baseline is clean, or
+      # when an exception has an owner and an expiry.
+      #
+      - name: Dependency audit (report only)
+        if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
+        run: pixi run security-audit
+
       # What a person needs to read a failure they cannot reproduce.
       # Only on failure: a green run's artifacts are noise.
       #

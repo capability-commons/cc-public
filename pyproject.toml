@@ -31,6 +31,7 @@ test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4",
                            "pytest-timeout>=2.4.0,<3", "diff-cover>=10,<11"]
 lint                    = ["import-linter>=2.15,<3", "mypy>=1.18,<2"]
 package                 = ["build>=1.2,<2", "twine>=7.0,<8"]
+security                = ["pip-audit>=2.9,<3"]
 
 [project.urls]
 Repository              = "https://github.com/capability-commons/cc-public"
@@ -47,7 +48,7 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package"] }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package", "security"] }
 
 [tool.cctool.new]
 copyright               = "Copyright 2026 William Payne"
@@ -103,6 +104,17 @@ id_mark                 = "mark_public"
 #
 # Not in the local gate: it builds and reaches the network, and a
 # nine minute gate should not also wait on pip. It blocks in CI.
+#
+# The dependency audit. Report only, and outside the gate: on
+# 2026-09-09 it found one advisory with no fix released, and a gate that
+# is red until somebody else publishes a release teaches people to stop
+# reading it.
+#
+# It audits what python distribution metadata describes, which was 134
+# packages. pixi.lock also names about 143 conda packages, most of which
+# have no dist-info and are therefore invisible to it. The native
+# libraries underneath, where a CVE is most likely to matter, are not
+# covered by this. Do not read a clean audit as a clean environment.
 #
 # The gate is what a pipeline runs and is the only aggregate. Its
 # depends-on is where the order lives: pixi runs lint and test before the
@@ -190,6 +202,7 @@ package-build           = "python -m build --outdir dist"
 package-verify          = "twine check --strict dist/*"
 package-smoke           = "python test/package_smoke.py"
 package-check           = { depends-on = ["package-build", "package-verify", "package-smoke"] }
+security-audit          = "pip-audit"
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }

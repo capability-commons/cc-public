@@ -1,0 +1,51 @@
+# Static security analysis of the python source, by CodeQL. Separate
+# from the gate: it is slow, it answers a different question, and a
+# finding here is for a person to read rather than something to stop a
+# push. The repository is public, so this is available to it.
+#
+# It analyses the source in this repository. It says nothing about the
+# dependencies, which pip-audit reads, and nothing about the conda
+# packages underneath, which neither of them reads.
+#
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, because an advisory can appear without this repository
+    # changing at all.
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+
+    steps:
+      # Pinned to the commit the v3 tag pointed at on 2026-09-09. The
+      # tag is annotated, so this is the commit it dereferences to and
+      # not the tag object.
+      #
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+
+      - uses: github/codeql-action/init@6f5948dfacef28e207b48d0905cf90c03365536d  # v3
+        with:
+          languages: python
+          # The default queries plus the security-focused extended set.
+          # Not the full quality suite: this is a security workflow.
+          queries: security-extended
+
+      - uses: github/codeql-action/analyze@6f5948dfacef28e207b48d0905cf90c03365536d  # v3
+        with:
+          category: /language:python
