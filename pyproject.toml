@@ -231,7 +231,9 @@ extend-exclude          = ["execution", ".pixi"]
 [tool.ruff.lint]
 select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
                            "ARG", "S", "DTZ", "PIE", "FURB",
-                           "SLF"]     # an underscore name is its module's (ddr_layered_architecture)
+                           "SLF",     # an underscore name is its module's (ddr_layered_architecture)
+                           "RUF100",  # a suppression that suppresses nothing
+                           "PTH119"]  # basename(str(p)) is a roundabout p.name
 ignore                  = ["UP032",   # format() is the house form
                            "PLC0415", # a lazy import keeps an optional dependency optional
                            "PLR2004", # a literal beside its comparison reads

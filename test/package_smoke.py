@@ -81,7 +81,7 @@ def _wheel():
 
 
 def _run(command, cwd = None):
-    return subprocess.run(command, cwd = cwd, capture_output = True,  # noqa: S603
+    return subprocess.run(command, cwd = cwd, capture_output = True,
                           text = True, check = False)
 
 

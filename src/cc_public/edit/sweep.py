@@ -33,7 +33,7 @@ relation:               []
 
 import collections
 import json
-import os
+import pathlib
 import re
 
 import cc_public.edit.field
@@ -90,7 +90,7 @@ def sweep(tree, path_report, id_self, title = None, brief = None):
     cc_public.edit.field.set_field(tree, id_self, 'brief', prose = brief or (
                 'What the evals found over {n} judgements, from the report at {path}, '
                 'grouped by eval and rule.'.format(n = check.get(KEY_COUNT, 0),
-                                                   path = os.path.basename(str(path_report)))))
+                                                   path = pathlib.Path(path_report).name)))
     judge = (check.get(KEY_DETAIL) or {}).get(KEY_MODEL) or 'unknown'
     cc_public.edit.field.set_field(tree, id_self, 'judge', value = str(judge))
     cc_public.edit.field.set_field(tree, id_self, 'count_judgement',
@@ -123,7 +123,7 @@ def _groups(findings):
     out = collections.OrderedDict()
 
     for finding in findings:
-        id_eval = os.path.basename(str(finding.get('filepath', ''))).rsplit('.', 1)[0]
+        id_eval = pathlib.Path(str(finding.get('filepath', ''))).stem
         message = ' '.join(str(finding.get('message', '')).split())
         named   = [r for r in RE_RULE.findall(message) if 'No rule named ' + r not in message]
         rule    = named[0] if named else ''

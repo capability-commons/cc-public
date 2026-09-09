@@ -276,7 +276,9 @@ def observe(root, list_nodeid):
         path_report = pathlib.Path(dirpath) / 'report.xml'
         command     = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
                        '--junitxml', str(path_report), *list_nodeid]
-        subprocess.run(command, cwd = root, env = env, capture_output = True,  # noqa: S603 -- the interpreter and pytest, on ids the tree names
+        # The interpreter and pytest, on ids the tree names.
+        #
+        subprocess.run(command, cwd = root, env = env, capture_output = True,
                        text = True, check = False)
         map_junit = _junit(path_report) if path_report.exists() else {}
 

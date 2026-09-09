@@ -28,15 +28,15 @@ relation:               []
 """
 
 
-import cc_public.cli.assurance     # noqa: F401 -- each registers its commands on the group
-import cc_public.cli.checking      # noqa: F401
-import cc_public.cli.committing    # noqa: F401
-import cc_public.cli.editing       # noqa: F401
+import cc_public.cli.assurance  # each registers its commands on the group
+import cc_public.cli.checking
+import cc_public.cli.committing
+import cc_public.cli.editing
 import cc_public.cli.group
-import cc_public.cli.judging       # noqa: F401
-import cc_public.cli.querying      # noqa: F401
-import cc_public.cli.rendering     # noqa: F401
-import cc_public.cli.running       # noqa: F401
+import cc_public.cli.judging
+import cc_public.cli.querying
+import cc_public.cli.rendering
+import cc_public.cli.running
 
 
 main = cc_public.cli.group.main

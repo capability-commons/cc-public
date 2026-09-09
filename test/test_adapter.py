@@ -181,7 +181,7 @@ def test_the_run_reads_the_code_of_the_tree_it_was_given(tmp_path):
 def _run(tmp_path, *option):
     import click.testing
     import cc_public.cli.group
-    import cc_public.cli.running                              # noqa: F401 -- registers
+    import cc_public.cli.running  # registers
     return click.testing.CliRunner().invoke(
                 cc_public.cli.group.main,
                 ['test', ID_CASE, '--under-test', ID_UNDER, '--root', str(tmp_path),

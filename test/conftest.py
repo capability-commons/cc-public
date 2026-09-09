@@ -190,7 +190,7 @@ def pytest_sessionfinish(session, exitstatus):
 
     try:
         written = cc_public.evidence.from_pytest(ROOT, MAP_OUTCOME, pytest.__version__)
-    except Exception as err:                        # noqa: BLE001 -- reported, never hidden
+    except Exception as err:  # reported, never hidden
         written = None
         if reporter is not None:
             reporter.write_line('evidence NOT written: {err}'.format(err = err))

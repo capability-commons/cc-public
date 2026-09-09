@@ -53,7 +53,9 @@ def svg(dot):
 # -----------------------------------------------------------------------------
 def _dot(dot):
     try:
-        done = subprocess.run([COMMAND, '-Tsvg'], input = dot, capture_output = True,  # noqa: S603 -- graphviz on text the tool wrote
+        # Graphviz, on text the tool wrote.
+        #
+        done = subprocess.run([COMMAND, '-Tsvg'], input = dot, capture_output = True,
                               text = True, check = False)
     except OSError:
         return None
@@ -63,7 +65,9 @@ def _dot(dot):
 
 def _register():
     try:
-        return subprocess.run([COMMAND, '-c'], capture_output = True, text = True,  # noqa: S603 -- writes graphviz's own plugin registry
+        # Writes graphviz's own plugin registry.
+        #
+        return subprocess.run([COMMAND, '-c'], capture_output = True, text = True,
                               check = False).returncode == 0
     except OSError:
         return False

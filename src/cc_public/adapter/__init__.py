@@ -180,7 +180,7 @@ def _environment(tree, observed):
 
     try:
         revision = cc_public.load.git.revision(tree.root)
-    except Exception:                                        # noqa: BLE001
+    except Exception:
         revision = None
 
     return ('python {version} on {platform}. The node was {node}. The tree was at '

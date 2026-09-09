@@ -231,7 +231,7 @@ def run(map_document, configuration, dirpath = None):
 
     root    = pathlib.Path(dirpath or '.').resolve()
     started = time.monotonic()
-    done    = subprocess.run([sys.executable, '-c', RUNNER, node],       # noqa: S603
+    done    = subprocess.run([sys.executable, '-c', RUNNER, node],
                              cwd            = str(root),
                              env            = _environment(root),
                              capture_output = True,

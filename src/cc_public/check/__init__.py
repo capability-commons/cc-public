@@ -221,7 +221,7 @@ def _run(module, context, is_fail_fast):
 
     try:
         result = module.check(context)
-    except Exception as err:                        # noqa: BLE001 -- see above
+    except Exception as err:  # see above
         return ({'id_check':      module.ID_CHECK,
                  'title':         module.TITLE,
                  'status':        STATUS_ERR,

@@ -56,7 +56,7 @@ def _mypy(text):
     with tempfile.TemporaryDirectory() as name:
         filepath = pathlib.Path(name) / 'probe.py'
         filepath.write_text(text, encoding = 'utf-8')
-        return subprocess.run(                                    # noqa: S603
+        return subprocess.run(
                     [sys.executable, '-m', 'mypy', '--no-incremental',
                      '--python-version', '3.14', '--strict', str(filepath)],
                     cwd            = str(conftest.ROOT),
@@ -118,7 +118,7 @@ def _coverage(floor, is_branch):
         # An empty config, so the probe does not inherit this
         # repository's pytest settings and measure this repository.
         (dirpath / 'probe.ini').write_text('[pytest]\n', encoding = 'utf-8')
-        return subprocess.run(                                    # noqa: S603
+        return subprocess.run(
                     [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
                      '-c', str(dirpath / 'probe.ini'), str(dirpath),
                      '--cov=probe', '--cov-report=',

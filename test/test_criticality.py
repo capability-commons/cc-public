@@ -136,7 +136,7 @@ def test_a_level_the_register_does_not_hold_carries_nothing(tree):
 def test_the_command_reads_the_same_projection(tree, tmp_path):
     import click.testing
 
-    import cc_public.cli.assurance                             # noqa: F401
+    import cc_public.cli.assurance
     import cc_public.cli.group
 
     def run(*option):
