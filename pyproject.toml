@@ -57,10 +57,24 @@ id_mark                 = "mark_public"
 # fails on a critical finding, an unresolved reference, a lint finding,
 # a failing test or coverage below the floor.
 #
+# The gate is what a pipeline runs and is the only aggregate. Its
+# depends-on is where the order lives: pixi runs lint and test before the
+# command, so the tests refresh the evidence that the closed-world check
+# then reads. Naming that order anywhere else would give it a second
+# place to drift from.
+#
+# A fast loop is wanted and is not here yet. Leaving coverage out saves
+# nothing: the suite costs 530 s and the cost is a handful of subprocess
+# tests, the slowest 175 s on its own. A loop worth having must select,
+# and selection wants markers, which arrive with strict_markers.
+#
 [tool.pixi.tasks]
 check                   = "cctool check"
+check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
 format                  = "cctool format"
+format-items            = "cctool format"
 test                    = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87"
+test-durations          = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87 --durations=25"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 lint                    = "ruff check src test && lint-imports"
 gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
