@@ -40,7 +40,9 @@ import cc_public.adapter.pytest_function as adapter
 import cc_public.edit.tree
 
 
-CONTROL = 'pyf_test.control_adapter.'
+CONTROL  = 'pyf_test.control_adapter.'
+ID_CASE  = 'tc_path_reported'
+ID_UNDER = 'pyf_cc_public.query.database.path'
 
 
 def _run(name):
@@ -99,3 +101,36 @@ def test_a_control_the_tree_does_not_hold_is_not_run():
     assert seen.execution_outcome  == 'not_run'
     assert seen.conformance_result is None
     assert seen.node is None
+
+
+def test_a_control_stopped_at_its_timeout_is_an_error_and_no_result():
+    # A run that was stopped never reached an end, so it says nothing
+    # about the item under test. pytest-timeout reports it as an
+    # ordinary call failure, and reading that as a failure would name
+    # the item in a report for something the run never observed.
+    seen = _run('test_times_out')
+    assert seen.execution_outcome  == 'error'
+    assert seen.conformance_result is None
+    assert 'timeout' in seen.observation.lower()
+
+
+def test_a_timeout_establishes_no_evidence_and_makes_no_report(tree):
+    import cc_public.evidence
+    import cc_public.nonconformity
+
+    document = {'id_self':           'tex_20260909000000_abcdef',
+                'guid_self':         'tex_' + '0' * 32,
+                'id_case':           ID_CASE,
+                'guid_case':         tree.resolve(ID_CASE).guid_self,
+                'id_method':         'tm_pytest_function',
+                'guid_method':       tree.resolve('tm_pytest_function').guid_self,
+                'id_under_test':     ID_UNDER,
+                'guid_under_test':   tree.resolve(ID_UNDER).guid_self,
+                'digest_under_test': 'abcd1234',
+                'adapter_version':   'pytest 9.1.1',
+                'execution_outcome': 'error',
+                'result': {'main': {'observation': 'stopped at its timeout\n'}}}
+
+    assert cc_public.evidence.from_execution(tree, document) is None
+    assert not cc_public.nonconformity.from_execution(
+                tree.context.map_document, document, dict(tree.defaults()))

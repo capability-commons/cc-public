@@ -94,6 +94,7 @@ def _promote(repo):
                                       {'promote.input.concept': 'cpt_field_power_cell'}, Proposer(), None)
 
 
+@pytest.mark.slow
 def test_a_concluded_challenge_admits_and_the_requirement_names_the_run(repo):
     r = _concept(repo, 'met')
     assert r['outcome'] == 'completed'
@@ -105,6 +106,7 @@ def test_a_concluded_challenge_admits_and_the_requirement_names_the_run(repo):
     assert clean(repo) == []
 
 
+@pytest.mark.slow
 def test_an_exhausted_challenge_refuses_promotion_until_a_waiver_admits_it(repo):
     r = _concept(repo, 'unmet')
     assert r['outcome'] == 'exhausted'
@@ -123,6 +125,7 @@ def test_an_exhausted_challenge_refuses_promotion_until_a_waiver_admits_it(repo)
     assert clean(repo) == []
 
 
+@pytest.mark.slow
 def test_an_evidential_candidate_is_admitted_only_with_a_quote_the_observation_holds(repo):
     evidential = [dict(c) for c in CANDIDATES]
     evidential[0] = {k: v for (k, v) in evidential[0].items() if k != 'quote'}   # endurance, no quote

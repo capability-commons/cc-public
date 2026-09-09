@@ -231,6 +231,7 @@ def test_two_edges_joining_the_same_ports_are_a_fault(repo):
     assert any('same two ports' in m for m in clean(repo))
 
 
+@pytest.mark.slow
 def test_back_edge_fires_and_the_draft_revises_its_prior_in_place(repo):
     deploy(repo, judge = 'always', commit = 'run', budget = 3)
     gen = Scripted()
@@ -616,6 +617,7 @@ def perform(repo, req, body = '    if 1 + 1 != 2:\n        raise AssertionError(
     cc_public.edit.link.link(tree, 'pyf_cc_public.probe.test_probe', 'r_verifies', req)
 
 
+@pytest.mark.slow
 def test_an_agent_node_parks_the_run_and_resume_reads_its_outputs_from_the_tree(repo):
     """
     The implement workflow parks at its agent node with a brief and its
@@ -697,6 +699,7 @@ def test_each_performer_is_held_to_its_form(repo):
     assert any('test carries no prompt' in f for f in faults), faults
 
 
+@pytest.mark.slow
 def test_a_failing_test_stops_the_run_at_verify_and_restores_the_evidence(repo):
     """
     The verify node runs the requirement's tests; one that fails stops

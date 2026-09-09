@@ -98,6 +98,7 @@ def built(repo):
     return cc_public.edit.tree.Tree([repo])
 
 
+@pytest.mark.slow
 def test_the_dossier_projects_a_demonstration_and_renders_both_documents(repo, tmp_path):
     tree   = built(repo)
     first  = cc_public.render.dossier.dossier(tree, ID_OBSERVATION)

@@ -475,6 +475,7 @@ def test_a_write_is_the_old_file_or_the_new_one_and_keeps_its_mode(tmp_path, mon
     assert list(tmp_path.iterdir()) == [target]
 
 
+@pytest.mark.slow
 def test_an_edge_runs_between_what_its_relation_allows(tree, tmp_path):
     def faults():
         return [m for (c, m) in clean(tmp_path) if c == 'relation']

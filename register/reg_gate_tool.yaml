@@ -138,10 +138,14 @@ table:
     version:            9.1.1
     scope:              |
                         Files under test/ whose names match
-                        test_something. Files that do not match are
+                        test_something, as testpaths and the default
+                        pattern say. Files that do not match are
                         collected only when named explicitly, which is
                         how the adapter controls are reached without
-                        the suite running them.
+                        the suite running them. An ini key pytest does
+                        not know, a marker nobody registered and an
+                        expected failure that passed are each refused
+                        rather than ignored.
     exit_status:        |
                         Zero where every collected test passed or was
                         skipped. Non zero on a failure, an error, or a
@@ -153,9 +157,19 @@ table:
                         What was not written. It also writes: the
                         session hook rewrites the pytest evidence
                         item, so a test run is not read only and the
-                        working tree may change under it.
+                        working tree may change under it. A test that
+                        runs longer than the timeout is stopped at 600
+                        seconds, which is a hang guard and not a
+                        budget: a test that grows past it is marked
+                        and explained, not accommodated.
     status:             proposed
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_is_controlled_by
+        guid_relation:  r_8929d2017dec4d0cba84cf7904e94c8d
+        id_target:      pym_test.test_adapter_control
+        guid_target:    pym_52c63e1d68b54a2b80d73b9b3719431d
 
   gt_pytest_cov:
     id_self:            gt_pytest_cov
@@ -208,13 +222,22 @@ table:
                         conformance result rather than an exit status.
                         An execution that did not complete carries no
                         result at all, so an error cannot become a
-                        failure and neither can become a pass.
+                        failure and neither can become a pass. A run
+                        stopped at its timeout is one of those: pytest
+                        reports it as an ordinary call failure, and
+                        reading it as one would name the item under
+                        test in a report for something the run never
+                        observed.
     blind_spot:         |
                         A node that could not be collected is told
                         apart from the rest only against a report
                         written by hand: a file with a syntax error
                         cannot live in this tree, so that one path is
-                        unobserved against a real run.
+                        unobserved against a real run. A timeout is
+                        recognised by the words pytest-timeout writes
+                        into the report, so a change in that wording
+                        would make a stopped run read as a failure
+                        again.
     status:             proposed
 
     relation:

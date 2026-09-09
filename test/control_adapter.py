@@ -36,6 +36,8 @@ relation:               []
 """
 
 
+import time
+
 import pytest
 
 
@@ -254,3 +256,36 @@ def test_parameterised(number):
     """
 
     assert number
+
+
+@pytest.mark.timeout(2)
+def test_times_out():
+    """
+    ---
+
+    id_self:                pyf_test.control_adapter.test_times_out
+    guid_self:              pyf_10f95f778e3c4fb9a15fabd90cc0368f
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A control that never finishes
+    brief:                  |
+                            A control that never finishes, stopped by the
+                            timeout.
+    description:            |
+                            Run through the adapter, this must not become
+                            a passing conformance result nor fresh passing
+                            evidence. A run stopped by a timeout did not
+                            finish, so what it says about the item under
+                            test is nothing.
+    relation:               []
+
+    ...
+    """
+
+    time.sleep(30)

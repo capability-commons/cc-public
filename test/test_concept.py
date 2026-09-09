@@ -37,6 +37,8 @@ relation:               []
 
 import json
 
+import pytest
+
 import cc_public.check
 import cc_public.edit.field
 import cc_public.edit.link
@@ -199,6 +201,7 @@ def test_too_few_candidate_requirements_fail_the_schema_and_the_run_restores(rep
     assert clean(repo) == []
 
 
+@pytest.mark.slow
 def test_promotion_makes_a_proposed_requirement_from_each_candidate_and_refuses_twice(repo):
     deploy(repo)
     gen = Proposer()

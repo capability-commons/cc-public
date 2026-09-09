@@ -46,6 +46,7 @@ import cc_public.load
 from conftest import DEFAULTS, clean, unverify
 
 
+@pytest.mark.slow
 def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
     shutil.rmtree(tmp_path / 'evidence')          # this copy observes from nothing
     tree = cc_public.edit.tree.Tree([tmp_path])
@@ -106,6 +107,7 @@ def test_evidence_is_observed_stamped_and_judged_current(tree, tmp_path):
 
 
 
+@pytest.mark.slow
 def test_evidence_goes_stale_with_what_it_observed_and_an_attestation_stands_for_inspection(tree, tmp_path):
     shutil.rmtree(tmp_path / 'evidence')          # this copy observes from nothing
     tree = cc_public.edit.tree.Tree([tmp_path])

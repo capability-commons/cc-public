@@ -33,6 +33,8 @@ relation:               []
 
 import json
 
+import pytest
+
 import cc_public.check
 import cc_public.edit.field
 import cc_public.edit.gather
@@ -67,6 +69,7 @@ def _found(root):
     return [n['message'] for n in found['nonconformity']]
 
 
+@pytest.mark.slow
 def test_gather_makes_a_set_of_the_promoted_requirements_and_gathers_once(repo):
     tree = _promoted(repo)
     (item, added) = cc_public.edit.gather.gather(tree, ID_CONCEPT)
@@ -82,6 +85,7 @@ def test_gather_makes_a_set_of_the_promoted_requirements_and_gathers_once(repo):
     assert not any('is on' in m for m in messages)
 
 
+@pytest.mark.slow
 def test_a_judge_and_a_model_are_shown_the_members_as_statements(repo):
     tree = _promoted(repo)
     cc_public.edit.gather.gather(tree, ID_CONCEPT)
@@ -96,6 +100,7 @@ def test_a_judge_and_a_model_are_shown_the_members_as_statements(repo):
     assert 'req_field_power_cell_endurance: The Field_Power_Cell shall power' in shown
 
 
+@pytest.mark.slow
 def test_the_set_checks_report_another_entity_a_duplicate_and_uncovered_classes(repo):
     tree = _promoted(repo)
     cc_public.edit.gather.gather(tree, ID_CONCEPT)
@@ -119,6 +124,7 @@ class Reviewer:
         return {'coverage': json.dumps(rows)}
 
 
+@pytest.mark.slow
 def test_the_review_workflow_fills_the_coverage_and_the_check_reports_the_uncovered_class(repo):
     tree = _promoted(repo)
     cc_public.edit.gather.gather(tree, ID_CONCEPT)
@@ -136,6 +142,7 @@ def test_the_review_workflow_fills_the_coverage_and_the_check_reports_the_uncove
     assert clean(repo) == []
 
 
+@pytest.mark.slow
 def test_a_run_takes_a_list_of_roots_and_writes_into_the_first(repo):
     tree = _promoted(repo)
     cc_public.edit.gather.gather(tree, ID_CONCEPT)

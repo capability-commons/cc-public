@@ -155,6 +155,8 @@ def test_awkward_paths_are_read_exactly_and_committed(repo):
     assert 'two words.txt' not in listed and '-dash.txt' not in listed
 
 
+@pytest.mark.slow
+@pytest.mark.slow
 def test_commit_lints_a_tree_that_configures_a_linter(repo):
     tree = cc_public.edit.tree.Tree([repo])
     bad  = cc_public.edit.new.new(tree, 't_python_module', 'pym_cc_public.unused',

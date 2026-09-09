@@ -161,6 +161,12 @@ RESULT_SKIPPED    = 'not_applicable'
 
 WHEN_CALL         = 'call'
 
+# What pytest-timeout writes into the report when it stops a test. A
+# timeout arrives as an ordinary call failure, so without this the run
+# that never finished would be read as the item under test failing.
+#
+MARK_TIMEOUT      = 'from pytest-timeout'
+
 
 # -----------------------------------------------------------------------------
 class Observation(typing.NamedTuple):
@@ -260,6 +266,27 @@ def _collected(done):
 
 
 # -----------------------------------------------------------------------------
+def _of_failed_call(text):
+    """
+    Return (outcome, result, text) for a call phase that failed.
+
+    A failed call is the item under test failing, except where the run
+    was stopped before it could finish. pytest-timeout reports a
+    timeout as an ordinary call failure, and a run that was stopped
+    observed nothing about the item, so it is an execution error and
+    carries no conformance result at all.
+
+    """
+
+    if MARK_TIMEOUT in text:
+        return (OUTCOME_ERROR, None,
+                'pytest stopped the node at its timeout, so the run did not '
+                'finish. ' + text)
+
+    return (OUTCOME_COMPLETED, RESULT_FAILED, text)
+
+
+# -----------------------------------------------------------------------------
 def _observation(collector, node, second):
     """
     Return what the collected reports say, as one Observation.
@@ -267,6 +294,12 @@ def _observation(collector, node, second):
     An error in setup or teardown is an execution error and no
     conformance result. Only what the call phase reported is a result
     about the item under test.
+
+    A timeout is not one of those results. pytest-timeout stops the
+    test and reports an ordinary call failure, but a run that was
+    stopped never reached an end, and what it says about the item under
+    test is nothing. Reading it as a failure would name the item in a
+    nonconformity report for something the run never observed.
 
     """
 
@@ -298,7 +331,7 @@ def _observation(collector, node, second):
                         'pytest reported the node passed.')
 
         if outcome == 'failed':
-            return made(OUTCOME_COMPLETED, RESULT_FAILED, text)
+            return made(*_of_failed_call(text))
 
     for (_, outcome, text) in collector.list_report:
         if outcome == 'skipped':

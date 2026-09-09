@@ -27,7 +27,8 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
 [project.optional-dependencies]
 eval                    = ["dspy==3.3.1"]
 render                  = ["jinja2>=3.1,<4", "weasyprint>=69,<70"]
-test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4"]
+test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4",
+                           "pytest-timeout>=2.4.0,<3"]
 lint                    = ["import-linter>=2.15,<3"]
 
 [project.urls]
@@ -63,11 +64,39 @@ id_mark                 = "mark_public"
 # then reads. Naming that order anywhere else would give it a second
 # place to drift from.
 #
-# A fast loop is wanted and is not here yet. Leaving coverage out saves
-# nothing: the suite costs 530 s and the cost is a handful of subprocess
-# tests, the slowest 175 s on its own. A loop worth having must select,
-# and selection wants markers, which arrive with strict_markers.
+# quick is the loop, gate is the judgement. Leaving coverage out saved
+# nothing, so quick leaves out the slow tests instead: those are what the
+# suite costs. It is never what CI runs and never a reason to skip gate.
 #
+# What pytest is allowed to assume. strict_config refuses an ini key it
+# does not know, strict_markers a marker nobody registered, and
+# xfail_strict an expected failure that passed: each of the three is a
+# way for a test to stop meaning what it says without anybody noticing.
+#
+# slow is measured, not felt. The seventeen tests carrying it cost sixty
+# seconds or more each on the baseline run, 1501 seconds of the suite's
+# cpu between them, and every one of them drives a workflow or a
+# subprocess chain. The number will drift; re-read it with
+# `pixi run test-durations` rather than trusting this comment.
+#
+[tool.pytest.ini_options]
+minversion              = "9.1"
+testpaths               = ["test"]
+strict_config           = true
+strict_markers          = true
+xfail_strict            = true
+
+# A hang, not a budget. The slowest test measured 175 s, so 600 gives it
+# more than three times its room while still catching a run that will
+# never end long before it doubles the suite. Raising this because a test
+# grew is the wrong move: mark that test and say why.
+#
+timeout                 = 600
+
+markers = [
+  "slow: drives a workflow or a subprocess chain and costs a minute or more; excluded from `pixi run quick` and never from `gate`",
+]
+
 [tool.pixi.tasks]
 check                   = "cctool check"
 check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
@@ -77,6 +106,7 @@ test                    = "pytest -q -n auto test --cov=cc_public --cov-report= 
 test-durations          = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87 --durations=25"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 lint                    = "ruff check src test && lint-imports"
+quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }
 gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
 
 [tool.pixi.dependencies]
