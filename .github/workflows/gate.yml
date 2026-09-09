@@ -1,7 +1,12 @@
 # The foundation gate, run on every push and pull request: the
-# mechanical checks with the world closed, the linter, the tests with
-# the coverage floor. The same command a developer runs as pixi run
-# gate, so that what passes here is what passes there.
+# mechanical checks with the world closed, the linter, the type checker
+# over the typed island, the tests with the coverage floor. The same
+# command a developer runs as pixi run gate, so that what passes here is
+# what passes there.
+#
+# Two further checks run here and not locally, because they build and
+# reach the network: the packaging check, which blocks, and changed line
+# coverage, which reports.
 #
 name: gate
 
@@ -9,23 +14,66 @@ on:
   push:
   pull_request:
 
+# Least privilege. Nothing in this workflow writes to the repository, so
+# nothing in it is given permission to.
+#
+permissions:
+  contents: read
+
+# One run per ref. A second push cancels the first, whose answer is to a
+# question nobody is asking any more.
+#
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   gate:
     runs-on: ${{ matrix.os }}
+
+    # The local gate measured about thirteen minutes on 2026-09-09: a
+    # nine minute suite, the branch coverage it now carries, the linter,
+    # the type checker and the closed world check. A hosted runner is
+    # slower and macOS slower again, so this is roughly three times the
+    # measurement, which catches a hang without failing a slow day.
+    #
+    timeout-minutes: 45
+
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+
     steps:
-      - uses: actions/checkout@v5
+      # Every action is pinned to the commit its tag pointed at on
+      # 2026-09-09, since a tag can be moved and a commit cannot. The
+      # version beside each is what that commit was called. Dependabot
+      # keeps them current; without it a pin is a fossil.
+      #
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           # diff-cover needs the base commit of a pull request, which a
           # shallow clone does not have.
           fetch-depth: 0
-      - uses: prefix-dev/setup-pixi@v0.8.14
+
+      - uses: prefix-dev/setup-pixi@8ca4608ef7f4daeb54f5205b20d0b7cb42f11143  # v0.8.14
         with:
           cache: true
+
+      # Tests run before the closed world check because the check reads
+      # the evidence the tests refresh. That order lives in the gate's
+      # own depends-on, not here, so there is one place for it to be.
+      #
       - run: pixi run gate
+
+      # Packaging. Blocking here and not in the local gate: it builds and
+      # reaches the network, and a nine minute gate should not also wait
+      # on pip. One platform, since the wheel is pure python and the
+      # answer cannot differ.
+      #
+      - name: Package check
+        if: matrix.os == 'ubuntu-latest'
+        run: pixi run package-check
 
       # Changed line coverage. The floor in the gate governs the whole
       # package and can absorb a small change that tests nothing; this
@@ -36,21 +84,23 @@ jobs:
       # observation behind it, so this reports and does not block: watch
       # it over real pull requests before making anything depend on it.
       #
-      # One platform only. The answer does not differ by operating
-      # system and reading it twice would only invite them to disagree.
-      #
-      # Packaging. Blocking here and not in the local gate: it builds and
-      # reaches the network, and a nine minute gate should not also wait
-      # on pip. One platform, since the wheel is pure python and the
-      # answer cannot differ.
-      #
-      - name: Package check
-        if: matrix.os == 'ubuntu-latest'
-        run: pixi run package-check
-
       - name: Changed line coverage (report only)
         if: github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest'
         continue-on-error: true
         run: >
           pixi run code-coverage-diff
           --compare-branch=origin/${{ github.event.pull_request.base.ref }}
+
+      # What a person needs to read a failure they cannot reproduce.
+      # Only on failure: a green run's artifacts are noise.
+      #
+      - name: Keep what a failure needs
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+        with:
+          name: gate-${{ matrix.os }}
+          path: |
+            coverage.xml
+            junit.xml
+          if-no-files-found: ignore
+          retention-days: 7
