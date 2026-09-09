@@ -20,12 +20,18 @@ on:
 permissions:
   contents: read
 
-# One run per ref. A second push cancels the first, whose answer is to a
-# question nobody is asking any more.
+# One run per ref. On a branch a second push cancels the first, whose
+# answer is to a question nobody is asking any more.
+#
+# Not on main. Two of fifteen runs there were cancelled that way on
+# 2026-09-09, and a cancelled run is a commit nobody verified: the next
+# push tests its own tree, not the one before it. On a branch that is
+# fine, because the branch is judged when it lands. On main there is no
+# later judgement.
 #
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   gate:
@@ -97,10 +103,26 @@ jobs:
       # reading it. It becomes blocking when the baseline is clean, or
       # when an exception has an owner and an expiry.
       #
+      # continue-on-error makes a step report success whatever it found,
+      # so a person scanning the checks would see green and never learn
+      # there was a finding. The output goes to the run summary, where
+      # somebody will actually read it.
+      #
       - name: Dependency audit (report only)
         if: matrix.os == 'ubuntu-latest'
         continue-on-error: true
-        run: pixi run security-audit
+        run: |
+          echo '## Dependency audit' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Reports and does not block. It reads python distribution' >> "$GITHUB_STEP_SUMMARY"
+          echo 'metadata only: most conda packages carry none and are' >> "$GITHUB_STEP_SUMMARY"
+          echo 'invisible to it. A clean audit is not a clean environment.' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          pixi run security-audit 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          status=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $status
 
       # What a person needs to read a failure they cannot reproduce.
       # Only on failure: a green run's artifacts are noise.

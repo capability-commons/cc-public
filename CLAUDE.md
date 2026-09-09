@@ -149,21 +149,80 @@ Running and committing
 
 Pixi tasks
 
-- `pixi run test` — pytest over `test/`, in parallel: the printer's
-  content-preservation proof over every file, and the edit commands against
-  a copy of the tree. Holds a coverage floor; `pixi run coverage` shows
-  what is uncovered.
-- `pixi run lint` — ruff over `src` and `test`, configured in `pyproject.toml`
-  for the house style, then `lint-imports` holding the seven tiers of
-  `ddr_layered_architecture`: a package imports downward only, and an
-  underscore name is its module's (tests excepted). Must be clean after any
-  code edit; `commit` runs both and refuses on a finding.
-- `pixi run gate` — what a pipeline runs: check with the world closed and
-  failing on a critical finding, lint, test. `check` alone only reports.
+One command per concern. `gate` is the judgement and is the only aggregate;
+everything else is a loop or a diagnostic.
+
+- `pixi run gate` — what a pipeline runs, and the only thing that decides.
+  Its `depends-on` is where the order lives: lint, then type, then test, then
+  the closed-world check, so the tests refresh the evidence the check reads.
+  Do not name that order anywhere else. About thirteen minutes.
+- `pixi run quick` — the loop, not the judgement: lint, then the suite with
+  the slow tests left out. About six minutes against the gate's thirteen. It
+  runs no coverage and no closed-world check, so a green `quick` decides
+  nothing. CI never runs it.
+- `pixi run lint` — ruff over `src` and `test` in the house rule set, then
+  `lint-imports` holding the seven tiers of `ddr_layered_architecture`: a
+  package imports downward only, and an underscore name is its module's
+  (tests excepted).
+- `pixi run type` — mypy over the typed island named by `files` in
+  `[tool.mypy]`, at full strictness. It says nothing about the other 89
+  modules. `mypy -p cc_public` reads the whole package when you want that
+  number; it was 63 errors in 31 of 92 files on 2026-09-09.
+- `pixi run test` — pytest over `test/`, in parallel, branch-aware coverage
+  against the floor. **Writes**: the evidence item, `coverage.xml` and
+  `junit.xml`.
+- `pixi run test-durations` — the same, plus the twenty-five slowest.
+- `pixi run coverage` / `code-coverage-branch` — what is uncovered, by
+  statement or by branch and statement together.
+- `pixi run code-coverage-diff` — changed-line coverage of what a change
+  touched, against `origin/main` by default. Append another
+  `--compare-branch` to override it; the later flag wins.
+- `pixi run check` / `check-closed-world` — the mechanical checks, reporting
+  or failing on a nonconformity with the world asserted closed.
+- `pixi run format` / `format-items` — lays every document out to the
+  convention. **Writes** every file it touches.
+- `pixi run package-check` — builds both distributions, checks their
+  metadata, installs the wheel into an environment of its own and runs the
+  tool that comes out of it. Not in the gate: it builds and reaches the
+  network. Blocking in CI.
+- `pixi run security-audit` — known vulnerabilities in the python
+  distributions. Reports; blocks nothing.
 - `pixi run -e demo ui` — the demonstration's temporary Streamlit interface,
-  `../demo/ui/app.py`, in its own `demo` environment: a reader over the
-  tree and a control panel that shells `cctool` one job at a time. It edits
-  no item. Disposable; the projection it reads is not.
+  `../demo/ui/app.py`, in its own `demo` environment: a reader over the tree
+  and a control panel that shells `cctool` one job at a time. It edits no
+  item. Disposable; the projection it reads is not.
+
+Which commands write: `test` and anything that runs pytest rewrites
+`evidence/evd_pytest.yaml` when it observes something new, and drops
+`coverage.xml` and `junit.xml`; `format` rewrites documents; `package-check`
+writes `dist/`. Everything else reads.
+
+Thresholds, and why they are where they are
+
+| | value | why |
+|---|---|---|
+| Coverage floor | 87, branch-aware | the measured 87.12 rounded down. **0.12 of a point of headroom**: about thirteen statements or branch exits |
+| Changed-line coverage | 90, reporting only | conservative, with no observation behind it yet |
+| Test timeout | 600 s | a hang guard, not a budget; the slowest test measured 175 s |
+| CI job timeout | 45 min | roughly three times the measured local gate |
+| Typed island | 3 modules | every strictness flag applies to them and to nothing else |
+
+Ratchet, never relax. Do not lower a threshold to let an ordinary change
+through; make the change carry its own tests. Raise a coverage floor when
+sustained coverage leaves a point of headroom. Lower a complexity maximum
+only after the real maximum falls. Widen the typed island a coherent package
+at a time, and only while the current one is stable.
+
+Read at each release, because each of these goes stale silently: the pinned
+action commits and what Dependabot has proposed, the dependency advisories
+and their triage, the slowest tests, the coverage floors, the confidence
+measured on each eval and its control cases, the scope of the typed island,
+and every suppression, objective claim and temporary exception.
+
+What the gate believes, and what it cannot see, is `register/reg_gate_tool.yaml`,
+one entry per tool whose failure stops the work. `qry_gate_tool_control` says
+which of them have anything demonstrating they can fail. A tool run for
+information is not entered there.
 
 ## Writing items — use the tool, never hand-edit
 
