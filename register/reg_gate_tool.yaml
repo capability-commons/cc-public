@@ -247,6 +247,54 @@ table:
         id_target:      pym_test.test_adapter_control
         guid_target:    pym_52c63e1d68b54a2b80d73b9b3719431d
 
+  gt_mypy:
+    id_self:            gt_mypy
+    guid_self:          gt_4613c475e96843349236cca2a464290a
+    title:              Mypy
+    brief:              |
+                        The static type checker, over the typed
+                        island, at full strictness.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            1.20.2
+    scope:              |
+                        Three modules named by files in the mypy
+                        configuration: question, need and control.
+                        Every strictness flag applies to those and to
+                        nothing else. The rest of the package is
+                        unchecked by this task, and reported 63 errors
+                        in 31 of 92 files when asked, which is the
+                        size of widening the island and not a claim
+                        about it.
+    exit_status:        |
+                        Zero where the island type checks. Non zero on
+                        any error in it. A zero says nothing whatever
+                        about the other 89 modules.
+    blind_spot:         |
+                        Everything outside the island, which is most
+                        of the package. Types are checked and not
+                        enforced: nothing here runs, so a value that
+                        arrives at runtime with the wrong type is not
+                        caught by this.
+
+                        Its cache is incremental and was observed to
+                        disagree with the tree: after a file was
+                        restored, mypy reported the errors of the
+                        version before it until the cache was removed.
+                        The control runs with no-incremental for that
+                        reason, and a doubtful local result is worth
+                        repeating after deleting .mypy_cache.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_controlled_by
+        guid_relation:  r_8929d2017dec4d0cba84cf7904e94c8d
+        id_target:      pym_test.test_gate_tool
+        guid_target:    pym_3d0d3c58d6514d829598e79a51cc1c77
+
 relation:
 
   - id_relation:        r_is_specified_by_schema

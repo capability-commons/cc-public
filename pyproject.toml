@@ -29,7 +29,7 @@ eval                    = ["dspy==3.3.1"]
 render                  = ["jinja2>=3.1,<4", "weasyprint>=69,<70"]
 test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4",
                            "pytest-timeout>=2.4.0,<3"]
-lint                    = ["import-linter>=2.15,<3"]
+lint                    = ["import-linter>=2.15,<3", "mypy>=1.18,<2"]
 
 [project.urls]
 Repository              = "https://github.com/capability-commons/cc-public"
@@ -68,6 +68,39 @@ id_mark                 = "mark_public"
 # nothing, so quick leaves out the slow tests instead: those are what the
 # suite costs. It is never what CI runs and never a reason to skip gate.
 #
+# The typed island. files is the island itself, so every flag below
+# applies to it and to nothing else, and growing the island is adding a
+# path here rather than remembering which overrides govern what.
+#
+# Measured 2026-09-09: the whole package under check_untyped_defs alone
+# reports 63 errors in 31 of 92 files, 36 of them missing annotations on
+# empty collections and 10 third-party imports without stubs. That is
+# the size of the job if the island is ever widened to everything; it is
+# not a reason to widen it today.
+#
+# `mypy -p cc_public` reads the whole package when someone wants that
+# number again. `pixi run type` reads the island and is what gates.
+#
+[tool.mypy]
+python_version           = "3.14"
+mypy_path                = "src"
+
+files = ["src/cc_public/question.py",
+         "src/cc_public/need.py",
+         "src/cc_public/control.py"]
+
+warn_unused_configs      = true
+show_column_numbers      = true
+check_untyped_defs       = true
+disallow_untyped_defs    = true
+disallow_incomplete_defs = true
+disallow_untyped_calls   = true
+disallow_any_generics    = true
+warn_return_any          = true
+warn_unused_ignores      = true
+no_implicit_optional     = true
+strict_equality          = true
+
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and
 # xfail_strict an expected failure that passed: each of the three is a
@@ -106,8 +139,9 @@ test                    = "pytest -q -n auto test --cov=cc_public --cov-report= 
 test-durations          = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87 --durations=25"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 lint                    = "ruff check src test && lint-imports"
+type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }
-gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "test"] }
+gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "type", "test"] }
 
 [tool.pixi.dependencies]
 ruff                    = ">=0.16.6,<0.17"

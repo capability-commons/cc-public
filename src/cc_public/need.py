@@ -29,6 +29,9 @@ relation:               []
 """
 
 
+import typing
+
+
 KEY_SUBJECT  = 'subject'
 KEY_OUTCOME  = 'outcome'
 KEY_PURPOSE  = 'purpose'
@@ -42,7 +45,7 @@ SLOTS        = (KEY_SUBJECT, KEY_OUTCOME, KEY_PURPOSE, KEY_CONTEXT, KEY_EVIDENCE
 
 
 # -----------------------------------------------------------------------------
-def is_need(document):
+def is_need(document: typing.Any) -> bool:
     """
     Return whether document is a need: a mapping with the need prefix
     and every slot.
@@ -55,13 +58,13 @@ def is_need(document):
 
 
 # -----------------------------------------------------------------------------
-def statement(document):
+def statement(document: dict[str, typing.Any]) -> str:
     """
     Return the statement of a need, composed from its slots.
 
     """
 
-    def clean(key):
+    def clean(key: str) -> str:
         return ' '.join(str(document[key]).split()).rstrip('.')
 
     entity = ' from the ' + clean(KEY_ENTITY) if document.get(KEY_ENTITY) else ''
@@ -73,7 +76,7 @@ def statement(document):
 
 
 # -----------------------------------------------------------------------------
-def compose(document):
+def compose(document: dict[str, typing.Any]) -> dict[str, typing.Any]:
     """
     Return document with its statement composed in front of its slots,
     where it is a need; otherwise document itself.
@@ -83,7 +86,7 @@ def compose(document):
     if not is_need(document) or KEY_STATEMENT in document:
         return document
 
-    out = {}
+    out: dict[str, typing.Any] = {}
 
     for (key, value) in document.items():
         if key == KEY_SUBJECT:

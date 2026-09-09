@@ -29,7 +29,9 @@ relation:               []
 """
 
 
+import collections.abc
 import hashlib
+import typing
 
 
 KEY_CASE      = 'case'
@@ -52,7 +54,7 @@ LETTER_KEY    = 'c'
 
 
 # -----------------------------------------------------------------------------
-def normalise(text):
+def normalise(text: str) -> str:
     """
     Return text with its whitespace collapsed, which is what is compared.
 
@@ -62,7 +64,7 @@ def normalise(text):
 
 
 # -----------------------------------------------------------------------------
-def key_of(text):
+def key_of(text: str) -> str:
     """
     Return the short content key of a subject: a letter, then a prefix
     of the digest of its normalised text. The local name a case is held
@@ -77,7 +79,10 @@ def key_of(text):
 
 
 # -----------------------------------------------------------------------------
-def iter_set(map_document, guid_eval):
+def iter_set(
+        map_document: dict[typing.Any, typing.Any],
+        guid_eval:    str,
+) -> collections.abc.Iterator[tuple[typing.Any, dict[str, typing.Any]]]:
     """
     Yield (filepath, document) for every control set measuring the eval.
 
@@ -97,7 +102,10 @@ def iter_set(map_document, guid_eval):
 
 
 # -----------------------------------------------------------------------------
-def iter_case(map_document, guid_eval):
+def iter_case(
+        map_document: dict[typing.Any, typing.Any],
+        guid_eval:    str,
+) -> collections.abc.Iterator[tuple[typing.Any, str, dict[str, typing.Any]]]:
     """
     Yield (id_set, key, case) for every case measuring the eval.
 
@@ -110,7 +118,10 @@ def iter_case(map_document, guid_eval):
 
 
 # -----------------------------------------------------------------------------
-def map_case(map_document, guid_eval):
+def map_case(
+        map_document: dict[typing.Any, typing.Any],
+        guid_eval:    str,
+) -> dict[str, dict[str, typing.Any]]:
     """
     Return {normalised subject: case} for every case measuring the eval.
 

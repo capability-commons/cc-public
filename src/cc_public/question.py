@@ -25,6 +25,10 @@ relation:               []
 """
 
 
+import collections.abc
+import typing
+
+
 KEY_QUESTION  = 'question'
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
@@ -36,14 +40,16 @@ REL_ANSWERS   = 'r_answers'
 
 
 # -----------------------------------------------------------------------------
-def report(map_document):
+def report(
+        map_document: dict[typing.Any, typing.Any],
+) -> list[tuple[str | None, str, str, list[str]]]:
     """
     Return one (id_record, id_question, text, list_answerer) per
     question, in record order. list_answerer is empty where open.
 
     """
 
-    map_answer = {}
+    map_answer: dict[typing.Any, list[str]] = {}
 
     for document in map_document.values():
         for (id_self, edges) in _iter_edges(document):
@@ -51,7 +57,7 @@ def report(map_document):
                 if edge.get(KEY_ID_REL) == REL_ANSWERS:
                     map_answer.setdefault(edge.get(KEY_GUID_TGT), []).append(id_self)
 
-    list_row = []
+    list_row: list[tuple[str | None, str, str, list[str]]] = []
 
     for (_, document) in sorted(map_document.items()):
 
@@ -70,7 +76,10 @@ def report(map_document):
 
 
 # -----------------------------------------------------------------------------
-def _iter_edges(node, id_self = None):
+def _iter_edges(
+        node:    typing.Any,
+        id_self: str | None = None,
+) -> collections.abc.Iterator[tuple[str, list[dict[str, typing.Any]]]]:
     """
     Yield (id of the nearest identified item, its edges) throughout node.
 
