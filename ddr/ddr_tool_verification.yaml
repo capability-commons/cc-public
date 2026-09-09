@@ -1,0 +1,190 @@
+id_self:                ddr_tool_verification
+guid_self:              ddr_d092232738b84c5e99307c1836de0c5d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Machinery a verdict rests on carries requirements of its own
+brief:                  |
+                        Where a verdict depends on a property of some
+                        machinery, that machinery is an item with its
+                        own requirements and test cases, and a check
+                        over the graph reports the reliance rather
+                        than a judge guessing at it.
+context:                |
+                        The coverage eval judged the printer test
+                        unmet, unanimously, once the projection let it
+                        see where the file set comes from. The set is
+                        what iter_filepath_all finds under the
+                        repository root. That function is not an item,
+                        nothing verifies it, and it appears in two
+                        places in the whole system. If it under
+                        enumerated, the requirement that every yaml
+                        file and every docstring document is a
+                        fixpoint would be false and the test would
+                        still pass.
+
+                        The same shape had already appeared once. The
+                        pytest adapter decides every conformance
+                        result this repository records, and was given
+                        a control set only after somebody noticed that
+                        nothing checked its mapping. In both cases a
+                        verdict rested on machinery, and the machinery
+                        was unaccounted for.
+
+                        The author of the eval first proposed to
+                        answer the disagreement by holding that a test
+                        may rely on the repository's own machinery.
+                        That was a defence of an adjudication rather
+                        than of the criterion: the machinery in
+                        question is verified by nothing at all.
+decision:               |
+                        Machinery a verdict rests on is an item, with
+                        requirements and test cases of its own, by the
+                        same means as anything else: the enumerator
+                        that decides which files a claim of
+                        completeness covers, the adapter that reads a
+                        verdict from a run, the judge that reaches
+                        one.
+
+                        What obliges is reliance on a property, not
+                        use. A test that calls a helper for
+                        convenience relies on nothing that the helper
+                        promises. A test whose coverage of every file
+                        is decided by a helper relies on that helper
+                        enumerating every file, and that reliance is
+                        what must be accounted for.
+
+                        The reliance is a fact about the graph and is
+                        reported by a check. Whether a helper is
+                        verified cannot be seen in source, so a model
+                        reading source can only guess at it, and
+                        guessing is what widening the projection was
+                        done to stop.
+
+                        An eval judges the assertions of a test
+                        against the criteria of the requirement, for
+                        what the test examines. Whether what it
+                        examines is everything the requirement speaks
+                        of belongs to the check, not to the judge. Two
+                        questions, and each goes where it can be
+                        answered.
+
+                        None of this is built. It is recorded so that
+                        the reasoning is not lost and so that the
+                        printer verdict rests on something stated.
+rationale:              |
+                        An item with its own requirements, because
+                        that is what this repository does with
+                        everything else a claim depends on, and
+                        because obj_tool_accounted already says it for
+                        a verification tool. A helper deciding which
+                        files a requirement is tested over is doing a
+                        verification tool's job inside a test.
+
+                        Reliance rather than use, because everything
+                        calls something. A rule over use would make an
+                        item of every call and say nothing about which
+                        of them a verdict actually rests on.
+
+                        A check rather than a judge, because the
+                        question is whether an edge exists, and a
+                        check answers that exactly while a model
+                        reading source answers it by inference. The
+                        measured instability that widening the
+                        projection removed came from a judge inferring
+                        what it could not see, and this would put it
+                        back.
+
+                        The eval's criterion left as it is, because
+                        judging assertions against criteria is what it
+                        does well: measured at no false positive by
+                        majority on the input it is given. Loading a
+                        second question onto it would spoil the first.
+alternative:            |
+                        Hold that a test may rely on the repository's
+                        own machinery, and judge only its assertions.
+                        Rejected: iter_filepath_all is verified by
+                        nothing, so the trust would rest on nothing.
+                        It was proposed here first and is recorded as
+                        rejected because the reasoning matters more
+                        than the proposal.
+
+                        Have the judge decide whether the machinery is
+                        verified. Rejected: it is a fact about the
+                        graph and is invisible in source.
+
+                        Require every function a test calls to be an
+                        item. Rejected: use is not reliance, and the
+                        rule would make an item of every call while
+                        saying nothing about which verdicts rest on
+                        what.
+
+                        Weaken the requirement instead, so that it
+                        speaks of the files the test examines rather
+                        than of every file in the repository.
+                        Rejected: the requirement says what is wanted,
+                        and narrowing a requirement to fit the test
+                        that verifies it is writing the answer into
+                        the question.
+consequence:            |
+                        iter_filepath_all is the first instance and
+                        has no identity. It decides which files the
+                        printer requirement is tested over and is
+                        verified by nothing.
+
+                        The control case for the printer test is held
+                        unmet, because the reliance is real and
+                        unaccounted for, not because the assertions
+                        are weak. The eval was right and the
+                        adjudication against it was wrong.
+
+                        A check that reports a test relying on
+                        machinery nothing verifies does not exist.
+                        What makes a use a reliance is not settled,
+                        and a check cannot be written until it is.
+
+                        Nothing here is built. It is recorded now
+                        because the reasoning was reached now, and the
+                        work is behind other work.
+
+relation:
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_rtca_do_330
+    guid_target:        doc_31d1b53f0829486ca2a797ae874734fb
+
+question:
+
+  reliance:
+    id_self:            qst_tool_verification.reliance
+    guid_self:          qst_efd42d1006d84387babd5036ec4752b1
+    question:           |
+                        What makes a use of a helper a reliance on it:
+                        whether it is that the requirement speaks of a
+                        property the helper decides, and who says so.
+    relation:           []
+
+  shape:
+    id_self:            qst_tool_verification.shape
+    guid_self:          qst_50e335cb57724b9c92b8137288e58930
+    question:           |
+                        Whether a test relying on machinery nothing
+                        verifies is a trace gap on the requirement, a
+                        check of its own, or a finding on the test
+                        item.
+    relation:           []
+
+  depth:
+    id_self:            qst_tool_verification.depth
+    guid_self:          qst_a0d4fbd09cec437b9af26144140e2100
+    question:           |
+                        How far the obligation runs, given that the
+                        machinery a helper itself relies on is
+                        machinery a verdict rests on too.
+    relation:           []

@@ -439,7 +439,7 @@ case:
   c2c05810f:
     id_self:            case_test_exercises_criteria.c2c05810f
     guid_self:          case_5ecdf94d8b71438698a15aba78d35623
-    verdict:            met
+    verdict:            unmet
     subject:            |
                         ---
                         pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
@@ -506,14 +506,22 @@ case:
                         success_criteria: Every YAML file and every
                         docstring document in the repository, laid out
                         twice, is byte identical after the first pass.
-    origin:             suppressed
+    origin:             confirmed
     note:               |
-                        FILES is every yaml and python file the tool's
-                        own iterator finds under the repository root,
-                        so the test does cover every file the criteria
-                        name. The judge could not see it: FILES is
-                        defined at module level and the projection
-                        shows the definition's source alone.
+                        Held met at first, and that was wrong. FILES
+                        is what iter_filepath_all finds under the
+                        repository root, and nothing verifies
+                        iter_filepath_all: it is not an item, and it
+                        appears in two places in the system. If it
+                        under enumerated, the requirement that every
+                        yaml file and every docstring document is a
+                        fixpoint would be false and this test would
+                        pass. By the criterion as written, that a test
+                        is unmet where something the criteria require
+                        could be untrue while it passes, the judge was
+                        right and the first adjudication was more
+                        generous than the criterion allows.
+                        ddr_tool_verification records what follows.
 
     relation:
 
@@ -638,6 +646,213 @@ case:
         guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
         id_target:      req_unused_relations_listed
         guid_target:    req_334b1654059748bcb18938201b6a9a27
+
+  c99fd1eca:
+    id_self:            case_test_exercises_criteria.c99fd1eca
+    guid_self:          case_850bf0e2c55440b1acf11ff6336ef253
+    verdict:            met
+    subject:            |
+                        ---
+                        pyf_test.test_query.test_orphans_are_what_nothing_points_at
+                        title: Orphans are what nothing points at
+
+                        brief: Items nothing points at are listed, and
+                        stop being listed once something points at
+                        them.
+
+                        source: def
+                        test_orphans_are_what_nothing_points_at(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_query.test_orphans_are_what_nothing_points_at
+                            guid_self:              pyf_99975b7fe6b148eba051aed4f49a66cc
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  Orphans are what nothing points at
+                            brief:                  |
+                                                    Items nothing points at are listed, and stop
+                                                    being listed once something points at them.
+                            description:            |
+                                                    Makes an item nothing points at, sees it
+                                                    listed, points at it and sees it gone.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_unreferenced_items_listed
+                                guid_target:        req_c2a686dc37e340e08f4ceb8631af75d7
+
+                            ...
+                            """
+
+                            db = cc_public.query.Database(tree.context.map_document)
+                            (before_item, _) = db.orphans()
+                            cc_public.edit.new.new(tree, 't_ddr', 'ddr_alone', DEFAULTS)
+                            db = cc_public.query.Database(tree.context.map_document)
+                            (after_item, _) = db.orphans()
+                            assert 'ddr_alone' in after_item and 'ddr_alone' not in before_item
+                            cc_public.edit.link.link(tree, 'ddr_fail_closed', 'r_decides', 'ddr_alone')
+                            db = cc_public.query.Database(tree.context.map_document)
+                            assert 'ddr_alone' not in db.orphans()[0]
+
+                        module: import json import click.testing
+                        import cc_public.check import
+                        cc_public.check.identifier import
+                        cc_public.cli.command import
+                        cc_public.edit.field import
+                        cc_public.edit.link import cc_public.edit.new
+                        import cc_public.facts import cc_public.query
+                        import cc_public.testing from conftest import
+                        DEFAULTS
+
+                        --- req_unreferenced_items_listed title: Items
+                        nothing points at are listed
+
+                        success_criteria: An Item made with no
+                        Relation_Edge pointing at it and no holder
+                        appears in the list, and disappears from it
+                        once one Relation_Edge points at it.
+    origin:             suppressed
+    note:               |
+                        Read the test against the criteria. It makes
+                        an item nothing points at, asserts it is
+                        listed and was not before, points at it, and
+                        asserts it is gone. That is both halves of the
+                        criteria, appearance and disappearance, and no
+                        finding was raised on it. Held met so that a
+                        false positive is measured against more than
+                        one case.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_orphans_are_what_nothing_points_at
+        guid_target:    pyf_99975b7fe6b148eba051aed4f49a66cc
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_unreferenced_items_listed
+        guid_target:    req_c2a686dc37e340e08f4ceb8631af75d7
+
+  c4b59ab12:
+    id_self:            case_test_exercises_criteria.c4b59ab12
+    guid_self:          case_eb8a25b0de2a4d2db057887077d778de
+    verdict:            met
+    subject:            |
+                        ---
+                        pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                        title: Walk reports the neighbourhood to a
+                        depth along named relations
+
+                        brief: Walk reports the neighbourhood to a
+                        depth along named relations.
+
+                        source: def
+                        test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                            guid_self:              pyf_21b4438010a1409fb36ac1cf6b0a54e2
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  Walk reports the neighbourhood to a depth along named relations
+                            brief:                  |
+                                                    Walk reports the neighbourhood to a depth
+                                                    along named relations.
+                            description:            |
+                                                    Walks a requirement to depths one and two, in
+                                                    one direction and both, with and without a
+                                                    relation named, and asserts what is reached
+                                                    and by what.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_walk_reports_neighbourhood
+                                guid_target:        req_f954bd2cda2344d98ed5b1faa3d9fe99
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_walk_follows_named_relations
+                                guid_target:        req_9d975348164e4650addf5f56118e4182
+
+                            ...
+                            """
+
+                            db = cc_public.query.Database(tree.context.map_document)
+                            one = db.walk('req_printer_idempotent', 1)
+                            ids = {s.id_self for s in one}
+                            assert {'req_printer_idempotent', 'need_layout_stable', 'pym_cc_public.layout'} <= ids
+                            assert all(s.depth == 1 for s in one if s.id_from is not None)
+                            assert next(s for s in one if s.id_self == 'need_layout_stable').id_relation == 'r_is_derived_from'
+                            two = db.walk('req_printer_idempotent', 2)
+                            assert {s.id_self for s in two} > ids
+                            assert {s.depth for s in two} == {0, 1, 2}
+                            only = db.walk('req_printer_idempotent', 2, ['r_is_derived_from'])
+                            assert all(s.id_relation == 'r_is_derived_from' for s in only if s.id_from is not None)
+                            assert 'pym_cc_public.layout' not in {s.id_self for s in only}
+                            assert db.walk('req_printer_idempotent', 1, (), ('out',)) and \
+                                   all(s.direction == 'out' for s in db.walk('req_printer_idempotent', 3, (), ('out',))
+                                       if s.id_from is not None)
+                            assert db.walk('nothing_here', 1) is None
+
+                        module: import json import click.testing
+                        import cc_public.check import
+                        cc_public.check.identifier import
+                        cc_public.cli.command import
+                        cc_public.edit.field import
+                        cc_public.edit.link import cc_public.edit.new
+                        import cc_public.facts import cc_public.query
+                        import cc_public.testing from conftest import
+                        DEFAULTS
+
+                        --- req_walk_follows_named_relations title:
+                        Walk follows only the relations named
+
+                        success_criteria: With the Relation given, no
+                        reported Item is reached by a Relation_Edge
+                        labelled with another Relation, and an Item
+                        reachable only by Relation_Edges labelled with
+                        other Relations is absent from the report.
+    origin:             suppressed
+    note:               |
+                        Read the test against the criteria. It asserts
+                        every step of a walk given one relation
+                        carries that relation, which is the first
+                        half, and that an item reachable only by
+                        another relation is absent, which is the
+                        second. No finding was raised on it.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+        guid_target:    pyf_21b4438010a1409fb36ac1cf6b0a54e2
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_walk_follows_named_relations
+        guid_target:    req_9d975348164e4650addf5f56118e4182
 
 relation:
 
