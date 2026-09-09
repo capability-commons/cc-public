@@ -42,6 +42,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.facts
 import cc_public.query
+import cc_public.testing
 from conftest import DEFAULTS
 
 
@@ -288,9 +289,23 @@ def test_unused_relations_are_what_no_edge_names(tree, tmp_path):
     ...
     """
 
-    db = cc_public.query.Database(tree.context.map_document)
-    (_, unused) = db.orphans()
-    assert isinstance(unused, list)
+    map_document = tree.context.map_document
+    (_, unused)  = cc_public.query.Database(map_document).orphans()
+
+    # What every relation the register declares, less every relation an
+    # edge is labelled with. Computed here rather than read from the
+    # same place the query reads it, so the two can disagree.
+    declared = {name for document in map_document.values()
+                     if isinstance(document, dict)
+                     and str(document.get('id_self', '')) == 'reg_relation'
+                     for name in document['table']}
+    labelled = {edge['id_relation']
+                for item in cc_public.testing.index(map_document).values()
+                for edge in item.get('relation') or []
+                if isinstance(edge, dict) and 'id_relation' in edge}
+
+    assert declared
+    assert set(unused) == declared - labelled
     assert all(r.startswith('r_') for r in unused)
 
 
