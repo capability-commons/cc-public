@@ -15,8 +15,13 @@ brief:                  |
                         untrue.
 criterion:              |
                         You are given the success criteria of a
-                        requirement and the source of the test that
-                        verifies it.
+                        requirement, the source of the test that
+                        verifies it, and under module the imports and
+                        module level values that source refers to.
+
+                        Read the module before deciding that a name is
+                        unknown. A constant or a table built as the
+                        module loads is there and not in the test.
 
                         MET when the test exercises what the criteria
                         require: for each thing the criteria say
@@ -83,10 +88,20 @@ note:                   |
                         projection now follows r_is_implemented_by
                         from a case to the function that automates it.
 
+                        Measured at a false negative of a fifth and
+                        unanimity of 0.857, and both unstable cases
+                        turned on something outside the definition:
+                        FILES at module level for the printer, a
+                        fixture for the walk. The projection now
+                        carries the module level statements beside the
+                        definition, so the digest has moved and the
+                        confidence recorded before it is stale.
+
 scope:
 
   include:
     - source
+    - module
     - success_criteria
     - brief
     - title
@@ -105,10 +120,10 @@ confidence:
     origin:             suppressed
     cases:              2
     samples:            5
-    false_positive:     0.0
+    false_positive:     0.5
     false_negative:     null
-    unanimous:          0.5
-    digest:             f7ee44fd
+    unanimous:          1.0
+    digest:             b9f87408
 
   - model:              openai/gpt-5.1
     date:               '2026-09-09'
@@ -118,17 +133,17 @@ confidence:
     false_positive:     null
     false_negative:     0.2
     unanimous:          1.0
-    digest:             f7ee44fd
+    digest:             b9f87408
 
   - model:              openai/gpt-5.1
     date:               '2026-09-09'
     origin:             all
     cases:              7
     samples:            5
-    false_positive:     0.0
+    false_positive:     0.5
     false_negative:     0.2
-    unanimous:          0.857
-    digest:             f7ee44fd
+    unanimous:          1.0
+    digest:             b9f87408
 
 relation:
 

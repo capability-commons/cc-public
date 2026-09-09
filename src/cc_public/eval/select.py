@@ -71,6 +71,7 @@ KEY_EXCLUDE   = 'exclude'
 KEY_SOURCE    = 'source'
 KEY_MEMBER    = 'member'
 REL_IMPLEMENT = 'r_is_implemented_by'
+KEY_MODULE    = 'module'
 KEY_GUID_TGT  = 'guid_target'
 REL_INCLUDES  = 'r_includes'
 SUFFIX_PYTHON = '.py'
@@ -571,14 +572,24 @@ def _with_source(document, location, map_location = None):
     if location is None or location.filepath.suffix != SUFFIX_PYTHON:
         return document
 
-    text = cc_public.load.python.source_of(
-                location.filepath.read_text(encoding = 'utf-8'), location.anchor)
+    whole = location.filepath.read_text(encoding = 'utf-8')
+    text  = cc_public.load.python.source_of(whole, location.anchor)
 
     if text is None:
         return document
 
     out = dict(document)
     out[KEY_SOURCE] = text
+
+    # The surroundings a name in the definition refers to. Projected
+    # under its own key, so an eval that wants them asks for them: a
+    # judge given more than the criterion is about weighs everything
+    # present, which is what the scope exists to prevent.
+    #
+    if location.anchor:
+        context = cc_public.load.python.context_of(whole)
+        if context is not None:
+            out[KEY_MODULE] = context
 
     return out
 

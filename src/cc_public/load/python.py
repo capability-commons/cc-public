@@ -274,6 +274,49 @@ def source_of(text, anchor):
 
 
 # -----------------------------------------------------------------------------
+def context_of(text):
+    """
+    Return the module level statements of text that are not
+    definitions, or None where there are none.
+
+    A definition read alone is code with its surroundings removed. What
+    a name in it refers to, an import or a constant or a table built as
+    the module loads, is not in the definition, and a reader given the
+    definition alone must guess at it. A judge asked whether a test
+    covers what a requirement requires, shown a decorator naming a
+    constant it cannot see, guesses.
+
+    Definitions are left out because the one being read is already
+    given and the others are not its surroundings. The module docstring
+    is left out because it is the item's own document, which the reader
+    already has.
+
+    """
+
+    try:
+        parsed = ast.parse(text)
+    except SyntaxError:
+        return None
+
+    list_line = text.splitlines()
+    list_part = []
+
+    for (index, node) in enumerate(parsed.body):
+
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+
+        if index == 0 and isinstance(node, ast.Expr) \
+                and isinstance(node.value, ast.Constant) \
+                and isinstance(node.value.value, str):
+            continue
+
+        list_part.append('\n'.join(list_line[node.lineno - 1 : node.end_lineno]))
+
+    return '\n'.join(list_part) + '\n' if list_part else None
+
+
+# -----------------------------------------------------------------------------
 def code_of(text, anchor):
     """
     Return what the definition at anchor in text does, as its syntax

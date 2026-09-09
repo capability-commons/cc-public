@@ -138,3 +138,92 @@ def test_an_item_naming_something_the_map_lacks_shows_no_source():
                 'relation': [{'id_relation': 'r_is_implemented_by',
                               'guid_target': 'pyf_' + '0' * 32}]}
     assert cc_public.eval.select._with_source(document, None, {}) is document
+
+
+# -----------------------------------------------------------------------------
+# The surroundings of a definition. A name in a test refers to imports
+# and module level values that are not in the test, and a judge shown
+# the definition alone guesses at them.
+
+MODULE = '''"""
+The module document, which the reader already has.
+
+"""
+
+
+import pathlib
+
+ROOT  = pathlib.Path('.')
+FILES = sorted(ROOT.glob('*.yaml'))
+
+
+def helper():
+    """
+    Not the surroundings of anything.
+
+    """
+
+    return 1
+
+
+def test_reads_files():
+    """
+    A test naming a module level value.
+
+    """
+
+    assert FILES
+'''
+
+
+def test_the_module_context_is_what_the_definition_refers_to():
+    import cc_public.load.python
+
+    context = cc_public.load.python.context_of(MODULE)
+    assert 'import pathlib' in context
+    assert "ROOT  = pathlib.Path('.')" in context
+    assert 'FILES = sorted' in context
+
+
+def test_the_module_context_leaves_out_definitions_and_the_document():
+    import cc_public.load.python
+
+    context = cc_public.load.python.context_of(MODULE)
+    assert 'def helper' not in context
+    assert 'def test_reads_files' not in context
+    assert 'The module document' not in context
+
+
+def test_a_module_of_definitions_alone_has_no_context():
+    import cc_public.load.python
+
+    assert cc_public.load.python.context_of('def only():\n    return 1\n') is None
+
+
+def test_a_module_that_does_not_parse_has_no_context():
+    import cc_public.load.python
+
+    assert cc_public.load.python.context_of('def (\n') is None
+
+
+def test_the_projection_carries_the_module_beside_the_source():
+    shown = _shown()
+    (subject,) = [s for s in shown
+                  if s[0] == 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint']
+
+    # The decorator names FILES and the definition does not define it.
+    assert 'FILES' in shown[subject]
+    assert 'FILES = sorted' in shown[subject]
+
+
+def test_a_module_item_carries_no_context_of_its_own():
+    import cc_public.eval.select
+
+    # The whole file is already the source, so the surroundings are in it.
+    import conftest
+    import cc_public.edit.tree
+
+    tree = cc_public.edit.tree.Tree([conftest.ROOT])
+    held = tree.resolve('pym_cc_public.layout')
+    out  = cc_public.eval.select._with_source({'id_self': held.id_self}, held.location)
+    assert 'module' not in out
