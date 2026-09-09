@@ -176,8 +176,8 @@ table:
     guid_self:          gt_a9090112b7144acba6a5f104259bf067
     title:              Coverage floor
     brief:              |
-                        Statement coverage of cc_public, failing under
-                        a floor of 87 per cent.
+                        Branch aware coverage of cc_public, failing
+                        under a floor of 87 per cent.
     description:        |
                         One of the tools whose exit status the gate
                         believes. What is written here is what a green
@@ -185,21 +185,41 @@ table:
     version:            pytest-cov 7.1.0, coverage 7.16.0
     scope:              |
                         Statements in cc_public executed during the
-                        suite. Measured at 89.55 per cent on b6cdcbc.
+                        suite, and the branch exits taken. Measured
+                        twice on f4d1e58 with identical results: 7638
+                        statements, 797 missed, 2812 branches, 309
+                        partial, 87.12 per cent.
     exit_status:        |
                         Zero where the measured percentage is at or
                         above the floor. Non zero below it. The floor
-                        is a floor and not a target.
+                        is a floor and not a target, and there is 0.12
+                        of a point between the two: roughly thirteen
+                        statements or branch exits of regression will
+                        fail it.
     blind_spot:         |
                         A statement that ran is not a statement that
-                        was asserted about. Branches are not measured
-                        at all, so a condition taken one way only
-                        counts as covered. It says nothing about
-                        whether a test exercises what its requirement
-                        requires, which is what
-                        evl_test_exercises_criteria is for.
+                        was asserted about, and a branch that was
+                        taken is not a branch whose outcome anything
+                        checked. It says nothing about whether a test
+                        exercises what its requirement requires, which
+                        is what evl_test_exercises_criteria is for,
+                        and the two must not be read as the same
+                        measure.
+
+                        It measures what the suite ran. Code reached
+                        only by a command nobody tests is simply
+                        absent from the numerator and the denominator
+                        alike, so cli/report.py sitting at 39 per cent
+                        lowers the total rather than failing anything
+                        by itself.
     status:             proposed
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_is_controlled_by
+        guid_relation:  r_8929d2017dec4d0cba84cf7904e94c8d
+        id_target:      pym_test.test_gate_tool
+        guid_target:    pym_3d0d3c58d6514d829598e79a51cc1c77
 
   gt_pytest_adapter:
     id_self:            gt_pytest_adapter

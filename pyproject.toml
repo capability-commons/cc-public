@@ -58,6 +58,22 @@ id_mark                 = "mark_public"
 # fails on a critical finding, an unresolved reference, a lint finding,
 # a failing test or coverage below the floor.
 #
+# The coverage floor is branch aware from 2026-09-09. Two runs on
+# f4d1e58 agreed exactly: 7638 statements, 797 missed, 2812 branches,
+# 309 partial, 87.12 per cent.
+#
+# The number beside --cov-fail-under did not move and the gate got much
+# tighter. Statement coverage was 89.55 against a floor of 87, which is
+# 2.55 points of room. Branch aware coverage is 87.12 against the same
+# 87, which is 0.12. Roughly thirteen statements or branch exits of
+# regression will now fail it, where before it took two hundred and
+# fifty. Read the floor as what it constrains, not as what it says.
+#
+# The obvious room is cli/report.py at 39 per cent, 173 of 307
+# statements unexecuted. That is the code rendering every report a
+# person reads, and it is worth testing on its merits rather than for
+# the number.
+#
 # The gate is what a pipeline runs and is the only aggregate. Its
 # depends-on is where the order lives: pixi runs lint and test before the
 # command, so the tests refresh the evidence that the closed-world check
@@ -135,9 +151,10 @@ check                   = "cctool check"
 check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
 format                  = "cctool format"
 format-items            = "cctool format"
-test                    = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87"
-test-durations          = "pytest -q -n auto test --cov=cc_public --cov-report= --cov-fail-under=87 --durations=25"
+test                    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87"
+test-durations          = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87 --durations=25"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
+code-coverage-branch    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=term-missing"
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }

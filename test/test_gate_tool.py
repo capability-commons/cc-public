@@ -77,3 +77,75 @@ def test_the_type_checker_passes_what_is_right():
     # And it is not simply failing everything: the same shape, correct.
     done = _mypy(TYPE_ERROR.replace('-> int:', '-> str:'))
     assert done.returncode == 0, done.stdout
+
+
+# Every statement of this runs when flag is true. The branch where the
+# condition is false never does, which is exactly the difference between
+# the two measurements and the reason for the migration.
+#
+COVERED = '''def taken(flag):
+    answer = 'no'
+    if flag:
+        answer = 'yes'
+    return answer
+'''
+
+EXERCISES_ONE_BRANCH = '''import probe
+
+
+def test_one_way():
+    assert probe.taken(True) == 'yes'
+'''
+
+
+def _coverage(floor, is_branch):
+    """
+    Run the suite of a tiny package outside the tree under a coverage
+    floor, and return what it did.
+
+    One function with one branch, and a test that takes it one way. The
+    branch the test does not take is the defect the floor is here to
+    notice.
+
+    """
+
+    with tempfile.TemporaryDirectory() as name:
+        dirpath = pathlib.Path(name)
+        (dirpath / 'probe.py').write_text(COVERED, encoding = 'utf-8')
+        (dirpath / 'test_probe.py').write_text(EXERCISES_ONE_BRANCH,
+                                               encoding = 'utf-8')
+
+        # An empty config, so the probe does not inherit this
+        # repository's pytest settings and measure this repository.
+        (dirpath / 'probe.ini').write_text('[pytest]\n', encoding = 'utf-8')
+        return subprocess.run(                                    # noqa: S603
+                    [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+                     '-c', str(dirpath / 'probe.ini'), str(dirpath),
+                     '--cov=probe', '--cov-report=',
+                     *(['--cov-branch'] if is_branch else []),
+                     '--cov-fail-under=' + str(floor)],
+                    cwd            = str(dirpath),
+                    capture_output = True,
+                    text           = True,
+                    check          = False)
+
+
+def test_the_coverage_floor_fails_when_coverage_is_under_it():
+    # Without this, a green run says the floor was configured, not that
+    # it would have stopped anything.
+    done = _coverage(100, is_branch = True)
+    assert done.returncode != 0
+    assert 'Coverage failure' in done.stdout or 'Required test coverage' in done.stdout
+
+
+def test_the_coverage_floor_passes_when_coverage_is_over_it():
+    done = _coverage(50, is_branch = True)
+    assert done.returncode == 0, done.stdout
+
+
+def test_branch_measurement_sees_what_statement_measurement_does_not():
+    # Every statement of taken() runs; the branch where the condition is
+    # false never does. A floor of 100 passes without --cov-branch and
+    # fails with it, which is the whole reason for the migration.
+    assert _coverage(100, is_branch = False).returncode == 0
+    assert _coverage(100, is_branch = True).returncode != 0
