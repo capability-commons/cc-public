@@ -1,0 +1,647 @@
+id_self:                ctl_test_exercises_criteria
+guid_self:              ctl_99b8c81c2b8348b3baf60773d87fe729
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control set for evl_test_exercises_criteria
+brief:                  |
+                        Cases with known verdicts for
+                        evl_test_exercises_criteria.
+description:            |
+                        Each case holds a subject as the judge is
+                        shown it, the verdict a person holds it to,
+                        and where the case came from.
+
+case:
+
+  c7e7757a8:
+    id_self:            case_test_exercises_criteria.c7e7757a8
+    guid_self:          case_09e6cdba77bf4a59bbeda7030fe4e235
+    verdict:            unmet
+    subject:            |
+                        ---
+                        pyf_test.test_edit.test_rename_carries_to_qualified_items_references_and_file
+                        title: A rename carries to qualified items,
+                        references and the file
+
+                        brief: A rename carries to qualified items,
+                        references and the file.
+
+                        source: def
+                        test_rename_carries_to_qualified_items_references_and_file(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_edit.test_rename_carries_to_qualified_items_references_and_file
+                            guid_self:              pyf_735385cfb85b4e9eb1381957b9f6f751
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  A rename carries to qualified items, references and the file
+                            brief:                  |
+                                                    A rename carries to qualified items,
+                                                    references and the file.
+                            description:            |
+                                                    Renames a component and asserts its guid is
+                                                    unchanged, its file and the ids it qualifies
+                                                    follow, every reference is repointed, a local
+                                                    key can change only its last step, and a
+                                                    python item is refused.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_renamer_keeps_guid
+                                guid_target:        req_9e78e8f7be56415a87394b2065de11e8
+
+                            ...
+                            """
+
+                            import cc_public.edit.rename
+                            guid   = tree.resolve('cmp_draft_design_decision').guid_self
+                            report = cc_public.edit.rename.rename(tree, 'cmp_draft_design_decision',
+                                                                  'cmp_draft_thing')
+                            assert report.map_rename['prt_draft_design_decision.decision'] == 'prt_draft_thing.decision'
+                            assert not (tmp_path / 'workflow' / 'cmp_draft_design_decision.yaml').exists()
+                            doc = cc_public.load.from_file(tmp_path / 'workflow' / 'cmp_draft_thing.yaml')
+                            assert doc['id_self'] == 'cmp_draft_thing'
+                            assert doc['guid_self'] == guid                 # the guid is the identity; it stays
+                            assert doc['output']['decision']['id_self'] == 'prt_draft_thing.decision'
+                            wf = cc_public.load.from_file(tmp_path / 'workflow' / 'wf_design_decision_from_schema.yaml')
+                            edge = next(e for e in wf['node']['draft']['relation']
+                                        if e['id_relation'] == 'r_instantiates')
+                            assert edge['id_target'] == 'cmp_draft_thing'
+                            assert clean(tmp_path) == []
+                            with pytest.raises(cc_public.edit.tree.ErrorItem):
+                                cc_public.edit.rename.rename(tree, 'prt_draft_thing.decision', 'prt_x.y')
+                            cc_public.edit.rename.rename(tree, 'prt_draft_thing.decision',
+                                                         'prt_draft_thing.made')
+                            doc = cc_public.load.from_file(tmp_path / 'workflow' / 'cmp_draft_thing.yaml')
+                            assert list(doc['output']) == ['made']
+                            assert doc['output']['made']['id_self'] == 'prt_draft_thing.made'
+                            with pytest.raises(cc_public.edit.tree.ErrorItem):
+                                cc_public.edit.rename.rename(tree, 'cmp_draft_thing', 'zzz_draft')
+
+                        --- req_renamer_keeps_guid title: Renamer
+                        keeps the guid
+
+                        success_criteria: After a rename, the guid of
+                        the renamed item and of every item it
+                        qualifies is the guid before the rename.
+    origin:             confirmed
+    note:               |
+                        Read the test. It asserts doc['guid_self'] ==
+                        guid for the renamed component and for nothing
+                        else. The criteria say the renamed item and
+                        every item it qualifies keep their guid, and
+                        no assertion touches a qualified item's guid.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_edit.test_rename_carries_to_qualified_items_references_and_file
+        guid_target:    pyf_735385cfb85b4e9eb1381957b9f6f751
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_renamer_keeps_guid
+        guid_target:    req_9e78e8f7be56415a87394b2065de11e8
+
+  cd4406a32:
+    id_self:            case_test_exercises_criteria.cd4406a32
+    guid_self:          case_48f8fc4115c146439de59c5846645069
+    verdict:            unmet
+    subject:            |
+                        ---
+                        pyf_test.test_query.test_a_named_query_runs_over_the_facts
+                        title: A named query runs over the facts
+
+                        brief: A named query runs over the facts.
+
+                        source: def
+                        test_a_named_query_runs_over_the_facts(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_query.test_a_named_query_runs_over_the_facts
+                            guid_self:              pyf_20cb93a9f39946938572d2a437f82758
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  A named query runs over the facts
+                            brief:                  |
+                                                    A named query runs over the facts.
+                            description:            |
+                                                    Runs the counting query and reads back the
+                                                    count of item facts, runs a query by name and
+                                                    SQL typed at the command line, and sees bad
+                                                    SQL refused.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_named_query_run
+                                guid_target:        req_3c672d6e90e844239e61eebc5dab157c
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_typed_query_run
+                                guid_target:        req_5ffe40ced6b7489ca3b37c3b9ec20af2
+
+                            ...
+                            """
+
+                            db = cc_public.query.Database(tree.context.map_document)
+                            sql = cc_public.query.named(tree.context.map_document, 'qry_count_items')
+                            (names, rows) = db.run(sql)
+                            assert names == ['items'] and rows == [(len(db.facts.item),)]
+                            assert cc_public.query.named(tree.context.map_document, 'qry_nothing') is None
+                            out = run('query', '--root', str(tmp_path), 'qry_decides_most', '--format', 'json')
+                            assert out.exit_code == 0, out.output
+                            rows = json.loads(out.output)
+                            assert rows[0]['decided'] >= rows[-1]['decided'] and 'decision' in rows[0]
+                            out = run('query', '--root', str(tmp_path), '--sql', 'SELECT COUNT(*) AS n FROM edge')
+                            assert out.exit_code == 0 and 'n' in out.output
+                            assert run('query', '--root', str(tmp_path), '--sql', 'SELECT * FROM nowhere').exit_code == 2
+
+                        --- req_typed_query_run title: A typed
+                        question is answered
+
+                        success_criteria: For Query_Text that counts
+                        the Edge_Facts, the Result has one Row holding
+                        the count of Edge_Facts in the Fact_Table, and
+                        Query_Text that names no table of the
+                        Fact_Table is refused with the reason.
+    origin:             confirmed
+    note:               |
+                        Read the test. The typed query is asserted
+                        only by exit_code == 0 and 'n' in out.output,
+                        which is the column header. Neither the single
+                        row nor the count is checked, and the refusal
+                        is asserted by exit code alone with nothing
+                        about the reason.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_a_named_query_runs_over_the_facts
+        guid_target:    pyf_20cb93a9f39946938572d2a437f82758
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_typed_query_run
+        guid_target:    req_5ffe40ced6b7489ca3b37c3b9ec20af2
+
+  cee13cfe5:
+    id_self:            case_test_exercises_criteria.cee13cfe5
+    guid_self:          case_9bf5ecb1283c47569093e74c65f0a6ec
+    verdict:            unmet
+    subject:            |
+                        ---
+                        pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                        title: Walk reports the neighbourhood to a
+                        depth along named relations
+
+                        brief: Walk reports the neighbourhood to a
+                        depth along named relations.
+
+                        source: def
+                        test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                            guid_self:              pyf_21b4438010a1409fb36ac1cf6b0a54e2
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  Walk reports the neighbourhood to a depth along named relations
+                            brief:                  |
+                                                    Walk reports the neighbourhood to a depth
+                                                    along named relations.
+                            description:            |
+                                                    Walks a requirement to depths one and two, in
+                                                    one direction and both, with and without a
+                                                    relation named, and asserts what is reached
+                                                    and by what.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_walk_reports_neighbourhood
+                                guid_target:        req_f954bd2cda2344d98ed5b1faa3d9fe99
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_walk_follows_named_relations
+                                guid_target:        req_9d975348164e4650addf5f56118e4182
+
+                            ...
+                            """
+
+                            db = cc_public.query.Database(tree.context.map_document)
+                            one = db.walk('req_printer_idempotent', 1)
+                            ids = {s.id_self for s in one}
+                            assert {'req_printer_idempotent', 'need_layout_stable', 'pym_cc_public.layout'} <= ids
+                            assert all(s.depth == 1 for s in one if s.id_from is not None)
+                            assert next(s for s in one if s.id_self == 'need_layout_stable').id_relation == 'r_is_derived_from'
+                            two = db.walk('req_printer_idempotent', 2)
+                            assert {s.id_self for s in two} > ids
+                            assert {s.depth for s in two} == {0, 1, 2}
+                            only = db.walk('req_printer_idempotent', 2, ['r_is_derived_from'])
+                            assert all(s.id_relation == 'r_is_derived_from' for s in only if s.id_from is not None)
+                            assert 'pym_cc_public.layout' not in {s.id_self for s in only}
+                            assert db.walk('req_printer_idempotent', 1, (), ('out',)) and \
+                                   all(s.direction == 'out' for s in db.walk('req_printer_idempotent', 3, (), ('out',))
+                                       if s.id_from is not None)
+                            assert db.walk('nothing_here', 1) is None
+
+                        --- req_walk_reports_neighbourhood title: Walk
+                        reports the neighbourhood to a depth
+
+                        success_criteria: On a graph of known shape,
+                        the Items reported at each Depth equal the
+                        Items within that many Relation_Edges by hand,
+                        and each reported Item carries the
+                        Relation_Edge it was reached by.
+    origin:             confirmed
+    note:               |
+                        Read the test. Depth one is asserted by a
+                        subset, depth two by a strict superset, and
+                        neither is the equality the criteria ask for.
+                        Extra items at a depth would pass.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+        guid_target:    pyf_21b4438010a1409fb36ac1cf6b0a54e2
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_walk_reports_neighbourhood
+        guid_target:    req_f954bd2cda2344d98ed5b1faa3d9fe99
+
+  c3aa8a550:
+    id_self:            case_test_exercises_criteria.c3aa8a550
+    guid_self:          case_dc0097c41a4144268034ee6844e07460
+    verdict:            unmet
+    subject:            |
+                        ---
+                        pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+                        title: A back edge is exhausted when the
+                        budget is spent
+
+                        brief: A back edge is exhausted when the
+                        budget is spent.
+
+                        source: def
+                        test_back_edge_is_exhausted_when_the_budget_is_spent(repo):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+                            guid_self:              pyf_f940333d706a4646904867a7cca8ab74
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  A back edge is exhausted when the budget is spent
+                            brief:                  |
+                                                    A back edge is exhausted when the budget is
+                                                    spent.
+                            description:            |
+                                                    Runs the one node workflow with a budget of
+                                                    one and a judge that always answers unmet, and
+                                                    asserts the node ran once, both back edges
+                                                    were reported exhausted, nothing fired, and
+                                                    the execution says it ended exhausted.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_executor_honours_budget
+                                guid_target:        req_a1428b3ae8ec4b5687e58895592accad
+
+                            ...
+                            """
+
+                            deploy(repo, judge = 'always', commit = 'never', budget = 1)
+                            r = cc_public.workflow.run.run(repo, 'wf_design_decision_from_schema',
+                                                           'dep_design_decision_from_schema_local', BIND,
+                                                           Scripted(), Judge(['unmet'] * 5))
+                            assert r['stopped'] is None
+                            assert [e['node'] for e in r['node']] == ['draft']
+                            assert sorted(r['node'][0]['exhausted']) == ['draft.input.judgement', 'draft.input.prior']
+                            assert r['node'][0]['fired'] == []
+                            assert r['outcome'] == 'exhausted'
+                            exe = cc_public.load.from_file(cc_public.edit.tree.Tree([repo]).resolve(r['execution']).filepath)
+                            assert exe['outcome'] == 'exhausted'
+
+                        --- req_executor_honours_budget title:
+                        Executor honours the budget
+
+                        success_criteria: In the execution record, no
+                        node has a binding with a pass number greater
+                        than the deployment's budget.
+    origin:             confirmed
+    note:               |
+                        Read the test. It asserts the run stopped
+                        nowhere, one node ran, both back edges are
+                        exhausted, nothing fired and the outcome is
+                        exhausted. No assertion reads a binding, let
+                        alone its pass number, which is what the
+                        criteria are about.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_run.test_back_edge_is_exhausted_when_the_budget_is_spent
+        guid_target:    pyf_f940333d706a4646904867a7cca8ab74
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_executor_honours_budget
+        guid_target:    req_a1428b3ae8ec4b5687e58895592accad
+
+  c158bc37e:
+    id_self:            case_test_exercises_criteria.c158bc37e
+    guid_self:          case_ca2ec07b7c734b8baae03f28d9f04c11
+    verdict:            unmet
+    subject:            |
+                        --- tc_executor_honours_budget title: A run
+                        stops at its budget
+
+                        brief: No node runs more times than the
+                        deployment allows.
+
+                        --- req_executor_honours_budget title:
+                        Executor honours the budget
+
+                        success_criteria: In the execution record, no
+                        node has a binding with a pass number greater
+                        than the deployment's budget.
+    origin:             confirmed
+    note:               |
+                        The case stands for the function above and the
+                        finding is the same one. Kept as its own case
+                        because a case and a function are shown to the
+                        judge by different paths, and the two agreeing
+                        is what says the projection works.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      tc_executor_honours_budget
+        guid_target:    tc_37ce5a4f03e44ef79e8b5613f8112b96
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_executor_honours_budget
+        guid_target:    req_a1428b3ae8ec4b5687e58895592accad
+
+  c2c05810f:
+    id_self:            case_test_exercises_criteria.c2c05810f
+    guid_self:          case_5ecdf94d8b71438698a15aba78d35623
+    verdict:            met
+    subject:            |
+                        ---
+                        pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+                        title: The printer preserves content and is a
+                        fixpoint
+
+                        brief: The printer preserves content and is a
+                        fixpoint.
+
+                        source: @pytest.mark.parametrize('filepath',
+                        FILES, ids = lambda p: p.name) def
+                        test_printer_preserves_and_is_fixpoint(filepath):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+                            guid_self:              pyf_8b8d9a067006402c93ea0f801153b299
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  The printer preserves content and is a fixpoint
+                            brief:                  |
+                                                    The printer preserves content and is a
+                                                    fixpoint.
+                            description:            |
+                                                    For every structured file in the tree, lays it
+                                                    out and asserts the content is unchanged
+                                                    scalar for scalar and that laying the result
+                                                    out again changes nothing.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_printer_idempotent
+                                guid_target:        req_28a87e8cfef7443f90fb70372e7c47e8
+
+                            ...
+                            """
+
+                            source = filepath.read_text(encoding = 'utf-8')
+                            out    = cc_public.layout.format_source(source, filepath.suffix)
+
+                            assert cc_public.layout.format_source(out, filepath.suffix) == out
+
+                            if filepath.suffix == '.yaml':
+                                assert shape(RT.load(out)) == shape(RT.load(source))
+                            else:
+                                assert code_of(out) == code_of(source)
+                                assert documents_of(out) == documents_of(source)
+
+                            def count_comment(text):
+                                return sum(line.lstrip().startswith('#') for line in text.splitlines())
+                            assert count_comment(out) == count_comment(source)
+
+                        --- req_printer_idempotent title: Printer is
+                        idempotent
+
+                        success_criteria: Every YAML file and every
+                        docstring document in the repository, laid out
+                        twice, is byte identical after the first pass.
+    origin:             suppressed
+    note:               |
+                        FILES is every yaml and python file the tool's
+                        own iterator finds under the repository root,
+                        so the test does cover every file the criteria
+                        name. The judge could not see it: FILES is
+                        defined at module level and the projection
+                        shows the definition's source alone.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
+        guid_target:    pyf_8b8d9a067006402c93ea0f801153b299
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_printer_idempotent
+        guid_target:    req_28a87e8cfef7443f90fb70372e7c47e8
+
+  ce4e97606:
+    id_self:            case_test_exercises_criteria.ce4e97606
+    guid_self:          case_131b17663655494fa8da025fc4bb7adf
+    verdict:            met
+    subject:            |
+                        ---
+                        pyf_test.test_query.test_unused_relations_are_what_no_edge_names
+                        title: Unused relations are what no edge names
+
+                        brief: Relations no edge uses are listed, and
+                        each listed one is a relation.
+
+                        source: def
+                        test_unused_relations_are_what_no_edge_names(tree,
+                        tmp_path):
+                            """
+                            ---
+
+                            id_self:                pyf_test.test_query.test_unused_relations_are_what_no_edge_names
+                            guid_self:              pyf_685a0ef345f7478889f184378f10284a
+                            copyright:              Copyright 2026 William Payne
+                            license:                Apache-2.0
+
+                            protective_mark:
+
+                              - id_mark:            mark_public
+                                guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                            title:                  Unused relations are what no edge names
+                            brief:                  |
+                                                    Relations no edge uses are listed, and each
+                                                    listed one is a relation.
+                            description:            |
+                                                    Reads the second half of what orphans reports
+                                                    and asserts every entry in it is a relation.
+
+                            relation:
+
+                              - id_relation:        r_verifies
+                                guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                id_target:          req_unused_relations_listed
+                                guid_target:        req_334b1654059748bcb18938201b6a9a27
+
+                            ...
+                            """
+
+                            map_document = tree.context.map_document
+                            (_, unused)  = cc_public.query.Database(map_document).orphans()
+
+                            # What every relation the register declares, less every relation an
+                            # edge is labelled with. Computed here rather than read from the
+                            # same place the query reads it, so the two can disagree.
+                            declared = {name for document in map_document.values()
+                                             if isinstance(document, dict)
+                                             and str(document.get('id_self', '')) == 'reg_relation'
+                                             for name in document['table']}
+                            labelled = {edge['id_relation']
+                                        for item in cc_public.testing.index(map_document).values()
+                                        for edge in item.get('relation') or []
+                                        if isinstance(edge, dict) and 'id_relation' in edge}
+
+                            assert declared
+                            assert set(unused) == declared - labelled
+                            assert all(r.startswith('r_') for r in unused)
+
+                            # And it leaves the list once an edge is labelled with it. The list
+                            # is a fact about the documents, so labelling one edge is the change
+                            # the criteria describe. Written into the loaded document rather
+                            # than through link, since what is tested is what the query reports
+                            # and not what the relation register admits.
+                            taken  = min(unused)
+                            holder = next(document for document in map_document.values()
+                                          if isinstance(document, dict)
+                                          and document.get('id_self') == 'req_unused_relations_listed')
+                            holder.setdefault('relation', []).append(
+                                {'id_relation':   taken,
+                                 'guid_relation': 'r_' + '0' * 32,
+                                 'id_target':     'req_unused_relations_listed',
+                                 'guid_target':   holder['guid_self']})
+
+                            (_, after) = cc_public.query.Database(map_document).orphans()
+                            assert taken not in after
+                            assert set(after) == set(unused) - {taken}
+
+                        --- req_unused_relations_listed title:
+                        Relations no edge uses are listed
+
+                        success_criteria: A Relation entry that no
+                        Relation_Edge is labelled with appears in the
+                        list, and disappears from it once one
+                        Relation_Edge is labelled with it.
+    origin:             suppressed
+    note:               |
+                        Answered since the finding was raised. The
+                        test now asserts the list equals what the
+                        register declares less what an edge is
+                        labelled with, and then labels an edge with an
+                        unused relation and asserts it leaves the
+                        list, which is both halves of the criteria.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_unused_relations_are_what_no_edge_names
+        guid_target:    pyf_685a0ef345f7478889f184378f10284a
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_unused_relations_listed
+        guid_target:    req_334b1654059748bcb18938201b6a9a27
+
+relation:
+
+  - id_relation:        r_measures
+    guid_relation:      r_5e895eb6d5e9433e94a9db3f24b498bb
+    id_target:          evl_test_exercises_criteria
+    guid_target:        evl_652209282f91463799ded7da18315992
