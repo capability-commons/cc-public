@@ -30,6 +30,7 @@ render                  = ["jinja2>=3.1,<4", "weasyprint>=69,<70"]
 test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4",
                            "pytest-timeout>=2.4.0,<3", "diff-cover>=10,<11"]
 lint                    = ["import-linter>=2.15,<3", "mypy>=1.18,<2"]
+package                 = ["build>=1.2,<2", "twine>=7.0,<8"]
 
 [project.urls]
 Repository              = "https://github.com/capability-commons/cc-public"
@@ -46,7 +47,7 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint"] }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package"] }
 
 [tool.cctool.new]
 copyright               = "Copyright 2026 William Payne"
@@ -89,6 +90,19 @@ id_mark                 = "mark_public"
 #
 # The test task writes coverage.xml so that nothing has to run a
 # nine minute suite twice to answer this.
+#
+# Packaging. Three steps rather than one so each can be run and read
+# alone: build both artifacts, check their metadata, then install the
+# wheel somewhere of its own and use it.
+#
+# The last of those is the one worth having. cc_public is installed
+# editable, so the checkout is importable and a smoke test that merely
+# imports it may be reading the tree the wheel was built from. The
+# script asserts the module it gets is inside the environment the wheel
+# went into and outside this repository.
+#
+# Not in the local gate: it builds and reaches the network, and a
+# nine minute gate should not also wait on pip. It blocks in CI.
 #
 # The gate is what a pipeline runs and is the only aggregate. Its
 # depends-on is where the order lives: pixi runs lint and test before the
@@ -172,6 +186,10 @@ test-durations          = "pytest -q -n auto test --cov=cc_public --cov-branch -
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 code-coverage-branch    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=term-missing"
 code-coverage-diff      = "diff-cover coverage.xml --compare-branch=origin/main --fail-under=90"
+package-build           = "python -m build --outdir dist"
+package-verify          = "twine check --strict dist/*"
+package-smoke           = "python test/package_smoke.py"
+package-check           = { depends-on = ["package-build", "package-verify", "package-smoke"] }
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }

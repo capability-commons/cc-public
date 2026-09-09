@@ -52,8 +52,6 @@ import sys
 import time
 import typing
 
-import pytest
-
 import cc_public.testing
 
 
@@ -169,6 +167,28 @@ MARK_TIMEOUT      = 'from pytest-timeout'
 
 
 # -----------------------------------------------------------------------------
+def _version():
+    """
+    Return the version of pytest, or absent where it is not installed.
+
+    Imported here and not at the top of the module. The adapter runs
+    pytest in a subprocess of its own and needs it in this process only
+    to say what observed a result, but cli.running imports this module
+    to reach the adapter allowlist, so a module level import would make
+    cctool refuse to start without a test runner. It did: the installed
+    wheel would not run --help.
+
+    """
+
+    try:
+        import pytest
+    except ImportError:
+        return 'absent'
+
+    return pytest.__version__
+
+
+# -----------------------------------------------------------------------------
 class Observation(typing.NamedTuple):
     """
     What one run of this adapter observed.
@@ -206,7 +226,7 @@ def run(map_document, configuration, dirpath = None):
                            conformance_result = None,
                            observation        = ' '.join(list_problem),
                            node               = None,
-                           version            = pytest.__version__,
+                           version            = _version(),
                            second             = 0.0)
 
     root    = pathlib.Path(dirpath or '.').resolve()
@@ -308,7 +328,7 @@ def _observation(collector, node, second):
                            conformance_result = result,
                            observation        = text.strip() or 'Nothing was reported.',
                            node               = node,
-                           version            = pytest.__version__,
+                           version            = _version(),
                            second             = round(second, 3))
 
     if collector.list_collect:

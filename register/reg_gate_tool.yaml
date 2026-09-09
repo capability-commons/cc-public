@@ -315,6 +315,56 @@ table:
         id_target:      pym_test.test_gate_tool
         guid_target:    pym_3d0d3c58d6514d829598e79a51cc1c77
 
+  gt_package_check:
+    id_self:            gt_package_check
+    guid_self:          gt_f168358a13804590b74d47fd8a701c24
+    title:              Packaging check
+    brief:              |
+                        Builds both distributions, checks their
+                        metadata, and uses the wheel from an
+                        environment of its own.
+    description:        |
+                        One of the tools whose exit status the gate
+                        believes. What is written here is what a green
+                        run is worth, and no more.
+    version:            build 1.6.0, twine 7.0.0
+    scope:              |
+                        The source distribution and the wheel as built
+                        from a clean checkout, their metadata, and the
+                        tool that comes out of the wheel: it must
+                        import from the environment the wheel was
+                        installed into, run --help, and run one read
+                        only command. It blocks in the pipeline and
+                        not in the local gate, since it builds and
+                        reaches the network.
+    exit_status:        |
+                        Zero where both artifacts build, both pass
+                        metadata validation, and the installed tool
+                        runs. Non zero on any of the three.
+    blind_spot:         |
+                        It exercises two commands. A command it does
+                        not run can still be broken in the wheel, and
+                        the first defect it found was exactly that
+                        shape: cctool would not start at all because
+                        the adapter imported pytest at module scope,
+                        and only running the installed binary showed
+                        it.
+
+                        It says nothing about whether the package
+                        works on a platform it was not run on, and
+                        twine validates metadata against its own list
+                        of versions: twine 6 rejected this wheel by
+                        monkeypatching that list back to a version
+                        older than the one packaging accepts.
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_controlled_by
+        guid_relation:  r_8929d2017dec4d0cba84cf7904e94c8d
+        id_target:      pym_test.test_gate_tool
+        guid_target:    pym_3d0d3c58d6514d829598e79a51cc1c77
+
 relation:
 
   - id_relation:        r_is_specified_by_schema

@@ -149,3 +149,25 @@ def test_branch_measurement_sees_what_statement_measurement_does_not():
     # fails with it, which is the whole reason for the migration.
     assert _coverage(100, is_branch = False).returncode == 0
     assert _coverage(100, is_branch = True).returncode != 0
+
+
+def test_the_packaging_smoke_tells_the_wheel_from_the_checkout():
+    # The one thing the smoke exists to decide. cc_public is installed
+    # editable, so the checkout is importable, and a smoke test that
+    # merely imports it may be reading the tree the wheel was built
+    # from. This is that judgement, exercised both ways.
+    import package_smoke
+
+    with tempfile.TemporaryDirectory() as name:
+        elsewhere = pathlib.Path(name)
+        assert package_smoke.is_inside(elsewhere / 'lib' / 'cc_public' / '__init__.py',
+                                       elsewhere)
+        assert not package_smoke.is_inside(conftest.ROOT / 'src' / 'cc_public' /
+                                           '__init__.py', elsewhere)
+
+    # And the negative it is guarding against: this interpreter has the
+    # editable install, so what it imports is inside the repository.
+    # A smoke run against an environment like this one must not pass.
+    import cc_public
+
+    assert package_smoke.is_inside(cc_public.__file__, conftest.ROOT)

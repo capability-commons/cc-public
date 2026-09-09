@@ -39,6 +39,15 @@ jobs:
       # One platform only. The answer does not differ by operating
       # system and reading it twice would only invite them to disagree.
       #
+      # Packaging. Blocking here and not in the local gate: it builds and
+      # reaches the network, and a nine minute gate should not also wait
+      # on pip. One platform, since the wheel is pure python and the
+      # answer cannot differ.
+      #
+      - name: Package check
+        if: matrix.os == 'ubuntu-latest'
+        run: pixi run package-check
+
       - name: Changed line coverage (report only)
         if: github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest'
         continue-on-error: true
