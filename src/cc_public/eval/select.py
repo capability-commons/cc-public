@@ -70,6 +70,7 @@ KEY_EXCLUDE   = 'exclude'
 
 KEY_SOURCE    = 'source'
 KEY_MEMBER    = 'member'
+REL_IMPLEMENT = 'r_is_implemented_by'
 KEY_GUID_TGT  = 'guid_target'
 REL_INCLUDES  = 'r_includes'
 SUFFIX_PYTHON = '.py'
@@ -133,6 +134,9 @@ def select(context, selector = None):
                     cc_public.check.register.find_type(context.map_document)[1])
     map_compose = _map_compose(map_schema)
     map_guid    = cc_public.decision.index(context.map_document)
+    map_location = {document_item.get(KEY_GUID_SELF): location_item
+                    for (_, document_item, location_item) in _iter_item(context)
+                    if document_item.get(KEY_GUID_SELF)}
 
     list_task = []
 
@@ -149,7 +153,8 @@ def select(context, selector = None):
                                                       map_prefix,
                                                       map_compose,
                                                       selector,
-                                                      map_guid):
+                                                      map_guid,
+                                                      map_location):
             if not text_input.strip():
                 continue
             list_task.append(Task(id_eval       = document[KEY_ID_SELF],
@@ -225,7 +230,7 @@ def _iter_anchor(document, id_rel):
 
 # -----------------------------------------------------------------------------
 def _iter_subject(document_eval, context, map_prefix, map_compose, selector,
-                  map_guid = None):
+                  map_guid = None, map_location = None):
     """
     Yield (id_subject, text_input) for everything this eval applies to.
 
@@ -233,15 +238,16 @@ def _iter_subject(document_eval, context, map_prefix, map_compose, selector,
 
     for edge in _iter_anchor(document_eval, ID_REL_TYPE):
         yield from _subject_of_type(edge, context, map_prefix, selector,
-                                    document_eval, map_guid)
+                                    document_eval, map_guid, map_location)
 
     for edge in _iter_anchor(document_eval, ID_REL_SCHEMA):
         yield from _subject_of_schema(edge, context, map_prefix, map_compose,
-                                      selector, document_eval, map_guid)
+                                      selector, document_eval, map_guid,
+                                      map_location)
 
     for edge in _iter_anchor(document_eval, ID_REL_JOIN):
         yield from _subject_of_join(edge, context, map_prefix, selector,
-                                    document_eval, map_guid)
+                                    document_eval, map_guid, map_location)
 
 
 # -----------------------------------------------------------------------------
@@ -270,7 +276,7 @@ def _wanted_type(id_self, document_eval, map_prefix):
 
 # -----------------------------------------------------------------------------
 def _subject_of_type(edge, context, map_prefix, selector, document_eval,
-                     map_guid = None):
+                     map_guid = None, map_location = None):
     """
     Yield every item whose type is the one the edge names.
 
@@ -288,12 +294,12 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval,
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
             yield ((id_self,), render(((id_self, document, location),), document_eval,
-                                      map_guid))
+                                      map_guid, map_location))
 
 
 # -----------------------------------------------------------------------------
 def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
-                       document_eval, map_guid = None):
+                       document_eval, map_guid = None, map_location = None):
     """
     Yield every item the named schema specifies, composition included.
 
@@ -316,12 +322,12 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
         if _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
             yield ((id_self,), render(((id_self, document, location),), document_eval,
-                                      map_guid))
+                                      map_guid, map_location))
 
 
 # -----------------------------------------------------------------------------
 def _subject_of_join(edge, context, map_prefix, selector,
-                     document_eval, map_guid = None):
+                     document_eval, map_guid = None, map_location = None):
     """
     Yield every pair of items joined by an edge of the named relation.
 
@@ -357,7 +363,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
                 yield ((id_self, id_far),
                        render(((id_self, document, location),
                                (id_far, document_far, location_far)),
-                              document_eval, map_guid))
+                              document_eval, map_guid, map_location))
 
 
 # -----------------------------------------------------------------------------
@@ -492,7 +498,7 @@ def ids_in(map_document, set_filepath):
 
 
 # -----------------------------------------------------------------------------
-def render(tuple_item, document_eval, map_guid = None):
+def render(tuple_item, document_eval, map_guid = None, map_location = None):
     """
     Return the text a judge would be given for these items.
 
@@ -516,7 +522,7 @@ def render(tuple_item, document_eval, map_guid = None):
         document = cc_public.requirement.compose(         # a need or a requirement
                         cc_public.need.compose(item))     # shows its statement
         if KEY_SOURCE in include and rest:                # a source item shows its source
-            document = _with_source(document, rest[0])
+            document = _with_source(document, rest[0], map_location)
         document = _with_members(document, map_guid)      # a set shows its members
         selected = cc_public.path.select(document, include, exclude)
         if selected is cc_public.path.DROP:
@@ -540,16 +546,27 @@ def render(tuple_item, document_eval, map_guid = None):
 
 
 # -----------------------------------------------------------------------------
-def _with_source(document, location):
+def _with_source(document, location, map_location = None):
     """
-    Return a copy of document carrying the source at location under
-    source, where location is in a python file; else document as it is.
+    Return a copy of document carrying the source under source, where
+    the item has source of its own or names what implements it; else
+    document as it is.
 
     Source is not a field of the item and is never stored in it. It is
     projected from the file when an eval names source in its scope, so
     that a judge sees the code and not only prose about the code.
 
+    An item that is not itself code may still stand for some: a test
+    case names the function that automates it by r_is_implemented_by,
+    and the code that runs is what a judge asking whether the case
+    catches anything must see. Shown the case alone, a judge reasons
+    from the prose about a test it cannot read, which is the mistake
+    this projection exists to prevent.
+
     """
+
+    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
+        location = _location_implementing(document, map_location)
 
     if location is None or location.filepath.suffix != SUFFIX_PYTHON:
         return document
@@ -564,6 +581,26 @@ def _with_source(document, location):
     out[KEY_SOURCE] = text
 
     return out
+
+
+# -----------------------------------------------------------------------------
+def _location_implementing(document, map_location):
+    """
+    Return the location of the first source item this one names by
+    r_is_implemented_by, or None.
+
+    """
+
+    if not map_location:
+        return None
+
+    for edge in document.get(KEY_RELATION) or []:
+        if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENT:
+            found = map_location.get(edge.get(KEY_GUID_TGT))
+            if found is not None:
+                return found
+
+    return None
 
 
 # -----------------------------------------------------------------------------

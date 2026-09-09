@@ -308,6 +308,25 @@ def test_unused_relations_are_what_no_edge_names(tree, tmp_path):
     assert set(unused) == declared - labelled
     assert all(r.startswith('r_') for r in unused)
 
+    # And it leaves the list once an edge is labelled with it. The list
+    # is a fact about the documents, so labelling one edge is the change
+    # the criteria describe. Written into the loaded document rather
+    # than through link, since what is tested is what the query reports
+    # and not what the relation register admits.
+    taken  = min(unused)
+    holder = next(document for document in map_document.values()
+                  if isinstance(document, dict)
+                  and document.get('id_self') == 'req_unused_relations_listed')
+    holder.setdefault('relation', []).append(
+        {'id_relation':   taken,
+         'guid_relation': 'r_' + '0' * 32,
+         'id_target':     'req_unused_relations_listed',
+         'guid_target':   holder['guid_self']})
+
+    (_, after) = cc_public.query.Database(map_document).orphans()
+    assert taken not in after
+    assert set(after) == set(unused) - {taken}
+
 
 def test_a_named_query_runs_over_the_facts(tree, tmp_path):
     """

@@ -83,3 +83,58 @@ def test_an_embedded_item_takes_the_schema_its_type_names(tree, tmp_path):
                     entry, prefix, is_embedded = True)[0] == 'sch_entry_type'
     assert cc_public.check.schema.select_schema(
                     entry, prefix)[0] == 'sch_commit'
+
+
+# -----------------------------------------------------------------------------
+# What a judge is shown of an item that is not itself code but stands
+# for some. A test case names the function that automates it, and an
+# eval asking whether the test catches anything must see the code.
+#
+# Read against the repository itself: a test tree holds no test/, so
+# the functions these cases name are not in one.
+
+ID_EVAL = 'evl_test_exercises_criteria'
+
+
+def _shown():
+    import conftest
+
+    import cc_public.eval.select
+
+    context = cc_public.check.context([conftest.ROOT])[0]
+
+    return {t.id_subject: t.text_input
+            for t in cc_public.eval.select.select(context)
+            if t.id_eval == ID_EVAL}
+
+
+def test_an_item_with_source_of_its_own_shows_it():
+    shown = _shown()
+    (subject,) = [s for s in shown
+                  if s[0] == 'pyf_test.test_layout.test_printer_preserves_and_is_fixpoint']
+    assert 'def test_printer_preserves_and_is_fixpoint' in shown[subject]
+
+
+def test_a_case_shows_the_source_of_what_implements_it():
+    shown = _shown()
+    (subject,) = [s for s in shown if s[0] == 'tc_path_reported']
+
+    # The function the case names by r_is_implemented_by, not the case's
+    # own prose about it.
+    assert 'def test_a_shortest_path_is_reported_or_its_absence' in shown[subject]
+
+
+def test_an_item_naming_nothing_that_implements_it_shows_no_source():
+    import cc_public.eval.select
+
+    document = {'id_self': 'tc_alone', 'title': 'Alone', 'relation': []}
+    assert cc_public.eval.select._with_source(document, None, {}) is document
+
+
+def test_an_item_naming_something_the_map_lacks_shows_no_source():
+    import cc_public.eval.select
+
+    document = {'id_self':  'tc_dangling',
+                'relation': [{'id_relation': 'r_is_implemented_by',
+                              'guid_target': 'pyf_' + '0' * 32}]}
+    assert cc_public.eval.select._with_source(document, None, {}) is document
