@@ -28,7 +28,7 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
 eval                    = ["dspy==3.3.1"]
 render                  = ["jinja2>=3.1,<4", "weasyprint>=69,<70"]
 test                    = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8.0,<4",
-                           "pytest-timeout>=2.4.0,<3"]
+                           "pytest-timeout>=2.4.0,<3", "diff-cover>=10,<11"]
 lint                    = ["import-linter>=2.15,<3", "mypy>=1.18,<2"]
 
 [project.urls]
@@ -73,6 +73,22 @@ id_mark                 = "mark_public"
 # statements unexecuted. That is the code rendering every report a
 # person reads, and it is worth testing on its merits rather than for
 # the number.
+#
+# Changed line coverage. The floor above governs the whole package and
+# says nothing about whether a change carried its own tests: 0.12 of a
+# point of headroom can absorb a small change that tests nothing at all.
+# This asks the narrower question, of the lines a change touched.
+#
+# The comparison branch is a default and not an assumption. Override it
+# by appending another --compare-branch, which is what a pipeline does
+# with the base of a pull request; the later flag wins.
+#
+# It reports and does not block. Ninety is a conservative number with no
+# observation behind it, so it is watched over real changes before
+# anything is made to depend on it.
+#
+# The test task writes coverage.xml so that nothing has to run a
+# nine minute suite twice to answer this.
 #
 # The gate is what a pipeline runs and is the only aggregate. Its
 # depends-on is where the order lives: pixi runs lint and test before the
@@ -151,10 +167,11 @@ check                   = "cctool check"
 check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
 format                  = "cctool format"
 format-items            = "cctool format"
-test                    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87"
+test                    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=xml --cov-fail-under=87"
 test-durations          = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87 --durations=25"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 code-coverage-branch    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=term-missing"
+code-coverage-diff      = "diff-cover coverage.xml --compare-branch=origin/main --fail-under=90"
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }

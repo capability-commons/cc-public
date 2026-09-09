@@ -18,7 +18,30 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v5
+        with:
+          # diff-cover needs the base commit of a pull request, which a
+          # shallow clone does not have.
+          fetch-depth: 0
       - uses: prefix-dev/setup-pixi@v0.8.14
         with:
           cache: true
       - run: pixi run gate
+
+      # Changed line coverage. The floor in the gate governs the whole
+      # package and can absorb a small change that tests nothing; this
+      # asks the narrower question, of the lines this change touched.
+      #
+      # It reads the coverage.xml the gate just wrote, so the suite is
+      # not run a second time. Ninety is conservative and has no
+      # observation behind it, so this reports and does not block: watch
+      # it over real pull requests before making anything depend on it.
+      #
+      # One platform only. The answer does not differ by operating
+      # system and reading it twice would only invite them to disagree.
+      #
+      - name: Changed line coverage (report only)
+        if: github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest'
+        continue-on-error: true
+        run: >
+          pixi run code-coverage-diff
+          --compare-branch=origin/${{ github.event.pull_request.base.ref }}
