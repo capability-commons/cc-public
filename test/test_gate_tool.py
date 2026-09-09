@@ -30,10 +30,14 @@ relation:               []
 """
 
 
+import os
 import pathlib
+import shutil
 import subprocess
 import sys
 import tempfile
+
+import pytest
 
 import conftest
 
@@ -171,3 +175,174 @@ def test_the_packaging_smoke_tells_the_wheel_from_the_checkout():
     import cc_public
 
     assert package_smoke.is_inside(cc_public.__file__, conftest.ROOT)
+
+
+# -----------------------------------------------------------------------------
+# The three tools that were here before any of this and had nothing
+# showing they could fail. Each is given the defect it is in the gate to
+# catch, and then the same shape without it.
+
+UNUSED_IMPORT = '''import json
+
+
+def nothing():
+    return 1
+'''
+
+# The house ignores UP032: format() is the house form. A run that
+# reports it is a run that did not read the house configuration, which
+# is the way a linter passes while looking at the wrong rules.
+#
+HOUSE_IGNORED = '''def greet(name):
+    return 'hello {name}'.format(name = name)
+'''
+
+
+def _ruff(text):
+    with tempfile.TemporaryDirectory() as name:
+        filepath = pathlib.Path(name) / 'probe.py'
+        filepath.write_text(text, encoding = 'utf-8')
+        return subprocess.run(
+                    [sys.executable, '-m', 'ruff', 'check',
+                     '--config', str(conftest.ROOT / 'pyproject.toml'),
+                     '--no-cache', str(filepath)],
+                    capture_output = True, text = True, check = False)
+
+
+def test_the_linter_fails_on_a_rule_it_selects():
+    done = _ruff(UNUSED_IMPORT)
+    assert done.returncode != 0
+    assert 'F401' in done.stdout
+
+
+def test_the_linter_passes_what_is_right():
+    done = _ruff('def nothing():\n    return 1\n')
+    assert done.returncode == 0, done.stdout
+
+
+def test_the_linter_reads_the_house_configuration():
+    # Not that it runs, but that it runs as configured here. A default
+    # rule set would report UP032 on this and the house set does not.
+    done = _ruff(HOUSE_IGNORED)
+    assert done.returncode == 0, done.stdout
+    assert 'UP032' not in done.stdout
+
+
+CONTRACT = '''[tool.importlinter]
+root_package = "probe_pkg"
+
+[[tool.importlinter.contracts]]
+name = "two tiers, importing downward only"
+type = "layers"
+layers = ["probe_pkg.high", "probe_pkg.low"]
+'''
+
+
+def _layers(is_broken):
+    """
+    Run the import linter over a package of two tiers.
+
+    The lower tier imports the upper one where is_broken, which is the
+    one thing a layers contract exists to refuse.
+
+    """
+
+    with tempfile.TemporaryDirectory() as name:
+        dirpath = pathlib.Path(name)
+        package = dirpath / 'probe_pkg'
+        package.mkdir()
+        (package / '__init__.py').write_text('', encoding = 'utf-8')
+        (package / 'high.py').write_text('VALUE = 1\n', encoding = 'utf-8')
+        (package / 'low.py').write_text(
+            'import probe_pkg.high\n' if is_broken else 'VALUE = 2\n',
+            encoding = 'utf-8')
+        (dirpath / 'pyproject.toml').write_text(CONTRACT, encoding = 'utf-8')
+
+        environment = dict(os.environ, PYTHONPATH = str(dirpath))
+        return subprocess.run(
+                    ['lint-imports', '--config', str(dirpath / 'pyproject.toml')],
+                    cwd            = str(dirpath),
+                    env            = environment,
+                    capture_output = True, text = True, check = False)
+
+
+def test_the_layering_contract_fails_on_an_upward_import():
+    done = _layers(is_broken = True)
+    assert done.returncode != 0
+    assert 'BROKEN' in done.stdout.upper()
+
+
+def test_the_layering_contract_passes_a_package_that_imports_downward():
+    done = _layers(is_broken = False)
+    assert done.returncode == 0, done.stdout + done.stderr
+
+
+def _check(break_it = None):
+    """
+    Run the repository check over a copy of the tree, as the gate runs
+    it, having first done break_it to that copy.
+
+    The command and not the projection: a check can compute a finding
+    correctly and still exit zero, and the gate believes the exit
+    status.
+
+    """
+
+    with tempfile.TemporaryDirectory() as name:
+        dirpath = pathlib.Path(name) / 'tree'
+        dirpath.mkdir()
+        conftest.copy_tree(dirpath)
+
+        # The tests too. copy_tree leaves test/ out, and a case names a
+        # test function in it, so a copy without them is not whole and
+        # would fail the closed world for a reason of its own.
+        shutil.copytree(conftest.ROOT / 'test', dirpath / 'test')
+        if break_it is not None:
+            break_it(dirpath)
+        return subprocess.run(
+                    ['cctool', 'check', '--closed-world',
+                     '--fail-on-nonconformity', '--path', str(dirpath)],
+                    capture_output = True, text = True, check = False)
+
+
+ABSENT = 'term_' + '0' * 32
+
+
+def _dangle(dirpath):
+    """
+    Point an edge at a guid nothing in the tree carries.
+
+    The guid and not the readable id, because a reference resolves by
+    guid: changing the id alone leaves the edge pointing where it
+    always did.
+
+    """
+
+    filepath = dirpath / 'ddr' / 'ddr_gate_tool.yaml'
+    text     = filepath.read_text(encoding = 'utf-8')
+    line     = text.splitlines(keepends = True)
+    found    = [i for (i, one) in enumerate(line) if 'guid_target:' in one]
+
+    if not found:
+        raise AssertionError('nothing to break in ' + str(filepath))
+
+    (head, _) = line[found[0]].split('guid_target:', 1)
+    line[found[0]] = '{head}guid_target:        {guid}\n'.format(head = head,
+                                                                guid = ABSENT)
+    filepath.write_text(''.join(line), encoding = 'utf-8')
+
+
+@pytest.mark.slow
+def test_the_repository_check_passes_a_tree_that_is_whole():
+    done = _check()
+    assert done.returncode == 0, done.stdout[-2000:]
+
+
+@pytest.mark.slow
+def test_the_repository_check_fails_a_reference_to_nothing():
+    # The defect it is in the gate to catch. Eighteen checks run here
+    # and this shows one of them reaching the exit status; the other
+    # seventeen are not controlled by this.
+    done = _check(_dangle)
+    assert done.returncode != 0
+    assert 'reference' in done.stdout.lower()
