@@ -512,14 +512,19 @@ table:
     description:        |
                         The item identified by SUBJ, an assessment,
                         one of its dimensions, a product it names, an
-                        assumption, or an evidential candidate or
-                        requirement, names the observation identified
-                        by OBJ as a reference for what it claims. A
-                        claim with no r_cites edge rests on its author
-                        alone, and says so. An evidential requirement
-                        cites with a quote, the span of the
-                        observation it rests on, which the promotion
-                        checks is there.
+                        assumption, an evidential candidate or
+                        requirement, or an annotation, names the
+                        observation identified by OBJ as a reference
+                        for what it claims. A claim with no r_cites
+                        edge rests on its author alone, and says so.
+                        An evidential requirement cites with a quote,
+                        the span of the observation it rests on, which
+                        the promotion checks is there.
+
+                        An annotation cites what its assertion rests
+                        on. It does not cite another annotation:
+                        naming one is supporting or challenging it,
+                        and neither of those is evidence.
 
     domain:
       - t_assessment
@@ -528,6 +533,7 @@ table:
       - t_assumption
       - t_candidate_requirement
       - t_textual_requirement
+      - t_annotation
 
     range:
       - t_observation
@@ -811,6 +817,94 @@ table:
     domain:
       - t_gate_tool
 
+    relation:           []
+
+  r_is_about:
+    id_self:            r_is_about
+    guid_self:          r_17ca99102b0b431b85235445a4635ae8
+    title:              Is about
+    brief:              |
+                        SUBJ makes its assertion about OBJ.
+    description:        |
+                        The annotation identified by SUBJ makes its
+                        assertion about the item identified by OBJ.
+                        The edge says what the assertion is about and
+                        nothing about the assertion: not that it is
+                        true, not that it is adverse, and not that
+                        anything follows from it.
+
+                        An annotation holds at least one, so that no
+                        assertion floats free of a subject, and may
+                        hold several, since one indivisible assertion
+                        may be about how two items meet.
+
+    domain:
+      - t_annotation
+
+    cardinality:
+      minimum:          1
+
+    dependency:         true
+    relation:           []
+
+  r_challenges:
+    id_self:            r_challenges
+    guid_self:          r_08792b8910554df3a181ecb43aae429d
+    title:              Challenges
+    brief:              |
+                        SUBJ gives a reason not to accept OBJ.
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason not to accept, or not to accept without
+                        qualification, the assertion made by the
+                        annotation identified by OBJ. A challenge does
+                        not defeat what it challenges. Nothing here
+                        computes which assertion prevails, and an
+                        assertion nothing answers is not thereby
+                        established.
+
+                        This is a wider sense of the word than the
+                        challenge held on a design decision, which is
+                        the strongest case against one decision and is
+                        answered by a resolution.
+
+    domain:
+      - t_annotation
+
+    range:
+      - t_annotation
+
+    dependency:         true
+    relation:           []
+
+  r_supports:
+    id_self:            r_supports
+    guid_self:          r_5d87b0c1741548108f5b851ad76a8605
+    title:              Supports
+    brief:              |
+                        SUBJ gives a reason to accept OBJ.
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason to accept, or to hold with greater
+                        confidence, the assertion made by the
+                        annotation identified by OBJ. Support does not
+                        establish what it supports, and an assertion
+                        with many supporters is not thereby true.
+
+                        Support and challenge are not declared
+                        incompatible. One annotation qualifying
+                        another may do both about different parts of
+                        it, and whether the one assertion discipline
+                        rules that out is a question for use rather
+                        than for this entry.
+
+    domain:
+      - t_annotation
+
+    range:
+      - t_annotation
+
+    dependency:         true
     relation:           []
 
 relation:

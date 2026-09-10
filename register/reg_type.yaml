@@ -2116,3 +2116,49 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_entry_gate_tool
         guid_target:    sch_ef4990dd62bb4e1cb15def9ead89d111
+
+  t_annotation:
+    id_self:            t_annotation
+    guid_self:          t_885b28187d9742a282deddea22e02bad
+    title:              Annotation type
+    brief:              |
+                        Type of annotation data items
+    description:        |
+                        Each annotation data item holds one assertion
+                        about one or more items in the graph, offered
+                        for consideration. Two assertions that could
+                        be challenged, supported or acted on
+                        separately are two annotations.
+
+                        An annotation says what it is about by an
+                        r_is_about edge, rests on captured sources by
+                        r_cites, and argues with other annotations by
+                        r_challenges and r_supports. Nothing computes
+                        which of them prevails.
+    prefix:             ann
+    regex_id:           ^ann_[a-z][a-z0-9_]*$
+    id_term:            term_annotation
+    guid_term:          term_b0fd9a9d0569454ebccd4b5fc1721029
+    home:               annotation
+    status:             proposed
+    alias:              []
+    usage:              |
+                        Made by hand or by whatever is reviewing.
+                        Annotations live in annotation/. An annotation
+                        has no status: it was asserted, and what
+                        became of it is another annotation or a later
+                        item that says so.
+    note:               |
+                        Not a nonconformity report, which asserts an
+                        observed failure against an applicable
+                        expectation. Not a question, which is what a
+                        decision leaves open. An annotation that
+                        carried a severity would be a finding, and one
+                        that carried a resolution would settle itself.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_annotation
+        guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
