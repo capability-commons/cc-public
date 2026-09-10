@@ -346,3 +346,211 @@ def test_the_repository_check_fails_a_reference_to_nothing():
     done = _check(_dangle)
     assert done.returncode != 0
     assert 'reference' in done.stdout.lower()
+
+
+# -----------------------------------------------------------------------------
+# One control per check. The command reaching a non zero exit is shown
+# once, above; what these show is that each of the eighteen checks
+# reports the defect it exists to find, and at what severity. A check
+# that quietly stopped looking would pass every other test in this
+# repository.
+
+def _text(name, old, new):
+    """
+    Return a break that replaces old with new, once, in the file.
+
+    """
+
+    def break_it(dirpath):
+        filepath = dirpath / name
+        text     = filepath.read_text(encoding = 'utf-8')
+        if text.count(old) != 1:
+            raise AssertionError('{name} holds {n} of {old!r}'.format(
+                            name = name, n = text.count(old), old = old))
+        filepath.write_text(text.replace(old, new, 1), encoding = 'utf-8')
+
+    return break_it
+
+
+def _field(id_item, path, **kwargs):
+    """
+    Return a break that writes one field through the edit api.
+
+    """
+
+    def break_it(dirpath):
+        import cc_public.edit.field
+        import cc_public.edit.tree
+        cc_public.edit.field.set_field(
+            cc_public.edit.tree.Tree([dirpath]), id_item, path, **kwargs)
+
+    return break_it
+
+
+def _edge(id_source, id_relation, id_target, is_added = True):
+    """
+    Return a break that adds or removes one edge.
+
+    """
+
+    def break_it(dirpath):
+        import cc_public.edit.link
+        import cc_public.edit.tree
+        tree = cc_public.edit.tree.Tree([dirpath])
+        act  = cc_public.edit.link.link if is_added else cc_public.edit.link.unlink
+        act(tree, id_source, id_relation, id_target)
+
+    return break_it
+
+
+def _unparseable(dirpath):
+    (dirpath / 'ddr' / 'ddr_unparseable.yaml').write_text('id_self: [unclosed\n',
+                                                          encoding = 'utf-8')
+
+
+def _duplicate_guid(dirpath):
+    borrowed = [one for one
+                in (dirpath / 'ddr' / 'ddr_criticality.yaml').read_text().splitlines()
+                if one.startswith('guid_self:')][0].split()[1]
+    filepath = dirpath / 'ddr' / 'ddr_gate_tool.yaml'
+    line     = filepath.read_text(encoding = 'utf-8').splitlines(keepends = True)
+    for (index, one) in enumerate(line):
+        if one.startswith('guid_self:'):
+            line[index] = 'guid_self:              {guid}\n'.format(guid = borrowed)
+            break
+    filepath.write_text(''.join(line), encoding = 'utf-8')
+
+
+def _no_evidence(dirpath):
+    (dirpath / 'evidence' / 'evd_pytest.yaml').unlink()
+
+
+def _decided_then_changed(dirpath):
+    import cc_public.edit.decide
+    import cc_public.edit.field
+    import cc_public.edit.tree
+
+    tree = cc_public.edit.tree.Tree([dirpath])
+    cc_public.edit.decide.decide(
+            tree, 'accept', ['req_printer_idempotent'],
+            {'actor': 'A person', 'role': 'Engineer', 'authority': 'This control'},
+            'Decided, so that the subject may then be changed under it.')
+    cc_public.edit.field.set_field(
+            cc_public.edit.tree.Tree([dirpath]), 'req_printer_idempotent', 'rationale',
+            prose = 'Reworded after the decision, so the digest no longer matches.')
+
+
+def _second_segment(dirpath):
+    """
+    Make a second segment beside the core and have the core name
+    something inside it.
+
+    A reference may run into a segment its own consumes, never the
+    other way, and the core consumes nothing.
+
+    """
+
+    import re
+    import uuid
+
+    import cc_public.edit.link
+    import cc_public.edit.tree
+
+    def reseat(source, target, prefix, id_new):
+        text = source.read_text(encoding = 'utf-8')
+        text = re.sub(r'^id_self: +\S+', 'id_self:                ' + id_new,
+                      text, count = 1, flags = re.MULTILINE)
+        text = re.sub(r'^guid_self: +\S+',
+                      'guid_self:              {p}_{h}'.format(p = prefix,
+                                                               h = uuid.uuid4().hex),
+                      text, count = 1, flags = re.MULTILINE)
+        for block in ('relation:', 'question:'):
+            text = re.sub(r'^' + block + r'.*?(?=^\w|\Z)',
+                          'relation:               []\n\n' if block == 'relation:' else '',
+                          text, count = 1, flags = re.MULTILINE | re.DOTALL)
+        target.parent.mkdir(parents = True, exist_ok = True)
+        target.write_text(text, encoding = 'utf-8')
+
+    reseat(dirpath / 'segment' / 'seg_cc_public.yaml',
+           dirpath / 'probe' / 'segment' / 'seg_probe.yaml', 'seg', 'seg_probe')
+    reseat(dirpath / 'ddr' / 'ddr_gate_tool.yaml',
+           dirpath / 'probe' / 'ddr' / 'ddr_probe.yaml', 'ddr', 'ddr_probe')
+
+    cc_public.edit.link.link(cc_public.edit.tree.Tree([dirpath]),
+                             'ddr_criticality', 'r_decides', 'ddr_probe')
+
+
+# The defect each check is here to find, and what it says about it.
+# Severity is part of the control: layout, decision and confidence
+# report and do not stop the gate, and that is a fact about them worth
+# holding to.
+#
+BROKEN = [
+ ('parse',       'critical', _unparseable,                    'while parsing'),
+ ('guid',        'critical', _duplicate_guid,                 'is already declared'),
+ ('identifier',  'critical', _text('ddr/ddr_gate_tool.yaml',
+                                   'id_self:                ddr_gate_tool',
+                                   'id_self:                ddr_Gate_Tool'),
+                                                              'does not match'),
+ ('source',      'critical', _text('src/cc_public/query.py',
+                                   'pyf_cc_public.query.database.path\n',
+                                   'pyf_cc_public.query.database.wrongname\n'),
+                                                              'named by where it sits'),
+ ('reference',   'critical', _dangle,                         'Reference to'),
+ ('segment',     'critical', _second_segment,                 'does not consume it'),
+ ('relation',    'critical', _edge('need_layout_stable', 'r_is_implemented_by',
+                                   'pym_cc_public.layout'),   'edge runs from'),
+ ('schema',      'critical', _text('ddr/ddr_criticality.yaml',
+                                   'title:', 'undeclared_field:      x\ntitle:'),
+                                                              'Unevaluated properties'),
+ ('requirement', 'critical', _field('req_printer_idempotent', 'process',
+                                    value = 'frobnicate'),    'process word'),
+ ('statement',   'critical', _field('req_printer_idempotent', 'qualifier',
+                                    value = 'in no more than 5'),
+                                                              'followed by no unit'),
+ ('decision',    'advisory', _decided_then_changed,           'has changed since'),
+ ('layout',      'advisory', _text('ddr/ddr_gate_tool.yaml',
+                                   'title:                  ', 'title: '),
+                                                              'Not laid out'),
+ ('workflow',    'critical', _text('workflow/wf_accept_requirement.yaml',
+                                   'guid_target:    cmp_469a5534091a49f2b3a0d7532e17907b',
+                                   'guid_target:    cmp_' + '0' * 32),
+                                                              'Names no component'),
+ ('interface',   'critical', _text('interface/icd_cc_public_query.yaml',
+                                   'id_self:      icm_cc_public_query.database\n',
+                                   'id_self:      icm_cc_public_query.absent\n'),
+                                                              'identity ends'),
+ ('testing',     'critical', _field('tc_path_reported', 'configuration',
+                                    value = {'not_a_declared_key': 'nonsense'}),
+                                                              'required property'),
+ ('trace',       'critical', _edge('req_printer_idempotent', 'r_is_implemented_by',
+                                   'pym_cc_public.layout', is_added = False),
+                                                              'nothing implements it'),
+ ('evidence',    'critical', _no_evidence,                    'no evidence by'),
+ ('confidence',  'advisory', _field('evl_test_exercises_criteria', 'criterion',
+                                    prose = 'Something else entirely is asked here.'),
+                                                              'since changed'),
+]
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize(('id_check', 'severity', 'break_it', 'says'), BROKEN,
+                         ids = [row[0] for row in BROKEN])
+def test_each_check_reports_the_defect_it_is_here_to_find(id_check, severity,
+                                                          break_it, says, tmp_path):
+    import cc_public.check
+
+    dirpath = tmp_path / 'tree'
+    dirpath.mkdir()
+    conftest.copy_tree(dirpath)
+    shutil.copytree(conftest.ROOT / 'test', dirpath / 'test')
+    break_it(dirpath)
+
+    report = cc_public.check.check(list_path = [dirpath],
+                                   is_closed_world = True)['report']
+    found  = [(one['severity'], ' '.join(one['message'].split()))
+              for check in report['check'] if check['id_check'] == id_check
+              for one in check['nonconformity']]
+
+    assert found, '{check} reported nothing'.format(check = id_check)
+    assert any(severity == s and says in m for (s, m) in found), found[:3]
