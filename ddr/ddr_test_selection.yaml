@@ -1,0 +1,261 @@
+id_self:                ddr_test_selection
+guid_self:              ddr_217478c495ce46c69c123cc43385dfa3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A selective run is the loop and never the judgement
+brief:                  |
+                        Which tests a change can reach is read from a
+                        measured map, and every rule in the selector
+                        errs towards running the whole suite.
+context:                |
+                        The suite is six and a half minutes over eight
+                        hundred and forty five tests, and it is the
+                        tax on every change. Two fixes this week took
+                        it from five hundred and fifty eight seconds
+                        to three hundred and ninety one by removing
+                        work repeated inside one process. What is left
+                        is a long tail: twenty five tests hold about a
+                        quarter of the work and every one of them
+                        builds a tree and checks it.
+
+                        Nothing here selects. Every change runs
+                        everything, which is right for a judgement and
+                        wasteful for a loop. Seeing whether a change
+                        broke something it could have broken should
+                        take seconds.
+
+                        The danger in selecting is not that it selects
+                        badly. It is that a run which selected the
+                        wrong tests and passed looks exactly like one
+                        that selected the right ones.
+decision:               |
+                        A selective run is the loop and never the
+                        judgement. The gate remains what says a tree
+                        is sound, nothing in CI reads the selector,
+                        and it takes no entry in the gate tool
+                        register, since the rule there is that a tool
+                        run for information is not entered.
+
+                        Which tests a change can reach is read from a
+                        map: for each module of the tool, the tests
+                        that executed a line of it. The map is
+                        measured over a whole run and holds every test
+                        that run saw.
+
+                        Every rule errs towards the whole suite, and
+                        each says which rule it was. There is no map;
+                        the shared fixtures changed; something changed
+                        that is neither a module nor a test; a module
+                        changed that the map does not hold; or the
+                        selection is more than half the suite.
+                        Under-running is the failure that matters, so
+                        every uncertainty resolves the same way.
+
+                        A change to a data item runs everything. A
+                        test reads a data item without executing any
+                        line that names it, so a map of executed lines
+                        cannot see the dependence at all. This is a
+                        limit of the signal and not a caution.
+
+                        A run made by the selector writes no evidence.
+                        Evidence is what a whole session observed, and
+                        a partial session writing it would drop the
+                        rows for every case it did not run, leaving a
+                        record that looks current and holds almost
+                        nothing. The session hook already declines to
+                        write for an adapter running one node, and
+                        this is the second reason.
+
+                        The map is a local cache and not an item. It
+                        is not committed, so a fresh clone has none
+                        and runs everything.
+
+                        The map is measured with a core that reports a
+                        line every time it runs. It is measured one
+                        process per test module, eight at a time.
+
+                        Selection is by file and not by line. A change
+                        anywhere in a module selects every test that
+                        reached that module.
+rationale:              |
+                        The loop and not the judgement, because a map
+                        can only be as good as its last measurement
+                        and nothing detects that it has gone stale. A
+                        selector that CI trusted would be a way for a
+                        change to be merged without the tests that
+                        cover it having run, and it would look green.
+
+                        Coverage rather than the graph, because the
+                        graph reaches seventeen requirements and the
+                        map reaches every test. Rather than the import
+                        graph, because every test module imports the
+                        check package, which imports nearly
+                        everything, so the import graph selects
+                        everything and says nothing.
+
+                        Every uncertainty towards the whole suite,
+                        because the two failures are not symmetric.
+                        Running too much costs minutes. Running too
+                        little costs the belief that the tests ran,
+                        which is the only thing the suite is for.
+
+                        A core that reports every line every time,
+                        because the default core on this python asks
+                        the interpreter to stop reporting a line once
+                        it has been seen. That is right for measuring
+                        coverage and wrong for attributing it: only
+                        the first test to reach a line is recorded
+                        against it, and every later test appears never
+                        to have touched the code. Measured here on
+                        three tests calling one function: the first
+                        recorded forty three lines and the other two
+                        recorded nothing. The selector refuses a map
+                        that does not say which core measured it,
+                        because such a map selects a handful of tests
+                        and passes.
+
+                        One process per test module, because recording
+                        a context per test under xdist leaves worker
+                        data files the combine step cannot read, and
+                        one session without xdist ran thirty four
+                        tests in twenty five minutes, which is ten
+                        hours for the suite. Per module it is half an
+                        hour and the modules run at once.
+
+                        By file and not by line, because the
+                        measurement says it is enough. The median
+                        module is reached by nineteen of eight hundred
+                        and seventeen tests, which is two and a third
+                        per cent. The two modules that are not
+                        selective are the layout module at eighty two
+                        per cent and the python loader at fifty four,
+                        and both are over the threshold that runs
+                        everything anyway. Line granularity would buy
+                        nothing there and would have to reckon with
+                        line numbers that move under it.
+
+                        Measured on the day it was written: a change
+                        to the pytest adapter selects twenty five node
+                        ids, which run as fifty five tests in twenty
+                        eight seconds, against three hundred and
+                        ninety one for the suite. Breaking that module
+                        deliberately made the selected run fail, so
+                        the saving is not a saving on examining
+                        nothing.
+
+                        Half the suite as the threshold, because past
+                        that the saving is small and the risk of what
+                        selection gets wrong is the same size as it
+                        ever was.
+alternative:            |
+                        Run everything, always. Rejected, but it is
+                        what happens in every case the selector cannot
+                        answer, and it remains what CI does.
+
+                        A task graph over the commands, in the manner
+                        of make, skipping a command whose inputs have
+                        not changed. Rejected as the first step: the
+                        commands other than the suite already cost
+                        seconds, so the graph would save nothing where
+                        the cost actually is.
+
+                        Selection from the repository's own dependency
+                        closure. Rejected: the closure runs between
+                        items, and a test function is an item only
+                        where somebody wrote it as one. Most test
+                        functions are not, so the closure sees almost
+                        nothing.
+
+                        Selection from the import graph. Rejected: it
+                        selects everything, since the check package
+                        sits under every test module and reaches
+                        nearly the whole tool.
+
+                        A map committed to the tree, so that a fresh
+                        clone has one. Rejected: it would change on
+                        nearly every commit, and a map that is a
+                        commit behind is the failure this is trying to
+                        avoid.
+
+                        Line granularity rather than file. Not
+                        rejected on principle, only unnecessary:
+                        measured, the file level already selects two
+                        per cent of the suite for the median module.
+consequence:            |
+                        The map goes stale and nothing says so. It is
+                        measured at a commit and used at another, and
+                        the only guard is that a module it has never
+                        seen runs everything. A module whose reach has
+                        narrowed since the measurement will select
+                        more tests than it needs, which is safe; one
+                        whose reach has widened will select fewer,
+                        which is not, and only re-measuring finds it.
+
+                        Measuring costs half an hour, so it will be
+                        done rarely, so the map will usually be stale.
+                        That is the reason for the whole suite
+                        remaining the judgement rather than a caveat
+                        on it.
+
+                        A change to a data item gets no saving at all,
+                        and most commits here change data items. The
+                        saving is in the loop where source is being
+                        edited, which is where the suite is slow
+                        enough to hurt.
+
+                        A module that most tests reach never selects,
+                        so a change to the layout module or the python
+                        loader always runs everything. That is correct
+                        and it is also most of what makes the loop
+                        slow.
+
+                        Somebody will eventually want this in CI,
+                        because it is faster. The decision that it is
+                        the loop and not the judgement has to be
+                        defended then, not now.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+question:
+
+  staleness:
+    id_self:            qst_test_selection.staleness
+    guid_self:          qst_b7f351713add4c8cbb95280249d18197
+    question:           |
+                        What tells a person that the map no longer
+                        describes the tree, given that a map measured
+                        at one commit and used at another looks the
+                        same either way.
+    relation:           []
+
+  data:
+    id_self:            qst_test_selection.data
+    guid_self:          qst_b09f56689eb54e2e92184a6c214e7d02
+    question:           |
+                        Whether a test's dependence on a data item can
+                        be attributed at all, given that the fixture
+                        copies the whole tree and the checks parse
+                        every file of it, so every test reads nearly
+                        every item.
+    relation:           []
+
+  measurement:
+    id_self:            qst_test_selection.measurement
+    guid_self:          qst_cea69bb55e324111b8723fc5995c5587
+    question:           |
+                        Whether the map should be measured by a
+                        scheduled run rather than by hand, and what
+                        would keep a measurement from being trusted
+                        longer than it deserves.
+    relation:           []

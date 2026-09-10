@@ -131,6 +131,22 @@ id_mark                 = "mark_public"
 # nothing, so quick leaves out the slow tests instead: those are what the
 # suite costs. It is never what CI runs and never a reason to skip gate.
 #
+# test-changed is the same loop, narrower. It runs the tests a change can
+# reach, read from a map test-map measures over a whole run. Also never
+# what CI runs: it can only be as good as its last measurement, and a
+# selective run that passed says nothing about what it did not run.
+#
+# Every rule in it errs towards the whole suite, because under-running is
+# the failure that matters. A change to anything but a module or a test
+# runs everything, since a test reads a data item without executing a
+# line that names it, and a map of executed lines cannot see that.
+#
+# The map is measured with COVERAGE_CORE=ctrace, which selection.py sets
+# for itself. The default core on this python stops reporting a line once
+# it has been seen, so only the first test to reach a line is recorded
+# against it. A map measured that way is confidently wrong, and the
+# selector refuses one that does not say which core measured it.
+#
 # The typed island. files is the island itself, so every flag below
 # applies to it and to nothing else, and growing the island is adding a
 # path here rather than remembering which overrides govern what.
@@ -200,6 +216,8 @@ format                  = "cctool format"
 format-items            = "cctool format"
 test                    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=xml --cov-fail-under=87 --junitxml=junit.xml"
 test-durations          = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87 --durations=25"
+test-changed            = "python test/selection.py"
+test-map                = "python test/selection.py --measure"
 coverage                = "pytest -q -n auto test --cov=cc_public --cov-report=term-missing"
 code-coverage-branch    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=term-missing"
 code-coverage-diff      = "diff-cover coverage.xml --compare-branch=origin/main --fail-under=90"

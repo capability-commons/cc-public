@@ -160,6 +160,15 @@ everything else is a loop or a diagnostic.
   the slow tests left out. About six minutes against the gate's thirteen. It
   runs no coverage and no closed-world check, so a green `quick` decides
   nothing. CI never runs it.
+- `pixi run test-changed` — the narrowest loop: only the tests a change can
+  reach, read from a map `test-map` measures. Every uncertainty runs
+  everything and says which rule decided that, so a change to anything but a
+  module or a test runs the whole suite. A green `test-changed` decides
+  nothing and CI never runs it (`ddr_test_selection`).
+- `pixi run test-map` — rebuilds that map: the whole suite, one process per
+  test module, about forty minutes. **Writes**: `.test_map.json`, which is
+  not committed. Do it after a change that moves what tests reach, and read
+  the lines it prints about modules it could not account for.
 - `pixi run lint` — ruff over `src` and `test` in the house rule set, then
   `lint-imports` holding the seven tiers of `ddr_layered_architecture`: a
   package imports downward only, and an underscore name is its module's

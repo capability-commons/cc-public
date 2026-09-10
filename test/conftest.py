@@ -49,6 +49,14 @@ import cc_public.evidence
 ROOT        = pathlib.Path(__file__).resolve().parent.parent
 MAP_OUTCOME = {}
 
+# Set where the session is running some of the suite and not all of it:
+# a selective run, or a measurement. Evidence is what a whole session
+# observed, and a partial session that wrote it would drop the rows for
+# every case it did not run, leaving an evidence record that looks
+# current and is missing most of what it should hold.
+#
+VARIABLE_PARTIAL = 'CCTOOL_PARTIAL_RUN'
+
 # What a test tree is made of, and what a new item in it is given.
 #
 DEFAULTS = {'copyright': 'Copyright 2026 William Payne',
@@ -167,6 +175,16 @@ def pytest_runtest_logreport(report):
 
 
 # -----------------------------------------------------------------------------
+def reporter_of(session):
+    """
+    Return the plugin that writes lines to the terminal, or None.
+
+    """
+
+    return session.config.pluginmanager.get_plugin('terminalreporter')
+
+
+# -----------------------------------------------------------------------------
 def pytest_sessionfinish(session, exitstatus):
     """
     Write what the session observed as evidence, once every test has run.
@@ -186,7 +204,16 @@ def pytest_sessionfinish(session, exitstatus):
     if os.environ.get('CCTOOL_ADAPTER'):
         return
 
-    reporter = session.config.pluginmanager.get_plugin('terminalreporter')
+    # A session that ran part of the suite observed part of the
+    # evidence, and writing it would drop every case it did not run.
+    #
+    if os.environ.get(VARIABLE_PARTIAL):
+        if reporter_of(session) is not None:
+            reporter_of(session).write_line(
+                    'evidence not written: this session ran part of the suite.')
+        return
+
+    reporter = reporter_of(session)
 
     try:
         written = cc_public.evidence.from_pytest(ROOT, MAP_OUTCOME, pytest.__version__)
