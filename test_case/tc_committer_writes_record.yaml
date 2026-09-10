@@ -1,0 +1,49 @@
+id_self:                tc_committer_writes_record
+guid_self:              tc_eac998ced1db4e8abc3f712c1338d107
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 proposed
+title:                  A commit message carries a record
+brief:                  |
+                        A commit message the tool wrote is read, and
+                        shown to hold a record.
+version:                '1.0'
+input:                  |
+                        The message of one commit made by cctool
+                        commit, taken from the history of the
+                        repository under test.
+expectation:            |
+                        The message reads as a title line, then a
+                        blank line, then one YAML document opened by
+                        three hyphens and closed by three dots, then
+                        the trailers. The document parses, and what it
+                        holds is the commit record.
+description:            |
+                        Read rather than run. What the requirement
+                        asks is a property of the text a person can
+                        see in the message itself, and reading it is
+                        the whole of the method.
+
+                        The case exists because the method is carried
+                        out by a person and not because a runner needs
+                        configuring. It names the item under test, the
+                        method and what the reader is given, and
+                        states what is expected before anyone looks.
+
+relation:
+
+  - id_relation:        r_uses_test_method
+    guid_relation:      r_1648a1a264024cf8b2882d377c7235d2
+    id_target:          tm_manual_inspection
+    guid_target:        tm_f092b70726b84bbb9683e71ea9852d4e
+
+  - id_relation:        r_verifies
+    guid_relation:      r_490096e908d1444cb0defb530fcf7786
+    id_target:          req_committer_writes_record
+    guid_target:        req_bda3a23bd191407996dd9708ef42fe42

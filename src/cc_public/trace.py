@@ -72,7 +72,11 @@ STATUS_PROPOSED   = 'proposed'
 STATUS_ACCEPTED   = 'accepted'
 STATUS_DEPRECATED = 'deprecated'
 
+# Read by the evidence check, which distinguishes evidence from a run
+# from evidence a person attests to.
+#
 VERIFICATION_TEST = 'test'
+
 
 # What follows from a gap. The same two words the checks use, and
 # with the same meaning: what must be fixed, and what must be known.
@@ -411,11 +415,14 @@ def _gaps(record, is_closed_world):
                   'r_is_implemented_by edge, or a lower requirement derives '
                   'from it.')
 
-    if record.verification == VERIFICATION_TEST and not record.verified_by:
+    if record.verification and not record.verified_by:
         yield Gap(KEY_VERIFICATION, elsewhere,
-                  'Verified by test, and no test names it. A test says what it '
-                  'verifies by an r_verifies edge, or the requirement is '
-                  'verified by nothing.')
+                  'Verified by {method}, and nothing names it. A test function '
+                  'or a case says what it verifies by an r_verifies edge, or '
+                  'the requirement is verified by nothing. A method a person '
+                  'carries out needs a case too: the case is where what was '
+                  'expected is stated, before anyone '
+                  'observes.'.format(method = record.verification))
 
     if record.shared_verdict:
         (verifier, other) = record.shared_verdict[0]

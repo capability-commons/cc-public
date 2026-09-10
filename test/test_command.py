@@ -105,7 +105,7 @@ def test_accept_is_the_only_path_and_refuses_what_lacks(repo):
     cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'status', value = 'proposed')
     unverify(tree, 'req_printer_idempotent')
     out = run('accept', '--root', str(repo), 'req_printer_idempotent')
-    assert out.exit_code == 2 and 'no test names it' in out.output
+    assert out.exit_code == 2 and 'Verified by test, and nothing names it' in out.output
 
 
 def test_new_takes_its_fields_and_edges_in_one_command(repo):

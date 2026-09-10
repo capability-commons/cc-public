@@ -32,6 +32,7 @@ relation:               []
 
 import pathlib
 
+import cc_public.adapter
 import cc_public.adapter.pytest_function
 import cc_public.check
 import cc_public.edit.field
@@ -39,7 +40,8 @@ import cc_public.edit.link
 import cc_public.testing
 
 
-ID_CASE = 'tc_path_reported'
+ID_CASE   = 'tc_path_reported'
+ID_MANUAL = 'tc_committer_writes_record'
 ID_TEST = 'pyf_test.test_query.test_a_shortest_path_is_reported_or_its_absence'
 
 
@@ -84,6 +86,34 @@ def test_a_case_naming_no_method_does_not_resolve(tree, tmp_path):
     (specification, problem) = cc_public.testing.resolve(_map(tree), ID_CASE)
     assert specification is None
     assert 'names 0 test method' in problem[0]
+
+
+def test_a_case_of_a_method_a_person_carries_out_resolves_without_an_adapter(tree):
+    # The case is what brings the item under test, the method and what
+    # it is given together, and states what is expected before anyone
+    # observes. Only the carrying out is a person's, so there is no
+    # adapter and nothing is wrong.
+    (specification, problem) = cc_public.testing.resolve(_map(tree), ID_MANUAL)
+    assert problem == []
+    assert specification.id_method  == 'tm_manual_inspection'
+    assert specification.id_adapter is None
+    assert 'req_committer_writes_record' in specification.list_verified
+
+
+def test_a_method_that_can_be_carried_out_no_way_at_all_does_not_resolve(tree, tmp_path):
+    cc_public.edit.field.unset_field(tree, 'tm_manual_inspection', 'execution_form.manual')
+    (specification, problem) = cc_public.testing.resolve(_map(tree), ID_MANUAL)
+    assert specification is None
+    assert 'takes no execution form, automated or manual' in problem[0]
+    assert any('no execution form' in message for message in _findings(tmp_path))
+
+
+def test_running_a_case_a_person_carries_out_is_refused_and_says_what_records_it(tree):
+    (document, problem) = cc_public.adapter.execute(tree, ID_MANUAL,
+                                                    'pyf_cc_public.commit.message')
+    assert document is None
+    assert 'which a person carries out, so nothing here runs it' in problem[0]
+    assert 'attest' in problem[0]
 
 
 def test_a_case_that_does_not_resolve_is_reported_where_it_is_written(tree, tmp_path):

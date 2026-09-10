@@ -87,6 +87,12 @@ def execute(tree, id_case, id_under_test):
         return (None, ['No item in this tree is named {name}, so there is nothing to '
                        'observe.'.format(name = id_under_test)])
 
+    if specification.id_adapter is None:
+        return (None, ['{case} names {method}, which a person carries out, so nothing '
+                       'here runs it. Its evidence is an attestation, which cctool '
+                       'attest records.'.format(case    = id_case,
+                                                method  = specification.id_method)])
+
     adapter = ADAPTER.get(specification.id_adapter)
 
     if adapter is None:

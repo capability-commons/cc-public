@@ -40,6 +40,11 @@ relation:
     id_target:          obj_verdict_per_requirement
     guid_target:        obj_26b7e105da03488db6031facc7422c0e
 
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_method_not_code
+    guid_target:        obj_5c949b221e2f40e993a6aec7659a83bb
+
 ...
 """
 

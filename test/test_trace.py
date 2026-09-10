@@ -215,3 +215,39 @@ def test_dividing_a_shared_verdict_clears_it_and_remerging_returns_it(tree, tmp_
     cc_public.edit.link.unlink(tree, 'tc_walk_follows_named_relations',
                                'r_verifies', ID_WALK)
     assert _shared(tmp_path, ID_ONLY) == []
+
+
+def test_a_method_carried_out_by_a_person_is_asked_for_a_case_like_any_other(tree,
+                                                                            tmp_path):
+    # The tree holds one requirement verified by inspection, and its
+    # case. Take the case away and the requirement is asked for one, in
+    # the same words a requirement verified by test is asked.
+    req = 'req_committer_writes_record'
+    assert clean(tmp_path) == []
+
+    unverify(tree, req)
+    ctx = cc_public.check.context([tmp_path])[0]
+    by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
+    (gap,) = [g for g in by[req].gap if g.path == 'verification']
+    assert 'Verified by inspection, and nothing names it' in gap.message
+
+    # And critically where the paths given hold everything, since an
+    # accepted requirement has claimed to be complete.
+    ctx = cc_public.check.context([tmp_path], True)[0]
+    by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document, True)}
+    assert [g.severity for g in by[req].gap if g.path == 'verification'] == ['critical']
+
+
+def test_a_requirement_that_names_no_method_is_asked_for_the_method_and_not_a_case(tree,
+                                                                                  tmp_path):
+    # Nothing names it is a gap about a stated method. A requirement
+    # stating none is asked for the method first, and asking it for a
+    # case as well would name two faults for one omission.
+    req = 'req_committer_writes_record'
+    unverify(tree, req)
+    cc_public.edit.field.unset_field(tree, req, 'verification')
+    ctx = cc_public.check.context([tmp_path])[0]
+    by  = {r.id_self: r for r in cc_public.trace.projection(ctx.map_document)}
+    message = [g.message for g in by[req].gap if g.path == 'verification']
+    assert any('no verification method' in m for m in message), message
+    assert not any('nothing names it' in m for m in message), message

@@ -51,6 +51,7 @@ KEY_ID_TARGET   = 'id_target'
 KEY_TABLE       = 'table'
 KEY_FORM        = 'execution_form'
 KEY_AUTOMATED   = 'automated'
+KEY_MANUAL      = 'manual'
 KEY_ID_ADAPTER  = 'id_adapter'
 KEY_ID_SCHEMA   = 'id_schema_case'
 KEY_CONFIG      = 'configuration'
@@ -121,12 +122,20 @@ def resolve(map_document, id_case):
         return (None, ['{case} names the test method {name}, which this tree does not '
                        'hold.'.format(case = id_case, name = id_method)])
 
-    automated = (method.get(KEY_FORM) or {}).get(KEY_AUTOMATED)
+    form      = method.get(KEY_FORM) or {}
+    automated = form.get(KEY_AUTOMATED)
 
-    if automated is None:
+    # A method carried out by a person takes no adapter, and a case
+    # naming one resolves without one. The case is still what brings
+    # the item under test, the method and what it is given together,
+    # and what is expected is stated there before anyone observes; only
+    # the carrying out is a person's. A method taking neither form
+    # cannot be carried out at all, and that is the fault.
+    #
+    if automated is None and form.get(KEY_MANUAL) is None:
         list_problem.append(
-                '{method} takes no automated execution form, so nothing here runs '
-                'it.'.format(method = id_method))
+                '{method} takes no execution form, automated or manual, so there is no '
+                'way to carry it out.'.format(method = id_method))
 
     id_adapter = (automated or {}).get(KEY_ID_ADAPTER)
 
