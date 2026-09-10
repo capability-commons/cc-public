@@ -40,6 +40,7 @@ relation:               []
 """
 
 
+import functools
 import io
 import re
 import textwrap
@@ -63,6 +64,13 @@ SUFFIX_PYTHON = '.py'
 REGEX_COMMENT = re.compile(r'^\s*#')
 
 _YAML         = ruamel.yaml.YAML(typ = 'rt')
+
+# Enough for every file of a tree several times over, so that a
+# process checking one tree repeatedly never evicts what it is about
+# to want again. A tree of five hundred files holds about five
+# megabytes of text here.
+#
+LIMIT_LAID_OUT = 4096
 _YAML.width = 10 ** 9              # a scalar is never folded across lines
 _YAML.preserve_quotes = True
 
@@ -366,9 +374,22 @@ def format_metadata(text):
 
 
 # -----------------------------------------------------------------------------
+@functools.lru_cache(maxsize = LIMIT_LAID_OUT)
 def format_source(text, suffix):
     """
     Return text laid out, according to what kind of file it came from.
+
+    A pure function of the text and the suffix, and remembered on
+    both. One command lays each file out once and gains nothing from
+    that; a process that checks a tree repeatedly re-lays four hundred
+    and seventy seven files it has already seen, and the layout check
+    is what a repeated check mostly spends its time on. Laying out is a
+    round trip parse, which is where the time goes.
+
+    Remembered here rather than around the calls in the tests, so that
+    what runs under test is what runs in the command. A wheel that
+    would not start went unnoticed for exactly as long as the tests ran
+    something other than what a user does.
 
     """
 
