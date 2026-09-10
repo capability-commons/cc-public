@@ -200,7 +200,7 @@ def registry(map_schema):
         registry = registry.with_resource(uri      = document[KEY_ID_SCHEMA],
                                           resource = resource)
 
-    return registry
+    return registry.crawl()
 
 
 # -----------------------------------------------------------------------------
