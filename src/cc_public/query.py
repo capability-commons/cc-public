@@ -449,10 +449,7 @@ def drawing(list_step, id_format, list_edge = None):
                             of the neighbourhood, given by the database as
                             the edges among the items reached; where none
                             are given, the edges the walk reached each
-                            item by. The first drawing showed only the
-                            reaching edges and hid what two requirements
-                            shared, which the requirement had asked for
-                            and the test had not.
+                            item by.
     relation:               []
 
     ...

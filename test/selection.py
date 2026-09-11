@@ -16,26 +16,13 @@ brief:                  |
                         Decides which tests a change can reach, from a
                         map measured over a whole run, and runs those.
 description:            |
-                        The loop and not the judgement. A selective
-                        run is a way to see quickly whether a change
-                        broke something it could have broken; the gate
-                        remains what says a tree is sound, and nothing
-                        in CI reads this.
-
-                        Every rule here errs towards running
-                        everything. A change this cannot attribute, a
-                        map that is absent, a map measured in a way
-                        that cannot attribute, or a selection so large
-                        that selecting saved nothing, all mean the
-                        whole suite. Under-running is the failure that
-                        matters: a suite that ran the wrong tests and
-                        passed looks exactly like one that ran the
-                        right ones.
-
-                        A run made from here writes no evidence.
-                        Evidence is what a whole session observed, and
-                        a partial session writing it would drop the
-                        rows for every case it did not run.
+                        The loop and not the judgement. A change the
+                        map cannot attribute, a map that is absent, a
+                        map measured in a way that cannot attribute,
+                        and a selection so large that selecting saved
+                        nothing each mean the whole suite. A run made
+                        from here writes no evidence
+                        (ddr_test_selection).
 relation:               []
 
 ...

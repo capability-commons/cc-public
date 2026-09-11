@@ -16,14 +16,11 @@ brief:                  |
                         Tests that an identifier written in prose is
                         read like one written in a field.
 description:            |
-                        The reference check read the identity fields
-                        of an item and said nothing about the prose
-                        beside them, and most of what a record asserts
-                        is in the prose. A review found records naming
-                        a command no longer run, a check said to read
-                        a flag it has no key for, and six type entries
-                        saying no schema names them where one does
-                        (ddr_prose_reference).
+                        The reference check reads the identity fields
+                        of an item and the prose beside them, and
+                        these tests hold the prose rule: an identifier
+                        written in prose is read like one written in a
+                        field (ddr_prose_reference).
 relation:               []
 
 ...

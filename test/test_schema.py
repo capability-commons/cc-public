@@ -20,10 +20,8 @@ description:            |
                         holds no line break. The draft reads a regular
                         expression by ECMA-262, where a dollar anchors
                         the end of the string, while Python matches it
-                        before a final newline as well, so an anchored
-                        pattern accepts a block scalar and says
-                        nothing. The check refuses the line break
-                        itself.
+                        before a final newline as well. The check
+                        refuses the line break itself.
 relation:               []
 
 ...

@@ -16,12 +16,9 @@ brief:                  |
                         Tests that selection errs towards running
                         everything, and says why whenever it does.
 description:            |
-                        The selector decides what is verified, so what
-                        matters is not that it selects well but that
-                        it never selects too little in silence. Each
-                        test here names a change whose reach the map
-                        cannot say, and asserts the whole suite is
-                        asked for and a reason given.
+                        Each test here names a change whose reach the
+                        map cannot say, and asserts that the whole
+                        suite is asked for and a reason given.
 relation:               []
 
 ...

@@ -23,14 +23,11 @@ description:            |
                         interface member. One walk finds them all, and
                         carries what a caller needs beside each: where
                         it sits, the path within its document, and the
-                        nearest item holding it.
-
-                        Every module that walks the tree for the items
-                        it declares reads this: the facts a query runs
-                        over, the trace projection, the identifier
-                        check and the tree loader through it. The tree
-                        is walked one way, so what counts as an item
-                        cannot differ by who is asking.
+                        nearest item holding it. Every module that
+                        walks the tree for the items it declares reads
+                        this: the facts a query runs over, the trace
+                        projection, the identifier check and the tree
+                        loader through it.
 relation:               []
 
 ...

@@ -16,10 +16,9 @@ brief:                  |
                         Control cases measure an eval and answer its
                         findings.
 description:            |
-                        Uses a scripted runner in place of a model, so
-                        that the arithmetic of the rates, the per
-                        origin split, and the suppression path can be
-                        asserted exactly.
+                        Uses a scripted runner in place of a model,
+                        and asserts the arithmetic of the rates, the
+                        per origin split and the suppression path.
 relation:               []
 
 ...

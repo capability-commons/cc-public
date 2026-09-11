@@ -20,10 +20,7 @@ brief:                  |
 description:            |
                         Every criticality here is declared on a
                         requirement in a copy of the tree and never on
-                        a real one. What a level demands of the tool's
-                        own requirements is not settled, and declaring
-                        one to exercise a check would settle it by
-                        accident.
+                        a real one.
 relation:               []
 
 ...

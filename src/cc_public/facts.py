@@ -22,10 +22,8 @@ description:            |
                         fact per relation edge, source and target by
                         guid with the advisory id the edge carries;
                         one containment fact per embedded item and its
-                        holder. The one source every query reads, so
-                        that the projection, the walk and any engine
-                        agree on what the graph is. Nothing stores the
-                        result.
+                        holder. The one source every query reads.
+                        Nothing stores the result.
 relation:               []
 
 ...

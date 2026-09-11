@@ -19,24 +19,20 @@ brief:                  |
 description:            |
                         The rules and their severities are the trace
                         projection's, which the trace command reads
-                        too, so that what the check reports and what
-                        the command shows cannot differ. A proposed
-                        requirement may be incomplete while it is
-                        written and its gaps are advisory; an accepted
-                        one has claimed to be complete and a gap in
-                        what it claims is critical, except where an
-                        open world leaves room for the missing thing
-                        to exist elsewhere.
-
-                        Beside the projection this reads what a
-                        coverage analysis says. A requirement whose
-                        declared criticality requires that its
-                        coverage be analysed, with no current analysis
-                        naming it, is a gap; a current reading whose
-                        verdict is unmet is reported here rather than
-                        as a gap, and is advisory whatever the
-                        requirement's status, since a judge is not a
-                        check (ddr_coverage_analysis).
+                        too. A proposed requirement may be incomplete
+                        while it is written and its gaps are advisory;
+                        an accepted one has claimed to be complete and
+                        a gap in what it claims is critical, except
+                        where an open world leaves room for the
+                        missing thing to exist elsewhere. Beside the
+                        projection this reads what a coverage analysis
+                        says. A requirement whose declared criticality
+                        requires that its coverage be analysed, with
+                        no current analysis naming it, is a gap; a
+                        current reading whose verdict is unmet is
+                        reported here rather than as a gap, and is
+                        advisory whatever the requirement's status
+                        (ddr_coverage_analysis).
 
 relation:
 

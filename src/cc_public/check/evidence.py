@@ -24,12 +24,10 @@ description:            |
                         declare a dependency, so what the digest
                         covers is read from the relation register.
                         What merely describes an item is removed
-                        before it is covered, as a docstring is
-                        removed from code. Absent evidence, or
+                        before it is covered. Absent evidence, or
                         evidence that is not a pass, is critical in a
-                        closed world and advisory in an open one;
-                        stale is advisory, since a tree being edited
-                        is ordinarily ahead of its last observation.
+                        closed world and advisory in an open one, and
+                        stale is advisory.
 
 relation:
 

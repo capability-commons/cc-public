@@ -17,13 +17,11 @@ brief:                  |
                         expected and what was observed, and keeps the
                         origin it came from.
 description:            |
-                        A report missing either half says that
-                        something is wrong without saying what would
-                        have been right, or the reverse, and neither
-                        can be acted on. The origin distinguishes a
-                        failure a check observed from one a test or an
-                        eval observed, so that one shape across the
-                        three loses nothing.
+                        A report states both what was expected and
+                        what was observed, and these tests hold that.
+                        The origin distinguishes a failure a check
+                        observed from one a test or an eval observed,
+                        across one shape.
 relation:               []
 
 ...

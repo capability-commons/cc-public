@@ -20,11 +20,9 @@ description:            |
                         ddr_environment_shape decides that the split
                         stays available only while every import of the
                         model stack sits inside the function that
-                        needs it. The record says so and nothing held
-                        it, so a module level import anywhere the gate
-                        reaches would have closed the option in an
-                        afternoon, by somebody tidying what looks like
-                        an untidy lazy import.
+                        needs it. These tests hold that, and hold that
+                        a private function defined at module scope is
+                        named somewhere else in its module.
 relation:               []
 
 ...

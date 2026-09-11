@@ -21,15 +21,9 @@ description:            |
                         execution outcome and a conformance result,
                         and every verdict this repository records
                         passes through that mapping. These controls
-                        exercise it against a real pytest run rather
-                        than against reports written by hand, so that
-                        a change in what pytest emits is caught rather
-                        than assumed away.
-
-                        This file is not named test_something, so the
-                        suite does not collect it. The adapter reaches
-                        each function by an explicit node id, which
-                        pytest collects whatever the file is called.
+                        exercise it against a real pytest run. The
+                        suite does not collect this file. The adapter
+                        reaches each function by an explicit node id.
 relation:               []
 
 ...
@@ -280,10 +274,8 @@ def test_parameterised_one_fails(number):
                             every instance and not by the first.
     description:            |
                             Run through the adapter, this must read
-                            failed. A reader that returns at the first
-                            report that passed calls it passed, and a case
-                            of four hundred and ninety two instances then
-                            hides every failure after the first pass.
+                            failed. The function is read by every instance
+                            and not by the first.
     relation:               []
 
     ...

@@ -21,9 +21,8 @@ description:            |
                         digest is not the eval's now is advisory,
                         since its rates describe something that has
                         changed; a row with no digest is a note, since
-                        nothing is known either way. Costs nothing and
-                        runs always, so that stale confidence is seen
-                        without judging anything.
+                        nothing is known either way. It runs always
+                        and judges nothing.
 relation:               []
 
 ...

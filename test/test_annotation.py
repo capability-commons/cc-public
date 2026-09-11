@@ -17,12 +17,10 @@ brief:                  |
                         about something, and that the register alone
                         holds it to that.
 description:            |
-                        Every rule an annotation is held to is a
-                        constraint in the relation register, so each
-                        test breaks one and asks the existing checks,
-                        never a check written for annotations. What
-                        the assertion argues with is an edge too, and
-                        the tests walk from an annotation to see it.
+                        Each test breaks one constraint of the
+                        relation register and asks the existing
+                        checks. The tests walk from an annotation to
+                        the edges its assertion holds.
 relation:               []
 
 ...

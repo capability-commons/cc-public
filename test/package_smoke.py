@@ -18,19 +18,12 @@ brief:                  |
                         whether the tool that comes out works and came
                         from the wheel.
 description:            |
-                        An editable install makes the checkout
-                        importable, so a smoke test that merely
-                        imports cc_public proves nothing about the
-                        wheel: it may be reading the very tree the
-                        wheel was built from. This installs into a
-                        virtual environment without system site
-                        packages and asserts the module it gets is
-                        inside that environment and not inside the
-                        repository.
-
-                        Run by the package-check task, never by the
-                        suite, since it builds and reaches the
-                        network.
+                        The wheel is installed into a virtual
+                        environment without system site packages, and
+                        the module the environment gives back is
+                        asserted to be inside it and not inside the
+                        repository. Run by the package-check task and
+                        never by the suite.
 relation:               []
 
 ...

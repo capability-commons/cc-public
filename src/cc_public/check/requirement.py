@@ -26,11 +26,8 @@ description:            |
                         process slot against the process word
                         registers the item can see, its own segment
                         and those it consumes, and reports a verb none
-                        defines: advisory on a candidate or a proposed
-                        requirement, since the finding is the question
-                        what the entity does, and critical on an
-                        accepted one, since what is accepted is
-                        defined.
+                        defines, advisory on a candidate or a proposed
+                        requirement and critical on an accepted one.
 relation:               []
 
 ...

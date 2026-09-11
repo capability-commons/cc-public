@@ -19,10 +19,8 @@ brief:                  |
                         carries no conformance result.
 description:            |
                         The normalisation is tested against reports
-                        made here, so that every outcome is covered
-                        without running five test sessions. One test
-                        runs a real case end to end and writes
-                        nothing.
+                        made here, one per outcome. One test runs a
+                        real case end to end and writes nothing.
 relation:               []
 
 ...

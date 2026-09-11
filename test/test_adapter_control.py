@@ -18,10 +18,9 @@ brief:                  |
 description:            |
                         The mapping from what pytest reports to an
                         execution outcome and a conformance result
-                        decides every verdict this repository records,
-                        and nothing else checks it. These run pytest
-                        for real, so the assumption about what pytest
-                        emits is tested rather than restated.
+                        decides every verdict this repository records.
+                        These run pytest for real, against the
+                        controls in control_adapter.
 
 relation:
 

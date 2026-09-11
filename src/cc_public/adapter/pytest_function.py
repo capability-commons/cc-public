@@ -21,22 +21,16 @@ description:            |
                         item sits in and the definitions down to it,
                         as the loader read them from the source, so
                         the names carry the case the source spells
-                        them with and the readable id does not.
-
-                        The run is made in a process of its own, with
-                        the source of the tree being read first on the
+                        them with and the readable id does not. The
+                        run is made in a process of its own, with the
+                        source of the tree being read first on the
                         path, so what runs is the code that tree
-                        holds. Reading one tree and running another
-                        tree's code would let an execution name an
-                        item under test it never observed. The reports
-                        come back as one line of json, so the outcome
-                        is read from what pytest reported and not from
-                        what it printed.
-
-                        Neither the method nor the case carries a
-                        command or a path, so a case names something
-                        this tree resolves and asks for nothing but a
-                        test to be run.
+                        holds. The reports come back as one line of
+                        json, and the outcome is read from what pytest
+                        reported. Neither the method nor the case
+                        carries a command or a path, so a case names
+                        something this tree resolves and asks for
+                        nothing but a test to be run.
 relation:               []
 
 ...

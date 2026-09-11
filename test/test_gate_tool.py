@@ -17,13 +17,10 @@ brief:                  |
                         meant to catch and asserts that the tool
                         fails.
 description:            |
-                        A tool that ran and exited zero has shown that
-                        it ran. Whether it would have said anything
-                        had there been something to say is a separate
-                        question, and this is where it is answered.
                         One control per tool, each pointing the tool
-                        at a known defect outside the tree so that the
-                        repository never holds a broken file.
+                        at a known defect outside the tree. A control
+                        shows that the tool reports the defect it is
+                        meant to catch.
 relation:               []
 
 ...
