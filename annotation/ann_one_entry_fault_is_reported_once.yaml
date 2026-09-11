@@ -1,0 +1,57 @@
+id_self:                ann_one_entry_fault_is_reported_once
+guid_self:              ann_48d4e029d54f4813800dc1207e68e4e8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One fault on a register entry is now reported once
+brief:                  |
+                        Fixed. Identical findings are collapsed before
+                        they are reported, so the three validations of
+                        an entry no longer say the same thing three
+                        times.
+description:            |
+                        An entry is validated against the generic
+                        entry shape by the register schema, by its own
+                        register's schema and by the entry schema
+                        composing sch_entry. An empty brief on
+                        term_anchor gave three identical findings.
+
+                        The three validations are kept, because each
+                        asks a real question and only their agreement
+                        is uninteresting; it is the report that should
+                        say a thing once.
+                        test_one_fault_on_a_register_entry_is_reported_once
+                        empties a brief and asserts no two findings on
+                        the register share a path and a message.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_entry_fault_reported_three_times
+    guid_target:        ann_ae068083bbb14b52a190fd5905cdf801
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.schema
+    guid_target:        pym_dc70a7fa709c4eaaab6b18f0eadd5fb0
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_register
+    guid_target:        sch_a4620d79fab546b3be6c756f0325e069
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_entry
+    guid_target:        sch_91757d88f90a40088de864b3a7ab4787

@@ -85,3 +85,42 @@ def test_a_term_no_record_decides_is_reported(tree):
     (_, _, undecided) = cc_public.glossary.gaps(_map(tree), minimum = 1)
     assert 'term_solution_concept' not in undecided      # ddr_concept decides it
     assert 'term_anchor' in undecided
+
+
+def test_a_datum_written_as_a_block_scalar_is_not_counted_as_prose(tree, tmp_path):
+    # A control case subject, a query's sql and a rule's example hold
+    # line breaks and are not prose. Counted as prose, the candidate
+    # list opened with the headers of every stored subject.
+    import cc_public.check
+    import cc_public.glossary
+
+    context = cc_public.check.context([tmp_path])[0]
+    read    = '\n'.join(text for (_, text)
+                         in cc_public.glossary._iter_prose(
+                                dict(context.map_document)))
+
+    # Nothing a control case, a query or a rule example holds reaches
+    # the count. The candidate list opened with the header of every
+    # stored subject before this.
+    assert 'as rendered:' not in read
+    assert 'SELECT ' not in read
+
+    (word, pair, _) = cc_public.glossary.gaps(context.map_document, 3)
+    said = {row[0] for row in word} | {row[0] for row in pair}
+    assert 'statement' not in said and 'def' not in said
+
+
+def test_a_run_of_words_inside_a_term_is_not_a_gap(tree, tmp_path):
+    # The register holds writing style rule and writing style guide,
+    # and interface control document. The pair list presented the
+    # glossary's own terms back as candidates.
+    import cc_public.check
+    import cc_public.glossary
+
+    context = cc_public.check.context([tmp_path])[0]
+    (_, pair, _) = cc_public.glossary.gaps(context.map_document, 1)
+    said = {row[0] for row in pair}
+
+    assert 'writing style' not in said
+    assert 'interface control' not in said
+    assert 'control document' not in said

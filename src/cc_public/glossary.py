@@ -39,10 +39,12 @@ relation:               []
 
 
 import collections
+import functools
 import re
 import typing
 
 
+FIELD_NOT_PROSE = ('subject', 'sql', 'example')
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
 KEY_TABLE     = 'table'
@@ -245,18 +247,42 @@ def _known(map_document):
     for term in terms(map_document):
         out.update(w.lower() for w in (term.term, *term.also, *term.avoid) if w)
 
-    return out
+    return frozenset(out)
+
+
+# -----------------------------------------------------------------------------
+@functools.lru_cache(maxsize = 8)
+def _within(known):
+    """
+    Return every run of words inside a term a glossary holds.
+
+    A pair inside a longer term names no concept of its own, and
+    reporting it presents the glossary's own terms back as candidates
+    (ddr_glossary).
+
+    """
+
+    out = set()
+
+    for phrase in known:
+        word = phrase.split()
+        for start in range(len(word)):
+            for stop in range(start + 1, len(word) + 1):
+                out.add(' '.join(word[start:stop]))
+
+    return frozenset(out)
 
 
 # -----------------------------------------------------------------------------
 def _is_known(phrase, known):
     """
-    Return whether a glossary holds the phrase, or holds it in the
-    singular. A plural is the same word.
+    Return whether a glossary holds the phrase, holds it in the
+    singular, or holds a longer term the phrase is a run of words
+    within. A plural is the same word.
 
     """
 
-    if phrase in known:
+    if phrase in known or phrase in _within(known):
         return True
 
     (head, _, last) = phrase.rpartition(' ')
@@ -299,6 +325,10 @@ def _iter_prose(node, id_item = None):
     which is what the layout convention makes prose. A plain scalar is
     a datum and says nothing about the words a repository uses.
 
+    A field named in FIELD_NOT_PROSE is a datum written as a block
+    scalar because it holds line breaks, not because it is prose
+    (ddr_glossary).
+
     """
 
     if isinstance(node, dict):
@@ -306,8 +336,9 @@ def _iter_prose(node, id_item = None):
         if isinstance(node.get(KEY_ID_SELF), str):
             id_item = node[KEY_ID_SELF]
 
-        for value in node.values():
-            yield from _iter_prose(value, id_item)
+        for (key, value) in node.items():
+            if key not in FIELD_NOT_PROSE:
+                yield from _iter_prose(value, id_item)
 
     elif isinstance(node, list):
 

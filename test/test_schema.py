@@ -75,3 +75,33 @@ def test_the_rule_reaches_an_item_held_within_another(tree, tmp_path):
     entry    = [n for n in found['nonconformity'] if 'holds a datum' in n['message']]
     (one,)   = entry                                     # once, not once per pass
     assert one['path'] == 'table.term_performer.term'
+
+
+def test_an_undeclared_field_is_reported_beside_any_other_fault(tree, tmp_path):
+    # Every error lies beneath the root, so the rule that hid a
+    # parent's unevaluated fields behind a child's own fault hid a
+    # field nobody declared behind any other fault the item had. A
+    # skeleton made by new fails until every field is written, which is
+    # exactly when a misspelled field is accepted.
+    cc_public.edit.field.set_field(tree, ID, 'frobnicate', value = 'nonsense')
+    assert any('nevaluated' in m for m in _findings(tmp_path)), _findings(tmp_path)
+
+    cc_public.edit.field.set_field(tree, ID, 'title', value = '')
+    found = _findings(tmp_path)
+    assert any('nevaluated' in m for m in found), found
+    assert len(found) > 1
+
+
+def test_one_fault_on_a_register_entry_is_reported_once(tree, tmp_path):
+    # An entry is validated against the envelope by the register
+    # schema, by the register's own schema and by the entry schema
+    # composing sch_entry, and identical findings were not collapsed.
+    cc_public.edit.field.set_field(tree, 'term_anchor', 'brief', value = '')
+
+    report = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
+    said = [(n['path'], n['message']) for n in found['nonconformity']
+            if 'reg_term' in n['filepath']]
+
+    assert said, said
+    assert len(said) == len(set(said)), said

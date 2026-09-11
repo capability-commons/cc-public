@@ -35,6 +35,8 @@ relation:               []
 """
 
 
+import re
+
 import jsonschema
 import jsonschema.validators
 import referencing
@@ -67,6 +69,15 @@ SEPARATOR     = '_'
 KEYWORD_UNEVALUATED = 'unevaluatedProperties'
 KEYWORD_PATTERN     = 'pattern'
 MESSAGE_DATUM       = 'is constrained by a pattern, so it holds a datum'
+
+# The properties an unevaluated properties error names, which the
+# message holds and the error object does not.
+#
+PATTERN_QUOTED      = r"'([^']+)'"
+KEYWORD_PROPERTIES  = 'properties'
+KEYWORD_ALL_OF      = 'allOf'
+KEYWORD_REF         = '$ref'
+SUFFIX_SCHEMA       = '.yaml'
 
 
 # -----------------------------------------------------------------------------
@@ -409,17 +420,68 @@ def validate(document, id_schema, map_schema, reg = None):
     list_error = sorted(validator.iter_errors(document),
                         key = lambda error: list(error.path))
 
-    # An embedded entry that fails its closure yields no annotations, so
-    # its parent then reports every field as unevaluated. That error is
-    # the child's, reported once, where it is.
+    # A subschema that failed yields no annotations, so unevaluated
+    # properties at that path names the fields that branch would have
+    # evaluated. That error is the child's, reported once, where it is,
+    # and is dropped here only where every field it names is declared
+    # somewhere in the composition (ddr_schema_closure).
     #
     list_path = [list(error.path) for error in list_error]
+    declared  = _declared(map_schema[id_schema], map_schema)
 
-    return [(_path(error), error.message)
+    held = [(_path(error), error.message)
                 for (error, path) in zip(list_error, list_path, strict = True)
                 if not (error.validator == KEYWORD_UNEVALUATED
+                        and _names_only_declared(error, declared)
                         and any(len(other) > len(path) and other[:len(path)] == path
                                 for other in list_path))]
+
+    # One fault, said once. An entry is validated against the envelope
+    # by three schemas that compose it (ddr_schema_closure).
+    #
+    return list(dict.fromkeys(held))
+
+
+# -----------------------------------------------------------------------------
+def _names_only_declared(error, declared):
+    """
+    Return whether every property an unevaluated properties error
+    names is declared by some schema of the composition.
+
+    Which properties went unevaluated is in the message and nowhere
+    else in the error, so it is read from there.
+
+    """
+
+    return not (set(re.findall(PATTERN_QUOTED, error.message)) - declared)
+
+
+# -----------------------------------------------------------------------------
+def _declared(node, map_schema, seen = None):
+    """
+    Return every property name the schema declares, through allOf and
+    through the references it makes to schemas of this tree.
+
+    """
+
+    seen = set() if seen is None else seen
+
+    if not isinstance(node, dict):
+        return set()
+
+    out = set(node.get(KEYWORD_PROPERTIES) or ())
+
+    for one in node.get(KEYWORD_ALL_OF) or ():
+        out |= _declared(one, map_schema, seen)
+
+    uri = node.get(KEYWORD_REF)
+
+    if isinstance(uri, str) and uri not in seen:
+        seen.add(uri)
+        named = map_schema.get(uri.rsplit('/', 1)[-1].removesuffix(SUFFIX_SCHEMA))
+        out  |= _declared(named, map_schema, seen)
+
+    return out
 
 
 # -----------------------------------------------------------------------------

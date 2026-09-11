@@ -1,0 +1,58 @@
+id_self:                ann_an_undeclared_field_is_now_reported
+guid_self:              ann_d170145c52ff4c2b8b806dfb6f54cb6f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An undeclared field is now reported beside any other fault
+brief:                  |
+                        Fixed. A closure error is dropped only where
+                        every field it names is declared somewhere in
+                        the composition.
+description:            |
+                        Every error lies beneath the root, so the rule
+                        that suppressed a closure error wherever
+                        anything deeper failed hid a field nobody
+                        declared behind any other fault the item had.
+                        A skeleton made by new fails its checks until
+                        every field is written, which is exactly when
+                        a misspelled field was accepted.
+
+                        What is declared is computed from the
+                        composition, through allOf and through the
+                        references a schema makes, which is where
+                        closure is decided. Which fields went
+                        unevaluated is read from the message, since
+                        the error carries it nowhere else.
+
+                        test_an_undeclared_field_is_reported_beside_any_other_fault
+                        writes a bogus field, then empties the title,
+                        and asserts the closure finding survives
+                        beside the other. ddr_schema_closure carries
+                        the reasoning.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_undeclared_field_hidden_by_other_faults
+    guid_target:        ann_2c5c7af5b8854f1e98787dd1883441ad
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.schema
+    guid_target:        pym_dc70a7fa709c4eaaab6b18f0eadd5fb0
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_schema_closure
+    guid_target:        ddr_698ae593d34e438fa4364124870ac706
