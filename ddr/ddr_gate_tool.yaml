@@ -61,14 +61,28 @@ decision:               |
                         would be learned: the gate itself is the
                         standing evidence that they pass a clean tree.
 
-                        A control says which item it breaks, and
-                        exactly one check reports about that item.
-                        ddr_relation_cardinality holds that one fault
-                        is not reported twice, and nothing held it
-                        until a review found a case naming no method
-                        reported by two checks. The control set is
-                        where that is cheapest to hold, since each
-                        control already makes one defect. Not built.
+                        Nothing holds that one fault is reported once,
+                        which ddr_relation_cardinality decides. It was
+                        tried here and does not work.
+
+                        The rule was to be: a control says which item
+                        it breaks, and exactly one check reports about
+                        that item. Built and measured over twelve of
+                        the controls, it reported seven, and every one
+                        of the seven was a second check saying
+                        something true and different. Changing the
+                        process word of a requirement stales its
+                        evidence, so the requirement check and the
+                        evidence check both report, correctly.
+
+                        One fault reported twice and one change
+                        reported by two checks look the same from
+                        outside. Keying on the file, on the path
+                        within it, or on the item named separates
+                        neither, and a list of pairs to excuse would
+                        be the rule weakened until it passed.
+                        qst_gate_tool.duplicate asks what tells the
+                        two apart.
 
                         They are called gate tools. Gate is the
                         decision to let work proceed, here or in a
@@ -253,4 +267,16 @@ question:
                         smoke test rests on rather than the task, and
                         that a control which built and installed would
                         reach the network on every run.
+    relation:           []
+
+  duplicate:
+    id_self:            qst_gate_tool.duplicate
+    guid_self:          qst_aceec81208b74f4a988d0688e12904ff
+    question:           |
+                        What tells one fault reported by two checks
+                        from one change reported by two checks, given
+                        that keying on the file, on the path or on the
+                        item named separates neither, and that a
+                        review found the first by reading two messages
+                        that said the same thing.
     relation:           []
