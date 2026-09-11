@@ -2732,26 +2732,14 @@ table:
                         anything if there were something to say, which
                         a run that exits zero does not. It is built
                         outside the tree, given to the tool, and the
-                        tool is required to fail on it.
-
-                        Controls come in pairs. One carries the defect
-                        the tool is in the gate to catch and the tool
-                        must fail on it. The other is the same shape
-                        without the defect and the tool must pass it,
-                        since a tool that failed everything would
-                        satisfy the first alone.
-
-                        A gate tool names what controls it by
-                        r_is_controlled_by. A gate tool with no such
-                        edge is relied on without that reliance having
-                        been shown.
-
-                        A control case is a different thing that
-                        shares most of the word: a subject with a
-                        verdict a person holds it to, used to measure
-                        a judge. That one is about how often a judge
-                        is right. This one is about whether a tool is
-                        looking at all.
+                        tool is required to fail on it. Where a tool
+                        could plausibly fail everything, a companion
+                        of the same shape without the defect is
+                        written and the tool must pass it;
+                        ddr_gate_tool decides when that is worth
+                        having. A gate tool names what controls it by
+                        r_is_controlled_by, and qry_gate_tool_control
+                        reports a tool that names none.
     term:               control
 
     also:

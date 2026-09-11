@@ -53,6 +53,14 @@ decision:               |
                         it, the edge is absent and the tool is listed
                         anyway. The absent edge is the statement.
 
+                        A control that fails is what is required. A
+                        companion showing the tool passes the same
+                        shape without the defect is written where the
+                        tool could plausibly fail everything, and is
+                        not required, because for most tools nothing
+                        would be learned: the gate itself is the
+                        standing evidence that they pass a clean tree.
+
                         They are called gate tools. Gate is the
                         decision to let work proceed, here or in a
                         pipeline, and not only the pixi task of that
@@ -61,6 +69,16 @@ decision:               |
                         A tool run for information is not entered. One
                         whose failure stops the work is.
 rationale:              |
+                        A passing companion where it is worth having
+                        rather than always, because a tool that failed
+                        everything is a real way for a control to pass
+                        and say nothing, and it is a real risk only
+                        where the tool is configured rather than
+                        installed. For the checks the gate runs on
+                        every commit, a clean tree passing is observed
+                        many times a day and a second control would
+                        restate it.
+
                         A register rather than prose in a plan,
                         because a plan outside the repository is not
                         checked, is not queryable, and is wrong the
@@ -159,6 +177,31 @@ relation:
     guid_relation:      r_4aefda84f8894e02aede8729ced91732
     id_target:          term_tool_control
     guid_target:        term_5d10d724e4414dfe8ad0af38353419dc
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_controlled_by
+    guid_target:        r_8929d2017dec4d0cba84cf7904e94c8d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_gate_tool
+    guid_target:        t_58ef496d54e64df7983b17a05f0c6a6a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_gate_tool
+    guid_target:        reg_3da3fd6ab87b4712aeec722b786c1d87
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_gate_tool
+    guid_target:        sch_ef4990dd62bb4e1cb15def9ead89d111
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_reg_gate_tool
+    guid_target:        sch_f6cb9ae6e6794d3396d68be6c2de463c
 
 question:
 

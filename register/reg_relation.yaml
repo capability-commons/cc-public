@@ -783,12 +783,9 @@ table:
                         requires. The subject may be of any kind: a
                         check, an eval, a workflow, a register, a
                         design decision, a procedure or the recorded
-                        activity of a person. No domain is declared,
-                        and that is deliberate rather than an
-                        omission: an objective restricted to what a
-                        check can satisfy would record the automatable
-                        part of conformance and drop the rest. An
-                        objective nothing points at is unsatisfied.
+                        activity of a person. No domain is declared.
+                        An objective nothing points at is unsatisfied.
+                        ddr_objective decides both.
 
     range:
       - t_objective
@@ -804,15 +801,10 @@ table:
     description:        |
                         The item identified by OBJ demonstrates that a
                         defect the tool identified by SUBJ is meant to
-                        catch does make it fail. Installing a tool,
-                        running it, and seeing it exit zero shows that
-                        it ran. It does not show that it would have
-                        said anything had there been something to say.
-
-                        A gate tool with no such edge is relied on
-                        without that being shown, and saying so is the
-                        point of leaving the edge absent rather than
-                        the tool unlisted.
+                        catch does make it fail. A gate tool with no
+                        such edge is relied on without that being
+                        shown, which qry_gate_tool_control reports.
+                        ddr_gate_tool decides it.
 
     domain:
       - t_gate_tool
@@ -831,12 +823,9 @@ table:
                         The edge says what the assertion is about and
                         nothing about the assertion: not that it is
                         true, not that it is adverse, and not that
-                        anything follows from it.
-
-                        An annotation holds at least one, so that no
-                        assertion floats free of a subject, and may
-                        hold several, since one indivisible assertion
-                        may be about how two items meet.
+                        anything follows from it. An annotation holds
+                        at least one and may hold several.
+                        ddr_annotation decides it.
 
     domain:
       - t_annotation
@@ -890,13 +879,8 @@ table:
                         annotation identified by OBJ. Support does not
                         establish what it supports, and an assertion
                         with many supporters is not thereby true.
-
                         Support and challenge are not declared
-                        incompatible. One annotation qualifying
-                        another may do both about different parts of
-                        it, and whether the one assertion discipline
-                        rules that out is a question for use rather
-                        than for this entry.
+                        incompatible, which ddr_annotation decides.
 
     domain:
       - t_annotation
