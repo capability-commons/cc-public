@@ -304,7 +304,7 @@ def test_changed_lists_what_changed_and_what_rests_on_it(tree, tmp_path):
     ctx  = cc_public.check.context([tmp_path])[0]
     file = {loc.filepath for loc in ctx.map_document
             if loc.filepath.parts[-2:] == ('cc_public', 'layout.py')}
-    (changed, dependent) = cc_public.trace.changed(ctx.map_document, file)
+    (changed, dependent, _) = cc_public.trace.changed(ctx.map_document, file)
 
     # The module is the one standalone item in the file, and its decision is named.
     assert [c.id_self for c in changed] == ['pym_cc_public.layout']
@@ -323,3 +323,21 @@ def test_changed_lists_what_changed_and_what_rests_on_it(tree, tmp_path):
                 == ('ann_layout_slow', 'pym_cc_public.layout')
     assert not any(d.id_self.startswith('pyf_test') for d in dependent)
     assert dependent == sorted(dependent)
+
+
+def test_a_change_to_a_register_entry_names_the_record_that_decides_it(tree):
+    # The dependency closure does not reach a record from what it
+    # decides, so a change to a register file leaves its records unread
+    # unless something else walks back (ddr_record_currency).
+    map_document = tree.context.map_document
+    file         = {loc.filepath for loc in map_document
+                    if loc.filepath.name == 'reg_relation.yaml'}
+
+    (changed, dependent, suspect) = cc_public.trace.changed(map_document, file)
+
+    # The register is the one standalone item in the file: its entries
+    # are embedded, and each is held by the record that introduced it.
+    assert [one.id_self for one in changed] == ['reg_relation']
+    assert 'ddr_annotation' in suspect, sorted(suspect)
+    assert 'ddr_annotation' not in {one.id_self for one in dependent}
+    assert list(suspect) == sorted(suspect)

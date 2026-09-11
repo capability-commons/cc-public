@@ -71,7 +71,7 @@ SEPARATOR         = '_'
 REL_DERIVED       = 'r_is_derived_from'
 REL_IMPLEMENTED   = 'r_is_implemented_by'
 REL_VERIFIES      = 'r_verifies'
-REL_DECIDES       = 'r_decides'
+KEY_DESCRIBES     = 'describes'
 KEY_DEPENDENCY    = 'dependency'
 KEY_TITLE         = 'title'
 PREFIX_RELATION   = 'r'
@@ -356,11 +356,13 @@ def changed(map_document, set_filepath):
 
     title:                  What changed and what rests on it
     brief:                  |
-                            Return (changed, dependent): every standalone
-                            item in the files named, in location order,
-                            and every item elsewhere that rests on an item
-                            in them by a chain of dependency edges, in id
-                            order.
+                            Return (changed, dependent, suspect): every
+                            standalone item in the files named, in
+                            location order; every item elsewhere that
+                            rests on an item in them by a chain of
+                            dependency edges, in id order; and every
+                            record that describes one of the items in them
+                            and is not itself among them.
 
                             Every item in a changed file is taken as
                             possibly changed, the entries of a register
@@ -382,9 +384,11 @@ def changed(map_document, set_filepath):
     """
 
     (map_by_guid, map_edge) = _index(map_document)
-    follow      = dependency(map_document)
-    set_changed = set()
-    list_out    = []
+    follow        = dependency(map_document)
+    map_describer = _describer(map_document, map_by_guid, map_edge)
+    set_changed   = set()
+    set_suspect   = set()
+    list_out      = []
 
     for (location, document) in sorted(map_document.items()):
 
@@ -393,6 +397,13 @@ def changed(map_document, set_filepath):
 
         held = [one.guid_self for one in cc_public.item.iter_item(document)]
         set_changed.update(g for g in held if isinstance(g, str))
+
+        # Every item in the file and not the document alone: an entry
+        # is described by the record that introduced it
+        # (ddr_record_currency).
+        #
+        for one in held:
+            set_suspect |= map_describer.get(one, set())
         guid = document.get(KEY_GUID_SELF)
         list_out.append(Changed(
                 id_self    = document.get(KEY_ID_SELF),
@@ -401,12 +412,7 @@ def changed(map_document, set_filepath):
                 title      = document.get(KEY_TITLE),
                 location   = str(location.filepath),
                 held       = max(len(held) - 1, 0),
-                decided_by = tuple(sorted(
-                                _name(g, map_by_guid, [])
-                                for (g, edges) in map_edge.items()
-                                for e in edges
-                                if e.get(KEY_ID_REL) == REL_DECIDES
-                                and e.get(KEY_GUID_TGT) == guid))))
+                decided_by = tuple(sorted(map_describer.get(guid, ())))))
 
     reverse = {}
     for (guid, edges) in map_edge.items():
@@ -432,7 +438,8 @@ def changed(map_document, set_filepath):
                                       changed     = _name(root, map_by_guid, [])))
             pending.append((source, root))
 
-    return (list_out, sorted(list_dep))
+    return (list_out, sorted(list_dep),
+            tuple(sorted(set_suspect - {one.id_self for one in list_out})))
 
 
 # -----------------------------------------------------------------------------
@@ -668,6 +675,40 @@ def responsibility(map_document):
     """
 
     return _declaring(map_document, KEY_RESPONSIBLE)
+
+
+# -----------------------------------------------------------------------------
+def _describer(map_document, map_by_guid, map_edge):
+    """
+    Return, by guid, the items that describe each item.
+
+    """
+
+    describe = describing(map_document)
+    out      = {}
+
+    for (guid, edges) in map_edge.items():
+        for edge in edges:
+            if edge.get(KEY_ID_REL) in describe:
+                out.setdefault(edge.get(KEY_GUID_TGT), set()).add(
+                                    _name(guid, map_by_guid, []))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def describing(map_document):
+    """
+    Return the readable ids of every relation declaring that a change
+    to what it points at makes the source suspect
+    (ddr_record_currency).
+
+    Read from the relation register, as dependency and responsibility
+    are.
+
+    """
+
+    return _declaring(map_document, KEY_DESCRIBES)
 
 
 # -----------------------------------------------------------------------------

@@ -214,7 +214,7 @@ def test_a_change_to_a_subject_reaches_the_annotation(tree):
     map_document = tree.context.map_document
     filepath     = tree.resolve(ID_SUBJECT).location.filepath
 
-    (touched, dependent) = cc_public.trace.changed(map_document, {filepath})
+    (touched, dependent, _) = cc_public.trace.changed(map_document, {filepath})
 
     assert any(one.id_self == ID_SUBJECT for one in touched)
     assert any(one.id_self == 'ann_concern' for one in dependent), \

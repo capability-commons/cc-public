@@ -66,7 +66,10 @@ Assurance
   the decisions that decide it, then every item elsewhere that reaches one
   of them by a chain of edges whose relation declares `dependency` (a
   requirement through what implements it, a case through its method, an
-  annotation through what it is about). Where a review starts.
+  annotation through what it is about), then every record that describes one
+  of them by a relation declaring `describes` (`r_decides` alone today), which
+  is what to read again rather than what is stale (`ddr_record_currency`).
+  Where a review starts.
 - `glossary [WORD] [--gaps] [--senses] [--min N] [--format json]` — read the
   term registers. WORD returns every entry that claims it, since a word may
   name several concepts, and every entry that rejects it; with no WORD, every

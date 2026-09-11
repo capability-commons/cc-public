@@ -365,16 +365,17 @@ def write_impact(list_impact, id_format):
 
 
 # -----------------------------------------------------------------------------
-def write_changed(list_changed, list_dependent, id_format):
+def write_changed(list_changed, list_dependent, list_suspect, id_format):
     """
-    Write what changed, by kind, and what rests on it, as text or as
-    json.
+    Write what changed, by kind, what rests on it, and what describes
+    it, as text or as json.
 
     """
 
     if id_format == 'json':
         click.echo(json.dumps({'changed':   [c._asdict() for c in list_changed],
-                               'dependent': [d._asdict() for d in list_dependent]},
+                               'dependent': [d._asdict() for d in list_dependent],
+                               'suspect':   list(list_suspect)},
                               indent = 2))
         return
 
@@ -400,8 +401,15 @@ def write_changed(list_changed, list_dependent, id_format):
                             via = ('' if d.changed == d.id_target
                                    else '  (through to {c})'.format(c = d.changed))))
 
-    click.echo('{n} item(s) changed, {m} resting on them.'.format(
-                    n = len(list_changed), m = len(list_dependent)))
+    if list_suspect:
+        click.echo('describes what changed, so read it again  ({n})'.format(
+                        n = len(list_suspect)))
+        for one in list_suspect:
+            click.echo('    {id}'.format(id = one))
+
+    click.echo('{n} item(s) changed, {m} resting on them, {k} describing '
+               'them.'.format(n = len(list_changed), m = len(list_dependent),
+                              k = len(list_suspect)))
 
 
 # -----------------------------------------------------------------------------

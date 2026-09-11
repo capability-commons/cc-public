@@ -72,9 +72,11 @@ decision:               |
                         alternative is a gate that goes red whenever a
                         schema is edited.
 
-                        None of this is built. It is recorded so that
-                        the reasoning is not lost and so that the
-                        forty findings have somewhere to point.
+                        Built as decided. The relation register entry
+                        carries describes, r_decides declares it, the
+                        changed projection walks it, and cctool
+                        changed reports a third list beside what rests
+                        on a change. No digest reads it.
 rationale:              |
                         A second declaration rather than widening
                         dependency, because the two questions differ.
@@ -140,11 +142,9 @@ alternative:            |
                         measured on this tree misses a third of what
                         it should catch.
 consequence:            |
-                        Every record that decides anything becomes
-                        reachable from a change to it, so a busy
-                        commit will name several. Whether that is a
-                        useful list or a wall of text is unknown until
-                        it is built.
+                        Every record that decides anything is
+                        reachable from a change to it, so a commit
+                        that touches a register names several.
 
                         A record nothing decides is unreachable by
                         this and stays as invisible as it is now. The
@@ -154,15 +154,25 @@ consequence:            |
 
                         Description is a third semantic on a relation
                         register entry, beside dependency and the
-                        constraints. A reader now has to know which of
-                        them a check reads, which is why the
-                        consequence of ddr_dependency_closure was
-                        wrong about that and had to be amended.
+                        constraints. A reader has to know which of
+                        them a check reads: the relation check reads
+                        neither, the closure and the evidence digest
+                        read dependency, and cctool changed reads
+                        both.
 
-                        Nothing is built, so the forty findings this
-                        would have caught were answered by hand, one
-                        at a time.
-relation:               []
+                        The size of the list was measured over every
+                        file in the tree, one file at a time. Four
+                        hundred and eighty-three of seven hundred and
+                        fifteen files name no record at all, the
+                        median is none and the ninetieth percentile is
+                        one. The tail is the three large registers,
+                        because a touched file makes every entry in it
+                        changed: thirty-nine records for the type
+                        register, thirty-two for the term register and
+                        twenty-four for the relation register. So an
+                        ordinary commit names nothing or one record,
+                        and a commit that edits a register names a
+                        page of them.
 
 question:
 
@@ -181,7 +191,27 @@ question:
     id_self:            qst_record_currency.noise
     guid_self:          qst_acbd741c330f487fa5e30c0e3c73d696
     question:           |
-                        How many records a busy commit makes suspect,
-                        and whether a list that size is read or
-                        ignored.
+                        Whether a list of this size is read or
+                        ignored. How many records a change makes
+                        suspect is measured and is in the consequence;
+                        whether the three registers at the tail need a
+                        narrower walk, to the entry rather than to the
+                        file, is not.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_decides
+    guid_target:        r_4aefda84f8894e02aede8729ced91732
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_entry_relation
+    guid_target:        sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f

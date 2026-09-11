@@ -167,6 +167,11 @@ def test_changed_says_what_changed_since_a_ref_and_what_rests_on_it(repo):
     report = json.loads(out.output)
     assert 'pym_cc_public.layout' in [c['id_self'] for c in report['changed']]
     assert [d['id_self'] for d in report['dependent']] == ['req_printer_idempotent']
+    # The record that decides the module is named as describing it, so a
+    # reader is told to read it again (ddr_record_currency).
+    assert report['suspect'] == ['ddr_layout_convention']
+    assert 'describes what changed' in run(
+                'changed', '--root', str(repo), '--since', 'HEAD').output
     assert run('changed', '--root', str(repo), '--since', 'nowhere').exit_code == 2
 
 

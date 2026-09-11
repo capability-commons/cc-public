@@ -192,8 +192,9 @@ def changed(ref, id_format, list_root):
     """
     Show what changed since a commit and what rests on it: every
     standalone item in the files changed since REF, with the decisions
-    that decide it, and every item elsewhere that reaches one of them
-    by a chain of dependency edges. Where a review starts.
+    that decide it, every item elsewhere that reaches one of them by a
+    chain of dependency edges, and every record describing one of them,
+    which is what to read again. Where a review starts.
 
     Reads the tree and the history, and writes nothing.
 
@@ -206,9 +207,10 @@ def changed(ref, id_format, list_root):
     except cc_public.load.git.ErrorGit as err:
         cc_public.cli.group.fail(err)
 
-    (list_changed, list_dependent) = cc_public.trace.changed(
+    (list_changed, list_dependent, list_suspect) = cc_public.trace.changed(
                                         tree.context.map_document, set_filepath)
-    cc_public.cli.report.write_changed(list_changed, list_dependent, id_format)
+    cc_public.cli.report.write_changed(list_changed, list_dependent, list_suspect,
+                                       id_format)
 
 
 # -----------------------------------------------------------------------------
