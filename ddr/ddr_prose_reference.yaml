@@ -1,0 +1,126 @@
+id_self:                ddr_prose_reference
+guid_self:              ddr_77322d73c73f4905b8db44650bba80e0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An identifier written in prose is checked like one written in a field
+brief:                  |
+                        Prose naming an item is reported where this
+                        tree holds no item of that name, so that a
+                        record describing something that has gone says
+                        so.
+context:                |
+                        The reference check reads the identity fields
+                        of an item: id_target, guid_target, id_mark
+                        and their kind. It says nothing about the
+                        prose beside them, and most of what a record
+                        asserts is in the prose.
+
+                        A review found records naming a gate command
+                        no longer run, a check said to read a flag it
+                        has no key for, a member said to hold links
+                        that were never made, and six type entries
+                        saying no schema names them where one does.
+                        Each named the thing it was wrong about, by
+                        its readable id, in a block scalar nothing
+                        reads.
+
+                        The identifiers are mechanical. reg_type gives
+                        a pattern for every prefix, so a token in
+                        prose either matches one of them or does not,
+                        and one that matches either resolves in this
+                        tree or does not.
+decision:               |
+                        A check reads the prose of every item for
+                        tokens matching the identifier pattern of a
+                        declared type, and reports each that this tree
+                        holds no item for.
+
+                        Advisory, always. Prose may name an item that
+                        a consumer segment holds, an item a record
+                        proposes and nobody has made, or a thing being
+                        argued against. None of those is a fault.
+
+                        Read from the type register, so a new prefix
+                        is covered the day it is entered and nothing
+                        lists the patterns twice.
+
+                        Not built. Recorded with ddr_record_currency,
+                        which covers the other half of the same drift.
+rationale:              |
+                        Advisory rather than critical, because the
+                        false positives are real and predictable: a
+                        record arguing against an item it did not make
+                        names it, and a segment may name what a
+                        consumer holds. A critical finding would be
+                        turned off within a week.
+
+                        Patterns from the register rather than one
+                        pattern for all prefixes, because that is
+                        where they are declared and a second copy is
+                        the failure this whole exercise is about.
+
+                        Prose rather than every string, because a
+                        datum is a datum: a pattern, a sql statement,
+                        a stored subject. The layout convention
+                        already draws that line and the glossary gap
+                        report already reads it.
+
+                        A check rather than an eval, because whether a
+                        token resolves is a fact about the graph and a
+                        model reading prose would answer it by
+                        inference, which is what ddr_tool_verification
+                        says to stop doing.
+alternative:            |
+                        Require every identifier in prose to be
+                        written as a reference field instead.
+                        Rejected: prose is prose, and a record that
+                        cannot name a thing without a field beside it
+                        is a record nobody writes.
+
+                        Have an eval read each record and say whether
+                        what it names still exists. Rejected for this
+                        half: it is a fact about the graph, and a
+                        judge answers it by inference. The eval has
+                        the half that names nothing, which is
+                        ddr_eval_schedule.
+
+                        Report a token that resolves to an item whose
+                        content has changed, as well as one that
+                        resolves to nothing. Rejected as a second
+                        thing: that is what ddr_record_currency
+                        reaches by the edges, and asking it of every
+                        token in prose would report every record on
+                        every commit.
+consequence:            |
+                        A record arguing against an item that was
+                        never made is reported for as long as it says
+                        so, which is a standing advisory a reader must
+                        learn to pass over. How many of those there
+                        are is unknown until it is built.
+
+                        An identifier misspelt in prose is reported,
+                        which is the point, and an identifier renamed
+                        by cctool rename is not: rename lists prose
+                        mentioning the old id rather than changing it,
+                        so the two mechanisms meet.
+
+                        Nothing is built.
+relation:               []
+
+question:
+
+  standing:
+    id_self:            qst_prose_reference.standing
+    guid_self:          qst_ca07ab153f244b52a920166e6d31b4b3
+    question:           |
+                        What holds a record that names on purpose an
+                        item nobody made, given that the finding
+                        stands for as long as the record says it and a
+                        reader learns to pass over it.
+    relation:           []

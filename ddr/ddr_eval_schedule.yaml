@@ -1,0 +1,169 @@
+id_self:                ddr_eval_schedule
+guid_self:              ddr_57a631b6fa5048cbb4aeec30279c6eba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evals run on a schedule within a budget, and what they find becomes annotations
+brief:                  |
+                        An eval too expensive to run on every commit
+                        is run periodically, and each finding is
+                        written as an annotation to be answered when
+                        somebody gets to it.
+context:                |
+                        Twenty nine evals are in the tree and nothing
+                        runs them. They are not in the gate, because a
+                        judged run costs money and time per item and a
+                        gate runs on every push. So they run when
+                        somebody remembers, which is rarely, and a
+                        review of four days' work found thirty four
+                        items whose prose argues where it should
+                        describe and four decisions that report rather
+                        than decide, all of them things
+                        evl_prose_describes and evl_decision_decides
+                        exist to find.
+
+                        The tooling was not missing. Nobody ran it,
+                        and nothing held what it would have said.
+
+                        The same review showed what a judge is worth
+                        and what it is not. The coverage eval,
+                        measured over nine control cases at five
+                        samples, sits at a false positive rate of zero
+                        and a false negative rate of a third. It
+                        almost never raises a false alarm and it
+                        misses a third of what it should catch.
+decision:               |
+                        An eval is not in the gate. A gate runs on
+                        every push and a judged run is paid for per
+                        item, so a gate that judged would be a gate
+                        somebody turns off.
+
+                        Evals run on a schedule, at whatever interval
+                        the budget allows, over what has changed since
+                        the last run. cctool check --eval
+                        --changed-since is what that runs.
+
+                        What a run finds is written as annotations,
+                        one assertion each, asserted by the judge's
+                        model entry. They are answered when somebody
+                        gets to them, by the means ddr_annotation
+                        already decides: another annotation supporting
+                        or challenging, or the item that arose from
+                        the finding.
+
+                        A judge is a widening layer over the
+                        mechanical checks and never a replacement for
+                        one. Where a question is a fact about the
+                        graph it belongs in a check, and
+                        ddr_record_currency, ddr_prose_reference and
+                        ddr_restated_fact take what can be made
+                        mechanical out of the evals' way.
+
+                        Nothing here is built. A run is by hand and
+                        the findings go nowhere.
+rationale:              |
+                        Periodic rather than never, because the
+                        alternative measured itself: twenty nine evals
+                        in the tree, none run, and a review by a
+                        different model found what they exist to find.
+                        An eval run weekly catches in a week what an
+                        eval run never catches never.
+
+                        Out of the gate rather than in it, because the
+                        cost is per item and per push, and because a
+                        judge that misses a third of what it should
+                        catch is a poor thing to block on. The gate
+                        decides; an eval widens.
+
+                        Annotations rather than a report, because a
+                        report is read once and an annotation can be
+                        answered, pointed at and left open honestly.
+                        The type exists and a review has now used it
+                        for a hundred and four findings.
+
+                        Over what changed rather than over everything,
+                        because that is what a budget buys and because
+                        the command already takes a commit to compare
+                        from.
+
+                        The mechanical work named alongside, because
+                        the cheapest way to make an eval affordable is
+                        to stop asking it what a check can answer.
+alternative:            |
+                        Put the evals in the gate. Rejected: cost per
+                        push, and a gate blocking on a judge measured
+                        at a third of false negatives teaches people
+                        that red means maybe.
+
+                        Run them by hand when somebody remembers.
+                        Rejected: that is the state this record is
+                        about.
+
+                        Write the findings into a sweep, which already
+                        groups a report by eval and rule. Not
+                        rejected, and not the same thing: a sweep is
+                        what wf_propose_rule reads to propose a rule a
+                        check could apply, which is the improvement
+                        loop turning a finding into a check. An
+                        annotation is what holds a finding nobody has
+                        acted on yet. A run may well make both.
+
+                        Hold the findings in a report file. Rejected:
+                        nothing can point at a line of a report, and a
+                        finding nobody can answer is one nobody argues
+                        with.
+consequence:            |
+                        A finding may sit unanswered for a long time,
+                        and the pile is visible and grows.
+                        ddr_annotation accepts that cost already and
+                        this makes it larger.
+
+                        The interval is a budget and not a property of
+                        the tree, so what the evals last said may
+                        describe a tree several changes old. An
+                        annotation is current against the commit that
+                        last changed it, which the history records,
+                        and nothing revalidates it.
+
+                        A judged run costs money, so somebody has to
+                        decide how often, and that decision is not
+                        made here.
+
+                        Nothing is built: no schedule, nothing that
+                        turns a finding into an annotation, and no
+                        record of what a run cost.
+relation:               []
+
+question:
+
+  interval:
+    id_self:            qst_eval_schedule.interval
+    guid_self:          qst_324fd50a668242c4bb7321944637e063
+    question:           |
+                        How often a run is worth its cost, which is a
+                        budget question and not a property of the
+                        tree.
+    relation:           []
+
+  writer:
+    id_self:            qst_eval_schedule.writer
+    guid_self:          qst_2e6b34ffeed74d268401b728808e9b3d
+    question:           |
+                        What turns a judged finding into an
+                        annotation, given that a person writes one
+                        today and a run may produce many.
+    relation:           []
+
+  cost:
+    id_self:            qst_eval_schedule.cost
+    guid_self:          qst_0561525761da431f8c883ba992aec950
+    question:           |
+                        What a run costs per item and per eval, which
+                        nothing measures and which decides the
+                        interval.
+    relation:           []

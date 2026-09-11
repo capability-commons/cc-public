@@ -1,0 +1,187 @@
+id_self:                ddr_record_currency
+guid_self:              ddr_025e3e2284f549b5ab4328a56b4f432d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A change to what a record decides makes its prose suspect
+brief:                  |
+                        A record is reached from the items it decides,
+                        so that prose describing a thing that has
+                        changed is reported rather than found by a
+                        reader.
+context:                |
+                        A review of four days' work by a second model
+                        raised one hundred and four findings. About
+                        forty of them are one kind: a record whose
+                        prose no longer describes the tree. A record
+                        counted six entries where the register holds
+                        eight, said a check reads a flag it does not
+                        read, said the method register holds one entry
+                        where it holds four, and said work does not
+                        yet exist that was built a week earlier.
+
+                        Every one of those was caused by the same
+                        thing. A record names what it decides by
+                        r_decides, and that relation declares no
+                        dependency, so a change to a decided item
+                        reaches nothing. The six relations that
+                        declare dependency are r_is_implemented_by,
+                        r_uses_test_method, r_tests, r_is_about,
+                        r_supports and r_challenges. A schema may be
+                        rewritten and the record arguing for it is not
+                        even suspect.
+
+                        The walk exists. cctool changed reads the
+                        edges that declare dependency and reports what
+                        rests on a change. Only the edge is missing,
+                        and it is missing on purpose:
+                        ddr_dependency_closure decided that a closure
+                        follows what a claim rests on, and an evidence
+                        digest must not go stale because somebody
+                        edited a record.
+decision:               |
+                        A relation may declare that a change to the
+                        item at its target makes what is at its source
+                        suspect, which is a weaker thing than
+                        dependency and is declared separately. Call it
+                        description. r_decides declares it; the six
+                        relations that declare dependency are
+                        untouched.
+
+                        A report reads it, and no digest does. cctool
+                        changed gains a second list: what describes a
+                        changed item, beside what rests on it. The
+                        evidence closure, the evidence digest and the
+                        coverage analysis digest read dependency alone
+                        and are not widened.
+
+                        Suspect is not stale. A record reached this
+                        way is one a person should read against what
+                        changed, and nothing computes whether the
+                        prose is still true. What makes a suspect
+                        record current again is a person reading it,
+                        and the history records that they did.
+
+                        Nothing blocks. A suspect record refuses no
+                        commit and stops no run, because the
+                        alternative is a gate that goes red whenever a
+                        schema is edited.
+
+                        None of this is built. It is recorded so that
+                        the reasoning is not lost and so that the
+                        forty findings have somewhere to point.
+rationale:              |
+                        A second declaration rather than widening
+                        dependency, because the two questions differ.
+                        Dependency asks what a claim rests on, and an
+                        evidence digest must cover exactly that: a
+                        verdict stops standing when the code under it
+                        moves. Description asks what talks about what.
+                        Folding them would make an evidence row stale
+                        because somebody rewrote a rationale, which is
+                        the widening ddr_dependency_closure argues
+                        against and would teach a reader to ignore
+                        staleness.
+
+                        Declared on the relation rather than listed in
+                        the report, for the reason
+                        ddr_dependency_closure gives about dependency:
+                        what rests on what belongs in the register, so
+                        that a later reader asking what a change
+                        reaches has an answer without reading code.
+
+                        A report rather than a check, because whether
+                        prose has drifted is not mechanically
+                        decidable and a check that reported every
+                        record beside every change would be noise.
+                        What is mechanical is the reaching; what is
+                        not is the reading.
+
+                        Nothing blocking, because the cost of a false
+                        alarm here is a person reading a record that
+                        was fine, and the cost of a gate that reddens
+                        on every schema edit is that somebody turns it
+                        off.
+alternative:            |
+                        Make r_decides declare dependency. Rejected:
+                        an evidence digest would go stale whenever a
+                        record that decides anything in the closure
+                        was edited, which is exactly the widening on
+                        an argument nobody has made that
+                        ddr_dependency_closure refuses.
+
+                        Stamp a digest of what it decides onto each
+                        record, as a decision stamps its subjects.
+                        Rejected for now: it is the mechanism
+                        ddr_decision already uses and it works, but it
+                        puts a field on every record that must be
+                        renewed by hand, and a record is prose about
+                        many items rather than a verdict about one. It
+                        is the obvious next step if the report proves
+                        too coarse.
+
+                        Leave it to review. Rejected: that is what
+                        happened, and it cost a hundred and four
+                        findings read by a person, forty of which a
+                        walk would have raised at the commit that
+                        caused them.
+
+                        Let an eval read each record against what it
+                        decides and say whether the prose still holds.
+                        Not rejected: it is ddr_eval_schedule's
+                        business and it catches the drift that names
+                        no identifier. It is the widening layer over
+                        this, not a replacement, because a judge
+                        measured on this tree misses a third of what
+                        it should catch.
+consequence:            |
+                        Every record that decides anything becomes
+                        reachable from a change to it, so a busy
+                        commit will name several. Whether that is a
+                        useful list or a wall of text is unknown until
+                        it is built.
+
+                        A record nothing decides is unreachable by
+                        this and stays as invisible as it is now. The
+                        two queries that find an item nothing decides
+                        already exist and nothing runs them, which is
+                        the same failure one layer down.
+
+                        Description is a third semantic on a relation
+                        register entry, beside dependency and the
+                        constraints. A reader now has to know which of
+                        them a check reads, which is why the
+                        consequence of ddr_dependency_closure was
+                        wrong about that and had to be amended.
+
+                        Nothing is built, so the forty findings this
+                        would have caught were answered by hand, one
+                        at a time.
+relation:               []
+
+question:
+
+  shape:
+    id_self:            qst_record_currency.shape
+    guid_self:          qst_df753c542c424170816a42040493c85f
+    question:           |
+                        Whether description belongs on the relation
+                        register entry beside dependency, or whether a
+                        relation should carry one semantic and a
+                        second register should say which relations a
+                        report walks.
+    relation:           []
+
+  noise:
+    id_self:            qst_record_currency.noise
+    guid_self:          qst_acbd741c330f487fa5e30c0e3c73d696
+    question:           |
+                        How many records a busy commit makes suspect,
+                        and whether a list that size is read or
+                        ignored.
+    relation:           []
