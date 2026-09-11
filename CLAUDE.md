@@ -319,7 +319,7 @@ information is not entered there.
   frame.input.guide=reg_writing_style_rule`. Captures live outside the
   tree, in `/Users/wtp/dev/cc/demo/`. A concept (`cpt_`, in `concept/`) is a
   candidate solution to a need under a framing, with assumptions, risks and
-  three to twelve embedded candidate requirements (`crq_`); `run
+  ten to thirty embedded candidate requirements (`crq_`); `run
   wf_concept_from_need --deployment dep_concept_from_need_local` with the
   need, framing, observation and guide bound on `propose` and the need and
   guide on `challenge`, once per framing (`ddr_concept`). `run

@@ -70,32 +70,23 @@ note:                   |
                         This is the coverage analysis DO-178C asks for
                         and nothing here did: that verification
                         exercises the requirement was inferred from
-                        the verification existing. It is advisory and
-                        unmeasured, so it reports and does not gate
-                        until someone runs cctool measure against it.
+                        the verification existing. It is advisory
+                        whatever it is measured at, because a judge is
+                        not a check.
 
-                        Narrowed to a python test function after the
-                        first run, then widened again once a case
-                        could show the code it stands for. A test case
-                        carries no source of its own, so the first run
-                        gave the judge the case prose and no code, and
-                        every one of the six such pairs came back
-                        unmet on five judgements of five. Two said so
-                        outright: no information about the actual test
-                        is given. A hundred per cent unmet on one kind
-                        of subject was a defect in what the judge was
-                        shown, not a finding about the tests. The
-                        projection now follows r_is_implemented_by
-                        from a case to the function that automates it.
-
-                        Measured at a false negative of a fifth and
-                        unanimity of 0.857, and both unstable cases
-                        turned on something outside the definition:
-                        FILES at module level for the printer, a
-                        fixture for the walk. The projection now
+                        The subject is a pair, a verifier and the
+                        requirement it verifies. A test case carries
+                        no source of its own, so the projection
+                        follows r_is_implemented_by from a case to the
+                        function that automates it, and the scope
                         carries the module level statements beside the
-                        definition, so the digest has moved and the
-                        confidence recorded before it is stale.
+                        definition, since a verdict may turn on a
+                        constant outside it.
+
+                        What this judge was measured at is the
+                        confidence rows below, and why it was measured
+                        again is in the commits and in
+                        ddr_coverage_analysis.
 
 scope:
 
