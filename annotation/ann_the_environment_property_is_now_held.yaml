@@ -1,0 +1,47 @@
+id_self:                ann_the_environment_property_is_now_held
+guid_self:              ann_8cc709d8d38e4435b35c5023040cf5a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The property the environment decision keeps is now held by a test
+brief:                  |
+                        Fixed. A test parses every module of the tool
+                        and asserts none imports the model stack as it
+                        loads.
+description:            |
+                        ddr_environment_shape decides that the split
+                        stays available only while every import of the
+                        model stack sits inside the function that
+                        needs it, and nothing held it. A module level
+                        import anywhere the gate reaches would have
+                        closed the option, and the record says so.
+
+                        test_the_model_stack_is_imported_inside_the_function_that_needs_it
+                        reads the top level statements of each of the
+                        ninety one modules and asserts none imports
+                        dspy, litellm or openai. Parsed rather than
+                        grepped, so an import inside a function is not
+                        a false alarm and an import at the top of a
+                        module cannot hide behind formatting.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_environment_property_held_by_nothing
+    guid_target:        ann_5098ba1de7cc4d1296c4385842460d6f
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_environment_shape
+    guid_target:        ddr_5d37c9605744492085deb2d97224f97d

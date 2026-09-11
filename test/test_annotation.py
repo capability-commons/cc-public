@@ -202,3 +202,20 @@ def test_an_annotation_rests_on_what_it_is_about(tree):
     map_document = tree.context.map_document
     assert 'r_is_about' in cc_public.testing.dependency(map_document)
     assert ID_SUBJECT in cc_public.testing.closure(map_document, ['ann_concern'])
+
+
+def test_a_change_to_a_subject_reaches_the_annotation(tree):
+    # The other direction, which is what ddr_annotation relies on: a
+    # change to the subject reaches the annotation. The closure runs
+    # from the annotation and passes whether or not anything walks back.
+    import cc_public.trace
+
+    _annotate(tree, 'ann_concern', 'The path query is unbounded.', ID_SUBJECT)
+    map_document = tree.context.map_document
+    filepath     = tree.resolve(ID_SUBJECT).location.filepath
+
+    (touched, dependent) = cc_public.trace.changed(map_document, {filepath})
+
+    assert any(one.id_self == ID_SUBJECT for one in touched)
+    assert any(one.id_self == 'ann_concern' for one in dependent), \
+           [one.id_self for one in dependent]

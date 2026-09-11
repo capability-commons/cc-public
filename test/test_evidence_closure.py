@@ -163,3 +163,48 @@ def test_a_row_names_the_execution_only_where_the_execution_is_kept(tree):
 
     cc_public.evidence.from_execution(tree, _execution(tree, 'passed'), is_kept = True)
     assert _row(tree)['id_execution'] == 'tex_20260908000000_abcdef'
+
+
+def test_a_kept_execution_is_in_the_closure_the_check_recomputes(tree, tmp_path):
+    # Every test here hands from_execution an execution the tree does
+    # not hold, so the digest drops it and the row and the check agree
+    # over a closure the execution is not in. A real kept execution is
+    # the path the decisions call the governed run.
+    import shutil
+
+    import conftest
+
+    import cc_public.adapter
+    import cc_public.check
+    import cc_public.check.evidence
+    import cc_public.edit.tree
+
+    # The copy holds no test directory, and the case names a function
+    # that lives in one.
+    shutil.copytree(conftest.ROOT / 'test', tmp_path / 'test')
+    tree = cc_public.edit.tree.Tree([tmp_path])
+
+    (document, problem) = cc_public.adapter.execute(tree, ID_CASE, ID_UNDER)
+    assert problem == []
+    assert document['execution_outcome'] == 'completed', document['result']
+
+    cc_public.adapter.record(tree, document)
+    tree = cc_public.edit.tree.Tree([tmp_path])
+    assert cc_public.evidence.from_execution(tree, document, is_kept = True) is not None
+
+    tree = cc_public.edit.tree.Tree([tmp_path])
+    row  = _row(tree)
+    assert row['id_execution'] == document['id_self']
+
+    # The check recomputes the digest over what the row names, the kept
+    # execution included, and agrees with what the row was stamped with.
+    context = cc_public.check.context([tmp_path])[0]
+    assert row['digest'] == cc_public.check.evidence.digest(
+                                    context.map_document,
+                                    tree.resolve(ID_REQ).guid_self,
+                                    tree.resolve(ID_CASE).guid_self,
+                                    cc_public.check.evidence.rests_on(row))
+
+    found = [n['message'] for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
+             if c['id_check'] == 'evidence' for n in c['nonconformity']]
+    assert not [m for m in found if 'stale' in m and ID_CASE in m], found
