@@ -2225,3 +2225,156 @@ table:
         guid_relation:  r_016e74a0abea4a3990cc3259942baf92
         id_target:      reg_model
         guid_target:    reg_8fb29a2ee76c427ba45e381ba9478c70
+
+  t_operational_concept:
+    id_self:            t_operational_concept
+    guid_self:          t_2e7923ec0dce498483c46f94df16deb2
+    title:              Operational concept type
+    brief:              |
+                        Type of operational concept data items
+    description:        |
+                        Each operational concept data item says how
+                        one system of interest is intended to be used:
+                        what is inside its boundary and what crosses
+                        it, what operating it achieves, the
+                        environment it runs in, who takes part and
+                        what modes it has. It says nothing about how
+                        the system is built.
+    prefix:             opc
+    regex_id:           ^opc_[a-z][a-z0-9_]*$
+    id_term:            term_operational_concept
+    guid_term:          term_a92959fcf2c9453284f8f467e826e509
+    usage:              |
+                        One item per system of interest, in
+                        operational_concept/. It derives from the need
+                        it elaborates by r_is_derived_from. Its
+                        scenarios are items of their own naming it by
+                        r_is_scenario_of, and the requirements on the
+                        system derive from it and from them.
+    home:               operational_concept
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_operational_concept
+        guid_target:    sch_9ebbb0fffc3f433882fdaf8de04656b4
+
+  t_operational_scenario:
+    id_self:            t_operational_scenario
+    guid_self:          t_de40575e6e044fc3ad444341bd5a8f99
+    title:              Operational scenario type
+    brief:              |
+                        Type of operational scenario data items
+    description:        |
+                        Each operational scenario data item holds one
+                        episode of operation: its kind, what it is
+                        for, what is true before it, what starts it,
+                        what happens in order, and what is observably
+                        true when it ends.
+    prefix:             osc
+    regex_id:           ^osc_[a-z][a-z0-9_]*$
+    id_term:            term_operational_scenario
+    guid_term:          term_b25df13086fd41068b31683247b6cd37
+    usage:              |
+                        One item per episode, in
+                        operational_scenario/. It names the
+                        operational concept it belongs to by
+                        r_is_scenario_of and its kind by an entry of
+                        reg_operational_scenario_kind. A requirement
+                        derives from a scenario, and a measure
+                        quantifies one.
+    home:               operational_scenario
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_operational_scenario
+        guid_target:    sch_3a7cbc4ccd4949b1b1d80aad3fbca0ab
+
+  t_measure:
+    id_self:            t_measure
+    guid_self:          t_19087288bae54ef29848e75d6963d92b
+    title:              Measure type
+    brief:              |
+                        Type of measure data items
+    description:        |
+                        Each measure data item says how one thing is
+                        quantified: what is measured, in what unit or
+                        of what counted thing, over what population,
+                        by what statistic, which way is better, the
+                        least acceptable value and how the number is
+                        arrived at.
+    prefix:             msr
+    regex_id:           ^msr_[a-z][a-z0-9_]*$
+    id_term:            term_measure
+    guid_term:          term_232035785dae4f8abd72c2509b7bb09f
+    usage:              |
+                        One item per quantity, in measure/. It names
+                        its kind by an entry of reg_measure_kind and
+                        what it quantifies by r_quantifies, and later
+                        the evidence that evaluates it.
+    home:               measure
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_measure
+        guid_target:    sch_3364e614074f48579f9db1ff327c42aa
+
+  t_operational_scenario_kind:
+    id_self:            t_operational_scenario_kind
+    guid_self:          t_9352b24b9ff04f19bba7b4967f657725
+    title:              Operational scenario kind type
+    brief:              |
+                        Type of operational scenario kind register
+                        entries
+    description:        |
+                        Each entry names one sort of episode a
+                        scenario can be, so that what a set of
+                        scenarios covers can be read rather than
+                        inferred from their prose.
+    prefix:             oskind
+    regex_id:           ^oskind_[a-z][a-z0-9_]*$
+    id_term:            term_operational_scenario_kind
+    guid_term:          term_1e24db7e7e5f45a6a71932aaae2ea431
+    usage:              |
+                        Entries live in reg_operational_scenario_kind.
+                        A scenario names one by its kind field. A
+                        consuming segment may hold a register of its
+                        own with kinds the core does not have.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_reg_plain
+        guid_target:    sch_40018b62a691433bb322fa44d25cd632
+
+  t_measure_kind:
+    id_self:            t_measure_kind
+    guid_self:          t_75a48896f973405193467c85e26ad236
+    title:              Measure kind type
+    brief:              |
+                        Type of measure kind register entries
+    description:        |
+                        Each entry names one sort of measure, taken
+                        from the INCOSE systems engineering handbook:
+                        of effectiveness, of performance, or a
+                        technical performance measure.
+    prefix:             mkind
+    regex_id:           ^mkind_[a-z][a-z0-9_]*$
+    id_term:            term_measure_kind
+    guid_term:          term_27a310d56f2547a08ffb90b06bcc2baf
+    usage:              |
+                        Entries live in reg_measure_kind. A measure
+                        names one by its kind field.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_reg_plain
+        guid_target:    sch_40018b62a691433bb322fa44d25cd632

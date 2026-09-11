@@ -1,0 +1,188 @@
+id_self:                sch_operational_scenario
+guid_self:              sch_3a7cbc4ccd4949b1b1d80aad3fbca0ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Operational scenario schema
+brief:                  |
+                        Schema for operational scenario data items:
+                        one episode of intended, alternative,
+                        degraded, failed, maintenance or misuse
+                        operation.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A scenario is one coherent episode
+                        of operation: what starts it, what happens in
+                        order, and what is true and observable when it
+                        ends. Its kind is an entry of
+                        reg_operational_scenario_kind. It is an item
+                        of its own rather than prose inside an
+                        operational concept, because a requirement, a
+                        measure and a validation case each point at a
+                        particular scenario.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_operational_scenario.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - kind
+      - purpose
+      - precondition
+      - trigger
+      - step
+      - postcondition
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the scenario, one line.
+
+      kind:
+        type:           object
+
+        required:
+          - id_kind
+          - guid_kind
+
+        properties:
+
+          id_kind:
+            type:       string
+            description:  |
+                        The readable id of the scenario kind entry.
+
+          guid_kind:
+            type:       string
+            description:  |
+                        The guid of that entry.
+
+        additionalProperties:  false
+        description:    |
+                        Which kind of episode this is, as an entry of
+                        reg_operational_scenario_kind: the intended
+                        one, an alternative that reaches the same
+                        outcome another way, operation degraded,
+                        operation failed, wrong or hostile use,
+                        maintenance, or deployment.
+
+      purpose:
+        type:           string
+        minLength:      1
+        description:    |
+                        What this episode is for and what the
+                        participants are trying to achieve. The
+                        outcome wanted, not the steps taken to reach
+                        it.
+
+      precondition:
+        type:           string
+        minLength:      1
+        description:    |
+                        What is true before the episode starts: the
+                        state of the system, the mode it is in, what
+                        the participants have, and what the
+                        environment is doing.
+
+      trigger:
+        type:           string
+        minLength:      1
+        description:    |
+                        The event that starts the episode: what
+                        happens, and who or what causes it.
+
+      step:
+        type:           array
+        minItems:       1
+
+        items:
+          type:         string
+          minLength:    1
+          maxLength:    160
+          pattern:      ^[^\n]+$
+
+        description:    |
+                        What happens, in order, one line each, naming
+                        who acts and what they do. A step carries no
+                        identity, so nothing points at one
+                        (ddr_operational_concept).
+
+      postcondition:
+        type:           string
+        minLength:      1
+        description:    |
+                        What is true when the episode ends, stated so
+                        that somebody could tell from outside whether
+                        it holds. The observable result, and the state
+                        the system is left in.
+
+      alternative:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Where the episode can depart from
+                        the steps above, what makes it depart, and
+                        where it rejoins or what it ends in instead.
+
+      participant:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Who takes part, naming the
+                        participants of the operational concept this
+                        is a scenario of.
+
+      environment:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The conditions this episode is
+                        played out under, where they narrow the
+                        environment the operational concept states.
+
+      importance:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How often this episode is expected,
+                        what it costs when it goes wrong, or why it is
+                        worth writing down. What makes it worth
+                        covering rather than a ranking.
+
+      assumption:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is taken as true for this
+                        episode alone, beyond what the operational
+                        concept assumes.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the scenario.
+
+unevaluatedProperties:  false

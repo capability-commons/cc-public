@@ -1,0 +1,212 @@
+id_self:                sch_operational_concept
+guid_self:              sch_9ebbb0fffc3f433882fdaf8de04656b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Operational concept schema
+brief:                  |
+                        Schema for operational concept data items: the
+                        system of interest, its boundary, the
+                        operational purpose, the environment, and who
+                        takes part.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. An operational concept says how the
+                        system of interest is intended to be used and
+                        what crosses its boundary, before anything
+                        specifies how it is built. It is not the
+                        solution concept: a solution concept proposes
+                        a candidate solution to a need, and an
+                        operational concept describes intended
+                        operation in context. Its scenarios are items
+                        of their own and point back at it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_operational_concept.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - system_of_interest
+      - boundary
+      - purpose
+      - environment
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the operational concept,
+                        one line.
+
+      system_of_interest:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the concept is about: the thing that will
+                        be specified, named as an entity rather than
+                        as a technology. What it is for is the
+                        purpose, and what is inside it is the
+                        boundary.
+
+      boundary:
+        type:           string
+        minLength:      1
+        description:    |
+                        What is inside the system of interest, what is
+                        outside it, and what crosses between them.
+                        Anything the system is required to interact
+                        with and does not contain is outside, and an
+                        exchange across the boundary is what a later
+                        interface controls.
+
+      purpose:
+        type:           string
+        minLength:      1
+        description:    |
+                        What operating the system is intended to
+                        achieve, in operational terms and not in terms
+                        of what it is made of. The outcome a
+                        stakeholder would recognise.
+
+      environment:
+        type:           string
+        minLength:      1
+        description:    |
+                        Where and under what conditions the system
+                        operates: the physical, procedural and
+                        organisational setting, the phases of its life
+                        it is operated in, and the conditions that
+                        change how it is used.
+
+      constraint:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is imposed on operation from
+                        outside: regulation, standing procedure, an
+                        existing system that must be used, a facility
+                        that must be shared. Not a requirement on the
+                        system, which is derived later.
+
+      assumption:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is taken as true about
+                        operation without being established here, and
+                        what would have to be revisited if it turned
+                        out false.
+
+      exclusion:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is deliberately not covered, so
+                        that a reader does not take silence for
+                        inclusion.
+
+      participant:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          type:         object
+
+          required:
+            - role
+
+          properties:
+
+            role:
+              type:     string
+              minLength:  1
+              description:  |
+                        What the participant is and what it does
+                        across the boundary. A person, a role, an
+                        organisation, an external system or a part of
+                        the environment that acts.
+
+            description:
+              type:     string
+              minLength:  1
+              description:  |
+                        Optional. What more a reader needs about this
+                        participant: what it expects, what it is not,
+                        and what it depends on.
+
+          additionalProperties:  false
+
+        description:    |
+                        Optional. Who and what takes part in
+                        operation, keyed by a short local name a
+                        scenario can name in prose. A participant
+                        carries no identity of its own, so nothing
+                        points at one (ddr_operational_concept).
+
+      mode:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          type:         object
+
+          required:
+            - description
+
+          properties:
+
+            description:
+              type:     string
+              minLength:  1
+              description:  |
+                        What the system does and does not do while it
+                        is in this mode.
+
+            entered_when:
+              type:     string
+              minLength:  1
+              description:  |
+                        Optional. What puts the system into this mode
+                        and what takes it out.
+
+          additionalProperties:  false
+
+        description:    |
+                        Optional. The operational modes or states the
+                        system is intended to have, keyed by a short
+                        local name. A scenario's precondition may name
+                        one.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the operational
+                        concept.
+
+unevaluatedProperties:  false

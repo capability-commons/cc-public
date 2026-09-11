@@ -1,0 +1,215 @@
+id_self:                sch_measure
+guid_self:              sch_3364e614074f48579f9db1ff327c42aa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Measure schema
+brief:                  |
+                        Schema for measure data items: what is
+                        quantified, in what unit, over what
+                        population, against what threshold, and what
+                        decision the result informs.
+description:            |
+                        Composes identity, rights and outgoing
+                        relations. A measure says how success or
+                        performance is quantified: what is measured,
+                        in what unit, over what population, by what
+                        statistic, which way is better, what is the
+                        least that is acceptable, and how it is found.
+                        Its kind is an entry of reg_measure_kind,
+                        which holds the measure of effectiveness, the
+                        measure of performance and the technical
+                        performance measure without three nearly
+                        identical schemas. A measure points by
+                        r_quantifies at the need, scenario or
+                        requirement it quantifies.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_measure.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_rights.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - title
+      - kind
+      - quantity
+      - population
+      - statistic
+      - direction
+      - threshold
+      - method
+
+    properties:
+
+      title:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        The unique name of the measure, one line.
+
+      kind:
+        type:           object
+
+        required:
+          - id_kind
+          - guid_kind
+
+        properties:
+
+          id_kind:
+            type:       string
+            description:  |
+                        The readable id of the measure kind entry.
+
+          guid_kind:
+            type:       string
+            description:  |
+                        The guid of that entry.
+
+        additionalProperties:  false
+        description:    |
+                        Which kind of measure this is, as an entry of
+                        reg_measure_kind.
+
+      quantity:
+        type:           string
+        minLength:      1
+        description:    |
+                        The outcome, behaviour or characteristic
+                        quantified, said plainly enough that two
+                        people measuring it would measure the same
+                        thing.
+
+      unit:
+        type:           object
+
+        required:
+          - id_unit
+          - guid_unit
+
+        properties:
+
+          id_unit:
+            type:       string
+            description:  |
+                        The readable id of the unit entry.
+
+          guid_unit:
+            type:       string
+            description:  |
+                        The guid of that entry.
+
+        additionalProperties:  false
+        description:    |
+                        The unit the quantity is stated in, as an
+                        entry of a unit register this item's segment
+                        can see. A measure with no unit names in
+                        counts what it counts instead.
+
+      counts:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. What the quantity counts, where it
+                        has no unit: a thing, an event or an occasion.
+                        One of unit and counts is expected, which
+                        nothing checks yet (ddr_operational_concept).
+
+      population:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the measure is taken over and under what
+                        conditions: the range of inputs, the period,
+                        the configurations, the environments. What
+                        varies and what is held fixed.
+
+      statistic:
+        type:           string
+        minLength:      1
+        description:    |
+                        How the observations over that population are
+                        reduced to one number: a mean, a worst case, a
+                        quantile, a proportion of occasions, a root
+                        mean square.
+
+      direction:
+        type:           string
+
+        enum:
+          - higher_is_better
+          - lower_is_better
+          - nearer_target_is_better
+
+        description:    |
+                        Which way is better. A measure with no better
+                        direction is two measures.
+
+      threshold:
+        type:           string
+        minLength:      1
+        description:    |
+                        The least that is acceptable, with its number
+                        and its unit, and what follows from not
+                        reaching it.
+
+      target:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is wanted where that differs
+                        from the threshold, with its number and its
+                        unit.
+
+      method:
+        type:           string
+        minLength:      1
+        description:    |
+                        How the number is arrived at: measured,
+                        computed, simulated or estimated, by what
+                        procedure, with what instrument or model, and
+                        against what reference.
+
+      uncertainty:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is known about the error of the
+                        method: the confidence wanted, the interval,
+                        the repeatability, or the error budget the
+                        measure has to fit inside.
+
+      decision:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What decision the result is meant to
+                        inform, and what a result either side of the
+                        threshold would mean for it.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the measure.
+
+unevaluatedProperties:  false

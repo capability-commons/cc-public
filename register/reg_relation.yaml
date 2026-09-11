@@ -404,6 +404,7 @@ table:
       - t_ddr
       - t_concept
       - t_rule_proposal
+      - t_operational_concept
 
     range:
       - t_need
@@ -411,6 +412,8 @@ table:
       - t_observation
       - t_concept
       - t_sweep
+      - t_operational_concept
+      - t_operational_scenario
 
     acyclic:            true
     relation:           []
@@ -916,6 +919,59 @@ table:
     cardinality:
       maximum:          1
 
+    relation:           []
+
+  r_is_scenario_of:
+    id_self:            r_is_scenario_of
+    guid_self:          r_e883e298dc7b4056ba8a7b6769d2b575
+    title:              Is a scenario of relation
+    brief:              |
+                        SUBJ is one episode of the operation OBJ
+                        describes.
+    description:        |
+                        The operational scenario identified by SUBJ is
+                        one episode of the operation the operational
+                        concept identified by OBJ describes. A concept
+                        states what the system is for and what its
+                        boundary is; a scenario plays one episode of
+                        that out. A change to the concept makes its
+                        scenarios worth reading again.
+
+    domain:
+      - t_operational_scenario
+
+    range:
+      - t_operational_concept
+
+    describes:          true
+    relation:           []
+
+  r_quantifies:
+    id_self:            r_quantifies
+    guid_self:          r_99fff177eff4460bbb10ac4c004f76cd
+    title:              Quantifies relation
+    brief:              |
+                        SUBJ says how OBJ is measured.
+    description:        |
+                        The measure identified by SUBJ says how the
+                        thing identified by OBJ is quantified: what is
+                        measured about it, over what population, and
+                        against what threshold. The measure carries
+                        the quantity and the target; the item measured
+                        carries neither. Not r_measures, which runs
+                        from a control set to the eval it measures the
+                        error rates of.
+
+    domain:
+      - t_measure
+
+    range:
+      - t_need
+      - t_operational_concept
+      - t_operational_scenario
+      - t_textual_requirement
+
+    describes:          true
     relation:           []
 
 relation:

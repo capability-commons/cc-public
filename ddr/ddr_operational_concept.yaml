@@ -1,0 +1,386 @@
+id_self:                ddr_operational_concept
+guid_self:              ddr_5bea92b796704dfab5ee1c8bf68fe73f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How a system is to be used is an item, and its episodes are items of their own
+brief:                  |
+                        An operational concept, its scenarios and the
+                        measures that quantify them are three types,
+                        so that a requirement can derive from an
+                        episode and a threshold can be traced to what
+                        it decides.
+context:                |
+                        The repository can hold a need, a candidate
+                        solution to it, requirements on an entity, the
+                        interfaces between entities, and the
+                        verification that the requirements were met.
+                        Between the need and the requirements there is
+                        nothing. How the thing is meant to be used,
+                        what crosses its boundary and what counts as
+                        doing well are carried today by the prose of a
+                        need and a concept, where nothing can point at
+                        them.
+
+                        That gap is where the requirements come from.
+                        ISO/IEC/IEEE 15288 and 29148 run from business
+                        or mission analysis through stakeholder needs
+                        to system requirements, and the AIAA guide and
+                        the NASA handbook both put an operational
+                        concept and its reference scenarios in
+                        between. Every one of those documents is
+                        already in reg_document and what was taken
+                        from it is already written down.
+
+                        The first product use of this repository
+                        outside its own tooling is a camera simulator,
+                        whose one item today is a need. Writing its
+                        requirements means first saying how it is
+                        operated, which episodes matter and what error
+                        is acceptable in each. There is nowhere to put
+                        any of that.
+decision:               |
+                        Three top-level types. An OPERATIONAL CONCEPT
+                        says how one system of interest is intended to
+                        be used: what is inside its boundary and what
+                        crosses it, what operating it achieves, the
+                        environment, who takes part and what modes it
+                        has. An OPERATIONAL SCENARIO is one episode of
+                        that: a kind, a purpose, a precondition, a
+                        trigger, ordered steps and an observable
+                        postcondition. A MEASURE says how something is
+                        quantified: what is measured, in what unit or
+                        of what counted thing, over what population,
+                        by what statistic, which way is better, the
+                        least acceptable value and how the number is
+                        arrived at.
+
+                        A scenario is an item and not prose inside a
+                        concept, because a requirement derives from a
+                        particular episode, a measure quantifies one,
+                        and a validation case will later exercise one.
+                        A participant and a mode are keyed entries
+                        inside the concept carrying no identity, and a
+                        step is one line in an ordered list, because
+                        nothing points at any of them today.
+
+                        Two registers. reg_operational_scenario_kind
+                        holds the sorts of episode: normal, alternate,
+                        degraded, failure, misuse, maintenance and
+                        deployment. reg_measure_kind holds the three
+                        the INCOSE handbook distinguishes: of
+                        effectiveness, of performance, and the
+                        technical performance measure tracked over
+                        time. Registers rather than enumerations in
+                        the schemas, because a consuming segment may
+                        hold a register of its own and cannot change a
+                        core schema.
+
+                        Two relations. r_is_scenario_of runs from a
+                        scenario to the concept it is an episode of.
+                        r_quantifies runs from a measure to the need,
+                        concept, scenario or requirement it
+                        quantifies. Both declare describes, so a
+                        change to what is pointed at makes the pointer
+                        worth reading again. r_is_derived_from is
+                        widened rather than duplicated: an operational
+                        concept derives from a need, and a requirement
+                        may derive from a concept or from a scenario.
+                        That is the relation's existing meaning
+                        applied to new ends, not a new meaning.
+
+                        The measure is one type and not three. A
+                        measure of effectiveness, a measure of
+                        performance and a technical performance
+                        measure differ in who they answer to and when
+                        they are read, which is what the kind says,
+                        and not in their shape.
+
+                        What is not built here: the architecture
+                        layer, the verification and validation plans,
+                        the requirement set fields for level and
+                        baseline, the artifact surface on the
+                        interface control document, the saved queries
+                        and every eval. They are the second and third
+                        slices and wait on real records.
+rationale:              |
+                        Three types and not nine, because the slice
+                        has to be populated before it is broadened,
+                        and the only real material is one need. Nine
+                        types written against no records would each be
+                        a guess that a later reader could not tell
+                        from a decision.
+
+                        A scenario carries its own identity because
+                        every other item in the chain has to reach it.
+                        Nothing reaches a participant, a mode or a
+                        step today, and the rule here is that an
+                        object becomes addressable when something
+                        needs to point at it, not when a standard
+                        names it. Each of the three is a question
+                        below rather than a thing already decided
+                        against.
+
+                        Registers rather than enumerations, because of
+                        the segment rule. A consuming segment holds
+                        its own registers, as the Brave1 demonstration
+                        already does with a process word register, and
+                        it cannot hold a type or a schema. An
+                        enumeration in a core schema would mean the
+                        core deciding every kind of episode any
+                        consumer will ever operate.
+
+                        r_is_derived_from widened rather than a new
+                        relation, because derivation is what the edge
+                        already means and the acyclic constraint on it
+                        is what keeps the chain honest. A second
+                        relation with the same meaning would leave two
+                        ways to say one thing, which is the
+                        restatement ddr_restated_fact is about. The
+                        two new relations are new because nothing in
+                        the register carries either meaning:
+                        r_measures already means something else, and
+                        r_is_part_of is a glossary relation between
+                        terms.
+
+                        Measure and not metric, because measure of
+                        effectiveness is the term the INCOSE handbook
+                        and the NASA handbook both use, and metric is
+                        not. The unit register had rejected the word
+                        measure as a name for a unit; that rejection
+                        is narrowed to the phrase it was about, a unit
+                        of measure, so that the two senses do not
+                        fight.
+alternative:            |
+                        Put the operational concept in the existing
+                        concept type, distinguished by a field.
+                        Rejected: a solution concept proposes a
+                        candidate answer to a need and is one of
+                        several to choose between, while an
+                        operational concept describes intended
+                        operation and is not an alternative to
+                        anything. Their fields overlap in almost
+                        nothing, and a checker told them apart by a
+                        flag would have to carry both shapes.
+
+                        Keep scenarios as an ordered collection inside
+                        the operational concept. Rejected: a
+                        requirement that derives from one episode
+                        would then derive from the whole concept, and
+                        what a set of requirements covers could not be
+                        read from the graph, which is the thing this
+                        layer is for.
+
+                        Three measure types for the three kinds.
+                        Rejected: their shape is identical and the
+                        difference is what the measure answers to,
+                        which a kind field carries. Three nearly
+                        identical schemas would be three places to fix
+                        a field.
+
+                        Enumerate the scenario kinds in the schema, as
+                        the requirement set already enumerates its
+                        coverage classes. Rejected for the segment
+                        reason above, and because that enumeration is
+                        itself a thing to revisit: it holds safety and
+                        budget beside normal and misuse, and neither
+                        of those is a sort of episode.
+
+                        Write the whole proposal at once, nine types
+                        and thirteen evals. Rejected: an eval needs a
+                        control set and a measurement before it is
+                        worth anything, and a control set for a type
+                        with no instances can only be written from
+                        imagination. The prose eval measured at no
+                        false positive on fifteen written cases
+                        produced five false alarms in seven on a
+                        population its cases did not represent, which
+                        is what writing control cases without
+                        specimens buys.
+consequence:            |
+                        The chain from a need to a requirement can be
+                        walked: need, operational concept, scenario,
+                        requirement. Five new types, two registers and
+                        two relations, against sixty two, sixteen and
+                        thirty eight.
+
+                        Two vocabularies now describe the same ground.
+                        The scenario kinds here are normal, alternate,
+                        degraded, failure, misuse, maintenance and
+                        deployment; the coverage classes a requirement
+                        set is reviewed for are normal, abnormal,
+                        misuse, maintenance, deployment, safety and
+                        budget. Abnormal covers degraded and failure
+                        together, alternate has no counterpart, and
+                        safety and budget are concerns that cut across
+                        episodes rather than sorts of episode. Nothing
+                        reconciles them and a reader has to know both.
+
+                        A measure may carry neither a unit nor a thing
+                        it counts, and nothing reports that. The
+                        requirement statement check already holds a
+                        number to one or the other; this does not.
+
+                        No eval judges any of this. The three schemas
+                        hold shape and nothing holds sense: whether a
+                        boundary is clear, whether an episode is
+                        coherent, whether a threshold supports the
+                        decision it names. That is the layer this was
+                        measured to be missing and it is still
+                        missing.
+
+                        A consuming segment can use these types and
+                        can add kinds to a register of its own, and
+                        cannot add a type or a schema. So the camera
+                        simulator exercises what is here and anything
+                        it finds wanting comes back as a change to the
+                        core.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_operational_concept
+    guid_target:        sch_9ebbb0fffc3f433882fdaf8de04656b4
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_operational_scenario
+    guid_target:        sch_3a7cbc4ccd4949b1b1d80aad3fbca0ab
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_measure
+    guid_target:        sch_3364e614074f48579f9db1ff327c42aa
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_operational_scenario_kind
+    guid_target:        reg_426c111542bd4fb9a21cfb0b955f0d97
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_measure_kind
+    guid_target:        reg_e2537a98b0ec46298dda68c880afb63a
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_scenario_of
+    guid_target:        r_e883e298dc7b4056ba8a7b6769d2b575
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_quantifies
+    guid_target:        r_99fff177eff4460bbb10ac4c004f76cd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_operational_concept
+    guid_target:        t_2e7923ec0dce498483c46f94df16deb2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_operational_scenario
+    guid_target:        t_de40575e6e044fc3ad444341bd5a8f99
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_measure
+    guid_target:        t_19087288bae54ef29848e75d6963d92b
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_iso_29148
+    guid_target:        doc_3ace62d4522548b680134c9cf99de3ab
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_aiaa_operational_concept
+    guid_target:        doc_6ea888390da94cf6831078cddbb790e7
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_incose_seh
+    guid_target:        doc_a5ab43ed09a748eaa158cebbf6a867bf
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_nasa_se_handbook
+    guid_target:        doc_4a11622ff70e48459f78028e84bea9a2
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_sutcliffe_scenario
+    guid_target:        doc_899369ff1d28436f9b39ac1479a25cd9
+
+question:
+
+  participant:
+    id_self:            qst_operational_concept.participant
+    guid_self:          qst_aaccbdc646c34818828061538ff5eb76
+    question:           |
+                        Whether an operational participant carries an
+                        identity of its own, which would let a
+                        scenario name one by reference instead of in
+                        prose, and whether that is worth a type and a
+                        prefix before anything asks for it.
+    relation:           []
+
+  step:
+    id_self:            qst_operational_concept.step
+    guid_self:          qst_d5b3ceb8dfa94052ba242af2cdf14fc9
+    question:           |
+                        Whether a scenario step carries an identity,
+                        which would let a requirement derive from one
+                        step rather than from the whole episode, and
+                        whether an actor and an action written apart
+                        would be worth more than one line.
+    relation:           []
+
+  unit_or_counts:
+    id_self:            qst_operational_concept.unit_or_counts
+    guid_self:          qst_dda73c321e014872b07ed70b225304fd
+    question:           |
+                        Whether a check should hold a measure to
+                        naming either a unit or the thing it counts,
+                        as the requirement statement check already
+                        holds a number, and where that check belongs.
+    relation:           []
+
+  coverage_class:
+    id_self:            qst_operational_concept.coverage_class
+    guid_self:          qst_4443beafc36c444fa9824fe34b6c8846
+    question:           |
+                        How the scenario kinds here and the coverage
+                        classes a requirement set is reviewed for are
+                        reconciled: whether the classes become the
+                        kinds, whether safety and budget become a
+                        separate cross-cutting dimension, and what
+                        happens to the sets already reviewed.
+    relation:           []
+
+  key_performance_parameter:
+    id_self:            qst_operational_concept.key_performance_parameter
+    guid_self:          qst_c00dd972fe8a43cdb2fdfccf9e87e621
+    question:           |
+                        Whether a key performance parameter is a
+                        fourth kind of measure or a designation put on
+                        a measure of effectiveness that matters most,
+                        and which the register should hold.
+    relation:           []
+
+  validation:
+    id_self:            qst_operational_concept.validation
+    guid_self:          qst_f891665cd43d44fbb3fe8dfeac73cb55
+    question:           |
+                        What points at a scenario or a measure to say
+                        it has been validated, given that r_verifies
+                        runs from a test to a requirement and
+                        validation asks a different question of a
+                        different thing.
+    relation:           []

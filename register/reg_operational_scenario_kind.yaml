@@ -1,0 +1,140 @@
+id_self:                reg_operational_scenario_kind
+guid_self:              reg_426c111542bd4fb9a21cfb0b955f0d97
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Operational scenario kind register
+brief:                  |
+                        Register of the sorts of episode an
+                        operational scenario can be.
+description:            |
+                        Each entry names one sort of episode. A set of
+                        scenarios is read for what it covers by which
+                        kinds appear in it and which do not, which is
+                        why the kinds are a register and not prose.
+usage:                  |
+                        A scenario names one entry in its kind field.
+                        A consuming segment may hold a register of its
+                        own carrying kinds the core does not have.
+note:                   |
+                        The scenario classes a requirement set is
+                        reviewed for cover the same ground under other
+                        names, and safety and budget are among them
+                        although neither is a sort of episode.
+                        ddr_operational_concept says how the two
+                        vocabularies stand to each other and what is
+                        left open.
+
+table:
+
+  oskind_normal:
+    id_self:            oskind_normal
+    guid_self:          oskind_89efb2b5f7f945ec93776ad9532d8d48
+    title:              Normal operation
+    brief:              |
+                        The intended episode: everything works and the
+                        participants do what they mean to do.
+    description:        |
+                        What the system is for, played out. A set of
+                        scenarios with no normal episode describes
+                        only what happens when things go wrong.
+    relation:           []
+
+  oskind_alternate:
+    id_self:            oskind_alternate
+    guid_self:          oskind_9a4ae400349a41d892ddd0f036765a64
+    title:              Alternate route to the same outcome
+    brief:              |
+                        The participants reach the intended outcome
+                        another way, by choice or by circumstance.
+    description:        |
+                        Not a failure. An alternate episode reaches
+                        the same postcondition as the normal one by
+                        different steps, and a requirement derived
+                        from one has to hold on both routes.
+    relation:           []
+
+  oskind_degraded:
+    id_self:            oskind_degraded
+    guid_self:          oskind_6b06352fba714c9fa051b25963e6d735
+    title:              Degraded operation
+    brief:              |
+                        The system goes on working with less than it
+                        needs: reduced capability, reduced quality, or
+                        reduced margin.
+    description:        |
+                        Something the system depends on is impaired
+                        and operation continues at a cost that has to
+                        be stated. The postcondition of a degraded
+                        episode is weaker than the normal one and is
+                        still worth reaching.
+    relation:           []
+
+  oskind_failure:
+    id_self:            oskind_failure
+    guid_self:          oskind_cbe7214221574142a93d8108582fd3ba
+    title:              Failure
+    brief:              |
+                        The system cannot reach the intended outcome,
+                        and what matters is how it stops and what the
+                        participants are left with.
+    description:        |
+                        Distinguished from degraded operation by
+                        whether the outcome is reached at all. A
+                        failure episode says what is detected, what is
+                        announced and what state the system is left
+                        in.
+    relation:           []
+
+  oskind_misuse:
+    id_self:            oskind_misuse
+    guid_self:          oskind_541ce617ee57422aafe4476f6057849a
+    title:              Wrong or hostile use
+    brief:              |
+                        The system is used in a way it was not meant
+                        to be, by mistake or on purpose.
+    description:        |
+                        Covers the honest error and the deliberate
+                        attack, because the system's response to both
+                        is what the episode is about.
+    relation:           []
+
+  oskind_maintenance:
+    id_self:            oskind_maintenance
+    guid_self:          oskind_266ad30d0a2c4afca9295f71b8378868
+    title:              Maintenance
+    brief:              |
+                        The system is inspected, repaired, calibrated,
+                        updated or replaced.
+    description:        |
+                        Operation of the system by the people who keep
+                        it working rather than by the people it is
+                        for. Its participants and its environment are
+                        usually not those of the normal episode.
+    relation:           []
+
+  oskind_deployment:
+    id_self:            oskind_deployment
+    guid_self:          oskind_d5a80cc44c8045f0aa1bc52f88d4b7d0
+    title:              Deployment
+    brief:              |
+                        The system is transported, installed,
+                        commissioned, moved or removed.
+    description:        |
+                        The episodes at the ends of its operating
+                        life, which impose requirements that operation
+                        alone does not.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_plain
+    guid_target:        sch_40018b62a691433bb322fa44d25cd632

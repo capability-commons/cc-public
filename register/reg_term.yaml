@@ -2314,7 +2314,7 @@ table:
     term:               unit
 
     avoid:
-      - measure
+      - unit of measure
       - dimension
       - metric
 
@@ -2864,4 +2864,121 @@ table:
                         is not a check.
     term:               coverage analysis
     status:             proposed
+    relation:           []
+
+  term_operational_concept:
+    id_self:            term_operational_concept
+    guid_self:          term_a92959fcf2c9453284f8f467e826e509
+    title:              Operational concept
+    brief:              |
+                        How the system of interest is intended to be
+                        used and what crosses its boundary, before
+                        anything specifies how it is built.
+    description:        |
+                        An operational concept data item in
+                        operational_concept/. It derives from a need,
+                        its scenarios point back at it by
+                        r_is_scenario_of, and the requirements on the
+                        system derive from it and from them. Not the
+                        solution concept, which proposes a candidate
+                        solution to a need.
+    term:               operational concept
+
+    also:
+      - operations concept
+      - concept of operations
+
+    avoid:
+      - use case
+
+    relation:           []
+
+  term_operational_scenario:
+    id_self:            term_operational_scenario
+    guid_self:          term_b25df13086fd41068b31683247b6cd37
+    title:              Operational scenario
+    brief:              |
+                        One coherent episode of operation: what starts
+                        it, what happens in order, and what is
+                        observably true when it ends.
+    description:        |
+                        An operational scenario data item in
+                        operational_scenario/. Its kind is an entry of
+                        reg_operational_scenario_kind. A requirement,
+                        a measure and a validation case each point at
+                        a particular scenario, which is why it is an
+                        item rather than prose inside an operational
+                        concept.
+    term:               operational scenario
+
+    also:
+      - scenario
+
+    avoid:
+      - story
+      - flow
+
+    relation:           []
+
+  term_measure:
+    id_self:            term_measure
+    guid_self:          term_232035785dae4f8abd72c2509b7bb09f
+    title:              Measure
+    brief:              |
+                        How success or performance is quantified: what
+                        is measured, over what population, by what
+                        statistic, and against what threshold.
+    description:        |
+                        A measure data item in measure/. Its kind is
+                        an entry of reg_measure_kind, which holds the
+                        measure of effectiveness, the measure of
+                        performance and the technical performance
+                        measure. A measure quantifies a need, a
+                        scenario or a requirement by r_quantifies. The
+                        unit a quantity is stated in is a unit and not
+                        a measure.
+    term:               measure
+
+    also:
+      - measure of effectiveness
+      - measure of performance
+      - technical performance measure
+
+    avoid:
+      - metric
+      - kpi
+
+    relation:           []
+
+  term_operational_scenario_kind:
+    id_self:            term_operational_scenario_kind
+    guid_self:          term_1e24db7e7e5f45a6a71932aaae2ea431
+    title:              Operational scenario kind
+    brief:              |
+                        Which sort of episode a scenario is: intended,
+                        alternative, degraded, failed, misuse,
+                        maintenance or deployment.
+    description:        |
+                        An entry of reg_operational_scenario_kind. A
+                        scenario names one by its kind field. The
+                        scenario classes a requirement set is reviewed
+                        for cover the same ground under different
+                        names, which ddr_operational_concept
+                        reconciles.
+    term:               operational scenario kind
+    relation:           []
+
+  term_measure_kind:
+    id_self:            term_measure_kind
+    guid_self:          term_27a310d56f2547a08ffb90b06bcc2baf
+    title:              Measure kind
+    brief:              |
+                        Which sort of measure a measure is: of
+                        effectiveness, of performance, or a technical
+                        performance measure tracked over time.
+    description:        |
+                        An entry of reg_measure_kind, taken from the
+                        INCOSE systems engineering handbook. A measure
+                        names one by its kind field.
+    term:               measure kind
     relation:           []
