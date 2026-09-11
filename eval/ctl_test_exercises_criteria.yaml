@@ -136,229 +136,6 @@ case:
         id_target:      req_renamer_keeps_guid
         guid_target:    req_9e78e8f7be56415a87394b2065de11e8
 
-  cdf88a393:
-    id_self:            case_test_exercises_criteria.cdf88a393
-    guid_self:          case_768bbcbdfe1248d78872fde862feedd9
-    verdict:            unmet
-    subject:            |
-                        as rendered:
-                          --- pyf_test.test_query.test_a_named_query_runs_over_the_facts
-                          title:
-                          A named query runs over the facts
-
-                          brief:
-                          A named query runs over the facts.
-
-                          source:
-                          def test_a_named_query_runs_over_the_facts(tree, tmp_path):
-                              """
-                              ---
-
-                              id_self:                pyf_test.test_query.test_a_named_query_runs_over_the_facts
-                              guid_self:              pyf_20cb93a9f39946938572d2a437f82758
-                              copyright:              Copyright 2026 William Payne
-                              license:                Apache-2.0
-
-                              protective_mark:
-
-                                - id_mark:            mark_public
-                                  guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
-
-                              title:                  A named query runs over the facts
-                              brief:                  |
-                                                      A named query runs over the facts.
-                              description:            |
-                                                      Runs the counting query and reads back the
-                                                      count of item facts, runs a query by name and
-                                                      SQL typed at the command line, and sees bad
-                                                      SQL refused.
-
-                              relation:
-
-                                - id_relation:        r_verifies
-                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
-                                  id_target:          req_named_query_run
-                                  guid_target:        req_3c672d6e90e844239e61eebc5dab157c
-
-                                - id_relation:        r_verifies
-                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
-                                  id_target:          req_typed_query_run
-                                  guid_target:        req_5ffe40ced6b7489ca3b37c3b9ec20af2
-
-                              ...
-                              """
-
-                              db = cc_public.query.Database(tree.context.map_document)
-                              sql = cc_public.query.named(tree.context.map_document, 'qry_count_items')
-                              (names, rows) = db.run(sql)
-                              assert names == ['items'] and rows == [(len(db.facts.item),)]
-                              assert cc_public.query.named(tree.context.map_document, 'qry_nothing') is None
-                              out = run('query', '--root', str(tmp_path), 'qry_decides_most', '--format', 'json')
-                              assert out.exit_code == 0, out.output
-                              rows = json.loads(out.output)
-                              assert rows[0]['decided'] >= rows[-1]['decided'] and 'decision' in rows[0]
-                              out = run('query', '--root', str(tmp_path), '--sql', 'SELECT COUNT(*) AS n FROM edge')
-                              assert out.exit_code == 0 and 'n' in out.output
-                              assert run('query', '--root', str(tmp_path), '--sql', 'SELECT * FROM nowhere').exit_code == 2
-
-                          module:
-                          import json
-                          import click.testing
-                          import cc_public.check
-                          import cc_public.check.identifier
-                          import cc_public.cli.command
-                          import cc_public.edit.field
-                          import cc_public.edit.link
-                          import cc_public.edit.new
-                          import cc_public.facts
-                          import cc_public.query
-                          import cc_public.testing
-                          from conftest import DEFAULTS
-
-                          --- req_typed_query_run
-                          title:
-                          A typed question is answered
-
-                          success_criteria:
-                          For Query_Text that counts the Edge_Facts, the
-                          Result has one Row holding the count of
-                          Edge_Facts in the Fact_Table, and Query_Text
-                          that names no table of the Fact_Table is
-                          refused with the reason.
-    origin:             confirmed
-    note:               |
-                        Read the test. The typed query is asserted
-                        only by exit_code == 0 and 'n' in out.output,
-                        which is the column header. Neither the single
-                        row nor the count is checked, and the refusal
-                        is asserted by exit code alone with nothing
-                        about the reason.
-
-    relation:
-
-      - id_relation:    r_is_snapshot_of
-        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
-        id_target:      pyf_test.test_query.test_a_named_query_runs_over_the_facts
-        guid_target:    pyf_20cb93a9f39946938572d2a437f82758
-
-      - id_relation:    r_is_snapshot_of
-        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
-        id_target:      req_typed_query_run
-        guid_target:    req_5ffe40ced6b7489ca3b37c3b9ec20af2
-
-  c220af715:
-    id_self:            case_test_exercises_criteria.c220af715
-    guid_self:          case_8ace6183edda4aeab96e581117001464
-    verdict:            unmet
-    subject:            |
-                        as rendered:
-                          --- pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
-                          title:
-                          Walk reports the neighbourhood to a depth along named relations
-
-                          brief:
-                          Walk reports the neighbourhood to a depth
-                          along named relations.
-
-                          source:
-                          def test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations(tree, tmp_path):
-                              """
-                              ---
-
-                              id_self:                pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
-                              guid_self:              pyf_21b4438010a1409fb36ac1cf6b0a54e2
-                              copyright:              Copyright 2026 William Payne
-                              license:                Apache-2.0
-
-                              protective_mark:
-
-                                - id_mark:            mark_public
-                                  guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
-
-                              title:                  Walk reports the neighbourhood to a depth along named relations
-                              brief:                  |
-                                                      Walk reports the neighbourhood to a depth
-                                                      along named relations.
-                              description:            |
-                                                      Walks a requirement to depths one and two, in
-                                                      one direction and both, with and without a
-                                                      relation named, and asserts what is reached
-                                                      and by what.
-
-                              relation:
-
-                                - id_relation:        r_verifies
-                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
-                                  id_target:          req_walk_reports_neighbourhood
-                                  guid_target:        req_f954bd2cda2344d98ed5b1faa3d9fe99
-
-                                - id_relation:        r_verifies
-                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
-                                  id_target:          req_walk_follows_named_relations
-                                  guid_target:        req_9d975348164e4650addf5f56118e4182
-
-                              ...
-                              """
-
-                              db = cc_public.query.Database(tree.context.map_document)
-                              one = db.walk('req_printer_idempotent', 1)
-                              ids = {s.id_self for s in one}
-                              assert {'req_printer_idempotent', 'need_layout_stable', 'pym_cc_public.layout'} <= ids
-                              assert all(s.depth == 1 for s in one if s.id_from is not None)
-                              assert next(s for s in one if s.id_self == 'need_layout_stable').id_relation == 'r_is_derived_from'
-                              two = db.walk('req_printer_idempotent', 2)
-                              assert {s.id_self for s in two} > ids
-                              assert {s.depth for s in two} == {0, 1, 2}
-                              only = db.walk('req_printer_idempotent', 2, ['r_is_derived_from'])
-                              assert all(s.id_relation == 'r_is_derived_from' for s in only if s.id_from is not None)
-                              assert 'pym_cc_public.layout' not in {s.id_self for s in only}
-                              assert db.walk('req_printer_idempotent', 1, (), ('out',)) and \
-                                     all(s.direction == 'out' for s in db.walk('req_printer_idempotent', 3, (), ('out',))
-                                         if s.id_from is not None)
-                              assert db.walk('nothing_here', 1) is None
-
-                          module:
-                          import json
-                          import click.testing
-                          import cc_public.check
-                          import cc_public.check.identifier
-                          import cc_public.cli.command
-                          import cc_public.edit.field
-                          import cc_public.edit.link
-                          import cc_public.edit.new
-                          import cc_public.facts
-                          import cc_public.query
-                          import cc_public.testing
-                          from conftest import DEFAULTS
-
-                          --- req_walk_reports_neighbourhood
-                          title:
-                          Walk reports the neighbourhood to a depth
-
-                          success_criteria:
-                          On a graph of known shape, the Items reported
-                          at each Depth equal the Items within that many
-                          Relation_Edges by hand, and each reported Item
-                          carries the Relation_Edge it was reached by.
-    origin:             confirmed
-    note:               |
-                        Read the test. Depth one is asserted by a
-                        subset, depth two by a strict superset, and
-                        neither is the equality the criteria ask for.
-                        Extra items at a depth would pass.
-
-    relation:
-
-      - id_relation:    r_is_snapshot_of
-        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
-        id_target:      pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
-        guid_target:    pyf_21b4438010a1409fb36ac1cf6b0a54e2
-
-      - id_relation:    r_is_snapshot_of
-        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
-        id_target:      req_walk_reports_neighbourhood
-        guid_target:    req_f954bd2cda2344d98ed5b1faa3d9fe99
-
   c147201e2:
     id_self:            case_test_exercises_criteria.c147201e2
     guid_self:          case_8fa6c174c0d844cf9b6e86fc53ed71fc
@@ -598,9 +375,236 @@ case:
         id_target:      req_executor_honours_budget
         guid_target:    req_a1428b3ae8ec4b5687e58895592accad
 
-  c0439f646:
-    id_self:            case_test_exercises_criteria.c0439f646
-    guid_self:          case_334e65eb2793462ca076f1974872aa78
+  ca035e754:
+    id_self:            case_test_exercises_criteria.ca035e754
+    guid_self:          case_d8f4351d48324635b01f4adcc225ce44
+    verdict:            unmet
+    subject:            |
+                        as rendered:
+                          --- pyf_test.test_query.test_a_named_query_runs_over_the_facts
+                          title:
+                          A named query runs over the facts
+
+                          brief:
+                          A named query runs over the facts.
+
+                          source:
+                          def test_a_named_query_runs_over_the_facts(tree, tmp_path):
+                              """
+                              ---
+
+                              id_self:                pyf_test.test_query.test_a_named_query_runs_over_the_facts
+                              guid_self:              pyf_20cb93a9f39946938572d2a437f82758
+                              copyright:              Copyright 2026 William Payne
+                              license:                Apache-2.0
+
+                              protective_mark:
+
+                                - id_mark:            mark_public
+                                  guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                              title:                  A named query runs over the facts
+                              brief:                  |
+                                                      A named query runs over the facts.
+                              description:            |
+                                                      Runs the counting query and reads back the
+                                                      count of item facts, runs a query by name and
+                                                      SQL typed at the command line, and sees bad
+                                                      SQL refused.
+
+                              relation:
+
+                                - id_relation:        r_verifies
+                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                  id_target:          req_named_query_run
+                                  guid_target:        req_3c672d6e90e844239e61eebc5dab157c
+
+                                - id_relation:        r_verifies
+                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                  id_target:          req_typed_query_run
+                                  guid_target:        req_5ffe40ced6b7489ca3b37c3b9ec20af2
+
+                              ...
+                              """
+
+                              db = cc_public.query.Database(tree.context.map_document)
+                              sql = cc_public.query.named(tree.context.map_document, 'qry_count_items')
+                              (names, rows) = db.run(sql)
+                              assert names == ['items'] and rows == [(len(db.facts.item),)]
+                              assert cc_public.query.named(tree.context.map_document, 'qry_nothing') is None
+                              out = run('query', '--root', str(tmp_path), 'qry_decides_most', '--format', 'json')
+                              assert out.exit_code == 0, out.output
+                              rows = json.loads(out.output)
+                              assert rows[0]['decided'] >= rows[-1]['decided'] and 'decision' in rows[0]
+                              out = run('query', '--root', str(tmp_path), '--sql', 'SELECT COUNT(*) AS n FROM edge')
+                              assert out.exit_code == 0 and 'n' in out.output
+                              assert run('query', '--root', str(tmp_path), '--sql', 'SELECT * FROM nowhere').exit_code == 2
+
+                          module:
+                          import json
+                          import sqlite3
+                          import click.testing
+                          import pytest
+                          import cc_public.check
+                          import cc_public.check.identifier
+                          import cc_public.cli.command
+                          import cc_public.edit.field
+                          import cc_public.edit.link
+                          import cc_public.edit.new
+                          import cc_public.facts
+                          import cc_public.query
+                          import cc_public.testing
+                          from conftest import DEFAULTS
+
+                          --- req_typed_query_run
+                          title:
+                          A typed question is answered
+
+                          success_criteria:
+                          For Query_Text that counts the Edge_Facts, the
+                          Result has one Row holding the count of
+                          Edge_Facts in the Fact_Table, and Query_Text
+                          that names no table of the Fact_Table is
+                          refused with the reason.
+    origin:             confirmed
+    note:               |
+                        Read the test. The typed query is asserted
+                        only by exit_code == 0 and 'n' in out.output,
+                        which is the column header. Neither the single
+                        row nor the count is checked, and the refusal
+                        is asserted by exit code alone with nothing
+                        about the reason.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_a_named_query_runs_over_the_facts
+        guid_target:    pyf_20cb93a9f39946938572d2a437f82758
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_typed_query_run
+        guid_target:    req_5ffe40ced6b7489ca3b37c3b9ec20af2
+
+  cad2f81c8:
+    id_self:            case_test_exercises_criteria.cad2f81c8
+    guid_self:          case_bbf91291643f4b6db0c6e1aed265f21e
+    verdict:            unmet
+    subject:            |
+                        as rendered:
+                          --- pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                          title:
+                          Walk reports the neighbourhood to a depth along named relations
+
+                          brief:
+                          Walk reports the neighbourhood to a depth
+                          along named relations.
+
+                          source:
+                          def test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations(tree, tmp_path):
+                              """
+                              ---
+
+                              id_self:                pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+                              guid_self:              pyf_21b4438010a1409fb36ac1cf6b0a54e2
+                              copyright:              Copyright 2026 William Payne
+                              license:                Apache-2.0
+
+                              protective_mark:
+
+                                - id_mark:            mark_public
+                                  guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+                              title:                  Walk reports the neighbourhood to a depth along named relations
+                              brief:                  |
+                                                      Walk reports the neighbourhood to a depth
+                                                      along named relations.
+                              description:            |
+                                                      Walks a requirement to depths one and two, in
+                                                      one direction and both, with and without a
+                                                      relation named, and asserts what is reached
+                                                      and by what.
+
+                              relation:
+
+                                - id_relation:        r_verifies
+                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                  id_target:          req_walk_reports_neighbourhood
+                                  guid_target:        req_f954bd2cda2344d98ed5b1faa3d9fe99
+
+                                - id_relation:        r_verifies
+                                  guid_relation:      r_490096e908d1444cb0defb530fcf7786
+                                  id_target:          req_walk_follows_named_relations
+                                  guid_target:        req_9d975348164e4650addf5f56118e4182
+
+                              ...
+                              """
+
+                              db = cc_public.query.Database(tree.context.map_document)
+                              one = db.walk('req_printer_idempotent', 1)
+                              ids = {s.id_self for s in one}
+                              assert {'req_printer_idempotent', 'need_layout_stable', 'pym_cc_public.layout'} <= ids
+                              assert all(s.depth == 1 for s in one if s.id_from is not None)
+                              assert next(s for s in one if s.id_self == 'need_layout_stable').id_relation == 'r_is_derived_from'
+                              two = db.walk('req_printer_idempotent', 2)
+                              assert {s.id_self for s in two} > ids
+                              assert {s.depth for s in two} == {0, 1, 2}
+                              only = db.walk('req_printer_idempotent', 2, ['r_is_derived_from'])
+                              assert all(s.id_relation == 'r_is_derived_from' for s in only if s.id_from is not None)
+                              assert 'pym_cc_public.layout' not in {s.id_self for s in only}
+                              assert db.walk('req_printer_idempotent', 1, (), ('out',)) and \
+                                     all(s.direction == 'out' for s in db.walk('req_printer_idempotent', 3, (), ('out',))
+                                         if s.id_from is not None)
+                              assert db.walk('nothing_here', 1) is None
+
+                          module:
+                          import json
+                          import sqlite3
+                          import click.testing
+                          import pytest
+                          import cc_public.check
+                          import cc_public.check.identifier
+                          import cc_public.cli.command
+                          import cc_public.edit.field
+                          import cc_public.edit.link
+                          import cc_public.edit.new
+                          import cc_public.facts
+                          import cc_public.query
+                          import cc_public.testing
+                          from conftest import DEFAULTS
+
+                          --- req_walk_reports_neighbourhood
+                          title:
+                          Walk reports the neighbourhood to a depth
+
+                          success_criteria:
+                          On a graph of known shape, the Items reported
+                          at each Depth equal the Items within that many
+                          Relation_Edges by hand, and each reported Item
+                          carries the Relation_Edge it was reached by.
+    origin:             confirmed
+    note:               |
+                        Read the test. Depth one is asserted by a
+                        subset, depth two by a strict superset, and
+                        neither is the equality the criteria ask for.
+                        Extra items at a depth would pass.
+
+    relation:
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      pyf_test.test_query.test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations
+        guid_target:    pyf_21b4438010a1409fb36ac1cf6b0a54e2
+
+      - id_relation:    r_is_snapshot_of
+        guid_relation:  r_b4a1513442114ceca64daf2d1090c5fb
+        id_target:      req_walk_reports_neighbourhood
+        guid_target:    req_f954bd2cda2344d98ed5b1faa3d9fe99
+
+  c675198ef:
+    id_self:            case_test_exercises_criteria.c675198ef
+    guid_self:          case_f2bf50f312e44095bf1ea69c24c18f9b
     verdict:            met
     subject:            |
                         as rendered:
@@ -685,7 +689,9 @@ case:
 
                           module:
                           import json
+                          import sqlite3
                           import click.testing
+                          import pytest
                           import cc_public.check
                           import cc_public.check.identifier
                           import cc_public.cli.command
@@ -727,9 +733,9 @@ case:
         id_target:      req_unused_relations_listed
         guid_target:    req_334b1654059748bcb18938201b6a9a27
 
-  c99fd1eca:
-    id_self:            case_test_exercises_criteria.c99fd1eca
-    guid_self:          case_1ab53d3a30aa4d62bab8a15c2e706438
+  c667c62d1:
+    id_self:            case_test_exercises_criteria.c667c62d1
+    guid_self:          case_8ff42fd54a594e72a7eb793c32f4029a
     verdict:            met
     subject:            |
                         as rendered:
@@ -786,7 +792,9 @@ case:
 
                           module:
                           import json
+                          import sqlite3
                           import click.testing
+                          import pytest
                           import cc_public.check
                           import cc_public.check.identifier
                           import cc_public.cli.command
@@ -830,9 +838,9 @@ case:
         id_target:      req_unreferenced_items_listed
         guid_target:    req_c2a686dc37e340e08f4ceb8631af75d7
 
-  c4b59ab12:
-    id_self:            case_test_exercises_criteria.c4b59ab12
-    guid_self:          case_ce87373e661d480d912bba4fb4b63d2e
+  c09c3e7cf:
+    id_self:            case_test_exercises_criteria.c09c3e7cf
+    guid_self:          case_8f05392e9c9446caa95670a30cd03a5c
     verdict:            met
     subject:            |
                         as rendered:
@@ -903,7 +911,9 @@ case:
 
                           module:
                           import json
+                          import sqlite3
                           import click.testing
+                          import pytest
                           import cc_public.check
                           import cc_public.check.identifier
                           import cc_public.cli.command
@@ -948,8 +958,8 @@ case:
 
   c78126fe2:
     id_self:            case_test_exercises_criteria.c78126fe2
-    guid_self:          case_22d0f13832424f64ae7b6fec62271698
-    verdict:            met
+    guid_self:          case_6f9f98519b9242ecbcc45635c624f9a4
+    verdict:            unmet
     subject:            |
                         as rendered:
                           --- pyf_test.test_layout.test_printer_preserves_and_is_fixpoint
@@ -1033,22 +1043,22 @@ case:
                           Every YAML file and every docstring document
                           in the repository, laid out twice, is byte
                           identical after the first pass.
-    origin:             suppressed
+    origin:             confirmed
     note:               |
-                        Held unmet while the criterion asked whether
-                        the test examined everything the requirement
-                        speaks of. FILES is what iter_filepath_all
-                        finds, and whether that helper is itself
-                        verified is a fact about the graph, which
-                        ddr_tool_verification gives to a check. The
-                        criterion now says to take the repository's
-                        helpers as doing what they say, and by that
-                        criterion the test asserts both halves of what
-                        the requirement requires: the content is
-                        unchanged scalar for scalar and laying the
-                        result out again changes nothing. The reliance
-                        on an unverified helper stands as a finding
-                        and is not this one.
+                        Held unmet, flipped to met while narrowing the
+                        criterion, and flipped back on reading the
+                        criteria again. The criteria say every YAML
+                        file and every docstring document in the
+                        repository. The test is parametrised over what
+                        iter_filepath_all finds, so the helper
+                        supplies the word every, and what the test
+                        asserts is every file the helper found. That
+                        is not a helper called for convenience, which
+                        the narrowed criterion excuses; it is the
+                        quantifier. The judge read it unmet five of
+                        five with the narrowing in place, and it was
+                        right. ddr_tool_verification records what
+                        follows.
 
     relation:
 
