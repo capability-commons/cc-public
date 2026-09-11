@@ -75,7 +75,8 @@ def measure(context, document_eval, runner, count_sample):
                     document_eval = document_eval,
                     id_subject    = (case.get('id_self') or key,),
                     filepath      = id_set,
-                    text_input    = case[cc_public.control.KEY_SUBJECT])
+                    text_input    = cc_public.control.as_written(
+                                        case[cc_public.control.KEY_SUBJECT]))
         tally = runner.sample(task, count_sample)
 
         detail.append((case.get('id_self') or key,

@@ -63,6 +63,57 @@ def normalise(text: str) -> str:
     return ' '.join(text.split())
 
 
+# What marks a stored subject as written rather than as prose. The
+# printer refills the paragraphs of a block scalar and leaves a line
+# indented further than the rest of it alone, and a block scalar's own
+# indentation is read from its first line. So a heading on the first
+# line, and every line of the subject indented under it, survives both
+# the printer and the loader exactly.
+#
+# A judge measured on a subject the printer had rewrapped was judging a
+# definition line broken across lines and a module joined into one
+# paragraph, where a sweep judges the code as written.
+#
+MARK_HEAD   = 'as rendered:'
+MARK_INDENT = '  '
+
+
+# -----------------------------------------------------------------------------
+def verbatim(text: str) -> str:
+    """
+    Return text marked so the printer and the loader keep it as
+    written.
+
+    """
+
+    return '\n'.join([MARK_HEAD] + [MARK_INDENT + line if line.strip() else line
+                                     for line in text.split('\n')])
+
+
+# -----------------------------------------------------------------------------
+def is_verbatim(text: str) -> bool:
+    """
+    Return whether text was stored as written.
+
+    """
+
+    return text.startswith(MARK_HEAD + '\n')
+
+
+# -----------------------------------------------------------------------------
+def as_written(text: str) -> str:
+    """
+    Return a stored subject as it was rendered.
+
+    """
+
+    if not is_verbatim(text):
+        return text
+
+    return '\n'.join(line.removeprefix(MARK_INDENT)
+                      for line in text.split('\n')[1:])
+
+
 # -----------------------------------------------------------------------------
 def key_of(text: str) -> str:
     """
@@ -127,5 +178,5 @@ def map_case(
 
     """
 
-    return {normalise(case.get(KEY_SUBJECT, '')): case
+    return {normalise(as_written(case.get(KEY_SUBJECT, ''))): case
             for (_, _, case) in iter_case(map_document, guid_eval)}

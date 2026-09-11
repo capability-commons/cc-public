@@ -1,0 +1,71 @@
+id_self:                ann_a_stored_subject_survives_the_printer
+guid_self:              ann_9801385bb1214c8b9839fdd14a9ae256
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A stored subject now survives the printer as it was rendered
+brief:                  |
+                        Fixed. control.verbatim marks a subject with a
+                        heading and an indent under it, which the
+                        printer and the loader both keep, and measure
+                        reads it back with control.as_written.
+description:            |
+                        The printer refills the paragraphs of a block
+                        scalar, so a stored subject held a definition
+                        line broken across lines and a module joined
+                        into one paragraph. Nothing noticed because a
+                        case is matched to a finding by normalised
+                        text, and the scripted judge in test_measure
+                        is keyed the same way.
+
+                        A block scalar's indentation is read from its
+                        first line, so indenting every line without a
+                        heading was eaten by the loader. The heading
+                        fixes the base indent and the indent under it
+                        survives both.
+
+                        test_a_stored_subject_survives_the_printer_as_it_was_rendered
+                        lays out a subject holding a definition and
+                        asserts the definition line is still whole,
+                        and
+                        test_every_control_case_holds_what_the_projection_renders_now
+                        asserts every coverage case equals the live
+                        render exactly, which it now does for all
+                        nine.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_measure_sends_refilled_code
+    guid_target:        ann_741f82666d744970b2d38873daeadb1a
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.eval.measure
+    guid_target:        pym_77bb285571e34b1ea01f58e8d019661f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.control
+    guid_target:        pym_d3c30505c19c48708b12bc12f946f862
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_control_case
+    guid_target:        sch_6315a0262304416da9dfb1f0fae6ea6a
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_judge_subject
+    guid_target:        ddr_84f0e12b5ae841fca59ccafc1ad01ff0

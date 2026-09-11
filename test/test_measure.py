@@ -72,6 +72,9 @@ class Scripted:
 
 
 
+ID_SET = 'ctl_test_exercises_criteria'
+
+
 def test_case_makes_set_and_suppresses(tree, tmp_path):
     (id_set, id_case) = cc_public.eval.case.case(
                 tree, 'evl_prose_matches_structure', 'pym_cc_public.load.yaml', 'met',
@@ -82,7 +85,10 @@ def test_case_makes_set_and_suppresses(tree, tmp_path):
     doc = cc_public.load.from_file(tmp_path / 'eval' / 'ctl_prose_matches_structure.yaml')
     case = doc['case'][id_case.rsplit('.', 1)[1]]
     assert case['verdict'] == 'met' and case['origin'] == 'suppressed'
-    assert case['subject'].startswith('--- pym_cc_public.load.yaml')
+    # Stored as written, so the printer does not refill the code in it.
+    assert cc_public.control.is_verbatim(case['subject'])
+    assert cc_public.control.as_written(case['subject']).startswith(
+                                                    '--- pym_cc_public.load.yaml')
     assert any(e['id_relation'] == 'r_is_snapshot_of' for e in case['relation'])
 
     # A sweep whose judge says unmet on that very text now reports a note.
@@ -92,7 +98,8 @@ def test_case_makes_set_and_suppresses(tree, tmp_path):
                                         id_eval = ('evl_prose_matches_structure',),
                                         id_item = ('pym_cc_public.load.yaml',)),
                     runner_eval   = Scripted({cc_public.control.normalise(
-                                                case['subject']): ['unmet']}),
+                                        cc_public.control.as_written(
+                                                case['subject'])): ['unmet']}),
                     count_confirm = 1)
     result = cc_public.eval.check.check(ctx)
     assert result.list_nonconformity == []
@@ -118,7 +125,11 @@ def test_measure_rates_per_origin(tree, tmp_path):
 
     # Judge: right on the first met case, always wrong on the second, and
     # split on the unmet one (majority met, so a false negative).
-    subj = {k: cc_public.control.normalise(c['subject']) for (_, k, c) in cases}
+    # Keyed by what measure sends, which is the subject as rendered.
+    # Keying by the stored text is why a printer-refilled subject went
+    # unnoticed: no test saw what the judge was given.
+    subj = {k: cc_public.control.normalise(cc_public.control.as_written(c['subject']))
+            for (_, k, c) in cases}
     by   = {c['verdict']: [] for (_, _, c) in cases}
     for (_, k, c) in cases:
         by[c['verdict']].append(subj[k])
@@ -299,3 +310,73 @@ def test_an_eval_with_no_cases_cannot_be_measured(tree, tmp_path):
     ev = tree.context.map_document[tree.resolve('evl_prose_matches_structure').location]
     with pytest.raises(ValueError):
         cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 3)
+
+
+@pytest.mark.slow
+def test_every_control_case_holds_what_the_projection_renders_now():
+    # A case is a snapshot, and a snapshot of text no sweep produces
+    # suppresses nothing and confirms nothing. All nine coverage cases
+    # and twelve across nine other sets had drifted from the
+    # projection while the confidence check read every row current,
+    # because the digest covers the stored subjects and not what the
+    # projection makes of the items they name.
+    import conftest
+
+    import cc_public.check
+    import cc_public.control
+    import cc_public.eval.select
+
+    context = cc_public.check.context([conftest.ROOT])[0]
+    live    = {task.id_subject: task.text_input
+               for task in cc_public.eval.select.select(context)}
+
+    # The coverage control set, which this holds exactly. Every other
+    # set is reported alongside, because the case command and the
+    # sweep projection still render an embedded item differently and
+    # twelve snapshots elsewhere differ for that reason, which is
+    # qst_eval_measurement.rendered and not this.
+    drifted = []
+    elsewhere = []
+
+    for document in context.map_document.values():
+        if not isinstance(document, dict):
+            continue
+        for (key, case) in (document.get('case') or {}).items():
+            if not isinstance(case, dict):
+                continue
+            # A written or a mutated case is meant to differ: one a
+            # person wrote, one altered on purpose. A suppressed or a
+            # confirmed case is a snapshot of a finding, and a
+            # snapshot of text no sweep renders suppresses nothing and
+            # confirms nothing.
+            if case.get('origin') not in ('suppressed', 'confirmed'):
+                continue
+            snap = tuple(edge['id_target'] for edge in case.get('relation') or []
+                         if edge.get('id_relation') == 'r_is_snapshot_of')
+            if snap in live and \
+                    live[snap] != cc_public.control.as_written(case.get('subject', '')):
+                (drifted if document.get('id_self') == ID_SET
+                         else elsewhere).append((document.get('id_self'), key))
+
+    assert drifted == [], drifted
+    assert len(elsewhere) == 12, elsewhere
+
+
+def test_a_stored_subject_survives_the_printer_as_it_was_rendered():
+    # The printer refills the paragraphs of a block scalar, so a
+    # definition line was broken across lines and a module joined into
+    # one paragraph. A heading and an indent under it survive both the
+    # printer and the loader.
+    import cc_public.control
+    import cc_public.layout
+
+    text  = '--- pyf_probe\ntitle: T\n\nsource:\ndef probe():\n    return 1\n'
+    held  = cc_public.control.verbatim(text)
+    assert cc_public.control.as_written(held) == text
+
+    laid  = cc_public.layout.format(
+                'id_self:                ctl_probe\nsubject:                |\n'
+                + '\n'.join('                        ' + line if line.strip() else ''
+                            for line in held.split('\n')) + '\n')
+    assert 'def probe():' in laid
+    assert 'as rendered:' in laid

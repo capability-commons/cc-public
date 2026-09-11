@@ -41,6 +41,9 @@ import cc_public.eval.select
 import cc_public.path
 
 
+KEY_GUID_SELF = 'guid_self'
+
+
 PREFIX_SET     = 'ctl'
 SEPARATOR      = '_'
 DIR_SET        = 'eval'
@@ -71,7 +74,18 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
     list_subj  = [tree.resolve(name) for name in list_name]
     tuple_item = tuple((item.id_self, _node(tree, item), item.location) for item in list_subj)
 
-    text = cc_public.eval.select.render(tuple_item, doc_eval)
+    # Rendered through the same projection a sweep renders through. A
+    # case made without it held a subject with no source, so a person
+    # suppressing or confirming a finding on a test case recorded a
+    # verdict on text the judge never saw.
+    #
+    map_document = tree.context.map_document
+    map_location = {d.get(KEY_GUID_SELF): location
+                    for (location, d) in map_document.items() if isinstance(d, dict)}
+    map_guid     = {d.get(KEY_GUID_SELF): d for d in map_document.values()
+                    if isinstance(d, dict)}
+
+    text = cc_public.eval.select.render(tuple_item, doc_eval, map_guid, map_location)
 
     if not text.strip():
         raise cc_public.edit.tree.ErrorItem(
@@ -85,7 +99,8 @@ def case(tree, id_eval, name_item, verdict, note, origin = None):
     (key, id_case) = cc_public.edit.insert.insert(tree, 't_control_case', key,
                                                   id_set, 'case')
 
-    cc_public.edit.field.set_field(tree, id_case, 'subject', prose = text)
+    cc_public.edit.field.set_field(tree, id_case, 'subject',
+                                   prose = cc_public.control.verbatim(text))
     cc_public.edit.field.set_field(tree, id_case, 'verdict', value = verdict)
     cc_public.edit.field.set_field(tree, id_case, 'origin',
                                    value = origin or (ORIGIN_MET if verdict == VERDICT_MET
