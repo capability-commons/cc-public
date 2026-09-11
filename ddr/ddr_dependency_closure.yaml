@@ -63,6 +63,13 @@ decision:               |
                         it, a method on its adapter, and an execution
                         on the item it observed.
 
+                        ddr_annotation later declared it on
+                        r_is_about, r_supports and r_challenges, so an
+                        assertion rests on what it is about and on the
+                        assertion it answers. Which relations declare
+                        it is read from the register and not listed
+                        here; cctool query returns them.
+
                         r_verifies does not. A case does not rest on
                         the requirement it verifies; the claim about
                         the requirement rests on the case, and an
@@ -129,10 +136,11 @@ alternative:            |
                         reaches something the source rests on does
                         not.
 consequence:            |
-                        sch_entry_relation gains dependency, and the
-                        relation check reads it beside domain, range,
-                        acyclic, transitive, incompatible and
-                        cardinality.
+                        sch_entry_relation gains dependency. The
+                        relation check does not read it: it constrains
+                        no edge. The closure and cctool changed read
+                        it, in opposite directions over the same
+                        declarations.
 
                         A closure is computable for any item, not only
                         for evidence. What rests on what is now in the

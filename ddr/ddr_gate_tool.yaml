@@ -121,11 +121,13 @@ alternative:            |
                         Rejected: the tools already believed are the
                         ones nobody has looked at.
 consequence:            |
-                        reg_gate_tool holds six entries: the
-                        repository check, ruff, the import linter,
-                        pytest, the coverage floor and the pytest
-                        adapter. One of the six is shown to fail by
-                        anything. qry_gate_tool_control reads that.
+                        reg_gate_tool holds an entry for each tool
+                        whose failure stops the work, and every one of
+                        them is shown to fail by something. Which
+                        tools those are, and which have a control, is
+                        qry_gate_tool_control rather than a count
+                        written here that goes stale as the register
+                        grows.
 
                         Nothing checks that a gate tool has a control,
                         or that the version written is the version

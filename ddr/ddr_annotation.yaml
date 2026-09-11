@@ -137,9 +137,9 @@ rationale:              |
                         digest on the item, because the repository
                         already knows what the tree held at each
                         commit, and because r_is_about is a
-                        dependency, so a change to the subject already
-                        reaches the annotation through the impact
-                        analysis this repository computes.
+                        dependency, so a change to the subject reaches
+                        the annotation through cctool changed, which
+                        walks the edges that declare it.
 
                         At least one subject and no maximum, because
                         an assertion about nothing cannot be read,
@@ -200,9 +200,9 @@ consequence:            |
                         An assertion may go stale silently. Its
                         subject may change under it while the
                         annotation reads as though it still applies.
-                        The impact analysis reaches it, since
-                        r_is_about declares dependency, but nothing
-                        revalidates it.
+                        cctool changed reaches it, since r_is_about
+                        declares dependency, but nothing revalidates
+                        it.
 
                         The word challenge now carries two senses, and
                         a reader who meets one may take it for the
