@@ -586,8 +586,4 @@ def _fault(filepath, path, message):
 
     """
 
-    return cc_public.check.result.Nonconformity(
-                filepath = str(filepath),
-                path     = path,
-                message  = message,
-                severity = cc_public.check.result.SEVERITY_CRITICAL)
+    return cc_public.check.result.fault(filepath, path, message)

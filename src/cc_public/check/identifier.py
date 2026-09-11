@@ -316,11 +316,7 @@ def _inspect(filepath, path, id_self, guid_self, map_prefix):
     """
 
     def bad(message):
-        return cc_public.check.result.Nonconformity(
-                    filepath = str(filepath),
-                    path     = path,
-                    severity = cc_public.check.result.SEVERITY_CRITICAL,
-                    message  = message)
+        return cc_public.check.result.fault(filepath, path, message)
 
     def unchecked(reason):
         return cc_public.check.result.Note(filepath = str(filepath),

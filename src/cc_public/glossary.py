@@ -43,11 +43,12 @@ import functools
 import re
 import typing
 
+import cc_public.item
+
 
 FIELD_NOT_PROSE = ('subject', 'sql', 'example')
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
-KEY_TABLE     = 'table'
 KEY_TERM      = 'term'
 KEY_ALSO      = 'also'
 KEY_AVOID     = 'avoid'
@@ -59,7 +60,6 @@ KEY_GUID_TGT  = 'guid_target'
 
 PREFIX_TERM   = 'term'
 REL_DECIDES   = 'r_decides'
-SEPARATOR     = '_'
 MINIMUM       = 10
 LENGTH_WORD   = 3
 
@@ -357,15 +357,7 @@ def _iter_entry(map_document):
 
     """
 
-    for document in map_document.values():
-
-        if not isinstance(document, dict) or not isinstance(document.get(KEY_TABLE), dict):
-            continue
-
-        for entry in document[KEY_TABLE].values():
-            if isinstance(entry, dict) \
-                    and str(entry.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_TERM:
-                yield entry
+    return cc_public.item.iter_entry(map_document, PREFIX_TERM)
 
 
 # -----------------------------------------------------------------------------

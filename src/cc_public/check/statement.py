@@ -45,6 +45,7 @@ import re
 
 import cc_public.check.requirement
 import cc_public.check.result
+import cc_public.item
 import cc_public.requirement
 
 
@@ -53,7 +54,6 @@ TITLE           = 'Statements carry units, bounds, defined acronyms and a proces
 NOUN            = 'statement'
 
 KEY_ID_SELF     = 'id_self'
-KEY_TABLE       = 'table'
 KEY_STATUS      = 'status'
 KEY_SYMBOL      = 'symbol'
 KEY_ALSO        = 'also'
@@ -347,13 +347,7 @@ def _entries(map_document, prefix):
 
     """
 
-    for document in map_document.values():
-        if not isinstance(document, dict) or not isinstance(document.get(KEY_TABLE), dict):
-            continue
-        for entry in document[KEY_TABLE].values():
-            if isinstance(entry, dict) \
-                    and str(entry.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == prefix:
-                yield entry
+    return cc_public.item.iter_entry(map_document, prefix)
 
 
 def _units(map_document):

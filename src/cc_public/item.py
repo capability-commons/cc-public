@@ -42,7 +42,9 @@ import typing
 
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
+KEY_TABLE     = 'table'
 DELIM         = '.'
+SEPARATOR     = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -75,6 +77,49 @@ class Index(typing.NamedTuple):
 
     by_id:   dict
     by_guid: dict
+
+
+# -----------------------------------------------------------------------------
+def prefix_of(id_self):
+    """
+    Return the type prefix of a readable id: what stands before the
+    first separator.
+
+    """
+
+    return str(id_self or '').split(SEPARATOR, 1)[0]
+
+
+# -----------------------------------------------------------------------------
+def is_type(document, prefix):
+    """
+    Return whether a document declares an identity of the type the
+    prefix names.
+
+    """
+
+    return isinstance(document, dict) \
+                and prefix_of(document.get(KEY_ID_SELF)) == prefix
+
+
+# -----------------------------------------------------------------------------
+def iter_entry(map_document, prefix):
+    """
+    Yield every entry of every register in the tree whose id carries
+    the prefix.
+
+    """
+
+    for document in map_document.values():
+
+        if not isinstance(document, dict) \
+                or not isinstance(document.get(KEY_TABLE), dict):
+            continue
+
+        for entry in document[KEY_TABLE].values():
+            if isinstance(entry, dict) \
+                    and prefix_of(entry.get(KEY_ID_SELF)) == prefix:
+                yield entry
 
 
 # -----------------------------------------------------------------------------

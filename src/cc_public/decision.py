@@ -46,7 +46,6 @@ KEY_DIGEST    = 'digest'
 KEY_OUTCOME   = 'outcome'
 KEY_EXPIRY    = 'expiry'
 PREFIX        = 'dcn'
-SEPARATOR     = '_'
 LENGTH_DIGEST = 8            # the length the control cases and confidence rows use
 
 OUTCOME_WAIVE  = 'waive'
@@ -76,8 +75,7 @@ def is_decision(document):
 
     """
 
-    return (isinstance(document, dict)
-            and str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX)
+    return cc_public.item.is_type(document, PREFIX)
 
 
 # -----------------------------------------------------------------------------

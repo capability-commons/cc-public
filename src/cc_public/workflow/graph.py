@@ -125,6 +125,24 @@ class Graph:
         return self.component[local].get(KEY_OUTPUT) or {}
 
     # -------------------------------------------------------------------------
+    def _leaving(self, map_edge, local, port):
+        """
+        Return [(node, port, guard, carries)] for the edges of map_edge
+        leaving a port.
+
+        """
+
+        out = []
+
+        for edge in map_edge.values():
+            if edge[KEY_FROM] == f'{local}.output.{port}':
+                (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
+                out.append((node_dst, port_dst, edge.get(KEY_GUARD),
+                            edge.get(KEY_CARRIES, CARRIES_ITEM)))
+
+        return out
+
+    # -------------------------------------------------------------------------
     def outgoing(self, local, port):
         """
         Return [(node, port, guard, carries)] for the forward edges leaving
@@ -132,15 +150,7 @@ class Graph:
 
         """
 
-        out = []
-
-        for edge in self.edge.values():
-            if edge[KEY_FROM] == f'{local}.output.{port}':
-                (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
-                out.append((node_dst, port_dst, edge.get(KEY_GUARD),
-                            edge.get(KEY_CARRIES, CARRIES_ITEM)))
-
-        return out
+        return self._leaving(self.edge, local, port)
 
     # -------------------------------------------------------------------------
     def outgoing_back(self, local, port):
@@ -150,15 +160,7 @@ class Graph:
 
         """
 
-        out = []
-
-        for edge in self.edge_back.values():
-            if edge[KEY_FROM] == f'{local}.output.{port}':
-                (node_dst, _, port_dst) = edge[KEY_TO].split(DELIM)
-                out.append((node_dst, port_dst, edge.get(KEY_GUARD),
-                            edge.get(KEY_CARRIES, CARRIES_ITEM)))
-
-        return out
+        return self._leaving(self.edge_back, local, port)
 
     # -------------------------------------------------------------------------
     def incoming(self, local, port):

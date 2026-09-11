@@ -183,10 +183,7 @@ class _Index:
         return None if item is None else self.document(item.id_self)
 
     def deriving(self, guid, prefix):
-        list_doc = [self.by_guid(g) for g in self.incoming.get((guid, REL_DERIVED), [])]
-        return sorted([d for d in list_doc
-                       if d is not None and d[KEY_ID_SELF].split(SEPARATOR, 1)[0] == prefix],
-                      key = lambda d: d[KEY_ID_SELF])
+        return self.pointing(guid, REL_DERIVED, prefix)
 
     def pointing(self, guid, id_relation, prefix):
         list_doc = [self.by_guid(g) for g in self.incoming.get((guid, id_relation), [])]

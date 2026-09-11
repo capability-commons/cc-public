@@ -621,8 +621,7 @@ def is_requirement(document):
 
     """
 
-    return isinstance(document, dict) and str(
-                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_REQ
+    return cc_public.item.is_type(document, PREFIX_REQ)
 
 
 # -----------------------------------------------------------------------------

@@ -138,6 +138,20 @@ class Nonconformity(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
+def fault(filepath, path, message, severity = SEVERITY_CRITICAL):
+    """
+    Return one nonconformity, critical unless another severity is
+    given, with filepath read as text so that a path may be passed.
+
+    """
+
+    return Nonconformity(filepath = str(filepath),
+                         path     = path,
+                         message  = message,
+                         severity = severity)
+
+
+# -----------------------------------------------------------------------------
 class Note(typing.NamedTuple):
     """
     Something a check wants reported that is not a nonconformity.
