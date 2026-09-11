@@ -1,0 +1,61 @@
+id_self:                ann_member_and_source_compared_by_step
+guid_self:              ann_e53ec190870347a6acea91499a956e64
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A member and its source are now compared at a step boundary
+brief:                  |
+                        Fixed. The identifier must end with the
+                        member's name at a step, with the case taken
+                        off, so a class member may name its class and
+                        a bare suffix is refused.
+description:            |
+                        Comparing a lower-cased identifier against a
+                        language-cased name meant a member called
+                        Database could never carry the edge to
+                        pyc_cc_public.query.database, and comparing by
+                        bare suffix let rawing pass for drawing.
+
+                        _ends_with_step admits an identifier that is
+                        the name or ends with a step of that name,
+                        which covers a module member named by its
+                        whole dotted path and a class or function
+                        member named by its last step.
+
+                        Three tests hold it: a member whose source
+                        does not carry its name, a bare suffix of a
+                        step, and a class member naming the class that
+                        presents it, which is made in a copy and then
+                        linked.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_interface_check_compares_names_by_suffix
+    guid_target:        ann_1a76a09895534098966aa5b0e17c8209
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.interface
+    guid_target:        pym_4b6efa92056e459db7df5b10939c0512
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          icd_cc_public_query
+    guid_target:        icd_d98da03aafb14fec9683fb1df40f8999
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_source_identifier
+    guid_target:        ddr_ae15055746a24db6b8906e1daaef00ce

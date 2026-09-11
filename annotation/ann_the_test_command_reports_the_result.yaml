@@ -1,0 +1,45 @@
+id_self:                ann_the_test_command_reports_the_result
+guid_self:              ann_e76e896785a644289832c71b278968e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The test command now reports the result in its exit status
+brief:                  |
+                        Fixed. An execution that did not complete, or
+                        any result that is not passed or not
+                        applicable, exits with the nonconformity
+                        status, as run and resume do.
+description:            |
+                        A completed execution with a failed result
+                        exited zero, so a caller could not tell pass
+                        from fail without parsing the output, and
+                        test_keeping_a_report_keeps_the_execution_it_names
+                        asserted zero on a deliberately broken
+                        candidate.
+
+                        That assertion now expects the nonconformity
+                        status, and the reading is over every result
+                        the execution holds rather than over the
+                        first.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_test_command_exits_zero_on_failure
+    guid_target:        ann_83c3702ba31e47f78885df93a4fcbf8e
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.cli.running
+    guid_target:        pym_2e94fa6dd42a4d75947f283c4f4a02fa

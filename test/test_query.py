@@ -31,8 +31,10 @@ relation:               []
 
 
 import json
+import sqlite3
 
 import click.testing
+import pytest
 
 import cc_public.check
 import cc_public.check.identifier
@@ -458,3 +460,36 @@ def test_a_neighbourhood_is_drawn_in_dot_and_in_mermaid(tree, tmp_path):
     assert out.exit_code == 0 and 'pym_cc_public.layout' in out.output
     out = run('orphans', '--root', str(tmp_path))
     assert out.exit_code == 0 and 'relation(s) nothing uses' in out.output
+
+
+def test_the_facts_are_open_for_reading_alone(tree, tmp_path):
+    # The run member's obligation says the query is read only, and an
+    # obligation is what the provider must do. Over the tree, DELETE
+    # FROM item returned an empty result and the item count fell to
+    # zero.
+    import cc_public.check
+    import cc_public.query
+
+    context = cc_public.check.context([tmp_path])[0]
+    db      = cc_public.query.Database(context.map_document)
+    before  = db.run('SELECT count(*) FROM item')[1]
+
+    with pytest.raises(sqlite3.OperationalError):
+        db.run('DELETE FROM item')
+
+    assert db.run('SELECT count(*) FROM item')[1] == before
+    db.close()
+
+
+def test_a_walk_of_a_name_the_tree_does_not_hold_is_absent(tree, tmp_path):
+    # The member says list[Step] | None, and said list[Step] while
+    # returning None, so a caller iterating the result raised on a typo.
+    import cc_public.check
+    import cc_public.query
+
+    context = cc_public.check.context([tmp_path])[0]
+    db      = cc_public.query.Database(context.map_document)
+
+    assert db.walk('req_no_such_requirement') is None
+    assert db.walk('req_path_reported') is not None
+    db.close()

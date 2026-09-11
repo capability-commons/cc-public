@@ -125,7 +125,10 @@ surface:
                         An item is reported once, at the depth it is
                         first reached, with the edge that reached it.
                         The order is breadth first, so a caller may
-                        rely on depth not decreasing.
+                        rely on depth not decreasing. A name this tree
+                        does not hold is answered with absent rather
+                        than with an empty neighbourhood, since the
+                        two say different things.
 
               parameter:
 
@@ -183,10 +186,12 @@ surface:
               returns:
 
                 type:
-                  spelling:  list[Step]
+                  spelling:  list[Step] | None
 
                 brief:  |
-                        The steps of the neighbourhood, breadth first.
+                        The steps of the neighbourhood, breadth first,
+                        or absent where this tree holds no item of
+                        that name.
 
               relation:
 
@@ -203,10 +208,11 @@ surface:
                         Return the column names and the rows of a
                         query over the facts.
               obligation:  |
-                        The query is read only. Parameters are bound
-                        rather than written into the text, so a value
-                        carrying a quotation mark is a value and not
-                        syntax.
+                        The database is open for reading alone, so a
+                        statement that would write raises rather than
+                        writing. Parameters are bound rather than
+                        written into the text, so a value carrying a
+                        quotation mark is a value and not syntax.
 
               parameter:
 

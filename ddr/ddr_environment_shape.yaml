@@ -69,12 +69,18 @@ rationale:              |
                         loads it. Splitting would separate the smaller
                         half of the problem.
 
-                        The one dependency finding lives in the model
-                        stack, in a cache library reached through
-                        litellm. Removing it from the environment the
-                        gate runs in would not remove it from the
-                        product, and it is already recorded as
-                        unreachable from anything here.
+                        There are two dependency findings and only one
+                        of them lives in the model stack. That one is
+                        a cache library reached through litellm, and
+                        removing it from the environment the gate runs
+                        in would not remove it from the product. The
+                        other is in the rendering stack, which no
+                        split would move, and it has a fix released
+                        that this channel does not yet carry: a test
+                        renders a dossier, so it is reached. What the
+                        audit reports is triaged in
+                        qst_environment_shape.audit and nowhere else,
+                        and the audit blocks nothing.
 
                         Written down rather than left as a shrug,
                         because the reason the split stays cheap is a
@@ -136,4 +142,15 @@ question:
                         How slow a cold environment has to be, or how
                         reachable a finding in the model stack has to
                         be, before the split is worth its maintenance.
+    relation:           []
+
+  audit:
+    id_self:            qst_environment_shape.audit
+    guid_self:          qst_3c142f04c691445b8de4cf55a75148ba
+    question:           |
+                        What holds a reported advisory whose fix the
+                        channel does not carry, given that the audit
+                        blocks nothing, the pin cannot move, and a
+                        record is the only place the triage is
+                        written.
     relation:           []

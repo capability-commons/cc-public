@@ -1,0 +1,53 @@
+id_self:                ann_the_audit_finding_is_triaged
+guid_self:              ann_3940006b2f0641f99b0453448c40aba7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The environment record now says what the audit reports
+brief:                  |
+                        Fixed as a record, not as a pin. There are two
+                        findings, one of them in the rendering stack
+                        and reached, and its fix is not in this
+                        channel.
+description:            |
+                        The record said the one dependency finding
+                        lives in the model stack and is unreachable,
+                        while its own context says the suite loads the
+                        rendering stack.
+
+                        I raised both pins to weasyprint 70 and the
+                        environment would not solve: conda-forge
+                        carries 69.0 as its latest, with nothing above
+                        it. The pins are back where they were, because
+                        moving them breaks the environment and does
+                        not fix anything.
+
+                        The record now says there are two findings,
+                        that one of them is in the rendering stack and
+                        is reached, that its fix is released and not
+                        carried here, and that the audit blocks
+                        nothing. qst_environment_shape.audit asks what
+                        holds an advisory whose fix the channel does
+                        not carry, which is the part nothing answers.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_weasyprint_advisory_reachable
+    guid_target:        ann_633700ae1c1d406db2f3ba6bfc213941
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_environment_shape
+    guid_target:        ddr_5d37c9605744492085deb2d97224f97d

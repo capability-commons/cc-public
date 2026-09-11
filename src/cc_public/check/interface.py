@@ -61,6 +61,7 @@ KEY_MODE      = 'mode'
 PREFIX_ICD    = 'icd'
 PREFIX_MEMBER = 'icm'
 REL_IMPLEMENT = 'r_is_implemented_by'
+DELIM_STEP    = '.'
 SEPARATOR     = '_'
 DELIM         = '.'
 
@@ -164,7 +165,12 @@ def _member(filepath, path, key, member, stem, language, declared):
 def _source(filepath, path, member, name):
     """
     Return a fault where a member names the source presenting it and
-    that source does not end with the member's name.
+    that identifier does not end with the member's name at a step
+    boundary.
+
+    A readable id spells a definition in lower case and a member is
+    named as the language spells it, so the two are compared with the
+    case taken off (ddr_source_identifier).
 
     """
 
@@ -177,12 +183,28 @@ def _source(filepath, path, member, name):
 
         target = str(edge.get(KEY_ID_TARGET) or '')
 
-        if SEPARATOR in target and not target.split(SEPARATOR, 1)[1].endswith(name):
+        if SEPARATOR in target \
+                and not _ends_with_step(target.split(SEPARATOR, 1)[1], name.lower()):
             out.append(_fault(filepath, cc_public.path.join(path, KEY_RELATION),
-                    'The member is named {name} and says {target} presents it, which does '
-                    'not end with that name.'.format(name = name, target = target)))
+                    'The member is named {name} and says {target} presents it, which '
+                    'does not end with that name at a step '
+                    'boundary.'.format(name = name, target = target)))
 
     return out
+
+
+# -----------------------------------------------------------------------------
+def _ends_with_step(identifier, name):
+    """
+    Return whether identifier ends with name at a step boundary.
+
+    A module member is named by its whole dotted path and a class or a
+    function member by its last step, so both are admitted; a bare
+    suffix of a step is not.
+
+    """
+
+    return identifier == name or identifier.endswith(DELIM_STEP + name)
 
 
 # -----------------------------------------------------------------------------

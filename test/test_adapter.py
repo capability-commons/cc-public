@@ -233,8 +233,13 @@ def test_keeping_a_report_keeps_the_execution_it_names(tmp_path):
     body     = text.index('\n', close) + 1
     filepath.write_text(text[:body] + '        return None\n' + text[body:])
 
+    # A result that is not passed is a failure of the run, and a caller
+    # reads the exit status. This asserted zero on a deliberately
+    # broken candidate, which is how the behaviour was held.
+    import cc_public.cli.group
+
     done = _run(tmp_path, '--report')
-    assert done.exit_code == 0
+    assert done.exit_code == cc_public.cli.group.EXIT_NONCONFORMITY
 
     (report,)    = list((tmp_path / 'nonconformity').iterdir())
     list_kept    = list((tmp_path / 'execution').glob('tex_*.yaml'))
@@ -247,3 +252,30 @@ def test_keeping_a_report_keeps_the_execution_it_names(tmp_path):
                 for c in cc_public.check.check(list_path = [tmp_path])['report']['check']
                 for n in c['nonconformity'] if n['severity'] == 'critical']
     assert critical == []
+
+
+def test_a_guid_names_what_a_readable_id_names(tmp_path):
+    # The help says either, and what runs the case indexes by readable
+    # id alone, so a guid was reported as an item the tree does not
+    # hold.
+    import cc_public.edit.tree
+
+    _whole(tmp_path)
+    tree = cc_public.edit.tree.Tree([tmp_path])
+    done = click_run(tmp_path, tree.resolve(ID_CASE).guid_self,
+                     tree.resolve(ID_UNDER).guid_self)
+
+    assert done.exit_code == 0, done.output
+    assert ID_UNDER in done.output
+
+
+def click_run(tmp_path, name_case, name_under_test, *option):
+    import click.testing
+
+    import cc_public.cli.group
+    import cc_public.cli.running  # registers
+
+    return click.testing.CliRunner().invoke(
+                cc_public.cli.group.main,
+                ['test', name_case, '--under-test', name_under_test,
+                 '--root', str(tmp_path), *option])

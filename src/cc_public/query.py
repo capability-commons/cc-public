@@ -89,6 +89,11 @@ class Database:
         self.db.executemany('INSERT INTO containment VALUES (?, ?)', self.facts.containment)
         self.db.commit()
 
+        # Read only from here, so that run keeps what its obligation
+        # promises whatever sql it is handed (ddr_graph_query).
+        #
+        self.db.execute('PRAGMA query_only = ON')
+
     # -------------------------------------------------------------------------
     def close(self):
         """
@@ -153,7 +158,9 @@ class Database:
                                 the facts.
         description:            |
                                 Runs SQL over the fact tables and returns the
-                                column names with the rows.
+                                column names with the rows. The database is
+                                open for reading alone, so a statement that
+                                would write raises rather than writing.
         relation:               []
 
         ...
@@ -340,14 +347,20 @@ class Database:
 
         """
 
-        self.db.execute('CREATE TEMP TABLE picked (guid TEXT PRIMARY KEY)')
-        self.db.executemany('INSERT OR IGNORE INTO picked VALUES (?)',
-                            [(s.guid,) for s in list_step])
-        (_, rows) = self.run(
-            'SELECT guid_source, guid_target, id_relation FROM edge '
-            'WHERE guid_source IN (SELECT guid FROM picked) '
-            '  AND guid_target IN (SELECT guid FROM picked)')
-        self.db.execute('DROP TABLE picked')
+        guid  = sorted({step.guid for step in list_step})
+        held  = ','.join('?' * len(guid))
+
+        if not guid:
+            return []
+
+        # held is a run of placeholders and holds nothing a caller wrote;
+        # every guid is bound.
+        #
+        sql = ('SELECT guid_source, guid_target, id_relation FROM edge '  # noqa: S608
+               'WHERE guid_source IN ({held}) '
+               '  AND guid_target IN ({held})').format(held = held)
+
+        (_, rows) = self.run(sql, guid + guid)
 
         return sorted((self.id_of(a), self.id_of(b), rel) for (a, b, rel) in rows)
 

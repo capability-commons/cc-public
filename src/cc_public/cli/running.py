@@ -63,6 +63,17 @@ import cc_public.workflow.run
 
 
 ID_TYPE_REPORT  = 't_nonconformity_report'
+
+# What an execution says happened, and what it says about the item
+# under test. They are two things: an execution that did not complete
+# carries no result at all (ddr_test_execution).
+#
+KEY_OUTCOME     = 'execution_outcome'
+KEY_RESULT      = 'result'
+KEY_CONFORMANCE = 'conformance_result'
+OUTCOME_COMPLETED    = 'completed'
+RESULT_PASSED        = 'passed'
+RESULT_NOT_APPLICABLE = 'not_applicable'
 KEY_EXPECTATION = 'expectation'
 
 
@@ -238,14 +249,21 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
 
     tree = cc_public.cli.group.tree(list_root)
 
-    (document, list_problem) = cc_public.adapter.execute(tree, name_case, name_under_test)
+    # Both are resolved here, so that a guid names what a readable id
+    # names, as it does everywhere else. What runs the case indexes by
+    # readable id alone.
+    #
+    id_case  = tree.resolve(name_case).id_self
+    id_under = tree.resolve(name_under_test).id_self
+
+    (document, list_problem) = cc_public.adapter.execute(tree, id_case, id_under)
 
     if document is None:
         cc_public.cli.group.fail('\n'.join(list_problem))
 
     defaults = dict(tree.defaults())
     defaults['guid_mark'] = tree.resolve(defaults['id_mark']).guid_self
-    case     = tree.context.map_document[tree.resolve(name_case).location]
+    case     = tree.context.map_document[tree.resolve(id_case).location]
 
     list_report = cc_public.nonconformity.from_execution(
                         tree.context.map_document, document, defaults,
@@ -276,3 +294,25 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
 
     cc_public.cli.report.write_execution_test(document, list_report, list_problem,
                                               written, id_format)
+
+    # A caller reads the exit status, as it does of run and resume. A
+    # result that is not passed, and an execution that did not
+    # complete, are both failures of the run (ddr_test_execution).
+    #
+    if not _is_passed(document):
+        raise SystemExit(cc_public.cli.group.EXIT_NONCONFORMITY)
+
+
+# -----------------------------------------------------------------------------
+def _is_passed(document):
+    """
+    Return whether an execution completed and every result it holds
+    says the item under test met what was expected.
+
+    """
+
+    if document.get(KEY_OUTCOME) != OUTCOME_COMPLETED:
+        return False
+
+    return all(one.get(KEY_CONFORMANCE) in (RESULT_PASSED, RESULT_NOT_APPLICABLE)
+               for one in (document.get(KEY_RESULT) or {}).values())

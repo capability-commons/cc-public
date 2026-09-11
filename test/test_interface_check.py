@@ -89,4 +89,30 @@ def test_a_member_whose_source_does_not_carry_its_name_is_reported(tree, tmp_pat
     cc_public.edit.field.set_field(
             tree, ID, 'surface.python.native.function.named.name', value = 'nomen')
     messages = _findings(tmp_path)
-    assert any('does not end with that name' in message for message in messages)
+    assert any('at a step boundary' in message for message in messages)
+
+
+def test_a_bare_suffix_of_a_step_is_not_the_name(tree, tmp_path):
+    # named ends with amed, and a member called amed was accepted
+    # because the comparison was a suffix and not a step.
+    cc_public.edit.field.set_field(
+            tree, ID, 'surface.python.native.function.named.name', value = 'amed')
+    assert any('at a step boundary' in message for message in _findings(tmp_path))
+
+
+def test_a_class_member_may_name_the_class_that_presents_it(tree, tmp_path):
+    # A readable id spells a definition in lower case, so a member
+    # named Database could never carry the edge to the class of that
+    # name while the comparison held the language's case against it.
+    import cc_public.edit.new
+    from conftest import DEFAULTS
+
+    cc_public.edit.new.new(tree, 't_python_class', 'pyc_cc_public.query.database',
+                           DEFAULTS)
+    cc_public.edit.field.set_field(tree, 'pyc_cc_public.query.database', 'title',
+                                   value = 'Database')
+    cc_public.edit.field.set_field(tree, 'pyc_cc_public.query.database', 'description',
+                                   prose = 'The facts of a tree, queried.')
+    cc_public.edit.link.link(tree, 'icm_cc_public_query.database',
+                             'r_is_implemented_by', 'pyc_cc_public.query.database')
+    assert _findings(tmp_path) == []
