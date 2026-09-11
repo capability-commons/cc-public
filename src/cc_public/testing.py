@@ -71,7 +71,6 @@ REL_USES        = 'r_uses_test_method'
 REL_VERIFIES    = 'r_verifies'
 
 PREFIX_CASE     = 'tc'
-SEPARATOR       = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -184,8 +183,8 @@ def iter_case(map_document):
 
     for (location, document) in sorted(map_document.items(), key = str):
         if isinstance(document, dict) \
-                and str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] \
-                                                            == PREFIX_CASE:
+                and cc_public.item.prefix_of(
+                                document.get(KEY_ID_SELF)) == PREFIX_CASE:
             yield (location, document[KEY_ID_SELF])
 
 

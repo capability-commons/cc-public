@@ -31,6 +31,8 @@ relation:               []
 
 import typing
 
+import cc_public.item
+
 
 KEY_SUBJECT  = 'subject'
 KEY_OUTCOME  = 'outcome'
@@ -53,7 +55,7 @@ def is_need(document: typing.Any) -> bool:
     """
 
     return (isinstance(document, dict)
-            and str(document.get(KEY_ID_SELF, '')).split('_', 1)[0] == PREFIX_NEED
+            and cc_public.item.prefix_of(document.get(KEY_ID_SELF)) == PREFIX_NEED
             and all(document.get(k) for k in SLOTS))
 
 

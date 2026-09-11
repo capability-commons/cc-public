@@ -40,6 +40,7 @@ import cc_public.control
 import cc_public.edit.field
 import cc_public.eval.runner
 import cc_public.eval.select
+import cc_public.item
 import cc_public.load
 
 
@@ -143,8 +144,8 @@ def list_stale(context, id_model):
     list_out = []
 
     for (_, document) in sorted(context.map_document.items()):
-        if not isinstance(document, dict) or str(
-                document.get('id_self', '')).split('_', 1)[0] != PREFIX_EVAL:
+        if not isinstance(document, dict) or cc_public.item.prefix_of(
+                                document.get('id_self')) != PREFIX_EVAL:
             continue
         if not any(True for _ in cc_public.control.iter_case(
                                 context.map_document, document['guid_self'])):

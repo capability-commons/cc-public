@@ -54,7 +54,6 @@ KEY_ID_SELF       = 'id_self'
 FIELD_NOT_PROSE   = ('subject', 'sql', 'example', 'alternative', 'note')
 DELIM_PATH_STEP   = '.'
 SUFFIX_ITEM       = '.yaml'
-SEPARATOR   = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -80,8 +79,8 @@ def check(context):
 
     for (filepath, document) in sorted(context.map_document.items()):
 
-        is_history = isinstance(document, dict) and str(
-                document.get('id_self', '')).split(SEPARATOR, 1)[0] in PREFIX_HISTORY
+        is_history = isinstance(document, dict) and cc_public.item.prefix_of(
+                                document.get('id_self')) in PREFIX_HISTORY
         gone       = []
 
         for (path, _key, guid, id_advisory) in iter_reference(document):
@@ -231,7 +230,9 @@ def _inspect(filepath, path, guid, id_advisory, map_declaration,
     # resolve, and reporting it as possibly lying behind a sharing
     # boundary would be misleading advice about what is a typo.
     #
-    if id_advisory is not None and _prefix(guid) != _prefix(id_advisory):
+    if id_advisory is not None \
+            and cc_public.item.prefix_of(guid) \
+                            != cc_public.item.prefix_of(id_advisory):
         return
 
     if guid not in map_declaration:
@@ -384,13 +385,3 @@ def _id_at(document, path):
         node = node.get(part, {})
 
     return node.get('id_self') if isinstance(node, dict) else None
-
-
-# -----------------------------------------------------------------------------
-def _prefix(identifier):
-    """
-    Return the type prefix of identifier.
-
-    """
-
-    return identifier.split(SEPARATOR, 1)[0]

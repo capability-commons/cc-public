@@ -33,6 +33,7 @@ relation:               []
 
 import importlib
 
+import cc_public.item
 import cc_public.load
 import cc_public.workflow
 import cc_public.workflow.produce
@@ -73,7 +74,7 @@ def function_of(tree, item):
 
     """
 
-    if item.id_self.split(SEPARATOR, 1)[0] != PREFIX_FUNCTION \
+    if cc_public.item.prefix_of(item.id_self) != PREFIX_FUNCTION \
             or len(item.location.anchor) != 1:
         raise cc_public.workflow.Stop(
                 '{item} is not a function at module level, and a component in '

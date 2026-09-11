@@ -35,6 +35,7 @@ import json
 
 import cc_public.check.result
 import cc_public.control
+import cc_public.item
 
 
 ID_CHECK       = 'confidence'
@@ -44,7 +45,6 @@ NOUN           = 'confidence row'
 KEY_ID_SELF    = 'id_self'
 KEY_CONFIDENCE = 'confidence'
 PREFIX_EVAL    = 'evl'
-SEPARATOR      = '_'
 
 KEY_DIGEST    = 'digest'
 KEY_MODEL     = 'model'
@@ -134,8 +134,8 @@ def check(context):
 
     for (filepath, document) in sorted(context.map_document.items()):
 
-        if not isinstance(document, dict) or str(
-                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] != PREFIX_EVAL:
+        if not isinstance(document, dict) or cc_public.item.prefix_of(
+                        document.get(KEY_ID_SELF)) != PREFIX_EVAL:
             continue
 
         list_row = document.get(KEY_CONFIDENCE) or []

@@ -38,6 +38,7 @@ relation:               []
 import collections
 
 import cc_public.check.result
+import cc_public.item
 
 
 ID_CHECK        = 'workflow'
@@ -45,7 +46,6 @@ TITLE           = 'Workflows are graphs that can run'
 NOUN            = 'workflow'
 
 PREFIX_WORKFLOW = 'wf'
-SEPARATOR       = '_'
 DELIM           = '.'
 
 KEY_ID_SELF     = 'id_self'
@@ -130,7 +130,7 @@ def _is_workflow(document):
     id_self = document.get(KEY_ID_SELF) if isinstance(document, dict) else None
 
     return isinstance(id_self, str) \
-                and id_self.split(SEPARATOR, 1)[0] == PREFIX_WORKFLOW
+                and cc_public.item.prefix_of(id_self) == PREFIX_WORKFLOW
 
 
 # -----------------------------------------------------------------------------
@@ -378,7 +378,7 @@ def _function_form(component, list_edge, outputs, map_by_guid):
     for edge in list_edge:
         target = map_by_guid.get(edge.get(KEY_GUID_TARGET))
         if target is not None \
-                and str(target.get(KEY_ID_SELF, '')).split('_', 1)[0] != PREFIX_FUNCTION:
+                and cc_public.item.prefix_of(target.get(KEY_ID_SELF)) != PREFIX_FUNCTION:
             list_bad.append('{c} is implemented by {t}, which is not a function. A '
                             'component in code names a function at module level.'.format(
                                     c = id_cmp, t = target.get(KEY_ID_SELF)))

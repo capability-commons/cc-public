@@ -66,7 +66,6 @@ OBJ_VERDICT       = 'obj_verdict_per_requirement'
 OBJ_ANALYSIS      = 'obj_coverage_analysed'
 
 PREFIX_REQ        = 'req'
-SEPARATOR         = '_'
 
 REL_DERIVED       = 'r_is_derived_from'
 REL_IMPLEMENTED   = 'r_is_implemented_by'
@@ -408,7 +407,7 @@ def changed(map_document, set_filepath):
         list_out.append(Changed(
                 id_self    = document.get(KEY_ID_SELF),
                 guid_self  = guid,
-                prefix     = str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0],
+                prefix     = cc_public.item.prefix_of(document.get(KEY_ID_SELF)),
                 title      = document.get(KEY_TITLE),
                 location   = str(location.filepath),
                 held       = max(len(held) - 1, 0),
@@ -743,7 +742,7 @@ def _declaring(map_document, key):
         for entry in document[KEY_TABLE].values():
             if isinstance(entry, dict) and entry.get(key) \
                     and isinstance(entry.get(KEY_ID_SELF), str) \
-                    and entry[KEY_ID_SELF].split(SEPARATOR, 1)[0] == PREFIX_RELATION:
+                    and cc_public.item.prefix_of(entry[KEY_ID_SELF]) == PREFIX_RELATION:
                 out.add(entry[KEY_ID_SELF])
 
     return out

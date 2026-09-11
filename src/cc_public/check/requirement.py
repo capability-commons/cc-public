@@ -41,6 +41,7 @@ import re
 
 import cc_public.check.result
 import cc_public.check.segment
+import cc_public.item
 import cc_public.requirement
 
 
@@ -69,7 +70,6 @@ ARTICLES        = frozenset(('a', 'an', 'the'))
 CLASSES         = ('normal', 'abnormal', 'misuse', 'maintenance', 'deployment', 'safety', 'budget')
 PREFIX_VERB     = 'verb'
 STATUS_ACCEPTED = 'accepted'
-SEPARATOR       = '_'
 DELIM           = '.'
 KEY_CRITICALITY = 'criticality'
 KEY_DIMENSION   = 'dimension'
@@ -139,8 +139,8 @@ def check(context):
     map_guid = _by_guid(context.map_document)
 
     for (location, document) in sorted(context.map_document.items(), key = lambda kv: str(kv[0])):
-        if isinstance(document, dict) and str(
-                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_SET:
+        if isinstance(document, dict) and cc_public.item.prefix_of(
+                        document.get(KEY_ID_SELF)) == PREFIX_SET:
             count += 1
             list_bad.extend(_check_set(location, document, map_guid))
 
@@ -304,7 +304,7 @@ def iter_subject(map_document):
         if not isinstance(document, dict):
             continue
 
-        prefix = str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0]
+        prefix = cc_public.item.prefix_of(document.get(KEY_ID_SELF))
 
         if prefix == PREFIX_REQ:
             yield (location, '', document)
@@ -335,7 +335,7 @@ def _defined(map_document, segments):
 
         for entry in document[KEY_TABLE].values():
             if isinstance(entry, dict) \
-                    and str(entry.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_VERB \
+                    and cc_public.item.prefix_of(entry.get(KEY_ID_SELF)) == PREFIX_VERB \
                     and entry.get(KEY_TERM):
                 out.setdefault(' '.join(str(entry[KEY_TERM]).split()), []).append(id_segment)
 

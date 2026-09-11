@@ -454,7 +454,7 @@ def _iter_domain(context, domain, map_prefix):
 
     for (location, document) in sorted(context.map_document.items(), key = str):
         for held in cc_public.item.iter_item(document, location):
-            if held.id_self and held.id_self.split(SEPARATOR, 1)[0] in prefix:
+            if held.id_self and cc_public.item.prefix_of(held.id_self) in prefix:
                 yield (held.id_self, location)
 
 
@@ -478,7 +478,7 @@ def _type_of(identifier, map_prefix):
     if not isinstance(identifier, str) or SEPARATOR not in identifier:
         return None
 
-    entry = map_prefix.get(identifier.split(SEPARATOR, 1)[0])
+    entry = map_prefix.get(cc_public.item.prefix_of(identifier))
 
     return entry.get(KEY_ID_SELF) if isinstance(entry, dict) else None
 

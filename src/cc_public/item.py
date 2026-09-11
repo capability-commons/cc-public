@@ -80,7 +80,7 @@ class Index(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
-def prefix_of(id_self):
+def prefix_of(id_self: object) -> str:
     """
     Return the type prefix of a readable id: what stands before the
     first separator.

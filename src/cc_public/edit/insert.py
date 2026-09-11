@@ -50,6 +50,7 @@ import cc_public.check.register
 import cc_public.check.schema
 import cc_public.edit.new
 import cc_public.edit.tree
+import cc_public.item
 import cc_public.path
 
 
@@ -90,7 +91,7 @@ def insert(tree, id_type, name, name_container, path_collection = None,
     entry_type = table[id_type]
     container  = tree.resolve(name_container)
     document   = tree.document(container)
-    is_reg     = container.id_self.split(SEPARATOR, 1)[0] == PREFIX_REGISTER
+    is_reg     = cc_public.item.prefix_of(container.id_self) == PREFIX_REGISTER
 
     if path_collection is None:
         if not is_reg:

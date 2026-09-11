@@ -44,7 +44,6 @@ KEY_ID_REL    = 'id_relation'
 KEY_GUID_TGT  = 'guid_target'
 KEY_ID_TGT    = 'id_target'
 KEY_STATUS    = 'status'
-SEPARATOR     = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -144,7 +143,7 @@ def facts(map_document):
             id_self = node.get(KEY_ID_SELF)
             list_item.append(Item(guid     = guid,
                                   id_self  = id_self,
-                                  prefix   = str(id_self or '').split(SEPARATOR, 1)[0],
+                                  prefix   = cc_public.item.prefix_of(id_self),
                                   status   = node.get(KEY_STATUS)
                                              if isinstance(node.get(KEY_STATUS), str) else None,
                                   location = str(location)))

@@ -77,7 +77,6 @@ TITLE     = 'Requirements trace to what derives, implements and verifies them'
 NOUN      = 'requirement'
 
 PREFIX_ANALYSIS = 'cva'
-SEPARATOR       = '_'
 SUFFIX_PYTHON   = '.py'
 
 # What joins a definition to the surroundings it was read with, so the
@@ -282,7 +281,7 @@ def _is_analysis(document):
     """
 
     return isinstance(document, dict) \
-       and str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] == PREFIX_ANALYSIS
+       and cc_public.item.prefix_of(document.get(KEY_ID_SELF)) == PREFIX_ANALYSIS
 
 
 # -----------------------------------------------------------------------------

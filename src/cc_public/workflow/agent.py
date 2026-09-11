@@ -35,6 +35,7 @@ relation:               []
 
 
 import cc_public.facts
+import cc_public.item
 import cc_public.workflow
 
 
@@ -112,7 +113,7 @@ def outputs(state, local, map_id):
         list_id   = sorted(tree.resolve(guid).id_self for guid in list_guid
                            if guid in tree.map_id or guid in _guids(tree))
         list_id   = [i for i in list_id
-                       if i.split('_', 1)[0] == prefix.get(spec.get(KEY_ID_TYPE))]
+                       if cc_public.item.prefix_of(i) == prefix.get(spec.get(KEY_ID_TYPE))]
 
         if not list_id:
             raise cc_public.workflow.Stop(

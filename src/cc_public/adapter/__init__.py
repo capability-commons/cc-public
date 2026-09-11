@@ -38,6 +38,7 @@ import cc_public.check.register
 import cc_public.check.schema
 import cc_public.edit.new
 import cc_public.decision
+import cc_public.item
 import cc_public.load.git
 import cc_public.testing
 
@@ -63,7 +64,6 @@ KEY_MAIN      = 'main'
 KEY_RANGE     = 'range'
 KEY_ID_SELF   = 'id_self'
 REL_TESTS     = 'r_tests'
-SEPARATOR     = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ def _kind_of(map_document, id_self):
 
     (_, document) = cc_public.check.register.find_type(map_document)
     entry = cc_public.check.register.map_prefix(document).get(
-                                        id_self.split(SEPARATOR, 1)[0])
+                                        cc_public.item.prefix_of(id_self))
 
     return entry.get(KEY_ID_SELF) if entry else None
 

@@ -33,6 +33,7 @@ import pathlib
 
 import cc_public.decision
 import cc_public.facts
+import cc_public.item
 import cc_public.load.git
 import cc_public.need
 import cc_public.requirement
@@ -188,7 +189,8 @@ class _Index:
     def pointing(self, guid, id_relation, prefix):
         list_doc = [self.by_guid(g) for g in self.incoming.get((guid, id_relation), [])]
         return sorted([d for d in list_doc
-                       if d is not None and d[KEY_ID_SELF].split(SEPARATOR, 1)[0] == prefix],
+                       if d is not None
+                          and cc_public.item.prefix_of(d[KEY_ID_SELF]) == prefix],
                       key = lambda d: d[KEY_ID_SELF])
 
     def cited(self, document):
@@ -212,7 +214,7 @@ class _Index:
         wanted = {d[KEY_GUID_SELF] for d in list_doc}
         seen   = {}
         for item in self.tree.map_id.values():
-            if item.id_self.split(SEPARATOR, 1)[0] != PREFIX_BINDING:
+            if cc_public.item.prefix_of(item.id_self) != PREFIX_BINDING:
                 continue
             binding = self.document(item.id_self)
             bound   = [e for e in binding.get(KEY_RELATION) or []
@@ -361,11 +363,11 @@ def _admission(index, concept):
     """
     for r in concept['requirement']:
         for id_target in r['admitted']:
-            if id_target.split(SEPARATOR, 1)[0] == PREFIX_DECISION:
+            if cc_public.item.prefix_of(id_target) == PREFIX_DECISION:
                 doc = index.document(id_target)
                 return {'kind': 'waived', 'id': id_target, 'expiry': doc.get('expiry'),
                         'actor': doc.get('actor'), 'condition': doc.get('condition', '')}
-            if id_target.split(SEPARATOR, 1)[0] == PREFIX_EXE:
+            if cc_public.item.prefix_of(id_target) == PREFIX_EXE:
                 return {'kind': 'concluded', 'id': id_target}
     return {'kind': 'none'}
 

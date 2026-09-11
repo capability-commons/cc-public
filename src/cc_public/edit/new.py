@@ -48,6 +48,7 @@ import ruamel.yaml.comments
 import cc_public.edit.field
 import cc_public.edit.link
 import cc_public.edit.tree
+import cc_public.item
 import cc_public.layout
 import cc_public.load
 
@@ -430,7 +431,7 @@ def _home(tree, entry):
     count  = {}
 
     for (id_self, item) in tree.map_id.items():
-        if id_self.split('_', 1)[0] == prefix and not item.path:
+        if cc_public.item.prefix_of(id_self) == prefix and not item.path:
             count[item.filepath.parent] = count.get(item.filepath.parent, 0) + 1
 
     if not count:

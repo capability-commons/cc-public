@@ -53,6 +53,7 @@ import time
 import typing
 
 import cc_public.evidence
+import cc_public.item
 import cc_public.testing
 
 
@@ -60,7 +61,6 @@ KEY_ID_TEST   = 'id_test'
 KEY_ID_SELF   = 'id_self'
 
 PREFIX_TEST   = 'pyf'
-SEPARATOR     = '_'
 DELIM         = '.'
 DELIM_NODE    = '::'
 
@@ -131,7 +131,7 @@ def specify(map_document, configuration, dirpath = None):
         return (None, ['The configuration names no test function under {key}.'.format(
                                                                 key = KEY_ID_TEST)])
 
-    if id_test.split(SEPARATOR, 1)[0] != PREFIX_TEST:
+    if cc_public.item.prefix_of(id_test) != PREFIX_TEST:
         return (None, ['{name} is not a python function, so it is not a test to '
                        'run.'.format(name = id_test)])
 

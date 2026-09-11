@@ -41,6 +41,7 @@ relation:               []
 import collections
 
 import cc_public.check.result
+import cc_public.item
 import cc_public.load.python
 import cc_public.path
 
@@ -107,7 +108,7 @@ def check(context):
         id_document = document.get(KEY_ID_SELF)
 
         if not isinstance(id_document, str) \
-                or id_document.split(SEPARATOR, 1)[0] != PREFIX_ICD:
+                or cc_public.item.prefix_of(id_document) != PREFIX_ICD:
             continue
 
         stem     = PREFIX_MEMBER + SEPARATOR + id_document.split(SEPARATOR, 1)[1]
@@ -323,7 +324,7 @@ def _iter_member(document, path = '', key = None, language = None, holder = ()):
         language = (document.get(KEY_LANGUAGE)
                     if isinstance(document.get(KEY_LANGUAGE), str) else language)
 
-        if str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_MEMBER:
+        if cc_public.item.prefix_of(document.get(KEY_ID_SELF)) == PREFIX_MEMBER:
             yield (path, key, document, language, holder)
             holder = (*holder, key if key is not None else document.get(KEY_NAME) or '')
 

@@ -41,6 +41,7 @@ import cc_public.check.reference
 import cc_public.check.register
 import cc_public.edit.ledger
 import cc_public.edit.tree
+import cc_public.item
 import cc_public.load
 import cc_public.path
 
@@ -272,7 +273,7 @@ def _cascade(tree, id_old, id_new):
 
 # -----------------------------------------------------------------------------
 def _validate(tree, id_new):
-    prefix     = id_new.split(SEPARATOR, 1)[0]
+    prefix     = cc_public.item.prefix_of(id_new)
     map_prefix = cc_public.check.register.map_prefix(tree.type_register())
     entry      = map_prefix.get(prefix)
 

@@ -33,6 +33,7 @@ import cc_public.edit.field
 import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.tree
+import cc_public.item
 
 
 TYPE_SET      = 't_requirement_set'
@@ -70,7 +71,7 @@ def gather(tree, id_concept, id_self = None, entity = None, title = None):
     list_member = sorted(
         doc[KEY_ID_SELF] for doc in tree.context.map_document.values()
         if isinstance(doc, dict)
-           and str(doc.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_REQ
+           and cc_public.item.prefix_of(doc.get(KEY_ID_SELF)) == PREFIX_REQ
            and any(isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_DERIVED
                    and edge.get(KEY_GUID_TGT) == concept.guid_self
                    for edge in doc.get(KEY_RELATION) or []))

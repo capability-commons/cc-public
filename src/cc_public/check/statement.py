@@ -68,7 +68,6 @@ PREFIX_TERM     = 'term'
 PREFIX_DOC      = 'doc'
 KIND_PROCESS    = 'process'
 STATUS_ACCEPTED = 'accepted'
-SEPARATOR       = '_'
 
 RULE_UNIT       = 'rule_r06_common_units'
 RULE_BOUND      = 'rule_r33_range_of_values'

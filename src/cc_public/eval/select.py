@@ -183,7 +183,7 @@ def _is_eval(document):
     id_self = document.get(KEY_ID_SELF)
 
     return isinstance(id_self, str) \
-                    and id_self.split(SEPARATOR, 1)[0] == PREFIX_EVAL
+                    and cc_public.item.prefix_of(id_self) == PREFIX_EVAL
 
 
 # -----------------------------------------------------------------------------
@@ -271,7 +271,7 @@ def _wanted_type(id_self, document_eval, map_prefix):
     if not include:
         return True
 
-    entry = map_prefix.get(id_self.split(SEPARATOR, 1)[0])
+    entry = map_prefix.get(cc_public.item.prefix_of(id_self))
 
     if entry is None:
         return False
@@ -294,7 +294,7 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval,
         return
 
     for (id_self, document, location) in _iter_item(context):
-        if id_self.split(SEPARATOR, 1)[0] == prefix \
+        if cc_public.item.prefix_of(id_self) == prefix \
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
             yield ((id_self,), render(((id_self, document, location),), document_eval,
@@ -603,7 +603,7 @@ def _is_case(document):
 
     """
 
-    return str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] == PREFIX_CASE
+    return cc_public.item.prefix_of(document.get(KEY_ID_SELF)) == PREFIX_CASE
 
 
 # -----------------------------------------------------------------------------

@@ -270,7 +270,7 @@ def _pair_disagreement(filepath, node, path = ''):
                 id_paired = node.get(PREFIX_ID + key[len(PREFIX_GUID):])
 
                 if isinstance(id_paired, str) \
-                        and _prefix_of(value) != _prefix_of(id_paired):
+                        and cc_public.item.prefix_of(value) != cc_public.item.prefix_of(id_paired):
                     list_bad.append(cc_public.check.result.Nonconformity(
                         filepath = str(filepath),
                         path     = cc_public.path.join(
@@ -280,8 +280,8 @@ def _pair_disagreement(filepath, node, path = ''):
                                    '{prefix_id} by readable id ({id_paired}), '
                                    'so the two cannot be the same '
                                    'item.'.format(
-                                        prefix_guid = _prefix_of(value),
-                                        prefix_id   = _prefix_of(id_paired),
+                                        prefix_guid = cc_public.item.prefix_of(value),
+                                        prefix_id   = cc_public.item.prefix_of(id_paired),
                                         id_paired   = id_paired)))
 
             list_bad.extend(_pair_disagreement(
@@ -296,16 +296,6 @@ def _pair_disagreement(filepath, node, path = ''):
                                                                 idx  = idx)))
 
     return list_bad
-
-
-# -----------------------------------------------------------------------------
-def _prefix_of(identifier):
-    """
-    Return the type prefix of identifier.
-
-    """
-
-    return identifier.split(SEPARATOR, 1)[0]
 
 
 # -----------------------------------------------------------------------------
@@ -347,7 +337,7 @@ def _inspect(filepath, path, id_self, guid_self, map_prefix):
                                                     id_self = id_self)))
         return (list_bad, None)
 
-    prefix = id_self.split(SEPARATOR, 1)[0]
+    prefix = cc_public.item.prefix_of(id_self)
 
     if prefix not in map_prefix:
         return (list_bad, unchecked('Prefix {prefix} is not in the type '

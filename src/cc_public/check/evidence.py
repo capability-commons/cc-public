@@ -76,7 +76,6 @@ KEY_OUTCOME       = 'outcome'
 KEY_DIGEST        = 'digest'
 
 PREFIX_EVIDENCE   = 'evd'
-SEPARATOR         = '_'
 SUFFIX_PYTHON     = '.py'
 
 REL_IMPLEMENTED   = cc_public.trace.REL_IMPLEMENTED
@@ -245,8 +244,8 @@ def _rows(map_document):
     out = {}
 
     for document in map_document.values():
-        if not isinstance(document, dict) or str(
-                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] != PREFIX_EVIDENCE:
+        if not isinstance(document, dict) or cc_public.item.prefix_of(
+                        document.get(KEY_ID_SELF)) != PREFIX_EVIDENCE:
             continue
         for row in (document.get(KEY_CASE) or {}).values():
             if isinstance(row, dict):

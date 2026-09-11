@@ -37,6 +37,7 @@ import pathlib
 import cc_public.check.identity
 import cc_public.check.reference
 import cc_public.check.result
+import cc_public.item
 
 
 ID_CHECK      = 'segment'
@@ -49,7 +50,6 @@ KEY_ID_SELF   = 'id_self'
 KEY_RELATION  = 'relation'
 KEY_ID_REL    = 'id_relation'
 KEY_ID_TARGET = 'id_target'
-SEPARATOR     = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ def map_segment(map_document):
 
         id_self = str(document.get(KEY_ID_SELF, ''))
 
-        if id_self.split(SEPARATOR, 1)[0] != PREFIX:
+        if cc_public.item.prefix_of(id_self) != PREFIX:
             continue
 
         consumed = tuple(edge[KEY_ID_TARGET]

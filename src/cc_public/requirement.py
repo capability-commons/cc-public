@@ -31,6 +31,9 @@ relation:               []
 """
 
 
+import cc_public.item
+
+
 KEY_CONDITION_KIND = 'condition_kind'
 KEY_CONDITION      = 'condition'
 KEY_ENTITY         = 'entity'
@@ -80,7 +83,7 @@ def is_requirement(document):
     """
 
     return (isinstance(document, dict)
-            and str(document.get(KEY_ID_SELF, '')).split('_', 1)[0]
+            and cc_public.item.prefix_of(document.get(KEY_ID_SELF))
                             in (PREFIX_REQUIREMENT, PREFIX_CANDIDATE)
             and all(document.get(k) for k in SLOTS))
 

@@ -40,6 +40,7 @@ import cc_public.control
 import cc_public.eval.runner
 import cc_public.eval.measure
 import cc_public.eval.select
+import cc_public.item
 
 
 ID_CHECK     = 'eval'
@@ -210,7 +211,7 @@ def _rules(map_document):
             for document in map_document.values() if isinstance(document, dict)
             for entry in (document.get(KEY_TABLE) or {}).values()
             if isinstance(entry, dict)
-               and str(entry.get(KEY_ID_SELF, '')).split('_', 1)[0] == PREFIX_RULE}
+               and cc_public.item.prefix_of(entry.get(KEY_ID_SELF)) == PREFIX_RULE}
 
 
 # -----------------------------------------------------------------------------

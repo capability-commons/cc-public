@@ -41,6 +41,7 @@ import cc_public.edit.new
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.facts
+import cc_public.item
 import cc_public.requirement
 
 
@@ -232,7 +233,7 @@ def _nodeids(tree, requirement):
     return sorted('::'.join([str(item.filepath.relative_to(tree.root)),
                              *item.location.anchor])
                   for item in list_item
-                  if item.id_self.split(SEPARATOR, 1)[0] == PREFIX_FUNCTION)
+                  if cc_public.item.prefix_of(item.id_self) == PREFIX_FUNCTION)
 
 
 # -----------------------------------------------------------------------------
@@ -329,8 +330,8 @@ def _admission(tree, id_concept):
     latest  = None
 
     for document in tree.context.map_document.values():
-        if not isinstance(document, dict) or str(
-                document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] != PREFIX_EXECUTION:
+        if not isinstance(document, dict) or cc_public.item.prefix_of(
+                        document.get(KEY_ID_SELF)) != PREFIX_EXECUTION:
             continue
         if not _binds(document, guid) or _workflow_of(tree, document) != WF_CONCEPT:
             continue
@@ -424,7 +425,7 @@ def _observations_behind(tree, id_concept):
         document = tree.context.map_document[tree.resolve(id_item).location]
         for edge in document.get(KEY_RELATION) or []:
             if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_DERIVED \
-                    and str(edge.get(KEY_ID_TARGET, '')).split(SEPARATOR, 1)[0] == PREFIX_OBS:
+                    and cc_public.item.prefix_of(edge.get(KEY_ID_TARGET)) == PREFIX_OBS:
                 out.append(edge[KEY_ID_TARGET])
 
     return out

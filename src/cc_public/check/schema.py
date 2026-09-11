@@ -255,7 +255,7 @@ def select_schema(document, map_prefix, is_embedded = False):
         return (None, 'id_self {id_item} carries no type '
                       'prefix.'.format(id_item = id_item))
 
-    prefix = id_item.split(SEPARATOR, 1)[0]
+    prefix = cc_public.item.prefix_of(id_item)
 
     if prefix not in map_prefix:
         return (None, 'Prefix {prefix} is not in the type '
@@ -282,7 +282,7 @@ def _id_schema_of_type(document, map_prefix):
     if id_item is None or SEPARATOR not in id_item:
         return None
 
-    entry = map_prefix.get(id_item.split(SEPARATOR, 1)[0])
+    entry = map_prefix.get(cc_public.item.prefix_of(id_item))
 
     return _id_schema(entry) if entry is not None else None
 
@@ -463,7 +463,7 @@ def _restated(filepath, document):
     """
 
     if not isinstance(document, dict) \
-            or str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] != PREFIX_SCHEMA:
+            or cc_public.item.prefix_of(document.get(KEY_ID_SELF)) != PREFIX_SCHEMA:
         return []
 
     return list(_says_optional(filepath, document)) \

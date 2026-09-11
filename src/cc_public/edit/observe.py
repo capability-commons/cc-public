@@ -39,6 +39,7 @@ import unicodedata
 import cc_public.edit.field
 import cc_public.edit.new
 import cc_public.edit.tree
+import cc_public.item
 
 
 ID_TYPE          = 't_observation'
@@ -185,7 +186,7 @@ def _by_digest(tree, digest):
     """
 
     for item in tree.map_id.values():
-        if item.path or item.id_self.split(SEPARATOR, 1)[0] != PREFIX:
+        if item.path or cc_public.item.prefix_of(item.id_self) != PREFIX:
             continue
         if tree.context.map_document[item.location].get(KEY_DIGEST) == digest:
             return item
