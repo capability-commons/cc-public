@@ -172,24 +172,35 @@ consequence:            |
                         can cite a standard.
 
                         DO-178C selects its objectives by design
-                        assurance level and this model carries no
-                        criticality, so nothing yet says which
-                        objectives apply. Until something does, an
-                        objective is taken up because it is argued
-                        for, not because a level requires it.
+                        assurance level and reg_criticality now says
+                        which objectives each level requires. The
+                        trace check reads it in two places, so a level
+                        declared on a requirement decides what is
+                        asked of it. Three of the five objectives a
+                        level can add are still read by no check.
 
                         Requirements-based coverage analysis is an
-                        objective this repository does not meet:
-                        nothing here shows that the test which
-                        verifies a requirement exercises that
-                        requirement's success criteria. The coverage
-                        floor measures lines of the tool, not
-                        requirements.
+                        objective this repository does not meet.
+                        evl_test_exercises_criteria asks whether a
+                        test would fail if the criteria were untrue,
+                        and t_coverage_analysis is the record of what
+                        it answered, and nothing writes one, so the
+                        analysing happens and the recording does not.
+                        obj_coverage_analysed is claimed by nothing
+                        for that reason. The coverage floor measures
+                        lines of the tool, not requirements.
 
-                        The tools relied on for verification are
-                        themselves unaccounted for. The pytest adapter
-                        decides every conformance result and nothing
-                        verifies the adapter.
+                        The pytest adapter decides every conformance
+                        result, and a control set now shows it reading
+                        a pass, a failure, an error in setup and in
+                        teardown, a skip, a timeout, and a function
+                        run twice that fails once. That is what
+                        satisfies obj_tool_accounted. What the tests
+                        rely on beyond it, the helpers deciding which
+                        files a claim of completeness covers, is
+                        unaccounted for still, which
+                        ddr_tool_verification decides and nothing has
+                        built.
 
                         Tracing the parts of this system and this
                         process to the clauses of the cited standards

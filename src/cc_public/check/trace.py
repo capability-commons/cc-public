@@ -13,15 +13,30 @@ protective_mark:
 
 title:                  Trace check
 brief:                  |
-                        Check that every requirement traces to what it
-                        derives from.
+                        Check what every requirement lacks of what
+                        derives from it, implements it and verifies
+                        it.
 description:            |
-                        A requirement with no r_is_derived_from edge
-                        cannot show it is necessary, which is the
-                        first characteristic the INCOSE guide asks of
-                        it. The finding is advisory: a requirement may
-                        be written before its need is, but not left
-                        so.
+                        The rules and their severities are the trace
+                        projection's, which the trace command reads
+                        too, so that what the check reports and what
+                        the command shows cannot differ. A proposed
+                        requirement may be incomplete while it is
+                        written and its gaps are advisory; an accepted
+                        one has claimed to be complete and a gap in
+                        what it claims is critical, except where an
+                        open world leaves room for the missing thing
+                        to exist elsewhere.
+
+                        Beside the projection this reads what a
+                        coverage analysis says. A requirement whose
+                        declared criticality requires that its
+                        coverage be analysed, with no current analysis
+                        naming it, is a gap; a current reading whose
+                        verdict is unmet is reported here rather than
+                        as a gap, and is advisory whatever the
+                        requirement's status, since a judge is not a
+                        check (ddr_coverage_analysis).
 
 relation:
 
@@ -39,16 +54,6 @@ relation:
     guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
     id_target:          obj_verdict_per_requirement
     guid_target:        obj_26b7e105da03488db6031facc7422c0e
-
-  - id_relation:        r_satisfies
-    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
-    id_target:          obj_method_not_code
-    guid_target:        obj_5c949b221e2f40e993a6aec7659a83bb
-
-  - id_relation:        r_satisfies
-    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
-    id_target:          obj_coverage_analysed
-    guid_target:        obj_d4ff4410e99c40a082ffbabcf8b6d223
 
 ...
 """

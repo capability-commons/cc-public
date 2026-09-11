@@ -61,8 +61,17 @@ table:
                         they say is true of the code. A requirement
                         whose implementation does the opposite of what
                         it claims passes every one of these checks.
-                        Nor does it read python beyond the documents
-                        held in docstrings.
+
+                        It reads python for two purposes and no other.
+                        The evidence check digests the syntax tree of
+                        each test function and implementation with the
+                        docstrings removed, so a change to what runs
+                        stales the evidence resting on it. The trace
+                        check reads the source of a verifier, and the
+                        module around it, to decide whether a coverage
+                        analysis still describes what a judge was
+                        shown. Neither reads python to judge whether
+                        it is right.
 
                         Each of the eighteen checks is shown a defect
                         it exists to find and is required to report

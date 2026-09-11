@@ -340,13 +340,18 @@ consequence:            |
                         them. ddr_objective decides what an objective
                         is and must land with this.
 
-                        No check varies by criticality today, so the
-                        levels are inert until at least one does. The
-                        first objectives to write are what each level
-                        demands of a requirement whose test function
-                        verifies more than one requirement, and of one
-                        whose normal, boundary and error conditions
-                        are separately expected.
+                        The trace check varies by criticality in two
+                        places. A verdict shared between requirements
+                        is critical from level sixty, and a
+                        requirement with no current coverage analysis
+                        is reported from level forty. Both read what a
+                        level requires from this register, so raising
+                        what a level demands is editing an entry.
+
+                        The objectives a level requires and no check
+                        reads are case per condition, method not code
+                        and tool accounted, so three of the five a
+                        level can add are still inert.
                         ddr_test_case_adoption defers both to this
                         register rather than stating them itself.
 
