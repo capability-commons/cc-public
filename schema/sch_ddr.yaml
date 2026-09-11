@@ -37,9 +37,15 @@ usage:                  |
                         carry no edge back.
 note:                   |
                         A record is edited, not versioned. It carries
-                        no number and no lifecycle status. Where a
-                        decision is replaced, the replacement is a new
-                        record, and the two are linked.
+                        no number. Where a decision is replaced, the
+                        replacement is a new record, and the two are
+                        linked.
+
+                        A record a workflow drafted carries status
+                        proposed, which is what the specimens hold. A
+                        record a person wrote carries none: writing it
+                        is the deciding, and there is no second step
+                        to record.
 type:                   object
 
 allOf:
@@ -181,8 +187,11 @@ allOf:
           - deprecated
 
         description:    |
-                        Optional. Proposed until a person accepts the
-                        decision; a workflow that makes a decision
-                        leaves it proposed.
+                        Optional, and written by a workflow that
+                        drafted the record, which leaves it proposed.
+                        A record a person wrote carries none. Nothing
+                        here records who accepted one, so a record
+                        carrying accepted says less than it appears
+                        to.
 
 unevaluatedProperties:  false

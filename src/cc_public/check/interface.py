@@ -41,6 +41,7 @@ relation:               []
 import collections
 
 import cc_public.check.result
+import cc_public.load.python
 import cc_public.path
 
 
@@ -53,6 +54,7 @@ KEY_NAME      = 'name'
 KEY_RELATION  = 'relation'
 KEY_ID_REL    = 'id_relation'
 KEY_ID_TARGET = 'id_target'
+KEY_GUID_TGT  = 'guid_target'
 KEY_LANGUAGE  = 'language'
 KEY_DECLARE   = 'declaration'
 KEY_TYPE      = 'type'
@@ -61,6 +63,9 @@ KEY_MODE      = 'mode'
 PREFIX_ICD    = 'icd'
 PREFIX_MEMBER = 'icm'
 REL_IMPLEMENT = 'r_is_implemented_by'
+KEY_GUID_SELF = 'guid_self'
+KEY_PARAMETER = 'parameter'
+SUFFIX_PYTHON = '.py'
 DELIM_STEP    = '.'
 SEPARATOR     = '_'
 DELIM         = '.'
@@ -90,6 +95,9 @@ def check(context):
 
     count    = 0
     list_bad = []
+    map_location = {d.get(KEY_GUID_SELF): location
+                    for (location, d) in context.map_document.items()
+                    if isinstance(d, dict)}
 
     for (filepath, document) in sorted(context.map_document.items(), key = str):
 
@@ -105,9 +113,10 @@ def check(context):
         stem     = PREFIX_MEMBER + SEPARATOR + id_document.split(SEPARATOR, 1)[1]
         declared = set(document.get(KEY_DECLARE) or ())
 
-        for (path, key, member, language) in _iter_member(document):
+        for (path, key, member, language, holder) in _iter_member(document):
             count += 1
-            list_bad.extend(_member(filepath, path, key, member, stem, language, declared))
+            list_bad.extend(_member(filepath, path, key, member, stem, language,
+                                    declared, holder, map_location))
 
         list_bad.extend(_duplicate(filepath, document))
 
@@ -117,27 +126,39 @@ def check(context):
 
 
 # -----------------------------------------------------------------------------
-def _member(filepath, path, key, member, stem, language, declared):
+def _member(filepath, path, key, member, stem, language, declared, holder = (),
+            map_location = None):
     """
     Return a fault for each way one member disagrees with what holds it.
 
+    The local part of an identity is every member this one sits within
+    and then its own name, so a member naming the wrong holder is
+    reported. Holding the first and last steps alone left the run
+    between them uncompared, and that run is how an embedded item says
+    where it sits.
+
     """
 
-    out     = []
-    id_self = member.get(KEY_ID_SELF) or ''
-    name    = member.get(KEY_NAME) or ''
-    held    = key if key is not None else name
+    out      = []
+    id_self  = member.get(KEY_ID_SELF) or ''
+    name     = member.get(KEY_NAME) or ''
+    held     = key if key is not None else name
+    expected = DELIM.join([stem, *holder, held])
 
     if not id_self.startswith(stem + DELIM):
         out.append(_fault(filepath, path,
                 'A member of this document is identified by {stem} and a local name, and '
                 'this one is {id_self}.'.format(stem = stem, id_self = id_self)))
 
-    elif id_self.rsplit(DELIM, 1)[-1] != held:
+    elif id_self != expected:
         out.append(_fault(filepath, path,
-                'The identity ends {last}, and what holds it is {held}. An identity ends '
-                'with the key that holds it, or with the name where a list does.'.format(
-                                        last = id_self.rsplit(DELIM, 1)[-1], held = held)))
+                'The identity is {id_self} and what holds it says {expected}. An identity '
+                'is the document, then every member it sits within, then the key that '
+                'holds it, or its name where a list does.'.format(id_self = id_self,
+                                                                  expected = expected)))
+
+    if language == 'python':
+        out.extend(_signature(filepath, path, member, map_location))
 
     reference = (member.get(KEY_TYPE) or {}).get(KEY_DECLARE)
 
@@ -159,6 +180,60 @@ def _member(filepath, path, key, member, stem, language, declared):
         out.extend(_source(filepath, path, member, name))
 
     return out
+
+
+# -----------------------------------------------------------------------------
+def _signature(filepath, path, member, map_location):
+    """
+    Return a fault where the parameters a member states are not the
+    parameters of the definition it says presents it.
+
+    A member restates a signature the code already holds, so the two
+    can drift while the edge still resolves. Comparing them is what
+    keeps the document a contract rather than a copy
+    (ddr_interface_control_document).
+
+    """
+
+    held = _parameter_of(member, map_location or {})
+
+    if held is None:
+        return []
+
+    said = tuple(one.get(KEY_NAME) for one in member.get(KEY_PARAMETER) or ()
+                 if isinstance(one, dict))
+
+    if said == held:
+        return []
+
+    return [_fault(filepath, cc_public.path.join(path, KEY_PARAMETER),
+            'The member states {said} and the definition presenting it takes '
+            '{held}.'.format(said = ', '.join(said) or 'no parameter',
+                             held = ', '.join(held) or 'no parameter'))]
+
+
+# -----------------------------------------------------------------------------
+def _parameter_of(member, map_location):
+    """
+    Return the parameter names of the definition a member says
+    presents it, or None where there is no python to read.
+
+    """
+
+    for edge in member.get(KEY_RELATION) or []:
+
+        if not isinstance(edge, dict) or edge.get(KEY_ID_REL) != REL_IMPLEMENT:
+            continue
+
+        location = map_location.get(edge.get(KEY_GUID_TGT))
+
+        if location is None or location.filepath.suffix != SUFFIX_PYTHON:
+            continue
+
+        return cc_public.load.python.parameter_of(
+                        location.filepath.read_text(encoding = 'utf-8'), location.anchor)
+
+    return None
 
 
 # -----------------------------------------------------------------------------
@@ -220,7 +295,7 @@ def _duplicate(filepath, document):
     out      = []
     map_name = collections.defaultdict(list)
 
-    for (path, key, member, _) in _iter_member(document):
+    for (path, key, member, _, _holder) in _iter_member(document):
         if key is not None:
             scope = path.rsplit(cc_public.path.DELIM_PATH, 1)[0]
             map_name[(scope, member.get(KEY_NAME))].append(path)
@@ -235,10 +310,11 @@ def _duplicate(filepath, document):
 
 
 # -----------------------------------------------------------------------------
-def _iter_member(document, path = '', key = None, language = None):
+def _iter_member(document, path = '', key = None, language = None, holder = ()):
     """
-    Yield (path, key, member, language) for every interface member in
-    the document. key is None where a list holds the member.
+    Yield (path, key, member, language, holder) for every interface
+    member in the document. key is None where a list holds the member,
+    and holder is the local names of the members this one sits within.
 
     """
 
@@ -248,15 +324,18 @@ def _iter_member(document, path = '', key = None, language = None):
                     if isinstance(document.get(KEY_LANGUAGE), str) else language)
 
         if str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] == PREFIX_MEMBER:
-            yield (path, key, document, language)
+            yield (path, key, document, language, holder)
+            holder = (*holder, key if key is not None else document.get(KEY_NAME) or '')
 
         for (name, value) in document.items():
-            yield from _iter_member(value, cc_public.path.join(path, name), name, language)
+            yield from _iter_member(value, cc_public.path.join(path, name), name,
+                                    language, holder)
 
     elif isinstance(document, list):
 
         for (index, value) in enumerate(document):
-            yield from _iter_member(value, cc_public.path.join(path, index), None, language)
+            yield from _iter_member(value, cc_public.path.join(path, index), None,
+                                    language, holder)
 
 
 # -----------------------------------------------------------------------------

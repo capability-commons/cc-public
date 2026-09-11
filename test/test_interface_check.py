@@ -54,7 +54,7 @@ def test_an_identity_that_does_not_end_with_its_key_is_reported(tree, tmp_path):
             tree, ID, 'surface.python.native.function.named.id_self',
             value = 'icm_cc_public_query.other')
     (message,) = _findings(tmp_path)
-    assert 'ends other' in message and 'holds it is named' in message
+    assert 'what holds it says icm_cc_public_query.named' in message
 
 
 def test_an_identity_not_qualified_by_its_document_is_reported(tree, tmp_path):
@@ -116,3 +116,30 @@ def test_a_class_member_may_name_the_class_that_presents_it(tree, tmp_path):
     cc_public.edit.link.link(tree, 'icm_cc_public_query.database',
                              'r_is_implemented_by', 'pyc_cc_public.query.database')
     assert _findings(tmp_path) == []
+
+
+def test_an_identity_naming_the_wrong_holder_is_reported(tree, tmp_path):
+    # The check held the first and last steps and left the run between
+    # them uncompared, and that run is how an embedded item says where
+    # it sits and what a rename carries.
+    cc_public.edit.field.set_field(
+            tree, ID, 'surface.python.native.class.database.method.path.id_self',
+            value = 'icm_cc_public_query.other.path')
+    assert any('what holds it says' in message for message in _findings(tmp_path))
+
+
+def test_a_stated_signature_is_held_to_the_definition(tree, tmp_path):
+    # The member restates a signature the code already holds, and
+    # renaming the parameters of the definition gave no finding while
+    # the edge still resolved.
+    filepath = tmp_path / 'src' / 'cc_public' / 'query.py'
+    filepath.write_text(filepath.read_text(encoding = 'utf-8').replace(
+                            'def path(self, name_from, name_to):',
+                            'def path(self, name_a, name_b):', 1), encoding = 'utf-8')
+
+    assert any('the definition presenting it takes name_a, name_b' in message
+               for message in _findings(tmp_path)), _findings(tmp_path)
+
+
+def test_a_signature_that_agrees_is_not_reported(tree, tmp_path):
+    assert not [m for m in _findings(tmp_path) if 'presenting it takes' in m]

@@ -409,3 +409,25 @@ def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
                                            close = MARKER_CLOSE))
 
     return ruamel.yaml.YAML(typ = 'safe').load(found.text)
+
+
+# -----------------------------------------------------------------------------
+def parameter_of(text, anchor):
+    """
+    Return the parameter names of the definition at anchor in text, or
+    None where nothing sits at anchor or it is not a function.
+
+    self and cls are left out: they are how a language spells the
+    receiver and are not part of what a surface presents.
+
+    """
+
+    found = next((d for d in iter_definition(text) if d.path == tuple(anchor)), None)
+
+    if found is None or not isinstance(found.node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return None
+
+    args = found.node.args
+
+    return tuple(one.arg for one in (*args.posonlyargs, *args.args, *args.kwonlyargs)
+                 if one.arg not in ('self', 'cls'))

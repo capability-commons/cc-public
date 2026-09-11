@@ -54,6 +54,20 @@ context:                |
                         as a whole, so the contract needs addressable
                         parts.
 decision:               |
+                        A member's brief and obligation are the
+                        contract and govern what a caller may rely on.
+                        The brief of the source item presenting it
+                        describes the definition for a reader of the
+                        code. Where the two differ, the member
+                        governs, because the document is what travels
+                        to a partner who may have no access to the
+                        code.
+
+                        They are two descriptions of one definition,
+                        which is the shape ddr_source_item rejected,
+                        and the audiences differ where those did not.
+                        Nothing compares them.
+
                         Define t_interface_control_document, with
                         prefix icd, as the type of a standalone
                         controlled contract for one explicitly
@@ -145,6 +159,16 @@ decision:               |
                         added deliberately. Unknown structures are not
                         accepted merely as extension data.
 rationale:              |
+                        The stated signature compared with the
+                        definition, rather than trusted or dropped. A
+                        member restates what the code already holds,
+                        so the two drift while the edge still
+                        resolves, which is the second copy
+                        ddr_source_item rejected. Dropping the
+                        restatement would make the document useless to
+                        a partner with no access to the code, so the
+                        copy is kept and held to its original.
+
                         A document with several surfaces represents a
                         boundary that is exposed in several ways
                         without conflating those ways. One language
@@ -240,6 +264,25 @@ alternative:            |
                         obligations. Native spelling is retained where
                         precise language detail matters.
 consequence:            |
+                        The schema settles more than anything uses. It
+                        declares C and C++ surfaces, dataflow step
+                        surfaces with their input, output and state
+                        tables and their execution semantics,
+                        parameter modes, ownership and lifetime, and
+                        one python surface of six members exercises
+                        it. An ontology settled before a use can test
+                        it is the order ddr_annotation refuses for its
+                        own increment, and this record took the other
+                        way without saying so.
+
+                        Recorded rather than undone. Narrowing a
+                        closed schema a partner may already read costs
+                        more than the unused declarations do, and what
+                        a second language or a dataflow step actually
+                        needs is still unknown, which is the point.
+                        qst_interface_control_document.surfaces asks
+                        whether to narrow it.
+
                         The type register will gain
                         t_interface_control_document with prefix icd
                         and an r_is_specified_by_schema edge to
@@ -264,15 +307,18 @@ consequence:            |
                         fields and surface discrimination. Companion
                         checks are needed for facts JSON Schema cannot
                         conveniently establish. check/interface holds
-                        four of them: a local type reference resolves,
-                        an identity ends with the key it sits under
-                        and is qualified by its document, two members
-                        of one table do not share a name, and a mode
-                        is legal for the language. Three are not held:
-                        a name unique across a language scope rather
-                        than within one table, a baselined version not
-                        silently changed, and dataflow roles that do
-                        not conflict.
+                        six of them: a local type reference resolves,
+                        an identity is the document then every member
+                        it sits within then its own name, two members
+                        of one table do not share a name, a mode is
+                        legal for the language, a member's name is the
+                        last step of the identifier presenting it, and
+                        the parameters a member states are the
+                        parameters of that definition. Three are not
+                        held: a name unique across a language scope
+                        rather than within one table, a baselined
+                        version not silently changed, and dataflow
+                        roles that do not conflict.
 
                         No automatic relation exists merely because an
                         ICD member resembles a Python source item or a
@@ -291,7 +337,6 @@ consequence:            |
                         implementation bounded, at the cost that some
                         conventional systems-engineering ICDs cannot
                         yet be represented structurally.
-status:                 accepted
 
 relation:
 
@@ -354,4 +399,25 @@ question:
                         table, and what refuses a port under two
                         dataflow roles at once. check/interface holds
                         the other four.
+    relation:           []
+
+  brief:
+    id_self:            qst_interface_control_document.brief
+    guid_self:          qst_d576d9f82cea41e38db9bcee4e92b81d
+    question:           |
+                        What compares a member's brief with the brief
+                        of the source item presenting it, given that
+                        the two describe one definition for different
+                        readers and have already diverged.
+    relation:           []
+
+  surfaces:
+    id_self:            qst_interface_control_document.surfaces
+    guid_self:          qst_94856adda2ef4f05adbc8a54718bc6c6
+    question:           |
+                        Whether the surfaces and the dataflow step
+                        tables this schema declares should be narrowed
+                        to what an item uses, given that one python
+                        surface of six members exercises it and the
+                        rest was settled before any use could test it.
     relation:           []
