@@ -39,6 +39,20 @@ context:                |
                         exactly the text the runner sends, which is
                         what found the renderer fault.
 decision:               |
+                        A case re-rendered from the same items with
+                        the same verdict is the same case and keeps
+                        its identity. Its key is derived from its
+                        content and moves; its guid does not, because
+                        other items point at it.
+
+                        cctool case does not know this: it inserts,
+                        and an insert mints an identity. Re-rendering
+                        nine cases through it during a review broke
+                        six references from annotations that named
+                        them, and the guids had to be put back by
+                        hand. qst_eval_measurement.reidentify asks
+                        what re-renders a case without minting one.
+
                         A CONTROL SET is an item that names the eval
                         it measures by an r_measures edge and holds
                         cases. Several sets may measure one eval.
@@ -284,6 +298,18 @@ question:
                         command holding the whole collection its
                         container declares and the projection holding
                         the entry alone.
+    relation:           []
+
+  reidentify:
+    id_self:            qst_eval_measurement.reidentify
+    guid_self:          qst_ed171dd096934ed4b0e83bfd38d452ed
+    question:           |
+                        What re-renders a control case without minting
+                        an identity, given that the command inserts,
+                        that a key derived from content moves when the
+                        subject is rendered anew, and that an
+                        annotation naming a case by guid dangles when
+                        it does.
     relation:           []
 
 relation:

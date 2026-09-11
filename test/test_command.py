@@ -39,6 +39,7 @@ import cc_public.cli.command
 import cc_public.edit.accept
 import cc_public.edit.field
 import cc_public.edit.link
+import cc_public.control
 import cc_public.edit.tree
 import cc_public.evidence
 import cc_public.load
@@ -209,7 +210,9 @@ def test_a_case_may_hold_a_pair_for_an_eval_over_pairs(repo):
     doc  = cc_public.load.from_file(repo / 'eval' / 'ctl_requirement_realises_need.yaml')
     key  = id_case.split('.', 1)[1]
     case = doc['case'][key]
-    assert case['subject'].startswith('--- req_walk_reports_neighbourhood')
+    # Stored as written, so the printer leaves the code in it alone.
+    assert cc_public.control.as_written(case['subject']).startswith(
+                                            '--- req_walk_reports_neighbourhood')
     assert '--- need_agent_sees_reach' in case['subject']
     assert [e['id_target'] for e in case['relation']] == ['req_walk_reports_neighbourhood', 'need_agent_sees_reach']
     assert clean(repo) == []

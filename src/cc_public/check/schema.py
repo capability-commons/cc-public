@@ -459,27 +459,39 @@ def _names_only_declared(error, declared):
 # -----------------------------------------------------------------------------
 def _declared(node, map_schema, seen = None):
     """
-    Return every property name the schema declares, through allOf and
-    through the references it makes to schemas of this tree.
+    Return every property name the schema declares, anywhere in it and
+    in the schemas it refers to.
+
+    Anywhere rather than at the path the error sits on, which would
+    mean resolving the subschema there. A name declared somewhere in
+    the composition counts as declared, so a misspelling that happens
+    to be another item's field escapes; a name nothing declares does
+    not (ddr_schema_closure).
 
     """
 
     seen = set() if seen is None else seen
+
+    if isinstance(node, list):
+        return set().union(*[_declared(one, map_schema, seen) for one in node]) \
+               if node else set()
 
     if not isinstance(node, dict):
         return set()
 
     out = set(node.get(KEYWORD_PROPERTIES) or ())
 
-    for one in node.get(KEYWORD_ALL_OF) or ():
-        out |= _declared(one, map_schema, seen)
+    for (key, value) in node.items():
 
-    uri = node.get(KEYWORD_REF)
-
-    if isinstance(uri, str) and uri not in seen:
-        seen.add(uri)
-        named = map_schema.get(uri.rsplit('/', 1)[-1].removesuffix(SUFFIX_SCHEMA))
-        out  |= _declared(named, map_schema, seen)
+        if key == KEYWORD_REF and isinstance(value, str) and value not in seen:
+            seen.add(value)
+            out |= _declared(map_schema.get(value.rsplit('/', 1)[-1]
+                                                 .removesuffix(SUFFIX_SCHEMA)),
+                             map_schema, seen)
+        elif key != KEYWORD_PROPERTIES:
+            out |= _declared(value, map_schema, seen)
+        else:
+            out |= _declared(list(value.values()), map_schema, seen)
 
     return out
 

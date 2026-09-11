@@ -541,7 +541,7 @@ BROKEN = [
  ('interface',   'critical', _text('interface/icd_cc_public_query.yaml',
                                    'id_self:      icm_cc_public_query.database\n',
                                    'id_self:      icm_cc_public_query.absent\n'),
-                                                              'identity ends'),
+                                                              'what holds it says'),
  ('testing',     'critical', _field('tc_path_reported', 'configuration',
                                     value = {'not_a_declared_key': 'nonsense'}),
                                                               'required property'),
