@@ -50,12 +50,14 @@ ROOT        = pathlib.Path(__file__).resolve().parent.parent
 MAP_OUTCOME = {}
 
 # Set where the session is running some of the suite and not all of it:
-# a selective run, or a measurement. Evidence is what a whole session
-# observed, and a partial session that wrote it would drop the rows for
-# every case it did not run, leaving an evidence record that looks
-# current and is missing most of what it should hold.
+# a selective run, a measurement, or the verify component observing the
+# tests of one requirement. Evidence is what a whole session observed,
+# and a partial session that wrote it would drop the rows for every case
+# it did not run, leaving an evidence record that looks current and is
+# missing most of what it should hold. Named once, in cc_public.evidence,
+# since the runs that set it are there.
 #
-VARIABLE_PARTIAL = 'CCTOOL_PARTIAL_RUN'
+VARIABLE_PARTIAL = cc_public.evidence.VARIABLE_PARTIAL
 
 # What a test tree is made of, and what a new item in it is given.
 #
@@ -146,15 +148,6 @@ def clean(root):
             for c in report['check'] for n in c['nonconformity']
             if n['severity'] == 'critical']
 
-# pytest's words for what happened, as evidence records them. An
-# expected failure that failed observed nothing about the requirement;
-# one that passed unexpectedly is a failure of the expectation.
-#
-OUTCOME     = {'passed': cc_public.evidence.OUTCOME_PASSED,
-               'failed': cc_public.evidence.OUTCOME_FAILED,
-               'skipped': cc_public.evidence.OUTCOME_SKIPPED}
-
-
 # -----------------------------------------------------------------------------
 def pytest_runtest_logreport(report):
     """
@@ -162,16 +155,21 @@ def pytest_runtest_logreport(report):
 
     """
 
-    if report.when == 'setup' and report.outcome != 'passed':
-        MAP_OUTCOME[report.nodeid] = (cc_public.evidence.OUTCOME_SKIPPED
-                                      if report.outcome == 'skipped'
-                                      else cc_public.evidence.OUTCOME_ERROR)
-    elif report.when == 'call':
-        outcome = OUTCOME.get(report.outcome, cc_public.evidence.OUTCOME_ERROR)
-        if hasattr(report, 'wasxfail'):
-            outcome = (cc_public.evidence.OUTCOME_FAILED if report.outcome == 'passed'
-                       else cc_public.evidence.OUTCOME_SKIPPED)
-        MAP_OUTCOME[report.nodeid] = outcome
+    said = cc_public.evidence.outcome_of_event(report.when, report.outcome,
+                                              str(report.longrepr or ''),
+                                              hasattr(report, 'wasxfail'))
+
+    if said is None:
+        return
+
+    # The worst of what the phases said, and not the last of them. A
+    # function whose call passed and whose teardown then errored had
+    # its pass left standing, because the hook had no branch for
+    # teardown and the later event never overwrote the earlier one.
+    #
+    held = MAP_OUTCOME.get(report.nodeid)
+    MAP_OUTCOME[report.nodeid] = said if held is None else \
+                                 min(held, said, key = cc_public.evidence.RANK.index)
 
 
 # -----------------------------------------------------------------------------

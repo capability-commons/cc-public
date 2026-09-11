@@ -1,0 +1,64 @@
+id_self:                ann_one_reading_of_a_pytest_event
+guid_self:              ann_d1e96444202f452996ebec10514b31c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One reader now turns a pytest event into an outcome
+brief:                  |
+                        Fixed. evidence.outcome_of_event is the one
+                        reading, and the session hook and the adapter
+                        both call it.
+description:            |
+                        Reproduced: fed setup passed, call passed and
+                        teardown failed, the hook recorded passed,
+                        because it had a branch for setup and a branch
+                        for call and nothing else.
+
+                        outcome_of_event returns what one report event
+                        says about the item under test, or nothing
+                        where it says nothing. Only the call phase
+                        says anything; a failure in setup or teardown
+                        is a fault in the harness, and a call failure
+                        carrying the pytest-timeout mark is a run that
+                        never finished. The hook keeps the worst of
+                        what the phases said, ranked by evidence.RANK,
+                        rather than the last of them.
+
+                        Four tests in test/test_evidence.py hold it:
+                        the reading itself over the seven events the
+                        two disagreed about, expected failures both
+                        ways, the hook keeping an error in teardown
+                        over a pass in call, and the hook reading a
+                        timeout as a run that did not finish.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_session_hook_and_adapter_read_events_differently
+    guid_target:        ann_70002e5a4f68441a98efb317038cd37e
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.adapter.pytest_function
+    guid_target:        pym_c62e5f399bae4c6fb04593696c3d2c04
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

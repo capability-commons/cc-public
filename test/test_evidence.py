@@ -204,3 +204,107 @@ def test_an_attestation_stands_for_inspection_and_refuses_a_test(tree, tmp_path)
     (row,) = doc['case'].values()
     assert 'guid_case' not in row and row['observer'] == 'W. Payne' and row['outcome'] == 'passed'
     assert evidence(True) == [] and clean(tmp_path) == []
+
+
+class _Report:
+    """
+    A pytest report, as the session hook reads one.
+
+    """
+
+    def __init__(self, when, outcome, longrepr = '', nodeid = 'test/t.py::test_x'):
+        self.when     = when
+        self.outcome  = outcome
+        self.longrepr = longrepr
+        self.nodeid   = nodeid
+
+
+def test_one_reading_of_a_pytest_event_serves_the_hook_and_the_adapter():
+    # There were two readings and they disagreed. Each row here is an
+    # event whose meaning the two got different answers for.
+    said = cc_public.evidence.outcome_of_event
+    assert said('call',     'passed')                  == 'passed'
+    assert said('call',     'failed', 'assert 1 == 2') == 'failed'
+    assert said('call',     'failed', 'E   Failed: Timeout >2.0s\nfrom pytest-timeout')\
+           == 'error'
+    assert said('setup',    'failed', 'fixture blew up') == 'error'
+    assert said('teardown', 'failed', 'fixture blew up') == 'error'
+    assert said('setup',    'passed') is None
+    assert said('call',     'skipped', 'not applicable') == 'skipped'
+
+
+def test_an_expected_failure_is_read_by_what_was_expected():
+    said = cc_public.evidence.outcome_of_event
+    assert said('call', 'passed', '', is_xfail = True)  == 'failed'
+    assert said('call', 'failed', '', is_xfail = True)  == 'skipped'
+
+
+def test_the_session_hook_keeps_the_worst_phase_and_not_the_last():
+    # A function whose call passed and whose teardown then errored had
+    # its pass left standing, because the hook had no branch for
+    # teardown and nothing overwrote the earlier event.
+    import conftest
+
+    node = 'test/probe.py::test_probe'
+    conftest.MAP_OUTCOME.pop(node, None)
+    for report in (_Report('setup', 'passed', nodeid = node),
+                   _Report('call', 'passed', nodeid = node),
+                   _Report('teardown', 'failed', 'fixture blew up', nodeid = node)):
+        conftest.pytest_runtest_logreport(report)
+
+    assert conftest.MAP_OUTCOME.pop(node) == 'error'
+
+
+def test_the_session_hook_reads_a_timeout_as_a_run_that_did_not_finish():
+    import conftest
+
+    node = 'test/probe.py::test_slow'
+    conftest.MAP_OUTCOME.pop(node, None)
+    conftest.pytest_runtest_logreport(
+            _Report('call', 'failed', 'E   Failed: Timeout >600.0s\nfrom pytest-timeout',
+                    nodeid = node))
+
+    assert conftest.MAP_OUTCOME.pop(node) == 'error'
+
+
+def test_a_junit_error_is_an_error_and_a_junit_failure_is_a_failure(tmp_path):
+    # A fixture that could not be built is a fault in the harness. Read
+    # as a failure, it becomes an implementation that does not work,
+    # and the verify component then stops a run saying so.
+    path = tmp_path / 'report.xml'
+    path.write_text('''<testsuites><testsuite>
+      <testcase classname="test.probe" name="test_broken"><error>no fixture</error></testcase>
+      <testcase classname="test.probe" name="test_wrong"><failure>assert 1</failure></testcase>
+      <testcase classname="test.probe" name="test_skipped"><skipped/></testcase>
+      <testcase classname="test.probe" name="test_fine"/>
+    </testsuite></testsuites>''', encoding = 'utf-8')
+
+    read = cc_public.evidence._junit(path)
+    assert read[('test.probe', 'test_broken')]  == 'error'
+    assert read[('test.probe', 'test_wrong')]   == 'failed'
+    assert read[('test.probe', 'test_skipped')] == 'skipped'
+    assert read[('test.probe', 'test_fine')]    == 'passed'
+
+
+def test_a_row_and_the_check_compute_one_digest_over_what_the_row_names(tree):
+    # A row was stamped with the closure of everything it named and the
+    # check recomputed it from the requirement and the case alone, so a
+    # row naming the execution it came from was stale as written.
+    guid_req  = tree.resolve('req_path_reported').guid_self
+    guid_case = tree.resolve('tc_path_reported').guid_self
+    guid_more = tree.resolve('pym_cc_public.glossary').guid_self
+
+    made = cc_public.evidence.row(tree, guid_req, 'passed', guid_case,
+                                  id_under_test = 'pym_cc_public.glossary',
+                                  guid_under_test = guid_more)
+
+    assert cc_public.check.evidence.rests_on(made) == (guid_more,)
+    assert made['digest'] == cc_public.check.evidence.digest(
+                                    tree.context.map_document, guid_req, guid_case,
+                                    cc_public.check.evidence.rests_on(made))
+
+    # And naming something the closure does not already reach is a
+    # different digest, which is the whole reason the two computations
+    # had to agree rather than happen to.
+    plain = cc_public.evidence.row(tree, guid_req, 'passed', guid_case)
+    assert plain['digest'] != made['digest']

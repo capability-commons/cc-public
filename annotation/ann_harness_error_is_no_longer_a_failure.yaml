@@ -1,0 +1,60 @@
+id_self:                ann_harness_error_is_no_longer_a_failure
+guid_self:              ann_575b268992d64fc4b155fed7858e61b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A harness error read from a JUnit report is now an error
+brief:                  |
+                        Fixed. evidence._junit reads an error element
+                        as error and a failure element as failed, and
+                        the observing run no longer writes
+                        whole-session evidence.
+description:            |
+                        The mapping was OUTCOME_FAILED where the tags
+                        held failure or error. It now returns error,
+                        failed, skipped or passed, one per element
+                        kind, and
+                        test_a_junit_error_is_an_error_and_a_junit_failure_is_a_failure
+                        holds each against a report written for it.
+
+                        The verify component names each node with the
+                        outcome read for it, so a fixture that could
+                        not be built now stops the run saying error
+                        rather than failed.
+
+                        The second half of the finding is fixed too:
+                        evidence.observe sets CCTOOL_PARTIAL_RUN in
+                        the environment of the run it launches, so the
+                        conftest of the tree being read declines to
+                        write evidence from a session that ran the
+                        tests of one requirement. Which of the two
+                        writers stood was previously an ordering. The
+                        variable is named once, in cc_public.evidence,
+                        and the conftest reads it from there.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_verify_records_harness_error_as_failure
+    guid_target:        ann_964e709189af47aa90d25464035c9033
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.workflow.component
+    guid_target:        pym_4fcb8b39bcdc4048a9a6402410525085
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

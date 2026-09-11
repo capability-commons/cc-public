@@ -101,8 +101,61 @@ MAP_CONFORMANCE  = {'passed': OUTCOME_PASSED, 'failed': OUTCOME_FAILED}
 #
 RANK             = (OUTCOME_ERROR, OUTCOME_FAILED, OUTCOME_SKIPPED, OUTCOME_PASSED)
 
+# The phase of a pytest report that says something about the item under
+# test. Setup and teardown say something about the harness.
+#
+PHASE_CALL       = 'call'
+
+# Set where a session runs part of the suite, read by the conftest of
+# the tree being run.
+#
+VARIABLE_PARTIAL = 'CCTOOL_PARTIAL_RUN'
+
+# What pytest-timeout writes into the report when it stops a test. A
+# timeout arrives as an ordinary call failure, so without this a run
+# that never finished reads as the item under test failing.
+#
+MARK_TIMEOUT     = 'from pytest-timeout'
+
 FORMAT_TIME      = '%Y-%m-%dT%H:%M:%SZ'
 LENGTH_KEY       = cc_public.control.LENGTH_KEY
+
+
+# -----------------------------------------------------------------------------
+def outcome_of_event(when, outcome, text = '', is_xfail = False):
+    """
+    Return what one pytest report event says about the item under
+    test, or None where it says nothing.
+
+    One reader, because there were two. A session hook writing
+    evidence and an adapter reading one node both turn these events
+    into an outcome, and they disagreed: the hook had no branch for
+    teardown, so a teardown error left a pass standing, and it read a
+    timeout as a failure of the item rather than as a run that never
+    finished.
+
+    Only the call phase says anything about the item. A failure in
+    setup or teardown is a fault in the harness, and a run stopped at
+    its timeout reached no end, so neither carries a result.
+
+    """
+
+    if is_xfail:
+        return OUTCOME_FAILED if outcome == 'passed' else OUTCOME_SKIPPED
+
+    if outcome == 'skipped':
+        return OUTCOME_SKIPPED
+
+    if when != PHASE_CALL:
+        return OUTCOME_ERROR if outcome == 'failed' else None
+
+    if outcome == 'failed':
+        return OUTCOME_ERROR if MARK_TIMEOUT in (text or '') else OUTCOME_FAILED
+
+    if outcome == 'passed':
+        return OUTCOME_PASSED
+
+    return OUTCOME_ERROR
 
 
 # -----------------------------------------------------------------------------
@@ -179,24 +232,26 @@ def row(tree, guid_requirement, outcome, guid_case = None, **extra):
     map_document = tree.context.map_document
     index        = {d.get('guid_self'): d.get('id_self') for d in map_document.values()
                     if isinstance(d, dict)}
-    # Whatever else the row names rests on things too, and the digest
-    # covers the closure of all of them.
-    #
-    list_guid    = tuple(value for (key, value) in sorted(extra.items())
-                         if key.startswith('guid_') and value)
-    out          = {'id_requirement':   index.get(guid_requirement),
-                    'guid_requirement': guid_requirement,
-                    'outcome':          outcome,
-                    'digest':           cc_public.check.evidence.digest(
-                                            map_document, guid_requirement, guid_case,
-                                            list_guid),
-                    'time':             now()}
+    out = {'id_requirement':   index.get(guid_requirement),
+           'guid_requirement': guid_requirement,
+           'outcome':          outcome,
+           'time':             now()}
+
     if guid_case is not None:
         out = {'id_case': index.get(guid_case), 'guid_case': guid_case, **out}
 
     for (key, value) in extra.items():
         if value is not None and value != '':
             out[key] = value
+
+    # Whatever else the row names rests on things too, and the digest
+    # covers the closure of all of them. What that is, is read from the
+    # finished row by the same function the check reads it with, so the
+    # two cannot compute different digests over the same row.
+    #
+    out['digest'] = cc_public.check.evidence.digest(
+                            map_document, guid_requirement, guid_case,
+                            cc_public.check.evidence.rests_on(out))
 
     return out
 
@@ -272,6 +327,13 @@ def observe(root, list_nodeid):
     env['PYTHONPATH'] = os.pathsep.join([str(src), env.get('PYTHONPATH', '')]).rstrip(os.pathsep)
     env['PYTHONDONTWRITEBYTECODE'] = '1'          # leave no cache in the tree
 
+    # This runs the tests of one requirement and not the suite, so the
+    # conftest of the tree being read must not write evidence from it.
+    # Without this the hook wrote what it saw and from_pytest then
+    # overwrote it, and which of the two stood was an ordering.
+    #
+    env[VARIABLE_PARTIAL] = '1'
+
     with tempfile.TemporaryDirectory() as dirpath:
         path_report = pathlib.Path(dirpath) / 'report.xml'
         command     = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
@@ -297,11 +359,17 @@ def _junit(path_report):
     root = xml.etree.ElementTree.parse(path_report).getroot()   # noqa: S314 -- pytest wrote it, just now, into a private directory
     seen = {}
 
+    # An error element is a fault in the harness and not a failure of
+    # the item under test. Reading the two the same way made a fixture
+    # that could not be built into an implementation that did not work,
+    # which is the conflation ddr_test_execution exists to prevent.
+    #
     for case in root.iter('testcase'):
         key  = (case.get('classname', ''), case.get('name', '').split('[', 1)[0])
         tags = {child.tag for child in case}
         seen.setdefault(key, []).append(
-                OUTCOME_FAILED if tags & {'failure', 'error'} else
+                OUTCOME_ERROR if 'error' in tags else
+                OUTCOME_FAILED if 'failure' in tags else
                 OUTCOME_SKIPPED if 'skipped' in tags else OUTCOME_PASSED)
 
     return {key: outcome_of(list_outcome)[0] for (key, list_outcome) in seen.items()}

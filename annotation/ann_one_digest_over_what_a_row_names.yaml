@@ -1,0 +1,56 @@
+id_self:                ann_one_digest_over_what_a_row_names
+guid_self:              ann_f84b09c6bfd74e20b412552b85fdd6b7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The row and the check now compute one digest
+brief:                  |
+                        Fixed. check.evidence.rests_on reads what a
+                        row names from the finished row, and both the
+                        writer and the check ask it.
+description:            |
+                        The row was stamped over the closure of
+                        everything it named and the check recomputed
+                        the digest from the requirement and the case
+                        alone, so a row naming the execution it came
+                        from was stale as written.
+
+                        evidence.row now builds the row first and
+                        digests it last, asking
+                        check.evidence.rests_on what the finished row
+                        names; the check asks the same function about
+                        the same row. Neither carries its own idea of
+                        what the digest covers.
+
+                        test_a_row_and_the_check_compute_one_digest_over_what_the_row_names
+                        asserts the two agree, and that naming an item
+                        the closure does not already reach changes the
+                        digest, so the agreement is not the agreement
+                        of two computations that cover nothing.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_evidence_digest_computed_twice
+    guid_target:        ann_39c026c26ded49cc912213afac9d6aec
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.evidence
+    guid_target:        pym_88b56f85d0a243fa8981a6216238ade1
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

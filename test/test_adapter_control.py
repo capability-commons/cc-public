@@ -96,6 +96,14 @@ def test_a_control_run_twice_is_one_verdict():
     assert (seen.execution_outcome, seen.conformance_result) == ('completed', 'passed')
 
 
+def test_a_control_run_twice_that_fails_once_is_one_failure():
+    # The verdict is over every instance, not the first. A reader that
+    # returned at the first report that passed called this passed,
+    # which hid every failure after a pass in a case of many.
+    seen = _run('test_parameterised_one_fails')
+    assert (seen.execution_outcome, seen.conformance_result) == ('completed', 'failed')
+
+
 def test_a_control_the_tree_does_not_hold_is_not_run():
     seen = _run('test_absent')
     assert seen.execution_outcome  == 'not_run'

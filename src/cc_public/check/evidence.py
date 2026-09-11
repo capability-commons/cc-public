@@ -100,6 +100,28 @@ KEY_TABLE         = 'table'
 LENGTH_DIGEST     = cc_public.control.LENGTH_KEY
 
 
+PREFIX_GUID       = 'guid_'
+
+
+# -----------------------------------------------------------------------------
+def rests_on(row):
+    """
+    Return the further items a row names, by guid, in the order the
+    digest covers them.
+
+    One reader, because there were two. A row was stamped with the
+    closure of everything it named and the check recomputed it from the
+    requirement and the case alone, so a row naming the execution it
+    came from was stale the moment it was written. Both now ask this
+    what the row rests on.
+
+    """
+
+    return tuple(value for (key, value) in sorted(row.items())
+                 if key.startswith(PREFIX_GUID)
+                 and key not in (KEY_GUID_REQ, KEY_GUID_CASE) and value)
+
+
 # -----------------------------------------------------------------------------
 def digest(map_document, guid_requirement, guid_case = None, list_guid = ()):
     """
@@ -198,7 +220,8 @@ def check(context):
                 list_bad.append(_finding(location, elsewhere,
                         'Accepted, and the evidence {about}says {outcome}, not '
                         'passed.'.format(about = about, outcome = row.get(KEY_OUTCOME))))
-            elif row.get(KEY_DIGEST) != digest(map_document, record.guid_self, guid_case):
+            elif row.get(KEY_DIGEST) != digest(map_document, record.guid_self,
+                                              guid_case, rests_on(row)):
                 list_bad.append(_finding(location,
                         cc_public.check.result.SEVERITY_ADVISORY,
                         'The evidence {about}is stale: the requirement, what '

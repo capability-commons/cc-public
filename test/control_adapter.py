@@ -258,6 +258,40 @@ def test_parameterised(number):
     assert number
 
 
+@pytest.mark.parametrize('number', [1, 2])
+def test_parameterised_one_fails(number):
+    """
+    ---
+
+    id_self:                pyf_test.control_adapter.test_parameterised_one_fails
+    guid_self:              pyf_6fd8d69c9b7c4d5f9c0f2b5c9c4e7a10
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A control run twice, failing once
+    brief:                  |
+                            A control run twice whose second instance
+                            fails, so the adapter reads the function by
+                            every instance and not by the first.
+    description:            |
+                            Run through the adapter, this must read
+                            failed. A reader that returns at the first
+                            report that passed calls it passed, and a case
+                            of four hundred and ninety two instances then
+                            hides every failure after the first pass.
+    relation:               []
+
+    ...
+    """
+
+    assert number == 1
+
+
 @pytest.mark.timeout(2)
 def test_times_out():
     """

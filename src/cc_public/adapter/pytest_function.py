@@ -52,6 +52,7 @@ import sys
 import time
 import typing
 
+import cc_public.evidence
 import cc_public.testing
 
 
@@ -286,27 +287,6 @@ def _collected(done):
 
 
 # -----------------------------------------------------------------------------
-def _of_failed_call(text):
-    """
-    Return (outcome, result, text) for a call phase that failed.
-
-    A failed call is the item under test failing, except where the run
-    was stopped before it could finish. pytest-timeout reports a
-    timeout as an ordinary call failure, and a run that was stopped
-    observed nothing about the item, so it is an execution error and
-    carries no conformance result at all.
-
-    """
-
-    if MARK_TIMEOUT in text:
-        return (OUTCOME_ERROR, None,
-                'pytest stopped the node at its timeout, so the run did not '
-                'finish. ' + text)
-
-    return (OUTCOME_COMPLETED, RESULT_FAILED, text)
-
-
-# -----------------------------------------------------------------------------
 def _observation(collector, node, second):
     """
     Return what the collected reports say, as one Observation.
@@ -335,30 +315,57 @@ def _observation(collector, node, second):
         return made(OUTCOME_ERROR, None,
                     'pytest could not collect the node. ' + collector.list_collect[0])
 
-    for (when, outcome, text) in collector.list_report:
-        if when != WHEN_CALL and outcome == 'failed':
-            return made(OUTCOME_ERROR, None,
-                        'pytest reported an error in {when}. {text}'.format(when = when,
-                                                                            text = text))
+    # Read through cc_public.evidence, so that the session hook writing
+    # evidence and this adapter reading one node cannot disagree about
+    # what an event means. They did: the hook had no branch for
+    # teardown and read a timeout as a failure of the item.
+    #
+    # Every instance and not the first. A parametrised function is one
+    # item however many times it runs, so the worst of what its
+    # instances said is what it said.
+    #
+    said = [(cc_public.evidence.outcome_of_event(when, outcome, text), text)
+            for (when, outcome, text) in collector.list_report]
+    held = [(outcome, text) for (outcome, text) in said if outcome is not None]
 
-    for (when, outcome, text) in collector.list_report:
+    if not held:
+        return made(OUTCOME_NOT_RUN, None, 'pytest ran no test for the node.')
 
-        if when != WHEN_CALL:
-            continue
+    worst = min((outcome for (outcome, _) in held),
+                key = cc_public.evidence.RANK.index)
+    text  = next(text for (outcome, text) in held if outcome == worst)
 
-        if outcome == 'passed':
-            return made(OUTCOME_COMPLETED, RESULT_PASSED,
-                        'pytest reported the node passed.')
+    if worst == cc_public.evidence.OUTCOME_ERROR:
+        return made(OUTCOME_ERROR, None, _why_error(collector, text))
 
-        if outcome == 'failed':
-            return made(*_of_failed_call(text))
+    if worst == cc_public.evidence.OUTCOME_FAILED:
+        return made(OUTCOME_COMPLETED, RESULT_FAILED, text)
 
-    for (_, outcome, text) in collector.list_report:
-        if outcome == 'skipped':
-            return made(OUTCOME_COMPLETED, RESULT_SKIPPED,
-                        'pytest reported the node skipped. ' + text)
+    if worst == cc_public.evidence.OUTCOME_SKIPPED:
+        return made(OUTCOME_COMPLETED, RESULT_SKIPPED,
+                    'pytest reported the node skipped. ' + text)
 
-    return made(OUTCOME_NOT_RUN, None, 'pytest ran no test for the node.')
+    return made(OUTCOME_COMPLETED, RESULT_PASSED,
+                'pytest reported {n} instance(s) of the node, and every one '
+                'passed.'.format(n = sum(1 for (when, _, _) in collector.list_report
+                                           if when == WHEN_CALL)))
+
+
+# -----------------------------------------------------------------------------
+def _why_error(collector, text):
+    """
+    Return what to say of a run that did not complete.
+
+    """
+
+    if MARK_TIMEOUT in text:
+        return ('pytest stopped the node at its timeout, so the run did not finish. '
+                + text)
+
+    when = next((when for (when, outcome, one) in collector.list_report
+                       if outcome == 'failed' and one == text), WHEN_CALL)
+
+    return 'pytest reported an error in {when}. {text}'.format(when = when, text = text)
 
 
 # -----------------------------------------------------------------------------

@@ -1,0 +1,55 @@
+id_self:                ann_adapter_now_reads_every_instance
+guid_self:              ann_0654603374fa49b8a9dd7248fcd54e40
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The adapter now reads every instance of a parametrised function
+brief:                  |
+                        Fixed. _observation ranks every report of the
+                        node rather than returning at the first that
+                        passed, so a function whose second instance
+                        fails reads failed.
+description:            |
+                        Reproduced by feeding _observation a call
+                        passed followed by a call failed, which
+                        returned completed passed. The reports are now
+                        read through
+                        cc_public.evidence.outcome_of_event and ranked
+                        by evidence.RANK, so an error beats a failure,
+                        a failure beats a skip and a skip beats a
+                        pass, which is how evidence.outcome_of already
+                        ranked the instances of one case.
+
+                        test_parameterised_one_fails in
+                        test/control_adapter.py is a control run twice
+                        whose second instance fails, and
+                        test_a_control_run_twice_that_fails_once_is_one_failure
+                        asserts the adapter reads failed. Before the
+                        change that control read passed.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_adapter_reads_first_passing_instance
+    guid_target:        ann_88294668ec974dbc859274ef4ecf3a8f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.adapter.pytest_function
+    guid_target:        pym_c62e5f399bae4c6fb04593696c3d2c04
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          tm_pytest_function
+    guid_target:        tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
