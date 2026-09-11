@@ -265,10 +265,14 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
     defaults['guid_mark'] = tree.resolve(defaults['id_mark']).guid_self
     case     = tree.context.map_document[tree.resolve(id_case).location]
 
-    list_report = cc_public.nonconformity.from_execution(
+    def reported(is_kept):
+        return cc_public.nonconformity.from_execution(
                         tree.context.map_document, document, defaults,
                         cc_public.testing.expectation(tree.context.map_document,
-                                                      case.get('id_self')))
+                                                      case.get('id_self')),
+                        is_kept)
+
+    list_report = reported(False)
 
     written = []
 
@@ -282,6 +286,7 @@ def test_(name_case, name_under_test, is_record, is_evidence, is_report,
 
         if is_kept:
             written.append(cc_public.adapter.record(tree, document))
+            list_report = reported(True)
 
         if is_evidence and cc_public.evidence.from_execution(
                                     tree, document, is_kept) is not None:

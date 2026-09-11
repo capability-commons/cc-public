@@ -178,3 +178,22 @@ def test_a_brief_says_what_failed_and_not_the_first_line_of_a_traceback(tree):
     assert made['brief'].strip() == ('pyf_cc_public.query.database.path does not meet '
                                      'what tc_path_reported expects of it.')
     assert '0x106b58690' in made['observed']       # the evidence is kept whole
+
+
+def test_a_report_names_the_run_it_came_from_by_an_edge(tree):
+    # A field does not carry what an edge should, and a kept report
+    # held id_execution and an empty relation list, so nothing could be
+    # walked from the report to the run that produced it.
+    # Only where the execution is kept: an edge naming a run the tree
+    # does not hold would dangle, and a development run leaves none.
+    (plain,) = cc_public.nonconformity.from_execution(
+                    tree.context.map_document, _execution(tree, 'failed'), _defaults(tree))
+    assert plain['relation'] == []
+
+    (made,) = cc_public.nonconformity.from_execution(
+                    tree.context.map_document, _execution(tree, 'failed'), _defaults(tree),
+                    is_kept = True)
+
+    (edge,) = [e for e in made['relation'] if e['id_relation'] == 'r_results_from']
+    assert edge['id_target'].startswith('tex_')
+    assert edge['guid_target']

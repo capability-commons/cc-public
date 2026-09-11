@@ -62,6 +62,7 @@ KEY_EXPECTATION = 'expectation'
 
 ORIGIN_CHECK    = 'check'
 ORIGIN_EVAL     = 'eval'
+REL_RESULTS_FROM = 'r_results_from'
 ORIGIN_TEST     = 'test'
 
 ID_CHECK_EVAL   = 'eval'
@@ -119,7 +120,8 @@ def from_report(map_document, report, defaults):
 
 
 # -----------------------------------------------------------------------------
-def from_execution(map_document, document, defaults, expectation = None):
+def from_execution(map_document, document, defaults, expectation = None,
+                   is_kept = False):
     """
     Return a report for every failed result of one test execution.
 
@@ -164,9 +166,40 @@ def from_execution(map_document, document, defaults, expectation = None):
                                'id_method':      document.get('id_method'),
                                'guid_method':    document.get('guid_method'),
                                'id_case':        document.get('id_case'),
-                               'guid_case':      document.get('guid_case')}}))
+                               'guid_case':      document.get('guid_case')},
+            'edge':           _edges(map_document, document) if is_kept else []}))
 
     return tuple(out)
+
+
+# -----------------------------------------------------------------------------
+def _edges(map_document, document):
+    """
+    Return the edges a report holds: the run it came from.
+
+    The execution's own guid is used rather than the index, because a
+    report is made from an execution before it is written. The edge is
+    added only where the execution is kept: one naming a run the tree
+    does not hold would dangle, and a report about a development run
+    has nothing to point at.
+
+    A field does not carry what an edge should, and a kept report
+    could not be walked to the run that produced it. What carries the
+    obligation the failure is against is
+    qst_nonconformity_report.obligation.
+
+    """
+
+    index = cc_public.item.index(map_document)
+    held  = index.by_id.get(REL_RESULTS_FROM)
+
+    if held is None or not document.get(KEY_GUID_SELF):
+        return []
+
+    return [{'id_relation':   REL_RESULTS_FROM,
+             'guid_relation': held.guid_self,
+             'id_target':     document.get(KEY_ID_SELF),
+             'guid_target':   document.get(KEY_GUID_SELF)}]
 
 
 # -----------------------------------------------------------------------------
@@ -200,7 +233,7 @@ def _document(defaults, map_document, field):
         'origin':         field['origin'],
         'severity':       field['severity'],
         'time_detected':  now.strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'relation':       []}
+        'relation':       list(field.get('edge') or [])}
 
     if id_subject:
         document['id_subject']   = id_subject

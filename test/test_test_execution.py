@@ -64,6 +64,8 @@ EXECUTION = {
     'id_under_test':    'pyf_cc_public.query.database.path',
     'guid_under_test':  'pyf_' + '3' * 32,
     'digest_under_test': 'cc33',
+    'id_adapter':       'pym_cc_public.adapter.pytest_function',
+    'guid_adapter':     'pym_' + '4' * 32,
     'time_start':       '2026-09-08T01:00:00Z',
     'time_finish':      '2026-09-08T01:00:04Z',
     'execution_outcome': 'completed',
@@ -159,3 +161,17 @@ def test_a_completed_execution_states_a_conformance_result(validate):
     del execution['result']['main']['conformance_result']
     messages = [message for (_, message) in validate(execution)]
     assert any('conformance_result' in message for message in messages)
+
+
+@pytest.mark.parametrize('field', ['id_case', 'guid_case', 'id_method', 'guid_method',
+                                   'id_under_test', 'guid_under_test',
+                                   'id_adapter', 'guid_adapter'])
+def test_an_execution_says_what_it_bound(validate, field):
+    # The schema required three digests and none of the identities
+    # beside them, so an execution could carry a digest of something it
+    # did not name, and the command that reads one reads id_case
+    # unconditionally: valid and unusable.
+    execution = copy.deepcopy(EXECUTION)
+    del execution[field]
+
+    assert validate(execution), field
