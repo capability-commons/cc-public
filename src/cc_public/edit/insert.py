@@ -327,6 +327,13 @@ def _properties(node, root, step, map_schema):
     found = []
     own   = (node.get(KEY_PROPERTIES) or {}).get(step)
 
+    # A step whose key the schema does not name is shaped by
+    # additionalProperties, which is how a surface of an interface
+    # control document and any other free-form table is reached.
+    #
+    if own is None and isinstance(node.get(KEY_ADDITIONAL), dict):
+        own = node[KEY_ADDITIONAL]
+
     if own is not None:
         found.append(_deref(own, root, map_schema))
 

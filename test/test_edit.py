@@ -243,6 +243,19 @@ def test_insert_creates_an_absent_collection(tree, tmp_path):
     assert list(doc['question']) == ['first']
 
 
+def test_insert_reaches_a_member_under_a_free_form_key(tree, tmp_path):
+    # A surface of an interface control document is keyed by a local name
+    # the schema does not list, so the shape of what sits under it is
+    # additionalProperties and not properties.
+    (key, made) = cc_public.edit.insert.insert(
+                        tree, 't_interface_member', 'sentinel',
+                        'icd_cc_public_query', 'surface.python.native.constant')
+    assert made == 'icm_cc_public_query.sentinel'
+    doc = cc_public.load.from_file(tree.resolve('icd_cc_public_query').filepath)
+    assert doc['surface']['python']['native']['constant']['sentinel']['id_self'] \
+                == made
+
+
 def test_path_steps_are_plain():
     assert cc_public.path.join('edge', 'draft_to_review') == 'edge.draft_to_review'
     assert cc_public.path.split('edge.draft_to_review.guard') == \
