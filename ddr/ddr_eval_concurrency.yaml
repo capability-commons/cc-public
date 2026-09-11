@@ -37,6 +37,15 @@ context:                |
                         and no alternative was weighed. The client
                         beneath it retries a refused request three
                         times.
+
+                        The run that prompted this took thirty
+                        minutes. It judged six hundred and eighty two
+                        items and confirmed each of the hundred and
+                        ninety four adverse verdicts five times, so
+                        about sixteen hundred and fifty judgements at
+                        roughly a second each, some of them served
+                        from the cache. What one judgement costs in
+                        tokens is still unmeasured.
 decision:               |
                         The driver may have several judgements in
                         flight at once, bounded by a worker count.
@@ -140,7 +149,6 @@ consequence:            |
                         Nothing is built, so a run is as long as it
                         is, and the run that prompted this record was
                         still going when the record was written.
-relation:               []
 
 question:
 
@@ -168,8 +176,12 @@ question:
     id_self:            qst_eval_concurrency.latency
     guid_self:          qst_b9de0af72cec4ce18a8a5ed1f37fda26
     question:           |
-                        What one judgement costs in time and in
-                        tokens, which decides whether a pool is worth
-                        building at all and which this record could
-                        not measure from outside the process.
+                        What one judgement costs in tokens, and what
+                        it costs in time when nothing is served from
+                        the cache. A run of about sixteen hundred and
+                        fifty judgements took thirty minutes, which is
+                        an average over hits and misses together and
+                        not the cost of a judgement.
     relation:           []
+
+relation:               []
