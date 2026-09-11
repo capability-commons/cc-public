@@ -1,0 +1,59 @@
+id_self:                ann_selector_now_compares_from_the_map_commit
+guid_self:              ann_76163cc63a0b4bbca80198b851ef61eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The comparison now runs from the commit the map was measured at
+brief:                  |
+                        Fixed. changed compares from the map's commit
+                        as well as from the last commit, so a
+                        committed change is still a change until the
+                        map is remeasured.
+description:            |
+                        The commit was written by _map_of and read
+                        nowhere, so once a change was committed the
+                        selector said nothing had changed and exited
+                        zero, although the map predated the commit. A
+                        commit runs the checks and the lint and no
+                        tests, so commit then run is the ordinary
+                        loop.
+
+                        changed now unions three sets: what differs
+                        from the commit the map records, what differs
+                        from the last commit, and what is untracked.
+                        Where there is no map it falls back to the
+                        last commit alone.
+
+                        test_the_comparison_runs_from_the_commit_the_map_was_measured_at
+                        builds a repository, commits twice, and
+                        asserts that a change committed since the
+                        map's commit is still seen while nothing
+                        differs from HEAD. The decision now says what
+                        the comparison runs from and why.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_selector_compares_to_head
+    guid_target:        ann_c3dacc6b12554c06adcdb47362170612
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_selection
+    guid_target:        ddr_217478c495ce46c69c123cc43385dfa3

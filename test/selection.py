@@ -60,6 +60,8 @@ DIR_DATA   = '.test_map_data'
 DIR_SOURCE = 'src/cc_public'
 DIR_TEST   = 'test'
 CONFTEST   = 'test/conftest.py'
+PREFIX_TEST = 'test_'
+DELIM_NODE = '::'
 
 KEY_CORE    = 'core'
 KEY_SOURCE  = 'by_source'
@@ -95,6 +97,7 @@ SECOND_TIMEOUT = 3600
 
 VARIABLE_PARTIAL = 'CCTOOL_PARTIAL_RUN'
 VARIABLE_CORE    = 'COVERAGE_CORE'
+HEAD             = 'HEAD'
 
 
 class Plan(typing.NamedTuple):
@@ -124,9 +127,38 @@ def is_test(path):
     """
     Return whether path is a test module.
 
+    A test module is what pytest collects and what the measurement
+    globs: test/test_*.py. Anything else under test/ is a helper the
+    modules import, and naming one as a node ran the helper and not
+    the module that tests it.
+
     """
 
-    return path.startswith(DIR_TEST + '/') and path.endswith('.py')
+    return path.startswith(DIR_TEST + '/') and path.endswith('.py') \
+       and pathlib.PurePosixPath(path).name.startswith(PREFIX_TEST)
+
+
+def is_helper(path):
+    """
+    Return whether path is a python file under test/ that is not a
+    test module.
+
+    What imports it is not something a map of executed lines can say,
+    since a helper's lines are attributed to the tests that ran them
+    and nothing records which modules import it.
+
+    """
+
+    return path.startswith(DIR_TEST + '/') and path.endswith('.py') and not is_test(path)
+
+
+def module_of(node):
+    """
+    Return the test module a node id belongs to.
+
+    """
+
+    return node.split(DELIM_NODE, 1)[0]
 
 
 def _whole_because(set_changed, held):
@@ -135,9 +167,9 @@ def _whole_because(set_changed, held):
     applies.
 
     Every reason here is a change whose reach a map of executed lines
-    cannot say: an absent map, the shared fixtures, a data item, the
-    project file, or a module the map never saw. Tests read those and
-    execute no line naming them.
+    cannot say: an absent map, the shared fixtures, a helper under
+    test/, a data item, the project file, or a module the map never
+    saw. Tests read those and execute no line naming them.
 
     """
 
@@ -148,6 +180,10 @@ def _whole_because(set_changed, held):
 
         if path == CONFTEST:
             return 'test/conftest.py changed, and every test is built from it.'
+
+        if is_helper(path):
+            return ('{path} changed. It is a helper under test/ and not a test module, '
+                    'and nothing records which modules import it.'.format(path = path))
 
         if not is_source(path) and not is_test(path):
             return ('{path} changed. It is neither a module of the tool nor a test, so '
@@ -162,18 +198,37 @@ def _whole_because(set_changed, held):
     return None
 
 
+def unseen(root = ROOT, held = None):
+    """
+    Return the test modules on disk that the map never saw.
+
+    A module committed after the map was measured is invisible to
+    every rule that reads the map, so a change to something it
+    exercises would select the modules the map holds, run green, and
+    never run it. It runs whenever anything runs, as a module the
+    measurement could not account for does.
+
+    """
+
+    seen = {module_of(node) for node in (held.test if held else ())}
+
+    return tuple(sorted(DIR_TEST + '/' + p.name
+                        for p in (pathlib.Path(root) / DIR_TEST).glob(PREFIX_TEST + '*.py')
+                        if DIR_TEST + '/' + p.name not in seen))
+
+
 def _reached(set_changed, held):
     """
     Return the node ids a change can reach.
 
     A changed test module is named whole, since the map cannot hold a
     test that did not exist when it was measured. So is every module
-    the measurement could not account for, since nothing is known
-    about what its tests reach.
+    the measurement could not account for, and every module on disk
+    the measurement never saw.
 
     """
 
-    node = set(held.missing)
+    node = set(held.missing) | set(held.unseen)
 
     for path in sorted(set_changed):
         node.update([path] if is_test(path) else held.by_source[path])
@@ -205,9 +260,19 @@ def plan(set_changed, held):
     return Plan(False, tuple(sorted(node)),
                 '{n} of {m} tests reach what changed{also}.'.format(
                         n    = len(node), m = held.count,
-                        also = '' if not held.missing else
-                               ', counting {k} module(s) the map could not account '
-                               'for'.format(k = len(held.missing))))
+                        also = _besides(held)))
+
+
+def _besides(held):
+    """
+    Return what is being run besides what the map attributes.
+
+    """
+
+    count = len(held.missing) + len(held.unseen)
+
+    return '' if not count else \
+           (', counting {k} module(s) the map does not account for'.format(k = count))
 
 
 def measure(root = ROOT, path = PATH_MAP, width = 8):
@@ -384,24 +449,33 @@ def _commit(root):
 
 class Map(typing.NamedTuple):
     """
-    What the map holds: which tests reached each module, how many tests
-    the measurement saw, and the test modules it could not account for.
+    What the map holds: which tests reached each module, the node ids
+    the measurement saw, the test modules it could not account for,
+    the modules on disk it never saw, and the commit it was measured
+    at.
 
     A module in missing did not pass under measurement, or its data
-    could not be read. Nothing is known about what its tests reach, so
-    it runs whenever anything runs.
+    could not be read. One in unseen was not there to measure. Nothing
+    is known about what either reaches, so both run whenever anything
+    runs.
 
     """
 
     by_source: dict
-    count:     int
+    test:      tuple
     missing:   tuple
+    unseen:    tuple = ()
+    commit:    str | None = None
+
+    @property
+    def count(self):
+        return len(self.test)
 
 
-NO_MAP = Map({}, 0, ())
+NO_MAP = Map({}, (), ())
 
 
-def load(path = PATH_MAP):
+def load(path = PATH_MAP, root = ROOT):
     """
     Return the Map, or NO_MAP where there is none this can be trusted.
 
@@ -419,27 +493,36 @@ def load(path = PATH_MAP):
     if held.get(KEY_CORE) not in CORE_ATTRIBUTING:
         return NO_MAP
 
-    return Map(by_source = held.get(KEY_SOURCE) or {},
-               count     = len(held.get(KEY_TEST) or ()),
-               missing   = tuple(held.get(KEY_MISSING) or ()))
+    made = Map(by_source = held.get(KEY_SOURCE) or {},
+               test      = tuple(held.get(KEY_TEST) or ()),
+               missing   = tuple(held.get(KEY_MISSING) or ()),
+               commit    = held.get(KEY_COMMIT) or None)
+
+    return made._replace(unseen = unseen(root, made))
 
 
 def changed(root = ROOT, ref = None):
     """
-    Return the repository relative paths that differ from ref, or from
-    the last commit and the working tree where ref is absent.
+    Return the repository relative paths that differ from ref, and
+    those the working tree has changed since the last commit.
+
+    Where no ref is given the comparison runs from the commit the map
+    was measured at, because that is what the map describes. Comparing
+    to the last commit alone said nothing had changed the moment a
+    change was committed, and a commit runs the checks and no tests,
+    so commit then run is the ordinary loop.
 
     """
 
     def git(*argument):
         done = subprocess.run(['git', '-C', str(root), *argument],
-                              capture_output = True, text = True, check = True)
+                              capture_output = True, text = True, check = False)
         return [line for line in done.stdout.splitlines() if line]
 
-    if ref is not None:
-        return set(git('diff', '--name-only', ref))
+    since = ref if ref is not None else (load(root = root).commit or HEAD)
 
-    return set(git('diff', '--name-only', 'HEAD')) \
+    return set(git('diff', '--name-only', since)) \
+         | set(git('diff', '--name-only', HEAD)) \
          | set(git('ls-files', '--others', '--exclude-standard'))
 
 

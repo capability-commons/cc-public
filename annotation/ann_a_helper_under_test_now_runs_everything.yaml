@@ -1,0 +1,50 @@
+id_self:                ann_a_helper_under_test_now_runs_everything
+guid_self:              ann_d364554702ff48e09c16512abf160d88
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A helper under test/ now runs the whole suite
+brief:                  |
+                        Fixed. is_test admits test/test_*.py alone,
+                        which is what pytest collects and what the
+                        measurement globs, and a helper is a reason to
+                        run everything.
+description:            |
+                        is_test accepted any python file under test/,
+                        so a change to selection.py named that file as
+                        the node, ran one file and exited zero, and
+                        never ran the module that tests it. The module
+                        disagreed with itself: measure globs
+                        test_*.py.
+
+                        is_test now requires the test_ prefix,
+                        is_helper names the rest, and a changed helper
+                        is a reason to run the whole suite, because
+                        nothing records which modules import it.
+
+                        test_a_helper_under_test_runs_everything
+                        asserts a change to test/selection.py runs
+                        everything and says so, and holds both
+                        predicates against a helper and a test module.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_selector_helper_selects_itself
+    guid_target:        ann_cd4fbdd6bb0b411eb9dde9470661b1e9
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910

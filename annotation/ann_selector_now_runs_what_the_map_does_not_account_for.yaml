@@ -1,0 +1,60 @@
+id_self:                ann_selector_now_runs_what_the_map_does_not_account_for
+guid_self:              ann_b5ec6ed4292740a6bcd1f49542f355a5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test module the map never saw now runs whenever anything runs
+brief:                  |
+                        Fixed. selection.unseen globs the test modules
+                        on disk, and every one the measurement did not
+                        see joins the modules it could not account
+                        for.
+description:            |
+                        Every rule read the map, so a module committed
+                        after the map was measured was invisible to
+                        all of them. test_coverage_analysis.py was on
+                        disk, absent from the map, and a change to
+                        trace.py selected 152 tests across twenty
+                        seven modules and not that one.
+
+                        The map now carries the node ids it saw rather
+                        than a count, and load globs test/test_*.py to
+                        find what it never saw. Those run alongside
+                        the modules the measurement could not account
+                        for, and the reason line counts both.
+
+                        test_a_test_module_the_map_never_saw_always_runs
+                        builds a tree holding a seen module, an unseen
+                        one and a helper, and asserts the unseen one
+                        is in the selection. ddr_test_selection said
+                        the only guard was a module it had never seen,
+                        which was true of source alone; the decision
+                        and the consequence now say which guards there
+                        are and which gap none of them closes.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_selector_never_selects_a_test_module_it_has_not_seen
+    guid_target:        ann_43304cddcad440f4b7b89d94884488d3
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_selection
+    guid_target:        ddr_217478c495ce46c69c123cc43385dfa3

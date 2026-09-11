@@ -38,7 +38,9 @@ import selection
 BY_SOURCE = {'src/cc_public/layout.py': ['test/test_layout.py::test_one',
                                          'test/test_layout.py::test_two'],
              'src/cc_public/query.py':  ['test/test_query.py::test_three']}
-MAP = selection.Map(BY_SOURCE, 3, ())
+NODE = ('test/test_layout.py::test_one', 'test/test_layout.py::test_two',
+        'test/test_query.py::test_three')
+MAP  = selection.Map(BY_SOURCE, NODE, ())
 
 
 def test_a_source_change_runs_what_the_map_says_reaches_it():
@@ -50,7 +52,7 @@ def test_a_source_change_runs_what_the_map_says_reaches_it():
 
 def test_two_changes_run_the_union():
     decided = selection.plan({'src/cc_public/query.py', 'src/cc_public/layout.py'},
-                             selection.Map(BY_SOURCE, 10, ()))
+                             selection.Map(BY_SOURCE, NODE + tuple('n{n}'.format(n = i) for i in range(7)), ()))
     assert not decided.is_whole and len(decided.node) == 3
 
 
@@ -108,16 +110,17 @@ def test_a_map_measured_by_a_core_that_cannot_attribute_is_refused(tmp_path):
     path = tmp_path / 'map.json'
     path.write_text(json.dumps({'core': 'sysmon', 'test': ['a'],
                                 'by_source': BY_SOURCE}), encoding = 'utf-8')
-    assert selection.load(path) == selection.NO_MAP
+    assert selection.load(path, root = tmp_path) == selection.NO_MAP
 
     path.write_text(json.dumps({'core': 'ctrace', 'test': ['a'],
                                 'by_source': BY_SOURCE}), encoding = 'utf-8')
-    held = selection.load(path)
+    held = selection.load(path, root = tmp_path)
     assert held.by_source == BY_SOURCE and held.count == 1
 
 
 def test_an_absent_map_is_no_map_rather_than_an_error(tmp_path):
-    assert selection.load(tmp_path / 'nothing.json') == selection.NO_MAP
+    assert selection.load(tmp_path / 'nothing.json', root = tmp_path) \
+           == selection.NO_MAP
 
 
 def test_what_counts_as_a_module_and_a_test():
@@ -133,11 +136,12 @@ def test_a_module_the_measurement_could_not_account_for_always_runs():
     # measurement. Nothing is known about what its tests reach, so
     # leaving it out would be the silent under-run this exists to
     # avoid.
-    held    = selection.Map(BY_SOURCE, 20, ('test/test_edit.py',))
+    held    = selection.Map(BY_SOURCE, NODE + tuple('n{n}'.format(n = i) for i in range(17)),
+                            ('test/test_edit.py',))
     decided = selection.plan({'src/cc_public/query.py'}, held)
     assert not decided.is_whole
     assert set(decided.node) == {'test/test_query.py::test_three', 'test/test_edit.py'}
-    assert 'could not account for' in decided.reason
+    assert 'does not account for' in decided.reason
 
 
 MODULE  = 'test_glossary.py'
@@ -194,3 +198,65 @@ def test_the_default_core_attributes_almost_nothing_and_is_why_one_is_named(tmp_
 
     assert len(default[selection.KEY_TEST]) < len(attributing[selection.KEY_TEST])
     assert REACHED in attributing[selection.KEY_SOURCE]
+
+
+def test_a_test_module_the_map_never_saw_always_runs(tmp_path):
+    # Every rule reads the map, so a module committed after the map was
+    # measured was invisible to all of them: a change to something it
+    # exercises selected the modules the map held, ran green, and never
+    # ran it.
+    (tmp_path / 'test').mkdir()
+    for name in ('test_seen.py', 'test_new.py', 'helper.py'):
+        (tmp_path / 'test' / name).write_text('', encoding = 'utf-8')
+
+    node = tuple('test/test_seen.py::test_{n}'.format(n = i) for i in range(20))
+    held = selection.Map(BY_SOURCE, node, ())
+    held = held._replace(unseen = selection.unseen(tmp_path, held))
+    assert held.unseen == ('test/test_new.py',)
+
+    decided = selection.plan({'src/cc_public/query.py'}, held)
+    assert 'test/test_new.py' in decided.node
+
+
+def test_a_helper_under_test_runs_everything():
+    # is_test accepted any python file under test/, so a change to a
+    # helper named that file as the node and never ran the module that
+    # tests it.
+    decided = selection.plan({'test/selection.py'}, MAP)
+    assert decided.is_whole and 'helper under test/' in decided.reason
+
+    assert selection.is_helper('test/selection.py')
+    assert not selection.is_helper('test/test_selection.py')
+    assert not selection.is_test('test/selection.py')
+    assert selection.is_test('test/test_selection.py')
+
+
+def test_the_comparison_runs_from_the_commit_the_map_was_measured_at(tmp_path):
+    # Comparing to the last commit alone said nothing had changed the
+    # moment a change was committed, and a commit runs the checks and
+    # no tests.
+    import subprocess
+
+    def git(*argument):
+        subprocess.run(['git', '-C', str(tmp_path), *argument], check = True,
+                       capture_output = True)
+
+    git('init', '-q')
+    git('config', 'user.email', 'probe@example.com')
+    git('config', 'user.name', 'Probe')
+    (tmp_path / 'src').mkdir(parents = True)
+    (tmp_path / 'src' / 'cc_public').mkdir()
+    (tmp_path / 'src' / 'cc_public' / 'query.py').write_text('x = 1\n', encoding = 'utf-8')
+    git('add', '-A')
+    git('-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'first')
+    first = subprocess.run(['git', '-C', str(tmp_path), 'rev-parse', 'HEAD'],
+                           capture_output = True, text = True, check = True).stdout.strip()
+
+    (tmp_path / 'src' / 'cc_public' / 'query.py').write_text('x = 2\n', encoding = 'utf-8')
+    git('add', '-A')
+    git('-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'second')
+
+    # Committed, so nothing differs from HEAD; the map still describes
+    # the tree as it was at the first commit.
+    assert selection.changed(tmp_path, first) == {'src/cc_public/query.py'}
+    assert selection.changed(tmp_path, 'HEAD') == set()

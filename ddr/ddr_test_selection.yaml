@@ -50,10 +50,13 @@ decision:               |
 
                         Every rule errs towards the whole suite, and
                         each says which rule it was. There is no map;
-                        the shared fixtures changed; something changed
-                        that is neither a module nor a test; a module
-                        changed that the map does not hold; or the
-                        selection is more than half the suite.
+                        the shared fixtures changed; a helper under
+                        test/ changed; something changed that is
+                        neither a module nor a test; a module changed
+                        that the map does not hold; or the selection
+                        is more than half the suite. A test module the
+                        measurement never saw, and one it could not
+                        account for, run whenever anything runs.
                         Under-running is the failure that matters, so
                         every uncertainty resolves the same way.
 
@@ -83,6 +86,13 @@ decision:               |
                         Selection is by file and not by line. A change
                         anywhere in a module selects every test that
                         reached that module.
+
+                        What a change is compared against is the
+                        commit the map was measured at, and not the
+                        last commit. A commit runs the checks and no
+                        tests, so comparing to the last commit said
+                        nothing had changed the moment a change was
+                        committed.
 rationale:              |
                         The loop and not the judgement, because a map
                         can only be as good as its last measurement
@@ -188,14 +198,16 @@ alternative:            |
                         measured, the file level already selects two
                         per cent of the suite for the median module.
 consequence:            |
-                        The map goes stale and nothing says so. It is
-                        measured at a commit and used at another, and
-                        the only guard is that a module it has never
-                        seen runs everything. A module whose reach has
-                        narrowed since the measurement will select
-                        more tests than it needs, which is safe; one
-                        whose reach has widened will select fewer,
-                        which is not, and only re-measuring finds it.
+                        The map goes stale and the guards against it
+                        are partial. A source module the map does not
+                        hold, a test module on disk it never saw, and
+                        a module it could not account for each run
+                        everything or run always. What none of them
+                        catches is a module whose reach has widened
+                        since the measurement: it selects fewer tests
+                        than it needs, and only re-measuring finds
+                        that. A module whose reach has narrowed
+                        selects more than it needs, which is safe.
 
                         Measuring costs half an hour, so it will be
                         done rarely, so the map will usually be stale.
