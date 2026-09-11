@@ -225,3 +225,32 @@ def test_a_case_may_hold_a_pair_for_an_eval_over_pairs(repo):
               '--item', 'req_no_path_reported', '--item', 'need_agent_sees_reach',
               '--verdict', 'met', '--note', 'Held met.')
     assert out.exit_code == 0, out.output
+
+
+def test_restated_lists_pairs_of_one_shape_and_counts_them(repo):
+    path = repo / 'src' / 'cc_public' / 'twice.py'
+    path.write_text('def a(x):\n'
+                    '    out = []\n'
+                    '    for one in x:\n'
+                    '        if one:\n'
+                    '            out.append(one)\n'
+                    '    return sorted(out)\n'
+                    '\n'
+                    'def b(y):\n'
+                    '    held = []\n'
+                    '    for each in y:\n'
+                    '        if each:\n'
+                    '            held.append(each)\n'
+                    '    return sorted(held)\n')
+    out = run('restated', '--root', str(repo), '--path', str(path))
+    assert out.exit_code == 0, out.output
+    assert 'twice.py::a' in out.output and 'twice.py::b' in out.output
+    assert '1 pair(s) at or above 0.8' in out.output
+
+    out = run('restated', '--root', str(repo), '--path', str(path), '--format', 'json')
+    found = json.loads(out.output)
+    assert [one['score'] for one in found] == [1.0]
+
+    # Nothing is alike enough at one, so the threshold is read.
+    out = run('restated', '--root', str(repo), '--path', str(path), '--threshold', '1.1')
+    assert '0 pair(s)' in out.output

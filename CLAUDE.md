@@ -95,6 +95,13 @@ Assurance
 
 Querying
 
+- `restated [--path DIR]… [--threshold N] [--format text|json]` — pairs of
+  function bodies of one shape, most alike first, over the `src` of every root
+  by default. Local names are normalised and constants reduced to their types,
+  so a pair differing only in what it calls things is reported. Sixteen pairs
+  over this tool at eight tenths, all six of the things behind them real. It
+  reports and blocks nothing, because which side of a pair should go is not a
+  thing it knows (`ddr_restated_fact`).
 - `walk ITEM [--depth N] [--relation R]… [--direction out|in|both] [--format text|json|dot|mermaid]`
   — the neighbourhood of an item, breadth first, each item once with the
   edge that reached it. `path A B` — a shortest path or its absence.

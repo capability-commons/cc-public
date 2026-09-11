@@ -30,12 +30,14 @@ relation:               []
 
 
 import json
+import os.path
 
 import click
 
 import cc_public.cli.group
 import cc_public.cli.report
 import cc_public.query
+import cc_public.restatement
 
 
 FORMAT_ALL = ('text', 'json', 'dot', 'mermaid')
@@ -165,3 +167,45 @@ def query(name, sql, id_format, list_root):
         cc_public.cli.group.fail('The query did not run: {err}'.format(err = err))
 
     cc_public.cli.report.write_rows(names, rows, id_format)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.option('--path', 'list_path', multiple = True, type = click.Path(exists = True),
+              help = 'A file or a directory of python to read. Repeatable. '
+                     'The src directory of every root by default.')
+@click.option('--threshold', 'threshold', type = float,
+              default = cc_public.restatement.THRESHOLD, show_default = True,
+              help = 'The proportion of shape a pair shares before it is reported.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True)
+@cc_public.cli.group.OPTION_ROOT
+def restated(list_path, threshold, id_format, list_root):
+    """
+    List every pair of function bodies of the same shape, most alike
+    first: two places holding one fact, where the answer is to write
+    it once and have both callers ask.
+
+    A body is compared with its local names normalised and its
+    constants reduced to their types, so a pair differing only in what
+    it calls things is reported (ddr_restated_fact). Reports; blocks
+    nothing.
+
+    """
+
+    if not list_path:
+        list_path = (os.path.relpath(
+                        cc_public.cli.group.tree(list_root).root / 'src'),)
+
+    list_pair = cc_public.restatement.similar(list_path, threshold)
+
+    if id_format == 'json':
+        click.echo(json.dumps([one._asdict() for one in list_pair], indent = 2))
+        return
+
+    for one in list_pair:
+        click.echo('{score:.2f}  {n:4}  {first}'.format(
+                        score = one.score, n = one.length, first = one.first))
+        click.echo('{pad:14}{second}'.format(pad = '', second = one.second))
+
+    click.echo('{n} pair(s) at or above {t}.'.format(n = len(list_pair), t = threshold))
