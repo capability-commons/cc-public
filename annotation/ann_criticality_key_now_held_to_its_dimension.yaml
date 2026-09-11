@@ -1,0 +1,60 @@
+id_self:                ann_criticality_key_now_held_to_its_dimension
+guid_self:              ann_444b6105afec43b68c927232a0ab02a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A criticality key is now held to the dimension of the entry it names
+brief:                  |
+                        Fixed. The requirement check reports a
+                        criticality declared under one dimension
+                        naming a level of another.
+description:            |
+                        Declaring safety naming crit_security_60 gave
+                        no finding, and the derivation read the entry
+                        and gave the item a security level under a
+                        safety key.
+
+                        check.requirement._check_criticality reads the
+                        dimension of every criticality entry from the
+                        register and compares it with the key the
+                        requirement declared under. The finding says
+                        which dimension the level is on and why the
+                        key matters: a level of another dimension is
+                        declared on neither.
+
+                        Two tests hold it, one each way: a key naming
+                        a level of another dimension is reported, and
+                        a key naming a level of its own dimension is
+                        not.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_criticality_key_not_held_to_its_dimension
+    guid_target:        ann_fd38119c673b43068af85af2c58086b0
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_textual_requirement
+    guid_target:        sch_862714ff65444283903e39f653c067af
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.requirement
+    guid_target:        pym_ad3bc6ced85b419aa3b2b131c595dfd6
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_criticality
+    guid_target:        ddr_0ebeb44550a942b3b94c7e488b980639

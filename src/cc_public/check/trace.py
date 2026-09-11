@@ -75,6 +75,11 @@ PREFIX_ANALYSIS = 'cva'
 SEPARATOR       = '_'
 SUFFIX_PYTHON   = '.py'
 
+# What joins a definition to the surroundings it was read with, so the
+# digest covers both and neither can be mistaken for the other.
+#
+SEPARATOR_CONTEXT = '\n# --- module ---\n'
+
 KEY_ID_SELF     = 'id_self'
 KEY_ANALYSIS    = 'analysis'
 KEY_CRITERIA    = 'success_criteria'
@@ -284,8 +289,21 @@ def _source_of(map_document, id_verifier):
     if location is None or location.filepath.suffix != SUFFIX_PYTHON:
         return None
 
-    return cc_public.load.python.source_of(
-                    location.filepath.read_text(encoding = 'utf-8'), location.anchor)
+    whole = location.filepath.read_text(encoding = 'utf-8')
+    text  = cc_public.load.python.source_of(whole, location.anchor)
+
+    if text is None:
+        return None
+
+    # The surroundings as well as the definition, because that is what
+    # the judge was shown. The eval names module in its scope, added
+    # because verdicts turned on a constant outside the definition, so
+    # a digest over the definition alone leaves a reading standing
+    # while the value its verdict rested on has changed.
+    #
+    context = cc_public.load.python.context_of(whole) if location.anchor else None
+
+    return text if context is None else text + SEPARATOR_CONTEXT + context
 
 
 # -----------------------------------------------------------------------------

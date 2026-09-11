@@ -156,3 +156,24 @@ def test_the_command_reads_the_same_projection(tree, tmp_path):
 
     # A dimension nothing raised is shown at its base, not left blank.
     assert 'security 10' in done.output
+
+
+def test_a_key_naming_a_level_of_another_dimension_is_reported(tree, tmp_path):
+    # The schema keys a criticality by dimension and says the entry
+    # names the same one. Two places for one fact, and the second was
+    # never read: safety could name a security level and the
+    # derivation would give the item a security level under a safety
+    # key.
+    from conftest import clean
+
+    _declare(tree, ID_REQ, 'safety', 'crit_security_60')
+    found = [message for (id_check, message) in clean(tmp_path)
+                     if id_check == 'requirement']
+    assert any('is a security level' in m for m in found), found
+
+
+def test_a_key_naming_a_level_of_its_own_dimension_is_not_reported(tree, tmp_path):
+    from conftest import clean
+
+    _declare(tree, ID_REQ, 'safety', SAFETY_60)
+    assert [m for (id_check, m) in clean(tmp_path) if id_check == 'requirement'] == []

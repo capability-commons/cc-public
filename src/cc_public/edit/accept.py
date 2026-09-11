@@ -30,6 +30,7 @@ relation:               []
 
 
 import cc_public.check.evidence
+import cc_public.check.trace
 import cc_public.edit.field
 import cc_public.edit.tree
 import cc_public.trace
@@ -73,7 +74,9 @@ def accept(tree, name):
                                          is_closed_world = True)
 
     list_lack = [gap.message
-                 for record in cc_public.trace.projection(map_document, True)
+                 for record in cc_public.trace.projection(
+                                    map_document, True,
+                                    cc_public.check.trace.analysed(map_document))
                  if record.guid_self == item.guid_self
                  for gap in record.gap]
     list_lack.extend(

@@ -227,3 +227,30 @@ def test_a_module_item_carries_no_context_of_its_own():
     held = tree.resolve('pym_cc_public.layout')
     out  = cc_public.eval.select._with_source({'id_self': held.id_self}, held.location)
     assert 'module' not in out
+
+
+def test_a_requirement_is_not_shown_the_code_that_implements_it():
+    # A requirement names what implements it by the same relation a
+    # case names the function that automates it. Following it for both
+    # handed a judge asked whether a test would fail the code under
+    # test beside the test, which it can answer from instead.
+    shown = _shown()
+    (subject,) = [s for s in shown
+                  if s[0] == 'pyf_test.test_run.'
+                             'test_back_edge_is_exhausted_when_the_budget_is_spent']
+
+    assert 'def test_back_edge_is_exhausted_when_the_budget_is_spent' in shown[subject]
+    assert 'def run(' not in shown[subject]
+    assert shown[subject].count('source:') == 1
+
+
+def test_only_a_case_follows_what_implements_it():
+    import cc_public.eval.select
+
+    held = {'id_self': 'req_probe', 'title': 'Probe',
+            'relation': [{'id_relation': 'r_is_implemented_by',
+                          'guid_target': 'pym_' + '0' * 32}]}
+
+    assert cc_public.eval.select._with_source(held, None, {}) is held
+    assert not cc_public.eval.select._is_case(held)
+    assert cc_public.eval.select._is_case({'id_self': 'tc_probe'})

@@ -71,6 +71,8 @@ KEY_EXCLUDE   = 'exclude'
 KEY_SOURCE    = 'source'
 KEY_MEMBER    = 'member'
 REL_IMPLEMENT = 'r_is_implemented_by'
+PREFIX_CASE   = 'tc'
+SEPARATOR     = '_'
 KEY_MODULE    = 'module'
 KEY_GUID_TGT  = 'guid_target'
 REL_INCLUDES  = 'r_includes'
@@ -567,7 +569,8 @@ def _with_source(document, location, map_location = None):
     """
 
     if location is None or location.filepath.suffix != SUFFIX_PYTHON:
-        location = _location_implementing(document, map_location)
+        location = _location_implementing(document, map_location) \
+                   if _is_case(document) else None
 
     if location is None or location.filepath.suffix != SUFFIX_PYTHON:
         return document
@@ -592,6 +595,22 @@ def _with_source(document, location, map_location = None):
             out[KEY_MODULE] = context
 
     return out
+
+
+# -----------------------------------------------------------------------------
+def _is_case(document):
+    """
+    Return whether document is a test case.
+
+    A case is the one kind of item that is not code and stands for
+    some. A requirement also names what implements it, and following
+    that edge handed a judge the code under test beside the test, so
+    a judge asked whether a test would fail could answer from the
+    implementation instead.
+
+    """
+
+    return str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] == PREFIX_CASE
 
 
 # -----------------------------------------------------------------------------

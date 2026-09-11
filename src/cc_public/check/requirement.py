@@ -70,6 +70,10 @@ CLASSES         = ('normal', 'abnormal', 'misuse', 'maintenance', 'deployment', 
 PREFIX_VERB     = 'verb'
 STATUS_ACCEPTED = 'accepted'
 SEPARATOR       = '_'
+DELIM           = '.'
+KEY_CRITICALITY = 'criticality'
+KEY_DIMENSION   = 'dimension'
+KEY_ID_CRIT     = 'id_criticality'
 
 
 # -----------------------------------------------------------------------------
@@ -127,6 +131,11 @@ def check(context):
             severity = (cc_public.check.result.SEVERITY_CRITICAL if is_accepted
                         else cc_public.check.result.SEVERITY_ADVISORY)))
 
+    map_dimension = _dimension_of(context.map_document)
+
+    for (location, path, document) in iter_subject(context.map_document):
+        list_bad.extend(_check_criticality(location, path, document, map_dimension))
+
     map_guid = _by_guid(context.map_document)
 
     for (location, document) in sorted(context.map_document.items(), key = lambda kv: str(kv[0])):
@@ -138,6 +147,52 @@ def check(context):
     return cc_public.check.result.Result(count_item         = count,
                                          list_nonconformity = list_bad,
                                          list_note          = [])
+
+
+# -----------------------------------------------------------------------------
+def _dimension_of(map_document):
+    """
+    Return the dimension each criticality entry belongs to, by
+    readable id.
+
+    """
+
+    return {entry.get(KEY_ID_SELF): entry.get(KEY_DIMENSION)
+            for document in map_document.values() if isinstance(document, dict)
+            for entry in (document.get(KEY_TABLE) or {}).values()
+            if isinstance(entry, dict) and entry.get(KEY_DIMENSION)}
+
+
+# -----------------------------------------------------------------------------
+def _check_criticality(location, path, document, map_dimension):
+    """
+    Return a finding for each declared criticality whose key is not
+    the dimension of the entry it names.
+
+    The schema keys a criticality by dimension and says the entry
+    names the same one. Two places for one fact, and until this the
+    second was never read: a requirement could declare safety and name
+    a security level, and the derivation would read the entry and give
+    it a security level under a safety key.
+
+    """
+
+    carried = document.get(KEY_CRITICALITY)
+
+    if not isinstance(carried, dict):
+        return []
+
+    return [cc_public.check.result.Nonconformity(
+                filepath = str(location.filepath),
+                path     = DELIM.join([p for p in (path, KEY_CRITICALITY, key) if p]),
+                message  = ('Declared under {key} and names {name}, which is a {found} '
+                            'level. The key says which dimension the level is on, so a '
+                            'level of another dimension is declared on neither.'.format(
+                                    key = key, name = reference.get(KEY_ID_CRIT),
+                                    found = map_dimension[reference.get(KEY_ID_CRIT)])))
+            for (key, reference) in sorted(carried.items())
+            if isinstance(reference, dict)
+            and map_dimension.get(reference.get(KEY_ID_CRIT), key) != key]
 
 
 # -----------------------------------------------------------------------------

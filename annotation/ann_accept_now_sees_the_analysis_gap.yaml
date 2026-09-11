@@ -1,0 +1,56 @@
+id_self:                ann_accept_now_sees_the_analysis_gap
+guid_self:              ann_4f810661d07b4ef4a4c52a86a1bed89e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  accept now reads the projection with the analyses
+brief:                  |
+                        Fixed. edit.accept passes check.trace.analysed
+                        to the projection, so the gap it could not see
+                        now refuses the acceptance.
+description:            |
+                        accept promised never to admit what the checks
+                        would refuse, and called the projection with
+                        two arguments where the check calls it with
+                        three, so the coverage analysis gap could not
+                        fire there at all.
+
+                        test_accept_refuses_a_requirement_whose_level_wants_an_analysis
+                        declares safety forty on a proposed
+                        requirement in a copy, calls accept, and
+                        asserts it raises naming the analysis and
+                        leaves the status proposed. Before the change
+                        it returned the accepted requirement and the
+                        next closed-world check reported one critical.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_accept_ignores_the_analysis_gap
+    guid_target:        ann_8baa380c06d048768f6646bfabe6495b
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.edit.accept
+    guid_target:        pym_5613885b858f48d9b2cab64bcd46dce3
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_coverage_analysis
+    guid_target:        ddr_78be6dbdde5e4c22802d753af1e73cee

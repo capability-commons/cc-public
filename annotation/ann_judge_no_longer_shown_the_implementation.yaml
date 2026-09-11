@@ -1,0 +1,63 @@
+id_self:                ann_judge_no_longer_shown_the_implementation
+guid_self:              ann_4e129592926a4f65904ec12a60a1b03a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Only a case follows what implements it, so the judge sees the test alone
+brief:                  |
+                        Fixed. _with_source follows
+                        r_is_implemented_by for a test case and for
+                        nothing else, so the requirement end of a pair
+                        carries no source.
+description:            |
+                        A requirement names what implements it by the
+                        same relation a case names the function that
+                        automates it, and the projection followed it
+                        for both. Twenty three of twenty four pairs
+                        carried two source sections and the longest
+                        was 37468 characters.
+
+                        Measured after the change over the twenty five
+                        pairs the eval selects: none carries two
+                        source sections, and the longest is 4758
+                        characters. The pair for
+                        req_executor_honours_budget shows the test
+                        function and no longer shows
+                        cc_public/workflow/run.py.
+
+                        Two tests hold it: a requirement is not shown
+                        the code that implements it, and the predicate
+                        that decides admits a case and refuses a
+                        requirement.
+
+                        This changes what the judge is shown, so the
+                        control cases are re-rendered and the eval
+                        measured again before its confidence is relied
+                        on.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_coverage_judge_shown_the_implementation
+    guid_target:        ann_eccca6b5c89942a3812a06f82135f865
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          evl_test_exercises_criteria
+    guid_target:        evl_652209282f91463799ded7da18315992

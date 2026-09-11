@@ -30,6 +30,8 @@ relation:               []
 """
 
 
+import pytest
+
 import cc_public.check
 import cc_public.check.trace
 import cc_public.edit.field
@@ -232,3 +234,40 @@ def test_an_unmet_reading_is_reported_advisory_with_the_judge_and_its_rates(tree
 def test_an_unmet_reading_of_something_changed_since_is_not_reported(tree, tmp_path):
     _analysis(tree, verdict = 'unmet', digest = 'deadbeef')
     assert not [m for m in _said(tmp_path) if 'could pass while' in m]
+
+
+def test_accept_refuses_a_requirement_whose_level_wants_an_analysis(tree, tmp_path):
+    # accept promises never to admit what the checks would refuse. It
+    # read the projection without the analyses, so this gap could not
+    # fire there, and the gate went red the moment the command
+    # succeeded.
+    import cc_public.edit.accept
+    import cc_public.edit.tree
+
+    cc_public.edit.field.set_field(tree, ID_REQ, 'status', value = 'proposed')
+    _declare(tree, LEVEL_40)
+    tree = cc_public.edit.tree.Tree([tmp_path])
+
+    with pytest.raises(cc_public.edit.tree.ErrorItem) as caught:
+        cc_public.edit.accept.accept(tree, ID_REQ)
+    assert 'analysed and recorded' in str(caught.value)
+    assert cc_public.load.from_file(
+                tmp_path / 'requirement' / (ID_REQ + '.yaml'))['status'] == 'proposed'
+
+
+def test_an_analysis_stops_standing_when_the_module_around_the_test_changes(tree,
+                                                                           tmp_path):
+    # The judge is shown the surroundings as well as the definition,
+    # because verdicts turned on a constant outside it. A digest over
+    # the definition alone left a reading standing while the value its
+    # verdict rested on had changed.
+    _declare(tree, LEVEL_40)
+    (id_verifier, _) = _analysis(tree)
+    assert _gap(tmp_path) == []
+
+    location = cc_public.testing.locate(
+                        cc_public.check.context([tmp_path])[0].map_document, id_verifier)
+    location.filepath.write_text(
+            location.filepath.read_text(encoding = 'utf-8')
+            + '\n\nLIMIT_PROBE = 3\n', encoding = 'utf-8')
+    assert len(_gap(tmp_path)) == 1
