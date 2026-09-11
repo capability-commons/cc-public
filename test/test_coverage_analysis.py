@@ -106,7 +106,7 @@ def _analysis(tree, verdict = 'met', digest = None, feedback = 'Both halves are 
     id_verifier = _verifier(tree)
     tree        = cc_public.edit.tree.Tree([tree.root])
     document    = tree.context.map_document[tree.resolve(ID_REQ).location]
-    text        = cc_public.check.trace._source_of(tree.context.map_document, id_verifier)
+    (text, around) = cc_public.testing.source_of(tree.context.map_document, id_verifier)
 
     cc_public.edit.new.new(tree, 't_coverage_analysis', 'cva_probe', DEFAULTS)
     for (field, value) in (('title',      'Probe analysis'),
@@ -131,7 +131,7 @@ def _analysis(tree, verdict = 'met', digest = None, feedback = 'Both halves are 
                             'verdict':          verdict,
                             'feedback':         feedback,
                             'digest':           digest or cc_public.check.trace.digest_of(
-                                                                    document, text),
+                                                                document, text, around),
                             'time':             '2026-09-11T09:00:00Z'}})
 
     return (id_verifier, cc_public.edit.tree.Tree([tree.root]))
@@ -152,12 +152,12 @@ def _said(tmp_path):
 
 def _gap(tmp_path, path_wanted = 'verification'):
     context = cc_public.check.context([tmp_path])[0]
-    record  = [r for r in cc_public.trace.projection(
-                                context.map_document, False,
-                                cc_public.check.trace.analysed(context.map_document))
+    record  = [r for r in cc_public.trace.projection(context.map_document, False)
                  if r.id_self == ID_REQ][0]
+    found   = cc_public.check.trace.missing_analysis(
+                    record, cc_public.check.trace.analysed(context.map_document))
 
-    return [g for g in record.gap
+    return [g for g in found
               if g.path == path_wanted and 'analysed and recorded' in g.message]
 
 

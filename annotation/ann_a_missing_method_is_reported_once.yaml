@@ -1,0 +1,59 @@
+id_self:                ann_a_missing_method_is_reported_once
+guid_self:              ann_3d9429ca983648f281f27061e959da9d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A case naming no method is now reported once
+brief:                  |
+                        Fixed. r_uses_test_method declares a maximum
+                        alone, as r_instantiates does, and the testing
+                        check reports the fault.
+description:            |
+                        The relation declared a minimum and a maximum
+                        of one and testing.resolve refuses a case
+                        naming other than one method, so one fault
+                        gave two critical findings, which
+                        ddr_relation_cardinality forbids in the same
+                        paragraph that gives r_instantiates a maximum
+                        alone for exactly this reason.
+
+                        The testing check is kept as the reporter
+                        because it says more: it names the case and
+                        the count, and it is where a case that cannot
+                        be resolved is reported anyway.
+                        test_a_case_naming_no_method_is_reported_once
+                        asserts the testing check reports and the
+                        relation check does not. The decision now
+                        names both relations and why.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_case_method_count_reported_twice
+    guid_target:        ann_fb556820b4f64695ac28315ebc89ff84
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          r_uses_test_method
+    guid_target:        r_1648a1a264024cf8b2882d377c7235d2
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.testing
+    guid_target:        pym_5cd4ce2fbead4451b4b89e7aaa321161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_relation_cardinality
+    guid_target:        ddr_7bf44fc4084c4f6980ff99a421451c24

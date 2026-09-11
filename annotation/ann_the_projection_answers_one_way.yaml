@@ -1,0 +1,54 @@
+id_self:                ann_the_projection_answers_one_way
+guid_self:              ann_757e58b664834479b4e0df75dc39b3f4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The projection now answers one way for every caller
+brief:                  |
+                        Fixed. The analysis gap is made by the trace
+                        check, which can read source, and the optional
+                        argument is gone from the projection.
+description:            |
+                        is_analysed was None where the set was absent
+                        and the gap fired only where it was False, so
+                        accept, the evidence check and the impact walk
+                        got a different answer from the check and the
+                        command, silently.
+
+                        check.trace.missing_analysis makes the gap and
+                        the three callers that want it ask for it: the
+                        check, the trace command and accept. The
+                        projection reads documents and has one
+                        behaviour. The unmet reading already lived in
+                        the check for the same reason, so the split is
+                        the one that was there, without the degrading.
+
+                        ddr_coverage_analysis says where the gap is
+                        made and why.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_projection_degrades_without_the_analysed_set
+    guid_target:        ann_cb340d7dc28140369de9f530a3cf4df6
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb

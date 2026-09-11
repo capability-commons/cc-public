@@ -1,0 +1,67 @@
+id_self:                ann_the_tree_is_walked_one_way
+guid_self:              ann_e7c0b142cc6a4ab7893baa319dce38df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The tree is now walked one way
+brief:                  |
+                        Fixed. The facts, the trace projection and the
+                        identifier check all read
+                        cc_public.item.iter_item; three walks are
+                        deleted.
+description:            |
+                        item.py said every module that needs an item
+                        by name reads it, so the tree is walked one
+                        way, while facts, trace and the identifier
+                        check each kept a walk with a different
+                        predicate: item and identifier accepted an id
+                        or a guid, facts and trace a guid alone.
+
+                        Measured before changing anything: all three
+                        walks found 1881 items on this tree, so the
+                        predicates had not diverged yet. After the
+                        change the facts are identical, 1881 items,
+                        1979 edges and 1158 containments, and the
+                        query and source tests pass.
+
+                        The tree loader walks through the identifier
+                        check, so it follows. item.py now names the
+                        four readers rather than claiming the property
+                        in the abstract.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_tree_walked_four_ways
+    guid_target:        ann_ae7280a3d0dd4c1e91bdd9c84c00dcb0
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.item
+    guid_target:        pym_7166309f54fc4dffb1b47a4d97c8a0d0
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.facts
+    guid_target:        pym_656182344c864fd28b265f23b0fe6527
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e

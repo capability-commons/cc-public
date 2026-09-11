@@ -38,6 +38,8 @@ relation:               []
 
 import typing
 
+import cc_public.item
+
 
 KEY_ID_SELF       = 'id_self'
 KEY_GUID_SELF     = 'guid_self'
@@ -127,11 +129,10 @@ class Requirement(typing.NamedTuple):
     the criticality register, never from this module.
 
     demands_analysis says the same of the objective that a
-    requirement's coverage be analysed and recorded. is_analysed says
-    whether a current analysis of it exists, and is None where the
-    caller did not say: reading an analysis means reading source,
-    which this module cannot, so the caller that can supplies the
-    answer.
+    requirement's coverage be analysed and recorded. Whether one
+    exists is not said here: reading an analysis means reading source,
+    which this module cannot, so the gap for a missing analysis is
+    made by the check that can (ddr_coverage_analysis).
 
     """
 
@@ -150,7 +151,6 @@ class Requirement(typing.NamedTuple):
     shared_verdict: tuple = ()
     demands_verdict: bool = False
     demands_analysis: bool = False
-    is_analysed:     bool | None = None
     claim:          str | None = None
 
 
@@ -173,7 +173,7 @@ class Impact(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
-def projection(map_document, is_closed_world = False, set_analysed = None):
+def projection(map_document, is_closed_world = False):
     """
     Return one Requirement per requirement in the tree, in id order.
 
@@ -181,12 +181,6 @@ def projection(map_document, is_closed_world = False, set_analysed = None):
     at, so that a child or an implementation absent from it is absent
     entirely. Where it is not asserted, a leaf may have children
     elsewhere, and what a leaf lacks is advisory rather than critical.
-
-    set_analysed holds the guids of the requirements a current
-    coverage analysis names. Whether an analysis is current is decided
-    by reading source, which this module does not do, so a caller that
-    can read it says; one that does not leaves every requirement
-    unknown rather than analysed.
 
     """
 
@@ -255,8 +249,6 @@ def projection(map_document, is_closed_world = False, set_analysed = None):
                                                    OBJ_VERDICT),
                         demands_analysis = _demands(document, map_level,
                                                     OBJ_ANALYSIS),
-                        is_analysed    = None if set_analysed is None else
-                                         guid in set_analysed,
                         claim          = document.get(KEY_CLAIM))
         list_out.append(record._replace(gap = tuple(_gaps(record, is_closed_world))))
 
@@ -399,7 +391,7 @@ def changed(map_document, set_filepath):
         if location.filepath not in set_filepath or not isinstance(document, dict):
             continue
 
-        held = [item.get(KEY_GUID_SELF) for (item, _) in _iter_item(document)]
+        held = [one.guid_self for one in cc_public.item.iter_item(document)]
         set_changed.update(g for g in held if isinstance(g, str))
         guid = document.get(KEY_GUID_SELF)
         list_out.append(Changed(
@@ -570,14 +562,6 @@ def _gaps(record, is_closed_world):
                   'r_is_implemented_by edge, or a lower requirement derives '
                   'from it.')
 
-    if record.demands_analysis and record.is_analysed is False:
-        yield Gap(KEY_VERIFICATION, claimed,
-                  'Its criticality requires that the coverage of its criteria be '
-                  'analysed and recorded, and no current analysis names it. That a '
-                  'test verifies a requirement does not say the test would fail if '
-                  'what the requirement requires were untrue, and only reading the '
-                  'two together says it.')
-
     if record.verification and not record.verified_by:
         yield Gap(KEY_VERIFICATION, elsewhere,
                   'Verified by {method}, and nothing names it. A test function '
@@ -612,32 +596,15 @@ def _index(map_document):
     map_edge    = {}
 
     for document in map_document.values():
-        for (item, edges) in _iter_item(document):
+        for held in cc_public.item.iter_item(document):
+            item  = held.document
+            edges = [e for e in (item.get(KEY_RELATION) or []) if isinstance(e, dict)]
             guid = item.get(KEY_GUID_SELF)
             if isinstance(guid, str):
                 map_by_guid[guid] = item
                 map_edge[guid]    = edges
 
     return (map_by_guid, map_edge)
-
-
-# -----------------------------------------------------------------------------
-def _iter_item(node):
-    """
-    Yield (item, its edges) for every mapping declaring an identity in
-    node, outermost first.
-
-    """
-
-    if isinstance(node, dict):
-        if isinstance(node.get(KEY_GUID_SELF), str):
-            yield (node, [e for e in (node.get(KEY_RELATION) or [])
-                            if isinstance(e, dict)])
-        for value in node.values():
-            yield from _iter_item(value)
-    elif isinstance(node, list):
-        for value in node:
-            yield from _iter_item(value)
 
 
 # -----------------------------------------------------------------------------

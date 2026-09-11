@@ -158,8 +158,13 @@ def trace(list_requirement, list_source, ref, is_criticality, is_gaps_only,
         cc_public.cli.report.write_impact(list_impact, id_format)
         return
 
-    list_record = cc_public.trace.projection(map_document, is_closed_world,
-                                             cc_public.check.trace.analysed(map_document))
+    list_record  = cc_public.trace.projection(map_document, is_closed_world)
+    set_analysed = cc_public.check.trace.analysed(map_document)
+    list_record  = [record._replace(
+                        gap = tuple(record.gap)
+                              + tuple(cc_public.check.trace.missing_analysis(
+                                            record, set_analysed)))
+                    for record in list_record]
 
     if list_requirement:
         wanted = set(list_requirement)

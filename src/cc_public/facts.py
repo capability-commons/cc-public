@@ -34,6 +34,8 @@ relation:               []
 
 import typing
 
+import cc_public.item
+
 
 KEY_ID_SELF   = 'id_self'
 KEY_GUID_SELF = 'guid_self'
@@ -135,8 +137,10 @@ def facts(map_document):
     list_containment = []
 
     for (location, document) in sorted(map_document.items()):
-        for (node, guid_holder) in _iter_identified(document, None):
-            guid    = node[KEY_GUID_SELF]
+        for held in cc_public.item.iter_item(document):
+            node        = held.document
+            guid_holder = held.guid_holder
+            guid        = node[KEY_GUID_SELF]
             id_self = node.get(KEY_ID_SELF)
             list_item.append(Item(guid     = guid,
                                   id_self  = id_self,
@@ -157,23 +161,3 @@ def facts(map_document):
     return Facts(item        = tuple(list_item),
                  edge        = tuple(list_edge),
                  containment = tuple(list_containment))
-
-
-# -----------------------------------------------------------------------------
-def _iter_identified(node, guid_holder):
-    """
-    Yield (mapping, guid of the nearest identified holder) for every
-    mapping in node that declares a guid, outermost first.
-
-    """
-
-    if isinstance(node, dict):
-        guid = node.get(KEY_GUID_SELF)
-        if isinstance(guid, str):
-            yield (node, guid_holder)
-            guid_holder = guid
-        for value in node.values():
-            yield from _iter_identified(value, guid_holder)
-    elif isinstance(node, list):
-        for value in node:
-            yield from _iter_identified(value, guid_holder)

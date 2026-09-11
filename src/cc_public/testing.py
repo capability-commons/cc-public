@@ -42,6 +42,7 @@ import typing
 
 import cc_public.decision
 import cc_public.item
+import cc_public.load.python
 import cc_public.trace
 
 
@@ -53,6 +54,11 @@ KEY_TABLE       = 'table'
 KEY_FORM        = 'execution_form'
 KEY_AUTOMATED   = 'automated'
 KEY_MANUAL      = 'manual'
+KEY_RELATION    = 'relation'
+KEY_ID_REL      = 'id_relation'
+KEY_GUID_TGT    = 'guid_target'
+REL_IMPLEMENTED = 'r_is_implemented_by'
+SUFFIX_PYTHON   = '.py'
 KEY_ID_ADAPTER  = 'id_adapter'
 KEY_ID_SCHEMA   = 'id_schema_case'
 KEY_CONFIG      = 'configuration'
@@ -193,6 +199,76 @@ def locate(map_document, id_self):
     held = cc_public.item.index(map_document).by_id.get(id_self)
 
     return held.location if held is not None else None
+
+
+# -----------------------------------------------------------------------------
+def source_of(map_document, id_self):
+    """
+    Return the source of the item called id_self and the module around
+    it, or (None, None) where this tree does not hold it or it is not
+    code.
+
+    A case is not code and stands for some: it names the function that
+    automates it by r_is_implemented_by, and that function is what a
+    judge reads and what a reading is digested against. The one reader,
+    because there were two and they could disagree about what a case
+    projects to (ddr_coverage_analysis).
+
+    """
+
+    location = locate(map_document, id_self)
+
+    if location is not None and location.filepath.suffix != SUFFIX_PYTHON:
+        location = _implementing(map_document, id_self)
+
+    return source_at(location)
+
+
+# -----------------------------------------------------------------------------
+def source_at(location):
+    """
+    Return the source at location and the module around it, or
+    (None, None) where there is no python there.
+
+    The one reading, so that what a judge is shown and what a coverage
+    analysis is digested against cannot be different text. How the
+    location is found differs by caller and what is read from it does
+    not.
+
+    """
+
+    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
+        return (None, None)
+
+    whole = location.filepath.read_text(encoding = 'utf-8')
+    text  = cc_public.load.python.source_of(whole, location.anchor)
+
+    if text is None:
+        return (None, None)
+
+    return (text, cc_public.load.python.context_of(whole) if location.anchor else None)
+
+
+# -----------------------------------------------------------------------------
+def _implementing(map_document, id_self):
+    """
+    Return the location of the first source item this one names by
+    r_is_implemented_by, or None.
+
+    """
+
+    held = index(map_document).get(id_self)
+
+    if held is None:
+        return None
+
+    for edge in held.get(KEY_RELATION) or []:
+        if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENTED:
+            found = cc_public.item.index(map_document).by_guid.get(edge.get(KEY_GUID_TGT))
+            if found is not None:
+                return found.location
+
+    return None
 
 
 # -----------------------------------------------------------------------------

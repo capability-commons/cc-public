@@ -33,6 +33,7 @@ import re
 
 import cc_public.check.register
 import cc_public.check.result
+import cc_public.item
 import cc_public.path
 
 
@@ -408,29 +409,17 @@ def _matches(pattern, value):
 # -----------------------------------------------------------------------------
 def iter_identity(document, path = ''):
     """
-    Yield (path, id_self, guid_self) for each mapping declaring an identity.
+    Yield (path, id_self, guid_self) for each mapping declaring an
+    identity.
 
-    A mapping declares an identity where it holds id_self or guid_self
-    as a STRING. The string test is what keeps a schema's properties
-    block out of the reckoning: it holds keys of both those names, but
-    their values are subschemas rather than identifiers.
+    One walk, cc_public.item's, so that what the tree holds cannot
+    differ by who is asking. A mapping declares an identity where it
+    holds id_self or guid_self as a string, which is what keeps a
+    schema's properties block out of the reckoning: it holds keys of
+    both those names, whose values are subschemas rather than
+    identifiers.
 
     """
 
-    if isinstance(document, dict):
-
-        id_self   = document.get(KEY_ID_SELF)
-        guid_self = document.get(KEY_GUID_SELF)
-
-        if isinstance(id_self, str) or isinstance(guid_self, str):
-            yield (path, id_self, guid_self)
-
-        for (key, value) in document.items():
-            yield from iter_identity(
-                        value, cc_public.path.join(path, key))
-
-    elif isinstance(document, list):
-
-        for (idx, value) in enumerate(document):
-            yield from iter_identity(
-                        value, cc_public.path.join(path, idx))
+    for held in cc_public.item.iter_item(document, path = path):
+        yield (held.path, held.id_self, held.guid_self)

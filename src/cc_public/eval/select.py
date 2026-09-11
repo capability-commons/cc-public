@@ -42,6 +42,7 @@ import cc_public.check.register
 import cc_public.load.python
 import cc_public.need
 import cc_public.requirement
+import cc_public.testing
 import cc_public.check.schema
 import cc_public.path
 
@@ -572,11 +573,7 @@ def _with_source(document, location, map_location = None):
         location = _location_implementing(document, map_location) \
                    if _is_case(document) else None
 
-    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
-        return document
-
-    whole = location.filepath.read_text(encoding = 'utf-8')
-    text  = cc_public.load.python.source_of(whole, location.anchor)
+    (text, context) = cc_public.testing.source_at(location)
 
     if text is None:
         return document
@@ -585,14 +582,10 @@ def _with_source(document, location, map_location = None):
     out[KEY_SOURCE] = text
 
     # The surroundings a name in the definition refers to. Projected
-    # under its own key, so an eval that wants them asks for them: a
-    # judge given more than the criterion is about weighs everything
-    # present, which is what the scope exists to prevent.
+    # under its own key, so an eval that wants them asks for them.
     #
-    if location.anchor:
-        context = cc_public.load.python.context_of(whole)
-        if context is not None:
-            out[KEY_MODULE] = context
+    if context is not None:
+        out[KEY_MODULE] = context
 
     return out
 

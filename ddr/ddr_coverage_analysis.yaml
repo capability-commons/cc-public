@@ -56,9 +56,14 @@ decision:               |
 
                         A requirement whose declared criticality
                         requires the objective, with no current
-                        analysis naming it, is a gap in the trace
-                        projection, critical once the requirement is
-                        accepted.
+                        analysis naming it, is a gap, critical once
+                        the requirement is accepted. It is made by the
+                        trace check and not by the projection, because
+                        deciding whether an analysis is current means
+                        reading source, which the projection does not
+                        do. Everything that reads the projection gets
+                        one answer, and the three callers that want
+                        this gap ask for it.
 
                         A current reading whose verdict is unmet is
                         reported by the check and not by the

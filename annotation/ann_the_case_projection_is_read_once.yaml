@@ -1,0 +1,59 @@
+id_self:                ann_the_case_projection_is_read_once
+guid_self:              ann_9fd4b6ffcce14d0489aa696167f64fc1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The reading a case projects to is written once
+brief:                  |
+                        Fixed. testing.source_at is the one reading,
+                        and the selector and the trace check both call
+                        it; the check's own copy is gone.
+description:            |
+                        Both followed the first r_is_implemented_by
+                        edge to a python location and called
+                        source_of, so what a judge is shown and what a
+                        reading is digested against were computed
+                        twice and could diverge, which would digest
+                        text the judge did not read.
+
+                        The reading is shared and the lookup is not,
+                        because the two genuinely differ: the selector
+                        has a map of guid to location and the check
+                        has the documents. What must not diverge is
+                        what is read from a location, and that is now
+                        one function. testing.source_of follows the
+                        edge for a caller holding the documents; the
+                        selector follows it with the map it has and
+                        hands the location to the same reader.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_trace_check_reimplements_the_projection
+    guid_target:        ann_43edf7a4f00e43f9aa7c71eefd5d5157
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.eval.select
+    guid_target:        pym_43906de35249460fba113911504bc06d
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.testing
+    guid_target:        pym_839c532f346f4e67bd8abf085445003a

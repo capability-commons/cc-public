@@ -93,25 +93,6 @@ def index(map_document):
 
 
 # -----------------------------------------------------------------------------
-def _declare(node, out):
-    """
-    Put every mapping beneath node that declares a guid into out, by
-    that guid.
-
-    """
-
-    if isinstance(node, dict):
-        guid = node.get(KEY_GUID_SELF)
-        if isinstance(guid, str):
-            out[guid] = node
-        for value in node.values():
-            _declare(value, out)
-    elif isinstance(node, list):
-        for value in node:
-            _declare(value, out)
-
-
-# -----------------------------------------------------------------------------
 def stale(decision, map_guid):
     """
     Return the id of every subject of the decision whose content has

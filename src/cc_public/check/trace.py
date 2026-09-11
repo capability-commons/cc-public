@@ -123,11 +123,11 @@ def check(context):
                     if isinstance(d, dict)}
     list_bad     = []
     list_record  = cc_public.trace.projection(context.map_document,
-                                              context.is_closed_world,
-                                              analysed(context.map_document))
+                                              context.is_closed_world)
+    set_analysed = analysed(context.map_document)
 
     for record in list_record:
-        for gap in record.gap:
+        for gap in list(record.gap) + missing_analysis(record, set_analysed):
             list_bad.append(cc_public.check.result.Nonconformity(
                     filepath = str(map_location.get(record.guid_self, record.id_self)),
                     path     = gap.path,
@@ -200,11 +200,39 @@ def _rate(confidence):
 
 
 # -----------------------------------------------------------------------------
-def digest_of(document, text):
+def missing_analysis(record, set_analysed):
+    """
+    Return the gap for a requirement whose criticality requires a
+    coverage analysis and which no current analysis names.
+
+    Made here and not in the projection, because whether an analysis
+    is current is decided by reading source and the projection reads
+    documents. The projection then answers one way for every caller
+    (ddr_coverage_analysis).
+
+    """
+
+    if not record.demands_analysis or record.guid_self in set_analysed:
+        return []
+
+    return [cc_public.trace.Gap(
+                cc_public.trace.KEY_VERIFICATION,
+                cc_public.trace.SEVERITY_CRITICAL
+                if record.status == cc_public.trace.STATUS_ACCEPTED
+                else cc_public.trace.SEVERITY_ADVISORY,
+                'Its criticality requires that the coverage of its criteria be '
+                'analysed and recorded, and no current analysis names it. That a test '
+                'verifies a requirement does not say the test would fail if what the '
+                'requirement requires were untrue, and only reading the two together '
+                'says it.')]
+
+
+# -----------------------------------------------------------------------------
+def digest_of(document, text, around = None):
     """
     Return the digest a coverage analysis stamps on what it read: the
-    success criteria of the requirement and the source of the verifier
-    it was read against.
+    success criteria of the requirement, the source of the verifier it
+    was read against, and the module around that source.
 
     Narrow on purpose. A reading stops standing when what was read
     changes and not when something else the requirement depends on
@@ -213,7 +241,8 @@ def digest_of(document, text):
 
     """
 
-    held = json.dumps([str(document.get(KEY_CRITERIA) or ''), text], sort_keys = True)
+    held = json.dumps([str(document.get(KEY_CRITERIA) or ''), text, around],
+                      sort_keys = True)
 
     return hashlib.sha256(held.encode('utf-8')).hexdigest()[:LENGTH_DIGEST]
 
@@ -263,72 +292,11 @@ def _is_current(row, map_document, map_item):
 
     """
 
-    held = map_item.get(row.get(KEY_GUID_REQ))
-    text = _source_of(map_document, row.get(KEY_ID_VERIFIER))
+    held           = map_item.get(row.get(KEY_GUID_REQ))
+    (text, around) = cc_public.testing.source_of(map_document,
+                                                 row.get(KEY_ID_VERIFIER))
 
     if held is None or text is None:
         return False
 
-    return digest_of(held.document, text) == row.get(KEY_DIGEST)
-
-
-# -----------------------------------------------------------------------------
-def _source_of(map_document, id_verifier):
-    """
-    Return the source of the verifier a row names, or None where this
-    tree does not hold it or it is not code.
-
-    A case is not code and stands for some: it names the function that
-    automates it by r_is_implemented_by, and that function is what a
-    judge read. Following the edge here is the same reason the eval's
-    projection follows it, and a case whose function this tree lacks
-    is a verifier nothing can show was read.
-
-    """
-
-    location = cc_public.testing.locate(map_document, id_verifier)
-
-    if location is not None and location.filepath.suffix != SUFFIX_PYTHON:
-        location = _implementing(map_document, id_verifier)
-
-    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
-        return None
-
-    whole = location.filepath.read_text(encoding = 'utf-8')
-    text  = cc_public.load.python.source_of(whole, location.anchor)
-
-    if text is None:
-        return None
-
-    # The surroundings as well as the definition, because that is what
-    # the judge was shown. The eval names module in its scope, added
-    # because verdicts turned on a constant outside the definition, so
-    # a digest over the definition alone leaves a reading standing
-    # while the value its verdict rested on has changed.
-    #
-    context = cc_public.load.python.context_of(whole) if location.anchor else None
-
-    return text if context is None else text + SEPARATOR_CONTEXT + context
-
-
-# -----------------------------------------------------------------------------
-def _implementing(map_document, id_verifier):
-    """
-    Return the location of the first source item the verifier names by
-    r_is_implemented_by, or None.
-
-    """
-
-    held = cc_public.item.index(map_document).by_id.get(id_verifier)
-
-    if held is None:
-        return None
-
-    for edge in held.document.get(KEY_RELATION) or []:
-        if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENTED:
-            found = cc_public.item.index(map_document).by_guid.get(
-                                                            edge.get(KEY_GUID_TARGET))
-            if found is not None:
-                return found.location
-
-    return None
+    return digest_of(held.document, text, around) == row.get(KEY_DIGEST)

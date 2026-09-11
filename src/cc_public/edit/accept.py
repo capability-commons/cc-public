@@ -73,12 +73,13 @@ def accept(tree, name):
     context      = tree.context._replace(map_document    = map_document,
                                          is_closed_world = True)
 
-    list_lack = [gap.message
-                 for record in cc_public.trace.projection(
-                                    map_document, True,
-                                    cc_public.check.trace.analysed(map_document))
-                 if record.guid_self == item.guid_self
-                 for gap in record.gap]
+    set_analysed = cc_public.check.trace.analysed(map_document)
+    list_lack    = [gap.message
+                    for record in cc_public.trace.projection(map_document, True)
+                    if record.guid_self == item.guid_self
+                    for gap in list(record.gap)
+                               + cc_public.check.trace.missing_analysis(record,
+                                                                       set_analysed)]
     list_lack.extend(
         found.message
         for found in cc_public.check.evidence.check(context).list_nonconformity

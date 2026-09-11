@@ -198,3 +198,19 @@ def test_a_case_that_verifies_nothing_carrying_criteria_expects_nothing(tree):
 def test_a_case_the_tree_lacks_expects_nothing(tree):
     assert cc_public.testing.expectation(tree.context.map_document,
                                          'tc_absent') is None
+
+
+def test_a_case_naming_no_method_is_reported_once(tree, tmp_path):
+    # The relation carried a minimum of one and the testing check
+    # refuses a case naming other than one method, so one fault gave
+    # two critical findings, which ddr_relation_cardinality forbids.
+    cc_public.edit.link.unlink(tree, ID_CASE, 'r_uses_test_method', 'tm_pytest_function')
+
+    report = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    found  = [(c['id_check'], n['message'])
+              for c in report['check'] for n in c['nonconformity']
+              if ID_CASE in n['message'] or ID_CASE in n['filepath']]
+    said   = {id_check for (id_check, _) in found}
+
+    assert 'testing' in said, found
+    assert 'relation' not in said, found
