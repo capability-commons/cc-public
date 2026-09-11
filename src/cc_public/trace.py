@@ -60,6 +60,7 @@ KEY_CLAIM         = 'claim'
 
 CLAIM_EVIDENTIAL  = 'evidential'
 OBJ_VERDICT       = 'obj_verdict_per_requirement'
+OBJ_ANALYSIS      = 'obj_coverage_analysed'
 
 PREFIX_REQ        = 'req'
 SEPARATOR         = '_'
@@ -120,6 +121,13 @@ class Requirement(typing.NamedTuple):
     requires that a verdict stand for one requirement. It is read from
     the criticality register, never from this module.
 
+    demands_analysis says the same of the objective that a
+    requirement's coverage be analysed and recorded. is_analysed says
+    whether a current analysis of it exists, and is None where the
+    caller did not say: reading an analysis means reading source,
+    which this module cannot, so the caller that can supplies the
+    answer.
+
     """
 
     id_self:        str
@@ -136,6 +144,8 @@ class Requirement(typing.NamedTuple):
     gap:            tuple
     shared_verdict: tuple = ()
     demands_verdict: bool = False
+    demands_analysis: bool = False
+    is_analysed:     bool | None = None
     claim:          str | None = None
 
 
@@ -158,7 +168,7 @@ class Impact(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
-def projection(map_document, is_closed_world = False):
+def projection(map_document, is_closed_world = False, set_analysed = None):
     """
     Return one Requirement per requirement in the tree, in id order.
 
@@ -166,6 +176,12 @@ def projection(map_document, is_closed_world = False):
     at, so that a child or an implementation absent from it is absent
     entirely. Where it is not asserted, a leaf may have children
     elsewhere, and what a leaf lacks is advisory rather than critical.
+
+    set_analysed holds the guids of the requirements a current
+    coverage analysis names. Whether an analysis is current is decided
+    by reading source, which this module does not do, so a caller that
+    can read it says; one that does not leaves every requirement
+    unknown rather than analysed.
 
     """
 
@@ -232,6 +248,10 @@ def projection(map_document, is_closed_world = False):
                         shared_verdict = () if is_alone else tuple(list_shared),
                         demands_verdict = _demands(document, map_level,
                                                    OBJ_VERDICT),
+                        demands_analysis = _demands(document, map_level,
+                                                    OBJ_ANALYSIS),
+                        is_analysed    = None if set_analysed is None else
+                                         guid in set_analysed,
                         claim          = document.get(KEY_CLAIM))
         list_out.append(record._replace(gap = tuple(_gaps(record, is_closed_world))))
 
@@ -414,6 +434,14 @@ def _gaps(record, is_closed_world):
                   'requirement names the code responsible for it by an '
                   'r_is_implemented_by edge, or a lower requirement derives '
                   'from it.')
+
+    if record.demands_analysis and record.is_analysed is False:
+        yield Gap(KEY_VERIFICATION, claimed,
+                  'Its criticality requires that the coverage of its criteria be '
+                  'analysed and recorded, and no current analysis names it. That a '
+                  'test verifies a requirement does not say the test would fail if '
+                  'what the requirement requires were untrue, and only reading the '
+                  'two together says it.')
 
     if record.verification and not record.verified_by:
         yield Gap(KEY_VERIFICATION, elsewhere,

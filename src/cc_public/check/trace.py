@@ -45,17 +45,53 @@ relation:
     id_target:          obj_method_not_code
     guid_target:        obj_5c949b221e2f40e993a6aec7659a83bb
 
+  - id_relation:        r_satisfies
+    guid_relation:      r_0a4f8ded2f2c4b138bcdfbed9e83ecd4
+    id_target:          obj_coverage_analysed
+    guid_target:        obj_d4ff4410e99c40a082ffbabcf8b6d223
+
 ...
 """
 
 
+import hashlib
+import json
+
 import cc_public.check.result
+import cc_public.item
+import cc_public.load.python
+import cc_public.testing
 import cc_public.trace
+
+
+LENGTH_DIGEST = 8
 
 
 ID_CHECK  = 'trace'
 TITLE     = 'Requirements trace to what derives, implements and verifies them'
 NOUN      = 'requirement'
+
+PREFIX_ANALYSIS = 'cva'
+SEPARATOR       = '_'
+SUFFIX_PYTHON   = '.py'
+
+KEY_ID_SELF     = 'id_self'
+KEY_ANALYSIS    = 'analysis'
+KEY_CRITERIA    = 'success_criteria'
+KEY_GUID_REQ    = 'guid_requirement'
+KEY_ID_VERIFIER = 'id_verifier'
+KEY_DIGEST      = 'digest'
+KEY_VERDICT     = 'verdict'
+VERDICT_UNMET   = 'unmet'
+KEY_JUDGE       = 'judge'
+KEY_FEEDBACK    = 'feedback'
+KEY_CONFIDENCE  = 'confidence'
+KEY_FALSE_POSITIVE = 'false_positive'
+KEY_FALSE_NEGATIVE = 'false_negative'
+KEY_RELATION    = 'relation'
+KEY_ID_REL      = 'id_relation'
+KEY_GUID_TARGET = 'guid_target'
+REL_IMPLEMENTED = 'r_is_implemented_by'
 
 
 # -----------------------------------------------------------------------------
@@ -77,7 +113,8 @@ def check(context):
                     if isinstance(d, dict)}
     list_bad     = []
     list_record  = cc_public.trace.projection(context.map_document,
-                                              context.is_closed_world)
+                                              context.is_closed_world,
+                                              analysed(context.map_document))
 
     for record in list_record:
         for gap in record.gap:
@@ -87,6 +124,188 @@ def check(context):
                     severity = gap.severity,
                     message  = gap.message))
 
+    list_bad.extend(_unmet(context.map_document, map_location))
+
     return cc_public.check.result.Result(count_item         = len(list_record),
                                          list_nonconformity = list_bad,
                                          list_note          = [])
+
+
+# -----------------------------------------------------------------------------
+def _unmet(map_document, map_location):
+    """
+    Return a finding for each current analysis whose verdict is unmet.
+
+    Reported here and not among the projection's gaps, because this is
+    not something a requirement lacks. It is what a judge answered, and
+    it is advisory whatever the requirement's status or criticality,
+    since a judge is not a check. What it rests on is written beside
+    it: the judge, and the rates it was measured at.
+
+    """
+
+    map_item = cc_public.item.index(map_document).by_guid
+
+    return [cc_public.check.result.Nonconformity(
+                    filepath = str(map_location.get(row.get(KEY_GUID_REQ), '')),
+                    path     = KEY_ANALYSIS,
+                    severity = cc_public.trace.SEVERITY_ADVISORY,
+                    message  = _said(document, row))
+            for document in map_document.values() if _is_analysis(document)
+            for row in (document.get(KEY_ANALYSIS) or {}).values()
+            if isinstance(row, dict) and row.get(KEY_VERDICT) == VERDICT_UNMET
+            and _is_current(row, map_document, map_item)]
+
+
+# -----------------------------------------------------------------------------
+def _said(document, row):
+    """
+    Return what to report of one unmet reading, with what it rests on.
+
+    """
+
+    return ('{judge} read {verifier} against these criteria and found the test could '
+            'pass while something they require is untrue. {feedback} It was measured '
+            'on this eval at {rate}.'.format(
+                    judge    = document.get(KEY_JUDGE),
+                    verifier = row.get(KEY_ID_VERIFIER),
+                    feedback = (row.get(KEY_FEEDBACK) or '').strip(),
+                    rate     = _rate(document.get(KEY_CONFIDENCE))))
+
+
+# -----------------------------------------------------------------------------
+def _rate(confidence):
+    """
+    Return the rates a judge was measured at, in words, or that it was
+    never measured.
+
+    """
+
+    if not isinstance(confidence, dict):
+        return 'no measured rate at all, so nothing says how often it is wrong'
+
+    return ('a false positive rate of {fp} and a false negative rate of {fn}'.format(
+                    fp = confidence.get(KEY_FALSE_POSITIVE),
+                    fn = confidence.get(KEY_FALSE_NEGATIVE)))
+
+
+# -----------------------------------------------------------------------------
+def digest_of(document, text):
+    """
+    Return the digest a coverage analysis stamps on what it read: the
+    success criteria of the requirement and the source of the verifier
+    it was read against.
+
+    Narrow on purpose. A reading stops standing when what was read
+    changes and not when something else the requirement depends on
+    moves, since an analysis going stale for an unrelated reason
+    teaches a reader to renew it without reading it.
+
+    """
+
+    held = json.dumps([str(document.get(KEY_CRITERIA) or ''), text], sort_keys = True)
+
+    return hashlib.sha256(held.encode('utf-8')).hexdigest()[:LENGTH_DIGEST]
+
+
+# -----------------------------------------------------------------------------
+def analysed(map_document):
+    """
+    Return the guids of the requirements a current coverage analysis
+    names.
+
+    Current means the digest the row carries is the digest of what it
+    says it read, now. A row naming a verifier this tree does not hold
+    or cannot read is not current, since nothing shows what was read.
+
+    """
+
+    map_item = cc_public.item.index(map_document).by_guid
+    out      = set()
+
+    for document in map_document.values():
+
+        if not _is_analysis(document):
+            continue
+
+        for row in (document.get(KEY_ANALYSIS) or {}).values():
+            if isinstance(row, dict) and _is_current(row, map_document, map_item):
+                out.add(row.get(KEY_GUID_REQ))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _is_analysis(document):
+    """
+    Return whether document is a coverage analysis.
+
+    """
+
+    return isinstance(document, dict) \
+       and str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] == PREFIX_ANALYSIS
+
+
+# -----------------------------------------------------------------------------
+def _is_current(row, map_document, map_item):
+    """
+    Return whether one row still describes what it says it read.
+
+    """
+
+    held = map_item.get(row.get(KEY_GUID_REQ))
+    text = _source_of(map_document, row.get(KEY_ID_VERIFIER))
+
+    if held is None or text is None:
+        return False
+
+    return digest_of(held.document, text) == row.get(KEY_DIGEST)
+
+
+# -----------------------------------------------------------------------------
+def _source_of(map_document, id_verifier):
+    """
+    Return the source of the verifier a row names, or None where this
+    tree does not hold it or it is not code.
+
+    A case is not code and stands for some: it names the function that
+    automates it by r_is_implemented_by, and that function is what a
+    judge read. Following the edge here is the same reason the eval's
+    projection follows it, and a case whose function this tree lacks
+    is a verifier nothing can show was read.
+
+    """
+
+    location = cc_public.testing.locate(map_document, id_verifier)
+
+    if location is not None and location.filepath.suffix != SUFFIX_PYTHON:
+        location = _implementing(map_document, id_verifier)
+
+    if location is None or location.filepath.suffix != SUFFIX_PYTHON:
+        return None
+
+    return cc_public.load.python.source_of(
+                    location.filepath.read_text(encoding = 'utf-8'), location.anchor)
+
+
+# -----------------------------------------------------------------------------
+def _implementing(map_document, id_verifier):
+    """
+    Return the location of the first source item the verifier names by
+    r_is_implemented_by, or None.
+
+    """
+
+    held = cc_public.item.index(map_document).by_id.get(id_verifier)
+
+    if held is None:
+        return None
+
+    for edge in held.document.get(KEY_RELATION) or []:
+        if isinstance(edge, dict) and edge.get(KEY_ID_REL) == REL_IMPLEMENTED:
+            found = cc_public.item.index(map_document).by_guid.get(
+                                                            edge.get(KEY_GUID_TARGET))
+            if found is not None:
+                return found.location
+
+    return None

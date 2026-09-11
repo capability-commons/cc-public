@@ -30,6 +30,7 @@ relation:               []
 """
 
 
+import collections
 import os
 import pathlib
 import shutil
@@ -387,6 +388,29 @@ def _field(id_item, path, **kwargs):
     return break_it
 
 
+def _criticality(id_item, id_level):
+    """
+    Return a break that declares a criticality on a requirement.
+
+    Declared here, in a copy, and never on a requirement of the tool
+    itself: what a level should demand of the tool's own requirements
+    is not settled, and declaring one to exercise a check would settle
+    it by accident.
+
+    """
+
+    def break_it(dirpath):
+        import cc_public.edit.field
+        import cc_public.edit.tree
+        tree = cc_public.edit.tree.Tree([dirpath])
+        cc_public.edit.field.set_field(
+            tree, id_item, 'criticality',
+            value = {'safety': {'id_criticality':   id_level,
+                                'guid_criticality': tree.resolve(id_level).guid_self}})
+
+    return break_it
+
+
 def _edge(id_source, id_relation, id_target, is_added = True):
     """
     Return a break that adds or removes one edge.
@@ -526,6 +550,9 @@ BROKEN = [
  ('trace',       'critical', _edge('req_printer_idempotent', 'r_is_implemented_by',
                                    'pym_cc_public.layout', is_added = False),
                                                               'nothing implements it'),
+ ('trace',       'critical', _criticality('req_printer_idempotent',
+                                            'crit_safety_40'),
+                                                              'analysed and recorded'),
  ('evidence',    'critical', _no_evidence,                    'no evidence by'),
  ('confidence',  'advisory', _field('evl_test_exercises_criteria', 'criterion',
                                     prose = 'Something else entirely is asked here.'),
@@ -533,9 +560,28 @@ BROKEN = [
 ]
 
 
+def _identifier(table):
+    """
+    Return a readable pytest id per row, numbering only where a check
+    is here for more than one defect.
+
+    """
+
+    seen = collections.Counter(row[0] for row in table)
+    made = collections.Counter()
+    out  = []
+
+    for row in table:
+        made[row[0]] += 1
+        out.append(row[0] if seen[row[0]] == 1 else
+                   '{name}{n}'.format(name = row[0], n = made[row[0]]))
+
+    return out
+
+
 @pytest.mark.slow
 @pytest.mark.parametrize(('id_check', 'severity', 'break_it', 'says'), BROKEN,
-                         ids = [row[0] for row in BROKEN])
+                         ids = _identifier(BROKEN))
 def test_each_check_reports_the_defect_it_is_here_to_find(id_check, severity,
                                                           break_it, says, tmp_path):
     import cc_public.check

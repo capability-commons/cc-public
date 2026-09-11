@@ -1,0 +1,218 @@
+id_self:                sch_coverage_analysis
+guid_self:              sch_6911c78625b4480cac0df93316ca6cd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage analysis schema
+brief:                  |
+                        The shape of a coverage analysis: what a judge
+                        read of a test against the criteria of the
+                        requirement it verifies.
+description:            |
+                        One item per judge, as evidence is one item
+                        per observer. The judge and what is known
+                        about it are written once at the top; the rows
+                        are one reading each, of one requirement and
+                        the verifier that was read against it.
+
+                        A judge is not a check. The rates the judge
+                        was measured at are carried here so that a
+                        reader sees what the verdict rests on without
+                        going to look, and a row whose rates are
+                        absent says the judge was never measured.
+
+                        Each row carries a digest of what was read:
+                        the criteria and the source of the verifier,
+                        and nothing else. A reading stops standing
+                        when what it read changes and not when
+                        something else the requirement depends on
+                        moves, since an analysis that goes stale for
+                        an unrelated reason teaches a reader to renew
+                        it without reading it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_coverage_analysis.yaml
+usage:                  |
+                        Selected for coverage analysis by the type
+                        register, which maps the cva prefix to that
+                        type. Written by the tool that runs the eval
+                        and read by the trace check; never edited by
+                        hand.
+note:                   |
+                        Judged, not authored. It records what a judge
+                        answered at a time and is replaced by the next
+                        reading; history is in git.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+      - id_eval
+      - guid_eval
+      - judge
+      - time
+      - analysis
+      - relation
+
+    properties:
+
+      id_eval:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_eval:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    The eval whose criterion every row here was judged against.
+
+      judge:
+        type:           string
+        minLength:      1
+        maxLength:      120
+        description:    'The model that judged, as the eval names it: provider and model.'
+
+      confidence:
+        $ref:           '#/$defs/confidence'
+        description:    |
+                        What that judge was measured at on this eval's
+                        control cases, copied from the eval when the
+                        rows were written. Absent where the judge was
+                        never measured, which is worth seeing.
+
+      revision:
+        type:           string
+        pattern:        ^[0-9a-f]{40}$
+        description:    The commit checked out when judged, as provenance; the digests decide currency.
+
+      time:
+        type:           string
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+        description:    When the item was last written, UTC.
+
+      analysis:
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         '#/$defs/row'
+
+        description:    The rows, keyed by a digest of the requirement and the verifier.
+
+unevaluatedProperties:  false
+
+$defs:
+
+  confidence:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - false_positive
+      - false_negative
+      - unanimous
+
+    properties:
+
+      false_positive:
+
+        type:
+          - 'number'
+          - 'null'
+
+        minimum:        0
+        maximum:        1
+        description:    The share of met control cases this judge called unmet. Null where none was met.
+
+      false_negative:
+
+        type:
+          - 'number'
+          - 'null'
+
+        minimum:        0
+        maximum:        1
+        description:    The share of unmet control cases it called met. Null where none was unmet.
+
+      unanimous:
+
+        type:
+          - 'number'
+          - 'null'
+
+        minimum:        0
+        maximum:        1
+        description:    The share of control cases it answered the same way every time.
+
+      digest:
+        type:           string
+        pattern:        ^[0-9a-f]{8}$
+        description:    The digest of the eval those rates were measured against.
+
+  row:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - id_requirement
+      - guid_requirement
+      - id_verifier
+      - guid_verifier
+      - verdict
+      - digest
+      - time
+
+    properties:
+
+      id_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_requirement:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    The requirement whose criteria were read.
+
+      id_verifier:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+      guid_verifier:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        description:    The test function or case that was read against them.
+
+      verdict:
+        type:           string
+
+        enum:
+          - met
+          - unmet
+
+        description:    |
+                        Met where the test would fail if what the
+                        criteria require were untrue. Unmet where it
+                        could pass while something they require is
+                        untrue.
+
+      feedback:
+        type:           string
+        minLength:      1
+        description:    What the judge said, which for an unmet verdict says which part nothing would catch.
+
+      digest:
+        type:           string
+        pattern:        ^[0-9a-f]{8}$
+        description:    |
+                        A digest of the criteria and the source of the
+                        verifier, as they were when read. A row whose
+                        digest is not theirs now describes something
+                        that has changed.
+
+      time:
+        type:           string
+        pattern:        ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+        description:    When this reading was made, UTC.

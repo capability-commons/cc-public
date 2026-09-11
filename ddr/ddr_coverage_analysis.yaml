@@ -1,0 +1,219 @@
+id_self:                ddr_coverage_analysis
+guid_self:              ddr_78be6dbdde5e4c22802d753af1e73cee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A coverage analysis names its judge and what that judge was measured at
+brief:                  |
+                        A recorded reading of a test against the
+                        criteria it verifies, kept only while what was
+                        read is unchanged.
+context:                |
+                        obj_coverage_analysed asks that whether the
+                        verification of a requirement exercises what
+                        that requirement requires be analysed and
+                        recorded, rather than inferred from the
+                        verification existing. A requirement with a
+                        test named against it has a verifier; whether
+                        that test would fail were the requirement
+                        untrue is a different question.
+
+                        The analysis existed and the record did not.
+                        evl_test_exercises_criteria asks exactly that
+                        question and already claimed to satisfy the
+                        objective, but it ran inside a check and its
+                        verdict was reported and then forgotten.
+                        Nothing said when a requirement was last read,
+                        or what the answer had been, so the next run
+                        started from nothing.
+
+                        Levels forty and above require the objective.
+                        Level ten does not.
+decision:               |
+                        A coverage analysis is an item of its own, one
+                        per judge, as evidence is one per observer.
+                        Each row is one reading: the requirement whose
+                        criteria were read, the verifier read against
+                        them, the verdict, and what the judge said.
+
+                        The record names the judge and the rates that
+                        judge was measured at on this eval's control
+                        cases. A judge is not a check, and a verdict
+                        recorded without saying what it rests on reads
+                        like a mechanical fact. A row whose rates are
+                        absent says the judge was never measured,
+                        which is worth seeing rather than hiding.
+
+                        Each row carries a digest of what was read:
+                        the success criteria and the source of the
+                        verifier, and nothing else. A reading stops
+                        standing when either of those changes.
+
+                        A requirement whose declared criticality
+                        requires the objective, with no current
+                        analysis naming it, is a gap in the trace
+                        projection, critical once the requirement is
+                        accepted.
+
+                        A current reading whose verdict is unmet is
+                        reported by the check and not by the
+                        projection, and is advisory whatever the
+                        requirement's status or criticality. It is not
+                        something the requirement lacks; it is what a
+                        judge answered.
+
+                        A verifier that is a case rather than code is
+                        followed to the function that automates it. A
+                        case is not code and stands for some.
+
+                        No criticality is declared on a requirement of
+                        the tool itself. Every one here is declared in
+                        a copy of the tree by a test.
+rationale:              |
+                        The judge and its rates on the record, because
+                        the alternative is a reader who must go and
+                        find them, and most will not. Writing them
+                        beside the verdict makes the strength of the
+                        claim visible where the claim is.
+
+                        A narrow digest, because an analysis that goes
+                        stale for a reason unconnected to what it read
+                        teaches a reader to renew it without reading
+                        it. The broad closure would stale a reading
+                        whenever anything the requirement depends on
+                        moved, and most of those movements say nothing
+                        about whether the test still exercises the
+                        criteria.
+
+                        An unmet reading advisory always, because the
+                        judge's own measured behaviour is what it
+                        rests on, and a model that is wrong some of
+                        the time should not stop work on its own. The
+                        measured false positive rate is zero, which is
+                        why an unmet verdict is worth reporting at
+                        all; the false negative rate of 0.167 is why
+                        it is not worth blocking on.
+
+                        The gap critical once accepted, because that
+                        is what every other gap does: a proposed
+                        requirement may be incomplete while it is
+                        written, and an accepted one has claimed to be
+                        complete.
+
+                        Following a case to its function, because that
+                        is what the eval's own projection does, and
+                        for the same reason: shown the case alone, a
+                        judge reasons from prose about a test it
+                        cannot read.
+alternative:            |
+                        Record the reading in the evidence item, as
+                        another row beside the test outcomes.
+                        Rejected: evidence says the requirement is met
+                        and this says the test is adequate, which are
+                        the two questions ddr_tool_verification
+                        separated. One record answering both would
+                        make a failure ambiguous.
+
+                        Keep no record and let the eval run each time.
+                        Rejected: it is what happens now, and it is
+                        why nothing can say when a requirement was
+                        last read. The objective asks for recorded,
+                        and a verdict that is not kept was not
+                        recorded.
+
+                        Use the evidence digest over the dependency
+                        closure. Not rejected so much as deferred: it
+                        is the broader question of whether anything
+                        the requirement reaches has moved, which is
+                        worth asking separately and on its own
+                        schedule rather than folded into this one.
+
+                        Report an unmet reading as critical at a high
+                        criticality. Rejected for now: it would put a
+                        model's answer in the position of stopping
+                        work, and the rates say how often it is wrong.
+                        It becomes arguable when a judge has been
+                        measured at rates that justify it.
+
+                        Make the verdict a field on the requirement.
+                        Rejected: a requirement is authored and this
+                        is observed, and the two have different
+                        lifetimes.
+consequence:            |
+                        Nothing writes one yet. The schema, the type
+                        and the check exist and the command that runs
+                        the eval and records what it answered does
+                        not, so every analysis today is written by a
+                        test. The gap fires correctly and there is no
+                        way to close it but by hand.
+
+                        A judge measured on nine control cases stands
+                        behind every row. If the eval's criterion or
+                        its cases change, the rates on existing rows
+                        describe a judge that no longer exists, and
+                        nothing compares them.
+
+                        The narrow digest means a reading stands while
+                        the requirement's other parts move underneath
+                        it. That is the intent, and it is also a way
+                        for an analysis to look current while the
+                        thing it concluded about has been undermined
+                        elsewhere.
+
+                        Two more senses of coverage are now in play.
+                        The glossary holds criteria coverage and
+                        scenario coverage, and line coverage is a
+                        third that no term claims.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_coverage_analysis
+    guid_target:        sch_6911c78625b4480cac0df93316ca6cd2
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_criteria_coverage
+    guid_target:        term_0495a7f0683347e7b8851ea9ef6fc186
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_coverage_analysis
+    guid_target:        t_b1c5f0ebed3f413da02a75bd914d5542
+
+question:
+
+  writer:
+    id_self:            qst_coverage_analysis.writer
+    guid_self:          qst_a6cf4e824fb847d3b860b84208c4723a
+    question:           |
+                        What writes a coverage analysis, given that
+                        the eval runs inside a check today and a check
+                        writes nothing.
+    relation:           []
+
+  broad:
+    id_self:            qst_coverage_analysis.broad
+    guid_self:          qst_38062a580ff14ab2b06a98cca1189c47
+    question:           |
+                        Whether a second digest over the dependency
+                        closure belongs beside the narrow one, so that
+                        a reading can say both what it read and
+                        whether anything it did not read has moved.
+    relation:           []
+
+  rates:
+    id_self:            qst_coverage_analysis.rates
+    guid_self:          qst_eb898b68a8e947dabf3b07dc21740ed4
+    question:           |
+                        What happens to a row whose judge was measured
+                        against a version of the eval that no longer
+                        exists, given that the rates are copied onto
+                        the row and nothing compares them afterwards.
+    relation:           []

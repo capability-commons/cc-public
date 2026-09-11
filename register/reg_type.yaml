@@ -2162,3 +2162,38 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_annotation
         guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
+
+  t_coverage_analysis:
+    id_self:            t_coverage_analysis
+    guid_self:          t_b1c5f0ebed3f413da02a75bd914d5542
+    title:              Coverage analysis type
+    brief:              |
+                        Type of coverage analysis data items
+    description:        |
+                        Each coverage analysis data item holds what
+                        one judge read of the tests that verify
+                        requirements, against the criteria of those
+                        requirements: for each thing the criteria say
+                        verification must show, whether the test would
+                        fail if that thing were untrue. One item per
+                        judge, as evidence is one item per observer.
+    prefix:             cva
+    regex_id:           ^cva_[a-z][a-z0-9_]*$
+    id_term:            term_criteria_coverage
+    guid_term:          term_0495a7f0683347e7b8851ea9ef6fc186
+    usage:              |
+                        Written by the tool that runs the eval, never
+                        by hand and never edited. A requirement whose
+                        declared criticality requires
+                        obj_coverage_analysed and has no current row
+                        here is reported by the trace check. Coverage
+                        analyses live in coverage_analysis/.
+    home:               coverage_analysis
+    status:             proposed
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_coverage_analysis
+        guid_target:    sch_6911c78625b4480cac0df93316ca6cd2

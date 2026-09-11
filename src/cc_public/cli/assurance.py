@@ -38,6 +38,7 @@ import click
 
 import cc_public.check
 import cc_public.check.schema
+import cc_public.check.trace
 import cc_public.cli.group
 import cc_public.cli.report
 import cc_public.commit
@@ -157,7 +158,8 @@ def trace(list_requirement, list_source, ref, is_criticality, is_gaps_only,
         cc_public.cli.report.write_impact(list_impact, id_format)
         return
 
-    list_record = cc_public.trace.projection(map_document, is_closed_world)
+    list_record = cc_public.trace.projection(map_document, is_closed_world,
+                                             cc_public.check.trace.analysed(map_document))
 
     if list_requirement:
         wanted = set(list_requirement)
