@@ -1,0 +1,50 @@
+id_self:                ann_verify_records_harness_error_as_failure
+guid_self:              ann_964e709189af47aa90d25464035c9033
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The verify component records a harness error as a failure of the product
+brief:                  |
+                        evidence._junit maps a JUnit error element to
+                        failed, so a test whose fixture could not be
+                        made is written as failed rather than error.
+description:            |
+                        evidence.observe over the three controls in
+                        test/control_adapter.py returned failed for
+                        test_errors_in_setup and
+                        test_errors_in_teardown and skipped for
+                        test_skips. The mapping is OUTCOME_FAILED
+                        where the tags hold failure or error. The
+                        evidence outcomes include error, and the
+                        adapter control set holds that a setup error
+                        is an error and no result. The subprocess
+                        observe launches runs the conftest with
+                        neither CCTOOL_ADAPTER nor CCTOOL_PARTIAL_RUN
+                        set, so the conftest writes error first and
+                        from_pytest overwrites it.
+                        wf_implement_requirement then reports did not
+                        pass for a broken fixture as though the
+                        implementation failed, which is the conflation
+                        ddr_test_execution exists to prevent.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.workflow.component
+    guid_target:        pym_4fcb8b39bcdc4048a9a6402410525085
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

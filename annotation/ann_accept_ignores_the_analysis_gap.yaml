@@ -1,0 +1,50 @@
+id_self:                ann_accept_ignores_the_analysis_gap
+guid_self:              ann_8baa380c06d048768f6646bfabe6495b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  accept admits a requirement whose level requires an absent analysis
+brief:                  |
+                        accept calls trace.projection without the set
+                        of current analyses, so the coverage analysis
+                        gap can never fire there, while the check
+                        computes it and reports it critical once the
+                        requirement is accepted.
+description:            |
+                        In a copy, req_path_reported at safety level
+                        60 and proposed drew an advisory that its
+                        criticality requires an analysis; cctool
+                        accept printed accepted and exited 0; the next
+                        closed-world check reported one critical, the
+                        same message. Only the trace check and the
+                        trace command pass the third argument. accept
+                        promises never to admit what the checks would
+                        refuse, and the gate goes red the moment the
+                        command succeeds.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.edit.accept
+    guid_target:        pym_5613885b858f48d9b2cab64bcd46dce3
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.trace
+    guid_target:        pym_568452a1258841b5a6aacc4abd66d81f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_coverage_analysis
+    guid_target:        ddr_78be6dbdde5e4c22802d753af1e73cee
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

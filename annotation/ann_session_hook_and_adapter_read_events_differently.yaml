@@ -1,0 +1,47 @@
+id_self:                ann_session_hook_and_adapter_read_events_differently
+guid_self:              ann_70002e5a4f68441a98efb317038cd37e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The session hook and the adapter read one pytest event differently
+brief:                  |
+                        pytest_runtest_logreport in the conftest
+                        ignores the teardown phase and reads every
+                        call failure as failed, so a teardown error is
+                        recorded passed and a timeout failed, where
+                        the adapter records error and no result for
+                        both.
+description:            |
+                        Fed setup passed, call passed, teardown
+                        failed, the hook recorded passed; fed a call
+                        failure it recorded failed. The hook has
+                        branches for setup and call only. The adapter
+                        controls hold that a teardown error and a
+                        timeout are errors with no result, and
+                        _of_failed_call reads the timeout text. Two
+                        readers of one event, and the whole-session
+                        reader is the one the gate uses, so evd_pytest
+                        can hold passed for a function whose run did
+                        not complete.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.adapter.pytest_function
+    guid_target:        pym_c62e5f399bae4c6fb04593696c3d2c04
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

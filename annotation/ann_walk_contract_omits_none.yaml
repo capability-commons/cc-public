@@ -1,0 +1,39 @@
+id_self:                ann_walk_contract_omits_none
+guid_self:              ann_4239343cd51d420a9973d50124d15529
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The walk member returns None where its contract says a list
+brief:                  |
+                        The member states returns list[Step] and its
+                        obligation never mentions an unknown name,
+                        while the code returns None where the name
+                        resolves to nothing.
+description:            |
+                        db.walk with an unknown name returns None; the
+                        sibling member path documents exactly this
+                        case as list[Step] | None, so the omission is
+                        not a convention. A caller iterating the
+                        result as the contract says raises on a typo.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          icm_cc_public_query.database.walk
+    guid_target:        icm_50deab060b5c4e32b0f949ba0bd9d236
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pyf_cc_public.query.database.walk
+    guid_target:        pyf_100de10c70814fca80c132c66d1e6890
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

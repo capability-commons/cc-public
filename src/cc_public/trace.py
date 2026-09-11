@@ -25,10 +25,11 @@ description:            |
                         resolve, and its gaps with their severities,
                         which follow from its status and from whether
                         the world is closed. Computes the reverse too,
-                        the impact of a change to one item. Read by
-                        the trace check and by the trace command, so
-                        that the two cannot disagree. Prints nothing
-                        and writes nothing.
+                        the impact of a change to one item, and what
+                        rests on the files a commit changed. Read by
+                        the trace check and by the trace and changed
+                        commands, so that they cannot disagree. Prints
+                        nothing and writes nothing.
 relation:               []
 
 ...
@@ -68,6 +69,10 @@ SEPARATOR         = '_'
 REL_DERIVED       = 'r_is_derived_from'
 REL_IMPLEMENTED   = 'r_is_implemented_by'
 REL_VERIFIES      = 'r_verifies'
+REL_DECIDES       = 'r_decides'
+KEY_DEPENDENCY    = 'dependency'
+KEY_TITLE         = 'title'
+PREFIX_RELATION   = 'r'
 
 STATUS_PROPOSED   = 'proposed'
 STATUS_ACCEPTED   = 'accepted'
@@ -306,6 +311,136 @@ def impact_of_files(map_document, set_filepath, is_closed_world = False):
             list_out.append(found)
 
     return list_out
+
+
+# -----------------------------------------------------------------------------
+class Changed(typing.NamedTuple):
+    """
+    One standalone item in a file that changed: what it is, where it
+    is, how many items it holds within it, and the decisions that
+    decide it.
+
+    """
+
+    id_self:    str
+    guid_self:  str
+    prefix:     str
+    title:      str | None
+    location:   str
+    held:       int
+    decided_by: tuple
+
+
+# -----------------------------------------------------------------------------
+class Dependent(typing.NamedTuple):
+    """
+    One item outside the changed files that rests on something in them:
+    the item, the dependency edge it holds, what that edge reaches, and
+    the changed item the chain ends at.
+
+    """
+
+    id_self:     str
+    guid_self:   str
+    id_relation: str
+    id_target:   str
+    changed:     str
+
+
+# -----------------------------------------------------------------------------
+def changed(map_document, set_filepath):
+    """
+    ---
+
+    id_self:                pyf_cc_public.trace.changed
+    guid_self:              pyf_1bcd47e36f4244c0931de468dde51e3b
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  What changed and what rests on it
+    brief:                  |
+                            Return (changed, dependent): every standalone
+                            item in the files named, in location order,
+                            and every item elsewhere that rests on an item
+                            in them by a chain of dependency edges, in id
+                            order.
+
+                            Every item in a changed file is taken as
+                            possibly changed, the entries of a register
+                            alike, which is conservative where a change
+                            touched one of many. An item resting on two
+                            changed items is reported once, with the first
+                            chain that reached it.
+    description:            |
+                            Every standalone item in the files named, with
+                            the decisions that decide it, and every item
+                            elsewhere reached from one of them by a chain
+                            of dependency edges read from target to
+                            source. The reverse of the closure the
+                            evidence digest follows, over the same
+                            declarations.
+    relation:               []
+
+    ...
+    """
+
+    (map_by_guid, map_edge) = _index(map_document)
+    follow      = dependency(map_document)
+    set_changed = set()
+    list_out    = []
+
+    for (location, document) in sorted(map_document.items()):
+
+        if location.filepath not in set_filepath or not isinstance(document, dict):
+            continue
+
+        held = [item.get(KEY_GUID_SELF) for (item, _) in _iter_item(document)]
+        set_changed.update(g for g in held if isinstance(g, str))
+        guid = document.get(KEY_GUID_SELF)
+        list_out.append(Changed(
+                id_self    = document.get(KEY_ID_SELF),
+                guid_self  = guid,
+                prefix     = str(document.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0],
+                title      = document.get(KEY_TITLE),
+                location   = str(location.filepath),
+                held       = max(len(held) - 1, 0),
+                decided_by = tuple(sorted(
+                                _name(g, map_by_guid, [])
+                                for (g, edges) in map_edge.items()
+                                for e in edges
+                                if e.get(KEY_ID_REL) == REL_DECIDES
+                                and e.get(KEY_GUID_TGT) == guid))))
+
+    reverse = {}
+    for (guid, edges) in map_edge.items():
+        for e in edges:
+            if e.get(KEY_ID_REL) in follow and isinstance(e.get(KEY_GUID_TGT), str):
+                reverse.setdefault(e[KEY_GUID_TGT], []).append((guid, e[KEY_ID_REL]))
+
+    seen     = set(set_changed)
+    pending  = [(g, g) for g in sorted(set_changed,
+                                       key = lambda g: _name(g, map_by_guid, []))]
+    list_dep = []
+
+    while pending:
+        (guid, root) = pending.pop(0)
+        for (source, id_relation) in reverse.get(guid, []):
+            if source in seen:
+                continue
+            seen.add(source)
+            list_dep.append(Dependent(id_self     = _name(source, map_by_guid, []),
+                                      guid_self   = source,
+                                      id_relation = id_relation,
+                                      id_target   = _name(guid, map_by_guid, []),
+                                      changed     = _name(root, map_by_guid, [])))
+            pending.append((source, root))
+
+    return (list_out, sorted(list_dep))
 
 
 # -----------------------------------------------------------------------------
@@ -565,6 +700,31 @@ def responsibility(map_document):
 
     """
 
+    return _declaring(map_document, KEY_RESPONSIBLE)
+
+
+# -----------------------------------------------------------------------------
+def dependency(map_document):
+    """
+    Return the readable ids of every relation declaring that following
+    it reaches something the source rests on
+    (ddr_dependency_closure).
+
+    Read from the relation register, as responsibility is.
+
+    """
+
+    return _declaring(map_document, KEY_DEPENDENCY)
+
+
+# -----------------------------------------------------------------------------
+def _declaring(map_document, key):
+    """
+    Return the readable ids of every relation register entry that
+    declares key.
+
+    """
+
     out = set()
 
     for document in map_document.values():
@@ -574,8 +734,9 @@ def responsibility(map_document):
             continue
 
         for entry in document[KEY_TABLE].values():
-            if isinstance(entry, dict) and entry.get(KEY_RESPONSIBLE) \
-                    and isinstance(entry.get(KEY_ID_SELF), str):
+            if isinstance(entry, dict) and entry.get(key) \
+                    and isinstance(entry.get(KEY_ID_SELF), str) \
+                    and entry[KEY_ID_SELF].split(SEPARATOR, 1)[0] == PREFIX_RELATION:
                 out.add(entry[KEY_ID_SELF])
 
     return out

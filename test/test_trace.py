@@ -251,3 +251,75 @@ def test_a_requirement_that_names_no_method_is_asked_for_the_method_and_not_a_ca
     message = [g.message for g in by[req].gap if g.path == 'verification']
     assert any('no verification method' in m for m in message), message
     assert not any('nothing names it' in m for m in message), message
+
+
+def test_changed_lists_what_changed_and_what_rests_on_it(tree, tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_trace.test_changed_lists_what_changed_and_what_rests_on_it
+    guid_self:              pyf_02fe06fb036e4c2dbbcfd7c669d6e70f
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  The changed projection lists what changed and what rests on it
+    brief:                  |
+                            What changed and what rests on it, read from
+                            the projection over a tree of known shape.
+    description:            |
+                            Two annotations are made in a copy of the
+                            tree, one about the layout module and one
+                            challenging it; the projection over the layout
+                            file names the module with its decision, and
+                            reaches the requirement the module implements
+                            and both annotations, the second through the
+                            first, and nothing through r_verifies.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_changed_reports_dependents
+        guid_target:        req_0786a6ec0c774c57ad73b6a3c68d7f43
+
+    ...
+    """
+
+    # Two annotations: one about the layout module, one challenging it.
+    for (id_self, title, target, relation) in (
+            ('ann_layout_slow', 'The printer is slow', 'pym_cc_public.layout', 'r_is_about'),
+            ('ann_layout_cached', 'The layout is cached', 'ann_layout_slow', 'r_is_about')):
+        cc_public.edit.new.new(tree, 't_annotation', id_self, DEFAULTS)
+        cc_public.edit.field.set_field(tree, id_self, 'title', value = title)
+        cc_public.edit.field.set_field(tree, id_self, 'brief', value = title + '.')
+        cc_public.edit.link.link(tree, id_self, relation, target)
+    cc_public.edit.link.link(tree, 'ann_layout_cached', 'r_challenges', 'ann_layout_slow')
+    assert clean(tmp_path) == []
+
+    ctx  = cc_public.check.context([tmp_path])[0]
+    file = {loc.filepath for loc in ctx.map_document
+            if loc.filepath.parts[-2:] == ('cc_public', 'layout.py')}
+    (changed, dependent) = cc_public.trace.changed(ctx.map_document, file)
+
+    # The module is the one standalone item in the file, and its decision is named.
+    assert [c.id_self for c in changed] == ['pym_cc_public.layout']
+    assert changed[0].prefix == 'pym' and changed[0].decided_by == ('ddr_layout_convention',)
+
+    # What rests on it: the requirement it implements, the annotation about it,
+    # and the annotation challenging that one, each with the edge it holds and
+    # the changed item the chain ends at. r_verifies declares no dependency,
+    # so nothing is reached through it.
+    by = {d.id_self: d for d in dependent}
+    assert by['req_printer_idempotent'].id_relation == 'r_is_implemented_by'
+    assert (by['ann_layout_slow'].id_relation, by['ann_layout_slow'].id_target) \
+                == ('r_is_about', 'pym_cc_public.layout')
+    assert by['ann_layout_cached'].id_relation in ('r_is_about', 'r_challenges')
+    assert (by['ann_layout_cached'].id_target, by['ann_layout_cached'].changed) \
+                == ('ann_layout_slow', 'pym_cc_public.layout')
+    assert not any(d.id_self.startswith('pyf_test') for d in dependent)
+    assert dependent == sorted(dependent)

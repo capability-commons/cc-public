@@ -1,0 +1,50 @@
+id_self:                ann_adapter_reads_first_passing_instance
+guid_self:              ann_88294668ec974dbc859274ef4ecf3a8f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The adapter reads a parametrised function by its first passing instance
+brief:                  |
+                        The pytest adapter returns completed and
+                        passed at the first call report that passed,
+                        so a parametrised test function whose second
+                        or later instance failed is recorded as a
+                        pass.
+description:            |
+                        In _observation the loop over call reports
+                        returns at the first passed outcome before
+                        reading the next report. With
+                        test_parameterised in test/control_adapter.py
+                        changed to assert number == 1, the adapter
+                        printed completed passed while pytest on the
+                        same node printed 1 failed, 1 passed. One
+                        skipped and one passed instance read as passed
+                        by the same order, where evidence.outcome_of
+                        ranks skipped above passed.
+                        ddr_verification_evidence decides that a case
+                        with several collected instances passes only
+                        where every instance did;
+                        tc_printer_idempotent runs four hundred and
+                        ninety two.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.adapter.pytest_function
+    guid_target:        pym_c62e5f399bae4c6fb04593696c3d2c04
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          tm_pytest_function
+    guid_target:        tm_9692d3ff61ae4dc18e9036f2e7f7cc25
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

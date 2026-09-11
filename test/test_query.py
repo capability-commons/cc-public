@@ -380,6 +380,24 @@ def test_a_named_query_runs_over_the_facts(tree, tmp_path):
     assert run('query', '--root', str(tmp_path), '--sql', 'SELECT * FROM nowhere').exit_code == 2
 
 
+def test_every_named_query_runs(tree):
+    """
+    Every query item in the tree runs over its facts without error, so
+    a change to the fact tables that breaks one is found here and not
+    by the reader who next runs it.
+
+    """
+
+    map_document = tree.context.map_document
+    database     = cc_public.query.Database(map_document)
+    list_query   = sorted(name for name in tree.map_id if name.startswith('qry_'))
+    assert list_query
+    for name in list_query:
+        (columns, rows) = database.run(cc_public.query.named(map_document, name))
+        assert columns, name
+        assert isinstance(rows, list), name
+
+
 def test_a_neighbourhood_is_drawn_in_dot_and_in_mermaid(tree, tmp_path):
     """
     ---

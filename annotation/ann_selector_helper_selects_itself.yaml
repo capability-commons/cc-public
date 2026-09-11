@@ -1,0 +1,37 @@
+id_self:                ann_selector_helper_selects_itself
+guid_self:              ann_cd4fbdd6bb0b411eb9dde9470661b1e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A helper module under test/ selects itself instead of its tests
+brief:                  |
+                        is_test accepts any python file under test/,
+                        so a change to selection.py,
+                        control_adapter.py or package_smoke.py names
+                        that file as the node and never selects the
+                        module that tests it.
+description:            |
+                        Planning for a change to test/selection.py
+                        selects test/selection.py and
+                        test/test_gate_tool.py, not test_selection.py
+                        which imports it; running the plan as pytest
+                        gives 1 passed, exit 0. measure globs
+                        test_*.py, so the module disagrees with itself
+                        about what a test module is.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

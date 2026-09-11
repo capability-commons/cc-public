@@ -1,0 +1,42 @@
+id_self:                ann_package_check_control_exercises_a_predicate
+guid_self:              ann_7f2e30a0aeec4b8bba1217ff5acbd12a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The control named for the packaging check exercises a predicate
+brief:                  |
+                        test_the_packaging_smoke_tells_the_wheel_from_the_checkout
+                        asserts package_smoke.is_inside both ways and
+                        never builds, installs or runs package-check,
+                        so nothing shows that task exiting non zero,
+                        unlike every other control.
+description:            |
+                        The other controls run their tool in a
+                        subprocess: mypy, ruff, lint-imports,
+                        pytest-cov and cctool check. gt_package_check
+                        says in its blind spot nothing of stopping at
+                        the predicate. The register says the packaging
+                        tool is shown to fail when what is shown is
+                        that a path comparison can return False.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_package_check
+    guid_target:        gt_f168358a13804590b74d47fd8a701c24
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.test_gate_tool
+    guid_target:        pym_3d0d3c58d6514d829598e79a51cc1c77
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

@@ -56,6 +56,12 @@ Assurance
   every item in the files changed since a commit may affect. Reads the
   same projection (`cc_public.trace`) as the trace check. Proposed gaps are
   advisory; accepted ones critical (`ddr_implementation_trace`).
+- `changed --since REF [--format json]` — what changed and what rests on it:
+  every standalone item in the files changed since a commit, by kind, with
+  the decisions that decide it, then every item elsewhere that reaches one
+  of them by a chain of edges whose relation declares `dependency` (a
+  requirement through what implements it, a case through its method, an
+  annotation through what it is about). Where a review starts.
 - `glossary [WORD] [--gaps] [--senses] [--min N] [--format json]` — read the
   term registers. WORD returns every entry that claims it, since a word may
   name several concepts, and every entry that rejects it; with no WORD, every
@@ -89,6 +95,23 @@ Querying
   `query/`, holding SQL over the tables `item`, `edge`, `containment`) or
   SQL typed here, over facts derived from the tree on every use
   (`ddr_graph_query`). Keep a question asked twice as a `qry_` item.
+
+Reviewing
+
+A review by a model other than the one that did the work recurs, and its
+findings are items. Read `changed --since REF` for the scope, then `check`,
+`trace --gaps`, `questions --open`, `glossary --senses`, `orphans`,
+`query qry_undecided` and `query qry_decides_nothing` for what the tree can
+say mechanically, and `check --eval --changed-since REF` for what a judge
+can. Record each finding as one annotation, one assertion each: `new
+t_annotation ann_x --set title=… --set brief=… --link r_is_about SUBJECT
+--link r_is_asserted_by mdl_…`, with `description` holding the evidence and
+the consequence; the model asserting it is an entry of `register/reg_model.yaml`
+(`ddr_model_register`), and a person's annotation names none. Answer one with
+another: `r_challenges` or `r_supports`, never by editing or deleting it. What
+nothing has answered is `query qry_annotation_unanswered`; what an annotation
+is about, and what answers it, is `show ann_x`. The reviewer fixes nothing in
+what it reviews (`ddr_annotation`).
 
 Rendering
 
@@ -440,8 +463,9 @@ is `../cc-brave1-demo`.
 workflow drafted as a trial · `query/` named queries · `need/` needs · `requirement/`
 requirements · `requirement_set/` sets of them · `sweep/` what the evals found ·
 `proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas ·
+`annotation/` assertions offered for consideration, by a reviewer or anyone ·
 `register/` type, relation, mark, term, style, rule, characteristic, framing, methodology,
-document, process word, unit and test method registers · `eval/` evals and control sets ·
+document, process word, unit, test method and model registers · `eval/` evals and control sets ·
 `workflow/` components, workflows, deployments · `execution/` runs of a workflow and of a
 test · `interface/` interface control documents · `test_case/` test cases ·
 `nonconformity/` reports that were kept · `segment/` this repository's declaration of

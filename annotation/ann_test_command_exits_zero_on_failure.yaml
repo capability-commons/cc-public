@@ -1,0 +1,40 @@
+id_self:                ann_test_command_exits_zero_on_failure
+guid_self:              ann_83c3702ba31e47f78885df93a4fcbf8e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The test command exits zero whatever the conformance result
+brief:                  |
+                        cctool test exits non zero only where the case
+                        cannot be run at all; a completed execution
+                        with a failed result, or one that errored,
+                        exits zero, so a caller cannot tell pass from
+                        fail without parsing the output.
+description:            |
+                        In a copy with Database.path broken, cctool
+                        test tc_path_reported --under-test
+                        pyf_cc_public.query.database.path printed
+                        result failed and exited 0, with and without
+                        --report; a missing item exits 2. run and
+                        resume in the same module exit
+                        EXIT_NONCONFORMITY when the run stopped.
+                        test_keeping_a_report_keeps_the_execution_it_names
+                        asserts exit_code == 0 on the failing run, so
+                        the behaviour is held by a test.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.cli.running
+    guid_target:        pym_2e94fa6dd42a4d75947f283c4f4a02fa
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

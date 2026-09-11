@@ -1,0 +1,40 @@
+id_self:                ann_execution_omits_whether_the_tree_was_dirty
+guid_self:              ann_b4a02875d90745a7ae4ccc06c312d6f6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The execution does not record whether the tree was dirty
+brief:                  |
+                        ddr_test_execution asks the adapter to report
+                        whether the tree was dirty, and evidence.head
+                        already computes it, but _environment writes
+                        the revision alone.
+description:            |
+                        An execution written in a copy reads the tree
+                        was at a revision and nothing of cleanliness;
+                        sch_test_execution has no such field. A reader
+                        comparing an execution to its commit cannot
+                        tell whether the observation was of that
+                        commit or of an edited tree.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pyp_cc_public.adapter
+    guid_target:        pyp_7c214a7f7c7f4f25bc5d2ea2f6e69059
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_execution
+    guid_target:        ddr_22eda79d92534ad38110ae7c726bb1e5
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

@@ -1,0 +1,42 @@
+id_self:                ann_queries_are_run_by_nothing
+guid_self:              ann_1fef443d3a81400494b0d3e8f299beff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two named queries are run by nothing
+brief:                  |
+                        qry_objective_conformance and
+                        qry_gate_tool_control are named by no test and
+                        no source, and no check executes a query SQL,
+                        so a change to the fact tables would break
+                        them without a finding.
+description:            |
+                        Both run today; qry_objective_conformance
+                        selects by LIKE obj_% where the underscore is
+                        a wildcard, its sibling by prefix. CLAUDE.md
+                        sends a reader to qry_gate_tool_control to
+                        learn what the gate believes; the day the
+                        facts change shape that answer is an SQL error
+                        found by the reader.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          qry_objective_conformance
+    guid_target:        qry_574b263f11a1499f90072bfd709ec11d
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          qry_gate_tool_control
+    guid_target:        qry_f29eeeeea21b486b98f56d90b2cd0520
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

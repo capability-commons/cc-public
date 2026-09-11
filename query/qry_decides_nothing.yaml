@@ -1,0 +1,28 @@
+id_self:                qry_decides_nothing
+guid_self:              qry_7b247791e9e843a29bb89ec49c684cdd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decisions that decide nothing
+brief:                  |
+                        Each design decision holding no r_decides
+                        edge.
+sql:                    |
+                        SELECT i.id_self AS decision
+                          FROM item i
+                         WHERE i.prefix = 'ddr'
+                           AND i.guid NOT IN (SELECT guid_source FROM edge
+                                               WHERE id_relation = 'r_decides')
+                         ORDER BY i.id_self
+meaning:                |
+                        One decision that names what it decides in
+                        prose alone, or that argues for a policy
+                        nothing in the tree carries. qry_undecided
+                        sees the same gap from the other end, the
+                        items no decision decides.
+relation:               []

@@ -2144,10 +2144,12 @@ table:
     alias:              []
     usage:              |
                         Made by hand or by whatever is reviewing.
-                        Annotations live in annotation/. An annotation
-                        has no status: it was asserted, and what
-                        became of it is another annotation or a later
-                        item that says so.
+                        Annotations live in annotation/. A model that
+                        asserts one names itself by r_is_asserted_by;
+                        a person is named by the history. An
+                        annotation has no status: it was asserted, and
+                        what became of it is another annotation or a
+                        later item that says so.
     note:               |
                         Not a nonconformity report, which asserts an
                         observed failure against an applicable
@@ -2197,3 +2199,36 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_coverage_analysis
         guid_target:    sch_6911c78625b4480cac0df93316ca6cd2
+
+  t_model:
+    id_self:            t_model
+    guid_self:          t_a667a8ac5a7c4333bf8036725301b25b
+    title:              Model type
+    brief:              |
+                        Type of model entries held in a model
+                        register.
+    description:        |
+                        A model is a language model named as what
+                        performed, judged or asserted something. Its
+                        entries are held in reg_model, keyed by
+                        readable id, rather than in a directory.
+    prefix:             mdl
+    regex_id:           ^mdl_[a-z][a-z0-9_]*$
+    id_term:            term_language_model
+    guid_term:          term_5e2b29fa4c9b4ec0a7922ef1d806bbcf
+    usage:              |
+                        One entry per model an annotation, a
+                        deployment or a confidence row names. A person
+                        is not one: the history records who committed.
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_entry_model
+        guid_target:    sch_2e00c3c7f8414ec29caf0786f01bd1c4
+
+      - id_relation:    r_is_held_in_registry
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_model
+        guid_target:    reg_8fb29a2ee76c427ba45e381ba9478c70

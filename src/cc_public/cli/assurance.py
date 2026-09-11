@@ -176,6 +176,38 @@ def trace(list_requirement, list_source, ref, is_criticality, is_gaps_only,
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
+@click.option('--since', 'ref', required = True, metavar = 'REF',
+              help = 'A commit or a branch. What changed is every file '
+                     'changed since it, committed or not.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text', show_default = True,
+              help = 'text for a person; json for a program, in a stable order.')
+@cc_public.cli.group.OPTION_ROOT
+def changed(ref, id_format, list_root):
+    """
+    Show what changed since a commit and what rests on it: every
+    standalone item in the files changed since REF, with the decisions
+    that decide it, and every item elsewhere that reaches one of them
+    by a chain of dependency edges. Where a review starts.
+
+    Reads the tree and the history, and writes nothing.
+
+    """
+
+    tree = cc_public.cli.group.tree(list_root)
+
+    try:
+        set_filepath = cc_public.load.git.changed_since(tree.root, ref)
+    except cc_public.load.git.ErrorGit as err:
+        cc_public.cli.group.fail(err)
+
+    (list_changed, list_dependent) = cc_public.trace.changed(
+                                        tree.context.map_document, set_filepath)
+    cc_public.cli.report.write_changed(list_changed, list_dependent, id_format)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
 @click.argument('word', required = False)
 @click.option('--gaps', 'is_gaps', is_flag = True,
               help = 'The words prose uses that no glossary defines.')

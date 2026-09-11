@@ -155,6 +155,20 @@ def test_trace_says_what_the_files_changed_since_a_ref_may_affect(repo):
     assert run('trace', '--root', str(repo), '--changed-since', 'nowhere').exit_code == 2
 
 
+def test_changed_says_what_changed_since_a_ref_and_what_rests_on_it(repo):
+    path = repo / 'src' / 'cc_public' / 'layout.py'
+    path.write_text(path.read_text() + '\n# touched\n')
+    out = run('changed', '--root', str(repo), '--since', 'HEAD')
+    assert out.exit_code == 0, out.output
+    assert 'pym_cc_public.layout' in out.output and 'decided by ddr_layout_convention' in out.output
+    assert 'req_printer_idempotent' in out.output and 'r_is_implemented_by' in out.output
+    out = run('changed', '--root', str(repo), '--since', 'HEAD', '--format', 'json')
+    report = json.loads(out.output)
+    assert 'pym_cc_public.layout' in [c['id_self'] for c in report['changed']]
+    assert [d['id_self'] for d in report['dependent']] == ['req_printer_idempotent']
+    assert run('changed', '--root', str(repo), '--since', 'nowhere').exit_code == 2
+
+
 def test_measure_stale_names_the_evals_whose_confidence_is_missing_or_old(repo):
     import cc_public.eval.measure
     import cc_public.edit.field

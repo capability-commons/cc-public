@@ -1,0 +1,49 @@
+id_self:                req_changed_reports_dependents
+guid_self:              req_0786a6ec0c774c57ad73b6a3c68d7f43
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What rests on a change is reported
+entity:                 Tool
+obligation:             shall
+activity:               autonomous
+process:                report
+object:                 each Item held in a File changed since the Commit, and each Item resting on one of them by a chain of Relation_Edges declaring Dependency, with the Relation_Edge it holds
+claim:                  design
+rationale:              |
+                        A change to an item changes what every item
+                        resting on it claims, and the relations that
+                        say so declare it in the register. A reviewer
+                        reading a change wants that list before
+                        reading, not after.
+category:               function
+verification:           test
+status:                 proposed
+success_criteria:       |
+                        On a tree of known shape with one File changed
+                        since the Commit, the Items reported as
+                        changed equal the Items that File holds, and
+                        the Items reported as resting on them equal
+                        the Items reached by hand along Relation_Edges
+                        declaring Dependency, read from target to
+                        source, each with the Relation_Edge it holds
+                        and the changed Item its chain ends at.
+condition_kind:         event
+condition:              the Tool is given the Commit
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_agent_sees_reach
+    guid_target:        need_28b1a8fd2adc4af78556a44dcb901d60
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pyf_cc_public.trace.changed
+    guid_target:        pyf_1bcd47e36f4244c0931de468dde51e3b

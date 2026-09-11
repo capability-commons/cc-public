@@ -1,0 +1,45 @@
+id_self:                ann_ci_regenerates_evidence_before_reading_it
+guid_self:              ann_427df8a894334a58b304599cbfee53ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The pipeline rewrites the evidence before the check reads it
+brief:                  |
+                        The gate runs test before the closed-world
+                        check, and test rewrites the evidence item
+                        when it observes something new, so the
+                        pipeline cannot fail on committed evidence
+                        that is stale, absent or partial.
+description:            |
+                        The order and its purpose are stated in
+                        pyproject.toml and gate.yml; the conftest
+                        writes on every full session; nothing in the
+                        workflow compares the tree afterwards. cctool
+                        commit runs no tests, so a commit with stale
+                        evidence is ordinary. A green pipeline says
+                        the evidence can be current, not that the
+                        committed record is; a git diff --exit-code
+                        over evidence/ after the gate would say the
+                        second.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_cctool_check
+    guid_target:        gt_d497ae22a0b0464a9961ca8ea9866921
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_pytest
+    guid_target:        gt_8719b27a6cac41a9a45d5450546c18ff
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

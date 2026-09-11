@@ -1,0 +1,52 @@
+id_self:                sch_entry_model
+guid_self:              sch_2e00c3c7f8414ec29caf0786f01bd1c4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Model entry schema
+brief:                  |
+                        What a model entry carries beyond the shape
+                        every register entry carries.
+description:            |
+                        The name a runtime resolves the model by and
+                        the family it belongs to. Title, brief,
+                        description, alias and status come from
+                        sch_entry.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_entry_model.yaml
+usage:                  |
+                        Composed with sch_entry by sch_reg_model as
+                        the shape of every entry in the model
+                        register.
+type:                   object
+
+required:
+  - name
+  - family
+
+properties:
+
+  name:
+    type:               string
+    pattern:            ^[a-z0-9_.-]+/[A-Za-z0-9_.:-]+$
+    description:        |
+                        The name a runtime resolves the model by,
+                        spelled as dspy spells one: the provider, a
+                        slash, the model. It is the spelling the model
+                        field of a deployment and of a confidence row
+                        carry, so that the three can be joined.
+
+  family:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    description:        |
+                        The family the model belongs to: claude, gpt.
+                        A judge should not be of the family that wrote
+                        what it judges, and a reviewing model should
+                        differ in family from the one that did the
+                        work, so the family is what that rule reads.

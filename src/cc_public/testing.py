@@ -42,6 +42,7 @@ import typing
 
 import cc_public.decision
 import cc_public.item
+import cc_public.trace
 
 
 KEY_ID_SELF     = 'id_self'
@@ -63,8 +64,6 @@ REL_USES        = 'r_uses_test_method'
 REL_VERIFIES    = 'r_verifies'
 
 PREFIX_CASE     = 'tc'
-PREFIX_RELATION = 'r'
-KEY_DEPENDENCY  = 'dependency'
 SEPARATOR       = '_'
 
 
@@ -230,23 +229,12 @@ def dependency(map_document):
 
     Read from the relation register, so a relation a partner brings is
     followed by the same closure without this module knowing its name.
+    The trace projection reads it for the same reason, so one reader
+    serves both.
 
     """
 
-    out = set()
-
-    for document in map_document.values():
-
-        if not isinstance(document, dict) or not isinstance(document.get(KEY_TABLE), dict):
-            continue
-
-        for entry in document[KEY_TABLE].values():
-            if isinstance(entry, dict) and entry.get(KEY_DEPENDENCY) \
-                    and str(entry.get(KEY_ID_SELF, '')).split(SEPARATOR, 1)[0] \
-                                                                == PREFIX_RELATION:
-                out.add(entry[KEY_ID_SELF])
-
-    return frozenset(out)
+    return frozenset(cc_public.trace.dependency(map_document))
 
 
 # -----------------------------------------------------------------------------

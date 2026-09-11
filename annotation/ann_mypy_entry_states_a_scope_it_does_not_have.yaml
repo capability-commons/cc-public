@@ -1,0 +1,39 @@
+id_self:                ann_mypy_entry_states_a_scope_it_does_not_have
+guid_self:              ann_87811857e5484c07a6797bb317cbfbb9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The mypy entry confines strictness to the island and miscounts the rest
+brief:                  |
+                        files in the mypy section chooses the default
+                        target only, so every strictness flag applies
+                        to whatever mypy is pointed at, and the
+                        documented command for the whole package gives
+                        1918 errors in 79 files, not the 63 in 31 that
+                        gt_mypy and CLAUDE.md state.
+description:            |
+                        pixi run mypy passes over three files; mypy -p
+                        cc_public reports 1918 errors, among them
+                        no-untyped-call in cli/assurance.py, a strict
+                        flag firing outside the island. The 63 was
+                        measured under check_untyped_defs alone, which
+                        the configuration no longer expresses.
+                        Following the guide to size the widening job
+                        yields a number contradicting it.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_mypy
+    guid_target:        gt_4613c475e96843349236cca2a464290a
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

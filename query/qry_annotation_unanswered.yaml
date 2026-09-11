@@ -1,0 +1,33 @@
+id_self:                qry_annotation_unanswered
+guid_self:              qry_a2f5d2bc19b843babbf1e6447dea6161
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Annotations nothing has answered
+brief:                  |
+                        Each annotation that no annotation supports or
+                        challenges, with what it is about.
+sql:                    |
+                        SELECT a.id_self AS annotation,
+                               GROUP_CONCAT(s.id_target, ', ') AS about
+                          FROM item a
+                          LEFT JOIN edge s
+                            ON s.guid_source = a.guid
+                           AND s.id_relation = 'r_is_about'
+                         WHERE a.prefix = 'ann'
+                           AND a.guid NOT IN (SELECT guid_target FROM edge
+                                               WHERE id_relation IN ('r_challenges', 'r_supports'))
+                         GROUP BY a.id_self
+                         ORDER BY a.id_self
+meaning:                |
+                        One annotation nothing has answered.
+                        Unanswered is neither unread nor true: it is
+                        what a rebuttal, a supporting reading or a
+                        later item has yet to take up, and the list is
+                        where a reviewer starts.
+relation:               []

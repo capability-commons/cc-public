@@ -1,0 +1,51 @@
+id_self:                ann_evidence_digest_computed_twice
+guid_self:              ann_39c026c26ded49cc912213afac9d6aec
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The row digest and the check digest are two computations
+brief:                  |
+                        evidence.row stamps a row with the closure of
+                        the requirement, the case and every item the
+                        row names, while check.evidence recomputes it
+                        from the requirement and the case alone, so a
+                        row a governed run writes is stale the moment
+                        it is written.
+description:            |
+                        For req_named_query_run and tc_named_query_run
+                        the check digest is 64b365ca and the row
+                        digest with the item under test and the method
+                        added is dc0d7841. In a copy, cctool test
+                        tc_path_reported --under-test
+                        pyf_cc_public.query.database.path --record
+                        --evidence wrote digest 8965ceb0 naming the
+                        kept execution, and cctool check reported the
+                        evidence stale at once, because the execution
+                        enters the row closure by r_tests and never
+                        the check closure. The seven committed case
+                        rows are current only because each names an
+                        implementing function of its requirement as
+                        the item under test, which adds nothing to the
+                        closure.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.evidence
+    guid_target:        pym_88b56f85d0a243fa8981a6216238ade1
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

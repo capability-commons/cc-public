@@ -1,0 +1,46 @@
+id_self:                ann_report_holds_fields_and_no_edges
+guid_self:              ann_dfe46334cc3e48c49260d0e4023eb07f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A kept report names its execution in fields and holds no edge
+brief:                  |
+                        nonconformity.from_execution writes
+                        id_execution, id_case and id_method as fields
+                        with an empty relation list and no
+                        id_requirement, so a kept report cannot be
+                        walked to the run it came from and does not
+                        say which requirement the failure is against.
+description:            |
+                        A report written by cctool test --report in a
+                        copy carried id_execution, id_method, id_case,
+                        id_subject and relation: [], and no
+                        requirement, though the case verifies
+                        req_path_reported. cctool walk on it found one
+                        item and cctool path to its execution found no
+                        path. ddr_nonconformity_report says a report
+                        states the requirement or interface member
+                        affected, and the house rule is that a field
+                        does not carry what an edge should.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.nonconformity
+    guid_target:        pym_688cc1d43ab841ac9455a21837334a04
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_nonconformity_report
+    guid_target:        sch_69ebae5dbdc44ecf96526260ef313647
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

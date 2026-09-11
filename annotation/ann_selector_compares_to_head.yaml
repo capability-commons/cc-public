@@ -1,0 +1,43 @@
+id_self:                ann_selector_compares_to_head
+guid_self:              ann_c3dacc6b12554c06adcdb47362170612
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The default run compares to HEAD, so a committed change runs nothing
+brief:                  |
+                        changed diffs the working tree against HEAD
+                        and ignores the commit the map records, so
+                        once a change is committed test-changed says
+                        nothing has changed and exits 0 although the
+                        map predates the commit.
+description:            |
+                        The commit the map was measured at is written
+                        by _map_of and read nowhere. Against the tree,
+                        git diff from the map commit to HEAD touches
+                        trace.py, check/trace.py, cli/assurance.py and
+                        three test files, and the dry run says nothing
+                        has changed, 0 nodes would run. cctool commit
+                        runs the checks and the lint and no tests, so
+                        commit then test-changed is the ordinary loop.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_selection
+    guid_target:        ddr_217478c495ce46c69c123cc43385dfa3
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

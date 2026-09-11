@@ -1,0 +1,39 @@
+id_self:                ann_closure_tests_never_keep_an_execution
+guid_self:              ann_95c28c4a2343469986d83da70de7ba50
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The closure tests never exercise a kept execution
+brief:                  |
+                        The two evidence closure tests pass is_kept
+                        with an execution guid the tree does not hold,
+                        so the digest drops it and the assertion that
+                        the row and the check agree never meets the
+                        case where they diverge.
+description:            |
+                        _execution uses a guid of zeros and
+                        check.evidence.digest keeps only guids in the
+                        index; a real kept execution in a copy made
+                        the check report stale at once, which no test
+                        in the file sees, and the command test runs
+                        the command without running the check
+                        afterwards. The one path the decisions call
+                        the governed run is the path the tests do not
+                        cover.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.test_evidence_closure
+    guid_target:        pym_a5d3f81c604b47e2b9c7e0f2a6d1483b
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

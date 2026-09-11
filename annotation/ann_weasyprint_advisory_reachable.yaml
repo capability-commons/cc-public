@@ -1,0 +1,38 @@
+id_self:                ann_weasyprint_advisory_reachable
+guid_self:              ann_633700ae1c1d406db2f3ba6bfc213941
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The audit finds a fixable advisory the environment record says cannot exist
+brief:                  |
+                        pip-audit reports two packages: diskcache with
+                        no fix, and weasyprint 69.0 with a fix at 70.0
+                        that both pins exclude, while
+                        ddr_environment_shape says the one dependency
+                        finding lives in the model stack and is
+                        unreachable, and its own context says the
+                        suite loads weasyprint.
+description:            |
+                        The pins are weasyprint>=69,<70 in the render
+                        extra and >=69.0,<70 in the pixi dependencies;
+                        Dependabot watches github-actions only; the
+                        triage the record says is recorded is in the
+                        record alone. The report-only audit tells
+                        nobody.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_environment_shape
+    guid_target:        ddr_5d37c9605744492085deb2d97224f97d
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

@@ -1,0 +1,48 @@
+id_self:                ann_selector_never_selects_a_test_module_it_has_not_seen
+guid_self:              ann_43304cddcad440f4b7b89d94884488d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test module the map has never seen is never selected
+brief:                  |
+                        Every rule in the selector reads the map, so a
+                        test module committed after the map was
+                        measured is invisible to all of them, and a
+                        change to a source module it exercises selects
+                        the map tests, runs green, and never runs it.
+description:            |
+                        The map records commit 7096f62;
+                        test_coverage_analysis.py was added at
+                        61a532b, has no data file under
+                        .test_map_data, and calls trace.projection.
+                        Planning for a change to trace.py selects 152
+                        of 818 tests across twenty-seven modules and
+                        not that one. The never-seen rule exists for a
+                        source module and not for a test module on
+                        disk absent from the map, which measure
+                        already globs. ddr_test_selection says the
+                        only guard is that a module it has never seen
+                        runs everything, which is true of source
+                        alone.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.selection
+    guid_target:        pym_fac41954e3584c49b9a1d51d51e64910
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_selection
+    guid_target:        ddr_217478c495ce46c69c123cc43385dfa3
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

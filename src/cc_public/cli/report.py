@@ -365,6 +365,46 @@ def write_impact(list_impact, id_format):
 
 
 # -----------------------------------------------------------------------------
+def write_changed(list_changed, list_dependent, id_format):
+    """
+    Write what changed, by kind, and what rests on it, as text or as
+    json.
+
+    """
+
+    if id_format == 'json':
+        click.echo(json.dumps({'changed':   [c._asdict() for c in list_changed],
+                               'dependent': [d._asdict() for d in list_dependent]},
+                              indent = 2))
+        return
+
+    by_prefix = {}
+    for c in list_changed:
+        by_prefix.setdefault(c.prefix, []).append(c)
+
+    for (prefix, items) in sorted(by_prefix.items()):
+        click.echo('{prefix}  ({n})'.format(prefix = prefix, n = len(items)))
+        for c in items:
+            click.echo('    {id:44} {title}{held}'.format(
+                            id = c.id_self, title = c.title or '',
+                            held = '  [holds {n}]'.format(n = c.held) if c.held else ''))
+            if c.decided_by:
+                click.echo('    {pad:44} decided by {d}'.format(
+                                pad = '', d = ', '.join(c.decided_by)))
+
+    if list_dependent:
+        click.echo('rests on what changed  ({n})'.format(n = len(list_dependent)))
+        for d in list_dependent:
+            click.echo('    {id:44} {rel:22} {target}{via}'.format(
+                            id = d.id_self, rel = d.id_relation, target = d.id_target,
+                            via = ('' if d.changed == d.id_target
+                                   else '  (through to {c})'.format(c = d.changed))))
+
+    click.echo('{n} item(s) changed, {m} resting on them.'.format(
+                    n = len(list_changed), m = len(list_dependent)))
+
+
+# -----------------------------------------------------------------------------
 def plain_record(record):
     """
     Return a projection record as plain data, gaps included.

@@ -1,0 +1,55 @@
+id_self:                ann_case_method_count_reported_twice
+guid_self:              ann_fb556820b4f64695ac28315ebc89ff84
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A case with zero or two methods is reported by two checks
+brief:                  |
+                        r_uses_test_method declares a minimum and a
+                        maximum of one and testing.resolve refuses a
+                        case naming other than one method, so one
+                        fault gives two critical findings, which
+                        ddr_relation_cardinality forbids.
+description:            |
+                        Unlinking the method from tc_named_query_run
+                        in a copy gave a relation finding, holds 0
+                        r_uses_test_method edges, and a testing
+                        finding, names 0 test methods; a second method
+                        gave both again. The decision says one fault
+                        is not reported twice and gives r_instantiates
+                        a maximum alone because the workflow check
+                        already reports the missing component; the
+                        case it names as the reason for the property
+                        is the one that breaks its rule.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          r_uses_test_method
+    guid_target:        r_1648a1a264024cf8b2882d377c7235d2
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.testing
+    guid_target:        pym_5cd4ce2fbead4451b4b89e7aaa321161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.testing
+    guid_target:        pym_839c532f346f4e67bd8abf085445003a
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_relation_cardinality
+    guid_target:        ddr_7bf44fc4084c4f6980ff99a421451c24
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35

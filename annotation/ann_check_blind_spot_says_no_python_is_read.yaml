@@ -1,0 +1,48 @@
+id_self:                ann_check_blind_spot_says_no_python_is_read
+guid_self:              ann_414280e8f756406e90af2c2cae666379
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The repository check entry says it reads no python, and two checks read source
+brief:                  |
+                        gt_cctool_check says the check does not read
+                        python beyond the documents held in
+                        docstrings, while the evidence check reads the
+                        code of each test function and implementation
+                        to digest it and the trace check reads a
+                        verifier source to decide whether an analysis
+                        is current.
+description:            |
+                        check/evidence.py calls code_of over the file
+                        text; check/trace.py calls source_of. The one
+                        field ddr_gate_tool makes mandatory
+                        understates what the tool sees, so a reader
+                        cannot learn from the register what a source
+                        edit stales.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_cctool_check
+    guid_target:        gt_d497ae22a0b0464a9961ca8ea9866921
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.evidence
+    guid_target:        pym_88b56f85d0a243fa8981a6216238ade1
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.check.trace
+    guid_target:        pym_0a9202d4cae34168a6520c00d544ebcb
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_fable_5_1
+    guid_target:        mdl_9f41f4aadcab4684909870bfda32dd35
