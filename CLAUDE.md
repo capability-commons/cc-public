@@ -257,7 +257,7 @@ Thresholds, and why they are where they are
 
 | | value | why |
 |---|---|---|
-| Coverage floor | 87, branch-aware | the measured 87.12 rounded down. **0.12 of a point of headroom**: about thirteen statements or branch exits |
+| Coverage floor | 87, branch-aware | 87.12 rounded down when set; three runs on 2026-09-11 measured 88.03 to 88.08, so **about a point of headroom** today. Held at 87 on one day's measurement; raise it when a week agrees |
 | Changed-line coverage | 90, reporting only | conservative, with no observation behind it yet |
 | Test timeout | 600 s | a hang guard, not a budget; the slowest test measured 175 s |
 | CI job timeout | 45 min | roughly three times the measured local gate |

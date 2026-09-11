@@ -1,0 +1,175 @@
+id_self:                ddr_eval_concurrency
+guid_self:              ddr_9bb1909d9e6b42778d8b5930db1bc65e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Several judgements may be in flight at once, and how many is measured
+brief:                  |
+                        A judged run waits on the model and not on the
+                        tree, so what shortens it is the number of
+                        judgements in flight, and that number is found
+                        by trying rather than declared.
+context:                |
+                        A run of one eval over the items changed since
+                        a baseline selects six hundred and eighty two
+                        of them, and over the whole tree nine hundred
+                        and ninety eight. The driver is a loop that
+                        asks the judge about one task and waits for
+                        the answer before asking about the next.
+
+                        In ten minutes of one such run the process
+                        used eighteen seconds of processor. It is
+                        waiting on the model for effectively the whole
+                        run. The fixed cost of the invocation around
+                        it, loading the tree and running the
+                        mechanical checks, is seven seconds whatever
+                        the judge is asked.
+
+                        Nothing in the tool mentions rate limits,
+                        concurrency or parallelism: not the code, not
+                        a comment, not a record. The loop is
+                        sequential because that is how it was written,
+                        and no alternative was weighed. The client
+                        beneath it retries a refused request three
+                        times.
+decision:               |
+                        The driver may have several judgements in
+                        flight at once, bounded by a worker count.
+                        Nothing else about a judgement changes: one
+                        item to a request, at the temperature the
+                        runner already sets.
+
+                        Judging is separated from the bookkeeping
+                        around it. Three things in the loop depend on
+                        the order tasks arrive in: a note said once
+                        per eval, a lazily built map of the cases a
+                        person has judged by hand, and the findings as
+                        they are appended. Those run afterwards, in
+                        order, over the verdicts collected, so a
+                        report reads the same however many workers
+                        ran.
+
+                        The worker count is a setting with a
+                        conservative default. What number an account
+                        admits is not a property of this tree, so it
+                        is found by measurement and not declared here.
+
+                        Confirmation is five fresh judgements of one
+                        task and runs on the same pool. It is the
+                        larger half of the cost of an adverse verdict.
+
+                        Not built. It is recorded so that the
+                        reasoning is not lost and so that
+                        ddr_eval_schedule has somewhere to point when
+                        it prices a run.
+rationale:              |
+                        A bounded pool rather than none, because the
+                        limit belongs to the account and is not known
+                        here. A run refused for asking too often pays
+                        for its time twice, once in the wait and once
+                        in the retry.
+
+                        The bookkeeping kept sequential rather than
+                        locked, because it is cheap beside a judgement
+                        and because a report whose order depends on
+                        how many workers ran cannot be compared with
+                        yesterday's.
+
+                        One item to a request, because a judge shown
+                        many items judges each of them worse, and
+                        every confidence row on every eval was
+                        measured one item at a time. Widening the
+                        request would leave those rows measuring
+                        something the judge is no longer asked.
+
+                        A number found by measurement rather than
+                        written down, for the reason
+                        ddr_eval_measurement gives about judges: what
+                        a thing does here is observed, and a figure
+                        asserted without observation is worth nothing.
+alternative:            |
+                        Leave the loop sequential. Rejected: a run
+                        long enough to be inconvenient is a run made
+                        rarely, and how often a run is worth its cost
+                        is the question ddr_eval_schedule exists to
+                        answer. Time is one of the two terms in it.
+
+                        One process per eval, run side by side.
+                        Rejected: each pays the seven seconds of
+                        loading the tree and running the checks, and
+                        the evals differ enough in size that the
+                        longest still sets the wall clock.
+
+                        Put many items in one request and ask for many
+                        verdicts. Rejected: it is a different question
+                        to the judge, and the measured confidence of
+                        every eval is against the question as it is
+                        asked today.
+
+                        Build the pool out of the model client's own
+                        parallel machinery rather than a pool of the
+                        tool's own. Not rejected: which library holds
+                        the threads is not a decision, and whichever
+                        is used must leave the bookkeeping sequential.
+consequence:            |
+                        How long a run takes stops being a property of
+                        the tree and becomes a property of the pool.
+                        The cost question ddr_eval_schedule asks then
+                        needs two numbers, what a run costs and how
+                        long it takes at a given width, and only the
+                        first is independent of this.
+
+                        A judgement that fails no longer stops the run
+                        at a knowable point, since others are in
+                        flight beside it. What a run reports when one
+                        judgement fails and the rest succeed has to be
+                        decided, and today it is not.
+
+                        The judge's cache is sixteen sqlite shards and
+                        is built for more than one reader. Whether it
+                        is written on every judgement was not
+                        established: counting its rows from outside
+                        while it was being written gave a stale
+                        answer.
+
+                        Nothing is built, so a run is as long as it
+                        is, and the run that prompted this record was
+                        still going when the record was written.
+relation:               []
+
+question:
+
+  width:
+    id_self:            qst_eval_concurrency.width
+    guid_self:          qst_5eac015289124e0d9430b5482137a8f2
+    question:           |
+                        How many judgements at once an account admits,
+                        which is a fact about the account and not
+                        about the tree, and which nothing here
+                        measures.
+    relation:           []
+
+  partial:
+    id_self:            qst_eval_concurrency.partial
+    guid_self:          qst_3126a545871840c4b87b75d29f771e45
+    question:           |
+                        What a run reports when one judgement fails
+                        and the others succeed, given that a
+                        sequential run stops at a point a reader can
+                        name and a pool does not.
+    relation:           []
+
+  latency:
+    id_self:            qst_eval_concurrency.latency
+    guid_self:          qst_b9de0af72cec4ce18a8a5ed1f37fda26
+    question:           |
+                        What one judgement costs in time and in
+                        tokens, which decides whether a pool is worth
+                        building at all and which this record could
+                        not measure from outside the process.
+    relation:           []
