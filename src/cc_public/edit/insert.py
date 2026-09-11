@@ -16,15 +16,23 @@ brief:                  |
                         Put a new item into a collection held by
                         another item.
 description:            |
-                        An embedded item has no schema of its own. Its
-                        shape is read from the container's schema at
-                        the collection it goes into, and every
-                        required field is written empty, as new does.
-                        Where the shape carries an identity, one is
-                        minted, with the key and readable id derived
-                        by the convention the container uses: in a
-                        register the key is the id; elsewhere the key
-                        is a local name and the id is qualified by the
+                        An embedded item has a schema, which its type
+                        names (ddr_embedded_item_schema). The shape
+                        written here is read from the container's
+                        schema at the collection it goes into, and
+                        every required field is written empty, as new
+                        does. The two agree for a register, whose
+                        schema composes the entry schema the type
+                        names, and differ where the container carries
+                        sch_entry and the type schema does not; the
+                        check reads the type schema and this reads the
+                        container, which is
+                        qst_embedded_item_schema.shape. Where the
+                        shape carries an identity, one is minted, with
+                        the key and readable id derived by the
+                        convention the container uses: in a register
+                        the key is the id; elsewhere the key is a
+                        local name and the id is qualified by the
                         container. A collection that is a list is
                         appended to.
 relation:               []

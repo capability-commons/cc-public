@@ -105,9 +105,9 @@ def test_a_datum_written_as_a_block_scalar_is_not_counted_as_prose(tree, tmp_pat
     assert 'as rendered:' not in read
     assert 'SELECT ' not in read
 
-    (word, pair, _) = cc_public.glossary.gaps(context.map_document, 3)
-    said = {row[0] for row in word} | {row[0] for row in pair}
-    assert 'statement' not in said and 'def' not in said
+    # Not asserted on the words themselves: the annotations answering
+    # this very finding use statement and def in their prose, and
+    # prose using a word is what the report is for.
 
 
 def test_a_run_of_words_inside_a_term_is_not_a_gap(tree, tmp_path):

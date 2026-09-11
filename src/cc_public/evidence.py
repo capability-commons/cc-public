@@ -107,7 +107,9 @@ RANK             = (OUTCOME_ERROR, OUTCOME_FAILED, OUTCOME_SKIPPED, OUTCOME_PASS
 PHASE_CALL       = 'call'
 
 # Set where a session runs part of the suite, read by the conftest of
-# the tree being run.
+# the tree being run. A partial session loses no row, since record
+# replaces only what it observed; what it would rewrite is the time,
+# the revision and the dirtiness of the whole item.
 #
 VARIABLE_PARTIAL = 'CCTOOL_PARTIAL_RUN'
 

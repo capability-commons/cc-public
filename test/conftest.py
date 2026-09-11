@@ -51,11 +51,11 @@ MAP_OUTCOME = {}
 
 # Set where the session is running some of the suite and not all of it:
 # a selective run, a measurement, or the verify component observing the
-# tests of one requirement. Evidence is what a whole session observed,
-# and a partial session that wrote it would drop the rows for every case
-# it did not run, leaving an evidence record that looks current and is
-# missing most of what it should hold. Named once, in cc_public.evidence,
-# since the runs that set it are there.
+# tests of one requirement. record keeps the rows a partial run did not
+# observe, so nothing is lost; what a partial run rewrites is the
+# item's time, its revision and whether the tree was dirty, so the
+# record would claim as of now for rows most of which are older. Named
+# once, in cc_public.evidence, since the runs that set it are there.
 #
 VARIABLE_PARTIAL = cc_public.evidence.VARIABLE_PARTIAL
 

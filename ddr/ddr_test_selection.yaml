@@ -67,13 +67,15 @@ decision:               |
                         limit of the signal and not a caution.
 
                         A run made by the selector writes no evidence.
-                        Evidence is what a whole session observed, and
-                        a partial session writing it would drop the
-                        rows for every case it did not run, leaving a
-                        record that looks current and holds almost
-                        nothing. The session hook already declines to
-                        write for an adapter running one node, and
-                        this is the second reason.
+                        No row is lost if it does, since the writer
+                        replaces only the rows it observed; what a
+                        partial session rewrites is the time, the
+                        revision and the dirtiness of the whole item,
+                        so the record would say as of now over rows
+                        most of which are older. The session hook
+                        already declines to write for an adapter
+                        running one node, and this is the second
+                        reason.
 
                         The map is a local cache and not an item. It
                         is not committed, so a fresh clone has none
