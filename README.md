@@ -18,12 +18,15 @@ mechanically before it is committed.
 | `concept/`       | candidate solutions to a need under a framing, each with assumptions, risks and candidate requirements |
 | `assessment/`    | feasibility assessments of concepts by a named assessor: verdict, seven rated dimensions, off-the-shelf candidates with references |
 | `schema/`        | JSON Schema for every kind of item                                           |
-| `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules, external documents, language models |
+| `register/`      | controlled vocabularies: types, relations, terms, marks, style rules, requirement rules, criticality levels, gate tools, test methods, external documents, language models |
 | `eval/`          | criteria a language model judges items against, with the control cases that measure them |
 | `workflow/`      | components, dataflow workflows and deployments                               |
 | `execution/`     | one record per workflow run, binding every port on every pass; a waiting one holds the run's state and a brief for its performer |
 | `evidence/`      | what pytest and attestations observed about each requirement, stamped with what they saw |
 | `query/`         | questions about the graph kept as SQL over its facts, with what a row means               |
+| `objective/`     | one thing a verification standard requires, in this repository's words, satisfied by whatever points at it |
+| `interface/`     | interface control documents: what a surface presents, member by member, with its obligations |
+| `test_case/`     | test cases: the item under test, the method, what it is given and what is expected of it |
 | `annotation/`    | one assertion each about something in the graph, offered for consideration: a review finding, a rebuttal, a defence; answered by another annotation, never settled |
 | `segment/`       | this repository declaring itself, and what it consumes                        |
 | `src/cc_public/` | `cctool`, which checks, edits, runs and commits                              |

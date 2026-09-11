@@ -262,14 +262,17 @@ consequence:            |
 
                         Schema validation can enforce shapes, required
                         fields and surface discrimination. Companion
-                        checks will be needed for facts JSON Schema
-                        cannot conveniently establish: local type
-                        references resolve, identities and keys agree,
-                        member names are unique in their language
-                        scope, modes are legal for a given language, a
-                        baselined version is not silently changed, and
-                        dataflow input, output and state roles do not
-                        conflict.
+                        checks are needed for facts JSON Schema cannot
+                        conveniently establish. check/interface holds
+                        four of them: a local type reference resolves,
+                        an identity ends with the key it sits under
+                        and is qualified by its document, two members
+                        of one table do not share a name, and a mode
+                        is legal for the language. Three are not held:
+                        a name unique across a language scope rather
+                        than within one table, a baselined version not
+                        silently changed, and dataflow roles that do
+                        not conflict.
 
                         No automatic relation exists merely because an
                         ICD member resembles a Python source item or a
@@ -326,7 +329,9 @@ question:
     question:           |
                         What tells a reader that a baselined interface
                         control document has changed since it was
-                        baselined. The other facts a check establishes
-                        rather than the schema are settled and
-                        check/interface holds them.
+                        baselined, what holds a member name unique
+                        across a language scope rather than within one
+                        table, and what refuses a port under two
+                        dataflow roles at once. check/interface holds
+                        the other four.
     relation:           []

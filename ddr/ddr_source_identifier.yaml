@@ -60,8 +60,8 @@ rationale:              |
                         varies by type is one more rule to know. The
                         cost is that resolving an identifier back to a
                         class needs a case insensitive lookup, which
-                        nothing provides because nothing has needed
-                        it.
+                        cc_public.edit.new provides by comparing the
+                        lower cased path of each definition it walks.
 
                         The check rather than trust, because a source
                         item and the definition it documents are in
@@ -85,9 +85,13 @@ alternative:            |
                         stale.
 consequence:            |
                         Resolving a readable id back to a python class
-                        needs a case insensitive lookup. Nothing
-                        provides one, because nothing yet resolves in
-                        that direction.
+                        needs a case insensitive lookup.
+                        cc_public.edit.new walks the definitions of a
+                        file and compares their lower cased paths,
+                        which is what lets new make an item from the
+                        docstring of a class or a method. Resolving in
+                        that direction from outside a tree, with no
+                        file to walk, is the part nobody has needed.
 
                         A definition that moves takes its item with
                         it, and the source check reports the item

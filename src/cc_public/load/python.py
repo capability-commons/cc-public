@@ -17,9 +17,11 @@ brief:                  |
                         file.
 description:            |
                         A python source file is code, and also carries
-                        a data item describing itself. That item lives
-                        in the module docstring as a YAML document
-                        opened by --- and closed by three full stops.
+                        data items describing itself and its
+                        definitions. Each lives in a docstring as a
+                        YAML document opened by --- and closed by
+                        three full stops: the module's in the module
+                        docstring, a class or a function's in its own.
 
                         The file is read with the abstract syntax
                         tree. Nothing is imported.
@@ -386,9 +388,9 @@ def from_bytes(data: bytes, encoding: str | None = None) -> typing.Any:
     this system is written in anything else, and reading one would mean
     decoding twice.
 
-    The item is the document in the module docstring. Documents in the
-    docstrings of classes and functions are located by the same walk
-    and are not yet items of their own.
+    The item is the document in the module docstring. A class or a
+    function carries an item of its own in the same way, located by
+    the same walk, and iter_document yields every one of them.
 
     """
 

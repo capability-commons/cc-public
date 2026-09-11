@@ -48,14 +48,19 @@ Assurance
 
 - `questions [--open]` — what the design decisions leave open, and what
   answered it.
-- `trace [--requirement X] [--source Y] [--gaps] [--closed-world] [--format json]`
+- `trace [--requirement X] [--source Y] [--gaps] [--criticality] [--closed-world] [--format json]`
   — what each requirement derives from, what implements it
   (`r_is_implemented_by`, to a package, module, class or function), what
   verifies it (`r_verifies`) and what it lacks; `--source` shows what a
   source item implements and verifies; `--changed-since REF` shows what
   every item in the files changed since a commit may affect. Reads the
   same projection (`cc_public.trace`) as the trace check. Proposed gaps are
-  advisory; accepted ones critical (`ddr_implementation_trace`).
+  advisory; accepted ones critical (`ddr_implementation_trace`). `--criticality`
+  shows the effective level of every item a requirement reaches: only a
+  requirement declares one, and a source or data item takes the greatest
+  reaching it along the relations that declare responsibility. What a level
+  requires is `register/reg_criticality.yaml`, read by the trace check where a
+  verdict is shared and where a coverage analysis is absent (`ddr_criticality`).
 - `changed --since REF [--format json]` — what changed and what rests on it:
   every standalone item in the files changed since a commit, by kind, with
   the decisions that decide it, then every item elsewhere that reaches one
@@ -464,8 +469,10 @@ workflow drafted as a trial · `query/` named queries · `need/` needs · `requi
 requirements · `requirement_set/` sets of them · `sweep/` what the evals found ·
 `proposal/` rules proposed from it · `evidence/` observed evidence · `schema/` schemas ·
 `annotation/` assertions offered for consideration, by a reviewer or anyone ·
+`objective/` what a verification standard requires ·
 `register/` type, relation, mark, term, style, rule, characteristic, framing, methodology,
-document, process word, unit, test method and model registers · `eval/` evals and control sets ·
+document, process word, unit, criticality, gate tool, test method and model registers ·
+`eval/` evals and control sets ·
 `workflow/` components, workflows, deployments · `execution/` runs of a workflow and of a
 test · `interface/` interface control documents · `test_case/` test cases ·
 `nonconformity/` reports that were kept · `segment/` this repository's declaration of
