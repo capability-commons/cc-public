@@ -10,12 +10,12 @@ protective_mark:
 
 title:                  Layered architecture of the tool
 brief:                  |
-                        The tool is seven tiers, each importing only
-                        from the tiers below it, with the committer
-                        and the judgement package as independent
-                        siblings. A module's underscore names are its
-                        own. Both rules are enforced by the lint, so a
-                        breach refuses a commit.
+                        The tool is tiers, each importing only from
+                        the tiers below it, with the committer and the
+                        judgement package as independent siblings. A
+                        module's underscore names are its own. Both
+                        rules are enforced by the lint, so a breach
+                        refuses a commit.
 context:                |
                         A review of the foundation counted ten calls
                         from one package into another's
@@ -50,31 +50,48 @@ context:                |
                         boundary that holds only under review is no
                         boundary.
 decision:               |
-                        Seven tiers. A module imports only from tiers
-                        below its own, and siblings within a tier do
-                        not import each other.
+                        Tiers, each importing only from the tiers
+                        below it, and siblings within a tier not
+                        importing each other. The list is the layers
+                        contract in pyproject.toml and is not
+                        enumerated twice; what follows is what each is
+                        for.
 
-                        One, foundations: load, path, need, question,
-                        control and trace, pure functions over bytes
-                        and documents that import nothing else in the
-                        tool; control finds and keys control sets and
-                        cases, and trace projects what each
-                        requirement rests on. Two, layout: the
-                        printer. Three, checks: the context, the
-                        mechanical checks, the report and the refusal
-                        policy, reading only, the digests a confidence
-                        row and an evidence row carry among them.
-                        Four, edits: the tree, the writing commands,
-                        acceptance, the ledger and atomic writes.
-                        Five, three independent siblings: commit runs
-                        the checks and writes history; eval selects
-                        and renders subjects, judges, measures,
-                        admits, and holds the case command and the
-                        eval check; evidence writes what an observer
-                        found. Six, workflow: the graph, the executor
-                        and the materialiser. Seven, the command line,
-                        which composes the rest and holds no logic of
-                        its own.
+                        The item tier is the identity of a thing. The
+                        foundations above it are pure functions over
+                        bytes and documents that import nothing else
+                        in the tool: load, path, need, requirement,
+                        decision, question, control, trace and facts,
+                        where control finds and keys control sets and
+                        cases and trace projects what each requirement
+                        rests on. Then testing, which resolves a case
+                        into a runnable specification; nonconformity,
+                        which turns an execution into a report; query,
+                        the facts as a database; layout, the printer;
+                        and checks: the context, the mechanical
+                        checks, the report and the refusal policy,
+                        reading only, holding the digests a confidence
+                        row and an evidence row carry.
+
+                        Above them, edits: the tree, the writing
+                        commands, acceptance, the ledger and atomic
+                        writes. Then four independent siblings: commit
+                        runs the checks and writes history; eval
+                        selects and renders subjects, judges,
+                        measures, admits, and holds the case command
+                        and the eval check; evidence writes what an
+                        observer found; render draws a dossier. Then
+                        the adapter, which runs a case and normalises
+                        what it observed; workflow: the graph, the
+                        executor and the materialiser; and the command
+                        line, which composes the rest and holds no
+                        logic of its own.
+
+                        The contract grew from seven tiers to twelve
+                        as the tool did, by splitting what was one
+                        tier rather than by loosening the rule. The
+                        rule is the same at every tier and it is the
+                        rule that matters.
 
                         Three moves make the graph match. The eval
                         check and the judge are given to the check
@@ -104,19 +121,21 @@ decision:               |
                         Both rules are lint. Ruff's private member
                         access rule refuses an underscore name reached
                         from outside, tests exempted. import-linter
-                        holds the seven tiers as a layers contract in
-                        pyproject.toml, with commit and eval declared
-                        independent, and refuses an upward import.
+                        holds the tiers as a layers contract in
+                        pyproject.toml, which is where they are
+                        enumerated, with the independent siblings
+                        declared so, and refuses an upward import.
                         Both run in the lint task, so the gate and
                         cctool commit refuse a breach as they refuse
                         any lint finding.
 rationale:              |
-                        Seven tiers rather than four, because seven is
-                        the order the imports already have once the
-                        two cycles are cut, and grouping them into
-                        fewer would hide the one-way rule inside a
-                        group. The rule is what matters, and it is the
-                        same rule at every tier.
+                        A tier per layer of the import order rather
+                        than a few broad ones, because that order is
+                        what the imports already have once the two
+                        cycles are cut, and grouping them would hide
+                        the one-way rule inside a group. The rule is
+                        what matters, and it is the same rule at every
+                        tier.
 
                         The eval check handed in rather than imported,
                         because a check that costs money and needs a
@@ -202,9 +221,9 @@ consequence:            |
                         The cycles are cut, the graph is one way, no
                         module reaches another package's underscore
                         name, and both rules are lint: ruff's private
-                        member rule and the seven tier contract, held
-                        by import-linter from the lint extra, run in
-                        the lint task and before every commit. The
+                        member rule and the layers contract, held by
+                        import-linter from the lint extra, run in the
+                        lint task and before every commit. The
                         decision is built.
 
 question:

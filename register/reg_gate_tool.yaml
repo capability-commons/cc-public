@@ -137,8 +137,8 @@ table:
     guid_self:          gt_6925d1ac52bb4ca0b988a117d7f7eba7
     title:              Import linter
     brief:              |
-                        The seven tier layering contract: a package
-                        imports downward only.
+                        The layering contract: a package imports
+                        downward only.
     description:        |
                         One of the tools whose exit status the gate
                         believes. What is written here is what a green
@@ -163,7 +163,7 @@ table:
                         where the lower imports the upper, which is
                         the one thing a layers contract exists to
                         refuse. It does not exercise this repository
-                        own seven tier contract.
+                        own layering contract.
     status:             proposed
 
     relation:
@@ -330,12 +330,21 @@ table:
     scope:              |
                         Three modules named by files in the mypy
                         configuration: question, need and control.
-                        Every strictness flag applies to those and to
-                        nothing else. The rest of the package is
-                        unchecked by this task, and reported 63 errors
-                        in 31 of 92 files when asked, which is the
-                        size of widening the island and not a claim
-                        about it.
+                        files chooses the default target and not the
+                        reach of the flags, so every strictness flag
+                        applies to whatever mypy is pointed at, and
+                        pointing it elsewhere is pointing the whole
+                        configuration elsewhere.
+
+                        The rest of the package is unchecked by this
+                        task. mypy -p cc_public under this
+                        configuration reported 1970 errors in 79 of 92
+                        files on 2026-09-11, which is what widening
+                        the island to everything at this strictness
+                        would cost and not a claim about the code. The
+                        63 in 31 of 92 recorded before was measured
+                        under check_untyped_defs alone, which the
+                        configuration no longer expresses.
     exit_status:        |
                         Zero where the island type checks. Non zero on
                         any error in it. A zero says nothing whatever

@@ -198,13 +198,15 @@ everything else is a loop or a diagnostic.
   not committed. Do it after a change that moves what tests reach, and read
   the lines it prints about modules it could not account for.
 - `pixi run lint` — ruff over `src` and `test` in the house rule set, then
-  `lint-imports` holding the seven tiers of `ddr_layered_architecture`: a
+  `lint-imports` holding the tiers of `ddr_layered_architecture`: a
   package imports downward only, and an underscore name is its module's
   (tests excepted).
 - `pixi run type` — mypy over the typed island named by `files` in
-  `[tool.mypy]`, at full strictness. It says nothing about the other 89
-  modules. `mypy -p cc_public` reads the whole package when you want that
-  number; it was 63 errors in 31 of 92 files on 2026-09-09.
+  `[tool.mypy]`, at full strictness. `files` chooses the default target and
+  not the reach of the flags, so pointing mypy elsewhere points every flag
+  elsewhere. It says nothing about the other 89 modules. `mypy -p cc_public`
+  reads the whole package at this strictness: 1970 errors in 79 of 92 files on
+  2026-09-11.
 - `pixi run test` — pytest over `test/`, in parallel, branch-aware coverage
   against the floor. **Writes**: the evidence item, `coverage.xml` and
   `junit.xml`.

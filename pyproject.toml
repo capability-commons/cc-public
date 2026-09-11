@@ -151,11 +151,15 @@ id_mark                 = "mark_public"
 # applies to it and to nothing else, and growing the island is adding a
 # path here rather than remembering which overrides govern what.
 #
-# Measured 2026-09-09: the whole package under check_untyped_defs alone
-# reports 63 errors in 31 of 92 files, 36 of them missing annotations on
-# empty collections and 10 third-party imports without stubs. That is
-# the size of the job if the island is ever widened to everything; it is
-# not a reason to widen it today.
+# files chooses the default target, not the reach of the flags: every
+# flag below applies to whatever mypy is pointed at. Pointing it at the
+# package points the whole configuration at the package.
+#
+# Measured 2026-09-11: mypy -p cc_public under this configuration
+# reports 1970 errors in 79 of 92 files. That is the size of the job if
+# the island is ever widened to everything at this strictness; it is not
+# a reason to widen it today. An earlier figure of 63 in 31 was measured
+# under check_untyped_defs alone.
 #
 # `mypy -p cc_public` reads the whole package when someone wants that
 # number again. `pixi run type` reads the island and is what gates.
@@ -274,7 +278,7 @@ max-positional-args     = 9
 max-branches            = 10
 max-statements          = 40
 
-# Layers. The tool is seven tiers importing downward only, with the
+# Layers. The tool is tiers importing downward only, with the
 # committer and the judgement package as independent siblings, and the
 # foundations independent of one another (ddr_layered_architecture).
 # lint-imports refuses an upward import; the lint task runs it.
@@ -283,7 +287,7 @@ max-statements          = 40
 root_package            = "cc_public"
 
 [[tool.importlinter.contracts]]
-name                    = "seven tiers, importing downward only"
+name                    = "tiers, importing downward only"
 type                    = "layers"
 layers                  = ["cc_public.cli",
                            "cc_public.workflow",

@@ -75,13 +75,14 @@ decision:               |
                         push, on macOS and on Linux.
 
                         A test names the requirement it verifies by an
-                        r_verifies edge on the test module's document,
-                        which every test module carries as any item
-                        does; the relation runs from a python module
-                        to a requirement. The trace check reports, as
-                        advisory, a requirement verified by test that
-                        no test names. A function will name its own
-                        requirement when functions are items.
+                        r_verifies edge on the test function's
+                        document, which every test module carries as
+                        any item does; the relation runs from a python
+                        module to a requirement. The trace check
+                        reports, as advisory, a requirement verified
+                        by test that no test names. A function will
+                        name its own requirement when functions are
+                        items.
 
                         Verification is at function grain: each test
                         function that proves a requirement is an item
@@ -143,9 +144,11 @@ consequence:            |
 
                         Coverage is measured on every run and held to
                         a floor that ratchets as the thresholds do, 81
-                        when it was first measured and 86 now.
-                        Traceability from tests runs at function
-                        grain: a test function that proves a
+                        when it was first measured and 87 now, branch
+                        aware since 2026-09-09. The number in
+                        pyproject.toml is the floor; this record says
+                        how it moves. Traceability from tests runs at
+                        function grain: a test function that proves a
                         requirement is an item and names it, the trace
                         check reports a requirement no test names, and
                         the evidence check reports one whose last
