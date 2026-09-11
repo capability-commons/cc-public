@@ -183,6 +183,9 @@ everything else is a loop or a diagnostic.
 - `pixi run gate` — what a pipeline runs, and the only thing that decides.
   Its `depends-on` is where the order lives: lint, then type, then test, then
   the closed-world check, so the tests refresh the evidence the check reads.
+  It refreshes the rows a test function establishes and not the rows a test
+  case does: no step runs a case, so those go stale on a change to the adapter
+  or to a method and nothing observes again (`qst_verification_evidence.cases`).
   Do not name that order anywhere else. About thirteen minutes.
 - `pixi run quick` — the loop, not the judgement: lint, then the suite with
   the slow tests left out. About six minutes against the gate's thirteen. It

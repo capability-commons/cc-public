@@ -34,6 +34,7 @@ import platform
 import sys
 import uuid
 
+import cc_public.check.register
 import cc_public.check.schema
 import cc_public.edit.new
 import cc_public.decision
@@ -59,6 +60,10 @@ KEY_RESULT    = 'result'
 PREFIX_EXE    = 'tex'
 PREFIX_RESULT = 'tres'
 KEY_MAIN      = 'main'
+KEY_RANGE     = 'range'
+KEY_ID_SELF   = 'id_self'
+REL_TESTS     = 'r_tests'
+SEPARATOR     = '_'
 
 
 # -----------------------------------------------------------------------------
@@ -86,6 +91,16 @@ def execute(tree, id_case, id_under_test):
     if subject is None:
         return (None, ['No item in this tree is named {name}, so there is nothing to '
                        'observe.'.format(name = id_under_test)])
+
+    kind = _kind_of(map_document, id_under_test)
+
+    if kind not in _admitted(map_document):
+        return (None, ['{name} is a {kind}, and r_tests admits {which}. What was bound '
+                       'is what the execution records observed, so anything may be '
+                       'named and nothing would say '
+                       'otherwise.'.format(name = id_under_test, kind = kind or 'no type',
+                                           which = ', '.join(sorted(_admitted(map_document)))
+                                                   or 'nothing')])
 
     if specification.id_adapter is None:
         return (None, ['{case} names {method}, which a person carries out, so nothing '
@@ -173,6 +188,36 @@ def _document(tree, specification, id_under_test, subject, observed, started):
                               _edge(tree, 'r_tests', id_under_test)]})
 
     return document
+
+
+# -----------------------------------------------------------------------------
+def _admitted(map_document):
+    """
+    Return the types r_tests admits at its far end, read from the
+    relation register.
+
+    Read rather than listed, so that widening what may be bound is
+    editing the entry (ddr_test_execution).
+
+    """
+
+    index = cc_public.item.index(map_document).by_id.get(REL_TESTS)
+
+    return set((index.document.get(KEY_RANGE) or ()) if index else ())
+
+
+# -----------------------------------------------------------------------------
+def _kind_of(map_document, id_self):
+    """
+    Return the type of the item called id_self, by its prefix.
+
+    """
+
+    (_, document) = cc_public.check.register.find_type(map_document)
+    entry = cc_public.check.register.map_prefix(document).get(
+                                        id_self.split(SEPARATOR, 1)[0])
+
+    return entry.get(KEY_ID_SELF) if entry else None
 
 
 # -----------------------------------------------------------------------------

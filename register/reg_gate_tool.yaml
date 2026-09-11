@@ -205,7 +205,13 @@ table:
                         What was not written. It also writes: the
                         session hook rewrites the pytest evidence
                         item, so a test run is not read only and the
-                        working tree may change under it. A test that
+                        working tree may change under it. It writes
+                        the rows a test function establishes and not
+                        the rows a test case does, since a session is
+                        keyed by test function items, so a case row
+                        goes stale on a change to the adapter or to a
+                        method and no step of the gate observes again
+                        (qst_verification_evidence.cases). A test that
                         runs longer than the timeout is stopped at 600
                         seconds, which is a hang guard and not a
                         budget: a test that grows past it is marked

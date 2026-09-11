@@ -279,3 +279,21 @@ def click_run(tmp_path, name_case, name_under_test, *option):
                 cc_public.cli.group.main,
                 ['test', name_case, '--under-test', name_under_test,
                  '--root', str(tmp_path), *option])
+
+
+def test_an_item_the_relation_does_not_admit_cannot_be_bound(tmp_path):
+    # The binding was a free assertion: the runner checked only that
+    # the item existed, so a protective mark could be bound and the
+    # execution would record a passing result about it.
+    import cc_public.adapter
+    import cc_public.edit.tree
+
+    _whole(tmp_path)
+    tree = cc_public.edit.tree.Tree([tmp_path])
+
+    (document, problem) = cc_public.adapter.execute(tree, ID_CASE, 'mark_public')
+    assert document is None
+    assert 'r_tests admits' in problem[0]
+
+    (document, problem) = cc_public.adapter.execute(tree, ID_CASE, ID_UNDER)
+    assert problem == [] and document is not None

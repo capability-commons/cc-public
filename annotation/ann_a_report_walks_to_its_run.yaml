@@ -1,0 +1,59 @@
+id_self:                ann_a_report_walks_to_its_run
+guid_self:              ann_cc20e2dd01d34ea9a47bc301b7a3c987
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A kept report can now be walked to the run it came from
+brief:                  |
+                        Fixed in part. r_results_from admits a report
+                        and a test execution, and the edge is written
+                        where the execution is kept; what carries the
+                        obligation is left open.
+description:            |
+                        The report held id_execution in a field with
+                        an empty relation list, so nothing could walk
+                        from it to the run, which is the house rule
+                        that a field does not carry what an edge
+                        should.
+
+                        The edge is added only where the execution is
+                        kept, because one naming a run the tree does
+                        not hold would dangle, and a development run
+                        leaves none. A test holds both cases.
+
+                        The other half is not fixed and not rebutted.
+                        A report should say which obligation the
+                        failure is against, and r_is_about is the
+                        annotation's relation whose minimum of one
+                        would oblige every report to name a
+                        requirement, while a report from a check is
+                        against none. Inventing a relation is a
+                        decision with alternatives, so it is
+                        qst_nonconformity_report.obligation.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_report_holds_fields_and_no_edges
+    guid_target:        ann_dfe46334cc3e48c49260d0e4023eb07f
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.nonconformity
+    guid_target:        pym_688cc1d43ab841ac9455a21837334a04
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          sch_nonconformity_report
+    guid_target:        sch_69ebae5dbdc44ecf96526260ef313647
