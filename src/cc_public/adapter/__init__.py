@@ -116,7 +116,9 @@ def execute(tree, id_case, id_under_test):
                                known = ', '.join(sorted(ADAPTER)))])
 
     started  = _now()
-    observed = adapter.run(map_document, specification.configuration, tree.root)
+    observed = adapter.run(map_document, specification.configuration, tree.root,
+                           specification.second_timeout
+                           or pytest_function.SECOND_TIMEOUT)
 
     document = _document(tree, specification, id_under_test, subject, observed, started)
 
@@ -229,16 +231,16 @@ def _environment(tree, observed):
 
     """
 
-    try:
-        revision = cc_public.load.git.revision(tree.root)
-    except Exception:
-        revision = None
+    (revision, is_dirty) = cc_public.evidence.head(tree.root)
 
     return ('python {version} on {platform}. The node was {node}. The tree was at '
-            '{revision}.\n'.format(version  = platform.python_version(),
-                                   platform = sys.platform,
-                                   node     = observed.node or 'not resolved',
-                                   revision = revision or 'no revision'))
+            '{revision}, and {state}.\n'.format(
+                    version  = platform.python_version(),
+                    platform = sys.platform,
+                    node     = observed.node or 'not resolved',
+                    revision = revision or 'no revision',
+                    state    = 'something had changed since'
+                               if is_dirty else 'nothing had changed since'))
 
 
 # -----------------------------------------------------------------------------

@@ -312,7 +312,6 @@ def test_an_eval_with_no_cases_cannot_be_measured(tree, tmp_path):
         cc_public.eval.measure.measure(tree.context, ev, Scripted({}), 3)
 
 
-@pytest.mark.slow
 def test_every_control_case_holds_what_the_projection_renders_now():
     # A case is a snapshot, and a snapshot of text no sweep produces
     # suppresses nothing and confirms nothing. All nine coverage cases

@@ -62,7 +62,15 @@ decision:               |
 
                         The control set written to hold the two
                         entries to a verdict is retired with the
-                        population it was about.
+                        population it was about, and none replaces it.
+
+                        So the eval sweeps every standalone item with
+                        no confidence for any judge, and every finding
+                        it makes carries none. ddr_eval_admission
+                        refuses such an eval as a guard, and a sweep
+                        is not a guard, so nothing stops it.
+                        qst_eval_anchor_and_population.replacement
+                        asks what measures it.
 rationale:              |
                         The anchor rather than the criterion, because
                         the criterion was sharpened first and
@@ -148,4 +156,16 @@ question:
                         the criterion states, and what evidence would
                         license widening the anchor back to
                         sch_descriptive.
+    relation:           []
+
+  replacement:
+    id_self:            qst_eval_anchor_and_population.replacement
+    guid_self:          qst_4f9b8851a04e4f28b697ce6dcbf7ed3b
+    question:           |
+                        What control set measures
+                        evl_prose_matches_structure, given that the
+                        one written for it was retired with the
+                        population it was about, that none replaced
+                        it, and that a sweep is not a guard so nothing
+                        refuses an unmeasured eval.
     relation:           []

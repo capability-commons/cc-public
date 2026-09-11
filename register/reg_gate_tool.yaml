@@ -211,11 +211,19 @@ table:
                         keyed by test function items, so a case row
                         goes stale on a change to the adapter or to a
                         method and no step of the gate observes again
-                        (qst_verification_evidence.cases). A test that
-                        runs longer than the timeout is stopped at 600
-                        seconds, which is a hang guard and not a
-                        budget: a test that grows past it is marked
-                        and explained, not accommodated.
+                        (qst_verification_evidence.cases).
+
+                        Because it writes before the closed world
+                        check reads, a green gate says the evidence
+                        can be current and not that the committed
+                        record is. The pipeline compares the tree
+                        afterwards and refuses a push whose committed
+                        evidence is not what a run observes; nothing
+                        local does. A test that runs longer than the
+                        timeout is stopped at 600 seconds, which is a
+                        hang guard and not a budget: a test that grows
+                        past it is marked and explained, not
+                        accommodated.
     status:             proposed
 
     relation:
@@ -405,6 +413,17 @@ table:
                         metadata validation, and the installed tool
                         runs. Non zero on any of the three.
     blind_spot:         |
+                        What controls it exercises the predicate the
+                        smoke test rests on and not the task. Every
+                        other control runs its tool in a subprocess
+                        and watches it exit non zero; this one asserts
+                        that a path comparison answers both ways, so
+                        nothing shows package-check failing. A control
+                        that built and installed would reach the
+                        network on every run, which is why the task is
+                        out of the local gate
+                        (qst_gate_tool.packaging).
+
                         It exercises two commands. A command it does
                         not run can still be broken in the wheel, and
                         the first defect it found was exactly that

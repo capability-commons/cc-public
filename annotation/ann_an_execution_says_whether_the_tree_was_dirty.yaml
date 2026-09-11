@@ -1,0 +1,45 @@
+id_self:                ann_an_execution_says_whether_the_tree_was_dirty
+guid_self:              ann_606879714e9f483497c2d30f429f3e19
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An execution now says whether the tree was dirty
+brief:                  |
+                        Fixed. The environment reads evidence.head,
+                        which already computed it, so an execution
+                        says the revision and whether anything had
+                        changed since.
+description:            |
+                        ddr_test_execution asked the adapter to report
+                        it and the environment wrote the revision
+                        alone, so a reader comparing an execution to
+                        its commit could not tell whether the
+                        observation was of that commit or of an edited
+                        tree.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_execution_omits_whether_the_tree_was_dirty
+    guid_target:        ann_b4a02875d90745a7ae4ccc06c312d6f6
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pyp_cc_public.adapter
+    guid_target:        pyp_7c214a7f7c7f4f25bc5d2ea2f6e69059
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_execution
+    guid_target:        ddr_22eda79d92534ad38110ae7c726bb1e5

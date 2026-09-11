@@ -188,9 +188,11 @@ everything else is a loop or a diagnostic.
   or to a method and nothing observes again (`qst_verification_evidence.cases`).
   Do not name that order anywhere else. About thirteen minutes.
 - `pixi run quick` — the loop, not the judgement: lint, then the suite with
-  the slow tests left out. About six minutes against the gate's thirteen. It
-  runs no coverage and no closed-world check, so a green `quick` decides
-  nothing. CI never runs it.
+  the slow tests left out. It runs no coverage and no closed-world check, so a
+  green `quick` decides nothing. CI never runs it. **Writes**: nothing; it sets
+  `CCTOOL_PARTIAL_RUN`, so a partial session does not restamp the evidence.
+  The gate-tool controls are not marked slow however long they run, because a
+  loop that omits them omits what shows a tool can fail.
 - `pixi run test-changed` — the narrowest loop: only the tests a change can
   reach, read from a map `test-map` measures. Every uncertainty runs
   everything and says which rule decided that, so a change to anything but a

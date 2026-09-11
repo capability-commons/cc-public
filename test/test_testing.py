@@ -214,3 +214,18 @@ def test_a_case_naming_no_method_is_reported_once(tree, tmp_path):
 
     assert 'testing' in said, found
     assert 'relation' not in said, found
+
+
+def test_the_method_says_what_bounds_a_run(tree):
+    # timeout_second had no reader: the run was bounded by the pytest
+    # configuration of this repository, so the method stated a bound it
+    # did not impose and a consumer tree without that option would run
+    # unbounded while the register said six hundred.
+    (specification, problem) = cc_public.testing.resolve(_map(tree), ID_CASE)
+    assert problem == []
+    assert specification.second_timeout == 600
+
+    cc_public.edit.field.set_field(tree, 'tm_pytest_function',
+                                   'execution_form.automated.timeout_second', value = 5)
+    (specification, _) = cc_public.testing.resolve(_map(tree), ID_CASE)
+    assert specification.second_timeout == 5

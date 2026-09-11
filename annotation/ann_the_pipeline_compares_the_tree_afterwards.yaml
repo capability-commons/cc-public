@@ -1,0 +1,52 @@
+id_self:                ann_the_pipeline_compares_the_tree_afterwards
+guid_self:              ann_6d8e4479e92f47a38a21da59181d6a05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The pipeline now compares the tree after the gate
+brief:                  |
+                        Fixed. A step after the gate refuses a push
+                        whose committed evidence is not what the run
+                        observed.
+description:            |
+                        The gate runs the tests before the
+                        closed-world check, and the tests rewrite the
+                        evidence item when they observe something new,
+                        so a green pipeline said the evidence can be
+                        current and not that the committed record is.
+                        A commit runs no tests, so committing stale
+                        evidence was ordinary.
+
+                        git diff --exit-code over evidence/ after the
+                        gate says the second thing. It is clean unless
+                        a run observed something new, since the writer
+                        leaves the item alone when it observes what
+                        the last run did. The pytest entry says what a
+                        green gate does and does not say.
+
+relation:
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          ann_ci_regenerates_evidence_before_reading_it
+    guid_target:        ann_427df8a894334a58b304599cbfee53ef
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_cctool_check
+    guid_target:        gt_d497ae22a0b0464a9961ca8ea9866921
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          gt_pytest
+    guid_target:        gt_8719b27a6cac41a9a45d5450546c18ff

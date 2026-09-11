@@ -333,13 +333,11 @@ def _dangle(dirpath):
     filepath.write_text(''.join(line), encoding = 'utf-8')
 
 
-@pytest.mark.slow
 def test_the_repository_check_passes_a_tree_that_is_whole():
     done = _check()
     assert done.returncode == 0, done.stdout[-2000:]
 
 
-@pytest.mark.slow
 def test_the_repository_check_fails_a_reference_to_nothing():
     # The defect it is in the gate to catch. Eighteen checks run here
     # and this shows one of them reaching the exit status; the other
@@ -579,7 +577,6 @@ def _identifier(table):
     return out
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize(('id_check', 'severity', 'break_it', 'says'), BROKEN,
                          ids = _identifier(BROKEN))
 def test_each_check_reports_the_defect_it_is_here_to_find(id_check, severity,

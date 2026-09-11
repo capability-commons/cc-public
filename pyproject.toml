@@ -210,7 +210,7 @@ xfail_strict            = true
 timeout                 = 600
 
 markers = [
-  "slow: drives a workflow or a subprocess chain and costs a minute or more; excluded from `pixi run quick` and never from `gate`",
+  "slow: drives a workflow or a subprocess chain and costs tens of seconds; excluded from `pixi run quick` and never from `gate`. Measured 2026-09-11: nineteen tests from forty to a hundred and thirty three seconds. A control is not marked however long it runs, since a loop that omits the controls omits what shows a tool can fail",
 ]
 
 [tool.pixi.tasks]
@@ -232,7 +232,7 @@ package-check           = { depends-on = ["package-build", "package-verify", "pa
 security-audit          = "pip-audit"
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
-quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"] }
+quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"], env = { CCTOOL_PARTIAL_RUN = "1" } }
 gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "type", "test"] }
 
 [tool.pixi.dependencies]

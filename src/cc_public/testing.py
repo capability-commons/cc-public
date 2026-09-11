@@ -53,6 +53,7 @@ KEY_ID_TARGET   = 'id_target'
 KEY_TABLE       = 'table'
 KEY_FORM        = 'execution_form'
 KEY_AUTOMATED   = 'automated'
+KEY_TIMEOUT     = 'timeout_second'
 KEY_MANUAL      = 'manual'
 KEY_RELATION    = 'relation'
 KEY_ID_REL      = 'id_relation'
@@ -79,6 +80,8 @@ class Specification(typing.NamedTuple):
     Everything a run of one test case needs, save the item under test.
 
     id_schema_case is the schema the method says governs configuration.
+    second_timeout is what the method's execution form says bounds a
+    run, so the register is where the bound is written.
     The digests are what a result is bound to: a later reader compares
     them to the items as they are and sees at once whether the result
     still describes what exists.
@@ -93,6 +96,7 @@ class Specification(typing.NamedTuple):
     digest_case:    str
     digest_method:  str
     list_verified:  tuple
+    second_timeout: int | None = None
 
 
 # -----------------------------------------------------------------------------
@@ -162,6 +166,7 @@ def resolve(map_document, id_case):
     return (Specification(id_case        = id_case,
                           id_method      = id_method,
                           id_adapter     = id_adapter,
+                          second_timeout = (automated or {}).get(KEY_TIMEOUT),
                           id_schema_case = id_schema,
                           configuration  = case.get(KEY_CONFIG) or {},
                           digest_case    = cc_public.decision.digest_of(case),

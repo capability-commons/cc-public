@@ -72,6 +72,20 @@ jobs:
       #
       - run: pixi run gate
 
+      # What the gate wrote. The tests refresh the evidence item before
+      # the closed world check reads it, so a green gate says the
+      # evidence can be current and not that the committed record is.
+      # This says the second: if the run observed something the commit
+      # does not hold, the tree differs here and the push is refused.
+      #
+      - name: The committed evidence is what a run observes
+        run: |
+          git diff --exit-code -- evidence/ || {
+            echo 'The gate observed something the committed evidence does not hold.'
+            echo 'Run the tests locally and commit the evidence they write.'
+            exit 1
+          }
+
       # Packaging. Blocking here and not in the local gate: it builds and
       # reaches the network, and a nine minute gate should not also wait
       # on pip. One platform, since the wheel is pure python and the

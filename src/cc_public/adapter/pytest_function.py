@@ -69,6 +69,10 @@ DELIM_NODE    = '::'
 #
 ARGUMENT      = ('-q', '--no-header', '-p', 'no:cacheprovider')
 
+# What bounds a run where the method names no bound.
+#
+SECOND_TIMEOUT = 600
+
 # Set while pytest runs, so that a conftest of the tree being read knows
 # it is an adapter running one node and not a session establishing
 # evidence. What an execution does to the current evidence is decided by
@@ -98,7 +102,8 @@ class Collector:
             self.collect.append(str(report.longrepr or ''))
 
 collector = Collector()
-pytest.main(['-q', '--no-header', '-p', 'no:cacheprovider', sys.argv[1]],
+pytest.main(['-q', '--no-header', '-p', 'no:cacheprovider',
+             '--timeout', sys.argv[2], sys.argv[1]],
             plugins = [collector])
 print('--- cctool adapter ' + json.dumps({'report':  collector.report,
                                           'collect': collector.collect}))
@@ -210,13 +215,17 @@ class Observation(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
-def run(map_document, configuration, dirpath = None):
+def run(map_document, configuration, dirpath = None, second = SECOND_TIMEOUT):
     """
     Run the one test function a case names, and return what was
     observed.
 
     pytest is run with a plugin that keeps its reports, so the outcome
     is read from what pytest reported rather than from what it printed.
+
+    second bounds the run. The caller reads it from the method's
+    execution form, so the register is where the bound is written and
+    a tree whose pytest configuration sets none is bounded anyway.
 
     """
 
@@ -232,7 +241,7 @@ def run(map_document, configuration, dirpath = None):
 
     root    = pathlib.Path(dirpath or '.').resolve()
     started = time.monotonic()
-    done    = subprocess.run([sys.executable, '-c', RUNNER, node],
+    done    = subprocess.run([sys.executable, '-c', RUNNER, node, str(second)],
                              cwd            = str(root),
                              env            = _environment(root),
                              capture_output = True,
