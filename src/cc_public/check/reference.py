@@ -30,6 +30,8 @@ relation:               []
 import re
 
 import cc_public.check.identity
+import cc_public.check.register
+import cc_public.item
 import cc_public.check.result
 import cc_public.path
 
@@ -48,6 +50,10 @@ PREFIX_GUID = 'guid'
 PREFIX_HISTORY = ('exe',)
 PREFIX_ID   = 'id'
 
+KEY_ID_SELF       = 'id_self'
+FIELD_NOT_PROSE   = ('subject', 'sql', 'example', 'alternative', 'note')
+DELIM_PATH_STEP   = '.'
+SUFFIX_ITEM       = '.yaml'
 SEPARATOR   = '_'
 
 
@@ -99,10 +105,113 @@ def check(context):
                                'execution may, being history: {ids}.'.format(
                                         n = len(gone), ids = ', '.join(gone))))
 
+    list_nonconformity.extend(in_prose(context.map_document, declared))
+
     return cc_public.check.result.Result(
                             count_item         = count_reference,
                             list_nonconformity = list_nonconformity,
                             list_note          = list_note)
+
+
+# -----------------------------------------------------------------------------
+def in_prose(map_document, declared):
+    """
+    Return an advisory for each identifier written in prose that this
+    tree holds no item for.
+
+    Advisory always. A record may name an item a consumer segment
+    holds, one it proposes and nobody has made, or one it argues
+    against, and none of those is a fault (ddr_prose_reference).
+
+    """
+
+    known   = set(cc_public.item.index(map_document).by_id) | set(declared)
+    pattern = _pattern(map_document)
+    out     = []
+
+    for document in map_document.values():
+        for (location, id_item, text) in _iter_prose(map_document, document):
+            for name in sorted({one for one in pattern.findall(text)
+                                if _is_absent(one, known)}):
+                out.append(cc_public.check.result.Nonconformity(
+                        filepath = str(location),
+                        path     = '',
+                        severity = cc_public.check.result.SEVERITY_ADVISORY,
+                        message  = 'The prose of {item} names {name}, which this tree '
+                                   'holds no item for.'.format(item = id_item,
+                                                               name = name)))
+
+    return out
+
+
+# -----------------------------------------------------------------------------
+def _pattern(map_document):
+    """
+    Return the pattern an identifier of any declared type matches.
+
+    Read from the type register, so a new prefix is covered the day it
+    is entered.
+
+    """
+
+    (_, document) = cc_public.check.register.find_type(map_document)
+    prefix        = sorted(cc_public.check.register.map_prefix(document))
+
+    return re.compile(r'\b(?:' + '|'.join(re.escape(one) for one in prefix)
+                      + r')_[a-z][a-z0-9_.]*\b')
+
+
+# -----------------------------------------------------------------------------
+def _is_absent(name, known):
+    """
+    Return whether a token names something this tree does not hold.
+
+    A file name is not an identifier, and neither is a dot path into an
+    item the tree does hold.
+
+    """
+
+    name = name.rstrip(DELIM_PATH_STEP)
+
+    if name.endswith(SUFFIX_ITEM) or name in known:
+        return False
+
+    return not (DELIM_PATH_STEP in name
+                and name.split(DELIM_PATH_STEP, 1)[0] in known)
+
+
+# -----------------------------------------------------------------------------
+def _iter_prose(map_document, node, location = None, id_item = None):
+    """
+    Yield (location, id_item, text) for the prose of every item.
+
+    A field named in FIELD_NOT_PROSE is passed over: a stored subject,
+    a query's sql and a rule's example hold line breaks for another
+    reason, and a record's alternative and a note name what was
+    considered and rejected, which is the whole point of them.
+
+    """
+
+    if location is None:
+        location = next((k for (k, v) in map_document.items() if v is node), None)
+
+    if isinstance(node, dict):
+
+        if isinstance(node.get(KEY_ID_SELF), str):
+            id_item = node[KEY_ID_SELF]
+
+        for (key, value) in node.items():
+            if key not in FIELD_NOT_PROSE:
+                yield from _iter_prose(map_document, value, location, id_item)
+
+    elif isinstance(node, list):
+
+        for value in node:
+            yield from _iter_prose(map_document, value, location, id_item)
+
+    elif isinstance(node, str) and '\n' in node and id_item is not None:
+
+        yield (location, id_item, node)
 
 
 # -----------------------------------------------------------------------------
