@@ -77,6 +77,12 @@ PATTERN_QUOTED      = r"'([^']+)'"
 KEYWORD_PROPERTIES  = 'properties'
 KEYWORD_ALL_OF      = 'allOf'
 KEYWORD_REF         = '$ref'
+KEYWORD_REQUIRED    = 'required'
+KEYWORD_DESCRIPTION = 'description'
+KEYWORD_DEFS        = '$defs'
+PREFIX_SCHEMA       = 'sch'
+WORD_OPTIONAL       = 'optional'
+FRAGMENT            = '#'
 SUFFIX_SCHEMA       = '.yaml'
 
 
@@ -103,6 +109,8 @@ def check(context):
     list_nonconformity = []
 
     for (filepath, document) in sorted(map_document.items()):
+
+        list_nonconformity.extend(_restated(filepath, document))
 
         # An item naming two schemas would be validated against one of
         # them, chosen by the order of its edges; naming two is a fault.
@@ -440,6 +448,90 @@ def validate(document, id_schema, map_schema, reg = None):
     # by three schemas that compose it (ddr_schema_closure).
     #
     return list(dict.fromkeys(held))
+
+
+# -----------------------------------------------------------------------------
+def _restated(filepath, document):
+    """
+    Return a finding for each way a schema says twice what it says
+    once, and the two disagree.
+
+    A description opening Optional on a property the schema requires,
+    and a definition that is a bare reference to another item schema,
+    which gives one shape two names (ddr_restated_fact).
+
+    """
+
+    if not isinstance(document, dict) \
+            or str(document.get(KEY_ID_SELF) or '').split(SEPARATOR, 1)[0] != PREFIX_SCHEMA:
+        return []
+
+    return list(_says_optional(filepath, document)) \
+         + list(_is_an_alias(filepath, document))
+
+
+# -----------------------------------------------------------------------------
+def _says_optional(filepath, node, path = ''):
+    """
+    Yield a finding for each required property whose description opens
+    by calling it optional.
+
+    """
+
+    if isinstance(node, list):
+        for (index, one) in enumerate(node):
+            yield from _says_optional(filepath, one, cc_public.path.join(path, index))
+        return
+
+    if not isinstance(node, dict):
+        return
+
+    required = set(node.get(KEYWORD_REQUIRED) or ())
+
+    for (name, one) in (node.get(KEYWORD_PROPERTIES) or {}).items():
+        said = str((one or {}).get(KEYWORD_DESCRIPTION) or '').strip().lower() \
+               if isinstance(one, dict) else ''
+        if name in required and said.startswith(WORD_OPTIONAL):
+            yield cc_public.check.result.Nonconformity(
+                        filepath = str(filepath),
+                        path     = cc_public.path.join(
+                                        cc_public.path.join(path, KEYWORD_PROPERTIES),
+                                        name),
+                        message  = 'Required, and its description calls it optional. A '
+                                   'schema is what travels to a partner, so it says '
+                                   'one thing about a field or the reader believes '
+                                   'the wrong one.')
+
+    for (key, one) in node.items():
+        yield from _says_optional(filepath, one, cc_public.path.join(path, key))
+
+
+# -----------------------------------------------------------------------------
+def _is_an_alias(filepath, document):
+    """
+    Yield a finding for each definition that is a bare reference to
+    another item schema.
+
+    A bare reference to a primitive is not one: it names a role for a
+    type. One to a whole schema gives that schema a second name, and
+    the next schema copied from a neighbour carries whichever it
+    copied.
+
+    """
+
+    for (name, node) in (document.get(KEYWORD_DEFS) or {}).items():
+
+        uri = node.get(KEYWORD_REF) if isinstance(node, dict) else None
+
+        if not isinstance(uri, str) or len(node) != 1 or FRAGMENT in uri:
+            continue
+
+        yield cc_public.check.result.Nonconformity(
+                    filepath = str(filepath),
+                    path     = cc_public.path.join(KEYWORD_DEFS, name),
+                    message  = 'A bare reference to {named}, which gives one shape two '
+                               'names. Compose the schema where it is '
+                               'wanted.'.format(named = uri.rsplit('/', 1)[-1]))
 
 
 # -----------------------------------------------------------------------------

@@ -75,13 +75,17 @@ decision:               |
                         push, on macOS and on Linux.
 
                         A private function at module scope that
-                        nothing but its own recursion names is a lint
-                        finding. A review found one left behind when
+                        nothing but its own recursion names is a
+                        fault. A review found one left behind when
                         what called it was rewritten, and the ruff
-                        rules in use do not reach it. Twenty lines
-                        over the syntax tree, finding nothing today,
-                        which is what a ratchet looks like when it is
-                        set. Not built.
+                        rules in use do not reach it. It is held by a
+                        test over the tool's own source rather than by
+                        a check, because it is a property of this code
+                        and not of a tree, and a check would travel
+                        where it is not wanted. Mentions inside the
+                        definition are not counted, since a function
+                        calling only itself is exactly the shape it is
+                        for.
 
                         A test names the requirement it verifies by an
                         r_verifies edge on the test function's

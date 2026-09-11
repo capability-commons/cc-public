@@ -105,3 +105,40 @@ def test_one_fault_on_a_register_entry_is_reported_once(tree, tmp_path):
 
     assert said, said
     assert len(said) == len(set(said)), said
+
+
+def test_a_required_field_whose_description_calls_it_optional_is_reported(tree, tmp_path):
+    # A schema is what travels to a partner, so it says one thing about
+    # a field or the reader believes the wrong one. sch_entry_type
+    # called id_term optional while requiring it.
+    cc_public.edit.field.set_field(
+            tree, 'sch_entry_type', 'properties.id_term.description',
+            prose = 'Optional. Readable id of the term entry.')
+
+    report = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
+    said = [n['message'] for n in found['nonconformity'] if 'sch_entry_type' in n['filepath']]
+
+    assert any('description calls it optional' in m for m in said), said
+
+
+def test_a_definition_that_is_a_bare_reference_to_a_schema_is_reported(tree, tmp_path):
+    # One shape with two names: the next register schema copied from a
+    # neighbour carries whichever it copied.
+    cc_public.edit.field.set_field(
+            tree, 'sch_register', '$defs.register_entry',
+            value = {'$ref': 'https://capability-commons.org/schema/sch_entry.yaml'})
+
+    report = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
+    said = [n['message'] for n in found['nonconformity'] if 'sch_register' in n['filepath']]
+
+    assert any('gives one shape two names' in m for m in said), said
+
+
+def test_a_bare_reference_to_a_primitive_is_not_reported(tree, tmp_path):
+    # It names a role for a type, which six definitions do.
+    report = cc_public.check.check(list_path = [pathlib.Path(tmp_path)])['report']
+    (found,) = [c for c in report['check'] if c['id_check'] == 'schema']
+
+    assert not [n for n in found['nonconformity'] if 'two names' in n['message']]

@@ -76,10 +76,18 @@ decision:               |
                         primitive is not one of these: it names a role
                         for a type, and six of those are legitimate.
 
-                        Nothing here is built. The two smaller checks
-                        find nothing today, because the instances that
-                        prompted them are fixed, so their value is a
-                        ratchet rather than a discovery.
+                        The two smaller checks are built, in the
+                        schema check, and find nothing today because
+                        the instances that prompted them are fixed:
+                        their value is a ratchet rather than a
+                        discovery. Each has a test that breaks the
+                        tree the way the review found it broken, and
+                        one that holds the case which looks the same
+                        and is not: a bare reference to a primitive
+                        names a role for a type.
+
+                        The declared restatement and the fingerprint
+                        over function bodies are not built.
 rationale:              |
                         Declared rather than inferred, because a field
                         that happens to equal another is not a
