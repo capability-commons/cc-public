@@ -58,7 +58,10 @@ allOf:
         minLength:      1
         description:    |
                         What the set is: the requirements on which
-                        entity, from where, as of when.
+                        entity, at which rung. Where it came from is
+                        the edges it holds and when it was baselined
+                        is the decision that baselined it, so neither
+                        is written here.
 
       entity:
         type:           string
@@ -109,5 +112,45 @@ allOf:
                         cost and interface limits the entity must
                         keep. Absent until reviewed, which the
                         requirement check says.
+
+      level:
+        type:           object
+
+        required:
+          - id_level
+          - guid_level
+
+        properties:
+
+          id_level:
+            type:       string
+            description:  |
+                        The readable id of the requirement level
+                        entry.
+
+          guid_level:
+            type:       string
+            description:  |
+                        The guid of that entry.
+
+        additionalProperties:  false
+        description:    |
+                        Optional. Which rung of a decomposition this
+                        set sits on, as an entry of a requirement
+                        level register this item's segment can see.
+                        The members keep one shape at every rung; only
+                        the set says which rung it is.
+
+      version_set:
+        type:           string
+        pattern:        ^[0-9]+(\.[0-9]+)*$
+        description:    |
+                        Optional. The version of this set, as the
+                        people citing it write it. A decision is what
+                        baselines a set and stamps the digest of each
+                        member; this is the label a reader cites, and
+                        a materially changed baselined set is a new
+                        item with a new version rather than this one
+                        edited.
 
 unevaluatedProperties:  false

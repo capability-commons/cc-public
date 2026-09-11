@@ -70,6 +70,24 @@ decision:               |
                         conflict, repetition and a thing under two
                         names, anchored on the set schema with entity
                         and member in its scope.
+
+                        A set says which RUNG of a decomposition it
+                        sits on, as an entry of a requirement level
+                        register: on the stakeholders, on the system,
+                        on a subsystem, or on a software or hardware
+                        part. The rung is written on the set and not
+                        on the members, which keep one shape wherever
+                        they sit. It is written rather than worked out
+                        from the graph, because a set on a part is a
+                        set on a part before anything has derived from
+                        it.
+
+                        A set carries a VERSION, in the form the
+                        people citing it write, and says what it was
+                        derived from by an edge. r_is_derived_from is
+                        widened to admit a set at its source, so a set
+                        derived from a concept, a need or a higher set
+                        says so the way everything else does.
 rationale:              |
                         Membership as edges rather than a query over
                         derivation, because what a decision baselines
@@ -117,6 +135,28 @@ alternative:            |
                         happens when the entity cannot and what is
                         assumed, and the answers are new requirements,
                         which is the review loop.
+
+                        A scope field on the set beside its entity.
+                        Rejected: the entity already names what every
+                        member is on, and a second field for the same
+                        fact is the restatement ddr_restated_fact is
+                        about. A set covering part of an entity has no
+                        way to say so, which is left open below.
+
+                        A source field holding where the set came
+                        from, as the proposal that prompted this
+                        asked. Rejected: where a thing came from is an
+                        edge here, and a prose copy of it would drift
+                        from the edge and be believed. The relation
+                        was widened instead.
+
+                        A baseline identifier on the set. Rejected as
+                        a second name for what a decision already
+                        holds: a decision baselines a set and stamps
+                        the digest of each member, and the decision
+                        check reports a member changed since. The
+                        version added is the label people cite and not
+                        the baseline itself.
 consequence:            |
                         The gather command, the review workflow, the
                         set checks and the set eval exist and are
@@ -137,6 +177,64 @@ consequence:            |
                         findings across runs and a proposal of a rule
                         from the recurring shapes, is the next step
                         and is not part of this decision.
+
+                        A set may now be shown at its rung, and the
+                        run from a stakeholder set down to a part can
+                        be walked. Nothing checks that the rungs are
+                        consistent with the edges: a system set
+                        derived from a subsystem set is not reported,
+                        and neither is a set with no rung at all.
+
+question:
+
+  baseline:
+    id_self:            qst_requirement_set.baseline
+    guid_self:          qst_d5f2052c42024bfbacf83957c2c9a603
+    question:           |
+                        What baselining a set means: a decision of
+                        outcome select or accept over the set and its
+                        members at their digests, and what an edit to
+                        a member does to the baseline.
+    relation:           []
+
+  budget:
+    id_self:            qst_requirement_set.budget
+    guid_self:          qst_076ef78c61a6458995909401c05501a0
+    question:           |
+                        Whether the budget class becomes a
+                        calculation: members that set mass, power and
+                        time limits gathered into a budget the check
+                        sums, so that a set whose limits cannot close
+                        is found without a judge.
+    relation:           []
+
+  span:
+    id_self:            qst_requirement_set.span
+    guid_self:          qst_69190d0c9a5a459cb595373d09b813df
+    question:           |
+                        Whether a set may include requirements from
+                        several concepts or needs, and what the entity
+                        of such a set is.
+    relation:           []
+
+  part_of_entity:
+    id_self:            qst_requirement_set.part_of_entity
+    guid_self:          qst_2c82147208e4450d9e5562d22afe48f5
+    question:           |
+                        How a set covering part of an entity says so,
+                        given that entity names the whole and a scope
+                        field beside it would give one fact two homes.
+    relation:           []
+
+  rung_consistency:
+    id_self:            qst_requirement_set.rung_consistency
+    guid_self:          qst_bf800b3ca5b6427f91a3d9af16e8ab33
+    question:           |
+                        Whether a check should hold the rung of a set
+                        against the rungs of the sets it derives from,
+                        and what it should do about a set with no rung
+                        at all.
+    relation:           []
 
 relation:
 
@@ -215,34 +313,12 @@ relation:
     id_target:          term_scenario_coverage
     guid_target:        term_f90ac4f5f9874863ad98853d0007123e
 
-question:
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_requirement_level
+    guid_target:        reg_e05b99ef20754f5696b285b5b92e1752
 
-  baseline:
-    id_self:            qst_requirement_set.baseline
-    guid_self:          qst_d5f2052c42024bfbacf83957c2c9a603
-    question:           |
-                        What baselining a set means: a decision of
-                        outcome select or accept over the set and its
-                        members at their digests, and what an edit to
-                        a member does to the baseline.
-    relation:           []
-
-  budget:
-    id_self:            qst_requirement_set.budget
-    guid_self:          qst_076ef78c61a6458995909401c05501a0
-    question:           |
-                        Whether the budget class becomes a
-                        calculation: members that set mass, power and
-                        time limits gathered into a budget the check
-                        sums, so that a set whose limits cannot close
-                        is found without a judge.
-    relation:           []
-
-  span:
-    id_self:            qst_requirement_set.span
-    guid_self:          qst_69190d0c9a5a459cb595373d09b813df
-    question:           |
-                        Whether a set may include requirements from
-                        several concepts or needs, and what the entity
-                        of such a set is.
-    relation:           []
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_requirement_level
+    guid_target:        t_99f535584d7245d6b21a89e27b48b1fc

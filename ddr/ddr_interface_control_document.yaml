@@ -12,9 +12,10 @@ title:                  Interface control documents describe versioned software 
 brief:                  |
                         An interface control document is a versioned,
                         addressable contract made of language-specific
-                        API surfaces or runtime dataflow-step
-                        surfaces, with shared data declarations and
-                        explicit behavioural obligations.
+                        API surfaces, runtime dataflow-step surfaces
+                        or artifact surfaces, with shared data
+                        declarations and explicit behavioural
+                        obligations.
 context:                |
                         The requirement rule register already
                         recommends referring to an interface control
@@ -97,8 +98,8 @@ decision:               |
                         than to a supposedly language-neutral
                         signature.
 
-                        The initial surface forms are NATIVE API and
-                        DATAFLOW STEP. A native API surface may
+                        The surface forms are NATIVE API, DATAFLOW
+                        STEP and ARTIFACT. A native API surface may
                         declare packages, modules, namespaces,
                         constants, named data types, free functions
                         and classes. Classes may declare inheritance,
@@ -129,6 +130,27 @@ decision:               |
                         determinism, failure and retry where
                         applicable.
 
+                        An ARTIFACT surface declares the files,
+                        messages or records handed from a producer to
+                        a reader. Each artifact says what it carries,
+                        the schema its payload conforms to and the
+                        version of that schema, how it is written
+                        down, and the conventions a reader needs to
+                        read a value rather than merely parse one:
+                        units, numeric representation, coordinate and
+                        reference frames, origins and axis directions,
+                        and what the values denote physically and in
+                        what state they were captured. The surface
+                        states when an instance is produced, and the
+                        semantics compatibility depends on:
+                        cardinality, ordering, batching, determinism,
+                        availability, atomicity, what a failed
+                        production leaves behind, retention and what a
+                        reader must tolerate. Nothing is called and
+                        nothing is invoked, so an artifact surface
+                        names no language and the checks that hold a
+                        member to its source do not apply to it.
+
                         A Stableflow dataflow-step surface is not a
                         Capability Commons component, port or workflow
                         form. It does not compose sch_component or
@@ -150,14 +172,14 @@ decision:               |
                         decision to point to one member without
                         pointing only to the whole ICD.
 
-                        The first schema is deliberately scoped to
-                        software APIs and runtime dataflow steps. Its
-                        common envelope and surface discriminator
-                        permit later surface forms, such as callbacks
-                        and events, streams, messages, services,
-                        serialized data or physical interfaces, to be
-                        added deliberately. Unknown structures are not
-                        accepted merely as extension data.
+                        The schema is scoped to software APIs, runtime
+                        dataflow steps and the artifacts handed
+                        between them. Its common envelope and surface
+                        discriminator permit later surface forms, such
+                        as callbacks and events, streams, services or
+                        physical interfaces, to be added deliberately.
+                        Unknown structures are not accepted merely as
+                        extension data.
 rationale:              |
                         The stated signature compared with the
                         definition, rather than trusted or dropped. A
@@ -329,41 +351,22 @@ consequence:            |
                         vocabulary may need additions for
                         specification, conformance and supersession.
 
-                        The initial scope excludes message protocols,
-                        network services, files, databases and
-                        physical interfaces except as prose. Adding
-                        one requires a deliberate surface form or a
-                        separate type. This keeps the first
-                        implementation bounded, at the cost that some
-                        conventional systems-engineering ICDs cannot
-                        yet be represented structurally.
+                        Network services, databases and physical
+                        interfaces are still out of scope except as
+                        prose, and adding one requires a deliberate
+                        surface form or a separate type. Files and
+                        messages came into scope with the artifact
+                        surface, which is what a product hands across
+                        a boundary as data rather than as a call, and
+                        what the first product use of this repository
+                        needs.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          reg_type
-    guid_target:        reg_c377bd8e87ec4b1ca2bd398488392a3d
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          t_interface_control_document
-    guid_target:        t_f61b8536b8d14f5587b1d55cd25efdec
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          t_interface_member
-    guid_target:        t_024a2ad873884028a618d7ed0a837efd
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_interface_control_document
-    guid_target:        sch_79c0dbfe449f4aa9b7f6d0b850b7c20e
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          sch_interface_member
-    guid_target:        sch_ff9775d1021b46119300ebd6eb0b3772
+                        The artifact surface was added against a
+                        product that had not yet written an interface,
+                        so it settles more than anything uses, as the
+                        native and dataflow step surfaces did before
+                        it. What an artifact contract actually needs
+                        will be known when the first one is written.
 
 question:
 
@@ -421,3 +424,30 @@ question:
                         surface of six members exercises it and the
                         rest was settled before any use could test it.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          reg_type
+    guid_target:        reg_c377bd8e87ec4b1ca2bd398488392a3d
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_interface_control_document
+    guid_target:        t_f61b8536b8d14f5587b1d55cd25efdec
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_interface_member
+    guid_target:        t_024a2ad873884028a618d7ed0a837efd
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_interface_control_document
+    guid_target:        sch_79c0dbfe449f4aa9b7f6d0b850b7c20e
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_interface_member
+    guid_target:        sch_ff9775d1021b46119300ebd6eb0b3772

@@ -1,0 +1,110 @@
+id_self:                reg_requirement_level
+guid_self:              reg_e05b99ef20754f5696b285b5b92e1752
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Requirement level register
+brief:                  |
+                        Register of the rungs of a decomposition a set
+                        of requirements can sit on.
+description:            |
+                        Each entry names one rung. The rungs run from
+                        what the stakeholders require of the system
+                        down to what one part of it is required to do,
+                        and a requirement on a lower rung ordinarily
+                        derives from one above.
+usage:                  |
+                        A requirement set names one entry in its level
+                        field. An individual requirement names none
+                        and keeps one shape at every rung.
+note:                   |
+                        The software and hardware rungs are a split of
+                        the part rung by what the part is made of,
+                        which is the one place this register describes
+                        the solution rather than the decomposition. A
+                        segment whose parts divide another way holds a
+                        register of its own.
+
+table:
+
+  rlvl_stakeholder:
+    id_self:            rlvl_stakeholder
+    guid_self:          rlvl_9c12085ffd594d6ab82fc18130c8efc3
+    title:              Stakeholder requirements
+    brief:              |
+                        What the stakeholders require, stated in their
+                        terms and about the outcome rather than about
+                        the system.
+    description:        |
+                        The rung above the system. A requirement here
+                        can be met by materially different systems,
+                        and what it is about is the need and the
+                        operational concept.
+    relation:           []
+
+  rlvl_system:
+    id_self:            rlvl_system
+    guid_self:          rlvl_1df5e7bcfb80447ca9f59838b53da59d
+    title:              System requirements
+    brief:              |
+                        What the system as a whole is required to do,
+                        stated as an obligation on the system and not
+                        on any part of it.
+    description:        |
+                        The rung a stakeholder requirement is realised
+                        at. What implements it is the system, and its
+                        parts are not yet chosen.
+    relation:           []
+
+  rlvl_subsystem:
+    id_self:            rlvl_subsystem
+    guid_self:          rlvl_d88475f331a14d0698c51d68cec5491c
+    title:              Subsystem requirements
+    brief:              |
+                        What one part of the system is required to do,
+                        where that part is itself made of parts.
+    description:        |
+                        The rung below the system, used where the
+                        decomposition has more than two levels. A
+                        subsystem requirement derives from a system
+                        requirement and from the architecture that
+                        allocated it.
+    relation:           []
+
+  rlvl_software:
+    id_self:            rlvl_software
+    guid_self:          rlvl_5bdc0cf4418a446cadcd086efe367798
+    title:              Software requirements
+    brief:              |
+                        What one software part is required to do.
+    description:        |
+                        A part rung, distinguished by what the part is
+                        made of, because the verification available to
+                        software differs from the verification
+                        available to hardware.
+    relation:           []
+
+  rlvl_hardware:
+    id_self:            rlvl_hardware
+    guid_self:          rlvl_b11b93f838704d988be821dd87af08bd
+    title:              Hardware requirements
+    brief:              |
+                        What one hardware part is required to do.
+    description:        |
+                        A part rung, distinguished by what the part is
+                        made of, for the same reason as the software
+                        rung.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_plain
+    guid_target:        sch_40018b62a691433bb322fa44d25cd632

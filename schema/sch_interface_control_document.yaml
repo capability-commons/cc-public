@@ -10,38 +10,40 @@ protective_mark:
 
 title:                  Interface control document schema
 brief:                  |
-                        The shape of a versioned controlled contract
-                        for one interface, made of keyed surfaces with
-                        addressable members.
+                        Schema for interface control document data
+                        items: a versioned contract for one interface,
+                        made of keyed surfaces with addressable
+                        members.
 description:            |
                         Identity, rights, the descriptive fields and
                         edges come from sch_base and sch_relation.
                         Beyond them an interface control document
                         carries its interface version, its lifecycle
                         status, the declarations its surfaces share,
-                        and one or more keyed surfaces.
-
-                        A surface is a keyed object holding exactly
-                        one of the forms the document admits. Two are
-                        admitted: a native API surface, which names
-                        exactly one implementation language, and a
-                        dataflow step surface, which declares the
-                        ports a step reads and writes and the
-                        execution semantics compatibility depends on.
-
-                        A dataflow step surface is not a Capability
+                        and one or more keyed surfaces. A surface is a
+                        keyed object holding exactly one of the forms
+                        the document admits. Three are admitted. A
+                        native API surface names exactly one
+                        implementation language. A dataflow step
+                        surface declares the ports a step reads and
+                        writes and the execution semantics
+                        compatibility depends on. An artifact surface
+                        declares the files, messages or records handed
+                        from a producer to a reader, what each
+                        carries, how it is written down and the
+                        conventions a reader needs to interpret it. A
+                        dataflow step surface is not a Capability
                         Commons component, port or workflow form. It
                         composes neither sch_component nor sch_port,
                         and any correspondence between a runtime
                         interface and a component is an explicit edge
-                        and never inferred from a shared field name.
-
-                        A runtime type is not a Capability Commons
-                        item type, so a type reference here does not
-                        use the id_type and guid_type fields of
-                        sch_port. It names a declaration this document
-                        shares, the spelling the surface language
-                        uses, or both.
+                        and never inferred from a shared field name. A
+                        runtime type is not a Capability Commons item
+                        type, so a type reference here does not use
+                        the id_type and guid_type fields of sch_port.
+                        It names a declaration this document shares,
+                        the spelling the surface language uses, or
+                        both.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_interface_control_document.yaml
 usage:                  |
@@ -837,6 +839,7 @@ $defs:
       enum:
         - native
         - dataflow_step
+        - artifact
 
     properties:
 
@@ -846,9 +849,216 @@ $defs:
       dataflow_step:
         $ref:           '#/$defs/surface_dataflow_step'
 
+      artifact:
+        $ref:           '#/$defs/surface_artifact'
+
     description:        |
-                        Exactly one form, under its own key. A form
-                        the document does not admit is refused here
-                        rather than accepted as extension data.
+                        Exactly one form of presentation of the
+                        interface. A native surface presents it as an
+                        API in one implementation language, a dataflow
+                        step surface as a runtime step reading and
+                        writing ports, and an artifact surface as
+                        files, messages or records handed from a
+                        producer to a reader.
+
+  artifact:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - content
+          - encoding
+          - convention
+
+        properties:
+
+          content:
+            type:       string
+            minLength:  1
+            description:  |
+                        What one instance carries and what it is
+                        about. The thing a reader wanted, said before
+                        how it is written down.
+
+          payload:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The key of a shared declaration this
+                        document holds.
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The payload schema as its own world
+                        names it: a URI, a file name or a message
+                        name. It is not a Capability Commons item
+                        reference.
+
+              version:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+                description:  |
+                        Optional. The version of that payload schema,
+                        as that schema states it.
+
+            description:  |
+                        Optional. The schema the payload conforms to
+                        and the version of it. An artifact whose
+                        structure is the encoding alone declares none.
+
+          encoding:
+            type:       string
+            minLength:  1
+            description:  |
+                        How an instance is written down: the media
+                        type, the character or byte encoding, the
+                        serialisation, and any container or
+                        compression a reader has to undo first.
+
+          convention:
+            type:       string
+            minLength:  1
+            description:  |
+                        What a reader needs in order to read a value
+                        correctly rather than merely parse it: the
+                        units, the numeric representation and its
+                        range, the coordinate and reference frames,
+                        the origin and the direction of each axis, and
+                        what the values denote physically and in what
+                        state they were captured.
+
+          identity:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. How one instance is named, what
+                        provenance travels with it, and what a digest
+                        covers where one is carried.
+
+    unevaluatedProperties:  false
+
+  surface_artifact:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - artifact
+      - production
+
+    description:        |
+                        One presentation of the interface as artifacts
+                        handed from a producer to a reader: a file, a
+                        message or a record, and what a reader needs
+                        to interpret one. Nothing is called and
+                        nothing is invoked; what crosses the boundary
+                        is the artifact itself.
+
+    properties:
+
+      artifact:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/artifact'
+
+        description:    |
+                        The artifacts this surface carries, keyed by a
+                        short local name.
+
+      production:
+        type:           string
+        minLength:      1
+        description:    |
+                        When an instance is produced and by what: the
+                        event, the schedule or the request that causes
+                        one to exist.
+
+      cardinality:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How many instances one production
+                        makes, and what decides the number.
+
+      ordering:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What order instances are in, what
+                        that order means, and whether a reader may
+                        rely on it.
+
+      batching:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Whether instances are grouped, what
+                        makes a group, and whether a reader may see
+                        part of one.
+
+      determinism:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Whether the same inputs yield the
+                        same artifact, and in what sense: byte for
+                        byte, value for value, or within a stated
+                        tolerance.
+
+      availability:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What a reader does when an instance
+                        is absent or not yet written, and how long it
+                        waits.
+
+      atomicity:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What a reader sees while an instance
+                        is being written, and what makes one visible.
+
+      failure:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What is written when production
+                        fails part way, whether an incomplete instance
+                        can be told from a complete one, and whether
+                        production may be retried.
+
+      retention:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. How long an instance is kept, what
+                        removes one, and what a reader holding a
+                        reference to a removed instance sees.
+
+      compatibility:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. What changes to the payload or the
+                        conventions a reader must tolerate, and what
+                        makes a new version of the interface rather
+                        than a change within this one.
 
 unevaluatedProperties:  false
