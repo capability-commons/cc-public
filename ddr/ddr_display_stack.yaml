@@ -1,0 +1,131 @@
+id_self:                ddr_display_stack
+guid_self:              ddr_56ce686067804a29bcd15e95270cdb65
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  'The display stack: Starlette, htpy and HTMX'
+brief:                  |
+                        The human interface is served by Starlette on
+                        uvicorn, its HTML built in Python with htpy,
+                        its interaction carried by one vendored copy
+                        of HTMX, and its live updates, when they come,
+                        by server sent events. Decided before the
+                        shape of a view, so that the experiments that
+                        settle the rest have something to stand on.
+context:                |
+                        The display architecture proposal of 8
+                        September 2026 separates projection from
+                        rendering and says what a person should see:
+                        the smallest truthful account of a situation,
+                        drillable to the record. It weighs a server
+                        rendered realisation at length and then
+                        declines to choose one, leaving the stack to
+                        experiments. The experiments cannot begin
+                        without one.
+
+                        The dossier for the Brave1 demonstration
+                        rendered two documents through Jinja
+                        templates. That demonstration is no longer
+                        required and its rendering is withdrawn with
+                        it (ddr_dossier), so nothing in the tree
+                        renders HTML and the choice is open.
+decision:               |
+                        Starlette on uvicorn serves the interface.
+
+                        htpy builds the HTML. An element is a Python
+                        value made by subscripting, a fragment is a
+                        return value, and a page is a function over a
+                        projection.
+
+                        HTMX, one vendored file, carries navigation,
+                        forms and fragment replacement over ordinary
+                        HTTP. There is no build pipeline and no
+                        package manager for the browser.
+
+                        The stylesheet is written by hand, with the
+                        design tokens as custom properties. A JSON
+                        representation is the same projection at a
+                        sibling route.
+
+                        Live update, once a read-only workbench exists
+                        to need it, is server sent events carrying
+                        invalidations; the browser then fetches the
+                        current representation.
+
+                        A graph is DOT or mermaid text until a view
+                        shows it needs pan and zoom. Then one vendored
+                        library, in one island.
+
+                        The code lives in cc_public.web behind a web
+                        extra, at the top of the layers, so that the
+                        domain never imports it.
+rationale:              |
+                        Starlette is the smallest ASGI server that
+                        routes, serves static files and streams.
+                        Server sent events need ASGI, so choosing it
+                        now saves a swap later.
+
+                        htpy keeps rendering in Python. A view over an
+                        arbitrary item type is a function from a
+                        schema and a document to an element, and can
+                        be tested as a value before it is a string.
+                        Nothing is inserted by context manager, so
+                        nothing is inserted twice, which is what the
+                        earlier Dominate work in Design Factory kept
+                        getting wrong. It is maintained.
+
+                        HTMX keeps a link a GET and a form a command,
+                        so that the same routes serve a browser
+                        without it, and the security of the interface
+                        is the security of HTTP.
+
+                        One template language fewer than the dossier
+                        had, and no second runtime to hold a copy of
+                        the model.
+alternative:            |
+                        Jinja2, already in the environment and more
+                        widely used: rejected, since a template is a
+                        second language, and a view generated from a
+                        schema is easier to write and to test as
+                        Python.
+
+                        Dominate: rejected in favour of htpy, which
+                        does the same thing without context managed
+                        insertion, and is maintained.
+
+                        A client model runtime, the browser holding
+                        the model and drawing from it: rejected, since
+                        it duplicates the policy boundary and the
+                        Python model in a second runtime with a build
+                        pipeline, for interaction the workbench has
+                        not shown it needs.
+
+                        Flask or Django: rejected, since neither
+                        streams without help and both carry more than
+                        is needed.
+
+                        Replacement HTML pushed over the event stream:
+                        kept as an optimisation the proposal allows
+                        within one policy scope, not as the
+                        consistency model.
+consequence:            |
+                        A web extra holding starlette, uvicorn and
+                        htpy, added with the first module that imports
+                        them and not before. A vendored htmx.min.js as
+                        a static resource. A cc_public.web package
+                        above cc_public.cli in the layers contract.
+
+                        What a view, a situation and a profile are is
+                        not decided here. The proposal's questions on
+                        those are settled by experiment on this stack,
+                        and each one settled gets a record of its own.
+
+                        The render extra, the Jinja templates,
+                        WeasyPrint and Graphviz leave the environment
+                        with the dossier.
+relation:               []
