@@ -17,13 +17,14 @@ brief:                  |
                         observed, and judged current; an attestation
                         stands for inspection.
 description:            |
-                        Folds instances into outcomes, writes evidence
-                        from a scripted pytest session into a copied
-                        tree with its own repository, asserts the
-                        evidence check reports absence, failure and
-                        staleness with the right severities, shows
-                        what changes the digest and what does not, and
-                        records an attestation.
+                        These tests fold test instances into outcomes
+                        and write evidence from a scripted pytest
+                        session into a copied tree with its own
+                        repository. They assert that the evidence
+                        check reports absence, failure and staleness
+                        with the right severities. They show what
+                        changes the digest and what does not, and they
+                        record an attestation.
 relation:               []
 
 ...

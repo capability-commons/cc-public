@@ -17,17 +17,18 @@ brief:                  |
                         they declare, and index them by readable id
                         and by guid.
 description:            |
-                        An item is a mapping declaring an identity. A
-                        document is one, and it may hold others: a
-                        register entry, a port, a question, an
-                        interface member. One walk finds them all, and
-                        carries what a caller needs beside each: where
-                        it sits, the path within its document, and the
-                        nearest item holding it. Every module that
-                        walks the tree for the items it declares reads
-                        this: the facts a query runs over, the trace
-                        projection, the identifier check and the tree
-                        loader through it.
+                        An item is a mapping that declares an
+                        identity. A document is an item, and it may
+                        hold other items: a register entry, a port, a
+                        question, or an interface member. One walk
+                        finds all of them, and carries beside each
+                        item what a caller needs: where the item sits,
+                        the path within its document, and the nearest
+                        item that holds it. Every module that walks
+                        the tree for the items it declares reads this
+                        one. That includes the facts a query runs
+                        over, the trace projection, the identifier
+                        check, and the tree loader.
 relation:               []
 
 ...

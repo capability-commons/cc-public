@@ -18,16 +18,18 @@ brief:                  |
                         node are read from the tree.
 description:            |
                         A node performed by an agent parks the run.
-                        The brief says what is bound on the node's
-                        inputs, what each output asks for and how its
-                        item will be found, and how to resume. On
-                        resume the outputs are read from the graph,
-                        never from the performer: an output revises an
-                        input, or is found from an input by an edge of
-                        a relation in a direction, keeping items of
-                        the port's type and binding the first by
-                        identifier. A port that finds nothing stops
-                        the run, since the performer has not finished.
+                        The brief left for the agent says what is
+                        bound on the node's inputs, what each output
+                        asks for and how its item will be found, and
+                        how to resume. On resume, the outputs are read
+                        from the graph and never from the performer.
+                        An output either revises an input, or is found
+                        from an input by following an edge of a given
+                        relation in a given direction, keeping the
+                        items of the port's type and binding the first
+                        by identifier. A port that finds nothing stops
+                        the run, because the performer has not
+                        finished.
 relation:               []
 
 ...

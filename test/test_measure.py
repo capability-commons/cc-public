@@ -16,9 +16,10 @@ brief:                  |
                         Control cases measure an eval and answer its
                         findings.
 description:            |
-                        Uses a scripted runner in place of a model,
-                        and asserts the arithmetic of the rates, the
-                        per origin split and the suppression path.
+                        These tests use a scripted runner in place of
+                        a model. They assert the arithmetic of the
+                        rates, the split per origin, and the
+                        suppression path.
 relation:               []
 
 ...
@@ -265,12 +266,13 @@ def test_an_unmet_screen_is_confirmed_count_times_and_the_majority_reported(tree
                             An unmet screen is confirmed count times and
                             the majority reported.
     description:            |
-                            Confirms an unmet screening verdict over
-                            scripted fresh samples and asserts the judge
-                            asks for count less one samples, reports met
-                            where the majority is met, reports unmet with
-                            the tally where it is not, and asks nothing
-                            when the count is one.
+                            The test confirms an unmet screening verdict
+                            over scripted fresh samples. It asserts that
+                            the judge asks for one fewer sample than the
+                            count, that it reports met where the majority
+                            is met, that it reports unmet with the tally
+                            where the majority is unmet, and that it asks
+                            for nothing when the count is one.
 
     relation:
 

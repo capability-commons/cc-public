@@ -19,12 +19,14 @@ brief:                  |
                         result.
 description:            |
                         The execution outcome and the conformance
-                        result are two fields, and a completed
-                        execution may hold a failed result. An
-                        execution that errored, did not run or was
+                        result are two separate fields, and a
+                        completed execution may hold a failed result.
+                        An execution that errored, did not run or was
                         cancelled may hold a failed, inconclusive or
-                        not applicable result and not a passing one,
-                        which is refused at the result that claims it.
+                        not applicable result. Such an execution may
+                        not hold a passing result. The schema refuses
+                        a passing result at the result entry that
+                        claims it.
 relation:               []
 
 ...

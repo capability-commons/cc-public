@@ -15,15 +15,15 @@ title:                  Report presentation
 brief:                  |
                         Present a check report.
 description:            |
-                        Writes a check report as text for a person, or
-                        as JSON, YAML or XML for a program, and
-                        renders what the other commands show: a run, a
-                        trace, an impact, an item and its edges, and
-                        the glossary as a list, a lookup, a sense
-                        report or a gap report. Findings go to
-                        standard output in every format; standard
-                        error is reserved for failures of the analysis
-                        itself.
+                        This module writes a check report as text for
+                        a person, or as JSON, YAML or XML for a
+                        program. It also renders what the other
+                        commands show: a run, a trace, an impact, an
+                        item with its edges, and the glossary as a
+                        list, a lookup, a sense report or a gap
+                        report. Findings go to standard output in
+                        every format. Standard error is reserved for
+                        failures of the analysis itself.
 relation:               []
 
 ...

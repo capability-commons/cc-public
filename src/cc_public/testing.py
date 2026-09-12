@@ -18,20 +18,18 @@ brief:                  |
                         configuration and the digests the result will
                         be bound to.
 description:            |
-                        A test case names one test method, the method
+                        A test case names one test method. The method
                         names the adapter that carries it out, and the
-                        case carries the configuration that method
-                        asks for. Resolving them yields everything a
+                        case carries the configuration the method asks
+                        for. Resolving the three yields everything a
                         run needs except the item under test, which is
-                        bound when the run happens.
-
-                        Every problem found on the way is returned
-                        rather than raised, so a caller reports all of
-                        them at once.
-
-                        Plain data over the documents of a tree.
-                        Validation against a schema is done by the
-                        check that reads this.
+                        bound when the run happens. Every problem
+                        found on the way is returned rather than
+                        raised, so that a caller reports all of them
+                        at once. The module is plain data over the
+                        documents of a tree. Validation against a
+                        schema is done by the check that reads this
+                        module.
 relation:               []
 
 ...

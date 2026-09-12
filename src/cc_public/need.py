@@ -16,13 +16,14 @@ brief:                  |
                         Compose the statement of a need from its
                         slots.
 description:            |
-                        A need statement is exactly its slots in
-                        order: in the context, the subject needs the
-                        outcome, in order to the purpose. It is
-                        composed wherever a need is rendered, for a
-                        judge, a model or a reader, and never stored,
-                        so that it cannot say something the slots do
-                        not.
+                        A need statement is its slots, in a fixed
+                        order. The statement reads: in the context,
+                        the subject needs the outcome, in order to
+                        serve the purpose. The statement is composed
+                        wherever a need is rendered, whether for a
+                        judge, a model or a reader. It is never
+                        stored, so that it cannot say something the
+                        slots do not say.
 relation:               []
 
 ...

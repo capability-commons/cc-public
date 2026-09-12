@@ -16,12 +16,13 @@ brief:                  |
                         Check that identifiers are well formed and
                         distinct.
 description:            |
-                        Holds each identifier against the form its
-                        type declares, checks that a register entry
-                        key agrees with the id it repeats, that the
-                        two halves of a reference name the same type,
-                        that no two types claim one prefix, and that
-                        no two items claim one readable id.
+                        This check holds each identifier against the
+                        form its type declares. It checks that a
+                        register entry key agrees with the id the
+                        entry repeats, that the two halves of a
+                        reference name the same type, that no two
+                        types claim one prefix, and that no two items
+                        claim one readable id.
 relation:               []
 
 ...

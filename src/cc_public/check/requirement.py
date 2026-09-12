@@ -17,17 +17,20 @@ brief:                  |
                         composes a statement and names a defined
                         process word.
 description:            |
-                        Composes the statement of every textual
-                        requirement and every candidate requirement in
-                        a concept from its slots, and reports slots
-                        that do not compose: an interaction without an
-                        actor, an actor without an interaction, a
-                        condition without its kind. Resolves the
-                        process slot against the process word
-                        registers the item can see, its own segment
-                        and those it consumes, and reports a verb none
-                        defines, advisory on a candidate or a proposed
-                        requirement and critical on an accepted one.
+                        This check composes the statement of every
+                        textual requirement, and of every candidate
+                        requirement in a concept, from its slots. It
+                        reports slots that do not compose: an
+                        interaction without an actor, an actor without
+                        an interaction, or a condition without its
+                        kind. It resolves the process slot against the
+                        process word registers the item can see, which
+                        are the registers of its own segment and of
+                        the segments it consumes. A verb that none of
+                        those registers defines is reported. That
+                        finding is advisory on a candidate or a
+                        proposed requirement, and critical on an
+                        accepted one.
 relation:               []
 
 ...

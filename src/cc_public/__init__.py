@@ -15,9 +15,9 @@ title:                  Capability commons
 brief:                  |
                         Tooling for the capability commons.
 description:            |
-                        The root package. Holds the loaders, the
-                        checks, the eval machinery and the command
-                        line interface.
+                        This is the root package. It holds the
+                        loaders, the checks, the eval machinery and
+                        the command line interface.
 relation:               []
 
 ...

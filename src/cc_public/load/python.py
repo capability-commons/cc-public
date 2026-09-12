@@ -16,15 +16,15 @@ brief:                  |
                         Load the data item embedded in a python source
                         file.
 description:            |
-                        A python source file is code, and also carries
-                        data items describing itself and its
-                        definitions. Each lives in a docstring as a
-                        YAML document opened by --- and closed by
-                        three full stops: the module's in the module
-                        docstring, a class or a function's in its own.
-
-                        The file is read with the abstract syntax
-                        tree. Nothing is imported.
+                        A python source file is code, and it also
+                        carries data items that describe the file and
+                        its definitions. Each data item lives in a
+                        docstring, as a YAML document opened by three
+                        hyphens and closed by three full stops. The
+                        module's item is in the module docstring, and
+                        the item of a class or a function is in its
+                        own docstring. The file is read with the
+                        abstract syntax tree. Nothing is imported.
 relation:               []
 
 ...

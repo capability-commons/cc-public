@@ -16,13 +16,15 @@ brief:                  |
                         The importer makes one observation per capture
                         and the need workflow derives from it.
 description:            |
-                        The digest is stable under whitespace and
-                        newline variation, a repeated capture is
-                        reused, a changed one is a new item, content
-                        is stored as data, a bad capture is refused,
-                        the command reports what it did, and a
-                        scripted run of the need workflow makes a
-                        proposed need deriving from the observation.
+                        These tests check that the digest is stable
+                        under variation in whitespace and newlines,
+                        that a repeated capture is reused, that a
+                        changed capture makes a new item, that content
+                        is stored as data, that a bad capture is
+                        refused, and that the command reports what it
+                        did. A scripted run of the need workflow then
+                        makes a proposed need that derives from the
+                        observation.
 relation:               []
 
 ...

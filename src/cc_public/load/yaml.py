@@ -15,11 +15,12 @@ title:                  YAML loader
 brief:                  |
                         Load YAML documents.
 description:            |
-                        The safe loader, so that tags naming arbitrary
-                        python types are refused and duplicate mapping
-                        keys are an error. A YAML stream announces its
-                        encoding with a byte order mark and is UTF-8
-                        where it carries none.
+                        This module uses the safe loader, so that tags
+                        naming arbitrary python types are refused and
+                        duplicate mapping keys are an error. A YAML
+                        stream announces its encoding with a byte
+                        order mark, and a stream that carries none is
+                        read as UTF-8.
 relation:               []
 
 ...

@@ -15,20 +15,21 @@ title:                  Schema check
 brief:                  |
                         Check that items conform to their schema.
 description:            |
-                        Selects a schema for each item, by the schema
-                        the item names or the schema its type names,
-                        and validates against it. A pattern constrains
-                        a datum, and a datum holds no line break; the
-                        draft reads a regular expression by ECMA-262,
-                        where a dollar anchors the end of the string,
-                        while Python matches it before a final newline
-                        as well, so the check refuses the line break
-                        itself. An item held within another is
-                        validated against the schema its type names,
-                        for that one rule, which the container pass
-                        does not state of it. Cross document facts a
-                        schema cannot express are left to their own
-                        checks.
+                        This check selects a schema for each item,
+                        either the schema the item names or the schema
+                        its type names, and validates the item against
+                        it. A pattern constrains a datum, and a datum
+                        holds no line break. The draft reads a regular
+                        expression by ECMA-262, where a dollar sign
+                        anchors the end of the string, while Python
+                        also matches before a final newline. The check
+                        therefore refuses the line break itself. An
+                        item held within another item is validated
+                        against the schema its type names, for that
+                        one rule, which the pass over the container
+                        does not state. Facts that span documents,
+                        which a schema cannot express, are left to
+                        their own checks.
 relation:               []
 
 ...

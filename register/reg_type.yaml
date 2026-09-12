@@ -469,10 +469,12 @@ table:
     brief:              |
                         Type of component data items
     description:        |
-                        Each component data item is one unit of
-                        transformation: named input and output ports,
-                        and either a prompt on each output or a source
-                        item that implements it.
+                        A component data item is one unit of
+                        transformation, with named input ports and
+                        named output ports. Either each output port
+                        carries a prompt that produces its item, or
+                        the component names a source item that
+                        implements it.
     usage:              |
                         A component is what a node in a workflow
                         instantiates. The same component may be
@@ -540,11 +542,12 @@ table:
     brief:              |
                         Type of dataflow workflow data items
     description:        |
-                        Each dataflow workflow data item holds a
-                        graph: nodes instantiating components, and
-                        edges wiring one output port to one input
-                        port, with back edges held apart and guards on
-                        destinations.
+                        A dataflow workflow data item holds a graph.
+                        The nodes of the graph instantiate components.
+                        The edges wire one output port to one input
+                        port. Back edges are held apart from the rest,
+                        and an edge may carry a guard on its
+                        destination.
     usage:              |
                         A dataflow workflow is run under a deployment,
                         and every run leaves an execution.
@@ -612,11 +615,11 @@ table:
     brief:              |
                         Type of deployment data items
     description:        |
-                        Each deployment data item names a workflow and
-                        the machinery it is run under: which model,
-                        what budget of passes a cycle may take, and
-                        whatever else a run needs that the definition
-                        must not say.
+                        A deployment data item names a workflow and
+                        the machinery the workflow is run under. The
+                        machinery is the model, the budget of passes a
+                        cycle may take, and whatever else a run needs
+                        that the workflow definition must not say.
     usage:              |
                         An execution names exactly one deployment, and
                         reads its machinery from there.
@@ -680,10 +683,11 @@ table:
     brief:              |
                         Type of binding data items
     description:        |
-                        Each binding data item names the node and port
-                        that were filled, the pass on which they were
-                        filled, and by an edge the item that filled
-                        them.
+                        A binding data item records one filling of a
+                        port. It names the node and the port that were
+                        filled, and the pass on which they were
+                        filled. An edge from the binding names the
+                        item that filled them.
     usage:              |
                         Bindings are entries held on an execution
                         under binding, keyed by a short local name.
@@ -822,10 +826,11 @@ table:
     brief:              |
                         Type of question data items
     description:        |
-                        Each question data item is one thing a design
-                        decision does not settle, held on that record
-                        with an identity of its own so that whatever
-                        later settles it can say so.
+                        A question data item records one thing that a
+                        design decision leaves unsettled. The question
+                        is held on the design decision itself and has
+                        an identity of its own, so that whatever
+                        settles the question later can name it.
     prefix:             qst
     regex_id:           ^qst_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
     usage:              |
@@ -934,11 +939,13 @@ table:
     brief:              |
                         Type of textual requirement data items
     description:        |
-                        Each textual requirement data item holds one
-                        requirement statement, a shall statement on
-                        one entity, with the attributes that make it a
-                        requirement expression: its rationale, its
-                        category, and where it came from.
+                        A textual requirement data item holds one
+                        requirement statement. The statement is a
+                        shall statement about one entity. The item
+                        also holds the attributes that make the
+                        statement a requirement expression: the
+                        rationale, the category, and the source the
+                        requirement came from.
     prefix:             req
     regex_id:           ^req_[a-z][a-z0-9_]*$
     usage:              |
@@ -1209,11 +1216,12 @@ table:
     brief:              |
                         Type of verification evidence data items
     description:        |
-                        Each verification evidence data item records
-                        what one observer found about the requirements
-                        verified by one method: a row per case and
-                        requirement, with an outcome and the digest of
-                        what it was observed against.
+                        A verification evidence data item records what
+                        one observer found about the requirements that
+                        one method verifies. It holds a row per case
+                        and requirement. Each row holds an outcome and
+                        the digest of what the case was observed
+                        against.
     prefix:             evd
     regex_id:           ^evd_[a-z][a-z0-9_]*$
     usage:              |
@@ -1286,14 +1294,19 @@ table:
     brief:              |
                         Type of observation data items
     description:        |
-                        Each observation data item holds what was
-                        captured from one public source, unchanged:
-                        the content, its locator, its attribution as
-                        the source gives it, when it was published and
-                        observed, how it was captured, and a digest
-                        naming that exact content. It interprets
-                        nothing; a need derived from it says in its
-                        evidence what the observation supports.
+                        An observation data item is a record of one
+                        public source, kept as it was captured. The
+                        record holds the content of the source, a
+                        locator that finds the source, and the
+                        attribution as the source gives it. It also
+                        holds the date the source was published, the
+                        date it was observed, the method of capture,
+                        and a digest that names the exact content
+                        captured. An observation does not interpret
+                        the source. Interpretation belongs to a need
+                        derived from the observation, and the evidence
+                        field of that need says what the observation
+                        supports.
     prefix:             obs
     regex_id:           ^obs_[a-z][a-z0-9_]*$
     usage:              |
@@ -1358,12 +1371,12 @@ table:
                         Type of candidate requirement entries embedded
                         in a concept
     description:        |
-                        Each candidate requirement is one obligation
-                        proposed on a concept's entity, with its
-                        rationale and category, held in the concept's
-                        candidate_requirement table with an identity
-                        of its own. Promotion makes a textual
-                        requirement item from it.
+                        A candidate requirement is one obligation
+                        proposed on the entity of a concept, with its
+                        rationale and its category. It is held in the
+                        concept's candidate_requirement table and has
+                        an identity of its own. Promotion makes a
+                        textual requirement item from a candidate.
     prefix:             crq
     regex_id:           ^crq_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
     usage:              |
@@ -1388,12 +1401,14 @@ table:
     brief:              |
                         Type of feasibility assessment data items
     description:        |
-                        Each assessment data item holds one assessor's
-                        judgement of one concept's feasibility: a
-                        verdict, seven rated dimensions with their
-                        rationale, and the off-the-shelf products,
-                        standards or component classes the concept
-                        could use, with what supports each claim.
+                        An assessment data item holds one assessor's
+                        judgement of whether one concept is feasible.
+                        It holds a verdict, seven rated dimensions
+                        with the rationale for each rating, and the
+                        off-the-shelf products, standards or component
+                        classes the concept could use. For each
+                        product named, it holds what supports the
+                        claim.
     prefix:             asmt
     regex_id:           ^asmt_[a-z][a-z0-9_]*$
     usage:              |
@@ -1449,10 +1464,12 @@ table:
                         Type of off-the-shelf candidate entries
                         embedded in an assessment
     description:        |
-                        Each product entry names a product, standard
-                        or component class a concept could use as it
-                        is, with its role, maturity and support. Never
-                        a top-level item.
+                        A product entry names a product, a standard or
+                        a component class that a concept could use as
+                        it is. The entry gives the role the product
+                        would play, its maturity, and what supports
+                        the claim. A product entry is never a
+                        top-level item.
     prefix:             prd
     regex_id:           ^prd_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
     usage:              |
@@ -1476,11 +1493,12 @@ table:
     brief:              |
                         Type of segment data items
     description:        |
-                        Each segment data item declares one repository
-                        of the commons and the segments it consumes.
-                        The repository it governs is the directory
-                        holding the directory the item sits in, so a
-                        repository declares itself by holding one.
+                        A segment data item declares one repository of
+                        the commons and names the segments that
+                        repository consumes. The repository it governs
+                        is the directory that holds the directory the
+                        segment item sits in. A repository therefore
+                        declares itself by holding one segment item.
     prefix:             seg
     regex_id:           ^seg_[a-z][a-z0-9_]*$
     home:               segment
@@ -1548,11 +1566,11 @@ table:
     brief:              |
                         Type of process word data items
     description:        |
-                        Each process word data item defines one verb a
-                        requirement may oblige an entity to perform:
-                        what the entity does, what the object must
-                        supply, and the verbs not to be used for the
-                        same process.
+                        A process word data item defines one verb that
+                        a requirement may oblige an entity to perform.
+                        It says what the entity does, what the object
+                        must supply, and which verbs are not to be
+                        used for the same process.
     prefix:             verb
     regex_id:           ^verb_[a-z][a-z0-9_]*$
     usage:              |
@@ -1629,10 +1647,11 @@ table:
     brief:              |
                         Type of requirement set data items
     description:        |
-                        Each requirement set data item takes the
-                        requirements on one entity together: its
-                        members by r_includes, and the scenario
-                        classes they cover. The unit the set-level
+                        A requirement set data item takes the
+                        requirements on one entity together. Its
+                        members are named by r_includes edges, and the
+                        set records the scenario classes those members
+                        cover. The set is the unit that the set-level
                         rules and evals judge.
     prefix:             rqs
     regex_id:           ^rqs_[a-z][a-z0-9_]*$
@@ -1732,10 +1751,11 @@ table:
     brief:              |
                         Type of sweep data items
     description:        |
-                        Each sweep data item holds what one run of the
-                        evals found, aggregated by eval and rule: the
-                        counts, the items and a sample of the
-                        messages, with the judge that judged.
+                        A sweep data item holds what one run of the
+                        evals found, aggregated by eval and by rule.
+                        For each group it holds the count of findings,
+                        the items found, and a sample of the messages.
+                        The sweep names the judge that judged.
     prefix:             swp
     regex_id:           ^swp_[a-z][a-z0-9_]*$
     home:               sweep
@@ -1766,11 +1786,11 @@ table:
     brief:              |
                         Type of rule proposal data items
     description:        |
-                        Each rule proposal data item holds a rule a
+                        A rule proposal data item holds a rule that a
                         model proposed from a recurring shape of
-                        finding, in the shape of a requirement rule,
-                        with how a mechanical check would find the
-                        defect.
+                        finding. The rule is written in the shape of a
+                        requirement rule, and the proposal says how a
+                        mechanical check would find the defect.
     prefix:             rlp
     regex_id:           ^rlp_[a-z][a-z0-9_]*$
     home:               proposal
@@ -1978,9 +1998,10 @@ table:
     brief:              |
                         Type of interface control document data items.
     description:        |
-                        An interface control document is a versioned
-                        controlled contract for one interface, made of
-                        keyed surfaces with addressable members.
+                        An interface control document is a versioned,
+                        controlled contract for one interface. It is
+                        made of keyed surfaces, and each surface has
+                        addressable members.
     prefix:             icd
     regex_id:           ^icd_[a-z][a-z0-9_]*$
     id_term:            term_interface_control_document
@@ -2033,9 +2054,10 @@ table:
                         Type of objective data items.
     description:        |
                         An objective is one thing an external standard
-                        requires of this system or its process. Its
-                        items are held in objective/, and what
-                        satisfies one points at it.
+                        requires of this system or of its process.
+                        Objective items are held in the objective
+                        directory. Whatever satisfies an objective
+                        points at the objective.
     prefix:             obj
     regex_id:           ^obj_[a-z][a-z0-9_]*$
     id_term:            term_objective
@@ -2165,13 +2187,14 @@ table:
     brief:              |
                         Type of coverage analysis data items
     description:        |
-                        Each coverage analysis data item holds what
-                        one judge read of the tests that verify
+                        A coverage analysis data item holds what one
+                        judge read of the tests that verify a set of
                         requirements, against the criteria of those
-                        requirements: for each thing the criteria say
-                        verification must show, whether the test would
-                        fail if that thing were untrue. One item per
-                        judge, as evidence is one item per observer.
+                        requirements. For each thing the criteria say
+                        verification must show, the analysis records
+                        whether the test would fail if that thing were
+                        untrue. There is one item per judge, as there
+                        is one evidence item per observer.
     prefix:             cva
     regex_id:           ^cva_[a-z][a-z0-9_]*$
     id_term:            term_coverage_analysis
@@ -2300,11 +2323,13 @@ table:
     brief:              |
                         Type of measure data items
     description:        |
-                        Each measure data item says how one thing is
-                        quantified: what is measured, in what unit or
-                        of what counted thing, over what population,
-                        by what statistic, which way is better, the
-                        least acceptable value and how the number is
+                        A measure data item says how one thing is
+                        quantified. It names what is measured, and the
+                        unit or the counted thing it is measured in.
+                        It names the population the measure is taken
+                        over, the statistic that summarises it, and
+                        which direction is better. It gives the least
+                        acceptable value and says how the number is
                         arrived at.
     prefix:             msr
     regex_id:           ^msr_[a-z][a-z0-9_]*$
@@ -2360,10 +2385,12 @@ table:
     brief:              |
                         Type of measure kind register entries
     description:        |
-                        Each entry names one sort of measure, taken
-                        from the INCOSE systems engineering handbook:
-                        of effectiveness, of performance, or a
-                        technical performance measure.
+                        A measure kind entry names one sort of
+                        measure, taken from the INCOSE systems
+                        engineering handbook. The sorts are the
+                        measure of effectiveness, the measure of
+                        performance, and the technical performance
+                        measure.
     prefix:             mkind
     regex_id:           ^mkind_[a-z][a-z0-9_]*$
     id_term:            term_measure_kind
@@ -2386,10 +2413,11 @@ table:
     brief:              |
                         Type of requirement level register entries
     description:        |
-                        Each entry names one rung of a decomposition a
-                        set of requirements can sit on, so that the
-                        run from a stakeholder requirement down to a
-                        part can be read rather than inferred.
+                        A requirement level entry names one rung of a
+                        decomposition. A set of requirements sits on
+                        one rung, so that the run from a stakeholder
+                        requirement down to a part can be read from
+                        the rungs rather than inferred.
     prefix:             rlvl
     regex_id:           ^rlvl_[a-z][a-z0-9_]*$
     id_term:            term_requirement_level

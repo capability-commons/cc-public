@@ -1,0 +1,60 @@
+id_self:                ddr_changed_in_working_tree
+guid_self:              ddr_fe89a87ebdea453ca2654a8b33499d45
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Judging what changed in the working tree
+brief:                  |
+                        The check command takes --changed, which
+                        narrows a run to the items in files that
+                        differ between the working tree and the last
+                        commit, beside --changed-since, which needs a
+                        commit to name.
+context:                |
+                        After a batch of rewrites, the question is
+                        whether the rewritten items now pass, and
+                        nothing else. The existing narrowing,
+                        --changed-since REF, reads the files changed
+                        since a commit, which does not cover
+                        uncommitted work in a tree where the person
+                        commits at checkpoints. The readability pass
+                        re-judged 31 items by building a regular
+                        expression of their ids by hand.
+decision:               |
+                        The check command takes --changed, which asks
+                        git for the files that differ between the
+                        working tree and HEAD, staged or not, and
+                        narrows the run to the items in those files
+                        and to pairs where either end is in them,
+                        exactly as --changed-since does for a commit.
+                        The two options are exclusive.
+rationale:              |
+                        The narrowing logic exists; only the source of
+                        the file list is new, and git already answers
+                        it. The working tree is where a person works
+                        between checkpoints, so the question is asked
+                        there far more often than of a commit.
+alternative:            |
+                        A list of ids from a file. Rejected as the
+                        only route, because the ids are what the
+                        person does not want to type; kept as a
+                        possible addition for a set that is not a
+                        change. Committing before every re-judge.
+                        Rejected: it makes the checkpoint rhythm serve
+                        the tool.
+consequence:            |
+                        Not yet implemented. A rename or a move shows
+                        as two files changed, both narrowed in, which
+                        is right. An untracked file counts as changed.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.checking
+    guid_target:        pym_17f14ede03a74bf29f9f31eccabb2408

@@ -16,15 +16,16 @@ brief:                  |
                         The facts loaded into an in-memory SQLite
                         database, walked, pathed, and asked questions.
 description:            |
-                        Loads the facts into a database that lives for
-                        one command, and answers over it: the
-                        neighbourhood of an item to a depth along
-                        chosen relations in either direction, a
-                        shortest path between two items, what nothing
-                        points at and what no edge uses, and any SQL a
-                        caller or a named query item gives. Draws a
-                        walk as Graphviz dot or as mermaid. See
-                        ddr_graph_query.
+                        This module loads the facts into a database
+                        that lives for one command, and answers
+                        questions over that database. It answers the
+                        neighbourhood of an item to a given depth,
+                        along chosen relations, in either direction.
+                        It answers a shortest path between two items,
+                        what nothing points at, what no edge uses, and
+                        any SQL that a caller or a named query item
+                        gives. It draws a walk as Graphviz dot or as
+                        mermaid. See ddr_graph_query.
 relation:               []
 
 ...
@@ -194,11 +195,12 @@ class Database:
                                 relations named or every relation, in the
                                 directions asked.
         description:            |
-                                Breadth first from the start item, each item
-                                once at the depth it is first reached, along
-                                the relations named or every relation, in the
-                                directions asked, with the edge that reached
-                                it.
+                                The function walks breadth first from the
+                                start item. It visits each item once, at the
+                                depth where the item is first reached, along
+                                the relations named or along every relation,
+                                in the directions asked for. Each step carries
+                                the edge that reached the item.
         relation:               []
 
         ...
@@ -252,10 +254,11 @@ class Database:
                                 zero; an empty list where no path joins them;
                                 None where either name is unknown.
         description:            |
-                                Breadth first from one item until the other is
-                                reached, then the way back retraced; an empty
-                                list where no path joins them, None where
-                                either name is unknown.
+                                The function searches breadth first from one
+                                item until the other item is reached, and then
+                                retraces the way back. It returns an empty
+                                list where no path joins the two items, and
+                                None where either name is unknown.
         relation:               []
 
         ...
@@ -315,9 +318,11 @@ class Database:
                                 Return (items no edge points at, relations no
                                 edge uses), as ids.
         description:            |
-                                Two queries over the facts: items that no edge
-                                points at and no item holds, and relation
-                                entries that no edge is labelled with.
+                                The function runs two queries over the facts.
+                                The first finds the items that no edge points
+                                at and no item holds. The second finds the
+                                relation entries that no edge is labelled
+                                with.
         relation:               []
 
         ...
@@ -443,13 +448,14 @@ def drawing(list_step, id_format, list_edge = None):
                             Return the steps of a walk as a drawing: dot
                             for Graphviz, or mermaid.
     description:            |
-                            The steps of a walk as a drawing, in Graphviz
-                            dot or in mermaid: one node per item, and one
-                            edge labelled with its relation for each edge
-                            of the neighbourhood, given by the database as
-                            the edges among the items reached; where none
-                            are given, the edges the walk reached each
-                            item by.
+                            The function returns the steps of a walk as a
+                            drawing, in Graphviz dot or in mermaid. There
+                            is one node per item, and one edge labelled
+                            with its relation for each edge of the
+                            neighbourhood. The edges are those the
+                            database gives as the edges among the items
+                            reached. Where none are given, the drawing
+                            uses the edges the walk reached each item by.
     relation:               []
 
     ...

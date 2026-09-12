@@ -15,17 +15,19 @@ title:                  Set a field
 brief:                  |
                         Set one field of one item, named by dot path.
 description:            |
-                        The value is read as YAML, so a number is a
-                        number and an empty list is a list. A string
-                        is stored as prose or as a datum by the
-                        schema: unbounded means prose, held as a block
+                        The value given to set is read as YAML, so a
+                        number is a number and an empty list is a
+                        list. A string is stored as prose or as a
+                        datum, and the schema decides which. An
+                        unbounded string is prose, held as a block
                         scalar, which is what marks it as prose to the
-                        printer; a length, pattern, enumeration,
-                        constant or format means a datum. Deeper than
-                        one step below an item a line break decides,
+                        printer. A string bounded by a length, a
+                        pattern, an enumeration, a constant or a
+                        format is a datum. Deeper than one step below
+                        an item, a line break in the value decides,
                         and a field already held as prose stays prose.
-                        Prose given as such is stored as a block
-                        scalar whatever the schema says.
+                        A value given explicitly as prose is stored as
+                        a block scalar whatever the schema says.
 relation:               []
 
 ...

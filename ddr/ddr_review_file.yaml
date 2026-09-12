@@ -1,0 +1,64 @@
+id_self:                ddr_review_file
+guid_self:              ddr_d17c84a085ba42a0aa0c2cbaef603f47
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Review files the tool writes and reads back
+brief:                  |
+                        The revise command writes a review file per
+                        class, holding for each revision the text
+                        before, the finding, the text after and the
+                        instrument's columns, with a verdict column a
+                        person fills in, and reads the file back to
+                        accept and reject.
+context:                |
+                        Every batch of the readability pass was
+                        reviewed from a file built by hand: before,
+                        the judge's reason, after, and a sentence of
+                        measures. The person read the file and
+                        answered in prose, and the answer was applied
+                        by hand. That is the only step in the loop a
+                        person must do, and it should be the only
+                        manual step left.
+decision:               |
+                        The revise command writes one review file per
+                        class it drafted, as plain text a person can
+                        read in a terminal or a viewer. Each entry
+                        shows the subject, the field, the finding's
+                        message, the text before, the text after, and
+                        the instrument's columns for both. Each entry
+                        has a verdict line, empty, which the person
+                        sets to accept, reject, or an edited text. The
+                        command reads the file back, applies the
+                        verdicts to the revisions, and applies the
+                        accepted revisions through the bulk write.
+rationale:              |
+                        The file is the form the review took when it
+                        was done by hand and it was found to work; the
+                        tool should produce and consume that form
+                        rather than a new one. Reading the file back
+                        closes the loop without a second command to
+                        learn. An edited text in the verdict line lets
+                        a person fix a draft in place, which was the
+                        commonest answer in the pass after accept.
+alternative:            |
+                        Reviewing in the diff. Rejected: the diff
+                        shows neither the finding nor the measures,
+                        and an accept has nowhere to go. A web page.
+                        Deferred: the dossier's temporary interface
+                        may host it later, and a text file needs
+                        nothing.
+consequence:            |
+                        Not yet implemented, and depends on
+                        ddr_revision_item. The file format is the
+                        revision item's fields laid out for reading,
+                        so it changes when the item does. A verdict a
+                        person writes in the file is a decision, and
+                        how it is recorded on the revision is the
+                        question the revision item's status answers.
+relation:               []

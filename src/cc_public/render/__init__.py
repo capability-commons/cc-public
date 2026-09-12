@@ -16,14 +16,15 @@ brief:                  |
                         Documents drawn from the graph: a projection,
                         then HTML and PDF.
 description:            |
-                        The projection of a dossier rooted at an
-                        observation, as plain data with nothing of
-                        layout in it; pages rendered from it by
-                        templates; the PDF written from a page; and
-                        the drawing of a graph. Reads the tree and a
-                        findings report, writes nothing into the tree.
-                        A sibling of the committer, the judgement and
-                        the evidence in the tiers.
+                        This package holds the projection of a dossier
+                        rooted at an observation, as plain data with
+                        nothing of layout in it. It holds the pages
+                        rendered from that projection by templates,
+                        the PDF written from a page, and the drawing
+                        of a graph. The package reads the tree and a
+                        findings report, and writes nothing into the
+                        tree. In the tiers it is a sibling of the
+                        committer, the judgement and the evidence.
 relation:               []
 
 ...

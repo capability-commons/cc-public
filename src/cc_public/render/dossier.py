@@ -15,13 +15,14 @@ title:                  Dossier projection
 brief:                  |
                         The dossier rooted at an observation, as data.
 description:            |
-                        Walks the derivations from an observation to
-                        needs, concepts and requirements, gathers what
-                        each run bound and judged, the findings a
-                        check report holds against each requirement
-                        and what the trace reports absent, draws the
-                        derivations as dot and mermaid, and lists the
-                        identities. Nothing about how it looks.
+                        This module walks the derivations from an
+                        observation to needs, concepts and
+                        requirements. It gathers what each run bound
+                        and judged, the findings a check report holds
+                        against each requirement, and what the trace
+                        reports absent. It draws the derivations as
+                        dot and as mermaid, and lists the identities.
+                        It says nothing about how the dossier looks.
 relation:               []
 
 ...

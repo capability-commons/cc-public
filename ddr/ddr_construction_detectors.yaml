@@ -1,0 +1,78 @@
+id_self:                ddr_construction_detectors
+guid_self:              ddr_2d799a25a90e45da88f13994394a46cd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mechanical detection of the constructions the judge finds
+brief:                  |
+                        The burden instrument reports, per field, the
+                        constructions the reads alone judge actually
+                        fires on: a sentence with no finite verb, a
+                        verb with no subject, a colon followed by a
+                        long list, and a word mentioned rather than
+                        used.
+context:                |
+                        The instrument's density columns did not
+                        predict the judge. Fields the judge failed and
+                        fields it passed had the same median length,
+                        propositions per word and pointers. The judge
+                        tracked constructions, and each of them is
+                        visible to the parser the instrument already
+                        loads. Two of the judge's known over-fires, a
+                        colon followed by three things and a sentence
+                        whose subject is a word being mentioned, are
+                        also constructions a parser can label.
+decision:               |
+                        The burden module gains four detectors: a
+                        sentence with no finite verb; a finite verb
+                        with no subject dependant; a colon followed by
+                        more than three coordinated items; and a
+                        sentence whose subject is a quoted or listed
+                        word, which is mention rather than use. The
+                        burden command reports their counts per field
+                        beside the existing columns. A check, prose,
+                        reports the first three as advisory findings,
+                        so that most of what the judge would find is
+                        found deterministically and for free. The
+                        fourth is reported as a note on a judged
+                        finding, marking it as a likely over-fire.
+rationale:              |
+                        A construction the parser can see needs no
+                        judge, and a finding a check makes is the same
+                        on every run. Marking the likely over-fires
+                        lets a reviewer suppress without reading,
+                        which is what the pass spent the most of a
+                        person's attention on. The instrument stays an
+                        instrument; the check is a separate thing with
+                        its own advisory severity, which keeps the
+                        decision of ddr_reader_burden that a score
+                        never gates.
+alternative:            |
+                        Teaching the judge the distinctions in its
+                        criterion. Tried twice and withdrawn, as
+                        ddr_prose_by_persona records: the judge
+                        loosened on everything. Leaving the judge to
+                        find everything. Rejected: six hundred
+                        judgements a sweep, and a person reading every
+                        one.
+consequence:            |
+                        Not yet implemented. The parser's subject
+                        detection is imperfect on imperatives, so the
+                        subjectless detector must exempt an imperative
+                        sentence, which the brief of a rule may
+                        legitimately be. The three item threshold is
+                        the judge's measured boundary and belongs in
+                        the check as a constant with that note, not in
+                        any rule.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.burden
+    guid_target:        pym_4e2ce1f281ae49ae85f2845b714313e4

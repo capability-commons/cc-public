@@ -17,10 +17,11 @@ brief:                  |
                         acronyms, weak verbs, light verbs and
                         nominalisations.
 description:            |
-                        Writes requirements with each defect and
-                        checks that the statement check reports it
-                        once, by the rule it names, and that a well
-                        formed statement earns nothing.
+                        These tests write requirements with each
+                        defect and check that the statement check
+                        reports each defect once, by the rule it
+                        names. A well formed statement earns no
+                        finding.
 relation:               []
 
 ...

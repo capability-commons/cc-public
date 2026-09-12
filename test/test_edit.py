@@ -16,10 +16,11 @@ brief:                  |
                         new, set and link make well formed changes and
                         refuse what they should.
 description:            |
-                        Copies the tree, then makes items, sets fields
-                        and links items through the edit package,
-                        asserting each change is well formed and each
-                        refusal is refused.
+                        These tests copy the tree, then make items,
+                        set fields and link items through the edit
+                        package. Each change is asserted to be well
+                        formed, and each refusal is asserted to be
+                        refused.
 relation:               []
 
 ...
@@ -295,11 +296,14 @@ def test_rename_carries_to_qualified_items_references_and_file(tree, tmp_path):
                             A rename carries to qualified items,
                             references and the file.
     description:            |
-                            Renames a component and asserts its guid is
-                            unchanged, its file and the ids it qualifies
-                            follow, every reference is repointed, a local
-                            key can change only its last step, and a
-                            python item is refused.
+                            The test renames a component. It asserts that
+                            the guid of the component is unchanged. It
+                            asserts that the component's file, and the ids
+                            that the component qualifies, follow the
+                            rename. It asserts that every reference to the
+                            component is repointed, that a local key can
+                            change only its last step, and that a rename
+                            of a python item is refused.
 
     relation:
 

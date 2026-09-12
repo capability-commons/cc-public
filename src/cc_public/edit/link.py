@@ -15,15 +15,16 @@ title:                  Link two items
 brief:                  |
                         Add a relation edge from one item to another.
 description:            |
-                        Both items are named, wherever they live. The
-                        relation must be an entry in the relation
-                        register. The edge is the four fields every
-                        edge has, with both guids looked up rather
-                        than typed, and it is appended to the source
-                        item's relation list, which is created where
-                        absent. unlink removes an edge found the same
-                        way, by relation and target guid, so that a
-                        stale readable id on it does not hide it.
+                        Both items are named by identifier, wherever
+                        they live. The relation must be an entry in
+                        the relation register. The edge is the four
+                        fields every edge has, with both guids looked
+                        up rather than typed. The edge is appended to
+                        the source item's relation list, and the list
+                        is created where it is absent. The unlink
+                        command removes an edge found the same way, by
+                        relation and target guid, so that a stale
+                        readable id on the edge does not hide it.
 relation:               []
 
 ...

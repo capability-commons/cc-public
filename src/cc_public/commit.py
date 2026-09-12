@@ -16,17 +16,18 @@ brief:                  |
                         Commit the working tree with a commit record
                         in the message.
 description:            |
-                        Runs the checks, mints the record, validates
-                        it against its schema, stages what changed and
-                        commits. What changed is not written into the
-                        record; the diff says it. A critical finding
-                        refuses the commit unless a checkpoint is
-                        asked for, in which case the record says so,
-                        and so does a lint finding where the tree
-                        configures a linter. An analysis that did not
-                        complete refuses it whatever is asked for,
-                        since no state of the checks can then be
-                        recorded.
+                        The committer runs the checks, mints the
+                        commit record, validates the record against
+                        its schema, stages what changed, and commits.
+                        What changed is not written into the record,
+                        because the diff says that. A critical finding
+                        refuses the commit, unless a checkpoint is
+                        asked for, in which case the record says so. A
+                        lint finding refuses the commit in the same
+                        way, where the tree configures a linter. An
+                        analysis that did not complete refuses the
+                        commit whatever is asked for, because no state
+                        of the checks can then be recorded.
 relation:               []
 
 ...
@@ -147,12 +148,13 @@ def commit(root, title, brief = None, description = None,
                             Make the record, commit everything that
                             changed, and return (hash, id_self).
     description:            |
-                            Runs the checks and the linters, refuses on
-                            what refusal says, mints and validates the
-                            record, stages the root and commits with the
-                            message. The checks read the root and every
-                            further path given, since a consumer segment
-                            is checked beside the core it names; only the
+                            The function runs the checks and the linters,
+                            and refuses where the refusal function says
+                            so. It then mints and validates the record,
+                            stages the root, and commits with the message.
+                            The checks read the root and every further
+                            path given, because a consumer segment is
+                            checked beside the core it names. Only the
                             root is committed.
     relation:               []
 
@@ -332,11 +334,12 @@ def message(document, list_trailer = ()):
                             record between its markers, laid out by the
                             printer, then any trailers.
     description:            |
-                            The title on the first line, a blank line, the
-                            record laid out by the printer between a line
-                            of three dashes and a line of three full
-                            stops, then any trailers: the record format
-                            cctool log reads back.
+                            The message is the title on the first line,
+                            then a blank line, then the record laid out by
+                            the printer between a line of three dashes and
+                            a line of three full stops, then any trailers.
+                            This is the record format that the log command
+                            reads back.
     relation:               []
 
     ...

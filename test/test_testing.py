@@ -19,11 +19,14 @@ brief:                  |
                         from identity alone.
 description:            |
                         The specification carries the method, the
-                        adapter, the configuration and the digests a
-                        result is bound to. A case naming no method,
-                        two methods, a method the tree lacks, or a
-                        configuration its method's schema refuses is
-                        reported where the case is written.
+                        adapter, the configuration, and the digests
+                        that a result is bound to. Four faults in a
+                        case are each reported where the case is
+                        written: the case names no method, the case
+                        names two methods, the case names a method the
+                        tree lacks, or the case supplies a
+                        configuration that its method's schema
+                        refuses.
 relation:               []
 
 ...

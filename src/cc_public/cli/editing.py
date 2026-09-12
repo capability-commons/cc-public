@@ -16,11 +16,12 @@ brief:                  |
                         new, insert, set, unset, link, unlink, rename
                         and accept: every write to the tree.
 description:            |
-                        Each adapts what was typed into one call on
-                        the edit tier and prints the file it touched.
-                        new takes fields and edges so that an item
-                        need never exist half made; accept is the only
-                        path to an accepted requirement.
+                        Each of these commands adapts what was typed
+                        into one call on the edit tier and prints the
+                        file it touched. The new command takes fields
+                        and edges, so that an item need never exist
+                        half made. The accept command is the only path
+                        to an accepted requirement.
 relation:               []
 
 ...

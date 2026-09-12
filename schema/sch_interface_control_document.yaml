@@ -17,33 +17,36 @@ brief:                  |
 description:            |
                         Identity, rights, the descriptive fields and
                         edges come from sch_base and sch_relation.
-                        Beyond them an interface control document
+                        Beyond them, an interface control document
                         carries its interface version, its lifecycle
                         status, the declarations its surfaces share,
-                        and one or more keyed surfaces. A surface is a
-                        keyed object holding exactly one of the forms
-                        the document admits. Three are admitted. A
-                        native API surface names exactly one
-                        implementation language. A dataflow step
-                        surface declares the ports a step reads and
-                        writes and the execution semantics
-                        compatibility depends on. An artifact surface
-                        declares the files, messages or records handed
-                        from a producer to a reader, what each
-                        carries, how it is written down and the
-                        conventions a reader needs to interpret it. A
-                        dataflow step surface is not a Capability
+                        and one or more keyed surfaces.
+
+                        A surface is a keyed object that holds exactly
+                        one of the forms the document admits, and
+                        three forms are admitted. A native API surface
+                        names exactly one implementation language. A
+                        dataflow step surface declares the ports a
+                        step reads and writes, and the execution
+                        semantics that compatibility depends on. An
+                        artifact surface declares the files, messages
+                        or records handed from a producer to a reader,
+                        what each carries, how it is written down, and
+                        the conventions a reader needs in order to
+                        interpret it.
+
+                        A dataflow step surface is not a Capability
                         Commons component, port or workflow form. It
-                        composes neither sch_component nor sch_port,
-                        and any correspondence between a runtime
-                        interface and a component is an explicit edge
-                        and never inferred from a shared field name. A
+                        composes neither sch_component nor sch_port. A
+                        correspondence between a runtime interface and
+                        a component is always an explicit edge. It is
+                        not inferred from a shared field name. A
                         runtime type is not a Capability Commons item
-                        type, so a type reference here does not use
-                        the id_type and guid_type fields of sch_port.
-                        It names a declaration this document shares,
-                        the spelling the surface language uses, or
-                        both.
+                        type, so a type reference in this document
+                        does not use the id_type and guid_type fields
+                        of sch_port. A type reference names a
+                        declaration this document shares, or the
+                        spelling the surface language uses, or both.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_interface_control_document.yaml
 usage:                  |

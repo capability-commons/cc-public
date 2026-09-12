@@ -16,14 +16,14 @@ brief:                  |
                         Check that every decision still holds: its
                         subjects unchanged and its expiry not passed.
 description:            |
-                        Computes the digest of each subject of every
-                        decision and compares it to the digest the
-                        decision stamped, reporting a subject that has
-                        changed since as advisory, since the decision
-                        then speaks of content that no longer exists;
-                        and reports a decision whose expiry has
-                        passed. A decision that no longer holds admits
-                        nothing.
+                        This check computes the digest of each subject
+                        of every decision and compares it with the
+                        digest the decision stamped. A subject that
+                        has changed since the decision is reported as
+                        advisory, because the decision then speaks of
+                        content that no longer exists. A decision
+                        whose expiry has passed is reported too. A
+                        decision that no longer holds admits nothing.
 relation:               []
 
 ...

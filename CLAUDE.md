@@ -43,6 +43,12 @@ Judging
   matching the same words reports a met case as a note, not a finding.
   `--origin written` holds a hand-written item to a verdict instead; a
   mutated case is made through the API with its subject text set.
+- `burden [--field F] [--prefix P] [--by field|prefix] [--sort M] [--min-words N] [--format json]`
+  — mechanical reading-load measures of prose fields, heaviest first:
+  propositions per word, pointers and participial clauses per sentence,
+  dependents per nominal, nominalisations, noun runs; sentence length and
+  grade as guards. An instrument, not a check: no threshold, gates nothing
+  (`ddr_reader_burden`). Needs the `prose` extra.
 
 Assurance
 
@@ -281,6 +287,17 @@ which of them have anything demonstrating they can fail. A tool run for
 information is not entered there.
 
 ## Writing items — use the tool, never hand-edit
+
+Before writing any prose field, read `register/reg_writing_style_rule.yaml`
+and hold its first entry, `style_write_for_the_reader`, as the whole
+instruction: *Write for a competent engineer who is reading this field on
+its own, with only the glossary to hand. Write steady, plain, workmanlike
+prose of the kind found in an engineering handbook. Say what a thing is
+before what it is not, and call a thing by its name rather than by a word
+such as both, the pair or the rest.* Give every sentence a subject and a
+verb, and let a long list become sentences. Length is the price and it is paid. Design
+decisions and annotations are exempt: they carry the model's own voice
+(`ddr_prose_by_persona`).
 
 - `new TYPE ID [--set PATH=VALUE]… [--prose PATH=TEXT]… [--link REL TARGET]…`
   — mints the identity, writes every required field empty (it fails the

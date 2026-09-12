@@ -16,9 +16,10 @@ brief:                  |
                         A commit carries a valid record in its
                         message.
 description:            |
-                        Makes a repository from a copy of the tree,
-                        changes it, commits through the tool, and
-                        reads the record back from the history.
+                        This test makes a repository from a copy of
+                        the tree, changes the copy, commits through
+                        the tool, and reads the commit record back
+                        from the history.
 relation:               []
 
 ...

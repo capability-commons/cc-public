@@ -16,13 +16,14 @@ brief:                  |
                         Make a decision item over named items, stamped
                         with their digests.
 description:            |
-                        Makes a decision data item in the decision
-                        directory: the outcome, the actor with role
-                        and authority, the reasons, the condition and
-                        expiry where given, and one subject per item
-                        named, each with the digest of its content as
-                        it stands. The one path by which a decision is
-                        made.
+                        This module makes a decision data item in the
+                        decision directory. The item holds the
+                        outcome, the actor with role and authority,
+                        the reasons, the condition and expiry where
+                        they are given, and one subject for each item
+                        named. Each subject carries the digest of that
+                        item's content as it stands. This is the one
+                        path by which a decision is made.
 relation:               []
 
 ...

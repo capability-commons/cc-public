@@ -26,6 +26,9 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
 #
 [project.optional-dependencies]
 eval                    = ["dspy==3.3.1"]
+prose                   = ["spacy>=3.8,<4",
+                           "ideadensity>=0.6,<1",
+                           "textstat>=0.7,<1"]
 render                  = ["jinja2>=3.1,<4", 
                            "weasyprint>=69,<70"]
 test                    = ["pytest>=9.1.1,<10",
@@ -53,7 +56,10 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package", "security"] }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package", "security", "prose"] }
+# The english model the prose extra reads with. A direct reference, which
+# an index refuses in a package's own metadata, so it is named here.
+en-core-web-sm          = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
 
 [tool.cctool.new]
 copyright               = "Copyright 2026 William Payne"

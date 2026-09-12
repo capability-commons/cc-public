@@ -181,11 +181,12 @@ def refusal(report, is_checkpoint = False):
                             report must stop for, or None where the report
                             may be acted on.
     description:            |
-                            The one place the policy lives, read by the
-                            committer, the executor and the gate. An
-                            analysis that failed to run refuses, and a
-                            critical finding refuses. ddr_fail_closed
-                            decides the policy.
+                            This function is the one place the refusal
+                            policy lives, and the committer, the executor
+                            and the gate all read it. An analysis that
+                            failed to run refuses, and a critical finding
+                            refuses. The policy is decided in
+                            ddr_fail_closed.
     relation:               []
 
     ...

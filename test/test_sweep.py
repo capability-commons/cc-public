@@ -17,13 +17,14 @@ brief:                  |
                         and a scripted model proposes a rule from
                         them.
 description:            |
-                        Writes a small check report with eval
-                        findings, makes a sweep from it and checks the
-                        groups, their counts, items and samples, and
-                        that an invented rule name groups under its
-                        eval alone; then runs the proposing workflow
-                        with a scripted model and checks the proposal
-                        derives from the sweep.
+                        These tests write a small check report with
+                        eval findings and make a sweep from it. They
+                        check the groups, their counts, their items
+                        and their samples, and that an invented rule
+                        name groups under its eval alone. They then
+                        run the proposing workflow with a scripted
+                        model and check that the proposal derives from
+                        the sweep.
 relation:               []
 
 ...

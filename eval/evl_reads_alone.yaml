@@ -1,0 +1,293 @@
+id_self:                evl_reads_alone
+guid_self:              evl_b15f18592fa645519b9c0437992f2375
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reads on its own
+brief:                  |
+                        A description can be read once, on its own, by
+                        a competent engineer who has read nothing
+                        else. The rule is style_write_for_the_reader.
+criterion:              |
+                        MET when a competent engineer who has read
+                        nothing else in the repository could read the
+                        passage once, at an ordinary pace, and say
+                        what it says. Each sentence has a subject and
+                        a verb. Whatever a word such as it, this, that
+                        or these points at is named in the same
+                        passage, in the same sentence or the one
+                        before. A list is short enough to hold in
+                        mind, or is written as sentences. Nothing has
+                        to be reconstructed from words left out.
+
+                        UNMET when the reader has to do work the
+                        writer could have done: a sentence with no
+                        main verb, or a verb with no subject of its
+                        own, so that the reader supplies what does the
+                        thing; a pointer whose referent is outside the
+                        passage or several sentences back; one clause
+                        carrying a colon and a list of more than a few
+                        things; a run of nouns that has to be unpacked
+                        to be understood; or words left out so that
+                        the reader supplies them.
+
+                        Length is not the question. A longer passage
+                        that reads once is MET. A shorter passage that
+                        has to be read twice is UNMET. Technical names
+                        from the glossary, such as r_cites or
+                        guid_self, are ordinary words to this reader
+                        and are never a fault.
+
+                        The subject opens with a label line: three
+                        hyphens, the item's id, and the name of its
+                        first field. Field names followed by a colon
+                        label the passages that follow. Labels are how
+                        the subject is presented and are never a
+                        fault.
+
+                        When UNMET, quote the passage that costs the
+                        effort and say what the reader has to supply.
+severity:               advisory
+
+example:
+
+  - input:              |
+                        --- t_question description: A question data
+                        item records one thing that a design decision
+                        leaves unsettled. The question is held on the
+                        design decision itself and has an identity of
+                        its own, so that whatever settles the question
+                        later can name it.
+    verdict:            met
+    feedback:           |
+                        Two sentences, each with a subject and a verb.
+                        The question, the design decision and the
+                        identity are named again rather than pointed
+                        at. Reads once.
+
+  - input:              |
+                        --- t_question description: Each question data
+                        item is one thing a design decision does not
+                        settle, held on that record with an identity
+                        of its own so that whatever later settles it
+                        can say so.
+    verdict:            unmet
+    feedback:           |
+                        One sentence of thirty two words. That record
+                        and it point back across the sentence;
+                        whatever later settles it makes the reader
+                        work out what it is. Quote: held on that
+                        record with an identity of its own so that
+                        whatever later settles it can say so.
+
+  - input:              |
+                        --- sch_port description: An entry on a
+                        component, under input or under output. Names
+                        the type of the item it carries. An input may
+                        be optional. An output carries the prompt that
+                        produces its item. An eval is anchored here by
+                        an r_is_judged_by edge.
+    verdict:            met
+    feedback:           |
+                        Short sentences that each say one thing. The
+                        second has no subject of its own, but the
+                        entry is named in the sentence before and
+                        nothing has to be supplied. r_is_judged_by is
+                        a glossary name. Reads once.
+
+  - input:              |
+                        --- pyf_cc_public.facts.facts description: One
+                        Item per identity with its prefix, status and
+                        location, one Edge per relation edge, one
+                        Containment per embedded item and its holder,
+                        derived from the documents on every use.
+    verdict:            unmet
+    feedback:           |
+                        A list of thirty words with no main verb. The
+                        reader has to supply what returns these, and
+                        what derived attaches to. Quote the whole
+                        passage.
+
+scope:
+
+  include:
+    - description
+
+confidence:
+
+  - model:              openai/gpt-4.1-mini
+    date:               '2026-09-12'
+    origin:             written
+    cases:              8
+    samples:            5
+    false_positive:     0.375
+    false_negative:     null
+    unanimous:          1.0
+    digest:             8ce97f1e
+
+  - model:              openai/gpt-4.1-mini
+    date:               '2026-09-12'
+    origin:             mutated
+    cases:              2
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          0.5
+    digest:             8ce97f1e
+
+  - model:              openai/gpt-4.1-mini
+    date:               '2026-09-12'
+    origin:             all
+    cases:              10
+    samples:            5
+    false_positive:     0.375
+    false_negative:     0.0
+    unanimous:          0.9
+    digest:             8ce97f1e
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-12'
+    origin:             written
+    cases:              8
+    samples:            5
+    false_positive:     0.0
+    false_negative:     null
+    unanimous:          1.0
+    digest:             8dae1acb
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-12'
+    origin:             mutated
+    cases:              2
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          0.5
+    digest:             8dae1acb
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-12'
+    origin:             suppressed
+    cases:              1
+    samples:            5
+    false_positive:     1.0
+    false_negative:     null
+    unanimous:          0.0
+    digest:             8dae1acb
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-12'
+    origin:             confirmed
+    cases:              7
+    samples:            5
+    false_positive:     null
+    false_negative:     0.286
+    unanimous:          0.857
+    digest:             8dae1acb
+
+  - model:              openai/gpt-5.1
+    date:               '2026-09-12'
+    origin:             all
+    cases:              18
+    samples:            5
+    false_positive:     0.111
+    false_negative:     0.222
+    unanimous:          0.833
+    digest:             8dae1acb
+
+  - model:              openai/gpt-4.1
+    date:               '2026-09-12'
+    origin:             written
+    cases:              8
+    samples:            5
+    false_positive:     0.125
+    false_negative:     null
+    unanimous:          0.875
+    digest:             c1cbae55
+
+  - model:              openai/gpt-4.1
+    date:               '2026-09-12'
+    origin:             mutated
+    cases:              9
+    samples:            5
+    false_positive:     null
+    false_negative:     0.0
+    unanimous:          1.0
+    digest:             c1cbae55
+
+  - model:              openai/gpt-4.1
+    date:               '2026-09-12'
+    origin:             suppressed
+    cases:              4
+    samples:            5
+    false_positive:     1.0
+    false_negative:     null
+    unanimous:          1.0
+    digest:             c1cbae55
+
+  - model:              openai/gpt-4.1
+    date:               '2026-09-12'
+    origin:             all
+    cases:              21
+    samples:            5
+    false_positive:     0.417
+    false_negative:     0.0
+    unanimous:          0.952
+    digest:             c1cbae55
+
+relation:
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_type
+    guid_target:        t_2a196326eaf84759b37d43d5b1f0b118
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_schema
+    guid_target:        t_a4fb6d3ae5ff4452a45804e2f57b06a2
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_register
+    guid_target:        t_dcd4c5f697c945829094914ff868a43b
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_relation
+    guid_target:        t_250febd9728346e98029ef9b587304f1
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_python_package
+    guid_target:        t_8d37421f029f4e13a7d99ee80028d6fb
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_python_module
+    guid_target:        t_186408f897d541588a1bb9c495fcec71
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_python_function
+    guid_target:        t_92b7b832d3c7419f9252f7eb3339f94b
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_term
+    guid_target:        t_e0d624b5a7a6406581eda544e5213cb1
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_requirement_rule
+    guid_target:        t_e6f6d4afca8348faa1a05dbcbefeb6ac
+
+  - id_relation:        r_evaluates_items_of_type
+    guid_relation:      r_18cffd40f764443c89211cfc4854dc08
+    id_target:          t_requirement_characteristic
+    guid_target:        t_4cde0a92d42c42e497cea394ce4df2bf

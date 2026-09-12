@@ -17,19 +17,21 @@ brief:                  |
                         implements it, what verifies it, and what it
                         lacks.
 description:            |
-                        Computes the assurance of every requirement
-                        from the documents alone: its status,
-                        derivation, children, whether it is a leaf,
-                        the code responsible for it, the tests that
-                        verify it, what it names that does not
-                        resolve, and its gaps with their severities,
-                        which follow from its status and from whether
-                        the world is closed. Computes the reverse too,
-                        the impact of a change to one item, and what
-                        rests on the files a commit changed. Read by
-                        the trace check and by the trace and changed
-                        commands, so that they cannot disagree. Prints
-                        nothing and writes nothing.
+                        This module computes the assurance of every
+                        requirement from the documents alone: its
+                        status, its derivation, its children, whether
+                        it is a leaf, the code responsible for it, the
+                        tests that verify it, what it names that does
+                        not resolve, and its gaps with their
+                        severities. The severities follow from the
+                        requirement's status and from whether the
+                        world is closed. The module also computes the
+                        reverse: the impact of a change to one item,
+                        and what rests on the files a commit changed.
+                        The trace check and the trace and changed
+                        commands all read this module, so that they
+                        cannot disagree. It prints nothing and writes
+                        nothing.
 relation:               []
 
 ...
@@ -370,11 +372,12 @@ def changed(map_document, set_filepath):
                             changed items is reported once, with the first
                             chain that reached it.
     description:            |
-                            Every standalone item in the files named, with
-                            the decisions that decide it, and every item
-                            elsewhere reached from one of them by a chain
-                            of dependency edges read from target to
-                            source. The reverse of the closure the
+                            The function returns every standalone item in
+                            the files named, with the decisions that
+                            decide each item, and every item elsewhere
+                            that is reached from one of them by a chain of
+                            dependency edges read from target to source.
+                            This is the reverse of the closure the
                             evidence digest follows, over the same
                             declarations.
     relation:               []

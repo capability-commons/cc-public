@@ -16,16 +16,18 @@ brief:                  |
                         Make or revise the item on an output port from
                         what the generator answers.
 description:            |
-                        Works out which fields the generator is asked
-                        for and what it is told about them, mints an
-                        identity from the slug it offers or from the
-                        node and a tag, makes the item through the
-                        edit package or revises the one bound to the
-                        port it revises, links what the port decides
-                        and derives from, fills each field as a value,
-                        as prose or as a table of entries from a JSON
-                        list, and marks what it made proposed. Knows
-                        nothing of scheduling, judgement or edges.
+                        This module works out which fields the
+                        generator is asked for and what it is told
+                        about them. It mints an identity from the slug
+                        the generator offers, or from the node and a
+                        tag. It makes the item through the edit
+                        package, or revises the item bound to the port
+                        it revises. It links what the port decides and
+                        derives from, fills each field as a value, as
+                        prose, or as a table of entries from a JSON
+                        list, and marks what it made as proposed. It
+                        knows nothing of scheduling, judgement or
+                        edges.
 relation:               []
 
 ...

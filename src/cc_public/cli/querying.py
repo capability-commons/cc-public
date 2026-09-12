@@ -16,12 +16,15 @@ brief:                  |
                         walk, path, orphans and query: questions put
                         to the graph of relations.
 description:            |
-                        Each opens the tree, loads its facts into the
-                        query database, and renders what comes back
-                        through the report module: a neighbourhood as
-                        text, json or a drawing; a shortest path or
-                        its absence; the items and relations nothing
-                        names; the rows of a named query or of SQL
+                        Each of these commands opens the tree, loads
+                        its facts into the query database, and renders
+                        what comes back through the report module. The
+                        walk command renders a neighbourhood as text,
+                        as JSON or as a drawing. The path command
+                        renders a shortest path, or its absence. The
+                        orphans command renders the items and
+                        relations nothing names. The query command
+                        renders the rows of a named query, or of SQL
                         typed at the command line.
 relation:               []
 

@@ -1,0 +1,83 @@
+id_self:                ddr_revision_item
+guid_self:              ddr_a273744b92c84f22bd7827cc34ce8c65
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Revisions as data items
+brief:                  |
+                        A revision is a data item holding one field's
+                        text before and after, the finding it answers,
+                        and a status. A revise command drafts
+                        revisions from a sweep by class through a
+                        model bound to the persona, and applies the
+                        accepted ones.
+context:                |
+                        The readability pass rewrote 299 fields. The
+                        rewrites exist only in the diff. Nothing
+                        records which finding each answers, what it
+                        measured before and after, who accepted it, or
+                        under which persona it was drafted. The loop
+                        that produced them, sweep, group by class,
+                        draft, review, apply, was run by hand in
+                        scratch files. The repository already has this
+                        shape for rules: a sweep, a proposal item a
+                        model drafts from it, and a person who
+                        ratifies. Prose revision is the same loop with
+                        a different subject.
+decision:               |
+                        A type t_revision, prefix rev, in revision/. A
+                        revision names its subject item and field by
+                        an r_revises edge and a field path, and holds
+                        the text before, the text after, the finding
+                        it answers, the persona entry it was drafted
+                        under, and a status of proposed, accepted or
+                        rejected. A revise command takes a sweep or a
+                        findings report, groups the findings by type
+                        prefix and field, drafts one revision per
+                        finding through a model bound to the writing
+                        style register with the persona entry first,
+                        and writes the revisions. Nothing in the tree
+                        changes until revisions are accepted.
+                        Accepting a revision writes its text after
+                        into the field through the bulk write of
+                        ddr_bulk_set, and a judged guard, the eval the
+                        finding came from, may accept on a person's
+                        behalf where the tree's deployment says so.
+rationale:              |
+                        Provenance is what the diff cannot give: a
+                        later reader of a description should be able
+                        to find the finding it answered and the
+                        judgement that accepted it, as they can for a
+                        rule. Drafting into revisions rather than into
+                        fields keeps the tree unchanged until a person
+                        or a guard has looked, which is what makes a
+                        cheaper model safe to draft with. Grouping by
+                        class is how the pass was actually done, and
+                        it is what lets a person review a kind at a
+                        time.
+alternative:            |
+                        Revising fields in place and reviewing the
+                        diff, as was done. Rejected: no provenance,
+                        and every draft is live before it is looked
+                        at. A workflow with no item type, drafts kept
+                        in a report outside the tree. Rejected: the
+                        proposal loop for rules showed that the draft
+                        is worth keeping, since acceptance is a
+                        decision and a rejected draft says what was
+                        tried.
+consequence:            |
+                        Not yet implemented, and the largest of the
+                        tooling decisions. The fact preservation guard
+                        of ddr_fact_preservation_guard is a
+                        precondition for accepting on a person's
+                        behalf. A revision item is as long as two
+                        copies of the field; the revision directory
+                        grows with every pass, and an accepted
+                        revision could be pruned once its commit is
+                        history, which is a later question.
+relation:               []

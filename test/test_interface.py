@@ -18,14 +18,14 @@ brief:                  |
                         language, and that a member carries an
                         identity.
 description:            |
-                        A surface is a keyed object holding exactly
-                        one of native and dataflow_step, so a surface
-                        with both and a surface with a form the
-                        document does not admit are refused. A native
+                        A surface is a keyed object that holds exactly
+                        one of native and dataflow_step. A surface
+                        with both forms, and a surface with a form the
+                        document does not admit, are refused. A native
                         surface names exactly one language. Every
                         declaration a surface holds carries an
-                        identity, since a requirement or a test case
-                        names one declaration rather than the
+                        identity, because a requirement or a test case
+                        names one declaration rather than the whole
                         document.
 relation:               []
 

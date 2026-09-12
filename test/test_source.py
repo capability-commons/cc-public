@@ -17,15 +17,17 @@ brief:                  |
                         docstring, is named by where it sits, and
                         shows its source to an eval.
 description:            |
-                        Copies the tree and makes function and class
-                        items through new, asserting the docstring
-                        becomes a document the printer lays out, the
-                        edit commands address it, the source check
-                        refuses a document whose id is not where it
-                        sits, the prefix tells a class from a function
-                        of one name, and the renderer projects a
-                        definition's source where an eval names source
-                        in its scope.
+                        These tests copy the tree and make function
+                        and class items through the new command. They
+                        assert that the docstring becomes a document
+                        that the printer lays out, and that the edit
+                        commands can address the document. They assert
+                        that the source check refuses a document whose
+                        id is not where the document sits. They assert
+                        that the prefix tells a class from a function
+                        of the same name. They assert that the
+                        renderer projects a definition's source code
+                        where an eval names source in its scope.
 relation:               []
 
 ...

@@ -16,15 +16,16 @@ brief:                  |
                         How the executor runs a component implemented
                         by a function rather than by prompts.
 description:            |
-                        Finds the function a component names by its
-                        r_is_implemented_by edge, imports it by the
-                        identifier of the module's own document, calls
-                        it once for the node with the tree, the ledger
-                        and the ids bound to its inputs, and takes an
-                        id for each output port from what it returns.
-                        A new item is noted on the ledger and settled
-                        as one a prompt made. Anything the function
-                        raises stops the run.
+                        The executor finds the function a component
+                        names by its r_is_implemented_by edge and
+                        imports it by the identifier of the module's
+                        own document. It calls the function once for
+                        the node, passing the tree, the ledger and the
+                        ids bound to the inputs, and takes from the
+                        return value an id for each output port. A new
+                        item is noted on the ledger and settled in the
+                        same way as an item a prompt made. Anything
+                        the function raises stops the run.
 relation:               []
 
 ...

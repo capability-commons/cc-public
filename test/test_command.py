@@ -16,12 +16,12 @@ brief:                  |
                         The commands that harden editing: unlink,
                         accept, and new with its fields.
 description:            |
-                        Copies the tree, evidence included, and
-                        exercises each command through its library
-                        function and through the command line: an edge
-                        removed by name, an acceptance refused for
-                        what it lacks, and an item made whole in one
-                        command.
+                        These tests copy the tree, evidence included,
+                        and exercise each command through its library
+                        function and through the command line. They
+                        remove an edge by name, see an acceptance
+                        refused for what it lacks, and make an item
+                        whole in one command.
 relation:               []
 
 ...

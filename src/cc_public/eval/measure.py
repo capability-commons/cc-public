@@ -17,13 +17,13 @@ brief:                  |
                         often, and how steadily, the judge agrees with
                         them.
 description:            |
-                        Every case is judged several times without the
-                        cache, through the same path a sweep uses. The
-                        two error rates are reported apart, and per
-                        origin. Records the rows on the eval stamped
-                        with the digest of what they measured, and
-                        lists the evals whose rows for a judge are
-                        absent or stale.
+                        Every control case is judged several times
+                        without the cache, through the same path a
+                        sweep uses. The two error rates are reported
+                        separately, and per origin. The module records
+                        the rows on the eval, stamped with the digest
+                        of what they measured. It also lists the evals
+                        whose rows for a judge are absent or stale.
 relation:               []
 
 ...

@@ -1,0 +1,206 @@
+id_self:                ddr_reader_burden
+guid_self:              ddr_6d06efb268354e18abe858b2d97984d5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reader burden instrument
+brief:                  |
+                        Reading load is measured mechanically, by a
+                        command that reports and gates nothing. The
+                        judged eval, the rules it cites and any
+                        threshold come after a person has calibrated
+                        the measures.
+context:                |
+                        Prose written by a language model into the
+                        repository is hard for a person to read. The
+                        prior style review of 6 September 2026 named
+                        the fault syntactic packing. The literature
+                        names it phrasal compression: meaning packed
+                        into noun phrase modifiers, pointers and
+                        participial clauses instead of clauses with a
+                        subject and a finite verb. Instruction tuned
+                        models do this at two to five times the human
+                        rate, and prompting alone does not remove it.
+
+                        The intended reader is a competent engineer
+                        who has not read the rest of the repository.
+                        The design decision and annotation items are
+                        meant to carry the model's own voice, so that
+                        the pressure to say more has somewhere to go.
+                        Every other prose field has to be readable by
+                        that engineer.
+
+                        Before any rule was written, the whole tree
+                        was measured against three reference passages:
+                        Feynman's appendix to the Rogers Commission
+                        report, a section of the NASA Systems
+                        Engineering Handbook, and an arXiv
+                        introduction. On sentence length, propositions
+                        per word, lexical density and nominalisation
+                        rate, the median description field already
+                        sits between the two aerospace passages. It
+                        differs on pointers per sentence, at twice the
+                        reference rate, on participial clauses, at
+                        nearly twice, and on dependents per nominal.
+                        The load is concentrated in a tail: the top
+                        decile of descriptions by propositions per
+                        word, single sentence briefs of thirty words,
+                        and a few descriptions carrying four or five
+                        pointers a sentence.
+decision:               |
+                        The measures are a command, burden, in the
+                        judging group. It reports one row per prose
+                        field, or the median per field or per type
+                        prefix, and sorts heaviest first. It sets no
+                        threshold, is not a check, and fails nothing.
+
+                        The measures are the ones the reading research
+                        says carry the cost, and that the readability
+                        formulas miss: propositions per word, pointers
+                        per sentence, participial clauses per
+                        sentence, dependents per nominal,
+                        nominalisations and noun runs per hundred
+                        words, and finite verbs per sentence. Sentence
+                        length and Flesch Kincaid grade are reported
+                        as guards only.
+
+                        The language model and the proposition rater
+                        are an optional extra, prose, installed in the
+                        default environment and refused with a plain
+                        message where absent.
+
+                        What follows is done one field at a time,
+                        starting with description. A person rewrites
+                        one item under one rule, rates it, and the
+                        versions become control cases. The rules go
+                        into the writing style register with their
+                        sources, the eval cites them, and only then is
+                        a threshold considered.
+rationale:              |
+                        Measuring first, because reasoning about eval
+                        behaviour has been wrong before, and because
+                        the measurement showed the burden is in a tail
+                        and in particular constructions, not in
+                        sentence length. A rule written before that
+                        measurement would have shortened sentences and
+                        left the pointers.
+
+                        A command rather than a check, because a score
+                        that gates becomes a target. The writer learns
+                        the number. The measures are proxies for a
+                        reader's effort, and only a reader can say
+                        whether the effort is too much. The command
+                        finds the tail for the person to read and
+                        catches a regression once a field is settled.
+
+                        Mechanical rather than judged, because these
+                        counts need no judge, cost nothing to run, and
+                        are stable. The judged eval is still wanted,
+                        for what the counts cannot see: a pointer
+                        whose antecedent is in another item looks the
+                        same as one whose antecedent is the previous
+                        sentence, and a word left out is not on the
+                        page to count.
+alternative:            |
+                        A check with thresholds now. Rejected until a
+                        person has calibrated the measures on
+                        rewritten items, because no source gives a
+                        number for the intended register, and the
+                        classic formulas would pass the current prose.
+
+                        A judged eval alone. Rejected as the first
+                        step, because a judge favours longer text and
+                        cannot be measured against a control set that
+                        does not yet exist.
+
+                        Readability formulas alone. Rejected, because
+                        they were built for sentence and word length,
+                        and the current prose already scores inside a
+                        plain language band on them.
+
+                        Keeping the instrument outside the repository
+                        as a script. Rejected, because the measures
+                        will be run after every rewrite and the tree's
+                        own loader and prose rule are what decide
+                        which fields count.
+consequence:            |
+                        The default environment carries a language
+                        model of some tens of megabytes and its
+                        english weights, fetched by direct reference
+                        from the model's release page, since a package
+                        index refuses a direct reference in a
+                        package's own metadata.
+
+                        The measures are heuristics. Nominalisation is
+                        read from a word ending, so document counts as
+                        one. A pointer count is within the field only.
+                        The numbers rank and screen; they do not
+                        judge.
+
+                        The item iterator of the eval selection is
+                        public now, since the instrument reads items
+                        the way the judge does.
+
+                        Open: where an exemption for a type lives when
+                        the style binds to a field in a trait schema,
+                        since composition can only narrow; what the
+                        thresholds are, once calibrated; and the
+                        register of The Economist, which could not be
+                        measured because the site refuses a fetch.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.burden
+    guid_target:        pym_4e2ce1f281ae49ae85f2845b714313e4
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_rogers_appendix_f
+    guid_target:        doc_280d3687f63d460b9aa7d1428d7a56af
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_kintsch_keenan_1973
+    guid_target:        doc_e6e935f2dc274f768bd47d71919ecd67
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_reinhart_2025_llm_style
+    guid_target:        doc_81766d3a113241e8866e2990428e07fa
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_biber_gray_2016
+    guid_target:        doc_1e4fe1b003c1491097528122c2823cbb
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_brown_2008_cpidr
+    guid_target:        doc_1f131a3c955145df8a01c0f25e533014
+
+  - id_relation:        r_is_taken_from
+    guid_relation:      r_63d66fa822d04128823be90fa6daee1e
+    id_target:          doc_redish_2000_readability
+    guid_target:        doc_e96458d776064d468039b0307ec0baa1
+
+question:
+
+  exemption:
+    id_self:            qst_reader_burden.exemption
+    guid_self:          qst_feaeae8ff3264e588498977d2b79c720
+    question:           |
+                        Where an exemption for a type lives when a
+                        style rule binds to a field in a trait schema.
+                        Composition can only narrow, so the design
+                        decision and annotation types cannot relax it
+                        in their own schema. Either the eval's scope
+                        excludes them, or the binding is an annotation
+                        the eval resolves with type precedence.
+    relation:           []

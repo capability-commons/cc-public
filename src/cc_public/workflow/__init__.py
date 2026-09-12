@@ -20,8 +20,8 @@ description:            |
                         Every write a run makes goes through the edit
                         package, so nothing a model produces can be
                         badly formed or badly laid out. The checks run
-                        after every node and a critical finding stops
-                        the run; what the run touched is then put
+                        after every node. A critical finding stops the
+                        run, and what the run touched is then put
                         back.
 relation:               []
 

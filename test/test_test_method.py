@@ -18,12 +18,13 @@ brief:                  |
                         refuses a mixed, an incomplete and an
                         undeclared one.
 description:            |
-                        The execution form is a keyed object holding
-                        exactly one of three forms. A method with two
-                        forms, with none, with a field of one form
-                        written under another, or with a field the
-                        envelope does not declare, is refused, and
-                        each is refused where it is written.
+                        The execution form is a keyed object that
+                        holds exactly one of three forms. A method
+                        with two forms, a method with none, a method
+                        with a field of one form written under
+                        another, and a method with a field the
+                        envelope does not declare are all refused.
+                        Each is refused where it is written.
 relation:               []
 
 ...

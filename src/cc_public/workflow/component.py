@@ -16,14 +16,14 @@ brief:                  |
                         Functions that implement components of the
                         tool's own workflows.
 description:            |
-                        Each function here is named by a component
-                        through r_is_implemented_by and follows the
-                        contract of a component in code: it takes the
-                        tree, the ledger and the inputs by port,
-                        returns the id of an item for each output
-                        port, and notes on the ledger what it changes
-                        before changing it. The first accepts a
-                        requirement.
+                        Each function in this module is named by a
+                        component through an r_is_implemented_by edge
+                        and follows the contract of a component in
+                        code. The function takes the tree, the ledger
+                        and the inputs by port. It returns the id of
+                        an item for each output port, and it notes on
+                        the ledger what it changes before changing it.
+                        The first such function accepts a requirement.
 relation:               []
 
 ...
@@ -127,11 +127,12 @@ def accept(tree, ledger, map_input):
                             so that a stop puts it back; and a refusal is
                             raised, which stops the run.
     description:            |
-                            The first component in code. Notes the
-                            requirement's file on the ledger, accepts it
-                            through the edit tier's accept, which refuses
-                            where the assurance is incomplete, and returns
-                            the same id on the accepted output.
+                            This is the first component in code. It notes
+                            the requirement's file on the ledger, accepts
+                            the requirement through the edit tier's accept
+                            function, which refuses where the assurance is
+                            incomplete, and returns the same id on the
+                            accepted output.
     relation:               []
 
     ...
@@ -267,12 +268,14 @@ def promote(tree, ledger, map_input):
                             acceptance binds. The boundary from
                             exploration to assurance, done mechanically.
     description:            |
-                            The third component in code. Reads the
-                            candidate requirement entries of the concept,
-                            makes a proposed textual requirement item from
-                            each through the edit tier, deriving from the
-                            concept and from the need the concept derives
-                            from, and refuses where one exists already.
+                            This is the third component in code. It reads
+                            the candidate requirement entries of the
+                            concept and makes a proposed textual
+                            requirement item from each through the edit
+                            tier. Each item derives from the concept and
+                            from the need the concept derives from. The
+                            component refuses where a requirement it would
+                            make exists already.
     relation:               []
 
     ...

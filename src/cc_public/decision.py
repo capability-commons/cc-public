@@ -17,13 +17,15 @@ brief:                  |
                         as it was, and whether a decision still holds.
 description:            |
                         A decision is an act over exact content. This
-                        module computes the digest a decision stamps
-                        on each subject, the whole document of the
-                        item as loaded, so that any edit changes it,
-                        and says whether a decision is current, its
-                        subjects unchanged and its expiry not passed.
-                        The foundation for the decide command, the
-                        decision check and the promotion gate.
+                        module computes the digest that a decision
+                        stamps on each subject. The digest covers the
+                        whole document of the item as loaded, so that
+                        any edit changes it. The module also says
+                        whether a decision is current, which means
+                        that its subjects are unchanged and its expiry
+                        has not passed. It is the foundation for the
+                        decide command, the decision check and the
+                        promotion gate.
 relation:               []
 
 ...

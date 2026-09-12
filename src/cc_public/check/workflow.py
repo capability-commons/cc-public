@@ -16,15 +16,16 @@ brief:                  |
                         Check that a dataflow workflow is a graph that
                         can run.
 description:            |
-                        Holds each dataflow workflow against what its
-                        schema cannot say: that every port an edge
-                        names exists on the component its node
-                        instantiates and lies on the right side of it;
-                        that the graph without its back edges can be
-                        ordered; that a guard has an eval to consult;
-                        that a back edge does not feed a required
-                        input; and that a node instantiating a
-                        component with no evals is reported.
+                        This check holds each dataflow workflow
+                        against what its schema cannot say. Every port
+                        an edge names must exist on the component its
+                        node instantiates, and must lie on the right
+                        side of that component. The graph without its
+                        back edges must be orderable. A guard must
+                        have an eval to consult. A back edge must not
+                        feed a required input. A node that
+                        instantiates a component with no evals is
+                        reported.
 usage:                  |
                         Run as part of cctool check. A node with no
                         evals is reported as a note rather than a

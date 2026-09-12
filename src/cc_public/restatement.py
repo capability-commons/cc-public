@@ -19,18 +19,19 @@ brief:                  |
 description:            |
                         Two function bodies are one shape when their
                         syntax trees agree once local names are
-                        normalised to the order they first appear in
-                        and constants are reduced to their types. The
-                        projection fingerprints every body long enough
-                        to compare as the set of overlapping windows
-                        of that token sequence, and reports every pair
-                        sharing at least a given proportion of them.
-
-                        What it finds is one fact written twice in
-                        code, which no field a check can read holds:
-                        the class ddr_restated_fact covers by
-                        declaration where both sides are in the tree,
-                        and by this where they are not.
+                        normalised to the order in which they first
+                        appear and constants are reduced to their
+                        types. The projection fingerprints every body
+                        long enough to compare, as the set of
+                        overlapping windows of its token sequence, and
+                        reports every pair that shares at least a
+                        given proportion of those windows. What it
+                        finds is one fact written twice in code, which
+                        no field a check can read holds. The design
+                        decision ddr_restated_fact covers that class
+                        by declaration where both sides are in the
+                        tree, and by this projection where they are
+                        not.
 relation:               []
 
 ...

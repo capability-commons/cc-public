@@ -17,10 +17,11 @@ brief:                  |
                         read like one written in a field.
 description:            |
                         The reference check reads the identity fields
-                        of an item and the prose beside them, and
-                        these tests hold the prose rule: an identifier
-                        written in prose is read like one written in a
-                        field (ddr_prose_reference).
+                        of an item and the prose beside them. These
+                        tests hold the prose rule: an identifier
+                        written in prose is read in the same way as
+                        one written in a field. See
+                        ddr_prose_reference.
 relation:               []
 
 ...

@@ -16,14 +16,15 @@ brief:                  |
                         Read the commit records held in a repository's
                         history.
 description:            |
-                        The one place git is run: a runner that
-                        reports a failure one way for every caller,
-                        the commit checked out, and the files changed
-                        since a commit. Reads a commit record out of a
-                        message, a plain first line, a blank line, and
-                        a YAML document between the markers a
-                        docstring uses, and walks the log for every
-                        commit that carries one.
+                        This module is the one place git is run. It
+                        holds a runner that reports a failure the same
+                        way for every caller, the commit that is
+                        checked out, and the files changed since a
+                        commit. It reads a commit record out of a
+                        message, which is a plain first line, a blank
+                        line, and a YAML document between the markers
+                        a docstring uses. It walks the log for every
+                        commit that carries a record.
 relation:               []
 
 ...

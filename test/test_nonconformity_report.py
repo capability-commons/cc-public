@@ -18,10 +18,11 @@ brief:                  |
                         origin it came from.
 description:            |
                         A report states both what was expected and
-                        what was observed, and these tests hold that.
-                        The origin distinguishes a failure a check
-                        observed from one a test or an eval observed,
-                        across one shape.
+                        what was observed, and these tests hold that
+                        rule. A report also carries its origin. The
+                        origin says whether the failure was observed
+                        by a check, by a test, or by an eval, and all
+                        three kinds of failure share one report shape.
 relation:               []
 
 ...

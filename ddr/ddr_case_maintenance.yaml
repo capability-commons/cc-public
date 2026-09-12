@@ -1,0 +1,80 @@
+id_self:                ddr_case_maintenance
+guid_self:              ddr_ab70542492844aa084e4db0425614565
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maintaining control cases after their items change
+brief:                  |
+                        The case command gains --refresh, which
+                        re-snapshots a drifted case and holds its
+                        verdict, and --mutate, which turns a
+                        superseded confirmed case into a mutated one.
+context:                |
+                        A confirmed or suppressed control case is a
+                        snapshot of an item as the judge saw it. When
+                        the item is rewritten, the snapshot no longer
+                        matches what the projection renders, and a
+                        test in the suite refuses the tree, because a
+                        snapshot of text no sweep renders suppresses
+                        nothing and confirms nothing. The readability
+                        pass of 12 September 2026 drifted five cases
+                        on the test coverage eval and seven on the
+                        reads alone eval. Each repair was a hand
+                        written script, and one repair failed silently
+                        until the verbatim helper was found, because a
+                        subject stored without it is refolded by the
+                        printer and still differs.
+decision:               |
+                        The case command takes --refresh CASE, which
+                        renders the case's item as the judge would see
+                        it now, stores that text as the subject
+                        through the verbatim helper, and holds the
+                        verdict and origin. It takes --mutate CASE,
+                        which sets the origin of a confirmed case to
+                        mutated, so that the old text becomes a
+                        deliberate variant of the item and is measured
+                        as one. Both append a note saying what was
+                        done and when. A --drifted option lists every
+                        case the drift test would report, so that the
+                        two repairs have their work list.
+rationale:              |
+                        The drift test already knows which cases
+                        drifted and what the live text is; the repair
+                        is mechanical and was done by hand only
+                        because no command held it. Which repair
+                        applies is a judgement, so the two stay
+                        separate options rather than one that guesses:
+                        a case whose verdict survives the rewrite is
+                        refreshed, and a case whose whole point was
+                        the old text is mutated. Storing through the
+                        verbatim helper inside the command removes the
+                        one gotcha a person cannot see.
+alternative:            |
+                        Deleting drifted cases and taking new ones.
+                        Rejected: a confirmed case records a person's
+                        judgement, and a deletion loses it. Refreshing
+                        every drifted case regardless of origin.
+                        Rejected: a confirmed unmet case whose item
+                        was fixed would then hold a passing text to an
+                        unmet verdict, which is wrong on its face.
+consequence:            |
+                        Not yet implemented. After either repair the
+                        eval's confidence digest is stale and the eval
+                        must be measured again, which the command
+                        should say. The drift test's fixed count of
+                        twelve pre-existing drifts elsewhere becomes a
+                        list the option can print, and those twelve
+                        are a separate question the test already
+                        names.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.eval.case
+    guid_target:        pym_526d7635fff54b9181e88a61a869704b

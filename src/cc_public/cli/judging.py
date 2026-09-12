@@ -16,18 +16,22 @@ brief:                  |
                         measure and case: what a judge is measured
                         against, and how a finding becomes a case.
 description:            |
-                        measure judges an eval's control cases fresh
-                        and writes the rates, for one eval or for
-                        every eval whose confidence for the judge is
-                        absent or stale. case turns a finding into a
+                        The measure command judges the control cases
+                        of an eval afresh and writes the rates. It
+                        does this for one eval, or for every eval
+                        whose confidence for the judge is absent or
+                        stale. The case command turns a finding into a
                         control case, suppressed or confirmed as a
-                        person judged it.
+                        person judged it. The burden command measures
+                        the reading load of prose fields.
 relation:               []
 
 ...
 """
 
 
+
+import pathlib
 
 import click
 
@@ -44,6 +48,7 @@ import cc_public.edit.link
 import cc_public.edit.new
 import cc_public.edit.rename
 import cc_public.edit.tree
+import cc_public.eval.burden
 import cc_public.eval.case
 import cc_public.eval.check
 import cc_public.eval.measure
@@ -188,3 +193,67 @@ def case_(id_eval, list_item, verdict, origin, note, list_root):
         cc_public.cli.group.fail(err)
 
     click.echo('{set}  {case}'.format(set = id_set, case = id_case))
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.option('--field', 'list_field', multiple = True,
+              help = 'A prose field to measure. May be given more than once. '
+                     'Defaults to every prose field.')
+@click.option('--prefix', 'list_prefix', multiple = True,
+              help = 'A type prefix of the items to measure. May be given '
+                     'more than once. Defaults to every type.')
+@click.option('--min-words', 'minimum', default = cc_public.eval.burden.MINIMUM,
+              show_default = True,
+              help = 'Leave out a text shorter than this.')
+@click.option('--by', 'group', type = click.Choice(['field', 'prefix']), default = None,
+              help = 'The median of each measure per field or per type prefix, '
+                     'instead of one row per text.')
+@click.option('--sort', 'key', type = click.Choice(cc_public.eval.burden.NUMERIC),
+              default = 'propositions', show_default = True,
+              help = 'The measure to sort by, heaviest first.')
+@click.option('--format', 'id_format', type = click.Choice(['text', 'json']),
+              default = 'text')
+@cc_public.cli.group.OPTION_ROOT
+def burden(list_field, list_prefix, minimum, group, key, id_format, list_root):
+    """
+    Measure the reading load of prose fields.
+
+    Mechanical measures of what the readability formulas miss:
+    propositions per word, pointers per sentence, participial clauses,
+    dependents per nominal, nominalisations and noun runs, beside
+    sentence length and grade. An instrument, not a check: it sets no
+    threshold and reports every text asked for, heaviest first.
+
+    Needs the prose extra and its english model.
+
+    """
+
+    tree         = cc_public.cli.group.tree(list_root)
+    (context, _) = cc_public.check.context(list_root or [pathlib.Path('.')])
+
+    try:
+        list_row = cc_public.eval.burden.rows(tree, context, list_field, list_prefix, minimum)
+    except cc_public.eval.burden.Absent as err:
+        cc_public.cli.group.fail(err)
+
+    if group:
+        list_row = cc_public.eval.burden.summarise(list_row, group)
+    else:
+        list_row.sort(key = lambda r: -r[key] if r[key] == r[key] else 1)
+
+    names = list(list_row[0].keys()) if list_row else list(cc_public.eval.burden.NAMES)
+    cc_public.cli.report.write_rows(
+        names,
+        [[_round(row[n]) for n in names] for row in list_row],
+        id_format)
+
+
+# -----------------------------------------------------------------------------
+def _round(value):
+    """
+    Return a float to two places, and anything else as it is.
+
+    """
+
+    return round(value, 2) if isinstance(value, float) else value

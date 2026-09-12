@@ -15,14 +15,18 @@ title:                  Load
 brief:                  |
                         Load structured data.
 description:            |
-                        One submodule per format, each exposing the
-                        same entry point, so that a loader is selected
-                        by lookup. Adds the one source of bytes wanted
-                        often enough to be worth naming, a file on
-                        disk, and yields every document a file holds
-                        with its location: the file, and for a python
-                        file each class and function beneath it that
-                        carries a document.
+                        This package has one submodule per format, and
+                        each submodule exposes the same entry point,
+                        so that a loader is selected by lookup. The
+                        package also names the one source of bytes
+                        that is wanted often enough to deserve a name,
+                        which is a file on disk. The package yields
+                        every document a file holds, together with the
+                        document's location. For a plain file, the
+                        location is the file itself. For a python
+                        file, there is one further location for each
+                        class and function beneath it that carries a
+                        document.
 relation:               []
 
 ...

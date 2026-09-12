@@ -15,9 +15,10 @@ title:                  Register lookup
 brief:                  |
                         Find the type register and index it by prefix.
 description:            |
-                        The type register, and the map from a type
-                        prefix to the entry describing that type. Used
-                        by the checks that resolve a type.
+                        This module finds the type register and builds
+                        the map from a type prefix to the entry that
+                        describes that type. The checks that resolve a
+                        type use this map.
 relation:               []
 
 ...

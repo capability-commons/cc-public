@@ -18,12 +18,13 @@ brief:                  |
                         the schema its type names.
 description:            |
                         A register entry is a subject of the evals
-                        anchored to sch_descriptive, which composes
-                        into every entry schema through sch_entry. A
-                        type register entry takes the schema of an
-                        entry and not the schema of the items it
-                        describes, although it names the second by an
-                        edge.
+                        anchored to sch_descriptive, because
+                        sch_descriptive composes into every entry
+                        schema through sch_entry. A type register
+                        entry takes the schema of an entry. It does
+                        not take the schema of the items its type
+                        describes, although the entry names that
+                        second schema by an edge.
 relation:               []
 
 ...

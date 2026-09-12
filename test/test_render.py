@@ -17,18 +17,19 @@ brief:                  |
                         over a demonstration the test builds.
 description:            |
                         The test builds what a demonstration segment
-                        holds, an observation, the need it supports, a
+                        holds: an observation, the need it supports, a
                         concept under a framing, the requirements
-                        promoted from it and an assessment citing the
-                        observation, then projects the dossier over
-                        it: the leading assessment orders the concept,
-                        the findings of a report reach each
-                        requirement, the trace gaps are there, the
-                        drawing is labelled by title, the briefing
-                        leads with the solutions and the appendix
-                        carries the findings. The items themselves
-                        live in the segment that demonstrates them,
-                        not here.
+                        promoted from the concept, and an assessment
+                        that cites the observation. It then projects
+                        the dossier over that. The test checks that
+                        the leading assessment orders the concept,
+                        that the findings of a report reach each
+                        requirement, that the trace gaps are present,
+                        that the drawing is labelled by title, that
+                        the briefing leads with the solutions, and
+                        that the appendix carries the findings. The
+                        items themselves live in the segment that
+                        demonstrates them, not here.
 relation:               []
 
 ...

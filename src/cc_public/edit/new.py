@@ -17,19 +17,20 @@ brief:                  |
                         minted and every required field present and
                         empty.
 description:            |
-                        The skeleton comes from the type's schema:
-                        each required field, through every schema it
-                        composes, is present with an empty value of
-                        the right kind, and the item fails its checks
-                        until every such field is written. Rights come
-                        from the tree's defaults. A package or a
-                        module is written as a file holding only its
-                        docstring; a class or a function has the
-                        docstring of its definition turned into a
-                        document, the prose it held becoming the
-                        brief, the definition found by the
-                        identifier's lower case names and the prefix's
-                        kind.
+                        The skeleton of a new item comes from the
+                        type's schema. Each required field, through
+                        every schema the type composes, is present
+                        with an empty value of the right kind, and the
+                        item fails its checks until every such field
+                        is written. Rights come from the tree's
+                        defaults. A package or a module is written as
+                        a file that holds only its docstring. For a
+                        class or a function, the docstring of the
+                        definition is turned into a document, and the
+                        prose it held becomes the brief. The
+                        definition is found by the lower case names in
+                        the identifier and by the kind the prefix
+                        names.
 relation:               []
 
 ...

@@ -16,13 +16,13 @@ brief:                  |
                         Make a requirement set from the requirements
                         derived from a concept.
 description:            |
-                        Makes a requirement set data item on the
-                        entity of a concept, including by r_includes
-                        every requirement that derives from the
-                        concept, so that the set-level rules have a
-                        set to judge. Membership is held as edges; a
-                        later gather over the same set adds what is
-                        new.
+                        This module makes a requirement set data item
+                        on the entity of a concept. The set includes,
+                        by r_includes edges, every requirement that
+                        derives from the concept, so that the
+                        set-level rules have a set to judge.
+                        Membership is held as edges, and a later
+                        gather over the same set adds whatever is new.
 relation:               []
 
 ...

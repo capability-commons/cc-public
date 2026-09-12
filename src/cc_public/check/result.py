@@ -15,10 +15,11 @@ title:                  Check result shapes
 brief:                  |
                         The shapes a check is given and returns.
 description:            |
-                        Context, Nonconformity, Note and Result,
-                        together with the two severity values and what
-                        they mean. A module of its own, depended on by
-                        the driver and by each check.
+                        This module holds the shapes Context,
+                        Nonconformity, Note and Result, together with
+                        the two severity values and what each means.
+                        It is a module of its own because the driver
+                        and every check depend on it.
 relation:               []
 
 ...

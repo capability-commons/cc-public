@@ -17,18 +17,21 @@ brief:                  |
                         concept under a framing, challenged, with its
                         candidate requirements bounded.
 description:            |
-                        A scripted run makes a concept deriving from
-                        the need and framed by the framing, with
-                        assumption and candidate requirement entries
-                        carrying identities, challenged by the second
-                        node; a key the entry schema does not declare
-                        is dropped with a note; a concept with too few
-                        candidate requirements fails the schema and
-                        the run restores; promotion makes one proposed
-                        requirement item per candidate and refuses to
-                        promote twice. Each test seeds its own
-                        observation and need, since those live in the
-                        segment that demonstrates them.
+                        A scripted run makes a concept that derives
+                        from the need and is framed by the framing.
+                        The concept's assumption entries and candidate
+                        requirement entries carry identities, and the
+                        second node challenges the concept. One test
+                        checks that a key the entry schema does not
+                        declare is dropped with a note. One test
+                        checks that a concept with too few candidate
+                        requirements fails the schema and that the run
+                        restores the tree. One test checks that
+                        promotion makes one proposed requirement item
+                        per candidate, and refuses to promote the same
+                        concept twice. Each test seeds its own
+                        observation and need, because those items live
+                        in the segment that demonstrates them.
 relation:               []
 
 ...

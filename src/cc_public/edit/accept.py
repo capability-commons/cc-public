@@ -16,13 +16,13 @@ brief:                  |
                         Set a requirement to accepted where its
                         assurance is complete, and refuse otherwise.
 description:            |
-                        Judges the requirement as it would be once
-                        accepted, in a closed world, before anything
-                        is written: the trace projection must show no
-                        gap and the evidence check must find nothing.
-                        The only path to accepted, so that the status
-                        never names a requirement the checks would
-                        refuse.
+                        This module judges a requirement as it would
+                        stand once accepted, in a closed world, before
+                        anything is written. The trace projection must
+                        show no gap, and the evidence check must find
+                        nothing. This is the only path to the accepted
+                        status, so that the status never names a
+                        requirement the checks would refuse.
 relation:               []
 
 ...

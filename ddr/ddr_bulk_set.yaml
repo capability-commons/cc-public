@@ -1,0 +1,72 @@
+id_self:                ddr_bulk_set
+guid_self:              ddr_295caa346d1f43e186f0ce836dfc5096
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bulk field writes in one transaction
+brief:                  |
+                        The set command takes a file of item, path and
+                        value rows and writes them all under one
+                        ledger transaction, so that a batch of
+                        rewrites is one edit, fast and all or nothing.
+context:                |
+                        The readability pass of 12 September 2026
+                        wrote 299 description fields through the set
+                        command, one process per field, at about two
+                        seconds each. A batch had no atomicity: a
+                        failure part way left the tree half rewritten,
+                        and the only record of what had been applied
+                        was a scratch file outside the tree. The same
+                        shape of work, many fields changed under one
+                        intent, will recur with every writing style
+                        pass and with every workflow that revises
+                        prose.
+decision:               |
+                        The set command takes --from FILE. The file
+                        holds rows, each naming an item, a path and a
+                        value, with the value read as YAML or marked
+                        as prose in the same way the command line
+                        marks it. Every row is written under one
+                        ledger transaction, in one process, so that
+                        the batch either applies whole or restores
+                        whole. The command reports each row it wrote
+                        and refuses the whole file on the first row it
+                        cannot write.
+rationale:              |
+                        The ledger already gives atomic edits to a
+                        single command, which is ddr_atomic_edit.
+                        Extending that to a file of rows uses the
+                        machinery as it stands and gives a batch the
+                        property a single edit has. One process for
+                        the batch removes the start-up cost that made
+                        three hundred writes take minutes. A weaker
+                        model, or a person, then has one command to
+                        run and one outcome to read, instead of a loop
+                        in which a mistake can hide.
+alternative:            |
+                        A loop of single set commands, as was done.
+                        Rejected: slow, and not atomic. A separate
+                        bulk command. Rejected: the rows are what set
+                        already takes, one at a time, and a second
+                        command with the same meaning is a second
+                        thing to learn.
+consequence:            |
+                        Not yet implemented. The row format is decided
+                        when the command is written, and the revision
+                        item of ddr_revision_item is expected to be
+                        its main source. A large batch under one
+                        transaction holds the ledger longer, which
+                        matters only where two writers share a tree,
+                        which nothing does yet.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.edit.field
+    guid_target:        pym_8f69052f5308480aba6652d5fd486140

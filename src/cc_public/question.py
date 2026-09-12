@@ -16,9 +16,10 @@ brief:                  |
                         What the design decisions leave open, and what
                         has since been answered.
 description:            |
-                        Walks every record for its questions and every
-                        item for r_answers edges, and pairs them. A
-                        question with no incoming edge is open.
+                        This module walks every design decision for
+                        its questions, and every item for its
+                        r_answers edges, and pairs the two. A question
+                        with no incoming edge is open.
 relation:               []
 
 ...

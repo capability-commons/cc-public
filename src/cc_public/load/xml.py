@@ -15,14 +15,14 @@ title:                  XML loader
 brief:                  |
                         Load XML documents.
 description:            |
-                        Parsed twice: once as a security gate refusing
-                        document type definitions and entity
-                        declarations, and once to convert. An XML
-                        document declares its own encoding, so an
-                        encoding supplied by a caller is refused
-                        rather than ignored. Mixed content has no
-                        faithful representation as a mapping and is
-                        refused.
+                        An XML document is parsed twice: once as a
+                        security gate that refuses document type
+                        definitions and entity declarations, and once
+                        to convert it. An XML document declares its
+                        own encoding, so an encoding supplied by a
+                        caller is refused rather than ignored. Mixed
+                        content has no faithful representation as a
+                        mapping, and it is refused.
 relation:               []
 
 ...

@@ -17,12 +17,13 @@ brief:                  |
                         a word two concepts claim, the sense report,
                         and the gap report.
 description:            |
-                        Reads the tree the fixture copies. A word two
-                        entries claim returns both. A rejected word
-                        returns the entry that rejects it. A word a
-                        glossary holds is not a gap, in the singular
-                        or the plural, and a word prose uses that no
-                        glossary holds is.
+                        These tests read the tree the fixture copies.
+                        A word that two entries claim returns both
+                        entries. A rejected word returns the entry
+                        that rejects it. A word a glossary holds is
+                        not a gap, whether in the singular or the
+                        plural, and a word that prose uses and no
+                        glossary holds is a gap.
 relation:               []
 
 ...

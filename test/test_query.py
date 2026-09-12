@@ -17,13 +17,15 @@ brief:                  |
                         the graph is walked, pathed, drawn and queried
                         as the requirements say.
 description:            |
-                        One test per requirement of the graph query
-                        tool: the fact counts against the checks'
-                        counts, the neighbourhood by depth, relation
-                        and direction, the shortest path and its
-                        absence, orphans appearing and vanishing with
-                        an edge, a named query and typed SQL, and a
-                        drawing in both formats.
+                        There is one test per requirement of the graph
+                        query tool. One test checks the fact counts
+                        against the counts the checks give. One test
+                        checks the neighbourhood by depth, by relation
+                        and by direction. One test checks the shortest
+                        path, and its absence. One test checks that
+                        orphans appear and vanish as an edge is added.
+                        One test checks a named query and typed SQL.
+                        One test checks a drawing in both formats.
 relation:               []
 
 ...
@@ -71,10 +73,11 @@ def test_facts_hold_every_identity_edge_and_containment_of_the_tree(tree, tmp_pa
                             The facts hold every identity, edge and
                             containment.
     description:            |
-                            Counts item facts against the guid check, edge
-                            facts against the relation edges of identified
-                            items, and containment facts against the
-                            identifier check's embedded identities.
+                            The test counts item facts against the guid
+                            check, edge facts against the relation edges
+                            of identified items, and containment facts
+                            against the embedded identities the identifier
+                            check finds.
 
     relation:
 
@@ -127,10 +130,10 @@ def test_walk_reports_the_neighbourhood_to_a_depth_along_named_relations(tree, t
                             Walk reports the neighbourhood to a depth
                             along named relations.
     description:            |
-                            Walks a requirement to depths one and two, in
-                            one direction and both, with and without a
-                            relation named, and asserts what is reached
-                            and by what.
+                            The test walks a requirement to depths one and
+                            two, in one direction and in both, with and
+                            without a relation named. It asserts what is
+                            reached and by what edge.
 
     relation:
 
@@ -183,10 +186,11 @@ def test_a_shortest_path_is_reported_or_its_absence(tree, tmp_path):
     brief:                  |
                             A shortest path is reported, or its absence.
     description:            |
-                            Joins two items by routes of two and three
-                            edges and asserts the shorter is reported,
-                            then asks for a path to an item in its own
-                            component and gets none.
+                            The test joins two items by routes of two
+                            edges and three edges and asserts that the
+                            shorter route is reported. It then asks for a
+                            path to an item in its own component and gets
+                            none.
 
     relation:
 
@@ -235,8 +239,9 @@ def test_orphans_are_what_nothing_points_at(tree, tmp_path):
                             Items nothing points at are listed, and stop
                             being listed once something points at them.
     description:            |
-                            Makes an item nothing points at, sees it
-                            listed, points at it and sees it gone.
+                            The test makes an item that nothing points at
+                            and sees it listed. It then points at the item
+                            and sees it gone from the list.
 
     relation:
 
@@ -278,8 +283,9 @@ def test_unused_relations_are_what_no_edge_names(tree, tmp_path):
                             Relations no edge uses are listed, and each
                             listed one is a relation.
     description:            |
-                            Reads the second half of what orphans reports
-                            and asserts every entry in it is a relation.
+                            The test reads the second half of what the
+                            orphans command reports and asserts that every
+                            entry in that half is a relation.
 
     relation:
 
@@ -348,10 +354,10 @@ def test_a_named_query_runs_over_the_facts(tree, tmp_path):
     brief:                  |
                             A named query runs over the facts.
     description:            |
-                            Runs the counting query and reads back the
-                            count of item facts, runs a query by name and
-                            SQL typed at the command line, and sees bad
-                            SQL refused.
+                            The test runs the counting query and reads
+                            back the count of item facts. It runs a query
+                            by name and SQL typed at the command line, and
+                            it sees bad SQL refused.
 
     relation:
 

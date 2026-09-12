@@ -16,10 +16,11 @@ brief:                  |
                         Check that documents are laid out as the
                         printer would lay them out.
 description:            |
-                        Compares each YAML file, and the metadata
-                        document in the docstring of each python file,
-                        with its own formatting. A file that differs
-                        is reported at the first line where it does.
+                        This check compares each YAML file, and the
+                        metadata document in the docstring of each
+                        python file, with its own formatting. A file
+                        that differs from its formatting is reported
+                        at the first line where it differs.
 usage:                  |
                         Run as part of cctool check. What it reports,
                         cctool format fixes.

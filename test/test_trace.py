@@ -17,12 +17,15 @@ brief:                  |
                         says what each lacks by status and world, and
                         the trace command reads it.
 description:            |
-                        Exercises the implementation relation at every
-                        grain and its refusals, the projection's gaps
-                        for proposed and accepted requirements in open
-                        and closed worlds, leaves and children, the
-                        impact of a change to a source item, and the
-                        trace command's json and text.
+                        These tests exercise the implementation
+                        relation at every grain, and the refusals of
+                        that relation. They exercise the gaps the
+                        projection reports, for proposed and accepted
+                        requirements, in open and closed worlds, and
+                        for leaves and children. They exercise the
+                        impact of a change to a source item. They
+                        exercise the JSON and the text output of the
+                        trace command.
 relation:               []
 
 ...
@@ -272,13 +275,14 @@ def test_changed_lists_what_changed_and_what_rests_on_it(tree, tmp_path):
                             What changed and what rests on it, read from
                             the projection over a tree of known shape.
     description:            |
-                            Two annotations are made in a copy of the
-                            tree, one about the layout module and one
-                            challenging it; the projection over the layout
-                            file names the module with its decision, and
-                            reaches the requirement the module implements
-                            and both annotations, the second through the
-                            first, and nothing through r_verifies.
+                            The test makes two annotations in a copy of
+                            the tree, one about the layout module and one
+                            challenging the first. The projection over the
+                            layout file names the module with its
+                            decision. It reaches the requirement the
+                            module implements and both annotations, the
+                            second through the first, and it reaches
+                            nothing through r_verifies.
 
     relation:
 

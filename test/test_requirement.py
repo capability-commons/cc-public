@@ -17,12 +17,12 @@ brief:                  |
                         the SOPHIST forms, the slots that do not
                         compose, and where the statement is shown.
 description:            |
-                        Composes statements from slots in each
-                        activity and condition form, refuses the slot
-                        combinations that cannot compose, and checks
-                        that a requirement shows its composed
-                        statement to a judge and that the evidence
-                        digest follows the slots.
+                        These tests compose statements from slots in
+                        each activity form and each condition form.
+                        They refuse the slot combinations that cannot
+                        compose. They check that a requirement shows
+                        its composed statement to a judge, and that
+                        the evidence digest follows the slots.
 relation:               []
 
 ...

@@ -254,10 +254,11 @@ class DspyRunner:
                                 judgements of this task.
         description:            |
                                 The screening verdict counts as the first
-                                judgement and the rest are fresh samples; the
-                                majority over the odd count is the verdict
-                                reported, met dropping the finding and unmet
-                                standing with the tally.
+                                judgement, and the remaining judgements are
+                                fresh samples. The majority over the odd count
+                                is the verdict reported. A met majority drops
+                                the finding, and an unmet majority lets the
+                                finding stand, with the tally.
         relation:               []
 
         ...

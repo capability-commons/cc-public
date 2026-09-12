@@ -17,12 +17,13 @@ brief:                  |
                         are reported and two of different shapes are
                         not.
 description:            |
-                        Three properties over python written into a
-                        temporary directory: two bodies differing only
-                        in what they call things are reported as one
-                        shape, a body of another shape beside them
-                        adds nothing, and two identical bodies under
-                        the token floor are passed over.
+                        These tests hold three properties over python
+                        written into a temporary directory. Two bodies
+                        that differ only in what they call things are
+                        reported as one shape. A body of another shape
+                        beside them adds nothing to the report. Two
+                        identical bodies below the token floor are
+                        passed over.
 relation:               []
 
 ...

@@ -17,17 +17,16 @@ brief:                  |
                         runnable specification and that its
                         configuration is what its method asks for.
 description:            |
-                        A case names one method, the method names an
-                        adapter this tree holds and a schema for the
-                        configuration a case supplies, and the case
-                        supplies configuration that schema accepts. A
-                        binding that does not resolve is reported
-                        where the case is written.
-
-                        The resolution is cc_public.testing, which
-                        validates nothing. The schema of the
-                        configuration is read here, where the schemas
-                        are.
+                        A test case names one method. The method names
+                        an adapter the tree holds, and a schema for
+                        the configuration a case supplies. The case
+                        supplies configuration that the schema
+                        accepts. A binding that does not resolve is
+                        reported where the case is written. The
+                        resolution itself is done by the testing
+                        module, which validates nothing. The schema of
+                        the configuration is read here, in the check,
+                        because this is where the schemas are.
 relation:               []
 
 ...

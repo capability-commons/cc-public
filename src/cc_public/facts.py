@@ -16,14 +16,16 @@ brief:                  |
                         What the tree states, as three tables: every
                         identity, every edge and every containment.
 description:            |
-                        Derives the facts of a tree from its documents
-                        on every use: one item fact per identity with
-                        its type prefix, status and location; one edge
-                        fact per relation edge, source and target by
-                        guid with the advisory id the edge carries;
-                        one containment fact per embedded item and its
-                        holder. The one source every query reads.
-                        Nothing stores the result.
+                        This module derives the facts of a tree from
+                        its documents on every use. There is one item
+                        fact per identity, with its type prefix,
+                        status and location. There is one edge fact
+                        per relation edge, with the source and the
+                        target by guid and the advisory id the edge
+                        carries. There is one containment fact per
+                        embedded item, with its holder. The facts are
+                        the one source every query reads. Nothing
+                        stores the result.
 relation:               []
 
 ...
@@ -120,10 +122,14 @@ def facts(map_document):
                             identity, one Edge per relation edge, one
                             Containment per embedded item.
     description:            |
-                            One Item per identity with its prefix, status
-                            and location, one Edge per relation edge, one
-                            Containment per embedded item and its holder,
-                            derived from the documents on every use.
+                            The function returns three kinds of fact,
+                            derived afresh from the documents on every
+                            call. There is one Item fact for each
+                            identity, carrying its prefix, its status and
+                            its location. There is one Edge fact for each
+                            relation edge. There is one Containment fact
+                            for each embedded item, naming the item and
+                            the item that holds it.
     relation:               []
 
     ...

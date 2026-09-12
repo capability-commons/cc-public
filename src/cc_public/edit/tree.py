@@ -16,16 +16,17 @@ brief:                  |
                         Find an item by name, and write a changed one
                         back through the printer.
 description:            |
-                        Loads the tree once and indexes every identity
-                        it declares, top level and embedded, and
-                        refuses a tree it could not read entirely.
-                        Resolves a readable id or a guid to the file
-                        holding it and the path within that file.
-                        Writes a changed document back in the layout
-                        the printer gives it, splicing into a
-                        docstring where the file is python. Says what
-                        a new item in the tree is given, from the
-                        configuration at or above its root.
+                        The tree loads once and indexes every identity
+                        it declares, top level and embedded. It
+                        refuses a tree it could not read entirely. It
+                        resolves a readable id or a guid to the file
+                        that holds it and to the path within that
+                        file. It writes a changed document back in the
+                        layout the printer gives it, and splices the
+                        document into a docstring where the file is
+                        python. It also says what a new item in the
+                        tree is given, from the configuration at or
+                        above the tree's root.
 relation:               []
 
 ...

@@ -15,8 +15,8 @@ title:                  Command line
 brief:                  |
                         The command line interface.
 description:            |
-                        Holds the command definitions and the
-                        presentation of a report.
+                        This package holds the command definitions and
+                        the presentation of a report.
 relation:               []
 
 ...

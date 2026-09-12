@@ -16,15 +16,17 @@ brief:                  |
                         Check that every class and function item is
                         named by where it sits.
 description:            |
-                        A class or function item lives in the
-                        docstring of its definition, and its
-                        identifier is its module's, then the run of
-                        definition names down to it in lower case,
-                        under the prefix of its kind. A document
-                        declaring another identifier has been moved
-                        without its definition or left behind by a
-                        rename, and an edge pointing at it no longer
-                        points at the code. Critical, at the document.
+                        A class item or a function item lives in the
+                        docstring of its definition. Its identifier is
+                        the identifier of its module, then the run of
+                        definition names down to the definition in
+                        lower case, under the prefix of its kind. A
+                        document that declares a different identifier
+                        has been moved without its definition, or has
+                        been left behind by a rename, and an edge that
+                        points at it no longer points at the code. The
+                        finding is critical and is reported at the
+                        document.
 relation:               []
 
 ...

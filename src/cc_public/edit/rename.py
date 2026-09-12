@@ -16,17 +16,18 @@ brief:                  |
                         Give an item a new readable id, and carry the
                         change to everything that names it.
 description:            |
-                        The guid is the truth and never changes. The
-                        readable id changes in its declaration, in the
-                        file name where the item is a file, in every
-                        embedded item whose id is qualified by it, and
-                        in every reference that pairs the id with the
-                        guid, every document of every file written
-                        under the ledger so that a failure puts all of
-                        them back. A mention of the old id in prose is
-                        reported and left, since prose is written, not
-                        derived. A python file, class or function is
-                        refused: its name is the code's, and the
+                        The guid is the truth, and it never changes.
+                        The readable id changes in its declaration, in
+                        the file name where the item is a file, in
+                        every embedded item whose id is qualified by
+                        it, and in every reference that pairs the id
+                        with the guid. Every document of every file is
+                        written under the ledger, so that a failure
+                        puts all of them back. A mention of the old id
+                        in prose is reported and left as it is,
+                        because prose is written and not derived. A
+                        python file, class or function is refused,
+                        because its name belongs to the code and the
                         document goes where the code goes.
 relation:               []
 

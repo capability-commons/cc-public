@@ -13,15 +13,18 @@ brief:                  |
                         What a relation register entry carries beyond
                         the general register entry.
 description:            |
-                        The kinds of item an edge of this relation may
-                        run from and to, whether its edges may form a
-                        cycle, whether a chain of them is one edge,
-                        which relations may not hold between the same
-                        pair, and how many edges of it one item holds.
-                        Each is optional, and an absent constraint
-                        says nothing rather than permitting nothing.
-                        The relation check reads these and reports an
-                        edge or an item that breaks them.
+                        A relation entry holds the constraints on the
+                        edges of that relation. It says which kinds of
+                        item an edge may run from and to, whether the
+                        edges may form a cycle, whether a chain of
+                        edges counts as one edge, which relations may
+                        not hold between the same pair of items, and
+                        how many edges of the relation one item may
+                        hold. Each constraint is optional. An absent
+                        constraint says nothing, rather than
+                        permitting nothing. The relation check reads
+                        these constraints and reports an edge or an
+                        item that breaks them.
 $schema:                https://json-schema.org/draft/2020-12/schema
 $id:                    https://capability-commons.org/schema/sch_entry_relation.yaml
 type:                   object

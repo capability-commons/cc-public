@@ -16,13 +16,14 @@ brief:                  |
                         Decides which tests a change can reach, from a
                         map measured over a whole run, and runs those.
 description:            |
-                        The loop and not the judgement. A change the
-                        map cannot attribute, a map that is absent, a
-                        map measured in a way that cannot attribute,
-                        and a selection so large that selecting saved
-                        nothing each mean the whole suite. A run made
-                        from here writes no evidence
-                        (ddr_test_selection).
+                        This module is the loop and not the judgement.
+                        Four conditions each mean the whole suite
+                        runs: a change the map cannot attribute, a map
+                        that is absent, a map measured in a way that
+                        cannot attribute, and a selection so large
+                        that selecting saved nothing. A run made from
+                        here writes no evidence. See
+                        ddr_test_selection.
 relation:               []
 
 ...

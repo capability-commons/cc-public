@@ -75,9 +75,10 @@ def test_passes():
                             A control that passes, so the adapter reads
                             completed and passed.
     description:            |
-                            Run through the adapter, this must read
-                            completed and passed. It is the outcome every
-                            other control is told apart from.
+                            When this control is run through the adapter,
+                            the adapter must read completed and passed.
+                            Every other control is defined by how its
+                            outcome differs from this one.
     relation:               []
 
     ...
@@ -106,10 +107,11 @@ def test_fails():
                             adapter reads completed and failed, and
                             carries the assertion into what it observed.
     description:            |
-                            Run through the adapter, this must read
-                            completed and failed, and the assertion must
-                            reach what was observed, since a report quotes
-                            it.
+                            When this control is run through the adapter,
+                            the adapter must read completed and failed.
+                            The text of the failed assertion must reach
+                            the observation, because a report quotes the
+                            assertion.
     relation:               []
 
     ...
@@ -140,11 +142,11 @@ def test_errors_in_setup(unmakeable):
                             observed: the adapter reads an execution error
                             and no conformance result at all.
     description:            |
-                            Run through the adapter, this must read an
-                            execution error and no conformance result.
-                            Nothing about the item under test was
-                            observed, so a result of any kind would be a
-                            claim the run cannot support.
+                            When this control is run through the adapter,
+                            the adapter must read an execution error and
+                            no conformance result. Nothing about the item
+                            under test was observed, so a result of any
+                            kind would be a claim the run cannot support.
     relation:               []
 
     ...
@@ -207,10 +209,11 @@ def test_skips():
                             completed and not applicable: the run happened
                             and observed nothing about the item.
     description:            |
-                            Run through the adapter, this must read
-                            completed and not applicable. The run happened
-                            and observed nothing about the item, which is
-                            neither a pass nor a failure.
+                            When this control is run through the adapter,
+                            the adapter must read completed and not
+                            applicable. The run happened and observed
+                            nothing about the item, which is neither a
+                            pass nor a failure.
     relation:               []
 
     ...
@@ -240,10 +243,10 @@ def test_parameterised(number):
                             verdict for the function rather than one for
                             each instance.
     description:            |
-                            Run through the adapter, this must read one
-                            verdict rather than one for each instance,
-                            since a test function is one item however many
-                            times it runs.
+                            When this control is run through the adapter,
+                            the adapter must read one verdict rather than
+                            one verdict for each instance. A test function
+                            is one item however many times it runs.
     relation:               []
 
     ...
@@ -273,9 +276,10 @@ def test_parameterised_one_fails(number):
                             fails, so the adapter reads the function by
                             every instance and not by the first.
     description:            |
-                            Run through the adapter, this must read
-                            failed. The function is read by every instance
-                            and not by the first.
+                            When this control is run through the adapter,
+                            the adapter must read failed. The function is
+                            read by every instance, and not by the first
+                            instance alone.
     relation:               []
 
     ...

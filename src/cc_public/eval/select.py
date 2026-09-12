@@ -139,7 +139,7 @@ def select(context, selector = None):
     map_compose = _map_compose(map_schema)
     map_guid    = cc_public.decision.index(context.map_document)
     map_location = {document_item.get(KEY_GUID_SELF): location_item
-                    for (_, document_item, location_item) in _iter_item(context)
+                    for (_, document_item, location_item) in iter_item(context)
                     if document_item.get(KEY_GUID_SELF)}
 
     list_task = []
@@ -293,7 +293,7 @@ def _subject_of_type(edge, context, map_prefix, selector, document_eval,
     if prefix is None:
         return
 
-    for (id_self, document, location) in _iter_item(context):
+    for (id_self, document, location) in iter_item(context):
         if cc_public.item.prefix_of(id_self) == prefix \
                         and _wanted_item(document, selector) \
                         and _wanted_type(id_self, document_eval, map_prefix):
@@ -311,7 +311,7 @@ def _subject_of_schema(edge, context, map_prefix, map_compose, selector,
 
     id_schema = edge.get(KEY_ID_TARGET)
 
-    for (id_self, document, location) in _iter_item(context):
+    for (id_self, document, location) in iter_item(context):
 
         (id_selected, _) = cc_public.check.schema.select_schema(
                                 document, map_prefix,
@@ -338,7 +338,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
     """
 
     id_rel      = edge.get(KEY_ID_TARGET)
-    map_by_id   = {i: (d, loc) for (i, d, loc) in _iter_item(context)}
+    map_by_id   = {i: (d, loc) for (i, d, loc) in iter_item(context)}
     map_by_guid = {d.get(KEY_GUID_SELF): (i, d, loc)
                         for (i, (d, loc)) in map_by_id.items()}
 
@@ -371,7 +371,7 @@ def _subject_of_join(edge, context, map_prefix, selector,
 
 
 # -----------------------------------------------------------------------------
-def _iter_item(context):
+def iter_item(context):
     """
     Yield (id_self, document, location) for every item that is not
     itself an eval: the item at each location, and every item embedded

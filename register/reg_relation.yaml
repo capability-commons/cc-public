@@ -13,9 +13,8 @@ title:                  Relation register
 brief:                  |
                         Register of relations.
 description:            |
-                        The relation register provides a comprehensive
-                        list of relations together with associated
-                        metadata for each.
+                        The relation register lists every relation,
+                        with the metadata each relation carries.
 usage:                  |
                         The relation register is used to enable
                         general purpose processing of networks of
@@ -313,10 +312,10 @@ table:
                         SUBJ measures OBJ
     description:        |
                         The control set identified by SUBJ holds cases
-                        with known verdicts against which the eval
-                        identified by OBJ is measured. Several sets
-                        may measure one eval, and a partner brings
-                        their own.
+                        with known verdicts, and the eval identified
+                        by OBJ is measured against those cases.
+                        Several sets may measure one eval, and a
+                        partner may bring a set of their own.
 
     domain:
       - t_control_set
@@ -449,9 +448,9 @@ table:
                         The item identified by SUBJ establishes that
                         the item identified by OBJ holds. A test case
                         establishes that a textual requirement or an
-                        interface member holds, and a python test
-                        function does the same while both
-                        representations of trace are read.
+                        interface member holds. A python test function
+                        does the same, while both representations of
+                        trace are read.
     status:             proposed
     alias:              []
 
@@ -518,21 +517,22 @@ table:
     brief:              |
                         SUBJ rests on the captured source OBJ.
     description:        |
-                        The item identified by SUBJ, an assessment,
-                        one of its dimensions, a product it names, an
-                        assumption, an evidential candidate or
-                        requirement, or an annotation, names the
+                        The item identified by SUBJ names the
                         observation identified by OBJ as a reference
-                        for what it claims. A claim with no r_cites
-                        edge rests on its author alone, and says so.
-                        An evidential requirement cites with a quote,
-                        the span of the observation it rests on, which
-                        the promotion checks is there.
-
-                        An annotation cites what its assertion rests
-                        on. It does not cite another annotation:
-                        naming one is supporting or challenging it,
-                        and neither of those is evidence.
+                        for what it claims. The subject may be an
+                        assessment, one of its dimensions, a product
+                        it names, an assumption, an evidential
+                        candidate or requirement, or an annotation. A
+                        claim with no r_cites edge rests on its author
+                        alone, and says so. An evidential requirement
+                        cites with a quote, which is the span of the
+                        observation it rests on, and promotion checks
+                        that the quote is there. An annotation cites
+                        what its assertion rests on. An annotation
+                        does not cite another annotation, because
+                        naming another annotation is supporting or
+                        challenging it, and neither of those is
+                        evidence.
 
     domain:
       - t_assessment
@@ -833,12 +833,13 @@ table:
     description:        |
                         The annotation identified by SUBJ makes its
                         assertion about the item identified by OBJ.
-                        The edge says what the assertion is about and
-                        nothing about the assertion: not that it is
-                        true, not that it is adverse, and not that
-                        anything follows from it. An annotation holds
-                        at least one and may hold several.
-                        ddr_annotation decides it.
+                        The edge says what the assertion is about, and
+                        it says nothing about the assertion itself. It
+                        does not say that the assertion is true, that
+                        it is adverse, or that anything follows from
+                        it. An annotation holds at least one such edge
+                        and may hold several. The relation is decided
+                        in ddr_annotation.
 
     domain:
       - t_annotation

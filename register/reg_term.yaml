@@ -83,9 +83,10 @@ table:
                         The pair of identifiers an item declares:
                         guid_self and id_self.
     description:        |
-                        Declared by the two fields named with self.
-                        Every other identifier field refers to an
-                        identity declared elsewhere.
+                        An identity is declared by the two fields
+                        whose names end in self. Every other
+                        identifier field refers to an identity
+                        declared somewhere else.
     term:               identity
     alias:              []
     status:             proposed
@@ -99,9 +100,10 @@ table:
                         The opaque identifier of an item: its type
                         prefix and thirty two hexadecimal digits.
     description:        |
-                        Minted once and never changed. What resolves a
-                        reference, and what tells two items apart when
-                        their readable ids collide.
+                        A guid is minted once and never changed. It is
+                        what resolves a reference, and it is what
+                        tells two items apart when their readable ids
+                        collide.
     term:               guid
     alias:              []
 
@@ -119,9 +121,10 @@ table:
                         The human readable identifier of an item,
                         carrying its type prefix.
     description:        |
-                        Chosen by an author rather than minted. An
-                        advisory copy travels beside every guid, so a
-                        reference carries both.
+                        A readable id is chosen by an author and not
+                        minted. An advisory copy of the readable id
+                        travels beside every guid, so that a reference
+                        carries both identifiers.
     term:               readable id
 
     also:
@@ -239,9 +242,10 @@ table:
                         A schema composed into others by allOf,
                         declaring one property every composer shares.
     description:        |
-                        Identity, the prose envelope and rights are
-                        the three. A composer requires whatever it
-                        needs beyond what the trait requires.
+                        There are three traits: identity, the prose
+                        envelope, and rights. A schema that composes a
+                        trait requires the fields the trait requires,
+                        and may require more.
     term:               trait
     alias:              []
 
@@ -260,8 +264,9 @@ table:
                         A kind of directed edge between items,
                         declared as an entry in the relation register.
     description:        |
-                        Directional. Where an inverse is wanted it is
-                        a separate relation. The vocabulary is open.
+                        A relation is directional. Where an inverse is
+                        wanted, the inverse is a separate relation.
+                        The vocabulary of relations is open.
     term:               relation
 
     also:
@@ -280,10 +285,11 @@ table:
                         naming its relation and its target by guid and
                         by readable id.
     description:        |
-                        Always exactly four fields. Held in an item's
-                        relation array. Not to be confused with a
-                        dataflow edge, which wires ports inside a
-                        workflow.
+                        A relation edge always has exactly four
+                        fields. It is held in the item's relation
+                        array. A relation edge is a different thing
+                        from a dataflow edge, which wires ports inside
+                        a workflow.
     term:               relation edge
     alias:              []
     status:             proposed
@@ -298,11 +304,12 @@ table:
                         design decision, so that the artifact need
                         not.
     description:        |
-                        Context, decision, rationale, alternative,
-                        consequence, and what is left open. A design
-                        decision decides items by r_decides edges. Its
-                        type prefix is ddr, and the item is a design
-                        decision rather than a design decision record.
+                        A design decision holds the context, the
+                        decision, the rationale, the alternatives, the
+                        consequences, and what is left open. It
+                        decides items by r_decides edges. Its type
+                        prefix is ddr, and the item is called a design
+                        decision and not a design decision record.
     term:               design decision
 
     also:
@@ -326,9 +333,10 @@ table:
                         An item holding one criterion that a language
                         model judges an item against.
     description:        |
-                        Anchored to what it applies to, scoped to what
-                        the judge is shown, and given examples with
-                        feedback. A verdict is met or unmet.
+                        An eval is anchored to what it applies to,
+                        scoped to what the judge is shown, and given
+                        examples with feedback. A verdict is either
+                        met or unmet.
     term:               eval
     alias:              []
 
@@ -367,9 +375,10 @@ table:
     brief:              |
                         The language model that answers a criterion.
     description:        |
-                        Named at run time, never in an eval. Should
-                        not be of the same family as the model that
-                        wrote the item being judged.
+                        The judge is named at run time and never in an
+                        eval. The judge should not be of the same
+                        family as the model that wrote the item being
+                        judged.
     term:               judge
     alias:              []
 
@@ -408,10 +417,11 @@ table:
                         What an eval applies to: a type, a schema, a
                         relation, or a port.
     description:        |
-                        Expressed by a relation edge, from the eval
-                        for types, schemas and relations, and from the
-                        port for ports. Distinct from scope, which
-                        says what the judge is shown.
+                        An anchor is expressed by a relation edge. For
+                        a type, a schema or a relation, the edge runs
+                        from the eval. For a port, the edge runs from
+                        the port. The anchor is different from the
+                        scope, which says what the judge is shown.
     term:               anchor
     alias:              []
 
@@ -450,8 +460,9 @@ table:
                         The text a judge is given: the scoped parts of
                         one item, or of two joined by a relation.
     description:        |
-                        Rendered as prose where the fields are prose.
-                        An item with nothing in scope is not judged.
+                        A subject is rendered as prose where the
+                        fields are prose. An item with nothing in
+                        scope is not judged.
     term:               subject
     alias:              []
 
@@ -586,9 +597,10 @@ table:
                         The convention every YAML document and
                         docstring metadata block is written to.
     description:        |
-                        Values at column 24, prose filled to seventy.
-                        Enforced by a check and produced by cctool
-                        format.
+                        The layout convention puts values at column 24
+                        and fills prose to seventy columns. A check
+                        enforces the convention, and the format
+                        command produces it.
     term:               layout
     alias:              []
 
@@ -632,9 +644,11 @@ table:
                         a prompt on each output, or code that
                         implements it.
     description:        |
-                        The base form. An eval is anchored to one of
-                        its ports, or to the component itself for an
-                        input and an output together.
+                        The atomic component is the base form of a
+                        component. An eval is anchored either to one
+                        of the component's ports, or to the component
+                        itself when the eval reads an input and an
+                        output together.
     term:               atomic component
     alias:              []
 
@@ -742,11 +756,13 @@ table:
                         Wiring from one output port to one input port
                         within a dataflow workflow.
     description:        |
-                        Named by a short local key, like a port or a
-                        node, and carrying its two endpoints as
-                        fields. Has no identity: it is its endpoints,
-                        whatever it is called. Not to be confused with
-                        a relation edge.
+                        A dataflow edge is named by a short local key,
+                        in the same way as a port or a node, and it
+                        carries its two endpoints as fields. It has no
+                        identity of its own: the edge is its
+                        endpoints, whatever it is called. A dataflow
+                        edge is a different thing from a relation
+                        edge.
     term:               dataflow edge
     alias:              []
 
@@ -766,9 +782,11 @@ table:
                         A dataflow edge whose destination precedes its
                         source, declared as such.
     description:        |
-                        Set aside when the graph is ordered.
-                        Ordinarily feeds an optional input, guarded on
-                        unmet, and is how a cycle revises.
+                        A back edge is set aside when the graph is put
+                        in order. Ordinarily a back edge feeds an
+                        optional input and is guarded on an unmet
+                        verdict. This is how a cycle revises its own
+                        output.
     term:               back edge
     alias:              []
 
@@ -787,10 +805,11 @@ table:
                         A verdict named on a destination, without
                         which the edge fires always.
     description:        |
-                        Consults the evals anchored to the source
-                        port: met when all are met, unmet when any is.
-                        The verdict is consumed here and never
-                        travels.
+                        A guard consults the evals anchored to the
+                        source port. The guard is met when all of
+                        those evals are met, and unmet when any of
+                        them is unmet. The verdict is consumed at the
+                        guard and never travels further.
     term:               guard
     alias:              []
 
@@ -808,9 +827,9 @@ table:
     brief:              |
                         A composite component of some declared form.
     description:        |
-                        A family of types rather than one. The
-                        dataflow workflow is the first form. A
-                        workflow item is meaningful to a reader who
+                        A workflow is a family of types and not one
+                        type. The dataflow workflow is the first form.
+                        A workflow item is meaningful to a reader who
                         cannot execute it.
     term:               workflow
     alias:              []
@@ -830,8 +849,9 @@ table:
                         An item recording one run of a workflow under
                         one deployment, as a table of bindings.
     description:        |
-                        Written once and never edited. Where an item
-                        came from is read here.
+                        An execution is written once and never edited.
+                        Where an item came from is read from the
+                        execution.
     term:               execution
     alias:              []
 
@@ -852,9 +872,10 @@ table:
                         port that were filled, the pass, and by an
                         edge the item that filled them.
     description:        |
-                        A reified reference: a relation edge is four
-                        fields and a binding needs more, so it is a
-                        thing that carries an edge.
+                        A binding is a reified reference. A relation
+                        edge has four fields, and a binding needs more
+                        than four, so a binding is an item of its own
+                        that carries an edge.
     term:               binding
     alias:              []
 
@@ -874,8 +895,9 @@ table:
                         is run under: the model, the budget, and
                         whatever else the definition must not say.
     description:        |
-                        An execution runs under exactly one. A
-                        definition names no machinery of its own.
+                        An execution runs under exactly one
+                        deployment. A workflow definition names no
+                        machinery of its own.
     term:               deployment
     alias:              []
 
@@ -915,9 +937,10 @@ table:
                         Where an item came from: which node, port,
                         pass and deployment produced it, from what.
     description:        |
-                        A walk over bindings and relation edges,
-                        needing no engine. Not yet able to say whether
-                        an input has changed since.
+                        Provenance is a walk over bindings and
+                        relation edges, and it needs no engine.
+                        Provenance cannot yet say whether an input has
+                        changed since the item was produced.
     term:               provenance
     alias:              []
 
@@ -936,9 +959,10 @@ table:
                         The tool that parses a document and writes it
                         again to the layout convention.
     description:        |
-                        Run by cctool format, and by every edit
-                        command on every write. The layout check is
-                        whether a file matches its own printing.
+                        The printer is run by the format command, and
+                        by every edit command on every write. The
+                        layout check asks whether a file matches its
+                        own printing.
     term:               printer
 
     avoid:
@@ -976,8 +1000,9 @@ table:
                         The most passes a cycle may take before it
                         stops, held on the deployment.
     description:        |
-                        Bounds a cycle spun by a false unmet. Nothing
-                        bounds a false met.
+                        The budget bounds a cycle that a false unmet
+                        verdict would otherwise spin forever. Nothing
+                        bounds a cycle spun by a false met verdict.
     term:               budget
 
     avoid:
@@ -995,9 +1020,10 @@ table:
                         Cases with known verdicts against which an
                         eval is measured.
     description:        |
-                        What turns an eval's reliability from an
-                        assertion into a number. Discrimination and
-                        stability are measured over it.
+                        A control set is what turns an eval's
+                        reliability from an assertion into a number.
+                        Discrimination and stability are measured over
+                        the control set.
     term:               control set
 
     avoid:
@@ -1015,9 +1041,10 @@ table:
                         A YAML string written beneath its key after a
                         vertical bar, one line per line.
     description:        |
-                        How prose is written here. The printer refills
-                        it and nothing else: a block scalar is what
-                        the author marked as prose.
+                        A block scalar is how prose is written in this
+                        repository. The printer refills block scalars
+                        and nothing else, because a block scalar is
+                        what the author marked as prose.
     term:               block scalar
 
     avoid:
@@ -1050,9 +1077,11 @@ table:
                         by full stops: table.t_eval.brief,
                         relation.0.guid_target.
     description:        |
-                        One notation for naming a place and, with glob
-                        wildcards, for matching many. Used by scope,
-                        by set, and by insert.
+                        A dot path is one notation for naming a place
+                        in a document. With glob wildcards it also
+                        matches many places. The scope of an eval, the
+                        set command and the insert command all use dot
+                        paths.
     term:               dot path
 
     also:
@@ -1073,11 +1102,12 @@ table:
                         An item that lives in the docstring of a
                         python package, module, class or function.
     description:        |
-                        Found by walking the syntax tree. A package
-                        and a module carry one always; a class and a
-                        function carry one where something needs to
-                        name them, and each is an item of its own at a
-                        location naming the file and the definition.
+                        A source item is found by walking the syntax
+                        tree. A package and a module always carry one.
+                        A class and a function carry one where
+                        something needs to name them. Each source item
+                        is an item of its own, at a location that
+                        names the file and the definition.
     term:               source item
 
     avoid:
@@ -1114,8 +1144,11 @@ table:
                         On a term, the forms the word is also known
                         by.
     description:        |
-                        Not alias, which on a register entry is an
-                        alternative identifier rather than a word.
+                        The also field on a term entry lists the other
+                        forms the word is known by. It is different
+                        from the alias field, which on a register
+                        entry is an alternative identifier and not a
+                        word.
     term:               also
 
     avoid:
@@ -1133,9 +1166,11 @@ table:
                         On a term, the forms not to be used for the
                         concept.
     description:        |
-                        Not always wrong words -- work is an ordinary
-                        word -- so judging prose against them is an
-                        eval's job and not a check's.
+                        The forms listed in the avoid field are not
+                        always wrong words. The word work, for
+                        example, is an ordinary word. Judging prose
+                        against the avoid list is therefore a job for
+                        an eval and not for a check.
     term:               avoid
 
     avoid:
@@ -1229,9 +1264,10 @@ table:
                         on it: the two error rates and the unanimity,
                         per origin, for a judge model.
     description:        |
-                        The partner severity lacked. What to do about
-                        a finding is its severity together with the
-                        confidence of the eval that raised it.
+                        Confidence is the partner that severity
+                        lacked. What to do about a finding depends on
+                        its severity together with the confidence of
+                        the eval that raised it.
     term:               confidence
 
     avoid:
@@ -1249,9 +1285,10 @@ table:
                         The text an item rendered to when a control
                         case was taken from it.
     description:        |
-                        Held on the case as its subject. Where the
-                        item later renders to the same words, the case
-                        applies; where it does not, it does not.
+                        A snapshot is held on the control case as its
+                        subject. Where the item later renders to the
+                        same words, the case applies. Where it renders
+                        to different words, the case does not apply.
     term:               snapshot
 
     avoid:
@@ -1270,10 +1307,11 @@ table:
                         held on the record as an entry with an
                         identity.
     description:        |
-                        Answered by an r_answers edge from whatever
-                        settles it, never by editing its text. Open
-                        means no such edge. Listed by cctool
-                        questions.
+                        A question is answered by an r_answers edge
+                        from whatever settles it, and never by editing
+                        the question's text. A question with no such
+                        edge is open. The questions command lists
+                        them.
     term:               question
 
     avoid:
@@ -1292,12 +1330,15 @@ table:
                         The data item held in a commit message,
                         describing that commit.
     description:        |
-                        A plain first line, then the record between
-                        the docstring markers: what the commit was
-                        for, the state of the checks, and what it
-                        relates to on purpose. What it changed is the
-                        diff's to say. Made by cctool commit, read by
-                        cctool log, never a file in the tree.
+                        A commit record has a plain first line, and
+                        then the record between the docstring markers.
+                        The record says what the commit was for, the
+                        state of the checks, and what the commit
+                        relates to on purpose. The record does not say
+                        what the commit changed, because the diff says
+                        that. The commit command makes the record, the
+                        log command reads it, and it is never a file
+                        in the tree.
     term:               commit record
 
     avoid:
@@ -1336,9 +1377,10 @@ table:
                         A register of writing style rules. The
                         cc-public guide is reg_writing_style_rule.
     description:        |
-                        The one source both a writing prompt and a
-                        prose eval draw on. House style is the
-                        publishing word for the same thing.
+                        The writing style guide is the one source that
+                        both a writing prompt and a prose eval draw
+                        on. House style is the publishing word for the
+                        same thing.
     term:               writing style guide
     alias:              []
 
@@ -1358,10 +1400,11 @@ table:
                         anchored there, the verdict and the judge's
                         reasons.
     description:        |
-                        Held on the binding of the port at that pass,
-                        so that a judgement is a fact about one item
-                        on one port on one pass. A verdict is one word
-                        of a judgement; the reasons are the rest.
+                        A judgement is held on the binding of the port
+                        at that pass, so that a judgement is a fact
+                        about one item on one port on one pass. The
+                        verdict is one word of the judgement, and the
+                        reasons are the remainder.
     term:               judgement
     alias:              []
 
@@ -1386,9 +1429,10 @@ table:
                         one entity, with the attributes that make it
                         an expression.
     description:        |
-                        What an entity must do or be to realise a
-                        need. Held as a textual requirement item in
-                        requirement/.
+                        A requirement is what an entity must do or be
+                        in order to realise a need. It is held as a
+                        textual requirement item in the requirement
+                        directory.
     term:               requirement
     alias:              []
     status:             proposed
@@ -1412,9 +1456,9 @@ table:
                         shall, the action, its object, any condition
                         and performance.
     description:        |
-                        The statement field of a requirement. The
-                        expression is the statement with its
-                        attributes.
+                        The requirement statement is the statement
+                        field of a requirement. The expression is the
+                        statement together with its attributes.
     term:               requirement statement
     alias:              []
     status:             proposed
@@ -1452,10 +1496,12 @@ table:
                         One quality a well formed requirement
                         statement or set has, from the INCOSE guide.
     description:        |
-                        An entry in the requirement characteristic
-                        register. Nine of a statement, six of a set.
-                        What a rule contributes to and what an eval
-                        measures toward.
+                        A requirement characteristic is an entry in
+                        the requirement characteristic register. Nine
+                        characteristics apply to a statement and six
+                        apply to a set. A rule contributes to a
+                        characteristic, and an eval measures toward
+                        one.
     term:               requirement characteristic
     alias:              []
     status:             proposed
@@ -1477,10 +1523,12 @@ table:
                         purpose, in a context, on evidence. Names no
                         entity and no solution.
     description:        |
-                        A need data item in need/. Its statement is
-                        composed from its slots. A requirement derives
-                        from a need by an r_is_derived_from edge and
-                        names the entity the need did not.
+                        A need is a need data item, held in the need
+                        directory. Its statement is composed from its
+                        slots. A requirement derives from a need by an
+                        r_is_derived_from edge. The need names no
+                        entity, and the requirement supplies the
+                        entity.
     term:               need
     alias:              []
     status:             proposed
@@ -1501,10 +1549,12 @@ table:
                         A way of looking at a need that decides how it
                         is analysed and broken into smaller problems.
     description:        |
-                        An entry of reg_framing: what it treats as the
-                        problem, what it makes salient, what responses
-                        it admits. One need decomposed under two
-                        framings gives two decision items to compare.
+                        A framing is an entry of reg_framing. The
+                        entry says what the framing treats as the
+                        problem, what it makes salient, and what
+                        responses it admits. One need decomposed under
+                        two framings gives two decision items to
+                        compare.
     term:               framing
     alias:              []
 
@@ -1581,7 +1631,8 @@ table:
                         writing requirements, named so that a
                         component can say it follows one.
     description:        |
-                        An entry of reg_methodology.
+                        A methodology is an entry of reg_methodology.
+                        A component names the methodology it follows.
     term:               methodology
     alias:              []
     status:             proposed
@@ -1604,11 +1655,12 @@ table:
                         the run of definition names down to a
                         docstring.
     description:        |
-                        Written as pytest writes a test's place, the
-                        file then each name after two colons:
-                        run.py::State::generator_for. The file's own
-                        document has no names after it. Findings,
-                        tasks and cases name locations.
+                        A location is written the way pytest writes a
+                        test's place: the file, then each definition
+                        name after two colons, as in
+                        run.py::State::generator_for. The document of
+                        the file itself has no names after the file.
+                        Findings, tasks and cases name locations.
     term:               location
 
     also:
@@ -1624,11 +1676,14 @@ table:
                         One of the seven layers of the tool, each
                         importing only from the tiers below it.
     description:        |
-                        Foundations, layout, checks, edits, the
-                        committer beside the judgement package and
-                        evidence, workflow, and the command line. Held
-                        by a layers contract the lint enforces. See
-                        ddr_layered_architecture.
+                        There are seven tiers. From the bottom up they
+                        are the foundations, the layout, the checks,
+                        the edits, then one tier holding the
+                        committer, the judgement package and the
+                        evidence side by side, then the workflow, and
+                        then the command line. A layers contract,
+                        enforced by the lint, holds the tiers apart.
+                        See ddr_layered_architecture.
     term:               tier
 
     also:
@@ -1645,12 +1700,14 @@ table:
                         outcome, stamped with a digest of what it was
                         observed against.
     description:        |
-                        Observed, not authored, and rewritten by the
-                        next observation. A row names the requirement,
-                        the case where the method has one, the outcome
-                        and the digest. Distinct from a verification
-                        declaration, which says what is meant to
-                        verify; evidence says what did. See
+                        Evidence is observed and not authored, and the
+                        next observation rewrites it. A row of
+                        evidence names the requirement, the case where
+                        the method has one, the outcome and the
+                        digest. Evidence is different from a
+                        verification declaration. The declaration says
+                        what is meant to verify a requirement, and the
+                        evidence says what did. See
                         ddr_verification_evidence.
     term:               evidence
 
@@ -1672,10 +1729,12 @@ table:
                         requirement verified by inspection,
                         demonstration or analysis.
     description:        |
-                        Recorded by cctool attest, naming the observer
-                        and the outcome, and stamped like any
-                        evidence. A requirement verified by test is
-                        not attested; its test observes it.
+                        An attestation is recorded by the attest
+                        command. It names the observer and the
+                        outcome, and it is stamped in the same way as
+                        every other piece of evidence. A requirement
+                        verified by test is not attested, because its
+                        test observes it.
     term:               attestation
 
     avoid:
@@ -1692,10 +1751,10 @@ table:
                         What produced a piece of evidence: a tool and
                         its version, or the person attesting.
     description:        |
-                        Named on every evidence item, and on a row
-                        where it differs from the item's. pytest 9.1.1
-                        is an observer; so is the agent that inspected
-                        the log.
+                        An observer is named on every evidence item,
+                        and on a row where the row's observer differs
+                        from the item's. pytest 9.1.1 is an observer,
+                        and so is the agent that inspected the log.
     term:               observer
 
     avoid:
@@ -1713,10 +1772,12 @@ table:
                         or a component, named by an
                         r_is_implemented_by edge.
     description:        |
-                        Places responsibility and shows nothing about
-                        whether the requirement is met. The narrowest
-                        stable item: a module where behaviour is
-                        spread over helpers, a function where one
+                        An implementation places responsibility, and
+                        it shows nothing about whether the requirement
+                        is met. The implementation is the narrowest
+                        stable item that carries the behaviour: a
+                        module where the behaviour is spread over
+                        helpers, and a function where one function
                         carries it. See ddr_implementation_trace.
     term:               implementation
 
@@ -1735,10 +1796,11 @@ table:
                         verifies it, and what it lacks, computed from
                         the tree.
     description:        |
-                        One module in the foundations computes it, and
-                        the trace check and cctool trace both read it.
-                        The impact of a change to one item is the same
-                        projection asked the other way.
+                        One module in the foundations computes the
+                        trace projection, and the trace check and the
+                        trace command both read it. The impact of a
+                        change to one item is the same projection
+                        asked in the other direction.
     term:               trace projection
 
     also:
@@ -1755,13 +1817,14 @@ table:
                         identity, every relation edge, every
                         containment.
     description:        |
-                        Derived from the documents on every use by the
-                        facts module and loaded into a database that
-                        lives for one command. An item fact carries
-                        the type prefix, the status and the location;
-                        an edge fact the source, the relation and the
-                        target; a containment fact the holder and the
-                        held.
+                        The fact table is derived from the documents
+                        on every use, by the facts module, and loaded
+                        into a database that lives for one command. An
+                        item fact carries the type prefix, the status
+                        and the location of an item. An edge fact
+                        carries the source, the relation and the
+                        target of an edge. A containment fact carries
+                        the holder and the held item.
     term:               fact table
 
     also:
@@ -1778,9 +1841,10 @@ table:
                         of one item, in either direction, with the
                         edge that reaches each.
     description:        |
-                        What walk reports and what a drawing draws.
-                        Depth one is what show gives; further depths
-                        are where a change reaches.
+                        The neighbourhood is what the walk command
+                        reports and what a drawing draws. Depth one is
+                        what the show command gives. Further depths
+                        show where a change reaches.
     term:               neighbourhood
     relation:           []
 
@@ -1793,9 +1857,10 @@ table:
                         as an item with what a row of its result
                         means.
     description:        |
-                        Run by cctool query, which loads the facts and
-                        reports the rows. A question asked twice is
-                        kept as a qry_ item in query/.
+                        A query is run by the query command, which
+                        loads the facts and reports the rows. A
+                        question asked twice is kept as a qry_ item in
+                        the query directory.
     term:               query
 
     also:
@@ -1811,13 +1876,14 @@ table:
                         Who does the work of a node: a function, a
                         model or an agent.
     description:        |
-                        The standard word, from workflow and human
-                        task standards, for the party that carries out
-                        a task. Here a component declares one of
-                        three: a function called in process, a model
-                        asked a prompt, or an agent, a person or a
-                        coding tool, that works in a session of its
-                        own while the run waits.
+                        Performer is the standard word, from workflow
+                        and human task standards, for the party that
+                        carries out a task. Here a component declares
+                        one of three performers. A function is called
+                        in process. A model is asked a prompt. An
+                        agent, which may be a person or a coding tool,
+                        works in a session of its own while the run
+                        waits.
     alias:              []
 
     avoid:
@@ -1938,15 +2004,14 @@ table:
                         framing, with its assumptions, risks and
                         candidate requirements.
     description:        |
-                        An item of t_concept in concept/. One need
-                        under one framing yields one concept. A
-                        decision selects, waives or rejects it, and
+                        A solution concept is an item of t_concept,
+                        held in the concept directory. One need under
+                        one framing yields one concept. A decision
+                        selects, waives or rejects a concept, and
                         promotion makes a proposed requirement from
-                        each of its candidates.
-
-                        The unit of meaning a term entry identifies is
-                        a different concept, held as
-                        term_ontology_concept.
+                        each of its candidates. The unit of meaning
+                        that a term entry identifies is a different
+                        concept, held as term_ontology_concept.
     term:               concept
 
     also:
@@ -1995,10 +2060,12 @@ table:
                         A requirement in a concept, written in slots,
                         before promotion makes an item of it.
     description:        |
-                        An entry embedded in a concept, ten to thirty
-                        of them by schema. Promotion makes a proposed
-                        requirement item from each, deriving from the
-                        concept and its need.
+                        A candidate requirement is an entry embedded
+                        in a concept. The schema allows ten to thirty
+                        candidates in one concept. Promotion makes a
+                        proposed requirement item from each candidate,
+                        and that item derives from the concept and
+                        from its need.
     term:               candidate requirement
 
     avoid:
@@ -2042,7 +2109,9 @@ table:
                         One aspect of a concept an assessment judges,
                         with the finding it reached.
     description:        |
-                        An entry embedded in an assessment.
+                        An assessment dimension is an entry embedded
+                        in an assessment. There is one entry for each
+                        aspect the assessment judges.
     term:               dimension
 
     also:
@@ -2068,7 +2137,8 @@ table:
                         An existing product an assessment weighs as a
                         way of meeting the need.
     description:        |
-                        An entry embedded in an assessment.
+                        A product is an entry embedded in an
+                        assessment.
     term:               product
 
     also:
@@ -2118,14 +2188,16 @@ table:
                         from, held as an entry so that it can be
                         cited.
     description:        |
-                        An entry of reg_document. A requirement rule,
-                        a requirement characteristic, a methodology, a
-                        design decision and an objective name the
-                        document they are taken from by
-                        r_is_taken_from. A requirement does not: a
-                        claim rests on an observation by r_cites,
-                        which ddr_document_register keeps apart from
-                        citing a standard.
+                        A document is an entry of reg_document. A
+                        requirement rule, a requirement
+                        characteristic, a methodology, a design
+                        decision and an objective each name the
+                        document they are taken from by an
+                        r_is_taken_from edge. A requirement does not
+                        name a document. A claim in a requirement
+                        rests on an observation, by an r_cites edge,
+                        and ddr_document_register keeps that apart
+                        from citing a standard.
     term:               document
 
     avoid:
@@ -2143,10 +2215,12 @@ table:
                         A verb a requirement's process slot may name,
                         with the kind of thing it denotes.
     description:        |
-                        An entry of reg_process_word. The requirement
-                        check reports a process slot naming a verb
-                        that no register the item's segment can see
-                        defines.
+                        A process word is an entry of
+                        reg_process_word. The requirement check reads
+                        the process slot of every requirement. Where
+                        the slot names a verb that no process word
+                        register visible from the item's segment
+                        defines, the check reports it.
     term:               process word
 
     avoid:
@@ -2164,13 +2238,14 @@ table:
                         actor, the role, the authority and the items
                         it is made on.
     description:        |
-                        An item of t_decision in decision/. Waive,
-                        select, accept and lead are its outcomes. Each
-                        subject is stamped with the digest of its
-                        whole document, and the decision check reports
-                        a subject changed since or an expiry passed.
-
-                        A design decision is a different concept, held
+                        A decision is an item of t_decision, held in
+                        the decision directory. Its outcomes are
+                        waive, select, accept and lead. Each subject
+                        of a decision is stamped with the digest of
+                        that subject's whole document, and the
+                        decision check reports a subject that has
+                        changed since, or an expiry that has passed. A
+                        design decision is a different concept, held
                         as term_design_decision.
     term:               decision
 
@@ -2189,11 +2264,12 @@ table:
                         The requirements gathered from one concept,
                         reviewed for coverage as a whole.
     description:        |
-                        An item of t_requirement_set in
-                        requirement_set/, including each member by
-                        r_includes. A set is shown to a judge or a
-                        model with its members projected as composed
-                        statements.
+                        A requirement set is an item of
+                        t_requirement_set, held in the requirement_set
+                        directory. It includes each member by an
+                        r_includes edge. When a set is shown to a
+                        judge or to a model, its members are projected
+                        as composed statements.
     term:               requirement set
 
     avoid:
@@ -2211,10 +2287,11 @@ table:
                         A scenario class a requirement set is reviewed
                         against, and what in the set covers it.
     description:        |
-                        An entry embedded in a requirement set, one
-                        for each scenario class. The requirement check
-                        reports an unreviewed set and each uncovered
-                        class.
+                        A scenario coverage is an entry embedded in a
+                        requirement set, with one entry for each
+                        scenario class. The requirement check reports
+                        a set that has not been reviewed, and each
+                        class that is not covered.
     term:               coverage
 
     also:
@@ -2241,10 +2318,12 @@ table:
                         with their count, the items they fell on and
                         sample messages.
     description:        |
-                        An entry embedded in a sweep, largest first. A
-                        finding naming a rule the register lacks
-                        groups under its eval alone, since the name is
-                        the judge's invention.
+                        A finding group is an entry embedded in a
+                        sweep, and the groups are ordered largest
+                        first. A finding that names a rule the
+                        register lacks is grouped under its eval
+                        alone, because the rule name is the judge's
+                        invention.
     term:               finding group
 
     avoid:
@@ -2285,12 +2364,14 @@ table:
                         A rule a model proposes from a sweep, for a
                         person to enter in the register or to reject.
     description:        |
-                        An item of t_rule_proposal in proposal/,
-                        deriving from the sweep it answers. It states
-                        the rule as a register entry states one, the
-                        groups it answers, a statement that follows it
-                        and one that breaks it. Nothing writes to the
-                        register but a person.
+                        A rule proposal is an item of t_rule_proposal,
+                        held in the proposal directory, and it derives
+                        from the sweep it answers. It states the rule
+                        in the way a register entry states one, names
+                        the finding groups it answers, and gives a
+                        statement that follows the rule and one that
+                        breaks it. Only a person writes to the
+                        register.
     term:               rule proposal
 
     avoid:
@@ -2307,10 +2388,11 @@ table:
                         A unit of measure a requirement's quantities
                         are stated in.
     description:        |
-                        An entry of reg_unit, carrying the symbol and
-                        the spellings the unit is also known by. The
-                        statement check reports a number no unit
-                        follows and a unit the register lacks.
+                        A unit is an entry of reg_unit, and it carries
+                        the symbol and the other spellings the unit is
+                        known by. The statement check reports a number
+                        that no unit follows, and a unit that the
+                        register lacks.
     term:               unit
 
     avoid:
@@ -2394,15 +2476,15 @@ table:
                         The particular configuration, inputs and
                         expected observations used with a test method.
     description:        |
-                        An item of t_test_case in test_case/, naming
-                        exactly one test method and one or more
-                        requirements or interface members. It binds no
-                        item under test, so one case applies to
-                        several implementations.
-
-                        A control case holds an item to a verdict for
-                        an eval. A test case is the logical case a
-                        test method is run with.
+                        A test case is an item of t_test_case, held in
+                        the test_case directory. It names exactly one
+                        test method, and one or more requirements or
+                        interface members. It binds no item under
+                        test, so one case applies to several
+                        implementations. A test case is different from
+                        a control case: a control case holds an item
+                        to a verdict for an eval, and a test case is
+                        the logical case a test method is run with.
     term:               test case
 
     avoid:
@@ -2548,16 +2630,17 @@ table:
                         expectation, stated in a shape a check, a test
                         and an eval all produce.
     description:        |
-                        It carries the expectation, the observation,
-                        what produced it, what it affects and the
-                        content identities it depends on. It is
-                        returned, serialised or written outside the
-                        tree, and becomes an item only when a process
-                        or a person asks.
-
-                        What a check reports is a finding, which
-                        term_finding holds and which also carries the
-                        word nonconformity.
+                        A nonconformity report carries the
+                        expectation, the observation, what produced
+                        the observation, what the observation affects,
+                        and the content identities the report depends
+                        on. The report is returned to the caller,
+                        serialised, or written outside the tree. It
+                        becomes an item only when a process or a
+                        person asks for the report to be kept. What a
+                        check reports is a finding, which term_finding
+                        holds, and a finding also carries the word
+                        nonconformity.
     term:               nonconformity report
 
     avoid:
@@ -2626,7 +2709,7 @@ table:
                         A native API surface names exactly one
                         implementation language. A dataflow step
                         surface declares its input, output and state
-                        ports and the execution semantics
+                        ports, and the execution semantics that
                         compatibility depends on. One document may
                         hold several surfaces of one boundary.
     term:               interface surface
@@ -2674,17 +2757,18 @@ table:
                         How bad it is if an obligation is not met, on
                         one dimension.
     description:        |
-                        An entry of reg_criticality, naming a
-                        dimension and a level. A requirement declares
-                        one for each dimension; a data item or a
-                        source item declares none and takes the
-                        greatest reaching it, in a closed world, along
-                        the relations that declare responsibility.
-
-                        Criticality says how bad failure would be.
-                        Maturity says how far through its lifecycle a
-                        thing is. They are different questions and run
-                        in opposite directions.
+                        A criticality is an entry of reg_criticality,
+                        and it names a dimension and a level. A
+                        requirement declares one criticality for each
+                        dimension. A data item or a source item
+                        declares none, and instead takes the greatest
+                        criticality that reaches it, in a closed
+                        world, along the relations that declare
+                        responsibility. Criticality says how bad
+                        failure would be. Maturity says how far
+                        through its lifecycle a thing is. The two are
+                        different questions, and they run in opposite
+                        directions.
     term:               criticality
 
     avoid:
@@ -2726,18 +2810,20 @@ table:
                         A known defect given to a tool, with what the
                         tool must do about it.
     description:        |
-                        A control answers whether a tool would say
-                        anything if there were something to say, which
-                        a run that exits zero does not. It is built
-                        outside the tree, given to the tool, and the
-                        tool is required to fail on it. Where a tool
-                        could plausibly fail everything, a companion
-                        of the same shape without the defect is
-                        written and the tool must pass it;
-                        ddr_gate_tool decides when that is worth
-                        having. A gate tool names what controls it by
-                        r_is_controlled_by, and qry_gate_tool_control
-                        reports a tool that names none.
+                        A tool control answers whether a tool would
+                        say anything if there were something to say,
+                        which a run that exits zero does not answer.
+                        The control is built outside the tree and
+                        given to the tool, and the tool is required to
+                        fail on it. Where a tool could plausibly fail
+                        everything, a companion of the same shape
+                        without the defect is written, and the tool
+                        must pass that companion. ddr_gate_tool
+                        decides when a companion is worth having. A
+                        gate tool names its controls by
+                        r_is_controlled_by edges, and
+                        qry_gate_tool_control reports a tool that
+                        names none.
     term:               control
 
     also:
@@ -2783,18 +2869,19 @@ table:
                         A reason not to accept an assertion another
                         annotation makes.
     description:        |
-                        The wider of two senses of the word here. A
-                        challenge held on a design decision is the
-                        strongest case against that one decision and
-                        is answered by a resolution; a challenge
-                        between annotations is one assertion giving a
-                        reason not to accept another, and nothing
-                        settles which prevails.
-
-                        Carried by an r_challenges edge and not by a
-                        field, so an annotation may be challenged by
-                        several and each challenge is itself an
-                        assertion that can be answered.
+                        The word challenge has two senses here, and
+                        this is the wider one. A challenge held on a
+                        design decision is the strongest case against
+                        that one decision, and a resolution answers
+                        it. A challenge between annotations is one
+                        assertion giving a reason not to accept
+                        another, and nothing settles which one
+                        prevails. A challenge between annotations is
+                        carried by an r_challenges edge and not by a
+                        field. That means an annotation may be
+                        challenged by several others, and each
+                        challenge is itself an assertion that can be
+                        answered.
     term:               challenge
     status:             proposed
     alias:              []
@@ -2830,11 +2917,12 @@ table:
                         A language model as a named party: what wrote,
                         judged or asserted an item.
     description:        |
-                        The identity of one model, held as an entry of
-                        the model register so that an annotation, a
-                        deployment or a confidence row can name it
-                        rather than spell it. A performer is a kind of
-                        party: a function, a model or an agent. A
+                        A language model entry holds the identity of
+                        one model, in the model register, so that an
+                        annotation, a deployment or a confidence row
+                        can name the model rather than spell it out. A
+                        performer is a kind of party, and a performer
+                        may be a function, a model or an agent. A
                         judge is the role a model plays over a
                         criterion. A language model entry is the model
                         itself, whichever role it plays.
@@ -2855,13 +2943,15 @@ table:
                         success criteria of the requirement it
                         verifies.
     description:        |
-                        One item per judge, holding a row for each
-                        reading: the requirement, the verifier read
-                        against it, the verdict, and a digest of what
-                        was read. It records criteria coverage; it is
-                        not that property. The rates the judge was
-                        measured at are on the record, because a judge
-                        is not a check.
+                        A coverage analysis holds one item per judge.
+                        Each item holds a row for each reading, and
+                        the row names the requirement, the verifier
+                        that was read against it, the verdict, and a
+                        digest of what was read. The analysis records
+                        how far the criteria are covered. It is a
+                        record of coverage, not the coverage itself.
+                        The error rates the judge was measured at are
+                        on the record, because a judge is not a check.
     term:               coverage analysis
     status:             proposed
     relation:           []
@@ -2875,11 +2965,14 @@ table:
                         used and what crosses its boundary, before
                         anything specifies how it is built.
     description:        |
-                        An operational concept data item in
-                        operational_concept/. It derives from a need,
-                        its scenarios point back at it by
-                        r_is_scenario_of, and the requirements on the
-                        system derive from it and from them. Not the
+                        An operational concept is an operational
+                        concept data item, held in the
+                        operational_concept directory. It derives from
+                        a need. Its scenarios point back at it by
+                        r_is_scenario_of edges, and the requirements
+                        on the system derive from the operational
+                        concept and from its scenarios. The
+                        operational concept is different from the
                         solution concept, which proposes a candidate
                         solution to a need.
     term:               operational concept
@@ -2959,12 +3052,13 @@ table:
                         alternative, degraded, failed, misuse,
                         maintenance or deployment.
     description:        |
-                        An entry of reg_operational_scenario_kind. A
-                        scenario names one by its kind field. The
-                        scenario classes a requirement set is reviewed
-                        for cover the same ground under different
-                        names, which ddr_operational_concept
-                        reconciles.
+                        An operational scenario kind is an entry of
+                        reg_operational_scenario_kind. A scenario
+                        names one kind in its kind field. The scenario
+                        classes that a requirement set is reviewed for
+                        cover the same ground under different names,
+                        and ddr_operational_concept reconciles the
+                        two.
     term:               operational scenario kind
     relation:           []
 

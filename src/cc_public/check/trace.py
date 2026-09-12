@@ -17,22 +17,25 @@ brief:                  |
                         derives from it, implements it and verifies
                         it.
 description:            |
-                        The rules and their severities are the trace
-                        projection's, which the trace command reads
-                        too. A proposed requirement may be incomplete
-                        while it is written and its gaps are advisory;
-                        an accepted one has claimed to be complete and
-                        a gap in what it claims is critical, except
-                        where an open world leaves room for the
-                        missing thing to exist elsewhere. Beside the
-                        projection this reads what a coverage analysis
-                        says. A requirement whose declared criticality
-                        requires that its coverage be analysed, with
-                        no current analysis naming it, is a gap; a
-                        current reading whose verdict is unmet is
-                        reported here rather than as a gap, and is
-                        advisory whatever the requirement's status
-                        (ddr_coverage_analysis).
+                        The rules of this check, and their severities,
+                        belong to the trace projection, and the trace
+                        command reads the same projection. A proposed
+                        requirement may be incomplete while it is
+                        being written, so its gaps are advisory. An
+                        accepted requirement has claimed to be
+                        complete, so a gap in what it claims is
+                        critical. The exception is an open world,
+                        which leaves room for the missing thing to
+                        exist elsewhere. Beside the projection, this
+                        check reads the coverage analyses. Some
+                        requirements declare a criticality that
+                        requires their coverage to be analysed. Such a
+                        requirement with no current analysis has a
+                        gap. Where a current analysis gives an unmet
+                        verdict, the check reports the verdict here
+                        rather than as a gap, and the finding is
+                        advisory whatever the status of the
+                        requirement. See ddr_coverage_analysis.
 
 relation:
 

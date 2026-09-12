@@ -18,15 +18,16 @@ brief:                  |
                         what a word means, what an item is, and what a
                         person observed.
 description:            |
-                        Each reads a projection from the foundations
-                        and renders it through the report module,
-                        except attest, which writes an attestation
-                        through the evidence module. trace shows a
-                        requirement, a source item's impact, or what
-                        the files changed since a commit may affect.
-                        glossary reads a word, the words more than one
-                        concept claims, or the words prose uses that
-                        no glossary holds.
+                        Each of these commands reads a projection from
+                        the foundations and renders it through the
+                        report module. The exception is attest, which
+                        writes an attestation through the evidence
+                        module. The trace command shows a requirement,
+                        the impact of a source item, or what the files
+                        changed since a commit may affect. The
+                        glossary command reads a word, the words that
+                        more than one concept claims, or the words
+                        prose uses that no glossary holds.
 relation:               []
 
 ...

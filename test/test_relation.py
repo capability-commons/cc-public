@@ -16,12 +16,13 @@ brief:                  |
                         Tests of the semantics a relation entry
                         declares: transitivity and incompatibility.
 description:            |
-                        Writes concept edges that break each declared
-                        semantic and checks that the relation check
-                        reports it, at the edge and with the severity
-                        the defect earns. An edge a chain already
-                        implies is advisory. Two incompatible
-                        relations between one pair are critical.
+                        These tests write concept edges that break
+                        each declared semantic, and check that the
+                        relation check reports the breach at the edge,
+                        with the severity the defect earns. An edge
+                        that a chain already implies is advisory. Two
+                        incompatible relations between one pair of
+                        items are critical.
 relation:               []
 
 ...

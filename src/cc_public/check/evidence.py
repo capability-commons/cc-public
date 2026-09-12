@@ -16,18 +16,20 @@ brief:                  |
                         Check that every accepted requirement has
                         evidence that is a pass and is current.
 description:            |
-                        Computes the digest evidence is stamped with,
-                        over the requirement as claimed and the
-                        content of every item its closure reaches, and
-                        compares each accepted requirement's evidence
-                        to it. The closure follows the relations that
-                        declare a dependency, so what the digest
-                        covers is read from the relation register.
-                        What merely describes an item is removed
-                        before it is covered. Absent evidence, or
-                        evidence that is not a pass, is critical in a
-                        closed world and advisory in an open one, and
-                        stale is advisory.
+                        This check computes the digest that evidence
+                        is stamped with. The digest covers the
+                        requirement as claimed and the content of
+                        every item that the requirement's closure
+                        reaches. The check then compares the evidence
+                        of each accepted requirement with that digest.
+                        The closure follows the relations that declare
+                        a dependency, so what the digest covers is
+                        read from the relation register. Fields that
+                        merely describe an item are removed before the
+                        digest is taken. Absent evidence, or evidence
+                        that is not a pass, is critical in a closed
+                        world and advisory in an open one. Stale
+                        evidence is advisory.
 
 relation:
 

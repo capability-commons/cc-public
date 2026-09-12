@@ -17,13 +17,14 @@ brief:                  |
                         digest, the decide path, the check, and what
                         promotion admits and refuses.
 description:            |
-                        Makes decisions over items and checks that an
-                        edit stales them and an expiry ends them; runs
-                        a concept whose challenge does not conclude
-                        and checks that promotion refuses it until a
-                        waiver decides it; checks that an evidential
-                        candidate is promoted only with a quote the
-                        cited observation holds.
+                        These tests make decisions over items, and
+                        check that an edit stales a decision and that
+                        an expiry ends one. They run a concept whose
+                        challenge does not conclude, and check that
+                        promotion refuses the concept until a waiver
+                        decides it. They also check that an evidential
+                        candidate is promoted only when the cited
+                        observation holds the quote.
 relation:               []
 
 ...

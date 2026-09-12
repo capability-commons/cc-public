@@ -80,11 +80,15 @@ def test_the_model_stack_is_imported_inside_the_function_that_needs_it(filepath)
                             No module of the tool imports the model stack
                             as it loads.
     description:            |
-                            The property ddr_environment_shape decides to
-                            keep, held over every module of the tool. An
-                            import of the model stack at module scope
-                            would put it in what the gate installs and
-                            close the split the record keeps open.
+                            The test holds, over every module of the tool,
+                            the property that ddr_environment_shape
+                            decides to keep: the model stack is imported
+                            inside the function that needs it, and never
+                            at module scope. An import at module scope
+                            would put the model stack into the environment
+                            the gate installs. That would close the split
+                            between the two environments that the design
+                            decision keeps open.
     relation:               []
 
     ...

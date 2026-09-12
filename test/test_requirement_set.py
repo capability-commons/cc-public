@@ -17,12 +17,13 @@ brief:                  |
                         members to a judge, the set checks, and the
                         coverage review.
 description:            |
-                        Gathers the requirements of a concept into a
-                        set, checks that a judge and a model are shown
-                        the members as composed statements, that the
-                        requirement check reports a member on another
-                        entity, a duplicated obligation, an unreviewed
-                        set and an uncovered class, and that the
+                        These tests gather the requirements of a
+                        concept into a set. They check that a judge
+                        and a model are shown the members as composed
+                        statements, and that the requirement check
+                        reports a member on another entity, a
+                        duplicated obligation, an unreviewed set, and
+                        an uncovered class. They also check that the
                         review workflow fills the coverage table from
                         a scripted model.
 relation:               []

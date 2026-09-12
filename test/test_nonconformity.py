@@ -18,11 +18,11 @@ brief:                  |
                         observation becomes none, and that a report is
                         written only when it is asked for.
 description:            |
-                        Every report made here is validated against
-                        sch_nonconformity_report, so a shape that
-                        would not be an item is a failure here rather
-                        than at the moment somebody asks for one to be
-                        kept.
+                        Every report made in these tests is validated
+                        against sch_nonconformity_report. A shape that
+                        would not be a valid item therefore fails
+                        here, rather than at the moment somebody asks
+                        for the report to be kept.
 relation:               []
 
 ...

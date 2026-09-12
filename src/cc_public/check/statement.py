@@ -18,23 +18,24 @@ brief:                  |
                         bounds, its acronyms are defined, and its verb
                         names a process.
 description:            |
-                        Reads the object and qualifier slots of every
-                        requirement and candidate. A number is
-                        followed by a unit the unit register holds, by
-                        the thing it counts, or by nothing, which is a
-                        finding; a number with a unit and no bound
-                        before it is a point value, which is a
-                        question; a unit the register lacks is a
-                        question. An acronym no glossary defines is a
-                        finding. A process word whose entry names a
+                        This check reads the object and qualifier
+                        slots of every requirement and candidate. A
+                        number must be followed by a unit the unit
+                        register holds, or by the thing it counts. A
+                        number followed by nothing is a finding. A
+                        number with a unit and no bound before it is a
+                        point value, which is a question. A unit the
+                        register lacks is a question. An acronym that
+                        no glossary defines is a finding. The check
+                        also asks the questions SOPHIST asks of the
+                        verb: a process word whose entry names a
                         state, a permission or a management word
-                        rather than a process, a light verb before a
-                        noun, and an object that opens with a
-                        nominalised process, are the questions SOPHIST
-                        asks of the verb. What was a judgement on
-                        these rules is a check, and the evals that
-                        judged them are narrowed to what a check
-                        cannot tell.
+                        instead of a process; a light verb before a
+                        noun; and an object that opens with a
+                        nominalised process. These rules were once
+                        judged by evals. They are now checked here,
+                        and the evals that judged them are narrowed to
+                        what a check cannot tell.
 relation:               []
 
 ...

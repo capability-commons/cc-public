@@ -16,14 +16,15 @@ brief:                  |
                         The group every command registers on, and what
                         every command shares.
 description:            |
-                        Holds main, which loads the environment for a
-                        judge, the root option, the odd-integer type,
-                        the exit statuses, and the two helpers a
-                        command calls: tree, which opens the roots
-                        given or the working directory, and fail,
-                        which reports a failure and exits with the
-                        error status. Every other module in the
-                        package registers its commands here.
+                        This module holds main, which loads the
+                        environment for a judge. It also holds the
+                        root option, the odd-integer type, the exit
+                        statuses, and the two helpers a command calls.
+                        The tree helper opens the roots given, or the
+                        working directory. The fail helper reports a
+                        failure and exits with the error status. Every
+                        other module in the package registers its
+                        commands on the group held here.
 relation:               []
 
 ...

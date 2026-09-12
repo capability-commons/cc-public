@@ -16,12 +16,12 @@ brief:                  |
                         A workflow runs end to end against a scripted
                         model and judge.
 description:            |
-                        Copies the tree into a repository, runs the
-                        example workflow with a generator that answers
-                        from a table and a judge that answers as told,
-                        and asserts what was made, revised, bound,
-                        fired, declined, stopped, restored and
-                        committed.
+                        This test copies the tree into a repository
+                        and runs the example workflow with a generator
+                        that answers from a table and a judge that
+                        answers as told. It asserts what was made,
+                        revised, bound, fired, declined, stopped,
+                        restored and committed.
 relation:               []
 
 ...

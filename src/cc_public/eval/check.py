@@ -16,14 +16,17 @@ brief:                  |
                         Check that items meet the evals anchored on
                         them.
 description:            |
-                        The seam between the eval machinery and the
-                        mechanical checks. Turns a verdict into the
-                        same nonconformity every other check produces.
-                        Handed to the check driver by the command line
-                        as a judgement, this module with the selector,
-                        a builder for the judge and the confirmation
-                        count, so that the checks import nothing above
-                        themselves. Does not run unless asked for.
+                        This module is the seam between the eval
+                        machinery and the mechanical checks. It turns
+                        a verdict into the same nonconformity that
+                        every other check produces. The command line
+                        builds a judgement out of four parts: this
+                        module, the selector, a builder for the judge,
+                        and the confirmation count. It hands that
+                        judgement to the check driver, so that the
+                        checks themselves import nothing above their
+                        own tier. The module does not run unless it is
+                        asked for.
 relation:               []
 
 ...
@@ -92,12 +95,12 @@ def check(context):
                             Return a Result holding a verdict for every
                             task the selector picks.
     description:            |
-                            The judge screens every subject once and
+                            The judge screens every subject once, and
                             confirms an adverse verdict over the
-                            confirmation count; what comes back unmet is a
-                            nonconformity at the severity the eval
-                            declares, met says nothing, and unknown is a
-                            note.
+                            confirmation count. A subject that comes back
+                            unmet is a nonconformity at the severity the
+                            eval declares. A met verdict says nothing. An
+                            unknown verdict is a note.
     relation:               []
 
     ...

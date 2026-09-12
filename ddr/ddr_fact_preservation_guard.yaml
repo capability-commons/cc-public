@@ -1,0 +1,65 @@
+id_self:                ddr_fact_preservation_guard
+guid_self:              ddr_fda542c7b7ea48faaa81050a6ce5ccb0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A guard that a rewrite keeps every fact
+brief:                  |
+                        A rewrite of a field is checked mechanically
+                        for every identifier, command name, number and
+                        glossary term the original held, and judged
+                        pairwise for saying the same things, before it
+                        can be accepted without a person.
+context:                |
+                        The one judgement made on every rewrite of the
+                        readability pass that no tool checked was that
+                        every fact was kept and none added. A person
+                        read a sample; the rest rested on the writer.
+                        For a cheaper drafting model, or for a run
+                        with no person in the loop, that judgement has
+                        to be a check.
+decision:               |
+                        Two guards on a revision. A mechanical one:
+                        every readable identifier, command name,
+                        number with its unit, and glossary term found
+                        in the text before must appear in the text
+                        after, and none may appear in the text after
+                        that the text before lacked, unless the
+                        revision names it as added. A judged one: a
+                        pairwise eval over the text before and the
+                        text after whose criterion is that the second
+                        states every claim the first states and no
+                        claim the first does not, with the difference
+                        quoted when unmet. A revision fails either
+                        guard is not accepted on a person's behalf,
+                        and the failure is shown beside it.
+rationale:              |
+                        Names, numbers and identifiers are where a
+                        rewrite most often loses or invents a fact,
+                        and they are exactly what a mechanical check
+                        can find. The judged eval covers the claims
+                        that carry no such token. Together they let a
+                        person review only what the guards passed, and
+                        let a guard accept the plain cases alone.
+alternative:            |
+                        A judged eval alone. Rejected: a judge misses
+                        a dropped identifier more often than a check
+                        does, and costs a call per revision. A
+                        mechanical check alone. Rejected: a claim
+                        reversed in plain words has the same tokens on
+                        both sides.
+consequence:            |
+                        Not yet implemented. The pairwise eval needs a
+                        control set of pairs, which the readability
+                        pass can supply from its logs: accepted
+                        rewrites as met, and mutated rewrites with a
+                        fact dropped or added as unmet. The mechanical
+                        guard will flag a name written in a different
+                        form, which is a case for the plain names rule
+                        and not for the guard.
+relation:               []

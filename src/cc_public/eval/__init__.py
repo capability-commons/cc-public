@@ -15,8 +15,9 @@ title:                  Eval machinery
 brief:                  |
                         Select and run evals.
 description:            |
-                        Holds the selection of what an eval applies
-                        to, and the runners that judge it.
+                        This package holds the selection of what an
+                        eval applies to, and the runners that judge
+                        it.
 relation:               []
 
 ...

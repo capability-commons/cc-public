@@ -16,11 +16,11 @@ brief:                  |
                         commit and log: history written with a record
                         in the message, and read back.
 description:            |
-                        commit hands its options to the committer,
-                        which runs the checks and the linters and
-                        refuses on what the refusal policy says; log
-                        walks the history and validates each record
-                        again.
+                        The commit command hands its options to the
+                        committer. The committer runs the checks and
+                        the linters, and refuses the commit where the
+                        refusal policy says so. The log command walks
+                        the history and validates each record again.
 relation:               []
 
 ...

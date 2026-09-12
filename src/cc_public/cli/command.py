@@ -15,13 +15,14 @@ title:                  Command definitions
 brief:                  |
                         The commands the tool offers.
 description:            |
-                        The entry point: imports each module of the
-                        package so that its commands register on the
-                        group, and exposes the group as main. Holds
-                        nothing else; the commands live with their
-                        kind, checking, editing, judging, assurance,
-                        committing and running, and what they share
-                        lives in group.
+                        This module is the entry point. It imports
+                        each module of the package so that the
+                        module's commands register on the group, and
+                        it exposes the group as main. It holds nothing
+                        else. The commands live with their kind, which
+                        is checking, editing, judging, assurance,
+                        committing or running, and what the commands
+                        share lives in the group module.
 relation:               []
 
 ...

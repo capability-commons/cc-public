@@ -18,13 +18,13 @@ brief:                  |
                         expected, and governs its external vectors.
 description:            |
                         The configuration is the one field whose shape
-                        a method decides, so anything is accepted
-                        there and a check validates it elsewhere. An
-                        external vector states its locator and its
-                        digest. That a case names exactly one test
-                        method is the cardinality of
-                        r_uses_test_method, which test_relation.py
-                        holds.
+                        a method decides, so anything is accepted in
+                        that field here and a check validates it
+                        elsewhere. An external vector states its
+                        locator and its digest. The rule that a case
+                        names exactly one test method is the
+                        cardinality of r_uses_test_method, and
+                        test_relation.py holds that rule.
 relation:               []
 
 ...

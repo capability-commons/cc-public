@@ -17,14 +17,15 @@ brief:                  |
                         findings of the evals, grouped by eval and
                         rule.
 description:            |
-                        Reads the eval check of a report written by
-                        check --eval --format json, groups its
-                        findings by the eval that raised them and the
-                        rule they name, and writes a sweep data item
-                        holding one finding group per shape, largest
-                        first, with the count, the items and a sample
-                        of the messages. The step that turns findings
-                        into data the improvement loop can read.
+                        This module reads the eval check of a report
+                        written by check --eval --format json. It
+                        groups the findings by the eval that raised
+                        them and by the rule they name, and writes a
+                        sweep data item holding one finding group per
+                        shape, largest first. Each group holds the
+                        count, the items and a sample of the messages.
+                        This is the step that turns findings into data
+                        the improvement loop can read.
 relation:               []
 
 ...

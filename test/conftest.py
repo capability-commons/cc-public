@@ -16,16 +16,18 @@ brief:                  |
                         Pytest hooks that hand a session's outcomes to
                         the evidence module.
 description:            |
-                        Holds the fixture every test module shares, a
-                        copy of the tree with its defaults and a
-                        helper that lists critical findings, and the
-                        pytest hooks that note the outcome of every
-                        test instance, map pytest's words onto the
-                        evidence outcomes, an expected failure being
-                        nothing observed and an unexpected pass a
-                        failure, and at the end of the session hand
-                        them to the evidence module from the
-                        controller alone. A failure to write is
+                        This module holds the fixture every test
+                        module shares, which is a copy of the tree
+                        with its defaults, and a helper that lists
+                        critical findings. It also holds the pytest
+                        hooks. The hooks note the outcome of every
+                        test instance and map pytest's words onto the
+                        evidence outcomes: an expected failure counts
+                        as nothing observed, and an unexpected pass
+                        counts as a failure. At the end of the
+                        session, the hooks hand the outcomes to the
+                        evidence module, from the controller process
+                        only. A failure to write the evidence is
                         reported and never hidden.
 relation:               []
 

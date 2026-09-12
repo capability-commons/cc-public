@@ -16,11 +16,11 @@ brief:                  |
                         run: one run of a dataflow workflow under a
                         deployment; resume: continue one that waits.
 description:            |
-                        Builds the generator and the judge the
-                        deployment names, hands them to the executor
-                        with the bindings given, and renders what each
-                        node made, revised, fired and declined, or why
-                        the run stopped.
+                        The run command builds the generator and the
+                        judge that the deployment names, and hands
+                        them to the executor with the bindings given.
+                        It then renders what each node made, revised,
+                        fired and declined, or why the run stopped.
 relation:               []
 
 ...

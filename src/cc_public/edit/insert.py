@@ -16,25 +16,31 @@ brief:                  |
                         Put a new item into a collection held by
                         another item.
 description:            |
-                        An embedded item has a schema, which its type
-                        names (ddr_embedded_item_schema). The shape
-                        written here is read from the container's
-                        schema at the collection it goes into, and
-                        every required field is written empty, as new
-                        does. The two agree for a register, whose
-                        schema composes the entry schema the type
-                        names, and differ where the container carries
-                        sch_entry and the type schema does not; the
-                        check reads the type schema and this reads the
-                        container, which is
-                        qst_embedded_item_schema.shape. Where the
-                        shape carries an identity, one is minted, with
-                        the key and readable id derived by the
-                        convention the container uses: in a register
-                        the key is the id; elsewhere the key is a
-                        local name and the id is qualified by the
-                        container. A collection that is a list is
-                        appended to.
+                        An embedded item has a schema, and the item's
+                        type names that schema. See
+                        ddr_embedded_item_schema. The insert command
+                        reads the shape of the new item from the
+                        container's schema, at the collection the item
+                        goes into. It writes every required field
+                        empty, which is what the new command does for
+                        a top level item. For a register, the
+                        container's schema and the type's schema
+                        agree, because a register schema composes the
+                        entry schema that the type names. The two
+                        schemas differ where the container carries
+                        sch_entry and the type schema does not. In
+                        that case the schema check reads the type
+                        schema and the insert command reads the
+                        container, and the question
+                        qst_embedded_item_schema.shape holds that
+                        difference open. Where the shape carries an
+                        identity, the insert command mints one. The
+                        key and the readable id follow the container's
+                        convention. In a register, the key is the id.
+                        Elsewhere, the key is a local name and the id
+                        is qualified by the container's id. Where the
+                        collection is a list, the new item is appended
+                        to it.
 relation:               []
 
 ...

@@ -16,10 +16,11 @@ brief:                  |
                         The printer preserves content and is a
                         fixpoint.
 description:            |
-                        Runs the printer over every file in the tree
-                        and over adversarial documents, asserting
-                        content is preserved, comments are kept, and
-                        the result is a fixpoint.
+                        These tests run the printer over every file in
+                        the tree and over adversarial documents. They
+                        assert that content is preserved, that
+                        comments are kept, and that the result is a
+                        fixpoint.
 relation:               []
 
 ...
@@ -94,10 +95,11 @@ def test_printer_preserves_and_is_fixpoint(filepath):
                             The printer preserves content and is a
                             fixpoint.
     description:            |
-                            For every structured file in the tree, lays it
-                            out and asserts the content is unchanged
-                            scalar for scalar and that laying the result
-                            out again changes nothing.
+                            For every structured file in the tree, the
+                            test lays the file out and asserts that the
+                            content is unchanged, scalar for scalar, and
+                            that laying the result out again changes
+                            nothing.
 
     relation:
 
