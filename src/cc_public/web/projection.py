@@ -107,14 +107,14 @@ class Graph(typing.NamedTuple):
 
     """
 
-    by_id:      dict
-    by_guid:    dict
-    out:        dict
-    inbound:    dict
-    map_prefix: dict
-    map_schema: dict
-    map_type:   dict
-    map_term:   dict
+    by_id:      dict[str, typing.Any]
+    by_guid:    dict[str, typing.Any]
+    out:        dict[str, list[tuple[str, str]]]
+    inbound:    dict[str, list[tuple[str, str]]]
+    map_prefix: dict[str, typing.Any]
+    map_schema: dict[str, typing.Any]
+    map_type:   dict[str, typing.Any]
+    map_term:   dict[str, str]
 
 
 # -----------------------------------------------------------------------------
@@ -140,9 +140,9 @@ class View(typing.NamedTuple):
     id_self:   str
     title:     str
     brief:     str | None
-    prefix:    tuple
+    prefix:    tuple[str, ...]
     sort:      str
-    traversal: tuple
+    traversal: tuple[Walk, ...]
 
 
 # -----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ class Row(typing.NamedTuple):
     kind:      str
     title:     str
     brief:     str | None
-    path:      tuple
+    path:      tuple[str, ...]
     has_child: bool
 
 
@@ -171,7 +171,7 @@ class Group(typing.NamedTuple):
     """
 
     label: str
-    rows:  tuple
+    rows:  tuple[Row, ...]
 
 
 # -----------------------------------------------------------------------------
@@ -181,7 +181,7 @@ class Opened(typing.NamedTuple):
 
     """
 
-    groups: tuple
+    groups: tuple[Group, ...]
 
 
 # -----------------------------------------------------------------------------
@@ -210,11 +210,11 @@ class Record(typing.NamedTuple):
     guid_self: str
     kind:      str
     location:  str
-    fields:    tuple
+    fields:    tuple[Field, ...]
 
 
 # -----------------------------------------------------------------------------
-def graph(tree):
+def graph(tree: typing.Any) -> Graph:
     """
     Return the Graph of a tree, indexed for navigation.
 
@@ -255,7 +255,7 @@ def graph(tree):
 
 
 # -----------------------------------------------------------------------------
-def views(graph_):
+def views(graph_: Graph) -> tuple[View, ...]:
     """
     Return every view the tree holds, in identifier order.
 
@@ -267,7 +267,7 @@ def views(graph_):
 
 
 # -----------------------------------------------------------------------------
-def roots(graph_, view, text = ''):
+def roots(graph_: Graph, view: View, text: str = '') -> tuple[Row, ...]:
     """
     Return the rows at the first level of a view: every item of a type
     the view names, in the order the view asks for, narrowed to those
@@ -293,7 +293,7 @@ def roots(graph_, view, text = ''):
 
 
 # -----------------------------------------------------------------------------
-def opened(graph_, view, path):
+def opened(graph_: Graph, view: View, path: tuple[str, ...]) -> Opened | None:
     """
     Return what the row at the end of path shows when it opens: its
     brief, and one Group per traversal that found anything.
@@ -325,7 +325,7 @@ def opened(graph_, view, path):
 
 
 # -----------------------------------------------------------------------------
-def record(graph_, name):
+def record(graph_: Graph, name: str) -> Record | None:
     """
     Return the Record of the item a readable id or a guid names, read
     in full, or None where nothing is named so.
@@ -349,7 +349,7 @@ def record(graph_, name):
 
 
 # -----------------------------------------------------------------------------
-def _view(graph_, held):
+def _view(graph_: Graph, held: typing.Any) -> View:
     document = held.document
     root     = document.get(KEY_ROOT) or {}
 
@@ -366,7 +366,7 @@ def _view(graph_, held):
 
 
 # -----------------------------------------------------------------------------
-def _walk(graph_, entry):
+def _walk(graph_: Graph, entry: typing.Mapping[str, typing.Any]) -> Walk:
     """
     Return the Walk one traversal entry describes, labelled from the
     relation register.
@@ -378,8 +378,8 @@ def _walk(graph_, entry):
 
     """
 
-    id_relation = entry.get(KEY_ID_RELATION)
-    direction   = entry.get(KEY_DIRECTION) or HOLDS
+    id_relation = str(entry.get(KEY_ID_RELATION) or '')
+    direction   = str(entry.get(KEY_DIRECTION) or HOLDS)
     held        = graph_.by_id.get(id_relation)
     title       = _line((held.document if held else {}).get(KEY_TITLE)) or id_relation
     edge        = title.removesuffix(SUFFIX_RELATION).lower()
@@ -390,7 +390,7 @@ def _walk(graph_, entry):
 
 
 # -----------------------------------------------------------------------------
-def _row(graph_, guid, path, view):
+def _row(graph_: Graph, guid: str, path: tuple[str, ...], view: View) -> Row:
     held    = graph_.by_guid[guid]
     id_self = held.id_self
 
@@ -405,7 +405,7 @@ def _row(graph_, guid, path, view):
 
 
 # -----------------------------------------------------------------------------
-def _has_child(graph_, guid, path, view):
+def _has_child(graph_: Graph, guid: str, path: tuple[str, ...], view: View) -> bool:
     """
     Return whether opening this row would find anything, so that a row
     can say it has more beneath it without being opened.
@@ -423,13 +423,13 @@ def _has_child(graph_, guid, path, view):
 
 
 # -----------------------------------------------------------------------------
-def _kind(graph_, id_self):
+def _kind(graph_: Graph, id_self: str) -> str:
     prefix = cc_public.item.prefix_of(id_self)
     return graph_.map_term.get(prefix, prefix)
 
 
 # -----------------------------------------------------------------------------
-def _prefix_of_type(graph_, id_type):
+def _prefix_of_type(graph_: Graph, id_type: object) -> str | None:
     for (prefix, entry) in graph_.map_type.items():
         if entry.get('id_self') == id_type:
             return prefix
@@ -437,7 +437,7 @@ def _prefix_of_type(graph_, id_type):
 
 
 # -----------------------------------------------------------------------------
-def _field(key, value, help_, graph_):
+def _field(key: str, value: typing.Any, help_: str | None, graph_: Graph) -> Field:
     """
     Return the Field for one key of a document, its value by kind.
 
@@ -462,7 +462,7 @@ def _field(key, value, help_, graph_):
 
 
 # -----------------------------------------------------------------------------
-def _help(graph_, held):
+def _help(graph_: Graph, held: typing.Any) -> dict[str, str | None]:
     """
     Return a key to description map from the schema the item's type
     names, through every schema it composes; empty where it names none.
@@ -476,7 +476,9 @@ def _help(graph_, held):
 
 
 # -----------------------------------------------------------------------------
-def _described(node, map_schema, seen):
+def _described(node:       typing.Any,
+               map_schema: dict[str, typing.Any],
+               seen:       set[str]) -> dict[str, str | None]:
     """
     Return every property name a schema declares with its description,
     anywhere in it and in the schemas it refers to.
@@ -511,7 +513,7 @@ def _described(node, map_schema, seen):
 
 
 # -----------------------------------------------------------------------------
-def _line(value):
+def _line(value: object) -> str | None:
     """
     Return a value as one line of text, or None where there is none.
 

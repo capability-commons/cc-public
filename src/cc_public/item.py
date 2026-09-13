@@ -58,11 +58,11 @@ class Held(typing.NamedTuple):
 
     """
 
-    id_self:     str
-    guid_self:   str
+    id_self:     str | None
+    guid_self:   str | None
     location:    typing.Any
     path:        str
-    document:    dict
+    document:    dict[str, typing.Any]
     guid_holder: str | None
 
 
@@ -73,8 +73,8 @@ class Index(typing.NamedTuple):
 
     """
 
-    by_id:   dict
-    by_guid: dict
+    by_id:   dict[str, Held]
+    by_guid: dict[str, Held]
 
 
 # -----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ def prefix_of(id_self: object) -> str:
 
 
 # -----------------------------------------------------------------------------
-def is_type(document, prefix):
+def is_type(document: object, prefix: str) -> bool:
     """
     Return whether a document declares an identity of the type the
     prefix names.
@@ -101,7 +101,8 @@ def is_type(document, prefix):
 
 
 # -----------------------------------------------------------------------------
-def iter_entry(map_document, prefix):
+def iter_entry(map_document: typing.Mapping[typing.Any, typing.Any],
+               prefix:       str) -> typing.Iterator[dict[str, typing.Any]]:
     """
     Yield every entry of every register in the tree whose id carries
     the prefix.
@@ -121,15 +122,15 @@ def iter_entry(map_document, prefix):
 
 
 # -----------------------------------------------------------------------------
-def index(map_document):
+def index(map_document: typing.Mapping[typing.Any, typing.Any]) -> Index:
     """
     Return an Index over every item the tree declares, the items held
     within another included.
 
     """
 
-    by_id   = {}
-    by_guid = {}
+    by_id:   dict[str, Held] = {}
+    by_guid: dict[str, Held] = {}
 
     for (location, document) in map_document.items():
         for held in iter_item(document, location):
@@ -142,7 +143,10 @@ def index(map_document):
 
 
 # -----------------------------------------------------------------------------
-def iter_item(node, location = None, path = '', guid_holder = None):
+def iter_item(node:        typing.Any,
+              location:    typing.Any = None,
+              path:        str        = '',
+              guid_holder: str | None = None) -> typing.Iterator[Held]:
     """
     Yield a Held for the node and for every item held anywhere within
     it, outermost first.
@@ -173,7 +177,7 @@ def iter_item(node, location = None, path = '', guid_holder = None):
 
 
 # -----------------------------------------------------------------------------
-def _join(path, step):
+def _join(path: str, step: object) -> str:
     """
     Return the path within a document, one step further down.
 

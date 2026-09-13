@@ -40,6 +40,9 @@ relation:               []
 """
 
 
+import pathlib
+import re
+
 import pytest
 import starlette.testclient
 
@@ -200,3 +203,150 @@ def test_the_application_serves_each_level_the_static_files_and_what_is_named_by
     assert client.get('/static/htmx.min.js').status_code == 200
     assert client.get('/static/surface.js').status_code == 200
     assert client.get('/static/style.css').status_code == 200
+
+
+# What the contrast test reads, and the minimum it holds every text to.
+# The figure is WCAG 2.2 for normal text; the workbench shows position by
+# contrast, so its faintest level is ordinary content and not decoration.
+#
+PATH_STYLE  = pathlib.Path(cc_public.web.app.DIR_STATIC) / 'style.css'
+DARK        = '@media (prefers-color-scheme: dark)'
+TOKEN       = re.compile(r'(--[a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;')
+KEY_PAGE    = '--surface-page'
+MINIMUM     = 4.5
+
+
+def _luminance(colour):
+    """Relative luminance of a six digit hexadecimal colour."""
+
+    def channel(value):
+        value = value / 255
+        return value / 12.92 if value <= 0.03928 \
+               else ((value + 0.055) / 1.055) ** 2.4
+
+    colour = colour.lstrip('#')
+    (r, g, b) = (int(colour[at:at + 2], 16) for at in (0, 2, 4))
+
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+
+def _ratio(one, other):
+    """Contrast ratio between two colours, the brighter over the darker."""
+
+    (a, b) = (_luminance(one), _luminance(other))
+
+    return (max(a, b) + 0.05) / (min(a, b) + 0.05)
+
+
+def _theme(text, is_dark):
+    """The tokens one theme declares, a later declaration winning."""
+
+    (light, _, dark) = text.partition(DARK)
+
+    return dict(TOKEN.findall(light + (dark if is_dark else '')))
+
+
+def test_every_text_the_workbench_presents_clears_the_contrast_minimum():
+    """
+    ---
+
+    id_self:                pyf_test.test_web.test_every_text_the_workbench_presents_clears_the_contrast_minimum
+    guid_self:              pyf_f7ec5c551e284c3f9f77bec6d9dd4c49
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Every text clears the contrast minimum
+    brief:                  |
+                            Every colour the workbench puts text in stands
+                            far enough from the page behind it to be read,
+                            in both themes.
+    description:            |
+                            Reads the tokens the stylesheet declares,
+                            computes the contrast of each colour that
+                            carries text against the page behind it, in
+                            the light theme and in the dark, and holds
+                            every one to four and a half to one. Holds the
+                            three levels to descending order as well,
+                            since a cursor fainter than what surrounds it
+                            would pass the minimum and carry nothing.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_workbench_text_read
+        guid_target:        req_8e8b8a90c77e4114b005cca23963c191
+
+    ...
+    """
+
+    text = PATH_STYLE.read_text(encoding = 'utf-8')
+
+    for is_dark in (False, True):
+        token = _theme(text, is_dark)
+        page  = token[KEY_PAGE]
+        for (name, colour) in sorted(token.items()):
+            if not (name.startswith('--text-') or name == '--action'):
+                continue
+            assert _ratio(colour, page) >= MINIMUM, (name, is_dark, colour, page)
+
+    # The levels are three, and each is fainter than the one before, or
+    # the cursor is not the loudest thing on the page.
+    for is_dark in (False, True):
+        token = _theme(text, is_dark)
+        rung  = [_ratio(token['--text-' + name], token[KEY_PAGE])
+                 for name in ('cursor', 'near', 'far')]
+        assert rung == sorted(rung, reverse = True)
+
+
+def test_a_row_says_whether_opening_it_would_find_anything(graph):
+    """
+    ---
+
+    id_self:                pyf_test.test_web.test_a_row_says_whether_opening_it_would_find_anything
+    guid_self:              pyf_c77c60fa396748aa925065ddd8453a98
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A row tells the truth about what is beneath it
+    brief:                  |
+                            What a row claims about having more beneath it
+                            agrees with what opening it finds, for every
+                            view and every row at its root.
+    description:            |
+                            Opens every row at the root of every view the
+                            tree holds and compares what the row claimed
+                            with what opening it found. A row that says it
+                            has more and has none makes a reader act for
+                            nothing; a row that says it has none and has
+                            some hides what the view was asked for.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_workbench_more_distinguished
+        guid_target:        req_6e06060b9c3146e290e7811879adc915
+
+    ...
+    """
+
+    seen = 0
+
+    for view in cc_public.web.projection.views(graph):
+        for row in cc_public.web.projection.roots(graph, view):
+            found = cc_public.web.projection.opened(graph, view, row.path)
+            assert row.has_child == bool(found.groups), row.id_self
+            seen += 1
+
+    assert seen > 0

@@ -1,0 +1,46 @@
+id_self:                qry_workbench_outstanding
+guid_self:              qry_e21b59fd62b8459c9b2ce23dddc91613
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What has been asserted about the workbench and not answered
+brief:                  |
+                        Each annotation about any part of the
+                        workbench that no annotation supports or
+                        challenges, with what it is about.
+sql:                    |
+                        SELECT a.id_self AS annotation,
+                               GROUP_CONCAT(s.id_target, ', ') AS about
+                          FROM item a
+                          JOIN edge s
+                            ON s.guid_source = a.guid
+                           AND s.id_relation = 'r_is_about'
+                           AND (s.id_target LIKE 'p__cc_public.web%'
+                             OR s.id_target LIKE 'css_cc_public.web%'
+                             OR s.id_target LIKE 'js_cc_public.web%'
+                             OR s.id_target IN ('ddr_navigation_surface', 'ddr_progressive_disclosure',
+                                                'ddr_view', 'ddr_display_stack')
+                             OR s.id_target LIKE 'req_workbench%'
+                             OR s.id_target LIKE 'vw_%')
+                         WHERE a.prefix = 'ann'
+                           AND a.guid NOT IN (SELECT guid_target FROM edge
+                                               WHERE id_relation IN ('r_challenges', 'r_supports'))
+                         GROUP BY a.id_self
+                         ORDER BY a.id_self
+meaning:                |
+                        One assertion about the workbench that nothing
+                        has taken up. The workbench is not one item,
+                        so it is named here by where its parts live:
+                        the web package and the modules, the
+                        stylesheet and the script, the decisions that
+                        govern the surface, the requirements on it,
+                        and the views it serves. A part added later
+                        and not listed here is invisible to this
+                        query, which is the cost of a product that has
+                        no identity of its own.
+relation:               []

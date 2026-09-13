@@ -55,7 +55,7 @@ class Item(typing.NamedTuple):
     """
 
     guid:     str
-    id_self:  str
+    id_self:  str | None
     prefix:   str
     status:   str | None
     location: str
@@ -71,7 +71,7 @@ class Edge(typing.NamedTuple):
     """
 
     guid_source: str
-    id_relation: str
+    id_relation: str | None
     guid_target: str
     id_target:   str | None
 
@@ -96,13 +96,13 @@ class Facts(typing.NamedTuple):
 
     """
 
-    item:        tuple
-    edge:        tuple
-    containment: tuple
+    item:        tuple[Item, ...]
+    edge:        tuple[Edge, ...]
+    containment: tuple[Containment, ...]
 
 
 # -----------------------------------------------------------------------------
-def facts(map_document):
+def facts(map_document: typing.Mapping[typing.Any, typing.Any]) -> Facts:
     """
     ---
 

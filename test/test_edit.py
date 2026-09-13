@@ -415,6 +415,43 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
 
 
 def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):
+    """
+    ---
+
+    id_self:                pyf_test.test_edit.test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited
+    guid_self:              pyf_638d1dd7c569499ab6cea8d400e85689
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  An unreadable tree refuses the edit
+    brief:                  |
+                            A tree holding a file that failed to load
+                            refuses to be opened for editing, naming the
+                            file.
+    description:            |
+                            Breaks one file of a copy of the tree, asks
+                            for an editable tree over it, and holds the
+                            refusal to naming the file that failed. Then
+                            checks that a file which loads and fails its
+                            schema is not such a file, since a skeleton
+                            made by new is meant to be filled over several
+                            commands.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_partial_tree_refuses_the_edit
+        guid_target:        req_44d266ef8d1049efa94eaa421463894b
+
+    ...
+    """
+
     copy_tree(tmp_path)
     (tmp_path / 'ddr' / 'ddr_broken.yaml').write_text('id_self: [unclosed\n')
     with pytest.raises(cc_public.edit.tree.ErrorItem) as caught:
@@ -450,6 +487,41 @@ def test_defaults_come_from_the_tree_and_not_from_where_the_command_runs(tmp_pat
 
 
 def test_a_failed_rename_puts_every_file_back(tree, tmp_path, monkeypatch):
+    """
+    ---
+
+    id_self:                pyf_test.test_edit.test_a_failed_rename_puts_every_file_back
+    guid_self:              pyf_c3f53850727242a684ee0b5e782dc856
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A failed rename puts every file back
+    brief:                  |
+                            A rename that fails partway leaves every file
+                            it touched holding what it held before.
+    description:            |
+                            Makes a rename fail partway through a set of
+                            files and checks that every one of them holds
+                            what it held before. A rename touches the
+                            declaration, the file name and every
+                            reference, so a rename that stops partway is
+                            the clearest case of a tree left half changed.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_write_leaves_the_tree_whole
+        guid_target:        req_963a6311b59a4010ad9fead41bedda8a
+
+    ...
+    """
+
     import cc_public.edit.rename
     before = {p: p.read_bytes() for p in tmp_path.rglob('*.yaml')}
     saved  = []
@@ -479,6 +551,42 @@ def test_a_failed_rename_puts_every_file_back(tree, tmp_path, monkeypatch):
 
 
 def test_a_write_is_the_old_file_or_the_new_one_and_keeps_its_mode(tmp_path, monkeypatch):
+    """
+    ---
+
+    id_self:                pyf_test.test_edit.test_a_write_is_the_old_file_or_the_new_one_and_keeps_its_mode
+    guid_self:              pyf_8a8704ba5e1c4299b482990d56265d19
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A write is the old file or the new one
+    brief:                  |
+                            A file written through the tool holds the old
+                            text or the new one, and keeps the mode it
+                            had.
+    description:            |
+                            Writes through the tool and checks that the
+                            target holds what was written and keeps the
+                            mode it had. A write that failed partway would
+                            leave a file holding neither thing, which is
+                            what the hidden file and the single move exist
+                            to prevent.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_write_leaves_the_tree_whole
+        guid_target:        req_963a6311b59a4010ad9fead41bedda8a
+
+    ...
+    """
+
     import os
     target = tmp_path / 'thing.yaml'
     target.write_text('old\n')

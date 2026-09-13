@@ -1,0 +1,44 @@
+id_self:                req_write_leaves_the_tree_whole
+guid_self:              req_963a6311b59a4010ad9fead41bedda8a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A write that fails leaves the tree as it was
+entity:                 Tool
+obligation:             shall
+activity:               autonomous
+process:                leave
+object:                 each File a failed write would have changed
+claim:                  design
+rationale:              |
+                        A write made by an agent is one of many in a
+                        run nobody is watching. A write that stops
+                        partway leaves a file holding neither what it
+                        held nor what it was meant to hold, and the
+                        next command reads it as though somebody meant
+                        it.
+category:               quality
+qualifier:              as it was before the write began
+verification:           test
+success_criteria:       |
+                        A write interrupted at any point leaves every
+                        file it would have changed holding exactly
+                        what it held before, and the tree loads and
+                        checks as it did.
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_a_tree_never_half_changed
+    guid_target:        need_f6de34be34d04f4b83d8f1f13f8ee8b5
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e

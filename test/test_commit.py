@@ -69,6 +69,40 @@ def test_commit_carries_a_valid_record(repo):
 
 
 def test_commit_refuses_failing_checks_unless_checkpoint(repo):
+    """
+    ---
+
+    id_self:                pyf_test.test_commit.test_commit_refuses_failing_checks_unless_checkpoint
+    guid_self:              pyf_0166307f2fde4d3dbe0a9cc53153d5b5
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  A commit refuses a critical finding
+    brief:                  |
+                            A commit over a critical finding is refused,
+                            and is made only where a checkpoint is asked
+                            for.
+    description:            |
+                            Commits over a tree the checks call critical
+                            and holds the tool to refusing, then asks for
+                            a checkpoint and holds it to committing and
+                            recording that it did.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_commit_refuses_a_critical_finding
+        guid_target:        req_1b7526489a7448cb94aca26eafe3f874
+
+    ...
+    """
+
     tree = cc_public.edit.tree.Tree([repo])
     cc_public.edit.field.set_field(tree, 'dep_design_decision_from_schema_local',
                                    'budget', value = 0)      # minimum is 1
@@ -123,6 +157,40 @@ class Raising:
 
 
 def test_commit_refuses_an_incomplete_analysis_even_as_a_checkpoint(repo, monkeypatch):
+    """
+    ---
+
+    id_self:                pyf_test.test_commit.test_commit_refuses_an_incomplete_analysis_even_as_a_checkpoint
+    guid_self:              pyf_e3afd115a9f54b879c5fa4479ce83d4d
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  An incomplete analysis refuses a commit outright
+    brief:                  |
+                            An analysis that did not complete refuses the
+                            commit, checkpoint or not.
+    description:            |
+                            Makes the analysis itself fail and holds the
+                            tool to refusing the commit even where a
+                            checkpoint is asked for, because a checkpoint
+                            records a known state and an incomplete
+                            analysis is not one.
+
+    relation:
+
+      - id_relation:        r_verifies
+        guid_relation:      r_490096e908d1444cb0defb530fcf7786
+        id_target:          req_commit_refuses_a_critical_finding
+        guid_target:        req_1b7526489a7448cb94aca26eafe3f874
+
+    ...
+    """
+
     monkeypatch.setattr(cc_public.check, 'CHECK', (*cc_public.check.CHECK, Raising))
     (repo / 'NOTES.md').write_text('a note\n')
     for is_checkpoint in (False, True):

@@ -1,0 +1,47 @@
+id_self:                req_partial_tree_refuses_the_edit
+guid_self:              req_44d266ef8d1049efa94eaa421463894b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A tree that cannot be read entirely refuses to be written to
+entity:                 Tool
+obligation:             shall
+activity:               autonomous
+process:                report
+object:                 each File that failed to load
+claim:                  design
+rationale:              |
+                        An edit over part of a tree can collide with
+                        an item it cannot see or break a reference it
+                        cannot read. The collision and the breakage
+                        are both silent, and both are found later by
+                        somebody who did not make them.
+category:               quality
+qualifier:              and change nothing
+verification:           test
+success_criteria:       |
+                        Asked to edit a tree in which any root is
+                        missing or any file failed to load, the Tool
+                        names each such file and changes nothing. A
+                        file that loads and fails its schema is not
+                        such a file, since a skeleton is meant to be
+                        filled over several commands.
+condition_kind:         event
+condition:              an edit is asked of a tree that could not be read entirely
+
+relation:
+
+  - id_relation:        r_is_derived_from
+    guid_relation:      r_a8017d991f8a4e63a84d1eec5a2d6051
+    id_target:          need_a_tree_never_half_changed
+    guid_target:        need_f6de34be34d04f4b83d8f1f13f8ee8b5
+
+  - id_relation:        r_is_implemented_by
+    guid_relation:      r_f9975465bdd64371ba4d59ed5563477e
+    id_target:          pym_cc_public.edit.tree
+    guid_target:        pym_64cb989cdc624aa0a1bab0daeb0e792e
