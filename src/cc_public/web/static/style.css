@@ -1,14 +1,52 @@
+/*
+---
+
+id_self:                css_cc_public.web.static.style
+guid_self:              css_e88bb0ef75c043d59d13777c1eb60a7b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workbench stylesheet
+brief:                  |
+                        Every colour, size and space the workbench
+                        uses, named once.
+description:            |
+                        The three contrast levels are the whole of how
+                        the workbench shows position, so each is named
+                        here and each clears the minimum for normal
+                        text. Nothing else declares a colour, because
+                        a colour declared beside the thing it paints
+                        is a colour nobody can measure. The tokens are
+                        redeclared for a dark scheme and for nothing
+                        else.
+relation:               []
+
+...
+*/
+
 /* Tokens. Every colour and size a page uses is named here and nowhere
    else. The three contrast levels are text-cursor, text-near and
    text-far: position is relative to the cursor, so a tree of any depth
-   needs three (ddr_navigation_surface). */
+   needs three (ddr_navigation_surface).
+
+   Every one of them carries ordinary text, so every one clears the 4.5
+   to 1 minimum for normal text, measured against the page. Light:
+   19.03, 7.51, 4.71 and 5.36 for the label. Dark: 16.52, 7.61, 4.73
+   and 5.39. The faintest level is therefore legible rather than merely
+   present, which leaves the three steps closer together than they
+   were and is why position cannot rest on contrast alone. */
 :root {
   --surface-page:    #ffffff;
   --surface-raised:  #f5f5f2;
   --text-cursor:     #101010;
   --text-near:       #55554e;
-  --text-far:        #9a9a92;
-  --text-label:      #8a8a84;
+  --text-far:        #74746c;
+  --text-label:      #6b6b65;
   --border-subtle:   #e6e6e1;
   --border-strong:   #9a9a94;
   --border-focus:    #2b5fd9;
@@ -27,8 +65,8 @@
     --surface-raised: #1e1e25;
     --text-cursor:    #f4f4f2;
     --text-near:      #a8a8a2;
-      --text-far:       #626260;
-    --text-label:     #747470;
+      --text-far:       #828280;
+    --text-label:     #8c8c88;
     --border-subtle:  #2a2a32;
     --border-strong:  #5a5a62;
     --border-focus:   #7aa0ff;

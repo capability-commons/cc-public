@@ -398,16 +398,20 @@ def test_a_need_composes_its_statement_and_a_requirement_must_trace(tree, tmp_pa
     # names it -- unless a test case does, since a case lives in test_case/ and
     # carries the trace a python function would otherwise carry alone.
     verified = [n for n in trace['nonconformity'] if n['path'] == 'verification']
-    by_case  = {t for d in tree.context.map_document.values()
+    # Whatever claims to verify, not only a case: a test function claims
+    # it too, and a requirement verified by demonstration is reported on
+    # the same terms as one verified by test.
+    verifies = {t for d in tree.context.map_document.values()
                   if isinstance(d, dict)
-                  and str(d.get('id_self', '')).startswith('tc_')
                   for t in (e.get('id_target') for e in d.get('relation') or []
                             if e.get('id_relation') == 'r_verifies')}
-    count_test = sum(1 for d in tree.context.map_document.values()
-                     if isinstance(d, dict) and str(d.get('id_self', '')).startswith('req_')
-                     and d.get('verification') == 'test'
-                     and d.get('id_self') not in by_case)
-    assert len(verified) == count_test and all(n['severity'] == 'advisory' for n in verified)
+    count_unverified = sum(1 for d in tree.context.map_document.values()
+                           if isinstance(d, dict)
+                           and str(d.get('id_self', '')).startswith('req_')
+                           and d.get('verification')
+                           and d.get('id_self') not in verifies)
+    assert len(verified) == count_unverified
+    assert all(n['severity'] == 'advisory' for n in verified)
 
 
 def test_a_tree_that_cannot_be_read_entirely_refuses_to_be_edited(tmp_path):

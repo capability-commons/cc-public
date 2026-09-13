@@ -36,6 +36,7 @@ relation:               []
 import pathlib
 import typing
 
+from cc_public.load import comment as loader_comment
 from cc_public.load import json   as loader_json
 from cc_public.load import jsonc  as loader_jsonc
 from cc_public.load import python as loader_python
@@ -43,7 +44,9 @@ from cc_public.load import xml    as loader_xml
 from cc_public.load import yaml   as loader_yaml
 
 
-LOADER     = {'.yaml':  loader_yaml.from_bytes,
+LOADER     = {'.css':   loader_comment.iter_document,
+              '.js':    loader_comment.iter_document,
+              '.yaml':  loader_yaml.from_bytes,
               '.yml':   loader_yaml.from_bytes,
               '.json':  loader_json.from_bytes,
               '.jsonc': loader_jsonc.from_bytes,
@@ -52,6 +55,11 @@ LOADER     = {'.yaml':  loader_yaml.from_bytes,
 
 SUFFIX_ALL = tuple(LOADER)
 SUFFIX_PYTHON = '.py'
+
+# The languages whose files may carry a document in the first block
+# comment of the file, and may equally carry none.
+#
+SUFFIX_COMMENT = ('.css', '.js')
 
 # A null encoding lets each loader apply its own format convention --
 # XML reads its declaration, JSON is UTF-8 by RFC 8259, YAML reads its
@@ -68,6 +76,7 @@ ERROR_LOAD = tuple(dict.fromkeys(loader_yaml.ERROR_LOAD
                                + loader_jsonc.ERROR_LOAD
                                + loader_xml.ERROR_LOAD
                                + loader_python.ERROR_LOAD
+                               + loader_comment.ERROR_LOAD
                                + (loader_python.ErrorMetadataMissing,
                                   loader_python.ErrorEllipsisInProse)
                                + (UnicodeDecodeError, OSError)))
@@ -149,6 +158,9 @@ def iter_document(filepath: pathlib.Path,
     if suffix == SUFFIX_PYTHON:
         for (kind, anchor, document) in loader_python.iter_document(data, encoding):
             yield (Location(filepath, anchor, kind), document)
+    elif suffix in SUFFIX_COMMENT:
+        for document in loader_comment.iter_document(data, encoding):
+            yield (Location(filepath), document)
     else:
         yield (Location(filepath), LOADER[suffix](data, encoding = encoding))
 

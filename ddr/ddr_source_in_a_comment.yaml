@@ -1,0 +1,203 @@
+id_self:                ddr_source_in_a_comment
+guid_self:              ddr_9ff7378d98ee4ce4a2ab536d14d4a5ba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A stylesheet and a script carry their item in a comment
+brief:                  |
+                        A file whose comments open with an oblique and
+                        a star may hold a data item in the first
+                        comment of the file, as a python file holds
+                        one in its module docstring. A file holding
+                        none is passed over rather than refused.
+context:                |
+                        The workbench is a package of python modules,
+                        a stylesheet and a script. The modules are
+                        items; the other two were not, so nothing
+                        could point at them. Four findings about the
+                        colour of faint text, the ambiguity of the
+                        cursor, the silence of a replaced fragment and
+                        the absence of a role on a row all had to name
+                        the package, because the files they were
+                        actually about had no identity.
+
+                        A source item works because it lives inside
+                        the thing it names. A python module carries
+                        its document in its own docstring, so the item
+                        and the code cannot drift apart and the source
+                        check can hold the item to sitting where its
+                        name says. A separate file pointing at a path
+                        would lose that.
+
+                        Both languages have block comments, and the
+                        loader already dispatches on suffix.
+decision:               |
+                        A CSS stylesheet and a JavaScript script are
+                        source item types, css and js, each specified
+                        by a schema that composes the source trait and
+                        adds nothing, as the python module type does.
+
+                        Each carries its document in the FIRST BLOCK
+                        COMMENT of its file, opened by three hyphens
+                        and closed by three full stops, exactly as a
+                        docstring carries one. Only the first comment
+                        is read, and only where nothing but space
+                        precedes it. The identifier is the path of the
+                        file beneath the package that holds it, so the
+                        name locates what it names.
+
+                        A file carrying no such document IS PASSED
+                        OVER. It is not a fault, and this is where the
+                        two differ from python, where a file carrying
+                        no document is refused.
+
+                        Types are named for the language and not for
+                        the kind of file. A later stylesheet language
+                        or a later script language is a further type,
+                        so that what a thing is written in can be read
+                        from what it is.
+rationale:              |
+                        The document inside the artefact, because that
+                        is what makes a source item worth having. The
+                        item and the file are edited together, moved
+                        together and reviewed together, and the source
+                        check can say when a name stops matching a
+                        location.
+
+                        Passed over rather than refused, because a
+                        stylesheet and a script are the two kinds of
+                        file this repository vendors. The workbench
+                        serves a copy of HTMX that was written
+                        elsewhere, and putting a capability commons
+                        identity inside somebody else's minified file
+                        would be a claim this repository is not
+                        entitled to make. Python is refused because no
+                        python file here comes from anywhere else.
+
+                        Named for the language because the reason for
+                        having two types rather than one is to be able
+                        to do one thing for a stylesheet and another
+                        for a script. A type that said only that a
+                        file is source would give a reader the fact
+                        they already had.
+alternative:            |
+                        One source file type covering every language.
+                        Rejected: it puts the language in a field
+                        where it could be in the type, and every
+                        consumer then reads the field to decide what
+                        it is looking at.
+
+                        An item in a YAML file naming the source file
+                        by its path. Rejected: the item and the file
+                        then drift, a rename breaks a path that no
+                        reference check walks, and the property that
+                        makes a source item trustworthy is exactly
+                        that it cannot.
+
+                        Refusing a file that carries no document, as
+                        python is refused. Rejected: the vendored
+                        script would have to carry one, and a document
+                        inside a file written elsewhere is a claim of
+                        authorship.
+
+                        Hiding vendored files from the loader under a
+                        dotted directory, as the demonstration did.
+                        Rejected here: the workbench serves those
+                        files over HTTP, and a served path that begins
+                        with a full stop is a path some servers
+                        refuse.
+consequence:            |
+                        The four findings that had to name the package
+                        now name the stylesheet or the script. What a
+                        change to either reaches is now what cctool
+                        changed says it reaches.
+
+                        The layout check examines YAML and python and
+                        does not examine these. A document inside a
+                        comment is laid out when it is written through
+                        the tool, since the writer splices it through
+                        the printer, and is not held to the convention
+                        when it is not. Nothing checks the difference.
+
+                        A file may lose its document silently and stop
+                        being an item, and nothing reports it, which
+                        is the cost of passing over the file that
+                        never had one.
+
+                        The writer knows a third place a document can
+                        live. It knew two.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_css_stylesheet
+    guid_target:        t_672477e732134e02b1355a7d37413fba
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_javascript_script
+    guid_target:        t_6a79e1a93c25441ca6eb48eb617b02ed
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_css_stylesheet
+    guid_target:        sch_8c2a1aa2759949e4afe385720d29ed04
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_javascript_script
+    guid_target:        sch_6aecac142b2b431585f8cd7e3ff409ab
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.load.comment
+    guid_target:        pym_53c01429c0ea42b4beb0f6a4ec7ac056
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_css_stylesheet
+    guid_target:        term_a9d448187f9748cd930bbeece5810118
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_javascript_script
+    guid_target:        term_02a8f1adb7694aab8555ddfca53a91d9
+
+question:
+
+  layout:
+    id_self:            qst_source_in_a_comment.layout
+    guid_self:          qst_c32fbc6a06e14a71ab1920eadcc504d6
+    question:           |
+                        Whether the layout check should examine a
+                        document held in a comment, given that it is
+                        written through the printer and can be edited
+                        by hand afterwards, as a docstring can.
+    relation:           []
+
+  vendored:
+    id_self:            qst_source_in_a_comment.vendored
+    guid_self:          qst_60a3574518ec4d0c9aedf68915893153
+    question:           |
+                        What marks a file as vendored, now that
+                        carrying no document is the only sign, and
+                        whether a repository wants to say so rather
+                        than leave it to be inferred.
+    relation:           []
+
+  other:
+    id_self:            qst_source_in_a_comment.other
+    guid_self:          qst_cc121fb585904c0fb2fdb9612a40d309
+    question:           |
+                        Which other languages carry items this way,
+                        and whether a language whose comments open
+                        differently is worth a loader of its own or is
+                        better served by a convention shared with
+                        these two.
+    relation:           []

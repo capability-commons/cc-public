@@ -1,3 +1,36 @@
+/*
+---
+
+id_self:                js_cc_public.web.static.surface
+guid_self:              js_db8d0ba313cb438db710a065861fd836
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workbench cursor script
+brief:                  |
+                        The cursor, the three levels of contrast
+                        around it, and the acts that open, read and
+                        collapse a row.
+description:            |
+                        The script holds where the reader is and
+                        nothing else. Contrast is computed from the
+                        cursor rather than from the root, so a tree of
+                        any depth needs three levels. Opening and
+                        reading each fetch into a region of their own,
+                        so neither waits on the other. Collapsing
+                        moves the focus up to a row still shown,
+                        because a hidden focus loses the reader their
+                        place.
+relation:               []
+
+...
+*/
+
 // The cursor, and the three levels of contrast around it. Position is
 // relative to the cursor and not to the root, so a tree of any depth
 // needs three levels and nothing is indented (ddr_navigation_surface).
@@ -56,10 +89,27 @@
                      sub.querySelector(':scope > .record'));
   }
 
+  // Collapsing may hide the row the reader is on, which would drop
+  // focus to the document and lose their place. Focus moves up to the
+  // nearest row that is still shown, and the cursor follows it.
+  function visible(row) {
+    return row && row.getClientRects().length > 0;
+  }
+
   function collapse() {
+    var here = document.activeElement && document.activeElement.closest('.row');
+
     document.querySelectorAll('.node.' + OPEN).forEach(function (n) {
       n.classList.remove(OPEN);
     });
+
+    if (!here || visible(here)) { return; }
+
+    var up = node(here).parentElement.closest('.node');
+    while (up && !visible(rowOf(up))) { up = up.parentElement.closest('.node'); }
+
+    var land = rowOf(up) || document.querySelector('#roots > .node > .row');
+    if (land) { land.focus(); mark(land); }
   }
 
   // The contrast levels are relative to the cursor, so without one

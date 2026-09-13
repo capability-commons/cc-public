@@ -45,6 +45,7 @@ import cc_public.check.identifier
 import cc_public.check.register
 import cc_public.layout
 import cc_public.load
+import cc_public.load.comment
 import cc_public.load.python
 import cc_public.path
 
@@ -255,13 +256,16 @@ def save(location, document):
 
     text = cc_public.layout.format(stream.getvalue())
 
-    if filepath.suffix != SUFFIX_PYTHON:
+    is_comment = filepath.suffix in cc_public.load.SUFFIX_COMMENT
+
+    if filepath.suffix != SUFFIX_PYTHON and not is_comment:
         write_text(filepath, text)
         return
 
     source    = filepath.read_text(encoding = 'utf-8')
     list_line = source.splitlines()
-    found     = metadata_at(source, location.anchor)
+    found     = cc_public.load.comment.metadata_at(source) if is_comment \
+                else metadata_at(source, location.anchor)
     pad       = ' ' * found.indent
     body      = [pad + line if line else '' for line in text.splitlines()]
 
@@ -304,6 +308,9 @@ def _text_of(location):
     """
 
     source = location.filepath.read_text(encoding = 'utf-8')
+
+    if location.filepath.suffix in cc_public.load.SUFFIX_COMMENT:
+        return cc_public.load.comment.metadata_at(source).text
 
     if location.filepath.suffix != SUFFIX_PYTHON:
         return source
