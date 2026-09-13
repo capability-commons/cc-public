@@ -1,0 +1,193 @@
+id_self:                ddr_navigation_surface
+guid_self:              ddr_b226da878cda4bb4beb983c5653bc779
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One list, two axes, and position shown by contrast
+brief:                  |
+                        A reader moves through the corpus by scrolling
+                        and by opening, on one list, with the cursor
+                        marked by contrast rather than by indentation,
+                        shading or shadow.
+context:                |
+                        The corpus is a graph and a graph has no
+                        layout. An interface that puts it on a two
+                        dimensional canvas makes every move a
+                        teleport, so spatial memory never forms and a
+                        reader is permanently slightly lost. A text
+                        editor beats that, because a file and a line
+                        and a scroll position are a crude but real
+                        sense of place.
+
+                        An earlier prototype leaned on drilling
+                        through layers of paper, with a darker shade
+                        and a drop shadow at each depth. It needs a
+                        new shade for every level, so it cannot go
+                        deep, and the shades only work in one colour
+                        scheme.
+
+                        A layout was also tried in which a record is
+                        read as a document with annotations in the
+                        margin. It gives most of the screen to the
+                        record, which is settled, while the work being
+                        done is in the annotations, which are in the
+                        margin. The proportions are the wrong way
+                        round.
+decision:               |
+                        There is one list, and a reader moves along
+                        two axes.
+
+                        VERTICAL is scrolling. DEPTH is opening a row
+                        to reveal what a view hangs beneath it. There
+                        is no second dimension and no canvas.
+
+                        Sort and filter are what make one surface
+                        serve many tasks. The same list sorted by
+                        derivation is the design read in order, sorted
+                        by what is unanswered it is a review queue,
+                        sorted by what has changed it is the impact of
+                        an edit. There is no separate screen for any
+                        of these.
+
+                        Position is shown by CONTRAST, at three
+                        levels, relative to the cursor and not to the
+                        root. The cursor is at the highest contrast.
+                        Its ancestors, its siblings and its children
+                        are at the middle. Everything else is at the
+                        lowest. Because the levels are relative, a
+                        tree of any depth needs only three.
+
+                        There is no indentation.
+
+                        Opening a row does not close its siblings.
+                        Many rows may be open at once, and collapsing
+                        them all is one keystroke.
+
+                        Opening and collapsing hold the row where it
+                        already sits, so that the page does not move
+                        under the reader.
+rationale:              |
+                        Two axes because each has one gesture, both
+                        are reversible, and neither requires a reader
+                        to remember where anything is. Scroll position
+                        is the strongest spatial memory a document
+                        interface has and this keeps it.
+
+                        Contrast relative to the cursor rather than
+                        absolute to the root because it is what makes
+                        arbitrary depth cost nothing. Three shades
+                        serve a tree of any depth, where a shade per
+                        level runs out and a shadow per level is hard
+                        to draw well in both colour schemes.
+
+                        Contrast rather than indentation because
+                        contrast changes no layout. Nothing moves when
+                        the cursor moves. Indentation tied to depth
+                        becomes absurd in a deep tree, and indentation
+                        tied to the cursor would reflow the whole page
+                        on every move, which is a great deal of motion
+                        to convey one fact.
+
+                        Emphasis on the cursor because attention
+                        should be where the work is. The rejected
+                        margin layout gave the most space to the most
+                        settled thing, and the same mistake in a list
+                        would be to make structure louder than
+                        content.
+
+                        Not an accordion because a reader who opens
+                        three things and finds the first two closed
+                        has lost the map they were building. The cost
+                        is a long list, which sort and a cheap
+                        collapse pay down.
+
+                        Anchoring on open and collapse because depth
+                        has to feel free. If the page jumps, a reader
+                        stops going down, and everything here depends
+                        on going down often and briefly.
+alternative:            |
+                        A two dimensional canvas of the graph, with
+                        nodes and edges laid out. Rejected: no stable
+                        layout exists, so no spatial memory forms, and
+                        the reader is lost. It is the thing most often
+                        built for a graph and the thing least often
+                        used twice.
+
+                        A shade and a drop shadow per level of depth,
+                        as an earlier prototype did. Rejected: it
+                        needs unbounded shades, works in one colour
+                        scheme only, and the shadows were difficult to
+                        make look right.
+
+                        A record read as a document with its
+                        annotations in the margin. Rejected: the
+                        record is sediment and the annotations are the
+                        work, so it allocates the screen in inverse
+                        proportion to the attention.
+
+                        Several panes, each with a fixed role.
+                        Rejected: it spends the width on context that
+                        is wanted in bursts rather than continuously,
+                        and a reader carries the panes even while
+                        doing something that needs one of them.
+
+                        An accordion, where opening one row closes the
+                        others. Rejected above.
+
+                        Indentation, absolute or relative to the
+                        cursor. Rejected above.
+
+                        Highest contrast on the current depth rather
+                        than the current node. Rejected: a reader
+                        reads a node, not a level, and the thing being
+                        read should be the loudest thing on the page.
+consequence:            |
+                        Many open rows make a long list. Sort and
+                        filter keep the list short to begin with and
+                        one keystroke resets it, and no automatic
+                        tidying is attempted.
+
+                        Scroll anchoring is required and its feel is
+                        untested. Whether opening a row at the foot of
+                        the viewport should also bring it upward is a
+                        question for a prototype and not for a record.
+
+                        What replaces indentation is not decided. A
+                        breadcrumb across the top and a navigation
+                        tray that slides open from the side are both
+                        candidates, separately or together, and both
+                        are held open deliberately.
+
+                        If only the cursor is at full contrast,
+                        scanning a list of siblings may suffer, which
+                        is why siblings sit at the middle level.
+                        Whether that is enough depends on how the
+                        cursor moves, and that is not settled.
+relation:               []
+
+question:
+
+  orientation:
+    id_self:            qst_navigation_surface.orientation
+    guid_self:          qst_a4f25934f4af4a0b844fe10fb556fad8
+    question:           |
+                        What replaces indentation as the account of
+                        where a reader is: a breadcrumb across the
+                        page, a navigation tray that slides open from
+                        the side, or both.
+    relation:           []
+
+  cursor:
+    id_self:            qst_navigation_surface.cursor
+    guid_self:          qst_0bac694e399b41a185c1305a83a6bb38
+    question:           |
+                        What moves the cursor, and whether a list of
+                        siblings can still be scanned when only the
+                        cursor and its immediate neighbourhood are
+                        above the lowest contrast.
+    relation:           []

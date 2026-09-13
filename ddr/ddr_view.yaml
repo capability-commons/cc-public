@@ -1,0 +1,198 @@
+id_self:                ddr_view
+guid_self:              ddr_e40834fa7f1d43e7bc9b59459e7e80d9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A view says what is at the root and which edges are children
+brief:                  |
+                        A view is a data item holding a root and an
+                        ordered list of relations to traverse. It
+                        projects the graph into a tree, and different
+                        views make one surface serve different work.
+context:                |
+                        A tree a person navigates is not the graph of
+                        relations. The same records serve reading a
+                        design from its need downward, working through
+                        what has been said and not answered, and
+                        seeing what rests on something about to
+                        change. Each wants different children, in a
+                        different order, from the same items.
+
+                        The graph alone does not say which edges are
+                        children. A relation is directional and both
+                        directions are meaningful: from a need the
+                        concept derived from it is reached by an edge
+                        the concept holds, and from the concept the
+                        need is reached by following the same edge the
+                        other way.
+
+                        Nor does the graph say where to start. A tree
+                        has a root and the corpus has none.
+decision:               |
+                        A VIEW is a data item. It holds a root and a
+                        traversal list, and a renderer turns it into a
+                        navigable tree.
+
+                        The ROOT says what sits at the first level: a
+                        filter by type, and one of a small number of
+                        sort orders offered by name. It is
+                        deliberately weaker than a query language.
+                        Nothing accepts arbitrary selection from a
+                        caller and none is built until something needs
+                        it.
+
+                        The TRAVERSAL LIST is an ordered list of
+                        relations, each with a direction. A direction
+                        is either the edges an item holds or the edges
+                        that name it. Nothing else is in the list.
+
+                        The list applies UNIFORMLY at every row,
+                        whatever the type of item there. A relation
+                        that does not apply to an item yields nothing,
+                        so the shape of the tree comes out of which
+                        edges exist where, and no rule is written per
+                        type or per level.
+
+                        Children are grouped by the relation that
+                        reached them, in the order of the list, and
+                        each group carries a quiet label.
+
+                        A view may not re-enter an item already on the
+                        path from the root to the current row. An item
+                        may appear in more than one branch.
+
+                        Nothing here infers an inverse relation. A
+                        traversal walks an edge backwards by naming
+                        its direction, and the reading that a backward
+                        walk deserves is left to the work that
+                        introduces inverses to the relation register.
+rationale:              |
+                        A view is an item because a member of the
+                        federation who registers a relation type needs
+                        it to appear in navigation. A list held as
+                        data can be shipped beside the type. A
+                        convention inside rendering code cannot.
+
+                        The list applies uniformly because a rule
+                        written per type would need an entry for every
+                        type its author had heard of, and a federation
+                        supplies types its author has not. Relations
+                        select themselves by where they exist, which
+                        costs nothing and covers what has not been
+                        invented yet.
+
+                        A list of relations and directions rather than
+                        a query, because that is all it is. Selection
+                        is the root's business and the depth is a
+                        walk.
+
+                        The root is a type filter and a named sort
+                        because the first uses are covered by it, and
+                        because a query language at the root would be
+                        the largest thing here and the least
+                        evidenced.
+
+                        Grouped by relation because a mixed expansion
+                        is otherwise a list of things with no account
+                        of why each is there. Quietly labelled because
+                        the label is orientation and not content.
+
+                        Refusing re-entry along the path rather than
+                        globally, because two directions of one
+                        relation in a list is common and would
+                        otherwise loop forever, and because the same
+                        annotation legitimately bears on two records
+                        and a global rule would drop the second
+                        appearance without saying so.
+alternative:            |
+                        The traversal expressed as a query over the
+                        graph. Rejected: a list of relations is what a
+                        traversal is, and a query language would be a
+                        large thing built before anything asks for it.
+
+                        Traversal rules per type, or per level of the
+                        tree. Rejected: per type cannot cover a
+                        federated type, and per level assumes every
+                        branch has the same shape, which the graph
+                        does not.
+
+                        A global set of items already visited.
+                        Rejected: it hides a legitimate second
+                        appearance of an item in another branch, and
+                        does so silently.
+
+                        Inferring an inverse for every relation so
+                        that a traversal names a relation and not a
+                        direction. Rejected here and deferred: the
+                        register decided that an inverse is a separate
+                        relation because it reads differently rather
+                        than merely backwards, and
+                        qst_relation_register.c15717d90 asks whether
+                        an entry should name its inverse.
+                        Bidirectional traceability will need an
+                        answer; navigation does not.
+
+                        Naming the item a UI view. Rejected: the same
+                        projection serves a command line report, a
+                        JSON representation and the assembly of
+                        context for a model, and a medium in the name
+                        of a domain item is wrong the first time
+                        something that is not a screen uses it.
+
+                        Application configuration rather than a data
+                        item, until the shape is known. Considered and
+                        not taken: the federation argument applies
+                        from the first consumer segment, and a view is
+                        small enough that being an item costs little.
+consequence:            |
+                        The types this needs do not exist. A view
+                        type, its schema and the shape of a traversal
+                        entry are all to be designed, and none is
+                        designed here.
+
+                        A backward traversal has no good label until
+                        the relation register names inverses. A view
+                        will read as pointed at by a forward relation,
+                        which is accurate and awkward, and that is
+                        accepted until the traceability work takes it
+                        up.
+
+                        Selection at the root is weak on purpose. A
+                        view that wants the annotations nothing has
+                        answered can name a type and a sort, and the
+                        named queries already in the tree are where a
+                        sharper selection would come from if one is
+                        wanted.
+
+                        How a view relates to the three levels of
+                        disclosure is not settled. A view says what
+                        the children are; ddr_progressive_disclosure
+                        says how much of an item shows at each level;
+                        whether a view may override that is open.
+relation:               []
+
+question:
+
+  override:
+    id_self:            qst_view.override
+    guid_self:          qst_83791ddc0b2549128d2547b8e338b8b5
+    question:           |
+                        Whether a view may say how much of an item
+                        shows at a level, or whether disclosure is
+                        fixed by ddr_progressive_disclosure for every
+                        view.
+    relation:           []
+
+  selection:
+    id_self:            qst_view.selection
+    guid_self:          qst_b11192aa2e2c4a1e817d0956e6d49de2
+    question:           |
+                        Whether selection at the root grows into a
+                        query, and whether the named queries already
+                        in the tree are what it would name.
+    relation:           []
