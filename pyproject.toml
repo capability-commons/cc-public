@@ -26,12 +26,16 @@ dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
 #
 [project.optional-dependencies]
 eval                    = ["dspy==3.3.1"]
+web                     = ["starlette>=1.6,<2",
+                           "uvicorn>=0.52,<1",
+                           "htpy>=26.5,<27"]
 prose                   = ["spacy>=3.8,<4",
                            "ideadensity>=0.6,<1",
                            "textstat>=0.7,<1"]
 test                    = ["pytest>=9.1.1,<10",
                            "pytest-xdist>=3.8.0,<4",
                            "pytest-timeout>=2.4.0,<3", 
+                           "httpx2>=2.12,<3",
                            "diff-cover>=10,<11"]
 lint                    = ["import-linter>=2.15,<3",
                            "mypy>=1.18,<2"]
@@ -54,7 +58,7 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
-cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package", "security", "prose"] }
+cc_public               = { path = ".", editable = true, extras = ["eval", "test", "lint", "package", "security", "prose", "web"] }
 # The english model the prose extra reads with. A direct reference, which
 # an index refuses in a package's own metadata, so it is named here.
 en-core-web-sm          = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
@@ -229,6 +233,7 @@ check                   = "cctool check"
 check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
 format                  = "cctool format"
 format-items            = "cctool format"
+serve                   = "cctool serve"
 test                    = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report=xml --cov-fail-under=87 --junitxml=junit.xml"
 test-durations          = "pytest -q -n auto test --cov=cc_public --cov-branch --cov-report= --cov-fail-under=87 --durations=25"
 test-changed            = "python test/selection.py"
@@ -298,7 +303,7 @@ root_package            = "cc_public"
 name                    = "tiers, importing downward only"
 type                    = "layers"
 layers                  = ["cc_public.cli",
-                           "cc_public.workflow",
+                           "cc_public.workflow | cc_public.web",
                            "cc_public.adapter",
                            "cc_public.commit | cc_public.eval | cc_public.evidence",
                            "cc_public.edit",

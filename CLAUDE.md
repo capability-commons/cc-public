@@ -136,6 +136,14 @@ nothing has answered is `query qry_annotation_unanswered`; what an annotation
 is about, and what answers it, is `show ann_x`. The reviewer fixes nothing in
 what it reviews (`ddr_annotation`).
 
+Serving
+
+- `serve [--host H] [--port P]` — the web interface over the tree, read
+  once: an index of items by type with a search that fills in place, one
+  page per item with its fields described by its schema and the edges at
+  it, and the same as JSON at `/item/ID.json` (`ddr_display_stack`).
+  Needs the `web` extra; writes nothing.
+
 Running and committing
 
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run

@@ -37,6 +37,7 @@ import cc_public.cli.group
 import cc_public.cli.judging
 import cc_public.cli.querying
 import cc_public.cli.running
+import cc_public.cli.serving
 
 
 main = cc_public.cli.group.main
