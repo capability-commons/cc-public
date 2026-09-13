@@ -139,10 +139,17 @@ what it reviews (`ddr_annotation`).
 Serving
 
 - `serve [--host H] [--port P]` — the web interface over the tree, read
-  once: an index of items by type with a search that fills in place, one
-  page per item with its fields described by its schema and the edges at
-  it, and the same as JSON at `/item/ID.json` (`ddr_display_stack`).
-  Needs the `web` extra; writes nothing.
+  once. One list, navigated by scrolling and by opening a row; a row shows
+  a title, opening shows its brief and its children grouped by the relation
+  that reached them, `r` reads the record in full, escape collapses
+  everything. Nothing is indented: the cursor carries three levels of
+  contrast relative to itself (`ddr_navigation_surface`,
+  `ddr_progressive_disclosure`). What sits at the root and which edges are
+  children is a view, an item of type `t_view` in `view/` holding a type
+  filter, a named sort and an ordered list of relations with directions
+  (`ddr_view`). Take `--root` more than once to serve a consumer segment
+  beside the core it names. The same projection is JSON at
+  `/record.json?id=ID`. Needs the `web` extra; writes nothing.
 
 Running and committing
 
@@ -507,7 +514,8 @@ document, process word, unit, criticality, gate tool, test method and model regi
 `eval/` evals and control sets ·
 `workflow/` components, workflows, deployments · `execution/` runs of a workflow and of a
 test · `interface/` interface control documents · `test_case/` test cases ·
-`nonconformity/` reports that were kept · `segment/` this repository's declaration of
+`nonconformity/` reports that were kept · `view/` views over the graph ·
+`segment/` this repository's declaration of
 itself · `test/` the tests · `src/cc_public/` the tool.
 
 A directory exists once something lives in it: a type's `home` says where its items go,

@@ -16,17 +16,19 @@ brief:                  |
                         The Starlette application: the routes, what
                         each renders, and the static files.
 description:            |
-                        application opens the tree under the roots
-                        given once, at construction, and serves that
-                        reading until the process ends; an edit to the
-                        tree is seen by starting again. The index
-                        route renders the listing as a document; the
-                        search route renders it as a fragment; the
-                        item route renders one item as a document, or
-                        as JSON at the sibling path ending in .json,
-                        and answers not found where nothing is named
-                        so. Static serves the vendored HTMX and the
-                        stylesheet.
+                        The application function opens the tree under
+                        the roots given once, indexes it, and reads
+                        the views it holds; a tree holding no view is
+                        refused, since a view is what says where a
+                        tree of rows begins. The surface route renders
+                        the whole page for the view chosen, the rows
+                        route renders the root rows alone so that the
+                        filter fills in place, the groups route
+                        renders the children of one row, and the
+                        record route renders one item read in full,
+                        with the same projection as JSON at a sibling
+                        path. An edit to the tree is seen by starting
+                        again.
 relation:               []
 
 ...
@@ -45,56 +47,76 @@ import cc_public.web.page
 import cc_public.web.projection
 
 
-DIR_STATIC  = pathlib.Path(__file__).parent / 'static'
-SUFFIX_JSON = '.json'
+DIR_STATIC = pathlib.Path(__file__).parent / 'static'
+PATH_JSON  = '/record.json'
 
 
 # -----------------------------------------------------------------------------
 def application(list_root):
     """
     Return the Starlette application serving the tree under the roots
-    given, read once here.
+    given, read and indexed once here.
 
     """
 
-    tree = cc_public.edit.tree.Tree(list_root)
-    name = tree.root.name
+    tree   = cc_public.edit.tree.Tree(list_root)
+    name   = tree.root.name
+    stamp  = str(max((int(path.stat().st_mtime) for path in DIR_STATIC.iterdir()),
+                     default = 0))
+    graph  = cc_public.web.projection.graph(tree)
+    scope  = cc_public.web.projection.views(graph)
 
-    async def index(request):
-        listing = cc_public.web.projection.listing(
-                                tree,
-                                query  = request.query_params.get('q', ''),
-                                prefix = request.query_params.get('kind') or None)
+    if not scope:
+        raise cc_public.edit.tree.ErrorItem(
+                'This tree holds no view, so there is nothing to serve. A view '
+                'says what sits at the root and which edges are children.')
+
+    def chosen(request):
+        wanted = request.query_params.get('view')
+        return next((one for one in scope if one.id_self == wanted), scope[0])
+
+    async def surface(request):
+        view = chosen(request)
+        text = request.query_params.get('q', '')
+        rows = cc_public.web.projection.roots(graph, view, text)
         return _html(cc_public.web.page.document(
-                                'Items', cc_public.web.page.index(listing), name))
+                        view.title,
+                        cc_public.web.page.surface(scope, view, rows, text),
+                        name, stamp))
 
-    async def search(request):
-        listing = cc_public.web.projection.listing(
-                                tree,
-                                query  = request.query_params.get('q', ''),
-                                prefix = request.query_params.get('kind') or None)
-        return _html(cc_public.web.page.fragment_listing(listing))
+    async def rows(request):
+        view = chosen(request)
+        return _html(cc_public.web.page.fragment_rows(
+                        cc_public.web.projection.roots(
+                                graph, view, request.query_params.get('q', ''))))
 
-    async def item(request):
-        found = cc_public.web.projection.detail(tree, request.path_params['name'])
+    async def opened(request):
+        view  = chosen(request)
+        path  = tuple(p for p in request.query_params.get('path', '').split(
+                                    cc_public.web.page.SEPARATOR) if p)
+        found = cc_public.web.projection.opened(graph, view, path) if path else None
         if found is None:
-            return _not_found(request.path_params['name'])
-        return _html(cc_public.web.page.document(
-                                found.title or found.id_self,
-                                cc_public.web.page.detail(found), name))
+            return _not_found(request.query_params.get('path', ''))
+        return _html(cc_public.web.page.fragment_groups(found))
 
-    async def item_json(request):
-        found = cc_public.web.projection.detail(tree, request.path_params['name'])
+    async def record(request):
+        found = cc_public.web.projection.record(graph, request.query_params.get('id', ''))
         if found is None:
-            return _not_found(request.path_params['name'])
+            return _not_found(request.query_params.get('id', ''))
+        return _html(cc_public.web.page.fragment_record(found))
+
+    async def record_json(request):
+        found = cc_public.web.projection.record(graph, request.query_params.get('id', ''))
+        if found is None:
+            return _not_found(request.query_params.get('id', ''))
         return starlette.responses.JSONResponse(_plain(found))
 
     return starlette.applications.Starlette(routes = [
-        starlette.routing.Route(cc_public.web.page.PATH_INDEX,  index),
-        starlette.routing.Route(cc_public.web.page.PATH_SEARCH, search),
-        starlette.routing.Route(cc_public.web.page.PATH_ITEM + '{name}' + SUFFIX_JSON,
-                                item_json),
-        starlette.routing.Route(cc_public.web.page.PATH_ITEM + '{name}', item),
+        starlette.routing.Route(cc_public.web.page.PATH_SURFACE, surface),
+        starlette.routing.Route(cc_public.web.page.PATH_ROWS,    rows),
+        starlette.routing.Route(cc_public.web.page.PATH_GROUPS,  opened),
+        starlette.routing.Route(PATH_JSON,                       record_json),
+        starlette.routing.Route(cc_public.web.page.PATH_RECORD,  record),
         starlette.routing.Mount(cc_public.web.page.PATH_STATIC.rstrip('/'),
                                 starlette.staticfiles.StaticFiles(directory = DIR_STATIC),
                                 name = 'static')])
@@ -105,12 +127,14 @@ def _html(element):
     return starlette.responses.HTMLResponse(str(element))
 
 
+# -----------------------------------------------------------------------------
 def _not_found(name):
     return starlette.responses.PlainTextResponse(
                 'Nothing in this tree is named {name}.'.format(name = name),
                 status_code = 404)
 
 
+# -----------------------------------------------------------------------------
 def _plain(value):
     """
     Return a projection as what JSON can hold: named tuples as objects,

@@ -19,20 +19,20 @@ brief:                  |
 description:            |
                         The package holds three modules. The
                         projection module reads the tree and returns
-                        plain values: an index of items by type, and
-                        one item in full with its fields described by
-                        its schema and the edges at it. The page
-                        module turns those values into HTML with htpy,
-                        as fragments with one root each and as whole
-                        documents. The application module binds the
-                        pages and their JSON to routes with Starlette
-                        and serves the vendored HTMX and the
-                        stylesheet from static. Nothing here writes to
-                        the tree. The domain never imports this
-                        package; the command line does, inside the
-                        serve command, so that a tree that is never
-                        served need not install the web extra
-                        (ddr_display_stack).
+                        plain values: the graph indexed for
+                        navigation, the views it holds, and the rows,
+                        groups and records a view asks for. The page
+                        module turns those values into HTML with htpy.
+                        The application module binds them to routes
+                        with Starlette and serves the vendored HTMX,
+                        the stylesheet and the script that places the
+                        cursor. Nothing here writes to the tree. The
+                        domain never imports this package; the command
+                        line does, inside the serve command, so that a
+                        tree that is never served need not install the
+                        web extra. What the surface does and why is
+                        decided in ddr_navigation_surface,
+                        ddr_progressive_disclosure and ddr_view.
 relation:               []
 
 ...

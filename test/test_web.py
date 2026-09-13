@@ -14,19 +14,26 @@ protective_mark:
 title:                  Web interface tests
 brief:                  |
                         The projections as values, the pages as
-                        fragments with one root, and the application
-                        through its routes, over a copy of the tree.
+                        fragments, and the application through its
+                        routes, over a copy of the tree.
 description:            |
-                        One test checks that the listing holds every
-                        item, counts each kind, and narrows by query
-                        and by kind. One test checks that the detail
-                        of a record labels its fields from its schema,
-                        holds its edges both ways, and is None for a
-                        name nothing bears. One test checks that each
-                        page renders to one root and escapes what it
-                        shows. One test drives the application: the
-                        index, the search fragment, an item as a page
-                        and as JSON, the static files, and not found.
+                        One test checks that the views load with the
+                        types at their root and the relations they
+                        traverse. One test checks that the rows at the
+                        root are of the types the view names, sorted
+                        and narrowed as it asks. One test checks that
+                        opening a row groups its children by the
+                        relation that reached them, refuses an item
+                        already on the path, and still admits one that
+                        appears in another branch. One test checks
+                        that a record read in full carries the fields
+                        its type adds, described by its schema, and
+                        not the envelope shown above it. One test
+                        checks that each page renders what it should
+                        and escapes what it shows. One test drives the
+                        application: the surface, the rows, the
+                        groups, a record as HTML and as JSON, the
+                        static files, and what is named by nothing.
 relation:               []
 
 ...
@@ -36,67 +43,129 @@ relation:               []
 import pytest
 import starlette.testclient
 
-import cc_public.item
 import cc_public.web.app
 import cc_public.web.page
 import cc_public.web.projection
 
 
 ID_RECORD = 'ddr_layered_architecture'
+ID_VIEW   = 'vw_decision'
 
 
-def test_a_listing_holds_every_item_and_narrows_by_query_and_kind(tree):
-    listing = cc_public.web.projection.listing(tree, limit = 100000)
-    index   = cc_public.item.index(tree.context.map_document)
-    assert listing.total == len(index.by_id) == len(listing.entries)
-    assert sum(kind.count for kind in listing.kinds) == listing.total
-    assert all(kind.title != kind.prefix for kind in listing.kinds)
-
-    narrowed = cc_public.web.projection.listing(tree, query = 'layered architecture')
-    assert ID_RECORD in [e.id_self for e in narrowed.entries]
-    assert 0 < narrowed.total < listing.total
-
-    by_kind = cc_public.web.projection.listing(tree, prefix = 'ddr', limit = 5)
-    assert by_kind.total > 5 and len(by_kind.entries) == 5
-    assert all(e.prefix == 'ddr' for e in by_kind.entries)
+@pytest.fixture
+def graph(tree):
+    return cc_public.web.projection.graph(tree)
 
 
-def test_a_detail_labels_its_fields_from_the_schema_and_holds_its_edges(tree):
-    found = cc_public.web.projection.detail(tree, ID_RECORD)
-    assert found.prefix == 'ddr' and found.kind == 'Design decision type'
-    assert found.path == '' and found.location.endswith('ddr_layered_architecture.yaml')
+@pytest.fixture
+def view(graph):
+    return next(one for one in cc_public.web.projection.views(graph)
+                if  one.id_self == ID_VIEW)
 
+
+def test_a_view_holds_the_types_at_its_root_and_the_relations_it_walks(graph, view):
+    every = cc_public.web.projection.views(graph)
+    assert [one.id_self for one in every] == ['vw_decision', 'vw_design', 'vw_review']
+    assert all(one.prefix and one.traversal for one in every)
+
+    assert view.prefix == ('ddr',)
+    assert [(w.id_relation, w.direction) for w in view.traversal] == [
+                ('r_decides',  cc_public.web.projection.HOLDS),
+                ('r_is_about', cc_public.web.projection.POINTED_AT_BY)]
+
+    # Nothing infers an inverse, so a backward walk is labelled by the
+    # forward relation and the direction it is read in (ddr_view).
+    assert view.traversal[1].label.startswith('pointed at by ')
+
+
+def test_the_rows_at_the_root_are_of_the_types_the_view_names(graph, view):
+    rows = cc_public.web.projection.roots(graph, view)
+    assert rows and all(row.prefix == 'ddr' for row in rows)
+    assert [row.id_self for row in rows] == sorted(row.id_self for row in rows)
+    assert all(row.path == (row.guid_self,) for row in rows)
+
+    narrowed = cc_public.web.projection.roots(graph, view, 'layered architecture')
+    assert ID_RECORD in [row.id_self for row in narrowed]
+    assert 0 < len(narrowed) < len(rows)
+
+
+def test_opening_a_row_groups_its_children_and_refuses_the_path_it_came_by(graph, view):
+    row    = next(r for r in cc_public.web.projection.roots(graph, view)
+                  if  r.id_self == ID_RECORD)
+    opened = cc_public.web.projection.opened(graph, view, row.path)
+
+    label = [group.label for group in opened.groups]
+    assert label[0] == 'decides'
+    assert label == [w.label for w in view.traversal if w.label in label]
+    child = opened.groups[0].rows[0]
+    assert child.path == row.path + (child.guid_self,)
+    assert child.brief is not None
+
+    # An item already on the path is not entered again, so a branch
+    # cannot re-enter itself; the same item is still reached where the
+    # path does not hold it (ddr_view).
+    def reached(path):
+        return {r.guid_self
+                for group in cc_public.web.projection.opened(graph, view, path).groups
+                for r in group.rows}
+
+    assert child.guid_self in reached(row.path)
+    assert child.guid_self not in reached((child.guid_self, row.guid_self))
+    assert all(guid not in child.path for guid in reached(child.path))
+
+
+def test_a_record_read_in_full_carries_what_its_type_adds_described_by_its_schema(graph):
+    found  = cc_public.web.projection.record(graph, ID_RECORD)
     by_key = {field.key: field for field in found.fields}
-    assert 'id_self' not in by_key and 'relation' not in by_key
+
+    # The kind is what the glossary calls the thing, not what the type
+    # item is called.
+    assert found.kind == 'design decision'
+    assert found.location.endswith('ddr_layered_architecture.yaml')
+
+    # The heading and the tree show these, so the record does not.
+    assert not {'id_self', 'title', 'brief', 'relation'} & set(by_key)
+
     assert by_key['decision'].kind == cc_public.web.projection.KIND_PROSE
-    assert by_key['decision'].help and 'decided' in by_key['decision'].help.lower()
-    assert by_key['title'].kind == cc_public.web.projection.KIND_DATUM
+    assert 'decided' in by_key['decision'].help.lower()
     assert by_key['question'].kind == cc_public.web.projection.KIND_HELD
     assert all(id_self.startswith('qst_') for (id_self, _) in by_key['question'].value)
 
-    assert found.outgoing and all(len(edge) == 2 for edge in found.outgoing)
-    assert found.incoming and all(len(edge) == 2 for edge in found.incoming)
-
-    same = cc_public.web.projection.detail(tree, found.guid_self)
-    assert same == found
-    assert cc_public.web.projection.detail(tree, 'ddr_nowhere') is None
+    assert cc_public.web.projection.record(graph, found.guid_self) == found
+    assert cc_public.web.projection.record(graph, 'ddr_nowhere') is None
 
 
-def test_a_page_renders_to_one_root_and_escapes_what_it_shows(tree):
-    found = cc_public.web.projection.detail(tree, ID_RECORD)
-    html  = str(cc_public.web.page.detail(found))
-    assert html.startswith('<article') and html.endswith('</article>')
-    assert html.count('<article') == 1 and 'cc_public.cli' in html
+def test_a_page_renders_each_level_and_escapes_what_it_shows(graph, view):
+    rows = cc_public.web.projection.roots(graph, view, 'layered architecture')
+    html = str(cc_public.web.page.fragment_rows(rows))
+    assert html.startswith('<div id="roots"') and html.endswith('</div>')
 
-    listing = cc_public.web.projection.listing(tree, query = 'a < b & "c"')
-    html    = str(cc_public.web.page.index(listing))
-    assert html.startswith('<section') and html.endswith('</section>')
-    assert 'a &lt; b &amp; &#34;c&#34;' in html and '<b &' not in html
+    # A row carries a place for each level it discloses.
+    for expected in ('class="row', 'class="detail"', 'class="record"', 'class="groups"'):
+        assert expected in html
 
-    page = str(cc_public.web.page.document('T', cc_public.web.page.fragment_listing(listing),
-                                           'here'))
+    groups = str(cc_public.web.page.fragment_groups(
+                    cc_public.web.projection.opened(graph, view, rows[0].path)))
+    assert 'class="glabel">decides<' in groups
+
+    # The target is already the record region, so the fragment does not
+    # wrap itself in a second one.
+    record = str(cc_public.web.page.fragment_record(
+                    cc_public.web.projection.record(graph, ID_RECORD)))
+    assert 'class="record"' not in record
+    assert record.count('<p class="key">') == len(
+                cc_public.web.projection.record(graph, ID_RECORD).fields)
+    assert '<code>decision</code>' in record and 'class="identity"' in record
+
+    surface = str(cc_public.web.page.surface(
+                    cc_public.web.projection.views(graph), view,
+                    cc_public.web.projection.roots(graph, view, 'a < b & "c"'), 'a < b & "c"'))
+    assert 'a &lt; b &amp; &#34;c&#34;' in surface and '<b &' not in surface
+    assert 'Nothing matches' in surface
+
+    page = str(cc_public.web.page.document('T', surface, 'here'))
     assert page.startswith('<!doctype html><html') and '<title>T</title>' in page
-    assert 'htmx.min.js' in page and 'style.css' in page
+    assert 'htmx.min.js' in page and 'surface.js' in page and 'style.css' in page
 
 
 @pytest.fixture
@@ -105,26 +174,29 @@ def client(tree):
                 cc_public.web.app.application([str(tree.root)]))
 
 
-def test_the_application_serves_the_index_the_search_the_items_and_the_static(client):
-    got = client.get('/')
-    assert got.status_code == 200 and 'Design decision type' in got.text
+def test_the_application_serves_each_level_the_static_files_and_what_is_named_by_nothing(client):
+    got = client.get('/', params = {'view': ID_VIEW})
+    assert got.status_code == 200 and 'id="roots"' in got.text
 
-    got = client.get('/search', params = {'q': 'layered architecture'})
-    assert got.status_code == 200 and got.text.startswith('<div id="listing"')
-    assert '/item/' + ID_RECORD in got.text and '<html' not in got.text
+    got = client.get('/rows', params = {'view': ID_VIEW, 'q': 'layered architecture'})
+    assert got.status_code == 200 and got.text.startswith('<div id="roots"')
+    assert ID_RECORD in got.text and '<html' not in got.text
 
-    got = client.get('/', params = {'q': 'layered architecture', 'kind': 'sch'})
-    assert got.status_code == 200 and 'Nothing matches' in got.text
+    guid = client.get('/rows', params = {'view': ID_VIEW, 'q': 'layered architecture'})
+    path = guid.text.split('data-path="', 1)[1].split('"', 1)[0]
 
-    got = client.get('/item/' + ID_RECORD)
-    assert got.status_code == 200 and '<article' in got.text and '<html' in got.text
+    got = client.get('/groups', params = {'view': ID_VIEW, 'path': path})
+    assert got.status_code == 200 and 'glabel' in got.text
 
-    got = client.get('/item/' + ID_RECORD + '.json')
-    assert got.status_code == 200
-    assert got.json()['id_self'] == ID_RECORD
+    got = client.get('/record', params = {'id': ID_RECORD})
+    assert got.status_code == 200 and 'class="key"' in got.text
+
+    got = client.get('/record.json', params = {'id': ID_RECORD})
+    assert got.status_code == 200 and got.json()['id_self'] == ID_RECORD
     assert {f['key'] for f in got.json()['fields']} >= {'decision', 'rationale'}
 
-    assert client.get('/item/ddr_nowhere').status_code == 404
-    assert client.get('/item/ddr_nowhere.json').status_code == 404
+    assert client.get('/record', params = {'id': 'ddr_nowhere'}).status_code == 404
+    assert client.get('/groups', params = {'view': ID_VIEW, 'path': ''}).status_code == 404
     assert client.get('/static/htmx.min.js').status_code == 200
+    assert client.get('/static/surface.js').status_code == 200
     assert client.get('/static/style.css').status_code == 200

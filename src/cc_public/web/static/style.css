@@ -1,21 +1,22 @@
-/* Tokens. Every colour, size and weight a page uses is named here and
-   nowhere else; a theme is a second block of these. */
+/* Tokens. Every colour and size a page uses is named here and nowhere
+   else. The three contrast levels are text-cursor, text-near and
+   text-far: position is relative to the cursor, so a tree of any depth
+   needs three (ddr_navigation_surface). */
 :root {
   --surface-page:    #ffffff;
   --surface-raised:  #f5f5f2;
-  --text-primary:    #1a1a1a;
-  --text-secondary:  #555550;
-  --text-subtle:     #8a8a84;
-  --border-subtle:   #e2e2dd;
+  --text-cursor:     #101010;
+  --text-near:       #55554e;
+  --text-far:        #9a9a92;
+  --text-label:      #8a8a84;
+  --border-subtle:   #e6e6e1;
   --border-strong:   #9a9a94;
   --border-focus:    #2b5fd9;
-  --action-primary:  #2b5fd9;
-  --status-unknown:  #8a8a84;
+  --action:          #2b5fd9;
   --space-1:         0.25rem;
   --space-2:         0.5rem;
   --space-3:         1rem;
-  --space-4:         2rem;
-  --measure:         70ch;
+  --measure:         72ch;
   --radius:          3px;
   --font:            system-ui, sans-serif;
   --font-mono:       ui-monospace, monospace;
@@ -23,66 +24,83 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --surface-page:   #15151a;
-    --surface-raised: #1f1f26;
-    --text-primary:   #ececea;
-    --text-secondary: #b4b4ae;
-    --text-subtle:    #7c7c78;
-    --border-subtle:  #2c2c34;
+    --surface-raised: #1e1e25;
+    --text-cursor:    #f4f4f2;
+    --text-near:      #a8a8a2;
+      --text-far:       #626260;
+    --text-label:     #747470;
+    --border-subtle:  #2a2a32;
     --border-strong:  #5a5a62;
     --border-focus:   #7aa0ff;
-    --action-primary: #7aa0ff;
+    --action:         #7aa0ff;
   }
 }
 
-html            { background: var(--surface-page); color: var(--text-primary);
-                  font: 15px/1.5 var(--font); }
+html            { background: var(--surface-page); color: var(--text-far);
+                  font: 15px/1.6 var(--font); }
 body            { margin: 0; }
-a               { color: var(--action-primary); }
-a:focus-visible,
-input:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 1px; }
+a               { color: var(--action); }
+:focus-visible  { outline: 2px solid var(--border-focus); outline-offset: 1px; }
 code            { font-family: var(--font-mono); font-size: 0.92em; }
 
 header          { border-bottom: 1px solid var(--border-subtle);
                   padding: var(--space-2) var(--space-3);
-                  display: flex; gap: var(--space-3); align-items: baseline; }
-header .tree    { color: var(--text-subtle); font-size: 0.9em; }
-main            { padding: var(--space-3); max-width: calc(var(--measure) + 20rem); }
-h1              { font-size: 1.4em; margin: 0 0 var(--space-1); }
-h2              { font-size: 1.05em; margin: var(--space-4) 0 var(--space-2);
-                  color: var(--text-secondary); }
-.identity       { color: var(--text-subtle); font-family: var(--font-mono);
-                  font-size: 0.85em; }
-.kind           { color: var(--text-secondary); }
+                  display: flex; gap: var(--space-3); align-items: baseline;
+                  flex-wrap: wrap; color: var(--text-near); }
+header .tree    { color: var(--text-cursor); }
+header .hint    { font-size: 0.8em; color: var(--text-label); }
+main            { padding: var(--space-3); max-width: var(--measure); }
 
-/* Fields: a definition list, the label from the schema, the value by
-   its shape. */
-dl.field        { display: grid; grid-template-columns: 14rem minmax(0, 1fr);
-                  gap: var(--space-2) var(--space-3); margin: 0; }
-dl.field dt     { color: var(--text-secondary); }
-dl.field dd     { margin: 0; max-width: var(--measure); }
-dl.field dd p   { margin: 0 0 var(--space-2); }
-dl.field dd p:last-child { margin-bottom: 0; }
-.help           { color: var(--text-subtle); font-size: 0.85em; display: block; }
+nav.views       { display: flex; gap: var(--space-3); flex-wrap: wrap;
+                  margin-bottom: var(--space-2); font-size: 0.9em; }
+nav.views a     { color: var(--text-near); text-decoration: none; }
+nav.views a.on  { color: var(--text-cursor); border-bottom: 1px solid var(--border-strong); }
+
+form.filter     { margin: 0 0 var(--space-3); font-size: 0.9em;
+                  color: var(--text-label); }
+form.filter input[type=search] {
+                  font: inherit; padding: var(--space-1) var(--space-2);
+                  border: 1px solid var(--border-subtle); border-radius: var(--radius);
+                  background: var(--surface-page); color: var(--text-cursor);
+                  width: min(100%, 36ch); }
+
+/* A row. Nothing is indented: depth is carried by contrast, and
+   indentation would reflow the page whenever the cursor moved. */
+.row            { display: flex; gap: var(--space-2); align-items: baseline;
+                  padding: 3px 0; cursor: default; color: var(--text-far); }
+.row .kind      { font-size: 0.72em; color: var(--text-label); flex: none; }
+.row .ttl       { color: inherit; }
+/* A row says whether opening it would find anything, so that a reader
+   does not have to try. */
+.row.more .kind::after { content: '\00a0\00b7\00b7\00b7'; }
+.node.open > .row.more .kind::after { content: ''; }
+.row.near       { color: var(--text-near); }
+.row.cursor     { color: var(--text-cursor); }
+
+.sub            { display: none; }
+.node.open > .sub { display: block; }
+.record:empty   { display: none; }
+.detail         { padding: var(--space-1) 0 var(--space-2) 2ch; }
+.brief          { margin: 0; color: var(--text-near); max-width: var(--measure); }
+.group          { padding-left: 2ch; }
+.glabel         { margin: var(--space-2) 0 0; font-size: 0.72em;
+                  color: var(--text-label); }
+.group .node    { margin-left: -2ch; }
+
+/* A record read in full. One column: the field named and described
+   above what it holds, because the fields are mostly paragraphs. */
+.record         { padding: var(--space-2) 0 var(--space-2) 2ch; }
+.record .key    { margin: var(--space-3) 0 var(--space-1); color: var(--text-label);
+                  font-size: 0.8em; }
+.record .key:first-child { margin-top: 0; }
+.record .val    { color: var(--text-near); max-width: var(--measure); }
+.record .val p  { margin: 0 0 var(--space-2); }
+.record .val p:last-child { margin-bottom: 0; }
+.record ul      { margin: 0; padding-left: 1.1em; }
+.help           { display: block; color: var(--text-far); }
 pre.datum       { margin: 0; padding: var(--space-2); white-space: pre-wrap;
                   background: var(--surface-raised); border-radius: var(--radius);
                   font-family: var(--font-mono); font-size: 0.85em; }
-.absent         { color: var(--status-unknown); font-style: italic; }
-
-/* Edges and lists. */
-table           { border-collapse: collapse; width: 100%; }
-td:first-child  { white-space: nowrap; }
-td:nth-child(2) { min-width: 14rem; }
-th, td          { text-align: left; padding: var(--space-1) var(--space-3)
-                  var(--space-1) 0; vertical-align: top;
-                  border-bottom: 1px solid var(--border-subtle); }
-th              { color: var(--text-secondary); font-weight: normal; }
-.relation       { font-family: var(--font-mono); font-size: 0.85em;
-                  color: var(--text-secondary); }
-
-/* The index: a search box and what it found. */
-form.search     { margin: 0 0 var(--space-3); }
-form.search input { font: inherit; padding: var(--space-1) var(--space-2);
-                  border: 1px solid var(--border-strong); border-radius: var(--radius);
-                  background: var(--surface-page); color: var(--text-primary);
-                  width: min(100%, 40ch); }
-.count          { color: var(--text-subtle); font-size: 0.9em; }
+.identity       { color: var(--text-far); font-family: var(--font-mono);
+                  font-size: 0.78em; margin: var(--space-2) 0 0; }
+.absent         { color: var(--text-far); font-size: 0.85em; margin: 0; }

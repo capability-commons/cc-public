@@ -19,9 +19,11 @@ description:            |
                         Opens the application over the roots given, or
                         the working directory, and runs it under
                         uvicorn on the host and port given until
-                        interrupted. The web tier is imported inside
-                        the command, so that the tool runs without the
-                        web extra installed.
+                        interrupted. Several roots are read as one
+                        closed world, so a consumer segment is served
+                        beside the core it names. The web tier is
+                        imported inside the command, so that the tool
+                        runs without the web extra installed.
 relation:               []
 
 ...
