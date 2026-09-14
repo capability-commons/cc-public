@@ -58,9 +58,9 @@ def find_type(map_document):
             return (filepath, document)
 
     raise ErrorRegisterNotFound(
-        'No data item with id_self {id_self} was found among the paths '
-        'given, so no type can be resolved. Add the type register to '
-        '--path.'.format(id_self = ID_REG_TYPE))
+        'No data item with id_self {id_self} was found among the trees '
+        'given, so no type can be resolved. Name the tree that holds the '
+        'type register as well.'.format(id_self = ID_REG_TYPE))
 
 
 # -----------------------------------------------------------------------------

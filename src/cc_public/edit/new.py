@@ -130,6 +130,23 @@ def new(tree, id_type, id_self, defaults, dirpath_out = None, guid = None):
                     else _home(tree, entry))
         filepath = dirpath / (id_self + SUFFIX)
 
+    # The rights a new item is given come from the tree it is written
+    # to, and the tree is what --root names. An item written outside
+    # every root would be given the rights of a tree it does not belong
+    # to, and would be given them silently, which matters most where
+    # the trees belong to different people. Refused rather than guessed
+    # at (ann_new_gives_another_tree_the_core_rights).
+    #
+    whole = filepath.resolve()
+
+    if not any(whole.is_relative_to(root) for root in tree.list_root):
+        raise cc_public.edit.tree.ErrorItem(
+                '{path} lies outside every root given: {root}. An item '
+                'written there would be given the rights of a tree it is not '
+                'in. Name its own tree with --root.'.format(
+                        path = whole,
+                        root = ', '.join(str(root) for root in tree.list_root)))
+
     if filepath.exists():
         raise cc_public.edit.tree.ErrorItem(
                 '{path} already exists.'.format(path = filepath))
@@ -423,6 +440,13 @@ def _home(tree, entry):
     register entry names, else where the items of its prefix already
     are, by majority.
 
+    Both are sought within the first root alone, which is the tree
+    being written to. Counting across every root would put a consumer's
+    item wherever items of that prefix are most numerous, and that is
+    always the core, since the core is the largest tree and a consumer
+    that has just started holds one or two
+    (ann_a_consumer_item_can_land_in_the_core).
+
     """
 
     if entry.get(KEY_HOME):
@@ -432,14 +456,15 @@ def _home(tree, entry):
     count  = {}
 
     for (id_self, item) in tree.map_id.items():
-        if cc_public.item.prefix_of(id_self) == prefix and not item.path:
+        if cc_public.item.prefix_of(id_self) == prefix and not item.path \
+                and item.filepath.resolve().is_relative_to(tree.root):
             count[item.filepath.parent] = count.get(item.filepath.parent, 0) + 1
 
     if not count:
         raise cc_public.edit.tree.ErrorItem(
-                'No item with prefix {prefix} exists yet and its type names no home, '
-                'so there is no directory to put one in. Give --out.'.format(
-                                                                prefix = prefix))
+                'No item with prefix {prefix} is in {root} yet and its type names '
+                'no home, so there is no directory there to put one in. Give '
+                '--out.'.format(prefix = prefix, root = tree.root))
 
     return max(count, key = count.get)
 

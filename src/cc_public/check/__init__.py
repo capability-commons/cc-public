@@ -46,6 +46,7 @@ from cc_public.check import reference as check_reference
 from cc_public.check import relation  as check_relation
 from cc_public.check import requirement as check_requirement
 from cc_public.check import result    as check_result
+from cc_public.check import rights    as check_rights
 from cc_public.check import schema    as check_schema
 from cc_public.check import segment    as check_segment
 from cc_public.check import source    as check_source
@@ -64,6 +65,7 @@ CHECK      = (check_parse,
               check_source,
               check_reference,
               check_segment,
+              check_rights,
               check_relation,
               check_schema,
               check_requirement,

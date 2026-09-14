@@ -299,7 +299,7 @@ def _check(break_it = None):
             break_it(dirpath)
         return subprocess.run(
                     ['cctool', 'check', '--closed-world',
-                     '--fail-on-nonconformity', '--path', str(dirpath)],
+                     '--fail-on-nonconformity', '--root', str(dirpath)],
                     capture_output = True, text = True, check = False)
 
 

@@ -80,16 +80,15 @@ import cc_public.workflow.run
               help = 'An edge from the record to an item, by any relation '
                      'in the register: what this commit relates to on '
                      'purpose. May be given more than once.')
-@click.option('--root', 'root', default = pathlib.Path('.'),
+@click.option('--root', 'list_root', multiple = True, metavar = 'DIR',
               type = click.Path(path_type = pathlib.Path),
-              help = 'The repository. Defaults to the working directory.')
-@click.option('--path', 'list_path', multiple = True,
-              type = click.Path(path_type = pathlib.Path),
-              help = 'A further tree the checks read beside the repository: '
-                     'the core a consumer segment names. Checked, not '
-                     'committed. May be given more than once.')
+              help = 'A directory tree holding the items. May be given more '
+                     'than once. THE FIRST IS THE REPOSITORY COMMITTED; the '
+                     'rest the checks read beside it and nothing commits, '
+                     'which is how a consumer segment names the core. '
+                     'Defaults to the working directory.')
 def commit(title, brief, description, is_checkpoint, id_execution,
-           list_trailer, list_link, root, list_path):
+           list_trailer, list_link, list_root):
     """
     Commit what has changed, with a commit record in the message.
 
@@ -99,10 +98,12 @@ def commit(title, brief, description, is_checkpoint, id_execution,
 
     """
 
+    (root, *list_beside) = list_root or (pathlib.Path('.'),)
+
     try:
         (hash, id_self) = cc_public.commit.commit(
                     root, title, brief, description, is_checkpoint,
-                    id_execution, list_trailer, list_link, list_path)
+                    id_execution, list_trailer, list_link, list_beside)
     except (cc_public.commit.ErrorCommit, cc_public.edit.tree.ErrorItem) as err:
         cc_public.cli.group.fail(err)
 

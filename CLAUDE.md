@@ -8,8 +8,11 @@ decisions decide.
 ## Tools
 
 All of these are `pixi run cctool …`; `pixi run check` and `pixi run format`
-are shorthands. Every command has `--help`; the writing commands take
-`--root DIR` (repeatable), `check` takes `--path`. The commands live in
+are shorthands. Every command has `--help`; every command that reads or
+writes items takes `--root DIR`, repeatable, and nothing takes `--path`
+(`ddr_one_name_for_a_tree`). Where a command acts on one tree, it is the
+first root: `new`, `set` and `link` write there, `commit` commits it, and
+the rest are read. The commands live in
 `src/cc_public/cli/` by kind, and are listed here the same way.
 
 Checking
@@ -101,7 +104,7 @@ Assurance
 
 Querying
 
-- `restated [--path DIR]… [--threshold N] [--format text|json]` — pairs of
+- `restated [--source PATH]… [--threshold N] [--format text|json]` — pairs of
   function bodies of one shape, most alike first, over the `src` of every root
   by default. Local names are normalised and constants reduced to their types,
   so a pair differing only in what it calls things is reported. Sixteen pairs
@@ -357,7 +360,12 @@ decisions and annotations are exempt: they carry the model's own voice
   — mints the identity, writes every required field empty (it fails the
   checks until written), puts it where its type lives (`--out` otherwise).
   Give the fields and edges in the same command and it never exists half
-  made; prefer that. A python package or module too: `pym_cc_public.demo.thing`
+  made; prefer that. **Rights come from the tree written to, which is the
+  first `--root`** (`ddr_item_rights`): an item that would land outside every
+  root is refused rather than given the rights of a tree it is not in, and
+  where a type names no `home` the directory is sought within the first root
+  alone. From a consumer, name your own tree first: `--root . --root
+  ../cc-public`. A python package or module too: `pym_cc_public.demo.thing`
   becomes `demo/thing.py` beside its parent package, docstring only. A
   class or function too: `new t_python_function pyf_cc_public.path.select`
   turns the docstring of `select` in `path.py` into a document, its prose
@@ -488,6 +496,11 @@ refilled to 70. Separate paragraphs in a block scalar with a blank line.
 
 ## Conventions that are not in the code
 
+- Rights: an item takes the copyright and licence of its segment. The rights
+  check reports one that differs from what the rest of its segment carries,
+  and does so critically; a segment's rights are nowhere declared, so what its
+  items agree on by a majority stands for them (`ddr_item_rights`). The
+  protective mark is not read, since a mark properly differs within a segment.
 - Schemas are closed (`ddr_schema_closure`): a concrete schema refuses a
   field no composed schema declares, at the path it was written. Add the
   field to the schema before writing it to an item. A trait carries no
@@ -556,8 +569,8 @@ readable output today, a model context protocol server and an agent to
 agent surface named as directions and designed nowhere. A consumer's gate names both roots and asserts the union
 closed; this repository's gate names only itself, so a consumer's content
 is never checked here and its own gate must run. A consumer commits with
-`cctool commit … --root . --path ../cc-public`: the checks read both, the
-root alone is committed. The Brave1 demonstration
+`cctool commit … --root . --root ../cc-public`: the checks read both, the
+first root alone is committed. The Brave1 demonstration
 is `../cc-brave1-demo`.
 
 ## Where things are

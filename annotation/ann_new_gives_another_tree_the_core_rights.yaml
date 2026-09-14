@@ -1,0 +1,81 @@
+id_self:                ann_new_gives_another_tree_the_core_rights
+guid_self:              ann_387fee59e4684f51bff3ab6779a2a263
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  new can stamp the core rights onto an item in another segment
+brief:                  |
+                        An item written into a consumer tree by a
+                        command run from the core is given the core
+                        copyright, licence and mark. It is silent, and
+                        the rights are wrong.
+description:            |
+                        Rights for a new item come from the cctool.new
+                        table of a pyproject.toml, and the tool looks
+                        for that file at or above a directory. Which
+                        directory it looks above is not the one the
+                        item is written to.
+
+                        Observed on 2026-09-14. A scratch tree was
+                        made outside this repository with no
+                        pyproject.toml of its own. Run from this
+                        repository, new for a need type, with --out
+                        naming a directory in that tree, wrote the
+                        item there and gave it Copyright 2026 William
+                        Payne, Apache-2.0 and mark_public, which are
+                        this repository's rights and not the rights of
+                        anything in that tree. The same happened for a
+                        segment item. Nothing was said.
+
+                        The same command given --root SCRATCH refused:
+                        no cctool.new in a pyproject.toml at or above
+                        SCRATCH, so no copyright, licence or id_mark
+                        to give a new item there. That refusal is the
+                        right behaviour. So the tool already knows how
+                        to decline rather than guess, and does so only
+                        when --root is given. --out says where the
+                        file goes and does not move the search for
+                        rights.
+
+                        What follows matters most where the segments
+                        belong to different people. The consumer
+                        segment being worked on alongside this one
+                        declares LicenseRef-Axair-Proprietary and a
+                        copyright held by Axair Systems UG. An agent
+                        working across both repositories, running a
+                        command from the core because that is where
+                        the environment is, puts this repository's
+                        licence and a personal copyright on that
+                        company's records. Nothing in the checks
+                        reports it, because the rights written are
+                        well formed; they are simply not the ones that
+                        tree uses.
+
+                        The fix has more than one shape and this
+                        annotation chooses none. The search could
+                        start from where the item is written rather
+                        than from the working directory. new could
+                        refuse whenever the output falls outside every
+                        root it was given. A tree could carry its
+                        rights as an item rather than as
+                        configuration, which
+                        qst_edit_commands.c35a6bfef already asks about
+                        for a different reason. Each answers this;
+                        they differ in what else they change.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_edit_commands
+    guid_target:        ddr_de3223c651d0447682b2f501a5dc44bd
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

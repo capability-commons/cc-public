@@ -1,0 +1,217 @@
+id_self:                ddr_item_rights
+guid_self:              ddr_87788dfb0dfa4ec099521f8d489c0e7c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An item takes the rights of the tree it is written to
+brief:                  |
+                        Rights come from the tree an item goes into,
+                        so a command refuses to write outside the
+                        trees it was given, looks for a home only
+                        within the one it is writing to, and a check
+                        reports an item whose rights differ from its
+                        segment.
+context:                |
+                        An item carries a copyright, a licence and a
+                        protective mark. They come from the cctool.new
+                        table of a pyproject.toml, and the module that
+                        reads them already says what the rule is meant
+                        to be: the tree being written to is what says
+                        what a new item in it gets, and where the
+                        command is run from says nothing.
+
+                        Two ways were found for that to fail, both
+                        while trying the tool from a consumer segment
+                        for the first time. Both are recorded with
+                        what was observed.
+
+                        ann_new_gives_another_tree_the_core_rights: an
+                        item written by --out into a tree outside
+                        every root took the rights of the root
+                        instead. Run from the core, it gave a
+                        consumer's item this repository's copyright
+                        and Apache-2.0.
+
+                        ann_a_consumer_item_can_land_in_the_core:
+                        where a type names no home, the command put
+                        the item wherever items of that prefix were
+                        most numerous, counted across every root. That
+                        is always the core. A consumer running the
+                        invocation the segment record prescribes wrote
+                        its item into the core carrying a proprietary
+                        licence. Fifty three of the seventy one types
+                        name no home, so this governed three quarters
+                        of what a consumer could make.
+
+                        Neither was reported by anything. Both produce
+                        a well formed item whose rights are simply not
+                        the ones its tree uses.
+decision:               |
+                        An item takes the rights of THE TREE IT IS
+                        WRITTEN TO, which is the first root given.
+
+                        new REFUSES to write outside every root it was
+                        given, rather than writing the item and giving
+                        it the rights of a tree it is not in.
+
+                        The search for where an item goes is made
+                        WITHIN THE FIRST ROOT ALONE. Where the type
+                        names a home, that home under the first root;
+                        where it names none, the majority of that
+                        prefix within the first root; where there is
+                        none there, the command asks for --out rather
+                        than reaching into another tree.
+
+                        A CHECK reports an item whose copyright or
+                        licence differs from what the rest of its
+                        segment carries. The rights of a segment are
+                        nowhere declared, so what its items agree on
+                        by a majority stands for them. A segment with
+                        no majority reports nothing. A file under no
+                        segment is passed over. The finding is
+                        critical.
+
+                        The protective mark is not read by the check.
+                        A mark says who may see one item and properly
+                        differs within a segment; a copyright and a
+                        licence say who owns the work and do not.
+rationale:              |
+                        Refusal rather than searching upward from
+                        where the file goes, because searching upward
+                        would make the rights follow the filesystem
+                        rather than the trees the caller named, and
+                        would change quietly for anyone whose --out
+                        already points somewhere with a pyproject
+                        above it. Refusing is loud, and the caller
+                        answers it by naming the tree, which is the
+                        thing that was missing.
+
+                        The home confined to the first root, because
+                        the alternative counts items in trees the
+                        writer is only reading. A consumer reads the
+                        core and writes its own segment, and the core
+                        will always outnumber it. This changes nothing
+                        where there is one root, which is every use in
+                        this repository.
+
+                        A check as well as two refusals, because the
+                        refusals guard the tool and the check guards
+                        the tree. An item can arrive by a hand written
+                        file, by a merge, or by a version of the tool
+                        that predates this. The check is the only one
+                        of the three that says anything about what is
+                        already there.
+
+                        Agreement by majority rather than a
+                        declaration, because a declaration is a
+                        convention every federated segment would have
+                        to follow before its items could be checked at
+                        all, and this repository is not in a position
+                        to impose one. Agreement needs nothing of
+                        anybody: a segment that holds one set of
+                        rights is described by its own contents.
+
+                        Critical rather than advisory, because the
+                        fault is somebody's licence on somebody else's
+                        work, and because both segments that exist
+                        today are uniform, so it costs nothing to
+                        hold. A segment that means to hold mixed
+                        rights has no way to say so and would be
+                        blocked; that case does not exist yet, and the
+                        exception should be designed when it does
+                        rather than before.
+alternative:            |
+                        Search for the rights upward from the
+                        directory the item is written to. Rejected: it
+                        makes rights follow the filesystem rather than
+                        the trees named, and it changes behaviour
+                        silently for a caller whose --out already sits
+                        under some other pyproject.
+
+                        Rights as an item in the tree rather than
+                        configuration in a project file, which
+                        qst_edit_commands.c35a6bfef asks about for the
+                        separate reason that configuration does not
+                        travel. It would answer this cleanly: the
+                        rights would be resolved the way every other
+                        reference is, and the question would stop
+                        being about directories. REJECTED FOR NOW, and
+                        it remains open. It imposes a convention that
+                        every federated segment must follow, and a
+                        segment that had not adopted it could not be
+                        checked at all. The refusals and the check
+                        cost a consumer nothing and require nothing of
+                        it, and they can be undone if the item is
+                        adopted later.
+
+                        Let the check read the protective mark too.
+                        Rejected: a mark is a property of one item and
+                        differs within a segment by design.
+
+                        Report the disagreement as advisory. Rejected:
+                        an advisory among thirty seven of them is not
+                        read, and what this catches is a licence on
+                        work that is not the licensor's.
+
+                        Leave it to review. Rejected: both faults were
+                        found by trying the tool for an afternoon and
+                        neither had been noticed in months of use,
+                        which is what a silent fault does.
+consequence:            |
+                        A consumer can make items with the tool
+                        without watching where they land. Three
+                        quarters of the types were placing them in the
+                        core.
+
+                        A command that wrote outside its roots now
+                        fails where it used to succeed. Nothing in
+                        this repository did that, and a caller who
+                        meant it adds --root.
+
+                        The checks number nineteen. The new one reads
+                        every document that carries a copyright or a
+                        licence, which was eight hundred and fifty one
+                        here and eight hundred and sixty one over this
+                        repository and a consumer together, and
+                        reports nothing on either.
+
+                        What the check cannot see is a segment whose
+                        items are wrong together. Rights that were all
+                        written wrongly agree with each other, and
+                        agreement is all it reads. A declaration would
+                        see that and this does not, which is what is
+                        given up by not asking consumers to make one.
+
+                        A segment meaning to hold mixed rights is
+                        blocked with no way to say so. That is a
+                        question this record leaves open.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.edit
+    guid_target:        pyp_c5dd90e4509841e9b094d896b0cf1e71
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.check.rights
+    guid_target:        pym_050b455ef33c40baad180a0ede3e9216
+
+question:
+
+  mixed:
+    id_self:            qst_item_rights.mixed
+    guid_self:          qst_d903423a302e42a0a0d61f6bf3576ebc
+    question:           |
+                        How a segment says that it means to hold more
+                        than one set of rights, given that the check
+                        reads agreement and a segment with a
+                        deliberate exception is blocked with no way to
+                        declare it.
+    relation:           []

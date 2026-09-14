@@ -1,0 +1,58 @@
+id_self:                ann_format_takes_a_different_flag_from_its_kin
+guid_self:              ann_a40353af06814804b1c413c86ce45805
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  format writes like new and set but takes a different flag
+brief:                  |
+                        new, set and link take --root. format writes
+                        too and takes --path. A consumer task written
+                        to the rule its neighbours follow exits two.
+description:            |
+                        The writing commands take --root, repeatable,
+                        naming the trees that hold the items. new,
+                        set, link, show, trace, walk and questions all
+                        take it. check takes --path. format writes to
+                        every file it touches and takes --path.
+
+                        Observed on 2026-09-14 by asking each command
+                        for its help. cctool format --root DIR
+                        answers: no such option --root.
+
+                        The consequence is already sitting in a
+                        consumer repository. The Axair camera
+                        simulator declares a format task as cctool
+                        format --root . --root ../cc-public, which is
+                        the rule its neighbouring tasks follow, and
+                        pixi run format there exits two having laid
+                        out nothing. That task has never worked. It
+                        will be copied into the next consumer, because
+                        the way to start a consumer is to copy one.
+
+                        Whether format should take --root like the
+                        other writers, or whether the split should be
+                        by what a command reads rather than by whether
+                        it writes, is the question. check and format
+                        are alike in one way the others are not: each
+                        runs over a union of paths and neither
+                        resolves an item by name. That is an argument
+                        for the flags being right and the rule being
+                        described wrongly, which is
+                        ann_the_flag_rule_is_written_down_wrong.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_cli_contract
+    guid_target:        ddr_f968df0d259e4542967f3b3b316914e5
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

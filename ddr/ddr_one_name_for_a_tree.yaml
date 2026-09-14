@@ -1,0 +1,187 @@
+id_self:                ddr_one_name_for_a_tree
+guid_self:              ddr_bc416e9e033f4ea5a62609e072831b8d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One name for a tree on the command line
+brief:                  |
+                        Every command that reads or writes items takes
+                        --root, and nothing takes --path. Where a
+                        command acts on one tree it is the first root.
+                        The word path was already spoken for.
+context:                |
+                        Thirty one commands named a tree with --root
+                        and four named one with --path, and nothing
+                        said which took which. The guide stated a
+                        rule, that the writing commands take --root
+                        and check takes --path, and the rule was
+                        wrong: format writes and took --path, and
+                        commit took both.
+
+                        Three of the six faults found while trying the
+                        tool from a consumer segment for the first
+                        time were that and nothing else.
+                        ann_format_takes_a_different_flag_from_its_kin:
+                        a consumer's format task, written to the rule
+                        its neighbouring tasks followed, had never
+                        once run.
+                        ann_the_flag_rule_is_written_down_wrong: the
+                        rule as given fails on the command a consumer
+                        runs most and is silent about the one where
+                        both flags appear and differ in meaning.
+                        ann_an_error_names_a_flag_the_command_lacks:
+                        the register error tells the reader to add the
+                        type register to --path, and every command
+                        that raises it accepts only --root.
+
+                        None of those is a hard fault. Together they
+                        are most of what made the tool awkward to pick
+                        up from a second repository.
+decision:               |
+                        Every command that reads or writes items takes
+                        --root, naming A DIRECTORY TREE HOLDING THE
+                        ITEMS, repeatable. NOTHING takes --path.
+
+                        Where a command acts on one tree, THAT TREE IS
+                        THE FIRST ROOT and the rest are read. new, set
+                        and link write there. commit commits it and
+                        checks them all. check and format run over the
+                        union and have no need of a first, so the rule
+                        is simply unused there.
+
+                        restated keeps a second option because it
+                        names something else: --source, a file or a
+                        directory of python to read, which is not a
+                        tree of items.
+
+                        The register error names the trees given
+                        rather than any flag, since it is raised below
+                        the command line and cannot know what the
+                        caller typed.
+
+                        This governs the command line. Inside the tool
+                        a filesystem path is called a path, because
+                        that is what it is in python and the glossary
+                        speaks for the corpus and its interface rather
+                        than for every local name.
+rationale:              |
+                        --root rather than --path, because THE WORD
+                        PATH IS ALREADY SPOKEN FOR. term_dot_path
+                        claims it for a location inside a document,
+                        and the tool uses it that way in set NAME PATH
+                        VALUE. Unifying on --path would have put one
+                        word in one command meaning both a directory
+                        and a place inside an item, and there is a
+                        third sense already in the command named path,
+                        which shows a shortest path of edges.
+
+                        --root also carries the meaning the rule
+                        needs. A root is the root of a tree and admits
+                        a first among several; a path is one of a list
+                        and admits no order. A command that must
+                        answer which tree it is acting on needs the
+                        first word and not the second.
+
+                        Nothing is lost. The one thing --path could do
+                        that --root could not was name a single file.
+                        Checking one file fails outright, and with the
+                        registers added it reports twenty critical and
+                        two hundred and four advisory, because a
+                        partial world makes everything look broken. No
+                        task or document in this repository ever
+                        passed a file. The capability was documented,
+                        present, unusable and unused.
+
+                        Thirty one commands against four decided which
+                        way to move.
+
+                        The rule written as what a command does rather
+                        than as whether it writes, because whether it
+                        writes was the rule that failed. format writes
+                        and does not resolve an item by name, which is
+                        why it never fitted.
+alternative:            |
+                        Unify on --path. Rejected: term_dot_path
+                        claims the word, set already uses it for a dot
+                        path, a command is named path, and thirty one
+                        commands would change rather than four.
+
+                        Leave the two flags and write the rule down
+                        correctly, which is what this record's own
+                        first proposal was. Rejected: a rule that has
+                        to be learned is worse than a rule that cannot
+                        be got wrong, and the rule would still need a
+                        reader to know which of two lists a command is
+                        in.
+
+                        Give format a --root and leave check with
+                        --path. Rejected: it fixes the one task that
+                        was found broken and leaves the same trap for
+                        the next command anybody adds.
+
+                        Keep --path as an accepted second spelling.
+                        Rejected: the second name is the whole fault,
+                        and there is one consumer segment today, whose
+                        task list is a few lines. A second spelling
+                        would be cheap now and permanent.
+
+                        Rename the parameter the library uses as well,
+                        which is list_path in seventy eight places.
+                        Rejected: inside python a filesystem path is a
+                        path, and pathlib makes that the least
+                        surprising name. What collided was a flag a
+                        person types beside a dot path, not a keyword
+                        argument.
+consequence:            |
+                        A consumer names its trees the same way
+                        whatever command it is running, and a task
+                        list copied from one command to another works.
+
+                        Four commands changed their spelling: check,
+                        format, commit and restated. Every task list
+                        naming them must change with them, which today
+                        means one consumer segment and four lines.
+
+                        commit's two options became one. --root .
+                        --path ../cc-public is now --root . --root
+                        ../cc-public, and which tree is committed
+                        follows the same rule as which tree is written
+                        to everywhere else rather than being a fact
+                        about commit.
+
+                        What this does not touch is what check and
+                        format DO with more than one tree. Both still
+                        run over the union, so a consumer's gate still
+                        reports the core's findings as well as its
+                        own, which is noise a consumer did not ask
+                        for. Whether the first root should bound what
+                        is reported, and what a consumer wants to be
+                        told about the tree it consumes, is a further
+                        decision.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.cli
+    guid_target:        pyp_c65c9b9793f644f49ec3531c78153ed5
+
+question:
+
+  scope:
+    id_self:            qst_one_name_for_a_tree.scope
+    guid_self:          qst_42318947fd89436e8632a0015f4d0c5d
+    question:           |
+                        Whether the first root should bound what check
+                        and format act on, as it bounds what new
+                        writes and what commit commits, given that a
+                        consumer's gate today reports the core's
+                        findings beside its own and that format given
+                        both trees would lay out a tree the consumer
+                        does not own.
+    relation:           []

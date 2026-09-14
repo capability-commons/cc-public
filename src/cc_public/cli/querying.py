@@ -174,9 +174,11 @@ def query(name, sql, id_format, list_root):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.option('--path', 'list_path', multiple = True, type = click.Path(exists = True),
+@click.option('--source', 'list_path', multiple = True, metavar = 'PATH',
+              type = click.Path(exists = True),
               help = 'A file or a directory of python to read. Repeatable. '
-                     'The src directory of every root by default.')
+                     'The src directory of every root by default. Not a tree '
+                     'of items, which is what --root names.')
 @click.option('--threshold', 'threshold', type = float,
               default = cc_public.restatement.THRESHOLD, show_default = True,
               help = 'The proportion of shape a pair shares before it is reported.')

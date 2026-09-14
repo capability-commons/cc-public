@@ -655,7 +655,7 @@ class Criticality(typing.NamedTuple):
     The answer is only as closed as the tree it was read from. Where a
     consuming segment holds a requirement that reaches an item here,
     that requirement must be loaded for the item's criticality to be
-    right, which is what --closed-world and a second --path are for.
+    right, which is what --closed-world and a second --root are for.
 
     """
 

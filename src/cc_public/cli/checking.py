@@ -70,11 +70,12 @@ import cc_public.workflow.run
 @cc_public.cli.group.main.command(
     help = 'Check the data for conformity. The checks, in the order they run: '
            + ', '.join(m.ID_CHECK for m in cc_public.check.CHECK) + '.')
-@click.option('--path',
+@click.option('--root',
               'list_path',
               multiple = True,
+              metavar  = 'DIR',
               type     = click.Path(path_type = pathlib.Path),
-              help     = 'A file or directory tree to check. May be given '
+              help     = 'A directory tree holding the items. May be given '
                          'more than once, and the check runs over the union '
                          'of all of them. Defaults to the working directory.')
 @click.option('--fail-on-nonconformity',
@@ -241,11 +242,12 @@ def check(list_path,
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command(name = 'format')
-@click.option('--path',
+@click.option('--root',
               'list_path',
               multiple = True,
+              metavar  = 'DIR',
               type     = click.Path(path_type = pathlib.Path),
-              help     = 'A file or directory tree to lay out. May be given '
+              help     = 'A directory tree holding the items. May be given '
                          'more than once, and the command runs over the '
                          'union of all of them. Defaults to the working '
                          'directory.')

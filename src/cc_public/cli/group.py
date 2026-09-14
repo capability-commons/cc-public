@@ -124,6 +124,7 @@ def fail(err):
 
 
 OPTION_ROOT = click.option('--root', 'list_root', multiple = True,
+                           metavar = 'DIR',
                            type = click.Path(path_type = pathlib.Path),
                            help = 'A directory tree holding the items. May '
                                   'be given more than once. Defaults to the '

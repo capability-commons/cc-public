@@ -196,17 +196,17 @@ def test_measure_stale_names_the_evals_whose_confidence_is_missing_or_old(repo):
 
 def test_check_judges_only_what_changed_since_a_ref(repo):
     tree = cc_public.edit.tree.Tree([repo])
-    out  = run('check', '--path', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null')
+    out  = run('check', '--root', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null')
     assert out.exit_code == 0 and 'Nothing changed since HEAD' in out.output
     cc_public.edit.field.set_field(tree, 'req_printer_idempotent', 'rationale', prose = 'Reworded.')
-    out = run('check', '--path', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null',
+    out = run('check', '--root', str(repo), '--changed-since', 'HEAD', '--judge-model', 'null',
               '--format', 'json')
     assert out.exit_code == 0, out.output
     entry  = next(c for c in json.loads(out.output)['report']['check'] if c['id_check'] == 'eval')
     judged = [n['message'] for n in entry['note'] if n['message'].startswith('would judge')]
     assert judged and all('req_printer_idempotent' in m for m in judged)
     assert any('need_layout_stable' in m for m in judged)            # a pair, one end changed
-    assert run('check', '--path', str(repo), '--changed-since', 'nowhere',
+    assert run('check', '--root', str(repo), '--changed-since', 'nowhere',
                '--judge-model', 'null').exit_code == 2
 
 
@@ -247,15 +247,15 @@ def test_restated_lists_pairs_of_one_shape_and_counts_them(repo):
                     '        if each:\n'
                     '            held.append(each)\n'
                     '    return sorted(held)\n')
-    out = run('restated', '--root', str(repo), '--path', str(path))
+    out = run('restated', '--root', str(repo), '--source', str(path))
     assert out.exit_code == 0, out.output
     assert 'twice.py::a' in out.output and 'twice.py::b' in out.output
     assert '1 pair(s) at or above 0.8' in out.output
 
-    out = run('restated', '--root', str(repo), '--path', str(path), '--format', 'json')
+    out = run('restated', '--root', str(repo), '--source', str(path), '--format', 'json')
     found = json.loads(out.output)
     assert [one['score'] for one in found] == [1.0]
 
     # Nothing is alike enough at one, so the threshold is read.
-    out = run('restated', '--root', str(repo), '--path', str(path), '--threshold', '1.1')
+    out = run('restated', '--root', str(repo), '--source', str(path), '--threshold', '1.1')
     assert '0 pair(s)' in out.output

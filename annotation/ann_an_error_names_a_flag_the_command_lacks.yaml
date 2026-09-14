@@ -1,0 +1,58 @@
+id_self:                ann_an_error_names_a_flag_the_command_lacks
+guid_self:              ann_607b26ceda3b48a38a33a0f465fa1302
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The register error names a flag the command it stops does not have
+brief:                  |
+                        A writing command that cannot find the type
+                        register says to add it to --path. Those
+                        commands accept --root alone, so the advice
+                        cannot be followed as given.
+description:            |
+                        A command that resolves a type and cannot find
+                        the type register raises: no data item with
+                        id_self reg_type was found among the paths
+                        given, so no type can be resolved. Add the
+                        type register to --path.
+
+                        Observed on 2026-09-14. cctool set, naming an
+                        item held in a tree outside this repository
+                        and given --root for that tree alone, raised
+                        it once for each of the four fields written.
+                        set has one flag for naming trees and it is
+                        --root; it has no --path at all. The advice as
+                        given cannot be followed, and the reader is
+                        left to guess that the flag meant is the other
+                        one.
+
+                        The message is raised from the register
+                        module, which is below the command line and
+                        cannot know which flag the command above it
+                        took. That is why it names one: it was written
+                        where only one was in view.
+
+                        The error is otherwise good. It says what was
+                        looked for, that nothing answered to it, and
+                        what that prevents. Only the last clause is
+                        wrong, and it is wrong for every writing
+                        command, which is where a consumer meets it,
+                        since a consumer that forgets the core root
+                        meets it on its first edit.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_cli_contract
+    guid_target:        ddr_f968df0d259e4542967f3b3b316914e5
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

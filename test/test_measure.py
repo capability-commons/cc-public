@@ -172,7 +172,7 @@ def test_a_majority_needs_an_odd_count_everywhere(tree, tmp_path):
                                               ['measure', '--id-eval', 'x', '--samples', '2'])
     assert result.exit_code == 2 and 'odd' in result.output
     result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
-                                              ['check', '--confirm', '4', '--path', str(tmp_path)])
+                                              ['check', '--confirm', '4', '--root', str(tmp_path)])
     assert result.exit_code == 2 and 'odd' in result.output
 
 

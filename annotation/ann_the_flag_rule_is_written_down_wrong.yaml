@@ -1,0 +1,59 @@
+id_self:                ann_the_flag_rule_is_written_down_wrong
+guid_self:              ann_7c5611aa1ad94708b0ee33b9e626e7fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The written rule for which command takes which flag is wrong
+brief:                  |
+                        The tool guide says the writing commands take
+                        --root and check takes --path. format writes
+                        and takes --path, so the rule fails on the one
+                        command a consumer runs most.
+description:            |
+                        The tool guide states the rule as: the writing
+                        commands take --root, repeatable, and check
+                        takes --path. A reader given that rule and
+                        asked to point format at two trees will write
+                        --root and be wrong.
+
+                        Measured on 2026-09-14 by reading the help of
+                        each command. --root is taken by new, set,
+                        link, show, trace, walk and questions. --path
+                        is taken by check and format. commit takes
+                        both, and they mean different things there:
+                        --root is the repository committed and --path
+                        is a further tree the checks read.
+
+                        So the rule as written is wrong about format,
+                        and silent about the one command where both
+                        flags appear and differ in meaning. Those are
+                        the two places a consumer meets first, since a
+                        consumer formats and commits across two trees
+                        from its first day.
+
+                        The rule that fits what is there is about what
+                        a command does with the trees rather than
+                        whether it writes. A command that resolves an
+                        item by name takes --root. A command that runs
+                        over a union of paths takes --path. commit
+                        does both and says so. Whether to write that
+                        rule down or to change the flags to fit the
+                        simpler one is a decision, and this annotation
+                        makes neither.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_cli_contract
+    guid_target:        ddr_f968df0d259e4542967f3b3b316914e5
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
