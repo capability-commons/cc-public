@@ -230,9 +230,11 @@ everything else is a loop or a diagnostic.
 - `pixi run type` — mypy over the typed island named by `files` in
   `[tool.mypy]`, at full strictness. `files` chooses the default target and
   not the reach of the flags, so pointing mypy elsewhere points every flag
-  elsewhere. It says nothing about the other 89 modules. `mypy -p cc_public`
+  elsewhere. It says nothing about the other modules. `mypy -p cc_public`
   reads the whole package at this strictness: 1970 errors in 79 of 92 files on
-  2026-09-11.
+  2026-09-11. Widening is gated by `disallow_untyped_calls`: a module cannot
+  enter the island while it calls anything outside it, so the island grows
+  upward from the foundations rather than down from the top.
 - `pixi run test` — pytest over `test/`, in parallel, branch-aware coverage
   against the floor. **Writes**: the evidence item, `coverage.xml` and
   `junit.xml`.
@@ -252,6 +254,12 @@ everything else is a loop or a diagnostic.
   network. Blocking in CI.
 - `pixi run security-audit` — known vulnerabilities in the python
   distributions. Reports; blocks nothing.
+- `pixi run -e oldest test` — the suite on the oldest interpreter the package
+  claims to support. The default environment resolves something newer, so this
+  is the only thing that exercises the floor, and CI runs it as its own job.
+  Python evaluates annotations lazily from 3.14 and eagerly before it, so a
+  forward reference written without quotes passes locally and raises for a
+  user, and only this sees it.
 - `pixi run -e demo ui` — the demonstration's temporary Streamlit interface,
   `../demo/ui/app.py`, in its own `demo` environment: a reader over the tree
   and a control panel that shells `cctool` one job at a time. It edits no
@@ -270,7 +278,8 @@ Thresholds, and why they are where they are
 | Changed-line coverage | 90, reporting only | conservative, with no observation behind it yet |
 | Test timeout | 600 s | a hang guard, not a budget; the slowest test measured 175 s |
 | CI job timeout | 45 min | roughly three times the measured local gate |
-| Typed island | 3 modules | every strictness flag applies to them and to nothing else |
+| Typed island | 5 modules | every strictness flag applies to them and to nothing else |
+| Python floor | 3.12 | what `requires-python`, `target-version` and `python_version` all say, and what the `oldest` job runs (`ddr_python_version`) |
 
 Ratchet, never relax. Do not lower a threshold to let an ordinary change
 through; make the change carry its own tests. Raise a coverage floor when

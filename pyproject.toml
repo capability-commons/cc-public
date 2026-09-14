@@ -6,9 +6,11 @@ description             = "Capability commons: a document-oriented engineering s
 readme                  = "README.md"
 license                 = "Apache-2.0"
 license-files           = ["LICENSE", "NOTICE"]
-requires-python         = ">= 3.14"
+requires-python         = ">= 3.12"
 classifiers             = ["Development Status :: 3 - Alpha",
                            "Intended Audience :: Developers",
+                           "Programming Language :: Python :: 3.12",
+                           "Programming Language :: Python :: 3.13",
                            "Programming Language :: Python :: 3.14",
                            "Topic :: Software Development :: Documentation"]
 dependencies            = ["ruamel-yaml>=0.19.1,<0.20",
@@ -180,7 +182,7 @@ id_mark                 = "mark_public"
 # number again. `pixi run type` reads the island and is what gates.
 #
 [tool.mypy]
-python_version           = "3.14"
+python_version           = "3.12"
 mypy_path                = "src"
 
 files = ["src/cc_public/question.py",
@@ -267,7 +269,7 @@ pytest-cov              = ">=7.1.0,<8"
 #
 [tool.ruff]
 line-length             = 100
-target-version          = "py314"
+target-version          = "py312"
 extend-exclude          = ["execution", ".pixi"]
 
 [tool.ruff.lint]
@@ -326,6 +328,18 @@ layers                  = ["cc_public.cli",
 # captures in ../demo, outside the tree. Its own environment, so that the
 # kernel's environment carries nothing for it.
 #
+# The oldest interpreter the package claims to support. Development runs
+# on whatever pixi resolves for the default environment, which is newer;
+# this environment exists so that the gate can run the suite on the
+# oldest, because a version nothing runs is a version nobody supports.
+# Floor is not used for it, since that word already names the coverage
+# floor here. A different python cannot share a solve group, so this
+# resolves the dependency set a second time and the lock carries both
+# (ddr_python_version).
+#
+[tool.pixi.feature.oldest.dependencies]
+python                  = "3.12.*"
+
 [tool.pixi.feature.demo.pypi-dependencies]
 streamlit               = ">=1.40"
 
@@ -334,3 +348,4 @@ ui                      = "streamlit run ../demo/ui/app.py --server.headless tru
 
 [tool.pixi.environments]
 demo                    = { features = ["demo"], solve-group = "default" }
+oldest                  = { features = ["oldest"], solve-group = "oldest" }

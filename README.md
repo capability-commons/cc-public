@@ -123,7 +123,7 @@ closed; the core's gate sees only itself.
 
 The mechanical checks are Python and do not travel: a partner running
 their own tooling over a slice of this tree gets the schemas and the
-evals, which are data, and none of the checks. Requires Python 3.14.
+evals, which are data, and none of the checks. Requires Python 3.12 or later.
 Tested on macOS and Linux.
 
 ## Rights

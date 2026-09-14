@@ -321,13 +321,53 @@ def context_of(text):
 # -----------------------------------------------------------------------------
 def code_of(text, anchor):
     """
-    Return what the definition at anchor in text does, as its syntax
-    tree with every docstring removed, dumped to a string; or the
-    module's, for no anchor. None where nothing sits at anchor.
+    ---
 
-    What evidence is stamped with. Prose and layout are not in it, so
-    neither stales evidence; a change to what runs does.
+    id_self:                pyf_cc_public.load.python.code_of
+    guid_self:              pyf_88d005c7fc0640b6a2bf65f412f9503c
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
 
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  The code a definition is
+    brief:                  |
+                            Return what the definition at anchor in text
+                            does, as the source its syntax tree unparses
+                            to with every docstring removed; or the
+                            module's, for no anchor. None where nothing
+                            sits at anchor.
+
+                            What evidence is stamped with. Prose, comments
+                            and layout are not in it, so none of them
+                            stales evidence; a change to what runs does.
+
+                            Unparsed rather than dumped, because a dump
+                            names the fields of the syntax tree and those
+                            change between releases of python, so the same
+                            file stamped under two interpreters gave two
+                            digests and evidence written under one read as
+                            stale under the other. Unparsed source is the
+                            language a person writes rather than the
+                            parser's internals, and agrees across them
+                            (ddr_portable_digest).
+    description:            |
+                            Parses the file, removes every docstring
+                            beneath the node, and returns the source the
+                            syntax tree unparses to. What evidence is
+                            stamped with, so what it includes decides what
+                            stales a verdict and what does not. Prose,
+                            comments and layout are not in it. The
+                            unparsed source is used rather than a dump of
+                            the tree, because a dump names the tree's own
+                            fields and those change between releases of
+                            python.
+    relation:               []
+
+    ...
     """
 
     node = ast.parse(text)
@@ -344,7 +384,7 @@ def code_of(text, anchor):
                 and isinstance(body[0].value.value, str)):
             del body[0]
 
-    return ast.dump(node)
+    return ast.unparse(node)
 
 
 # -----------------------------------------------------------------------------

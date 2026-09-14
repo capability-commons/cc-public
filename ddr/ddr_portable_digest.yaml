@@ -1,0 +1,146 @@
+id_self:                ddr_portable_digest
+guid_self:              ddr_bd70a37474c24acd805ee58cfa1b8671
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A digest agrees across interpreters
+brief:                  |
+                        The content of a python item, for the purpose
+                        of stamping evidence, is the source its syntax
+                        tree unparses to rather than a dump of the
+                        tree, so that the same file stamped under two
+                        interpreters gives one digest.
+context:                |
+                        Evidence is stamped with a digest covering the
+                        requirement as claimed and the content of
+                        everything its closure reaches. The content of
+                        a python item was the syntax tree with
+                        docstrings removed, dumped to a string. The
+                        dump names the fields of the tree, and those
+                        fields change between releases of python: a
+                        release that adds a field to a node changes
+                        the dump of every file holding one.
+
+                        Measured on one file of this tree, unchanged
+                        between the two readings: thirty one thousand
+                        seven hundred and forty six characters under
+                        3.14 and thirty four thousand and sixty nine
+                        under 3.12, and two different digests.
+
+                        Found by running the suite on the oldest
+                        interpreter the package was about to claim to
+                        support. One test failed, and it failed
+                        because a workflow could not accept a
+                        requirement whose evidence read as stale.
+                        Nothing was wrong with the evidence; the
+                        interpreter reading it was not the one that
+                        wrote it.
+decision:               |
+                        The content of a python item is the source its
+                        syntax tree UNPARSES to, with every docstring
+                        removed. It is not a dump of the tree.
+
+                        Everything else about the digest is unchanged:
+                        what it covers, the closure it follows, and
+                        the requirement being covered as claimed
+                        rather than as written.
+rationale:              |
+                        Unparsed source is the language a person
+                        writes. A dump is the parser's account of it,
+                        and the parser's account is an implementation
+                        that changes when the language gains a feature
+                        nobody in this tree uses.
+
+                        It keeps the property the dump was chosen for.
+                        Layout, comments and prose are still absent,
+                        because unparsing normalises the first two and
+                        the docstrings are removed before it runs. A
+                        change to what runs still stales everything
+                        resting on it.
+
+                        Verified rather than argued: every one of the
+                        ninety three source files in this tree
+                        unparses to the same bytes under 3.12 and
+                        under 3.14, and the digest over all of them
+                        agrees.
+
+                        A federated system settles this on its own. A
+                        partner brings their own interpreter, and a
+                        stamp that means one thing here and another
+                        there is not a stamp.
+alternative:            |
+                        Keep the dump and pin one interpreter for
+                        everyone. Rejected: it makes the python
+                        version part of the contract between partners,
+                        which is a heavy thing to ask of somebody who
+                        wants to consume a segment and nothing else.
+
+                        Carry the interpreter in the evidence row, so
+                        that staleness is judged per interpreter.
+                        Rejected: it multiplies every row by the
+                        interpreters anyone runs, and a green gate
+                        under one would say nothing about another.
+
+                        Hash the source text as written. Rejected:
+                        layout and comments would then stale evidence,
+                        which is the fault the dump was chosen to
+                        avoid.
+
+                        Hash the bytecode. Rejected for the same
+                        reason as the dump, and worse: bytecode
+                        changes between releases more often than the
+                        syntax tree does.
+consequence:            |
+                        Every digest in the tree changes once. All
+                        evidence reads as stale until it is observed
+                        again, which is one run of the suite for the
+                        rows a test writes and one act of attestation
+                        for the rest.
+
+                        Unparsed source is not guaranteed stable
+                        across releases either. It is the language's
+                        surface rather than the parser's internals, so
+                        it changes far less, but a release that
+                        changed how something is unparsed would stale
+                        everything again. Nothing detects that except
+                        running the oldest interpreter, which is now
+                        what the gate does.
+
+                        The tool depends on unparsing being available
+                        and faithful. It has been in the standard
+                        library since 3.9 and this tree needs nothing
+                        older.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyf_cc_public.load.python.code_of
+    guid_target:        pyf_88d005c7fc0640b6a2bf65f412f9503c
+
+question:
+
+  drift:
+    id_self:            qst_portable_digest.drift
+    guid_self:          qst_d7a5fd79a29e4207ac5bafab64d67efd
+    question:           |
+                        What would detect unparsing changing between
+                        releases, given that the gate compares the
+                        oldest interpreter against the newest only
+                        when one of the two moves.
+    relation:           []
+
+  elsewhere:
+    id_self:            qst_portable_digest.elsewhere
+    guid_self:          qst_9cf8214885be46c6994ce97f8b0f7ba2
+    question:           |
+                        Whether anything else stamped in this tree is
+                        computed from the parser's internals rather
+                        than from what a person wrote, and would
+                        disagree across interpreters the same way.
+    relation:           []

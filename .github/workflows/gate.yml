@@ -151,3 +151,52 @@ jobs:
             junit.xml
           if-no-files-found: ignore
           retention-days: 7
+
+  # The oldest interpreter the package claims to support. The gate above
+  # runs whatever pixi resolves for the default environment, which is
+  # newer, so without this the floor would be asserted and never
+  # exercised, and a version nothing runs is a version nobody supports.
+  #
+  # One difference makes this more than diligence. Python evaluates
+  # annotations lazily from 3.14 and eagerly before it, so a forward
+  # reference written without quotes works for a developer on the newer
+  # interpreter and raises for a user on the older. Nothing else in the
+  # pipeline would see it.
+  #
+  # The tests alone and not the whole gate. The linter and the type
+  # checker are static and already read the floor, from target-version
+  # and python_version; coverage is the same code either way; and the
+  # mechanical checks are run by the gate over the same documents.
+  #
+  # Measured at thirty eight minutes locally on a loaded machine, so the
+  # timeout is set well above that rather than at the gate's forty five.
+  #
+  oldest:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e  # v0.10.2
+        with:
+          cache: true
+          environments: oldest
+
+      - run: pixi run -e oldest test
+
+      # What the suite observed on the oldest interpreter is what the
+      # newest one committed. A digest computed from the parser's
+      # internals rather than from what a person wrote would differ here
+      # and nowhere else, which is how ddr_portable_digest was found.
+      #
+      - name: The evidence agrees across interpreters
+        run: |
+          git diff --exit-code -- evidence/ || {
+            echo 'The oldest interpreter observed something the committed evidence does not hold.'
+            echo 'A digest that differs between interpreters is a digest nobody can rely on.'
+            exit 1
+          }

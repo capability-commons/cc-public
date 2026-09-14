@@ -1,0 +1,158 @@
+id_self:                ddr_python_version
+guid_self:              ddr_f3087014a1e644cc80e2659cc1c9ab17
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The floor is 3.12, and the gate runs it
+brief:                  |
+                        The package asks for python 3.12 or later, and
+                        an environment named oldest pins 3.12 so that
+                        the gate runs the suite on the floor rather
+                        than asserting it.
+context:                |
+                        The package asked for 3.14 and nothing in it
+                        needed 3.14. Every source and test file parses
+                        under the grammar of 3.9, because the house
+                        style reaches for nothing modern: format
+                        rather than f-strings, and no generic syntax.
+                        No distribution in the environment asks for
+                        more than 3.10, dspy and spacy included. The
+                        only thing requiring 3.14 was the package
+                        itself.
+
+                        3.14 was released in October 2025 and is in no
+                        distribution anyone deploys on. Ubuntu 24.04
+                        LTS ships 3.12 and so does RHEL 10; Debian 13
+                        ships 3.13. A floor of 3.14 therefore excluded
+                        the common baselines in exchange for nothing.
+decision:               |
+                        The floor is 3.12. requires-python, the
+                        linter's target version and the type checker's
+                        python version all say so, and the classifiers
+                        name 3.12, 3.13 and 3.14.
+
+                        An environment named OLDEST pins 3.12. The
+                        gate runs the suite in it as a job of its own,
+                        and holds the evidence that run writes to what
+                        the newest interpreter committed.
+
+                        Development stays on whatever pixi resolves
+                        for the default environment, which is newer.
+                        The floor is what the package supports, not
+                        what anybody writes on.
+
+                        The word floor names the coverage floor in
+                        this repository already, so the environment is
+                        called oldest and not floor.
+rationale:              |
+                        3.12 rather than 3.13 because 3.12 reaches the
+                        common baselines and 3.13 reaches one of them.
+                        The step down is worth taking once and not
+                        twice.
+
+                        The job rather than the declaration alone,
+                        because a version nothing runs is a version
+                        nobody supports. One difference makes that
+                        concrete rather than diligent: python
+                        evaluates annotations lazily from 3.14 and
+                        eagerly before it, so a forward reference
+                        written without quotes works for whoever wrote
+                        it and raises for whoever uses it, and nothing
+                        else in the pipeline would see that.
+
+                        The tests alone in that job. The linter and
+                        the type checker are static and already read
+                        the floor from their own settings, coverage is
+                        the same code either way, and the mechanical
+                        checks read the same documents whatever runs
+                        them.
+
+                        A job of its own rather than a second axis of
+                        the matrix, because the matrix crosses
+                        operating systems and four combinations on
+                        every push buys nothing over one.
+
+                        The evidence compared as part of it, because a
+                        digest computed from the parser's internals
+                        differs between interpreters and would differ
+                        nowhere else. That is how ddr_portable_digest
+                        was found, and this is what would find it
+                        again.
+alternative:            |
+                        Stay at 3.14. Rejected: the floor was
+                        self-imposed, cost the common baselines, and
+                        bought nothing the tree uses.
+
+                        3.13. Rejected: it reaches Debian 13 and
+                        little else, and leaves the two most widely
+                        deployed baselines out.
+
+                        3.11 or 3.10, which the dependencies allow.
+                        Rejected: the adoption argument stops paying
+                        below 3.12, while each step down constrains
+                        what may be written later and adds nothing
+                        that anybody is asking for.
+
+                        Adding python to the existing matrix. Rejected
+                        above.
+
+                        tox. Rejected: it is a second environment
+                        manager doing what pixi already does here, the
+                        gate is defined as one pixi command a
+                        developer also runs, and the two would
+                        disagree about what is installed. Its value is
+                        in testing against many interpreters through
+                        pip without a lock, and this repository has a
+                        lock.
+consequence:            |
+                        The lock file carries a second full
+                        resolution, because a different python cannot
+                        share a solve group. It grew from four
+                        thousand eight hundred and sixty one lines to
+                        six thousand three hundred and eighty six, and
+                        it is read on every change to a dependency.
+
+                        Continuous integration gains a job that ran to
+                        thirty eight minutes locally on a loaded
+                        machine, so its timeout is set above the
+                        gate's rather than at it.
+
+                        Writing on a newer interpreter than the floor
+                        means a difference between them can be
+                        introduced and not noticed until that job
+                        runs. Lazy annotations are the one known
+                        today. There will be others, and the job is
+                        the only thing that will say so.
+
+                        Raising the floor later is three declarations
+                        and one environment. Lowering it further would
+                        need the dependencies checked again, since
+                        they are what stops at 3.10.
+relation:               []
+
+question:
+
+  rise:
+    id_self:            qst_python_version.rise
+    guid_self:          qst_9b98e060095c4b128e9226aad4206c00
+    question:           |
+                        What would say the floor should rise, given
+                        that where it sits follows from what
+                        distributions ship rather than from anything
+                        this tree needs.
+    relation:           []
+
+  breadth:
+    id_self:            qst_python_version.breadth
+    guid_self:          qst_e39fc5874d5b407e8f746ba482992982
+    question:           |
+                        Whether the oldest job should also run the
+                        mechanical checks, which execute code a test
+                        may not reach, or whether the suite covers
+                        enough of them to make that redundant.
+    relation:           []
