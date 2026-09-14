@@ -235,6 +235,7 @@ markers = [
 [tool.pixi.tasks]
 check                   = "cctool check"
 check-closed-world      = "cctool check --closed-world --fail-on-nonconformity"
+check-early             = "cctool check --closed-world --fail-on-nonconformity --skip-check evidence"
 format                  = "cctool format"
 format-items            = "cctool format"
 serve                   = "cctool serve"
@@ -253,7 +254,7 @@ security-audit          = "pip-audit"
 lint                    = "ruff check src test && lint-imports"
 type                    = "mypy"
 quick                   = { cmd = "pytest -q -n auto test -m 'not slow'", depends-on = ["lint"], env = { CCTOOL_PARTIAL_RUN = "1" } }
-gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "type", "test"] }
+gate                    = { cmd = "cctool check --closed-world --fail-on-nonconformity", depends-on = ["lint", "type", "check-early", "test"] }
 
 [tool.pixi.dependencies]
 ruff                    = ">=0.16.6,<0.17"

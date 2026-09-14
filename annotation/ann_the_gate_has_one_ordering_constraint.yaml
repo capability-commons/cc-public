@@ -1,0 +1,79 @@
+id_self:                ann_the_gate_has_one_ordering_constraint
+guid_self:              ann_f1cbda9d2776404ba2cbf7f3918a04af
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The gate steps have one ordering constraint, not four
+brief:                  |
+                        Of the four steps the gate runs, only one pair
+                        is ordered by anything: the evidence check
+                        reads what the tests write. The rest are
+                        ordered by habit and could run in any order.
+description:            |
+                        The gate task runs lint, then type, then the
+                        tests, then the checks with the world asserted
+                        closed. That order reads as a dependency chain
+                        and is not one.
+
+                        A step constrains a later step only where the
+                        later one reads what the earlier one writes.
+                        Four things were looked for and three of them
+                        are absent.
+
+                        Lint writes nothing. It is ruff over src and
+                        test followed by lint-imports, and both report
+                        to the console and leave no file behind.
+
+                        Type writes nothing any step reads. Mypy
+                        writes its own cache, which only mypy reads.
+
+                        Nothing reads coverage.xml or junit.xml. The
+                        tests write both and no source file in the
+                        tool mentions either. They are outputs of the
+                        run, not inputs to anything in it.
+
+                        Of the eighteen check modules the driver runs,
+                        one reads evidence. A search for evidence
+                        across every module in the check package
+                        returns evidence.py and the driver line that
+                        registers it. The other seventeen checks
+                        cannot be affected by whether the tests have
+                        run.
+
+                        So the graph has one edge. The tests write
+                        evidence and the evidence check reads it,
+                        which is the ordering constraint CLAUDE.md
+                        already names as the reason the checks come
+                        last. Everything else is free.
+
+                        What follows is that seventeen checks wait for
+                        the tests for no reason. A finding any of them
+                        would make costs a whole gate run today, and
+                        the arrangement that would let it cost seconds
+                        is a reordering rather than anything harder.
+
+                        The order is free in one direction only. The
+                        steps must stay sequential, whatever order
+                        they take, because what tells a reader what a
+                        failing run found is the end of the log, and
+                        that rests on the gate stopping at its first
+                        failing step. Running the independent steps at
+                        the same time would break that to save the
+                        eight seconds they take together.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_gate_tool
+    guid_target:        ddr_4a9b13b19bae495db03e917e049be8d0
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

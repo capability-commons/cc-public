@@ -103,6 +103,13 @@ import cc_public.workflow.run
                         'boundary, and is reported as critical rather than '
                         'advisory. Set this for a single repository; leave '
                         'it unset for a federated slice.')
+@click.option('--skip-check', 'skip_check', multiple = True,
+              metavar = 'ID',
+              help    = 'Do not run the check named. May be given more than '
+                        'once. A check left out reports nothing, so this asks '
+                        'to be told less. The gate uses it to run the checks '
+                        'that do not read what the tests write before the '
+                        'tests rather than after them.')
 @click.option('--eval',
               'is_eval',
               is_flag = True,
@@ -173,6 +180,7 @@ def check(list_path,
           is_fail_on_nonconformity,
           is_fail_fast,
           is_closed_world,
+          skip_check,
           is_eval,
           id_model_eval,
           id_eval,
@@ -218,7 +226,8 @@ def check(list_path,
     report    = cc_public.check.check(list_path       = list_path,
                                       is_fail_fast    = is_fail_fast,
                                       is_closed_world = is_closed_world,
-                                      judgement       = judgement)
+                                      judgement       = judgement,
+                                      skip_check      = skip_check)
 
     list_error = report['report']['error']
     list_error.extend(cc_public.cli.report.write(report,

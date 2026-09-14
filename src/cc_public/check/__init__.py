@@ -88,7 +88,7 @@ COMMAND    = 'check'
 
 # -----------------------------------------------------------------------------
 def check(list_path = (), is_fail_fast = False,
-          is_closed_world = False, judgement = None):
+          is_closed_world = False, judgement = None, skip_check = ()):
     """
     Return a report over the union of the paths given.
 
@@ -107,6 +107,12 @@ def check(list_path = (), is_fail_fast = False,
     alone is in a position to make it, and it changes what an
     unresolved reference means.
 
+    skip_check names checks by ID_CHECK that are not to be run. A check
+    left out reports nothing, so a caller that leaves one out is
+    choosing to be told less. It exists so that the checks which do not
+    read what the tests write can run before the tests rather than
+    after them (ddr_gate_order).
+
     """
 
     list_dirpath   = [pathlib.Path(path) for path in list_path]
@@ -115,6 +121,8 @@ def check(list_path = (), is_fail_fast = False,
     (ctx, list_error) = context(list_dirpath, is_closed_world, judgement)
 
     tuple_check = CHECK + ((judgement.module,) if judgement is not None else ())
+    tuple_check = tuple(module for module in tuple_check
+                        if module.ID_CHECK not in set(skip_check))
 
     list_check = []
 

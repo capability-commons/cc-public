@@ -231,8 +231,17 @@ everything else is a loop or a diagnostic.
   Run it through `cctool gate` rather than directly, unless you mean to
   block the working copy; the command runs this task on a snapshot
   elsewhere and this task is still where the order lives.
-  Its `depends-on` is where the order lives: lint, then type, then test, then
-  the closed-world check, so the tests refresh the evidence the check reads.
+  Its `depends-on` is where the order lives, cheapest judgement first: lint,
+  then type, then `check-early`, then test, then the closed-world check as the
+  task's own `cmd`. `check-early` is every check but `evidence`, which is the
+  one check that reads what the tests write, so it alone must wait for them
+  (`ddr_gate_order`). A finding from any of the other seventeen therefore costs
+  about eight seconds instead of a whole run — measured at 7.6 s on a planted
+  fault. The price is the tree loaded one extra time, about two seconds on a
+  clean run. The late pass runs every check and is the one that decides; the
+  early pass is a warning. The steps stay sequential, because `cctool gate
+  --status` shows the end of the log and that only finds the failure while the
+  gate stops at its first failing step.
   It refreshes the rows a test function establishes and not the rows a test
   case does: no step runs a case, so those go stale on a change to the adapter
   or to a method and nothing observes again (`qst_verification_evidence.cases`).
@@ -275,6 +284,10 @@ everything else is a loop or a diagnostic.
   `--compare-branch` to override it; the later flag wins.
 - `pixi run check` / `check-closed-world` — the mechanical checks, reporting
   or failing on a nonconformity with the world asserted closed.
+  `check-early` is `check-closed-world` less the evidence check, which the gate
+  runs before the tests. `cctool check --skip-check ID` leaves any check out,
+  repeatably; a run that leaves one out is asking to be told less, so do not
+  reach for it to get past a finding.
 - `pixi run format` / `format-items` — lays every document out to the
   convention. **Writes** every file it touches.
 - `pixi run package-check` — builds both distributions, checks their

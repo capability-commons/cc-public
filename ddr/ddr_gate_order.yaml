@@ -1,0 +1,201 @@
+id_self:                ddr_gate_order
+guid_self:              ddr_468c14dd5858412f84f4ca792cd0956d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The gate runs its cheapest judgement first
+brief:                  |
+                        The checks that do not read what the tests
+                        write run before the tests as well as after
+                        them. A finding they would make costs seconds
+                        rather than a whole run, and the judgement at
+                        the end is unchanged.
+context:                |
+                        Detaching the gate freed the working copy and
+                        took away the one thing a blocking run gave
+                        for nothing, which is that a finding arrived
+                        while somebody was still looking. Every
+                        finding now arrives at the end, whether the
+                        check that made it took a quarter of a second
+                        or the tests took a quarter of an hour.
+
+                        Two measurements say what there is to gain.
+                        ann_the_gate_has_one_ordering_constraint finds
+                        one edge in the whole graph: the evidence
+                        check reads what the tests write, and nothing
+                        else in the gate reads anything another step
+                        produces. Lint writes nothing, type writes
+                        only its own cache, and no check reads
+                        coverage.xml or junit.xml.
+                        ann_the_gate_is_the_tests_and_eight_seconds
+                        finds the tests to be ninety nine point one
+                        per cent of the run, and everything else to be
+                        eight seconds together.
+
+                        So seventeen checks that cannot be affected by
+                        the tests were waiting fourteen minutes behind
+                        them.
+decision:               |
+                        The gate runs its steps CHEAPEST FIRST: lint,
+                        then type, then the checks that do not read
+                        what the tests write, then the tests, then
+                        every check.
+
+                        The early pass is the pixi task check-early,
+                        which is the closed world check with the
+                        evidence check left out. The task named gate
+                        still ends with every check, unchanged, and
+                        that pass is the judgement.
+
+                        The checks gain --skip-check, which names a
+                        check by its ID_CHECK and does not run it. It
+                        is the means, not the decision.
+
+                        The steps stay SEQUENTIAL. The independent
+                        ones could run at the same time and would save
+                        eight seconds; they do not.
+
+                        The order still lives in one place, the
+                        depends-on of the gate task, and is still
+                        named nowhere else.
+rationale:              |
+                        The early pass is worth a whole run when it
+                        finds anything and costs one extra load of the
+                        tree when it does not. The load measured one
+                        and nine tenths of a second against a run of
+                        fourteen and a half minutes. That is the trade
+                        in full: about two seconds on every clean run,
+                        against about fourteen and a half minutes on a
+                        run with a check finding in it. It was
+                        measured and not estimated: a schema fault
+                        planted in a record stopped the gate in seven
+                        and six tenths of a second, and the gate never
+                        reached the tests.
+
+                        The evidence check left out of the early pass
+                        rather than the whole check moved, because the
+                        evidence check is the one thing in the gate
+                        that genuinely needs the tests to have run.
+                        Running it first would report evidence as
+                        stale for the ordinary reason that the tests
+                        have not refreshed it yet, and the gate would
+                        refuse to run the tests because the tests had
+                        not run.
+
+                        Every check run again at the end rather than
+                        only the evidence check, because the tests
+                        rewrite a document in the tree and the checks
+                        that read documents should see the one the run
+                        produced. The early pass is a warning and the
+                        late pass is the judgement. Nothing the gate
+                        decided before this decision is decided
+                        differently after it.
+
+                        Sequential, because what tells a reader what a
+                        failing run found is the end of the log, and
+                        that holds only while the gate stops at its
+                        first failing step (ddr_test_in_a_worktree).
+                        Eight seconds is not worth that.
+
+                        Cheapest first rather than most likely to fail
+                        first, because what is most likely to fail is
+                        a guess and what is cheapest is measured. The
+                        ordering that uses what a change reaches, or
+                        what failed last, is worth having where the
+                        cost is large, and the only step where it is
+                        large is the tests.
+alternative:            |
+                        Leave the order alone. Rejected on
+                        measurement: it costs a whole run to learn
+                        something that takes seconds to find.
+
+                        Run the whole check before the tests as well
+                        as after. Rejected: the evidence check reports
+                        stale evidence before the tests refresh it, so
+                        the gate would stop on a finding that the run
+                        itself was about to resolve.
+
+                        Run only the evidence check after the tests.
+                        Rejected: the tests rewrite a document in the
+                        tree, and the checks that read documents would
+                        then never see what the run produced. It saves
+                        seven seconds and buys a blind spot.
+
+                        Run the independent steps at the same time.
+                        Rejected: it saves eight seconds out of nine
+                        hundred and takes away the property that the
+                        end of the log is where a failing run says
+                        what it found.
+
+                        Order the steps by what is most likely to
+                        fail. Rejected for now: it needs evidence
+                        about failures that nothing gathers, and the
+                        cheapest first ordering gets most of the
+                        benefit with none of the bookkeeping.
+consequence:            |
+                        A finding from any of seventeen checks reaches
+                        whoever reads it in about eight seconds rather
+                        than about fourteen and a half minutes.
+                        Measured at seven and six tenths of a second
+                        on a planted fault.
+
+                        Every clean run costs about two seconds more,
+                        which is the tree loaded one extra time.
+
+                        The gate now reports twice, so a reader sees a
+                        count of seventeen checks and then a count of
+                        eighteen. The second is the one that decides.
+
+                        The tests remain ninety nine per cent of the
+                        gate and this decision does not touch them.
+                        Ordering within the tests is the rest of
+                        qst_test_in_a_worktree.objective and is asked
+                        again here.
+
+                        A check left out of a run is a caller choosing
+                        to be told less. --skip-check makes that
+                        possible generally, and nothing stops it being
+                        used to make a gate weaker. What guards
+                        against that is that the gate task is one line
+                        and is read often.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pyp_cc_public.check
+    guid_target:        pyp_0dcce7d7c1084e04b20e99e52400d2b7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.checking
+    guid_target:        pym_17f14ede03a74bf29f9f31eccabb2408
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_test_in_a_worktree.objective
+    guid_target:        qst_730a8b063ba1417388a018d9df8d4957
+
+question:
+
+  within_tests:
+    id_self:            qst_gate_order.within_tests
+    guid_self:          qst_311a7ad4d0a24af9897dcbe8204f00da
+    question:           |
+                        What orders the tests, given that they are
+                        ninety nine per cent of the gate and this
+                        decision does not touch them: what a change
+                        reaches, which a measured map already knows,
+                        what failed last, which the cache in the
+                        persistent worktree would remember, or what
+                        has told nobody anything for a long time,
+                        which nothing records. And whether the gate
+                        should stop at the first test that fails at
+                        all, since finishing soonest and finding
+                        soonest ask for opposite things.
+    relation:           []

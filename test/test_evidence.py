@@ -309,3 +309,29 @@ def test_a_row_and_the_check_compute_one_digest_over_what_the_row_names(tree):
     # had to agree rather than happen to.
     plain = cc_public.evidence.row(tree, guid_req, 'passed', guid_case)
     assert plain['digest'] != made['digest']
+
+
+def test_a_skipped_check_does_not_run_and_leaves_the_others_alone(repo):
+    """
+    The gate runs every check but evidence before the tests, so leaving
+    one out must leave the rest exactly as they were (ddr_gate_order).
+
+    """
+
+    def ran(**kwargs):
+        rep = cc_public.check.check(list_path       = [repo],
+                                    is_closed_world = True,
+                                    **kwargs)['report']
+        return [entry['id_check'] for entry in rep['check']]
+
+    whole = ran()
+    assert 'evidence' in whole
+
+    without = ran(skip_check = ('evidence',))
+    assert 'evidence' not in without
+    assert without == [name for name in whole if name != 'evidence']
+
+    # A name nothing answers to leaves every check in place. The safe
+    # direction for a typo is being told more, not less.
+    #
+    assert ran(skip_check = ('evidance',)) == whole
