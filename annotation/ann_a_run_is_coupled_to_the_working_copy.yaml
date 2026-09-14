@@ -1,0 +1,47 @@
+id_self:                ann_a_run_is_coupled_to_the_working_copy
+guid_self:              ann_56ae9492d9864e74916562a4723814a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test run reads the working copy at three moments and writes to it at the end
+brief:                  |
+                        Collection imports the test modules from the
+                        working copy, every tree fixture copies from
+                        it at the moment its test runs, and the
+                        session end writes the evidence into it and
+                        digests the source it finds there.
+description:            |
+                        So a run and an edit cannot proceed at once,
+                        and the reason is not a lock. Two tests in one
+                        run can see two different trees, and the
+                        evidence written at the end can digest code
+                        that no test in the run exercised. The
+                        convention is to leave the tree alone for the
+                        length of a run, which on this suite is
+                        fifteen minutes, and that is what makes a gate
+                        feel like it blocks the work rather than
+                        merely takes time. A run against a fixed
+                        revision in a worktree of its own would touch
+                        none of the three.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.evidence
+    guid_target:        pym_b3aa2f235f4a42749db6ef939d90a456
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

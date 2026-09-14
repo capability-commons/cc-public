@@ -151,6 +151,23 @@ Serving
   beside the core it names. The same projection is JSON at
   `/record.json?id=ID`. Needs the `web` extra; writes nothing.
 
+Gating
+
+- `gate [--here]` — the gate, run on a snapshot of the working copy in a
+  worktree of its own, so that the working copy is free while it runs.
+  **This is what to type.** A run reads the working copy at three moments
+  and writes to it at the end, so running in place means nothing may be
+  edited for the length of it (`ddr_test_in_a_worktree`). The snapshot
+  holds everything the working copy holds, committed or not and tracked
+  or not, made through an index of its own so neither the index nor the
+  working copy is touched. The worktree is `.gate/`, kept between runs
+  and pointed at each new snapshot, with an environment of its own
+  because pixi rewrites where the editable install points on each run
+  and a shared one would be re-pointed by whichever run went last. The
+  evidence the run observed is copied back, whatever it observed.
+  `--here` runs in the working copy, which is what a fresh checkout
+  wants, since it has nothing to protect.
+
 Running and committing
 
 - `run WORKFLOW --deployment DEP --bind node.input.port=ITEM …` — one run
@@ -202,6 +219,9 @@ One command per concern. `gate` is the judgement and is the only aggregate;
 everything else is a loop or a diagnostic.
 
 - `pixi run gate` — what a pipeline runs, and the only thing that decides.
+  Run it through `cctool gate` rather than directly, unless you mean to
+  block the working copy; the command runs this task on a snapshot
+  elsewhere and this task is still where the order lives.
   Its `depends-on` is where the order lives: lint, then type, then test, then
   the closed-world check, so the tests refresh the evidence the check reads.
   It refreshes the rows a test function establishes and not the rows a test

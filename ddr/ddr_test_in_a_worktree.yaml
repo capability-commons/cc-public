@@ -1,0 +1,206 @@
+id_self:                ddr_test_in_a_worktree
+guid_self:              ddr_e4c076a5b9254c7cb10c1c91caa15ca1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The gate runs on a snapshot, in a worktree of its own
+brief:                  |
+                        Running the tests takes a worktree at a
+                        snapshot of the working copy and runs them
+                        there, so that the working copy is free while
+                        they run. A flag runs them in place instead.
+context:                |
+                        A run reads the working copy at three moments
+                        and writes to it at the end, which
+                        ann_a_run_is_coupled_to_the_working_copy sets
+                        out. So nothing may be edited for the fifteen
+                        minutes a run takes, and the reason is a
+                        coupling rather than a lock: two tests in one
+                        run can otherwise see two different trees, and
+                        the evidence written at the end can digest
+                        code no test exercised.
+
+                        Most writes here are made by an agent running
+                        many commands unattended, so fifteen minutes
+                        of not writing is paid several times a day.
+                        Making the tests faster shortens that and does
+                        not remove it.
+
+                        The hiai project solved the neighbouring
+                        problem a decade ago by committing everything
+                        before building and resetting the head
+                        afterwards if anything raised, leaving the
+                        working copy untouched. What that bought was a
+                        build that ran against a configuration with a
+                        name.
+decision:               |
+                        Running the tests takes a SNAPSHOT of the
+                        working copy, adds a detached worktree at it,
+                        and runs there. That is what happens by
+                        default; a flag runs them in the working copy
+                        instead, for the times when that is what is
+                        wanted.
+
+                        The snapshot is made through a temporary
+                        index, so the real index and the working copy
+                        are untouched and UNTRACKED FILES ARE
+                        INCLUDED. A new item here is untracked until
+                        it is added, and a gate that quietly skipped
+                        new records would be worse than no gate.
+
+                        ONE ENVIRONMENT serves every worktree. The
+                        worktree's own source is put on the path of
+                        the run, so that what runs is the code the
+                        snapshot holds.
+
+                        The evidence the run writes is brought back to
+                        the working copy, which is the one thread left
+                        between them.
+rationale:              |
+                        Decoupling rather than speed, because the
+                        block is not the duration. A gate that took
+                        two minutes would still stop two minutes of
+                        work, and the whole complaint is that work
+                        stops.
+
+                        Git rather than a copy into a temporary
+                        directory, because a snapshot has an identity
+                        and a copy has none. Sharing the object store
+                        also makes it cheap: the worktree measured
+                        seven megabytes against a two gigabyte
+                        environment. The identity is what later allows
+                        the thing tested to be a commit rather than a
+                        moment.
+
+                        Untracked files included, because of what this
+                        repository is. Items arrive as new files, and
+                        the ones most worth testing are the ones just
+                        written.
+
+                        One environment, because two gigabytes for
+                        each worktree is the entire cost of the
+                        scheme, and there is nothing in the
+                        environment that belongs to one checkout.
+
+                        The path set deliberately, because without it
+                        a run started in the worktree imports the code
+                        of the main checkout and tests the wrong
+                        source against the right data. That was
+                        measured rather than feared, and it is the one
+                        failure this arrangement can have that the old
+                        one could not.
+alternative:            |
+                        Run in place and accept the wait. Rejected: it
+                        is what is done now and it is what prompted
+                        this.
+
+                        Copy the tree to a temporary directory.
+                        Rejected: git shares the object store and so
+                        does it more cheaply, and a copy has no name,
+                        so nothing can later be said about what was
+                        tested.
+
+                        Lock the working copy for the length of a run.
+                        Rejected: it makes the block explicit rather
+                        than removing it, which is worse than the
+                        convention it replaces.
+
+                        Make the tests faster and leave the coupling
+                        alone. Rejected as the answer and kept as
+                        work:
+                        ann_the_layout_check_is_paid_for_many_times
+                        and
+                        ann_a_run_rechecks_the_whole_tree_at_every_node
+                        are both worth doing and neither frees the
+                        working copy.
+
+                        An environment for each worktree. Rejected on
+                        measurement: two gigabytes and several
+                        minutes, each time.
+consequence:            |
+                        A worktree costs about seven megabytes and a
+                        moment. The environment is shared, so the
+                        second one costs no more than the first.
+
+                        What revision is tested becomes an explicit
+                        thing rather than an implicit one. Today it is
+                        a snapshot made for the run and thrown away. A
+                        tentative commit would make it a revision with
+                        a name that survives, which is what hiai did,
+                        and that is a further decision rather than
+                        this one.
+
+                        Nobody watches a run that does not block. So a
+                        finding at five seconds and a finding at
+                        fifteen minutes reach a person at the same
+                        moment, which takes away most of the value of
+                        finding things early. What reports a detached
+                        run is now a question, and it was not one
+                        before.
+
+                        The tests are coupled to git, which they were
+                        not. Git is present wherever this repository
+                        is, so the cost is a dependency named rather
+                        than a dependency felt.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.gating
+    guid_target:        pym_c781c30db1c347419bf2e2faa337d17f
+
+question:
+
+  staged:
+    id_self:            qst_test_in_a_worktree.staged
+    guid_self:          qst_96416c8c873d4c87994c4eb1bd2919b9
+    question:           |
+                        Whether the gate becomes several gates of
+                        rising cost, with a branch for each unit of
+                        work and a tentative commit as the thing each
+                        one tests, as hiai did, or whether one gate
+                        off the critical path is enough.
+    relation:           []
+
+  objective:
+    id_self:            qst_test_in_a_worktree.objective
+    guid_self:          qst_730a8b063ba1417388a018d9df8d4957
+    question:           |
+                        Whether a gate that no longer blocks should be
+                        sequenced to reach its first finding soonest
+                        rather than to finish soonest, and what would
+                        order it: what a change reaches, what failed
+                        last, or what has told nobody anything for a
+                        long time.
+    relation:           []
+
+  report:
+    id_self:            qst_test_in_a_worktree.report
+    guid_self:          qst_a8edb89c30ec4bbdafcc40fd51c53713
+    question:           |
+                        What tells a person that a detached run has
+                        found something, given that the reason for
+                        detaching it is that they are doing something
+                        else.
+    relation:           []
+
+  stale:
+    id_self:            qst_test_in_a_worktree.stale
+    guid_self:          qst_5d7b0d4173524bf2b6168be4b911820c
+    question:           |
+                        What stops a worktree and its snapshot
+                        outliving the work they were made for, and
+                        what happens to the evidence of a run whose
+                        working copy has moved on since.
+    relation:           []
