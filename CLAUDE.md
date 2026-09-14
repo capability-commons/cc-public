@@ -523,7 +523,15 @@ the rest. A file under no segment is passed over.
 The core consumes nothing and holds what travels: the tool, the schemas,
 types, relations, registers and evals. A consumer holds its own items and
 in time its own schemas, usable from it and from anything consuming it,
-never from here. A consumer's gate names both roots and asserts the union
+never from here.
+
+The tool travels as a python package, and a consuming segment may use it,
+extend it or replace it with tooling of its own; what no segment can do
+without is the data, because that is where the agreement about what a
+relation means lives (`ddr_tooling_travels`). Reaching a corpus from other
+ecosystems is intended and unbuilt: the command line and its machine
+readable output today, a model context protocol server and an agent to
+agent surface named as directions and designed nowhere. A consumer's gate names both roots and asserts the union
 closed; this repository's gate names only itself, so a consumer's content
 is never checked here and its own gate must run. A consumer commits with
 `cctool commit … --root . --path ../cc-public`: the checks read both, the

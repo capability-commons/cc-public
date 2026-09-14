@@ -1,0 +1,47 @@
+id_self:                ann_severity_is_decided_in_code
+guid_self:              ann_3ee6abea8aff436098755b2c1f153dc2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whether a finding is critical is decided in code, not in data
+brief:                  |
+                        Thirteen of the check modules name a severity
+                        themselves, and the two severities are
+                        constants in the result module. Nothing in any
+                        register says which conditions are critical
+                        and which advisory.
+description:            |
+                        So a partner writing their own checks from the
+                        registers can learn what a relation permits
+                        and what a schema requires, and cannot learn
+                        what the core would refuse a commit for. That
+                        matters because refusal is the part with
+                        consequences: ddr_fail_closed puts the policy
+                        in one function so that three callers cannot
+                        disagree, and a fourth caller in another
+                        segment is outside that function altogether.
+                        The registers are what ddr_tooling_travels
+                        claims a segment can build from, and this is
+                        the largest thing they do not say.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pyp_cc_public.check
+    guid_target:        pyp_0dcce7d7c1084e04b20e99e52400d2b7
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_fail_closed
+    guid_target:        ddr_ebf0d29492ee4d97869422b1d7ff2132
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

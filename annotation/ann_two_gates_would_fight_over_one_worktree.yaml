@@ -1,0 +1,56 @@
+id_self:                ann_two_gates_would_fight_over_one_worktree
+guid_self:              ann_7f1b3bcf0e554358b3b4a26cb52724c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two detached gates would fight over one worktree
+brief:                  |
+                        There is one worktree and nothing holds it. A
+                        second run started while the first is going
+                        would point the worktree at its own snapshot,
+                        and the first would then be testing files that
+                        changed under it.
+description:            |
+                        The failure is quiet, which is the worst kind.
+                        The first run would keep going and would be
+                        reading a tree it did not ask for, so it could
+                        pass or fail for reasons belonging to somebody
+                        else's snapshot, and the evidence it wrote and
+                        copied back would describe neither.
+
+                        It has not happened because one person has
+                        been running one gate. It becomes likely the
+                        moment the reason for detaching the gate is
+                        honoured, which is that a person starts one
+                        and goes back to work, and then starts
+                        another.
+
+                        What is wanted is not obvious. A lock that
+                        refuses the second run is the smallest thing
+                        and makes the gate serial, which may be right.
+                        A worktree for each run costs six hundred
+                        megabytes an environment. A worktree named for
+                        its snapshot, kept and reused, sits between
+                        the two.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          pym_cc_public.cli.gating
+    guid_target:        pym_c781c30db1c347419bf2e2faa337d17f
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_in_a_worktree
+    guid_target:        ddr_e4c076a5b9254c7cb10c1c91caa15ca1
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

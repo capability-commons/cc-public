@@ -1,0 +1,175 @@
+id_self:                ddr_gate_worktrees_are_few
+guid_self:              ddr_044f64bcca7d48c4ab1356042eee4014
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The worktrees the gate runs in are few, and work on them queues
+brief:                  |
+                        A small fixed number of worktrees, two today,
+                        and a run that finds them busy waits rather
+                        than racing or being refused. Never one
+                        worktree for each run.
+context:                |
+                        There is one worktree the gate runs in and
+                        nothing holds it.
+                        ann_two_gates_would_fight_over_one_worktree
+                        sets out what follows: a second run points the
+                        worktree at its own snapshot, the first is
+                        then reading files it did not ask for, and the
+                        evidence copied back describes neither. The
+                        failure is quiet.
+
+                        It has not happened because one person has run
+                        one gate. It becomes likely the moment the
+                        reason for detaching the gate is honoured,
+                        which is that a person starts one and goes
+                        back to work, and then has more work worth
+                        testing.
+
+                        A worktree is seven megabytes of files and six
+                        hundred of environment. The environment is the
+                        whole cost and it grows: the floor interpreter
+                        is already a second one, and a layer that
+                        drives a browser would want a third.
+decision:               |
+                        The number of worktrees the gate runs in is
+                        BOUNDED AND SMALL. Two today. Never one for
+                        each run, and never a number that follows from
+                        how much work is in flight.
+
+                        Work on them QUEUES. A run that finds them
+                        busy waits. It is not refused, and it does not
+                        take a worktree that something else is using.
+
+                        How the queue is made, and what holds it
+                        between one command and the next, is not
+                        decided here. Nothing in the tool holds
+                        anything between invocations today.
+rationale:              |
+                        Bounded, because the cost is the environment
+                        rather than the checkout, and every
+                        environment this repository ever adds is
+                        multiplied by the number of worktrees. One for
+                        each run would make the cost of a new
+                        dependency depend on how many people are
+                        working.
+
+                        Queued rather than refused, because refusing
+                        makes a person wait at a keyboard for the very
+                        thing the worktree was built to stop them
+                        waiting for. A refusal is a block wearing a
+                        different hat.
+
+                        Queued rather than raced, because racing is
+                        the defect, and because it is silent. A run
+                        that fails loudly can be started again; a run
+                        that passes over somebody else's files cannot
+                        be told apart from one that did its job.
+
+                        Small rather than one, because the common case
+                        the queue is for is a run in flight and a
+                        newer snapshot worth testing, and a second
+                        worktree serves that without a queue at all.
+                        What the queue is for is the case beyond that.
+alternative:            |
+                        One worktree for each run. Rejected: the
+                        environment is the cost, it grows, and this
+                        multiplies it by something nobody controls.
+
+                        Refuse a run that finds the worktree busy.
+                        Rejected as the answer and kept as the
+                        fallback: it is the smallest thing that
+                        removes the silent failure, and if a queue
+                        proves awkward it is better than what is there
+                        now.
+
+                        Let them race, and document that you should
+                        not do that. Rejected: it is what happens
+                        today, and a convention that has to be
+                        remembered by everyone including an agent is
+                        not a mechanism.
+
+                        One worktree with a lock, strictly serial. Not
+                        rejected: it is a queue of one worker, and it
+                        may be what the first implementation is.
+consequence:            |
+                        Something has to hold the queue between one
+                        invocation and the next, and nothing in the
+                        tool does that. Every command here starts,
+                        does its work and exits.
+
+                        A queued run tests a snapshot, and the
+                        snapshot may be taken when the run was asked
+                        for or when it starts. Those are different
+                        trees and the difference matters, because the
+                        second is what a person would expect and the
+                        first is what they asked for.
+
+                        Two runs queued for one working copy will
+                        usually be testing a tree that no longer
+                        exists by the time the first finishes. Whether
+                        the newer replaces the older rather than both
+                        running is worth deciding before the queue is
+                        built.
+
+                        ann_two_gates_would_fight_over_one_worktree
+                        stays as the trace by which this arose, and
+                        will read as unanswered, because nothing
+                        records that a decision addressed an
+                        annotation.
+                        ann_an_annotation_acted_on_stays_outstanding
+                        is that gap, and this is an instance of it.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.gating
+    guid_target:        pym_c781c30db1c347419bf2e2faa337d17f
+
+question:
+
+  count:
+    id_self:            qst_gate_worktrees_are_few.count
+    guid_self:          qst_173a2346465847b195004951fc544ac5
+    question:           |
+                        How many worktrees, and what decides the
+                        number, given that two is where it starts and
+                        the cost of each is whatever the environment
+                        grows into.
+    relation:           []
+
+  hold:
+    id_self:            qst_gate_worktrees_are_few.hold
+    guid_self:          qst_331506cac80c4072932361557f360cd1
+    question:           |
+                        What holds the queue between one command and
+                        the next, given that every command in this
+                        tool starts, works and exits, and that a queue
+                        surviving nothing is not a queue.
+    relation:           []
+
+  when:
+    id_self:            qst_gate_worktrees_are_few.when
+    guid_self:          qst_d25c52b441e7480c8daa57d9a2c52a3e
+    question:           |
+                        Whether a queued run tests the tree as it was
+                        when the run was asked for or as it is when
+                        the run starts, and which of those a person
+                        means.
+    relation:           []
+
+  supersede:
+    id_self:            qst_gate_worktrees_are_few.supersede
+    guid_self:          qst_2b40a3a7ba1249159a9416c26a76fd6e
+    question:           |
+                        Whether a newer request for the same working
+                        copy replaces an older one still waiting,
+                        rather than both running against trees that no
+                        longer exist.
+    relation:           []

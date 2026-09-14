@@ -1,0 +1,208 @@
+id_self:                ddr_tooling_travels
+guid_self:              ddr_a0e155370d4842568e3d79c59a781339
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The tool travels as a package, and a segment may replace it
+brief:                  |
+                        The checks and the commands are distributed as
+                        a python package, so a consuming segment may
+                        use them, extend them or do without them. What
+                        no segment can do without is the data.
+context:                |
+                        Two records disagree. ddr_segment says the
+                        core holds what travels, and names the checks
+                        and the tool among them.
+                        ddr_check_architecture says in its consequence
+                        that the rules live in python and therefore do
+                        not travel, and that a partner running their
+                        own tooling gets the schemas and the evals and
+                        none of the checks.
+
+                        The packaging says the first is right and
+                        nothing decided it. The project declares a
+                        console script and a build backend, and the
+                        packaging check builds both distributions,
+                        installs the wheel into an environment of its
+                        own and runs the tool that comes out of it. So
+                        the tool is already distributable and has
+                        never been distributed.
+
+                        What was never settled is whether a partner is
+                        meant to have it, whether they are meant to be
+                        able to do without it, and how a corpus here
+                        is to be reached by anything that is not this
+                        tool.
+decision:               |
+                        The tool TRAVELS AS A PYTHON PACKAGE. That is
+                        how the checks and the commands reach a
+                        consuming segment, and it is what the
+                        packaging check already proves works.
+
+                        A consuming segment MAY USE IT, MAY EXTEND IT,
+                        OR MAY REPLACE IT. None of the three is
+                        privileged, and a segment that brings its own
+                        tooling is a first class member of the
+                        federation rather than a special case.
+
+                        WHAT NO SEGMENT CAN DO WITHOUT IS THE DATA.
+                        The schemas, the types, the relations and the
+                        registers are what make a corpus readable by
+                        anything, and they travel whether or not the
+                        tool does. A partner who writes their own
+                        checks is held by the same registers, because
+                        that is where the agreement about what a
+                        relation means lives.
+
+                        INTEROPERATION IS INTENDED AND NOT BUILT.
+                        Three surfaces are named so that later work
+                        has somewhere to attach. The command line,
+                        with the machine readable output it already
+                        offers. A model context protocol server, so
+                        that a model reaches a corpus by the acts the
+                        tool defines rather than by editing files. And
+                        an agent to agent surface, so that an agent
+                        working in one segment may ask an agent
+                        working in another, which is the federated
+                        case the segment model already describes and
+                        the argumentation framework will need.
+
+                        Nothing about those three is designed here.
+                        They are named so that the next person knows
+                        they are intended rather than absent by
+                        choice.
+rationale:              |
+                        A package, because it already is one, and
+                        because it is the least surprising way for
+                        python tooling to travel. The alternative
+                        would be a second mechanism invented for a job
+                        an index already does.
+
+                        A segment may replace the tool, because the
+                        whole reason the semantics are data is that
+                        they do not need this implementation. A corpus
+                        only one program can read is a format, not a
+                        commons. Saying so plainly also sets the bar
+                        for the data: if a partner cannot write their
+                        own checks from the registers, the registers
+                        are not saying enough.
+
+                        The data is what cannot be done without,
+                        because two checks written by two parties have
+                        to agree about what a relation means, and the
+                        register is the only place that agreement can
+                        live. This is the same reason the relation
+                        register carries domain, range and cardinality
+                        rather than leaving them to the code.
+
+                        The interoperation surfaces are named rather
+                        than designed, because naming a direction
+                        costs one record and building the wrong
+                        surface costs much more. That a model reaching
+                        a corpus should perform acts rather than write
+                        files is the one thing worth asserting now,
+                        because it is the difference between a corpus
+                        that stays checkable and one that does not.
+alternative:            |
+                        Vendoring the tool into each consumer.
+                        Rejected: versions drift and nothing says so,
+                        and a consumer that wants its own tooling is
+                        still carrying this one.
+
+                        A service the core operates and consumers
+                        call. Rejected: it makes the core a runtime
+                        dependency and an operator of something, and a
+                        federation whose members stop working when one
+                        member is down is not federated.
+
+                        A container image as the unit of distribution.
+                        Not rejected and not chosen: it may be how a
+                        partner without python runs the tool, and it
+                        would wrap the package rather than replace it.
+
+                        Letting each partner build their own tooling
+                        from the data and distributing nothing.
+                        Rejected as the only route and kept as a
+                        supported one, which is the point of the
+                        decision above.
+
+                        Designing the model context protocol and agent
+                        to agent surfaces now. Rejected: what a
+                        governed act looks like over a protocol is a
+                        design nobody here has done, and doing it
+                        before a consumer needs it would settle it
+                        wrongly.
+consequence:            |
+                        ddr_check_architecture is corrected. Its
+                        consequence said the checks do not travel;
+                        what does not travel is the ability to check a
+                        corpus with no tooling at all, which is a
+                        different and smaller claim.
+
+                        Publishing is not arranged. The package
+                        builds, installs and runs from the wheel, and
+                        has never been published anywhere, and nothing
+                        says where or by what act.
+
+                        Versioning becomes a real question the moment
+                        anything depends on it. The version is 0.1.0
+                        and nothing moves it.
+
+                        A consumer extending the tool has nowhere to
+                        put a check of its own. The driver holds its
+                        checks as a tuple in python, so a partner
+                        adding one forks rather than registers. That
+                        is the first thing the decision above will run
+                        into.
+
+                        Saying that a segment may replace the tool
+                        raises the bar for the registers, since the
+                        claim is only true while they say enough for
+                        somebody else to act on.
+relation:               []
+
+question:
+
+  publish:
+    id_self:            qst_tooling_travels.publish
+    guid_self:          qst_70816955224d4e9eb88e6c1e9184a5b6
+    question:           |
+                        Where the package is published, by what act,
+                        and what moves the version, given that nothing
+                        today does either.
+    relation:           []
+
+  extend:
+    id_self:            qst_tooling_travels.extend
+    guid_self:          qst_2e81f291ed0241abaf940801879c63aa
+    question:           |
+                        How a consuming segment adds a check of its
+                        own without forking the tool, given that the
+                        driver holds its checks as a tuple in python
+                        rather than reading them from the tree.
+    relation:           []
+
+  surface:
+    id_self:            qst_tooling_travels.surface
+    guid_self:          qst_ea6c5f3387bc4b30abe6417b19167b28
+    question:           |
+                        What a model context protocol server exposes,
+                        given that a governed act is not a file write,
+                        and whether a model should be able to reach a
+                        corpus by any other means.
+    relation:           []
+
+  ask:
+    id_self:            qst_tooling_travels.ask
+    guid_self:          qst_052385205b40459bb877b544265f0410
+    question:           |
+                        What an agent working in one segment may ask
+                        an agent working in another, and whether the
+                        consuming relation is what permits it or
+                        whether asking is a separate grant.
+    relation:           []
