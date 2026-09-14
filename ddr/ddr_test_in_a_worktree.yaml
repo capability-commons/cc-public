@@ -53,14 +53,29 @@ decision:               |
                         it is added, and a gate that quietly skipped
                         new records would be worse than no gate.
 
-                        ONE ENVIRONMENT serves every worktree. The
-                        worktree's own source is put on the path of
-                        the run, so that what runs is the code the
-                        snapshot holds.
+                        THE WORKTREE HAS AN ENVIRONMENT OF ITS OWN.
+                        Pixi rewrites the pointer of its editable
+                        install on every invocation, so an environment
+                        shared with the working copy is pointed at
+                        whichever tree ran last, and a run then tests
+                        one tree's code against another tree's data.
+                        An environment of its own gives the worktree
+                        an editable install that points at the
+                        worktree, and that is what makes the code the
+                        run exercises the code the snapshot holds.
 
                         The evidence the run writes is brought back to
                         the working copy, which is the one thread left
                         between them.
+
+                        WHAT THE RUN SAID IS KEPT, AND IS ASKED FOR.
+                        The run writes its output to a log as the
+                        output is said, and writes what it is doing to
+                        a status document beside it. cctool gate
+                        --status reads both and says which state the
+                        run is in, how long it has been going or how
+                        long it took, and how the log ends. Nothing is
+                        sent to anybody.
 rationale:              |
                         Decoupling rather than speed, because the
                         block is not the duration. A gate that took
@@ -71,10 +86,11 @@ rationale:              |
                         Git rather than a copy into a temporary
                         directory, because a snapshot has an identity
                         and a copy has none. Sharing the object store
-                        also makes it cheap: the worktree measured
-                        seven megabytes against a two gigabyte
-                        environment. The identity is what later allows
-                        the thing tested to be a commit rather than a
+                        also makes it cheap: the files of a worktree
+                        measured seven megabytes, which is nothing
+                        beside the environment that has to stand next
+                        to them. The identity is what later allows the
+                        thing tested to be a commit rather than a
                         moment.
 
                         Untracked files included, because of what this
@@ -82,18 +98,38 @@ rationale:              |
                         the ones most worth testing are the ones just
                         written.
 
-                        One environment, because two gigabytes for
-                        each worktree is the entire cost of the
-                        scheme, and there is nothing in the
-                        environment that belongs to one checkout.
+                        An environment for each worktree, because the
+                        alternative was built first and it broke. A
+                        shared environment held until two runs
+                        overlapped: pixi rewrote the editable install
+                        on each invocation, so the environment pointed
+                        at whichever tree went last and a run quietly
+                        tested the wrong source. The worktree's own
+                        environment holds the default feature alone
+                        and measured 584 megabytes and five seconds,
+                        against the two gigabytes the working copy's
+                        holds for every feature together. That is the
+                        whole cost of the scheme and it is paid once.
 
-                        The path set deliberately, because without it
-                        a run started in the worktree imports the code
-                        of the main checkout and tests the wrong
-                        source against the right data. That was
+                        The source found through the editable install
+                        rather than through a path set for the run,
+                        because the install is how the environment
+                        already finds the package and a path beside it
+                        would be a second answer to one question. With
+                        neither, a run started in the worktree imports
+                        the code of the working copy and tests the
+                        wrong source against the right data. That was
                         measured rather than feared, and it is the one
                         failure this arrangement can have that the old
                         one could not.
+
+                        The report asked for rather than sent, because
+                        whoever reads it is nearly always the agent
+                        that will work out what went wrong and propose
+                        the fix, and an agent reads when it comes back
+                        rather than being interrupted. A person who
+                        wants to watch has the log, which is written
+                        as the run speaks.
 alternative:            |
                         Run in place and accept the wait. Rejected: it
                         is what is done now and it is what prompted
@@ -119,13 +155,29 @@ alternative:            |
                         are both worth doing and neither frees the
                         working copy.
 
-                        An environment for each worktree. Rejected on
-                        measurement: two gigabytes and several
-                        minutes, each time.
+                        One environment shared by the working copy and
+                        the worktree. Rejected after it was built:
+                        pixi rewrites where the editable install
+                        points on every invocation, so the environment
+                        pointed at whichever tree ran last. The
+                        measurement that first argued for sharing was
+                        of the working copy's environment, which holds
+                        every feature at once; an environment holding
+                        the default feature alone is 584 megabytes.
+
+                        A notification when a detached run ends.
+                        Rejected: whoever reads a finding is nearly
+                        always the agent that will act on it, and it
+                        reads when it comes back. A notification would
+                        interrupt the person who detached the run
+                        precisely so as not to be interrupted.
 consequence:            |
-                        A worktree costs about seven megabytes and a
-                        moment. The environment is shared, so the
-                        second one costs no more than the first.
+                        A worktree costs about seven megabytes of
+                        files and 584 megabytes of environment, the
+                        environment paid once. A third would cost the
+                        same again, which is among the reasons the
+                        worktrees are bounded and few
+                        (ddr_gate_worktrees_are_few).
 
                         What revision is tested becomes an explicit
                         thing rather than an implicit one. Today it is
@@ -137,28 +189,23 @@ consequence:            |
 
                         Nobody watches a run that does not block. So a
                         finding at five seconds and a finding at
-                        fifteen minutes reach a person at the same
-                        moment, which takes away most of the value of
-                        finding things early. What reports a detached
-                        run is now a question, and it was not one
-                        before.
+                        fifteen minutes are read at the same moment,
+                        which takes away most of the value of finding
+                        things early. Sequencing the gate to reach its
+                        first finding soonest is what would give that
+                        back, and it is
+                        qst_test_in_a_worktree.objective.
 
                         The tests are coupled to git, which they were
                         not. Git is present wherever this repository
                         is, so the cost is a dependency named rather
                         than a dependency felt.
 
-relation:
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_test.conftest
-    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
-
-  - id_relation:        r_decides
-    guid_relation:      r_4aefda84f8894e02aede8729ced91732
-    id_target:          pym_cc_public.cli.gating
-    guid_target:        pym_c781c30db1c347419bf2e2faa337d17f
+                        A run that stopped without recording how it
+                        ended is reported as stopped rather than as
+                        running, since the process it named is gone. A
+                        status that called a dead run live would have
+                        whoever read it wait for nothing.
 
 question:
 
@@ -204,3 +251,20 @@ question:
                         what happens to the evidence of a run whose
                         working copy has moved on since.
     relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_test.conftest
+    guid_target:        pym_9455e1335ac84fc5be416a2f0b60e143
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          pym_cc_public.cli.gating
+    guid_target:        pym_c781c30db1c347419bf2e2faa337d17f
+
+  - id_relation:        r_answers
+    guid_relation:      r_4f5ab9aea04e4732919518c4b4ab7f18
+    id_target:          qst_test_in_a_worktree.report
+    guid_target:        qst_a8edb89c30ec4bbdafcc40fd51c53713

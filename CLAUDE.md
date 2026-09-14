@@ -153,7 +153,7 @@ Serving
 
 Gating
 
-- `gate [--here]` — the gate, run on a snapshot of the working copy in a
+- `gate [--here] [--status]` — the gate, run on a snapshot of the working copy in a
   worktree of its own, so that the working copy is free while it runs.
   **This is what to type.** A run reads the working copy at three moments
   and writes to it at the end, so running in place means nothing may be
@@ -167,6 +167,15 @@ Gating
   evidence the run observed is copied back, whatever it observed.
   `--here` runs in the working copy, which is what a fresh checkout
   wants, since it has nothing to protect.
+  Nothing is sent to anybody when a run ends: the run writes what it says
+  to `.gate.log` as it says it, and what it is doing to `.gate.yaml`, and
+  whoever comes back asks. `--status` is the asking — the state, how long
+  it has been going or how long it took, and the last twenty lines of the
+  log where the run has not passed, since the gate stops at its first
+  failing step and so what it found is at the end. It exits zero only on
+  `passed`. A run whose process has gone reads as `stopped`, not as
+  `running`. A second run while one is live is refused, naming the one
+  that holds the worktree (`ddr_gate_worktrees_are_few`).
 
 Running and committing
 
