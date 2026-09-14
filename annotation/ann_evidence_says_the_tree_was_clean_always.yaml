@@ -1,0 +1,74 @@
+id_self:                ann_evidence_says_the_tree_was_clean_always
+guid_self:              ann_28e1fbeb1e044c5da3d3bc9a52713512
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence now always says the tree was clean, whatever it was
+brief:                  |
+                        Running the gate on a snapshot made is_dirty
+                        constant. It reports the cleanliness of the
+                        snapshot, which is always clean, and not of
+                        the working copy the snapshot was taken from.
+description:            |
+                        Evidence records is_dirty so that a later
+                        reader knows whether uncommitted work was in
+                        play when the observation was made.
+                        cc_public.evidence.head asks git whether
+                        anything but evidence has changed since HEAD,
+                        in the tree the run happened in.
+
+                        Since ddr_test_in_a_worktree, the tree the run
+                        happens in is the gate worktree, which is a
+                        fresh detached checkout of the snapshot.
+                        Nothing has changed in it, so is_dirty is
+                        false. It is false whatever the working copy
+                        held.
+
+                        This is observed and not reasoned. The
+                        evidence committed at 79214798ea records
+                        revision 6c1487337a and is_dirty false. That
+                        snapshot differs from the commit that was HEAD
+                        when it was taken, 68cda23cfa, by 564 lines
+                        across five files, one of them an untracked
+                        file. The working copy was as dirty as a
+                        working copy gets, and the evidence says
+                        nothing had changed.
+
+                        What follows is that a field which once
+                        carried a signal now carries a constant, and
+                        does so silently. An agent reading evidence to
+                        decide how far to trust it is told the
+                        observation was made on a committed state. It
+                        was made on a snapshot of arbitrary
+                        uncommitted work that no branch holds. That is
+                        the opposite of what the field is for, and it
+                        is worse than the field being absent, because
+                        absence prompts a question and a false answer
+                        does not.
+
+                        Two repairs suggest themselves and this
+                        annotation chooses neither. The field could
+                        report the working copy the snapshot was taken
+                        from rather than the tree the run happened in,
+                        which keeps the meaning it was given. Or the
+                        evidence could say plainly that it observed a
+                        snapshot, and carry what the snapshot was
+                        taken from, which makes the new arrangement
+                        legible rather than restoring the old reading.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_verification_evidence
+    guid_target:        ddr_e36c83cfd0744b588168bc399a3fac71
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161

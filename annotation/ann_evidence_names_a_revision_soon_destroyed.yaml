@@ -1,0 +1,93 @@
+id_self:                ann_evidence_names_a_revision_soon_destroyed
+guid_self:              ann_ccbaac771f054c0685c2eb582e7257c3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence names a revision the next gate run destroys
+brief:                  |
+                        The snapshot a run is observed on is held
+                        alive only by the gate worktree. The next run
+                        points that worktree elsewhere, and the
+                        revision the evidence names becomes
+                        collectable.
+description:            |
+                        The snapshot the gate runs on is made with
+                        commit-tree and is a child of HEAD, so no
+                        branch reaches it. One thing keeps it alive:
+                        the gate worktree, whose detached HEAD is at
+                        it. The next run points that worktree at a new
+                        snapshot, and from that moment nothing reaches
+                        the old one.
+
+                        This is observed. The run committed at
+                        79214798ea wrote revision 6c1487337a into the
+                        evidence, and that commit is reachable today
+                        from the gate worktree HEAD alone. The
+                        snapshot of the run before it, 5e65e53aac, is
+                        reachable from nothing: git rev-list over
+                        every ref does not list it. A git gc will drop
+                        it.
+
+                        So each run orphans its predecessor, and
+                        evidence committed to the history names a
+                        revision that the next run makes collectable.
+                        The evidence outlives what it points at.
+
+                        The consequence is stated by the code that
+                        writes the field.
+                        cc_public.adapter._environment says it returns
+                        what a later reader needs in order to run this
+                        again. A revision that has been collected
+                        cannot be checked out, so the field does not
+                        do the one thing its own docstring gives as
+                        its purpose. An agent that reads evidence and
+                        tries to reproduce an observation will find a
+                        commit that is not there, and the failure will
+                        look like a broken repository rather than a
+                        design that did not keep what it named.
+
+                        Nothing depends on it today, which is why this
+                        is an annotation and not a defect report. The
+                        evidence check reads digests of the
+                        requirement, its implementation and the test,
+                        and those are content and do not need the
+                        commit. The revision is provenance, and it is
+                        provenance that expires.
+
+                        qst_test_in_a_worktree.stale asks a
+                        neighbouring question, what stops a worktree
+                        and its snapshot outliving the work they were
+                        made for. This is the other failure: the
+                        snapshot is destroyed while something still
+                        points at it. The two want answering together,
+                        since a rule that keeps snapshots longer
+                        answers one and worsens the other.
+
+                        Three repairs suggest themselves and this
+                        annotation chooses none. The snapshot could be
+                        given a ref, which keeps it and raises the
+                        question of when the ref goes. The thing
+                        tested could be a tentative commit on a
+                        branch, which qst_test_in_a_worktree.staged
+                        already contemplates and which gives the
+                        revision a name that survives. Or the evidence
+                        could name what the snapshot was taken from, a
+                        commit that does persist, together with the
+                        fact that uncommitted work was included.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          ddr_test_in_a_worktree
+    guid_target:        ddr_e4c076a5b9254c7cb10c1c91caa15ca1
+
+  - id_relation:        r_is_asserted_by
+    guid_relation:      r_9b918728ea164728bfb51d08dfa35331
+    id_target:          mdl_claude_opus_5
+    guid_target:        mdl_843359c1b534455d9bfa2712a50fb161
