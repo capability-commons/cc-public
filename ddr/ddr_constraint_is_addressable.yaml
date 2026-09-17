@@ -1,0 +1,186 @@
+id_self:                ddr_constraint_is_addressable
+guid_self:              ddr_1792ee80a1644c049b882b89214e445c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A constraint carries an identity, because design points back at it
+brief:                  |
+                        The constraint field of an operational concept
+                        becomes keyed entries with identities of their
+                        own, so that a requirement or a design
+                        decision can name the constraint that forced
+                        it.
+context:                |
+                        ddr_operational_concept made the operational
+                        concept, its scenarios and its measures three
+                        types. It left constraint, assumption and
+                        exclusion as prose fields on the concept,
+                        under the rule that an object becomes
+                        addressable when something needs to point at
+                        it and not when a standard names it. Nothing
+                        pointed at a constraint then. The only
+                        operational concept in existence was the
+                        camera simulator's, whose three constraints
+                        sit in one paragraph.
+
+                        The Axair patrol client is the second product
+                        segment. Its design is mostly the product of
+                        constraints rather than of a rich need.
+                        Skilled operators cannot be added. Only
+                        ground-based software may change. Confirmation
+                        is a person's. An alert spends the same
+                        attention it is raised to protect. The
+                        engineering that follows will consist largely
+                        of decisions forced by one or another of
+                        those, and of requirements that answer them.
+                        Something now needs to point at a constraint.
+decision:               |
+                        The constraint field of an operational concept
+                        is a mapping of keyed entries, each an item
+                        with an identity of its own, governed by
+                        sch_constraint. A constraint entry has two
+                        fields. The statement says what is imposed, as
+                        it holds rather than as an obligation on the
+                        system. The source names what imposes it.
+
+                        t_constraint takes the prefix cst, and its
+                        entries are qualified by the concept that
+                        holds them, as a question is qualified by the
+                        design decision that holds it. term_constraint
+                        enters the glossary, separating a constraint
+                        from a design decision, which is a bound the
+                        project chose for itself, and from a
+                        requirement, which is an obligation on the
+                        system.
+
+                        Assumption and exclusion stay prose. The
+                        camera simulator's constraint paragraph
+                        becomes three entries, which is the whole
+                        population affected.
+rationale:              |
+                        Two fields and not five. A constraint that
+                        names what imposes it can be revisited,
+                        because a source is something a reader can go
+                        back to. Everything else that might be
+                        recorded about a constraint, its severity, its
+                        kind, what it forecloses, is either argument,
+                        which belongs in the design decision it
+                        forces, or a guess made before any constraint
+                        has been written.
+
+                        The source field is there to keep the type
+                        honest. A bound with no source is a choice the
+                        project made, which is a design decision.
+                        Requiring the source makes that confusion
+                        visible while the entry is being written
+                        rather than at review.
+
+                        The pattern is the assumption entry on a
+                        design decision, which has the same shape for
+                        the same reason: a claim with an identity,
+                        checked differently from the argument around
+                        it. Copying it gives a reader one thing to
+                        learn instead of two.
+
+                        Assumption and exclusion stay prose because
+                        nothing points at one yet. That is the rule
+                        ddr_operational_concept set, and this decision
+                        follows it rather than overturns it.
+                        Constraints reached the point the rule names.
+                        The other two have not.
+alternative:            |
+                        Leave constraint as prose and let a
+                        requirement trace to the concept as a whole.
+                        Rejected because a concept will hold a dozen
+                        constraints of very different force, and
+                        tracing to the whole says almost nothing about
+                        which one a requirement answers.
+
+                        Make a constraint a top-level item in a
+                        constraint directory. Rejected because a
+                        constraint is meaningful only within the
+                        operation it constrains, and a top-level item
+                        invites constraints written with no concept
+                        behind them. The qualified identifier already
+                        gives every entry a name that can be pointed
+                        at from anywhere.
+
+                        Write constraints as requirements with an
+                        imposed condition kind. Rejected because it
+                        collapses the distinction the type exists to
+                        draw. A requirement is an obligation the
+                        system is verified against. A constraint is a
+                        fact about the world the system is designed
+                        within. Recording both as requirements puts
+                        unverifiable statements into a set a
+                        verification standard reads.
+consequence:            |
+                        An operational concept whose constraint field
+                        is a string fails the schema check. One
+                        existed. It is migrated in the same change, so
+                        cc-axair-camera-simulator now carries three
+                        constraint entries where it carried a
+                        paragraph.
+
+                        A consumer segment can name a constraint from
+                        a requirement or a design decision. A consumer
+                        cannot add a field to a core schema, which is
+                        why this change is made here rather than in
+                        the segment that wanted it.
+
+                        Nothing yet checks that a constraint is
+                        pointed at, or that a source names something a
+                        reader can reach. Both wait on enough
+                        constraints to show what such a check would
+                        have to say.
+
+question:
+
+  unsourced:
+    id_self:            qst_constraint_is_addressable.unsourced
+    guid_self:          qst_ee3e8746f92541af8ebffc66872668b3
+    question:           |
+                        Whether a check should report a constraint
+                        whose source names nothing a reader can reach,
+                        inside the corpus or outside it, and whether
+                        that is a check on the field or a judgement an
+                        eval makes.
+    relation:           []
+
+  still_holds:
+    id_self:            qst_constraint_is_addressable.still_holds
+    guid_self:          qst_d81ac14bbc9d4335b366c480ae6eef8f
+    question:           |
+                        What records that a constraint has been
+                        revisited and still holds, given that a
+                        constraint lapses when its source changes, and
+                        whether that is the decision stamp mechanism
+                        or something of its own.
+    relation:           []
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_constraint
+    guid_target:        sch_cc4c9b45cd2c4c88b9ce058b2e177186
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_constraint
+    guid_target:        t_0eb0fff17db24827b53b748973f03b78
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_constraint
+    guid_target:        term_291d688cc31e4876968480585c7c2c5b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_operational_concept
+    guid_target:        sch_9ebbb0fffc3f433882fdaf8de04656b4

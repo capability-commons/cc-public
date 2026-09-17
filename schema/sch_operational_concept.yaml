@@ -95,14 +95,22 @@ allOf:
                         change how it is used.
 
       constraint:
-        type:           string
-        minLength:      1
+        type:           object
+
+        propertyNames:
+          pattern:      ^[a-z][a-z0-9_]*$
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_constraint.yaml
+
         description:    |
                         Optional. What is imposed on operation from
-                        outside: regulation, standing procedure, an
-                        existing system that must be used, a facility
-                        that must be shared. Not a requirement on the
-                        system, which is derived later.
+                        outside, each with what imposes it, as entries
+                        with identities of their own. A requirement
+                        derived from this concept, or a design
+                        decision forced by one of them, can then name
+                        the constraint it answers. Not a requirement
+                        on the system, which is derived later.
 
       assumption:
         type:           string

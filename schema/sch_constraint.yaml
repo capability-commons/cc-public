@@ -1,0 +1,68 @@
+id_self:                sch_constraint
+guid_self:              sch_cc4c9b45cd2c4c88b9ce058b2e177186
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Constraint schema
+brief:                  |
+                        One thing imposed on operation from outside,
+                        and what imposes it.
+description:            |
+                        An entry with an identity of its own under
+                        constraint on an operational concept. The
+                        statement is what is imposed; the source is
+                        what imposes it, named as a need names the
+                        sources of its evidence. A constraint bounds
+                        the design without saying what the design must
+                        do, so that a requirement derived from it can
+                        name the constraint it answers and a design
+                        decision can name the constraint that forced
+                        it.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_constraint.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_identity.yaml
+
+  - type:               object
+
+    required:
+      - statement
+      - source
+
+    properties:
+
+      statement:
+        type:           string
+        minLength:      1
+        description:    |
+                        What is imposed, in one sentence, stated as it
+                        holds rather than as an obligation on the
+                        system. A requirement derived from a
+                        constraint says who shall do what; the
+                        constraint says only what is so.
+
+      source:
+        type:           string
+        minLength:      1
+        description:    |
+                        What imposes it, named: a regulation, a
+                        contract, a standing procedure, an existing
+                        system that must be used, a supply that cannot
+                        be increased, or a decision already taken
+                        elsewhere. A bound nothing imposes is a
+                        choice, and belongs in a design decision.
+
+      relation:
+        type:           array
+
+        items:
+          $ref:         https://capability-commons.org/schema/sch_relation.yaml#/$defs/edge
+
+unevaluatedProperties:  false
