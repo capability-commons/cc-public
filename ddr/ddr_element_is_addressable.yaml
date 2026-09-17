@@ -1,0 +1,172 @@
+id_self:                ddr_element_is_addressable
+guid_self:              ddr_a2a281a3a064470a9013ede37257369e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A system element carries an identity, because requirements are allocated to it
+brief:                  |
+                        A system element is an item, so that a
+                        requirement can be allocated to it, an
+                        interface control document can name the
+                        elements it sits between, and a decomposition
+                        can say what is part of what.
+context:                |
+                        ddr_operational_concept built the operational
+                        concept, its scenarios and its measures, and
+                        named the architecture layer as a later slice
+                        waiting on real records. Since then a
+                        requirement has named its entity as a
+                        Capitalised_Snake_Case string, a requirement
+                        set has been on an entity by the same string,
+                        and an interface control document has named no
+                        element at all.
+
+                        The Axair patrol client is being decomposed
+                        into functional elements, each with its own
+                        requirements and with interface control
+                        documents between them, so that each element
+                        can be implemented on its own. Three things
+                        need to point at an element: a requirement or
+                        a set, to say which element must meet it; an
+                        interface control document, to say which
+                        elements it sits between; and an element, to
+                        say which element it is part of. By the rule
+                        ddr_operational_concept set, that is the
+                        moment an element becomes addressable.
+decision:               |
+                        One type, t_element, with the prefix elm and
+                        the home directory element. Beyond the
+                        descriptive fields, an element carries a name,
+                        which is the spelling the entity slot of a
+                        requirement uses, and a responsibility, which
+                        says what the element is for.
+
+                        Three relations. r_is_part_of, which ran from
+                        term to term, is widened to run from element
+                        to element as well; it was already acyclic and
+                        transitive, and composition is what it means.
+                        r_is_allocated_to runs from a requirement or a
+                        requirement set to the element that must meet
+                        it. r_is_interface_of runs from an interface
+                        control document to each element whose
+                        boundary it controls.
+
+                        The entity slot of a requirement stays a
+                        string. The element's name is the same
+                        spelling. Nothing checks that the two agree.
+rationale:              |
+                        A name field on the element rather than a
+                        replacement of the entity string on the
+                        requirement, because the statement
+                        composition, the requirement check and the set
+                        check all read the entity string, and a
+                        consumer segment cannot change any of them.
+                        The edge is what a reader follows; the name is
+                        what the statement says; keeping both costs
+                        one field.
+
+                        r_is_part_of widened rather than a new
+                        relation, for the reason
+                        ddr_operational_concept gave for
+                        r_is_derived_from: it is the meaning the edge
+                        already has, and two ways to say one thing is
+                        the restatement ddr_restated_fact forbids. The
+                        two new relations are new because nothing in
+                        the register carries either meaning.
+
+                        One type and not three. A functional element,
+                        a physical element and a logical element
+                        differ in how they are decomposed and by whom,
+                        and not in their shape; a kind field can be
+                        added when a second sort of decomposition
+                        exists to need it.
+alternative:            |
+                        Leave the element as the entity string.
+                        Rejected because nothing can point at a
+                        string, so an interface control document could
+                        not say what it is between, and a child could
+                        not say what it is part of.
+
+                        Put the element identifiers in fields on the
+                        interface control document and on the
+                        requirement set. Rejected because a field is
+                        not traced, and the walk, the reach and the
+                        neighbourhood queries all follow edges.
+
+                        A full architecture layer with functional,
+                        logical and physical elements, allocation
+                        between layers, and a check on the entity
+                        string. Rejected for now, as
+                        ddr_operational_concept rejected nine types:
+                        it would be written against no records. The
+                        check is a question below.
+consequence:            |
+                        Nothing that exists changes shape, since no
+                        element existed. A consumer segment can now
+                        hold elements, allocate requirements and sets
+                        to them, and control interfaces between them.
+                        Whether the entity string of a requirement
+                        must match the name of an element it is
+                        allocated to is unchecked until a check is
+                        written.
+
+relation:
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          sch_element
+    guid_target:        sch_1a84641c7e654f36bbfafa895b51630b
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          t_element
+    guid_target:        t_1488ad65f3bb48609c27ec8c315c57d9
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          term_element
+    guid_target:        term_79cc1916d206417c8c8c77b25a5faec6
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_part_of
+    guid_target:        r_27e63aad1a0d4f349396478498d8f511
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_allocated_to
+    guid_target:        r_6798ca2ad48e4b2e87134dbb0406a9e7
+
+  - id_relation:        r_decides
+    guid_relation:      r_4aefda84f8894e02aede8729ced91732
+    id_target:          r_is_interface_of
+    guid_target:        r_e3e8b14a7d884c01a304ce6bdfb53713
+
+question:
+
+  entity_name_check:
+    id_self:            qst_element_is_addressable.entity_name_check
+    guid_self:          qst_6c1e102affc34e57a33aa372a4fe31c7
+    question:           |
+                        Whether the requirement check should report a
+                        requirement whose entity string is not the
+                        name of the element it is allocated to, or of
+                        any element its segment can see, and whether
+                        that is advisory while proposed.
+    relation:           []
+
+  element_kind:
+    id_self:            qst_element_is_addressable.element_kind
+    guid_self:          qst_7c15cd4b5afa4f0db904fb3ed19761d2
+    question:           |
+                        Whether an element needs a kind, functional,
+                        logical or physical, once a second sort of
+                        decomposition exists, and whether allocation
+                        between kinds is r_is_allocated_to or a
+                        relation of its own.
+    relation:           []

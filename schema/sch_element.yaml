@@ -1,0 +1,75 @@
+id_self:                sch_element
+guid_self:              sch_1a84641c7e654f36bbfafa895b51630b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  System element schema
+brief:                  |
+                        Schema for system element data items: one part
+                        of a system that requirements are allocated
+                        to.
+description:            |
+                        Composes identity, rights, the descriptive
+                        fields and outgoing relations. A system
+                        element is one part of a decomposition: a
+                        function, a subsystem or a component, named so
+                        that a requirement can be allocated to it, an
+                        interface control document can say which
+                        elements it sits between, and a parent element
+                        can say it is part of it. The name is the
+                        spelling the entity slot of a requirement
+                        uses, so that a requirement on an element and
+                        the element agree by name as well as by edge.
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_element.yaml
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_base.yaml
+  - $ref:               https://capability-commons.org/schema/sch_relation.yaml
+
+  - type:               object
+
+    required:
+      - name
+      - responsibility
+
+    properties:
+
+      name:
+        type:           string
+        minLength:      1
+        maxLength:      80
+        pattern:        ^[A-Z][A-Za-z0-9]*(_[A-Z][A-Za-z0-9]*)*$
+        description:    |
+                        The name of the element as the entity slot of
+                        a requirement spells it, in
+                        Capitalised_Snake_Case, unique among the
+                        elements a segment can see.
+
+      responsibility:
+        type:           string
+        minLength:      1
+        description:    |
+                        What the element is for: the obligations it
+                        takes on for the system, stated as what it
+                        does and not as what it is made of. The
+                        requirements allocated to it say the rest.
+
+      status:
+        type:           string
+
+        enum:
+          - proposed
+          - accepted
+          - deprecated
+
+        description:    |
+                        Optional. Lifecycle status of the element.
+
+unevaluatedProperties:  false

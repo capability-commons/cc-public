@@ -2565,3 +2565,44 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_constraint
         guid_target:    sch_cc4c9b45cd2c4c88b9ce058b2e177186
+
+  t_element:
+    id_self:            t_element
+    guid_self:          t_1488ad65f3bb48609c27ec8c315c57d9
+    title:              System element type
+    brief:              |
+                        Type of system element data items
+    description:        |
+                        Each system element data item is one part of a
+                        decomposition of a system of interest, with a
+                        name that the requirements allocated to it use
+                        as their entity, so that the requirements on a
+                        part, the interfaces of a part and the parts
+                        of a part can all be reached from it.
+    prefix:             elm
+    regex_id:           ^elm_[a-z][a-z0-9_]*$
+    id_term:            term_element
+    guid_term:          term_79cc1916d206417c8c8c77b25a5faec6
+    home:               element
+    usage:              |
+                        An element is made once an operational concept
+                        exists and a decomposition has chosen the
+                        parts. A requirement or a requirement set is
+                        allocated to it by r_is_allocated_to, an
+                        interface control document names it by
+                        r_is_interface_of, and a child names its
+                        parent by r_is_part_of.
+    note:               |
+                        The entity slot of a requirement stays a
+                        string, and the element's name is the same
+                        spelling. Nothing checks that they agree yet;
+                        see ddr_element_is_addressable.
+    status:             proposed
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_element
+        guid_target:    sch_1a84641c7e654f36bbfafa895b51630b

@@ -416,6 +416,7 @@ table:
       - t_sweep
       - t_operational_concept
       - t_operational_scenario
+      - t_constraint
 
     acyclic:            true
     relation:           []
@@ -720,13 +721,17 @@ table:
                         the concept identified by OBJ. An entry is
                         part of a register. An instance of the part is
                         not an instance of the whole, which is what
-                        tells this relation from r_is_narrower_than.
+                        tells this relation from r_is_narrower_than. A
+                        system element is part of the element it
+                        decomposes.
 
     domain:
       - t_term
+      - t_element
 
     range:
       - t_term
+      - t_element
 
     acyclic:            true
     transitive:         true
@@ -974,6 +979,57 @@ table:
       - t_operational_concept
       - t_operational_scenario
       - t_textual_requirement
+
+    describes:          true
+    relation:           []
+
+  r_is_allocated_to:
+    id_self:            r_is_allocated_to
+    guid_self:          r_6798ca2ad48e4b2e87134dbb0406a9e7
+    title:              Is allocated to relation
+    brief:              |
+                        SUBJ is allocated to OBJ
+    description:        |
+                        The requirement or requirement set identified
+                        by SUBJ is placed on the system element
+                        identified by OBJ: that element is what must
+                        meet it. The requirement's entity slot spells
+                        the element's name; this edge is what a reader
+                        follows. Not r_is_derived_from, which runs
+                        from a requirement to what it came from, not
+                        to what must meet it.
+
+    domain:
+      - t_textual_requirement
+      - t_requirement_set
+
+    range:
+      - t_element
+
+    describes:          true
+    relation:           []
+
+  r_is_interface_of:
+    id_self:            r_is_interface_of
+    guid_self:          r_e3e8b14a7d884c01a304ce6bdfb53713
+    title:              Is interface of relation
+    brief:              |
+                        SUBJ is an interface of OBJ
+    description:        |
+                        The interface control document identified by
+                        SUBJ controls a boundary of the system element
+                        identified by OBJ. A document between two
+                        elements carries one edge to each; which
+                        produces and which consumes is said by the
+                        surface. A document at the boundary of the
+                        system of interest carries one edge, to the
+                        element inside.
+
+    domain:
+      - t_interface_control_document
+
+    range:
+      - t_element
 
     describes:          true
     relation:           []
