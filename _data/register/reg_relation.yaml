@@ -1,0 +1,95 @@
+id_self:                reg_relation
+guid_self:              reg_512fbf5c51be4efaa4517b52310ddf80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Relation register
+brief:                  |
+                        Register of relations.
+description:            |
+                        The relation register lists every relation,
+                        with the metadata each relation carries. An
+                        entry may also hold an inverse reading of the
+                        same relation, embedded within it.
+usage:                  |
+                        The relation register enables general-purpose
+                        processing of networks of items. Any item that
+                        carries an identifier may take part in such a
+                        network as a node, and any pair of such items
+                        may be joined by a labelled edge. The label is
+                        drawn from this register, and the entry it
+                        names defines what the edge means.
+note:                   |
+                        The register holds one mechanism for labelling
+                        an edge between any pair of items that carry
+                        identifiers. A relation is added here before
+                        an edge uses it.
+
+                        An entry holds the semantics of its relation:
+                        the domain, the range, the cardinality at each
+                        end, and whatever else a checker reads. Where
+                        the opposite reading is useful, the entry
+                        embeds an inverse, which holds an identity and
+                        a surface form and nothing else. An inverse is
+                        minted when an item wants to record an edge
+                        that way, and not as a matter of course.
+
+                        An edge may be recorded in either direction,
+                        and tooling reads it in both. The choice of
+                        direction is not only a question of which
+                        reading is easier. An edge is held by the item
+                        that records it, so the direction decides
+                        which item carries the fact when it travels on
+                        its own, and in a federation it decides who is
+                        able to record the fact at all, since an
+                        author may write only to items they own.
+
+relation:               []
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # r_is_specified_by_schema -- Is specified by schema relation
+  #
+  r_is_specified_by_schema:
+    id_self:            r_is_specified_by_schema
+    guid_self:          r_d70024bd40444f93b4fc1903379ded81
+    title:              Is specified by schema relation
+    brief:              SUBJ is specified by schema OBJ
+    description:        |
+                        The schema data item identified by OBJ
+                        specifies the structure of the data item
+                        identified by SUBJ.
+
+    range:
+      - t_schema
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_is_held_in_registry -- Is held in registry relation
+  #
+  r_is_held_in_registry:
+    id_self:            r_is_held_in_registry
+    guid_self:          r_016e74a0abea4a3990cc3259942baf92
+    title:              Is held in registry relation
+    brief:              SUBJ is held in registry OBJ
+    description:        |
+                        The register data item identified by OBJ
+                        records the metadata of the item identified by
+                        SUBJ.
+
+    range:
+      - t_register
+
+    status:             proposed
+    alias:              []
+    relation:           []

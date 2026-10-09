@@ -1,0 +1,104 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_register.yaml
+id_self:                sch_register
+guid_self:              sch_a4620d79fab546b3be6c756f0325e069
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register schema
+brief:                  |
+                        Schema for register data items.
+description:            |
+                        The shape shared by every register. Registers
+                        differ in what their entries say, not in how
+                        they are structured. Each concrete register is
+                        a data item conforming to this schema.
+
+                        A register is a first class data item. It has
+                        identity, it can be the endpoint of relation
+                        edges, and it can be superseded by a successor
+                        register. Its entries are a controlled
+                        vocabulary, and the source of truth for the
+                        stable join keys used across other items.
+usage:                  |
+                        Selected for a register by the type register,
+                        which maps the reg prefix to the register type
+                        and carries the r_is_specified_by_schema edge
+                        naming this schema.
+note:                   |
+                        The table is a map keyed by each entry's
+                        readable id, rather than an array of entries.
+
+                        An entry nonetheless repeats its id as a
+                        field, so that an entry lifted out of its
+                        table still says what it is. The key and the
+                        id field must agree, and a companion check
+                        enforces that.
+
+                        This schema fixes only the fields that every
+                        entry in every register carries, and leaves
+                        the rest open so that each register may add
+                        its own. The type register adds prefix and
+                        regex_id.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - status
+      - description
+      - usage
+      - note
+      - table
+
+    properties:
+
+      status:
+        $ref:           '#/$defs/register_status'
+        description:    |
+                        Lifecycle status of this register as a whole.
+                        Distinct from the status of any individual
+                        entry -- a register may be accepted while some
+                        of its entries are still proposed.
+
+      table:
+        type:           object
+        minProperties:  1
+        description:    |
+                        The controlled entries, keyed by readable id.
+                        Keys carry the type prefix of whatever the
+                        register controls, so the entries of a given
+                        register share one prefix.
+
+        propertyNames:
+          $ref:         https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_entry.yaml
+
+$defs:
+
+  register_status:
+    type:               string
+
+    enum:
+      - draft
+      - under_review
+      - accepted
+      - superseded
+      - withdrawn
+
+    description:        |
+                        Lifecycle status of a register relative to
+                        review and use.
+
+unevaluatedProperties:  false

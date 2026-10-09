@@ -1,0 +1,435 @@
+id_self:                reg_writing_style_rule
+guid_self:              reg_6efc4d246c3d4097ac0010bc004b12ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Writing style rule register
+brief:                  |
+                        Register of the rules that prose in the
+                        cc-public repository follows: the writing
+                        style guide.
+description:            |
+                        The writing style rule register holds one
+                        entry per rule. Each entry states the rule in
+                        one sentence and gives its reasoning. It also
+                        shows a sentence that follows the rule beside
+                        the same sentence written so that it breaks
+                        the rule.
+usage:                  |
+                        A prompt that writes prose takes this register
+                        as context through an input port. An eval that
+                        judges prose cites the rules it checks by id;
+                        the example pair on a rule is the smallest
+                        written control case for that eval.
+
+                        The hand-written records are the register's
+                        evidence. A rule that no record follows is a
+                        rule to remove.
+note:                   |
+                        The rules say how a field reads. They do not
+                        say what is true: a claim about the system is
+                        checked against the system, not against a
+                        style.
+
+table:
+
+  style_say_the_thing:
+    id_self:            style_say_the_thing
+    guid_self:          style_bf2ad634fc2d41c0997bd739baa13f3f
+    title:              Say the thing
+    brief:              |
+                        State the claim. Do not announce that a claim
+                        is coming.
+    description:        |
+                        A brief opens with a fact about its subject. A
+                        sentence that says what the document is about,
+                        or what the following text outlines, carries
+                        nothing the reader cannot already see from the
+                        field name.
+    follows:            |
+                        A relation edge is exactly four fields.
+    breaks:             |
+                        This document outlines the decisions made in
+                        defining the relation edge.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_short_sentences:
+    id_self:            style_short_sentences
+    guid_self:          style_52191bd69cfe417784b665b06b6a86aa
+    title:              Short sentences
+    brief:              |
+                        One idea per sentence, in the present tense.
+    description:        |
+                        A long sentence that contains numbered clauses
+                        is a list wearing a sentence's clothes. Break
+                        it. A short sentence is still a sentence, with
+                        a subject and a verb of its own.
+
+                        The present tense states what is. The past
+                        tense narrates how it came to be; that is the
+                        job of a context field.
+    follows:            |
+                        The four-field edge is kept. Nothing is added
+                        to it.
+    breaks:             |
+                        It was decided that the four-field edge would
+                        be retained, with (1) no additional fields
+                        being introduced and (2) the following
+                        outlining the reasons.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_subject_first:
+    id_self:            style_subject_first
+    guid_self:          style_46bfa582fe4f4f1b832c40a0dfaadee6
+    title:              Subject first
+    brief:              |
+                        Lead with the subject, in the active voice. Do
+                        not open a field with an identifier.
+    description:        |
+                        A sentence that opens with its subject tells
+                        the reader what it is about before saying what
+                        happens to it. The passive voice hides the
+                        actor. An identifier at the head of a field
+                        makes the reader parse a name before knowing
+                        why it is there.
+    follows:            |
+                        Types whose items describe themselves compose
+                        this trait via allOf.
+    breaks:             |
+                        Composed via allOf by anything carrying prose.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_paragraphs:
+    id_self:            style_paragraphs
+    guid_self:          style_8bf8b26707f640808f8428a19e6ed573
+    title:              Paragraphs at the joints
+    brief:              |
+                        Break a block into paragraphs where what it
+                        says changes.
+    description:        |
+                        A field that holds several claims is read in
+                        parts. A blank line between them shows where
+                        one claim ends and the next begins, and lets a
+                        reader find the part they need. A block of ten
+                        unbroken lines hides its own structure.
+    follows:            |
+                        This trait holds the fields an item uses to
+                        describe itself: title, brief, description,
+                        usage and note.
+
+                        Only title and brief are required by this
+                        trait. A schema that composes it requires
+                        whichever of the other three it needs.
+    breaks:             |
+                        This trait holds the fields an item uses to
+                        describe itself: title, brief, description,
+                        usage and note. Only title and brief are
+                        required by this trait. A schema that composes
+                        it requires whichever of the other three it
+                        needs.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_plain_text:
+    id_self:            style_plain_text
+    guid_self:          style_860f8abe148947d089a14b9c61dcdca7
+    title:              Plain text
+    brief:              |
+                        No markup in a field: no headings, bullet
+                        marks, emphasis marks or code fences.
+    description:        |
+                        A field is read as text, by people and by
+                        tools. A heading or an asterisk inside it is
+                        noise to be stripped. A list is written as
+                        sentences, or as a YAML list in a field of its
+                        own. A word in capitals is emphasis by another
+                        means: write the sentence so that the weight
+                        falls where it should.
+    follows:            |
+                        guid_self is minted once at creation and never
+                        changes.
+    breaks:             |
+                        **guid_self**: minted once at creation;
+                        *never* changes.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_ordinary_words:
+    id_self:            style_ordinary_words
+    guid_self:          style_e234d08084c3401d868f69b6165befa3
+    title:              Ordinary words
+    brief:              |
+                        Prefer the ordinary word, unless a register
+                        defines the technical one.
+    description:        |
+                        An elevated or literary turn makes the reader
+                        translate before using the sentence. The test
+                        is whether a competent engineer would say the
+                        sentence aloud to a colleague.
+
+                        A defined term is the exception, and is never
+                        simplified away. A trait composes another, an
+                        item travels, an annotation asserts: each of
+                        those words is fixed by a register, and a
+                        plainer synonym would say something else.
+    follows:            |
+                        This trait holds the fields an item uses to
+                        describe itself.
+    breaks:             |
+                        This trait comprises the fields by means of
+                        which an item effects its own description.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_plain_names:
+    id_self:            style_plain_names
+    guid_self:          style_5b8aa528748a4b50a3c3c01c3c9ba42a
+    title:              Plain names
+    brief:              |
+                        Call a thing by its name in the glossary,
+                        written as it is declared.
+    description:        |
+                        A name is written exactly as it appears in its
+                        declaration, without quotation marks,
+                        capitalisation, or a descriptive phrase
+                        wrapped around it. Repeating the phrase at
+                        every mention buries the name.
+    follows:            |
+                        id_self is readable and may change; guid_self
+                        is neither.
+    breaks:             |
+                        The human-readable identifier field (id_self)
+                        of the identity trait may change, whereas the
+                        GUID field (guid_self) may not.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_parallel_siblings:
+    id_self:            style_parallel_siblings
+    guid_self:          style_dbca6ee0ed7c403e9e757ca464ef0fb0
+    title:              Parallel siblings
+    brief:              |
+                        Write the same field the same way across a set
+                        of sibling items.
+    description:        |
+                        A reader scans a register or a directory by
+                        comparing one entry with the next. Where the
+                        briefs of four traits share a shape, a
+                        difference in the fifth means something. Where
+                        each is phrased differently, nothing can be
+                        read from the difference.
+    follows:            |
+                        Trait with the identity fields. Trait with the
+                        description fields. Trait with the handling
+                        and ownership fields.
+    breaks:             |
+                        Trait with identity. Trait that holds the
+                        description fields. Handling and ownership.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_record_the_decision:
+    id_self:            style_record_the_decision
+    guid_self:          style_2f9c25951c4d4c00b075ab8d90253824
+    title:              Record the decision
+    brief:              |
+                        A design decision says what was chosen, what
+                        was not, and why. It does not restate what the
+                        artefact already says.
+    description:        |
+                        The schema says what fields it has. The record
+                        says why those fields and not others. A record
+                        that paraphrases its subject leaves the reader
+                        with two copies of the same information and no
+                        reasoning.
+    follows:            |
+                        A glossary is a register whose entries are
+                        terms. A document of its own was rejected: it
+                        would reinvent keyed entries.
+    breaks:             |
+                        The schema defines identity by requiring two
+                        identifier fields, guid_self and id_self, each
+                        with the roles described below.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_no_filler:
+    id_self:            style_no_filler
+    guid_self:          style_c97c8bb4504b491ea2c12ece825f5aa7
+    title:              No filler
+    brief:              |
+                        Leave out any word that carries nothing. An
+                        article, a repeated subject or a finite verb
+                        is never filler.
+    description:        |
+                        Words such as robust, comprehensive,
+                        effectively, in order to, and it is necessary
+                        to can be deleted from any sentence in this
+                        repository without changing what it says. A
+                        hedge is the same, unless the uncertainty is
+                        real; in that case say what is uncertain.
+
+                        The words that make a sentence readable are
+                        not filler. The article that marks a noun, the
+                        subject named again instead of pointed at, and
+                        the verb that turns a fragment into a sentence
+                        all stay. Dropping them saves the writer a
+                        word and costs the reader a reconstruction.
+    follows:            |
+                        Keying makes duplicate terms impossible.
+    breaks:             |
+                        In order to provide a robust and comprehensive
+                        approach, keying effectively helps to ensure
+                        that duplicate terms are generally avoided.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_explain_not_argue:
+    id_self:            style_explain_not_argue
+    guid_self:          style_bb6e16cc30ee480ca9f9aadb6154d2ce
+    title:              Explain, do not argue
+    brief:              |
+                        Descriptive prose says what a thing is and
+                        does. Argument for it belongs in a rationale.
+    description:        |
+                        A description, brief, usage or note explains
+                        the design as it stands. Why the design is
+                        right, and what was rejected, belongs in a
+                        decision record's rationale and alternative
+                        fields, where a reader expects argument and
+                        can weigh it. This is the line drawn by
+                        evl_prose_describes.
+    follows:            |
+                        Only literal block scalars are refilled. A
+                        plain scalar is data and is never touched.
+    breaks:             |
+                        Refilling only block scalars is clearly the
+                        right choice, because it elegantly avoids
+                        corrupting data.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_state_not_oblige:
+    id_self:            style_state_not_oblige
+    guid_self:          style_aa096f88b9784f5d81c96c2743dca2b9
+    title:              State, do not oblige
+    brief:              |
+                        Descriptive prose states what is. An
+                        obligation belongs in a requirement.
+    description:        |
+                        Shall, must and should place a duty on
+                        somebody. A schema, a register or a design
+                        decision says what the system is and how it
+                        behaves; the duty that follows is recorded
+                        where duties are recorded and verified.
+
+                        A handling instruction is the exception. Where
+                        a field governs what somebody must do with an
+                        item, such as an unresolvable protective mark,
+                        the obligation is stated with the field it
+                        governs.
+    follows:            |
+                        The type register records the prefix.
+    breaks:             |
+                        The type prefix shall be recorded in the type
+                        register.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+  style_write_for_the_reader:
+    id_self:            style_write_for_the_reader
+    guid_self:          style_2f22d98799724ffda311e7981a53c6b9
+    title:              Write for the reader
+    brief:              |
+                        Write for a competent engineer who is reading
+                        this field on its own, with only the glossary
+                        to hand. Write steady, plain, workmanlike
+                        prose of the kind found in an engineering
+                        handbook. Say what a thing is before what it
+                        is not, and call a thing by its name rather
+                        than by a word such as both, the pair or the
+                        rest.
+    description:        |
+                        The three sentences of the brief are the whole
+                        of what a writer is told about how to write.
+                        The first says who reads and what they have
+                        open. The second says what the prose sounds
+                        like. The third names the two habits that
+                        survived the first two: defining a thing by
+                        contrast before saying what it is, and
+                        pointing at a thing with a word such as both
+                        or the pair instead of naming it. None of the
+                        three counts anything, and none forbids
+                        anything.
+
+                        They were found by measurement. A description
+                        rewritten under the first two sentences alone,
+                        with no rule and no exemplar passage, fell
+                        from four or five pointers a sentence to one,
+                        from thirty-word sentences to twenty, and read
+                        once where the original read twice. Adding an
+                        exemplar passage moved nothing. The third
+                        sentence was added when a reader found the
+                        rhetoric still present after the density had
+                        gone. The cost is length, by a fifth to a
+                        half, and that cost is paid.
+
+                        This entry is bound first, before the other
+                        rules, by anything that writes prose. The
+                        other rules say what to leave out and what to
+                        keep. This one says who is reading.
+    follows:            |
+                        A question data item records one thing that a
+                        design decision leaves unsettled. The question
+                        is held on the design decision itself and has
+                        an identity of its own, so that whatever
+                        settles the question later can name it.
+    breaks:             |
+                        Each question data item is one thing a design
+                        decision does not settle, held on that record
+                        with an identity of its own so that whatever
+                        later settles it can say so.
+    enforcement:        none
+    alias:              []
+    status:             proposed
+    relation:           []
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_writing_style_rule
+    guid_target:        sch_8b8088534ec24938b9390e48d20b10e6
