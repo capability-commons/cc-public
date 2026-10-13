@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_check
+id_self:                pym_check.check
 guid_self:              pym_56d08447c0cf432dbe39760c22730116
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -36,6 +36,7 @@ relation:               []
 """
 
 
+import ast
 import os
 import pathlib
 import subprocess
@@ -60,8 +61,21 @@ KEY_INVERSE       = 'inverse'
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
 DIR_DATA          = '_data'
-DIR_GIT           = '.git'
+SUFFIX_YAML       = '.yaml'
+SUFFIX_PYTHON     = '.py'
 DELIM_FIELD       = '\t'
+
+# A document opens with this line and closes with the next. In a
+# comment header each line also begins with the comment marker.
+#
+LINE_OPEN         = '---'
+LINE_CLOSE        = '...'
+MARK_COMMENT      = '#'
+
+# Directories that hold no items: version control, environments,
+# caches and local tools.
+#
+SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
 
 TUPLE_RELATION    = ('item',
                      'reference',
@@ -80,18 +94,74 @@ def extract(root: pathlib.Path) -> Facts:
     """
     Return the facts of the tree under root, keyed by relation.
 
+    Items are read from YAML files under a _data directory, from the
+    module docstring of a python module, and from the comment header
+    of any other file.
+
     """
 
     facts = {name: set() for name in TUPLE_RELATION}
 
-    for path in sorted(root.rglob('*.yaml')):
+    for path in sorted(root.rglob('*')):
         relative = path.relative_to(root)
-        if (DIR_DATA not in relative.parts) or (DIR_GIT in relative.parts):
+        if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
-        with open(path, encoding = 'utf-8') as file:
-            _walk(yaml.safe_load(file), '', str(relative), facts)
+        document = _read(path, relative)
+        if document is not None:
+            _walk(document, '', str(relative), facts)
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _read(path: pathlib.Path, relative: pathlib.Path) -> typing.Any:
+    """
+    Return the document that the file at path holds, or None if it
+    holds none.
+
+    """
+
+    if path.suffix == SUFFIX_YAML:
+        if DIR_DATA not in relative.parts:
+            return None
+        with open(path, encoding = 'utf-8') as file:
+            return yaml.safe_load(file)
+
+    if path.suffix == SUFFIX_PYTHON:
+        docstring = ast.get_docstring(ast.parse(path.read_text(encoding = 'utf-8')))
+        if docstring and docstring.startswith(LINE_OPEN):
+            return yaml.safe_load(docstring)
+        return None
+
+    return _header(path)
+
+
+# -----------------------------------------------------------------------------
+def _header(path: pathlib.Path) -> typing.Any:
+    """
+    Return the document in the comment header of the file at path, or
+    None if the file does not open with one.
+
+    """
+
+    list_line = []
+
+    try:
+        with open(path, encoding = 'utf-8') as file:
+            for line in file:
+                text = line.rstrip('\n')
+                if not text.startswith(MARK_COMMENT):
+                    return None
+                text = text[len(MARK_COMMENT):].removeprefix(' ')
+                if (not list_line) and text != LINE_OPEN:
+                    return None
+                list_line.append(text)
+                if text == LINE_CLOSE:
+                    return yaml.safe_load('\n'.join(list_line))
+    except UnicodeDecodeError:
+        return None
+
+    return None
 
 
 # -----------------------------------------------------------------------------
@@ -243,5 +313,6 @@ def main(list_arg: list[str]) -> int:
     return 1 if count else 0
 
 
+# -----------------------------------------------------------------------------
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

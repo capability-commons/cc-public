@@ -528,3 +528,83 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_regentry_concern
         guid_target:    sch_c3c151bc793c468faa80f97ceb67d669
+
+  # ---------------------------------------------------------------------------
+  # t_python_module -- Python module type
+  #
+  t_python_module:
+    id_self:            t_python_module
+    guid_self:          t_25f5d95ef9e24c339175ec182eb959a4
+    title:              Python module type
+    brief:              |
+                        Type of python module data items.
+    description:        |
+                        Each python module data item holds the
+                        metadata of one python module, in the module
+                        docstring.
+    usage:              |
+                        Python module data items let a module be
+                        traced, annotated and argued over like any
+                        other item, without a second file to keep in
+                        step with it.
+    note:               |
+                        The id is the prefix and the name the module
+                        is imported under, with src as the root of
+                        the import path, in lower case and with its
+                        parts separated by full stops.
+                        pym_check.check names src/check/check.py.
+
+                        The shape of python module data items is
+                        defined by the sch_python_module schema.
+    status:             proposed
+    alias:              []
+    prefix:             pym
+    regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$
+    id_concept:         con_python_module
+    guid_concept:       con_1f7d2eb2ccc94944b3dd731f63f8284b
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_module
+        guid_target:    sch_d1d9d093e52d47a9ba8b4fdd8c47db07
+
+  # ---------------------------------------------------------------------------
+  # t_file -- File type
+  #
+  t_file:
+    id_self:            t_file
+    guid_self:          t_b1ad4688e8fa46e18255de8783c72c23
+    title:              File type
+    brief:              |
+                        Type of file data items.
+    description:        |
+                        Each file data item holds the metadata of one
+                        file that is neither a data item itself nor
+                        source code with a docstring, in a comment at
+                        the head of the file.
+    usage:              |
+                        File data items let configuration files and
+                        the like be traced and owned like any other
+                        item.
+    note:               |
+                        A python module is not a file in this sense:
+                        its item is held in its docstring and has the
+                        type t_python_module.
+
+                        The shape of file data items is defined by the
+                        sch_file schema.
+    status:             proposed
+    alias:              []
+    prefix:             file
+    regex_id:           ^file_[a-z][a-z0-9_]*$
+    id_concept:         con_file
+    guid_concept:       con_75e8c140d26c4fe6bdd8ad37030611cd
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_file
+        guid_target:    sch_416542a4956343bfa02a827fcdae43a9
