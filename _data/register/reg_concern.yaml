@@ -313,9 +313,9 @@ table:
                         changed and repaired.
     description:        |
                         Maintainability covers how readily the system
-                        can be analysed, modified, repaired and
-                        reused, and how far a change in one part stays
-                        in that part.
+                        can be analysed, modified, tested and reused,
+                        and how far a change in one part stays in that
+                        part.
     note:               |
                         Corresponds to the maintainability
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -324,7 +324,7 @@ table:
     question:
       - How readily can a newcomer understand the design?
       - How far does a change in one part spread to others?
-      - What does it take to repair a fault once in use?
+      - How readily can a change be checked before it ships?
 
     measure:
       - Time to make a representative change, in person hours.
@@ -332,7 +332,6 @@ table:
 
     excludes:
       - Adapting to a new environment (concern_portability).
-      - How readily it can be checked (concern_testability).
 
     status:             proposed
     alias:              []
@@ -370,42 +369,6 @@ table:
     excludes:
       - Keeping the system available (concern_reliability).
       - Harm caused deliberately by others (concern_security).
-
-    status:             proposed
-    alias:              []
-    relation:           []
-
-  # ---------------------------------------------------------------------------
-  # concern_testability -- Testability
-  #
-  concern_testability:
-    id_self:            concern_testability
-    guid_self:          concern_96bd2df1e7544e8f885ec8f28b345881
-    title:              Testability
-    brief:              |
-                        How readily the system can be checked, and a
-                        failure traced to its cause.
-    description:        |
-                        Testability covers how readily each part can
-                        be exercised in isolation, how completely its
-                        behaviour can be observed, and how quickly a
-                        failing check leads to the fault behind it.
-    note:               |
-                        Testability is a subcharacteristic of
-                        maintainability in ISO/IEC 25010:2023. It is
-                        held as a concern of its own so that it can be
-                        argued for separately.
-    question:
-      - Can each part be exercised without the rest of the system?
-      - Can its behaviour be observed well enough to judge it?
-      - How quickly does a failing check lead to its cause?
-
-    measure:
-      - Time to run the full set of checks, in minutes.
-      - Time from a failing check to its cause, in hours.
-
-    excludes:
-      - Ease of making a change (concern_maintainability).
 
     status:             proposed
     alias:              []
