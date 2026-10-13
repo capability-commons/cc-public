@@ -28,9 +28,10 @@ relation:               []
 """
 
 
+import io
 import uuid
 
-import yaml
+import ruamel.yaml
 
 import cc_public.check.check
 from conftest import DIR_REPO
@@ -83,11 +84,22 @@ def _item(root, relative, id_self, list_edge = (), guid = None):
 
     path = root / relative
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text(yaml.safe_dump({'id_self':   id_self,
-                                    'guid_self': guid or _guid(id_self.split('_')[0]),
-                                    'relation':  list(list_edge)},
-                                   sort_keys = False))
+    path.write_text(_dump({'id_self':   id_self,
+                           'guid_self': guid or _guid(id_self.split('_')[0]),
+                           'relation':  list(list_edge)}))
     return relative
+
+
+# -----------------------------------------------------------------------------
+def _dump(data):
+    """
+    Return data as YAML text.
+
+    """
+
+    stream = io.StringIO()
+    ruamel.yaml.YAML().dump(data, stream)
+    return stream.getvalue()
 
 
 # -----------------------------------------------------------------------------
@@ -224,11 +236,11 @@ def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
     # dec_x records that it is the subject of ann_x, which is ann_x
     # being about dec_x, so ann_x is about something.
     path     = tree / '_data/register/reg_relation.yaml'
-    register = yaml.safe_load(path.read_text())
+    register = ruamel.yaml.YAML().load(path.read_text())
     register['table']['r_is_about']['inverse'] = {'id_self':   'r_is_subject_of',
                                                   'guid_self': _guid('r'),
                                                   'brief':     'SUBJ is the subject of OBJ'}
-    path.write_text(yaml.safe_dump(register, sort_keys = False))
+    path.write_text(_dump(register))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                        _edge(tree, 'r_is_subject_of', 'ann_x')])

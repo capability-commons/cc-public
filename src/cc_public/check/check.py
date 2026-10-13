@@ -42,10 +42,15 @@ import subprocess
 import tempfile
 import typing
 
-import yaml
+import ruamel.yaml
 
 
 RULES             = pathlib.Path(__file__).with_name('check.dl')
+
+# Round trip loading keeps the line and column of every key and value,
+# so that a fact can later be traced to where it is written.
+#
+YAML              = ruamel.yaml.YAML(typ = 'rt')
 
 KEY_ID_SELF       = 'id_self'
 KEY_GUID_SELF     = 'guid_self'
@@ -160,12 +165,12 @@ def _read(path: pathlib.Path, relative: pathlib.Path) -> typing.Any:
         if DIR_DATA not in relative.parts:
             return None
         with open(path, encoding = 'utf-8') as file:
-            return yaml.safe_load(file)
+            return YAML.load(file)
 
     if path.suffix == SUFFIX_PYTHON:
         docstring = ast.get_docstring(ast.parse(path.read_text(encoding = 'utf-8')))
         if docstring and docstring.startswith(LINE_OPEN):
-            return yaml.safe_load(docstring)
+            return YAML.load(docstring)
         return None
 
     return _header(path)
@@ -192,7 +197,7 @@ def _header(path: pathlib.Path) -> typing.Any:
                     return None
                 list_line.append(text)
                 if text == LINE_CLOSE:
-                    return yaml.safe_load('\n'.join(list_line))
+                    return YAML.load('\n'.join(list_line))
     except UnicodeDecodeError:
         return None
 
