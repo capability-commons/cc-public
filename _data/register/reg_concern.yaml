@@ -15,8 +15,8 @@ brief:                  |
                         arguments about a design speak for.
 description:            |
                         The concern register holds one entry per
-                        concern, such as correctness, security or
-                        usability. A concern is a matter of interest
+                        concern, such as security, reliability or
+                        safety. A concern is a matter of interest
                         in a system, in the sense of ISO/IEC/IEEE
                         42010.
 usage:                  |
@@ -46,20 +46,22 @@ relation:
 table:
 
   # ---------------------------------------------------------------------------
-  # concern_correctness -- Correctness
+  # concern_functional_suitability -- Functional suitability
   #
-  concern_correctness:
-    id_self:            concern_correctness
+  concern_functional_suitability:
+    id_self:            concern_functional_suitability
     guid_self:          concern_a5e005c2c7944e178ade4790d0851ac1
-    title:              Correctness
+    title:              Functional suitability
     brief:              |
                         Whether the system does what it is meant to
                         do.
     description:        |
-                        Correctness covers whether each function gives
-                        the right result, does everything it is meant
-                        to do, and does nothing it is not meant to do,
-                        under the conditions it was designed for.
+                        Functional suitability covers whether each
+                        function gives the right result, whether every
+                        function that is needed is present, and
+                        whether the functions help users complete
+                        their tasks, under the conditions the system
+                        was designed for.
     note:               |
                         Corresponds to the functional suitability
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -78,7 +80,8 @@ table:
       - Behaviour over time and under faults (concern_reliability).
 
     status:             proposed
-    alias:              []
+    alias:
+      - concern_correctness
     relation:           []
 
   # ---------------------------------------------------------------------------
@@ -112,7 +115,7 @@ table:
       - Mean time to recover, in minutes.
 
     excludes:
-      - Whether a result is right (concern_correctness).
+      - Whether a result is right (concern_functional_suitability).
       - Failures caused deliberately (concern_security).
       - Harm caused by a failure (concern_safety).
 
@@ -157,20 +160,21 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # concern_performance -- Performance
+  # concern_performance_efficiency -- Performance efficiency
   #
-  concern_performance:
-    id_self:            concern_performance
+  concern_performance_efficiency:
+    id_self:            concern_performance_efficiency
     guid_self:          concern_ddd0eb5942824a0e944f2fde58b485c0
-    title:              Performance
+    title:              Performance efficiency
     brief:              |
                         How fast the system responds and how much it
                         consumes.
     description:        |
-                        Performance covers response time, throughput
-                        and the resources the system uses, such as
-                        processor time, memory, storage and network,
-                        under the loads it is expected to carry.
+                        Performance efficiency covers response time,
+                        throughput, capacity and the resources the
+                        system uses, such as processor time, memory,
+                        storage and network, under the loads it is
+                        expected to carry.
     note:               |
                         Corresponds to the performance efficiency
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -187,27 +191,34 @@ table:
       - Peak memory, in megabytes.
 
     excludes:
-      - How long a task takes a person (concern_usability).
+      - Time a task takes a person (concern_interaction_capability).
 
     status:             proposed
-    alias:              []
+    alias:
+      - concern_performance
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # concern_usability -- Usability
+  # concern_interaction_capability -- Interaction capability
   #
-  concern_usability:
-    id_self:            concern_usability
+  concern_interaction_capability:
+    id_self:            concern_interaction_capability
     guid_self:          concern_7c525ec6beee404bbf327469a5fbc281
-    title:              Usability
+    title:              Interaction capability
     brief:              |
-                        How readily people can use the system to do
-                        their work.
+                        How readily people can use the interface of
+                        the system to do their work.
     description:        |
-                        Usability covers the time, attention and
-                        effort the system asks of the people who use
-                        it, how readily they learn it, and how well it
-                        guards them against mistakes.
+                        Interaction capability covers how readily
+                        people recognise, learn and operate the system
+                        through its interface, the time and attention
+                        it asks of them, and how well it guards them
+                        against mistakes.
+
+                        The outcomes of use, such as effectiveness and
+                        satisfaction, are usability in the quality in
+                        use model of ISO/IEC 25019, for which
+                        interaction capability is a prerequisite.
     note:               |
                         Corresponds to the interaction capability
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -223,27 +234,32 @@ table:
       - Errors per task, for a representative set of users.
 
     excludes:
-      - Machine response time (concern_performance).
+      - Machine response time (concern_performance_efficiency).
 
     status:             proposed
-    alias:              []
+    alias:
+      - concern_usability
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # concern_interoperability -- Interoperability
+  # concern_compatibility -- Compatibility
   #
-  concern_interoperability:
-    id_self:            concern_interoperability
+  concern_compatibility:
+    id_self:            concern_compatibility
     guid_self:          concern_787f6c2b26ad4848b703c8d4224b9a06
-    title:              Interoperability
+    title:              Compatibility
     brief:              |
-                        Whether the system exchanges data and works
-                        with other systems.
+                        Whether the system exchanges data with other
+                        systems, and shares an environment with them
+                        without harm.
     description:        |
-                        Interoperability covers whether the system can
-                        exchange data with the systems of partners,
-                        and use what it receives, without either side
-                        having to adopt the tools of the other.
+                        Compatibility covers whether the system can
+                        exchange data with the systems of partners and
+                        use what it receives, without either side
+                        having to adopt the tools of the other. It
+                        also covers whether the system can share an
+                        environment and its resources with other
+                        products without harming them.
     note:               |
                         Corresponds to the compatibility
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -253,33 +269,37 @@ table:
       - Can a partner read and use what the design produces?
       - Can the design read and use what a partner produces?
       - What must a partner adopt in order to do either?
+      - Can it share an environment with other products unharmed?
 
     measure:
       - Partner formats read and written without loss, by count.
       - Tools a partner must install to take part, by count.
+      - Conflicts with products in a shared environment, by count.
 
     excludes:
-      - Running on another platform (concern_portability).
+      - Running on another platform (concern_flexibility).
 
     status:             proposed
-    alias:              []
+    alias:
+      - concern_interoperability
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # concern_portability -- Portability
+  # concern_flexibility -- Flexibility
   #
-  concern_portability:
-    id_self:            concern_portability
+  concern_flexibility:
+    id_self:            concern_flexibility
     guid_self:          concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
-    title:              Portability
+    title:              Flexibility
     brief:              |
-                        Whether the system runs in environments other
-                        than the one it was built in.
+                        Whether the system adapts to other
+                        environments and to changes in scale.
     description:        |
-                        Portability covers how readily the system can
+                        Flexibility covers how readily the system can
                         be installed, run and moved across operating
                         systems, hardware and hosting environments,
-                        and adapted when they change.
+                        adapted when they change, and scaled as the
+                        load on it grows or shrinks.
     note:               |
                         Corresponds to the flexibility characteristic
                         of ISO/IEC 25010:2023, Systems and software
@@ -288,17 +308,19 @@ table:
     question:
       - On which platforms and environments does the design run?
       - What does it take to install it on a new one?
-      - What does it assume about its environment?
+      - Can it be scaled up or down as the load changes?
 
     measure:
       - Supported platforms, by count.
       - Effort to install on a new platform, in person hours.
 
     excludes:
-      - Exchanging data with other systems (concern_interoperability).
+      - Exchanging data with other systems (concern_compatibility).
+      - Behaviour under a set load (concern_performance_efficiency).
 
     status:             proposed
-    alias:              []
+    alias:
+      - concern_portability
     relation:           []
 
   # ---------------------------------------------------------------------------
@@ -331,7 +353,7 @@ table:
       - Parts touched by a representative change, by count.
 
     excludes:
-      - Adapting to a new environment (concern_portability).
+      - Adapting to a new environment (concern_flexibility).
 
     status:             proposed
     alias:              []
