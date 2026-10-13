@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_check._test.test_check
+id_self:                pym_cc_public.check._test.test_check
 guid_self:              pym_fa0c3da481904525a0476ca6420e4c83
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -32,7 +32,7 @@ import uuid
 
 import yaml
 
-import check
+import cc_public.check.check
 from conftest import DIR_REPO
 
 
@@ -57,7 +57,7 @@ def _guid_of(root, id_self):
 
     """
 
-    return next(guid for (ident, guid, _, _) in check.extract(root)['item']
+    return next(guid for (ident, guid, _, _) in cc_public.check.check.extract(root)['item']
                      if ident == id_self)
 
 
@@ -101,7 +101,7 @@ def _module(root, relative, id_self):
     path.parent.mkdir(parents = True, exist_ok = True)
     path.write_text('"""\n---\nid_self: {id_self}\nguid_self: {guid}\n'
                     'relation: []\n...\n"""\n'.format(id_self = id_self,
-                                                      guid    = _guid('pym')))
+                                                      guid    = _guid(id_self.split('_')[0])))
 
 
 # -----------------------------------------------------------------------------
@@ -118,47 +118,47 @@ def _replace(root, relative, old, new):
 
 
 def test_the_repository_passes_every_check(souffle):
-    assert check.check(DIR_REPO) == {}
+    assert cc_public.check.check.check(DIR_REPO) == {}
 
 
 def test_an_annotation_and_a_decision_about_an_item_pass(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', 'dec_x')])
-    assert check.check(tree) == {}
+    assert cc_public.check.check.check(tree) == {}
 
 
 def test_an_annotation_about_nothing_is_reported(tree):
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
-    assert check.check(tree) == {'missing_about': [('ann_x',)]}
+    assert cc_public.check.check.check(tree) == {'missing_about': [('ann_x',)]}
 
 
 def test_a_decision_about_nothing_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x')
-    assert check.check(tree) == {'missing_about': [('dec_x',)]}
+    assert cc_public.check.check.check(tree) == {'missing_about': [('dec_x',)]}
 
 
 def test_an_id_with_no_known_prefix_is_reported(tree):
     location = _item(tree, '_data/x/xyz_x.yaml', 'xyz_x')
-    assert check.check(tree) == {'unknown_prefix': [('xyz_x', location)]}
+    assert cc_public.check.check.check(tree) == {'unknown_prefix': [('xyz_x', location)]}
 
 
 def test_an_id_against_the_pattern_of_its_type_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_X',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
-    assert check.check(tree) == {'bad_id': [('ann_X', REGEX_ANN, location)]}
+    assert cc_public.check.check.check(tree) == {'bad_id': [('ann_X', REGEX_ANN, location)]}
 
 
 def test_a_malformed_guid_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)], guid = 'ann_123')
-    assert check.check(tree) == {'bad_guid': [('ann_x', 'ann_123', location)]}
+    assert cc_public.check.check.check(tree) == {'bad_guid': [('ann_x', 'ann_123', location)]}
 
 
 def test_two_types_sharing_a_prefix_are_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'prefix:             dec\n', 'prefix:             ann\n')
-    assert check.check(tree) == {'duplicate_prefix': [('ann', 't_annotation', 't_decision'),
+    assert cc_public.check.check.check(tree) == {'duplicate_prefix': [('ann', 't_annotation', 't_decision'),
                                                       ('ann', 't_decision', 't_annotation')]}
 
 
@@ -167,7 +167,7 @@ def test_an_id_given_to_two_items_is_reported(tree):
     (one, two) = (_guid('ann'), _guid('ann'))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = one)
     _item(tree, '_data/annotation/ann_y.yaml', 'ann_x', list_edge, guid = two)
-    assert check.check(tree) == {'duplicate_id': sorted([('ann_x', one, two),
+    assert cc_public.check.check.check(tree) == {'duplicate_id': sorted([('ann_x', one, two),
                                                          ('ann_x', two, one)])}
 
 
@@ -176,14 +176,14 @@ def test_a_guid_given_to_two_items_is_reported(tree):
     guid      = _guid('ann')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = guid)
     _item(tree, '_data/annotation/ann_y.yaml', 'ann_y', list_edge, guid = guid)
-    assert check.check(tree) == {'duplicate_guid': [(guid, 'ann_x', 'ann_y'),
+    assert cc_public.check.check.check(tree) == {'duplicate_guid': [(guid, 'ann_x', 'ann_y'),
                                                     (guid, 'ann_y', 'ann_x')]}
 
 
 def test_an_entry_held_under_another_key_is_reported(tree):
     _replace(tree, '_data/register/reg_concern.yaml',
              '  concern_security:\n', '  concern_secure:\n')
-    assert check.check(tree) == {'key_mismatch': [('reg_concern',
+    assert cc_public.check.check.check(tree) == {'key_mismatch': [('reg_concern',
                                                    'concern_secure',
                                                    'concern_security')]}
 
@@ -194,14 +194,14 @@ def test_a_reference_to_nothing_is_reported(tree):
             'id_target':     'concern_absent',
             'guid_target':   _guid('concern')}
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
-    assert check.check(tree) == {'dangling_reference': [('ann_x', 'target', 'concern_absent',
+    assert cc_public.check.check.check(tree) == {'dangling_reference': [('ann_x', 'target', 'concern_absent',
                                                          location)]}
 
 
 def test_a_reference_with_a_stale_guid_is_reported(tree):
     edge = dict(_edge(tree, 'r_is_about', ID_ABOUT), guid_target = _guid('concern'))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
-    assert check.check(tree) == {'stale_guid': [('ann_x', 'target', ID_ABOUT,
+    assert cc_public.check.check.check(tree) == {'stale_guid': [('ann_x', 'target', ID_ABOUT,
                                                  edge['guid_target'])]}
 
 
@@ -210,14 +210,14 @@ def test_an_edge_from_outside_the_domain_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                        _edge(tree, 'r_supports', 'dec_x')])
-    assert check.check(tree) == {'domain_violation': [('dec_y', 'r_supports', 't_decision')]}
+    assert cc_public.check.check.check(tree) == {'domain_violation': [('dec_y', 'r_supports', 't_decision')]}
 
 
 def test_an_edge_to_outside_the_range_is_reported(tree):
     # Support runs to an assertion or a choice, not to a concern.
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', ID_ABOUT)])
-    assert check.check(tree) == {'range_violation': [(ID_ABOUT, 'r_supports', 't_concern')]}
+    assert cc_public.check.check.check(tree) == {'range_violation': [(ID_ABOUT, 'r_supports', 't_concern')]}
 
 
 def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
@@ -232,23 +232,34 @@ def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                        _edge(tree, 'r_is_subject_of', 'ann_x')])
-    assert check.check(tree) == {}
+    assert cc_public.check.check.check(tree) == {}
 
 
 def test_a_module_named_for_its_place_passes(tree):
     _module(tree, 'src/x/_test/test_y.py', 'pym_x._test.test_y')
-    assert check.check(tree) == {}
+    assert cc_public.check.check.check(tree) == {}
 
 
 def test_a_module_named_for_another_place_is_reported(tree):
     _module(tree, 'src/x/y.py', 'pym_x.z')
-    assert check.check(tree) == {'misplaced_module': [('pym_x.z', 'pym_x.y')]}
+    assert cc_public.check.check.check(tree) == {'misplaced_module': [('pym_x.z', 'pym_x.y')]}
+
+
+def test_a_package_named_for_its_place_passes(tree):
+    _module(tree, 'src/x/y/__init__.py', 'pyp_x.y')
+    assert cc_public.check.check.check(tree) == {}
+
+
+def test_a_package_named_as_a_module_is_reported(tree):
+    _module(tree, 'src/x/y/__init__.py', 'pym_x.y.__init__')
+    assert cc_public.check.check.check(tree) == {'misplaced_module': [('pym_x.y.__init__',
+                                                                       'pyp_x.y')]}
 
 
 def test_an_item_in_a_comment_header_is_read(tree):
     (tree / 'tool.cfg').write_text('# ---\n# id_self: file_tool\n# guid_self: file_123\n'
                                    '# relation: []\n# ...\nsetting = 1\n')
-    assert check.check(tree) == {'bad_guid': [('file_tool', 'file_123', 'tool.cfg')]}
+    assert cc_public.check.check.check(tree) == {'bad_guid': [('file_tool', 'file_123', 'tool.cfg')]}
 
 
 def test_files_that_hold_no_item_are_passed_over(tree):
@@ -256,4 +267,4 @@ def test_files_that_hold_no_item_are_passed_over(tree):
     (tree / 'plain.py').write_text('"""A module with no item."""\n')
     (tree / 'loose.yaml').write_text('id_self: xyz_x\n')
     (tree / 'notes.txt').write_text('# A heading, not an item.\n')
-    assert check.check(tree) == {}
+    assert cc_public.check.check.check(tree) == {}

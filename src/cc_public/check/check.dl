@@ -73,7 +73,8 @@ duplicate_id(i, g, h) :- item(i, g, _, _), item(i, h, _, _), g != h.
 .output duplicate_guid
 duplicate_guid(g, i, j) :- item(i, g, _, _), item(j, g, _, _), i != j.
 
-// A python module item is named for the module that holds it.
+// A python module or package item is named for the module or package
+// that holds it.
 .decl misplaced_module(id:symbol, expected:symbol)
 .output misplaced_module
 misplaced_module(i, e) :- module_name(i, e), i != e.

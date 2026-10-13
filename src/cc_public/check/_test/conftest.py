@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_check._test.conftest
+id_self:                pym_cc_public.check._test.conftest
 guid_self:              pym_8c07ee653351466fa401605f3b360b5f
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -16,10 +16,9 @@ brief:                  |
                         The fixtures the checker tests share: a copy
                         of the repository's data items to break.
 description:            |
-                        This module puts the checker on the import
-                        path and holds the fixtures. A test that needs
-                        souffle is skipped where souffle cannot be
-                        found, since the checker cannot run without
+                        This module holds the fixtures. A test that
+                        needs souffle is skipped where souffle cannot
+                        be found, since the checker cannot run without
                         it.
 relation:               []
 
@@ -30,16 +29,12 @@ relation:               []
 import os
 import pathlib
 import shutil
-import sys
 
 import pytest
 
 
-DIR_CHECK = pathlib.Path(__file__).resolve().parents[1]
-DIR_REPO  = DIR_CHECK.parents[1]
+DIR_REPO  = pathlib.Path(__file__).resolve().parents[4]
 DIR_DATA  = '_data'
-
-sys.path.insert(0, str(DIR_CHECK))
 
 
 # -----------------------------------------------------------------------------

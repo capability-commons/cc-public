@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_check.check
+id_self:                pym_cc_public.check.check
 guid_self:              pym_56d08447c0cf432dbe39760c22730116
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -22,10 +22,9 @@ description:            |
                         Souffle input, evaluates check.dl over them,
                         and reports every row of every output
                         relation. Each output relation is one check,
-                        and each row is one failure. The exit status
-                        is 1 when any check fails.
+                        and each row is one failure.
 usage:                  |
-                        python3 src/check/check.py [root]
+                        cctool check [root]
 
                         The souffle executable is taken from the
                         SOUFFLE environment variable, or from the
@@ -40,7 +39,6 @@ import ast
 import os
 import pathlib
 import subprocess
-import sys
 import tempfile
 import typing
 
@@ -87,10 +85,13 @@ TUPLE_RELATION    = ('item',
                      'entry_key',
                      'module_name')
 
-# Python modules are imported with src as the root of the path.
+# Python modules are imported with src as the root of the path. The
+# item of a package is held in the docstring of its __init__ module.
 #
 DIR_IMPORT_ROOT   = 'src'
 PREFIX_MODULE     = 'pym_'
+PREFIX_PACKAGE    = 'pyp_'
+NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
 
 Facts             = dict[str, set[tuple[str, ...]]]
@@ -129,16 +130,22 @@ def extract(root: pathlib.Path) -> Facts:
 def _module_name(relative: pathlib.Path) -> str:
     """
     Return the id that names the python module at relative: the prefix
-    and the dotted name it is imported under, in lower case.
+    and the dotted name it is imported under, in lower case. An
+    __init__ module is named for its package.
 
     """
 
     list_part = list(relative.with_suffix('').parts)
+    prefix    = PREFIX_MODULE
 
     if list_part and list_part[0] == DIR_IMPORT_ROOT:
         list_part = list_part[1:]
 
-    return PREFIX_MODULE + DELIM_MODULE.join(list_part).lower()
+    if list_part and list_part[-1] == NAME_PACKAGE:
+        list_part = list_part[:-1]
+        prefix    = PREFIX_PACKAGE
+
+    return prefix + DELIM_MODULE.join(list_part).lower()
 
 
 # -----------------------------------------------------------------------------
@@ -337,29 +344,3 @@ def check(root: pathlib.Path) -> Failures:
                 failures[path.stem] = sorted(list_row)
 
     return failures
-
-
-# -----------------------------------------------------------------------------
-def main(list_arg: list[str]) -> int:
-    """
-    Check the tree named by the first argument, or the current
-    directory, print every failure, and return the exit status.
-
-    """
-
-    root     = pathlib.Path(list_arg[1] if len(list_arg) > 1 else '.').resolve()
-    failures = check(root)
-    count    = 0
-
-    for (name, list_row) in failures.items():
-        for row in list_row:
-            print('{name}: {row}'.format(name = name, row = '  '.join(row)))
-            count += 1
-
-    print('{count} failures'.format(count = count))
-    return 1 if count else 0
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    sys.exit(main(sys.argv))

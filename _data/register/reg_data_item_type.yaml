@@ -539,7 +539,8 @@ table:
                         is imported under, with src as the root of
                         the import path, in lower case and with its
                         parts separated by full stops.
-                        pym_check.check names src/check/check.py.
+                        pym_cc_public.check.check names
+                        src/cc_public/check/check.py.
 
                         The shape of python module data items is
                         defined by the sch_python_module schema.
@@ -555,6 +556,47 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_python_module
         guid_target:    sch_d1d9d093e52d47a9ba8b4fdd8c47db07
+
+  # ---------------------------------------------------------------------------
+  # t_python_package -- Python package type
+  #
+  t_python_package:
+    id_self:            t_python_package
+    guid_self:          t_bd462575484043a39c573ed2fb58eb0f
+    title:              Python package type
+    brief:              |
+                        Type of python package data items.
+    description:        |
+                        Each python package data item holds the
+                        metadata of one python package, in the
+                        docstring of its __init__ module.
+    usage:              |
+                        Python package data items let a package be
+                        traced, annotated and argued over as a whole,
+                        apart from the modules it holds.
+    note:               |
+                        The id is the prefix and the name the package
+                        is imported under, with src as the root of
+                        the import path, in lower case and with its
+                        parts separated by full stops.
+                        pyp_cc_public.check names src/cc_public/check.
+                        The __init__ module holds the package item and
+                        has no python module item of its own.
+
+                        The shape of python package data items is
+                        defined by the sch_python_package schema.
+    alias:              []
+    prefix:             pyp
+    regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_python_package
+    guid_concept:       con_53a6b71e9dec4a42a8100e03e692f84e
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_python_package
+        guid_target:    sch_c2b3fe510fa64c80a4c372a3816ef720
 
   # ---------------------------------------------------------------------------
   # t_file -- File type
