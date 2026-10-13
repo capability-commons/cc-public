@@ -435,6 +435,51 @@ table:
         guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
 
   # ---------------------------------------------------------------------------
+  # t_decision -- Decision type
+  #
+  t_decision:
+    id_self:            t_decision
+    guid_self:          t_db4130e5642c4c019f0c95c9f956875c
+    title:              Decision type
+    brief:              |
+                        Type of decision data items.
+    description:        |
+                        Each decision data item records one choice
+                        about one or more items in the graph, and
+                        whether it was proposed, accepted or rejected.
+    usage:              |
+                        Decision data items are what annotations argue
+                        over. The annotations that support or
+                        challenge a decision, and the concerns they
+                        argue for, are its rationale, so that a
+                        decision that proves wrong can be traced back
+                        to the concerns that shaped it.
+    note:               |
+                        Decision data items travel on their own, one
+                        per file, in _data/decision/.
+
+                        Alternatives are sibling decisions about the
+                        same item, each argued over on its own. One is
+                        accepted and the others are rejected, and the
+                        rejected ones are kept.
+
+                        The shape of decision data items is defined by
+                        the sch_decision schema.
+    status:             proposed
+    alias:              []
+    prefix:             dec
+    regex_id:           ^dec_[a-z][a-z0-9_]*$
+    id_concept:         con_decision
+    guid_concept:       con_26a4625162d2482ab375384b716f164a
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_decision
+        guid_target:    sch_6fd91c76629042f394ce1addf6f0cd1b
+
+  # ---------------------------------------------------------------------------
   # t_concern -- Concern type
   #
   t_concern:

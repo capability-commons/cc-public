@@ -1,0 +1,79 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_decision.yaml
+id_self:                sch_decision
+guid_self:              sch_6fd91c76629042f394ce1addf6f0cd1b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decision schema
+brief:                  |
+                        The shape of a decision: one choice about
+                        something in the graph, and where it stands.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A decision adds only its
+                        status.
+
+                        title names the decision and brief states it.
+                        The brief is required, because a decision that
+                        is not stated cannot be argued over.
+
+                        What a decision is about, and which decision
+                        it replaces, are edges rather than fields. The
+                        rationale is not a field either: it is the set
+                        of annotations that support or challenge the
+                        decision.
+usage:                  |
+                        Named by t_decision as the schema of every
+                        item in _data/decision/.
+note:                   |
+                        There is no superseded status. A decision that
+                        has been replaced keeps the status it had, and
+                        the r_supersedes edge from its successor
+                        records the replacement, so that the fact is
+                        held once.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - brief
+      - status
+
+    properties:
+
+      status:
+        $ref:           '#/$defs/decision_status'
+        description:    |
+                        Where the decision stands. Distinct from the
+                        status of a register entry, which records the
+                        lifecycle of the entry rather than a choice.
+
+$defs:
+
+  decision_status:
+    type:               string
+
+    enum:
+      - proposed
+      - accepted
+      - rejected
+
+    description:        |
+                        proposed: put forward and open to argument.
+                        accepted: taken, and in force unless a later
+                        decision supersedes it. rejected: considered
+                        and not taken, kept so that the reasons stay
+                        on record.
+
+unevaluatedProperties:  false
