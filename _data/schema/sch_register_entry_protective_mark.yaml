@@ -1,0 +1,53 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_register_entry_protective_mark.yaml
+id_self:                sch_register_entry_protective_mark
+guid_self:              sch_749dc2bbaf6c4a238ca4e02044a633fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protective mark register entry schema
+brief:                  |
+                        What a protective mark register entry carries
+                        beyond the general register entry.
+description:            |
+                        A protective mark entry names the authority
+                        whose rules govern the mark, and the level the
+                        mark names within that authority's scheme.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_protective_mark as the shape of every
+                        entry in the protective mark register.
+type:                   object
+
+required:
+  - authority
+  - level
+
+properties:
+
+  authority:
+    $ref:               '#/$defs/name'
+    description:        |
+                        The authority whose rules govern this mark.
+
+  level:
+    $ref:               '#/$defs/name'
+    description:        |
+                        The level this mark names within the scheme of
+                        its authority.
+
+$defs:
+
+  name:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    description:        |
+                        A lowercase snake_case name.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml

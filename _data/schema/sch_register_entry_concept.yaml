@@ -1,0 +1,93 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_register_entry_concept.yaml
+id_self:                sch_register_entry_concept
+guid_self:              sch_62e63ec5ebe24650856fe2d275be3b4b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept register entry schema
+brief:                  |
+                        What a concept register entry carries beyond
+                        the general register entry.
+description:            |
+                        A concept entry holds the terms that designate
+                        the concept: one preferred term, any admitted
+                        terms, and any deprecated terms. The
+                        definition of the concept is the brief, and
+                        its fuller statement is the description. Both
+                        of those are fields of the general register
+                        entry shape.
+
+                        A term designates a concept and is not the
+                        concept itself. One term may designate several
+                        concepts, and several terms may designate one
+                        concept.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_concept as the shape of every entry in
+                        the concept register.
+note:                   |
+                        The three term fields follow ISO 1087:2019,
+                        Terminology work and terminology science --
+                        Vocabulary, which rates each term that
+                        designates a concept as preferred, admitted or
+                        deprecated.
+
+                        A preferred term is the term rated as the
+                        primary designation of the concept. An
+                        admitted term is rated as an acceptable
+                        synonym for the preferred term. A deprecated
+                        term is rated as undesired for the concept.
+type:                   object
+
+required:
+  - term_preferred
+
+properties:
+
+  term_preferred:
+    $ref:               '#/$defs/term'
+    description:        |
+                        The term rated as the primary designation of
+                        the concept, in the sense of ISO 1087.
+
+  term_admitted:
+    type:               array
+    uniqueItems:        true
+    description:        |
+                        Optional. Terms rated as acceptable synonyms
+                        for the preferred term, in the sense of ISO
+                        1087.
+
+    items:
+      $ref:             '#/$defs/term'
+
+  term_deprecated:
+    type:               array
+    uniqueItems:        true
+    description:        |
+                        Optional. Terms rated as undesired for the
+                        concept, in the sense of ISO 1087. A
+                        deprecated term is not used to designate this
+                        concept.
+
+    items:
+      $ref:             '#/$defs/term'
+
+$defs:
+
+  term:
+    type:               string
+    minLength:          1
+    description:        |
+                        A term: a designation of a concept in words,
+                        written in lower case except where the term
+                        itself requires otherwise.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml

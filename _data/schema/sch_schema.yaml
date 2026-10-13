@@ -1,0 +1,62 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_schema.yaml
+id_self:                sch_schema
+guid_self:              sch_19b746511dc84ae1b822a98afa81a196
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema schema
+brief:                  |
+                        The shape every schema data item carries.
+description:            |
+                        A schema data item is a JSON Schema, and it is
+                        also a standalone data item. This schema
+                        composes the draft 2020-12 meta-schema with
+                        sch_standalone to assert both, and pins the
+                        dialect and the form of the $id.
+usage:                  |
+                        Named by the r_is_specified_by_schema edge of
+                        t_schema in the data item type register. This
+                        schema validates itself, being a schema data
+                        item.
+note:                   |
+                        Nothing is said about which JSON Schema
+                        keywords a schema uses. A trait declares
+                        properties, a library declares only $defs, and
+                        a composite declares only allOf. All three are
+                        schemas.
+
+                        The last segment of the $id is the id_self of
+                        the schema and the name of its file. JSON
+                        Schema cannot compare one field with another,
+                        so that agreement is left to a companion
+                        check. The pattern here asserts only the form.
+type:                   object
+
+allOf:
+  - $ref:               https://json-schema.org/draft/2020-12/schema
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+
+required:
+  - $schema
+  - $id
+
+properties:
+
+  $schema:
+    const:              https://json-schema.org/draft/2020-12/schema
+    description:        |
+                        The JSON Schema dialect, pinned to one draft
+                        across the whole repository.
+
+  $id:
+    type:               string
+    pattern:            ^https://capability-commons\.org/schema/sch_[a-z][a-z0-9_]*\.yaml$
+    description:        |
+                        The canonical URI of this schema, and the
+                        target of any $ref that names it.
