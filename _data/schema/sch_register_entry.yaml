@@ -16,11 +16,11 @@ brief:                  |
                         whatever the register controls.
 description:            |
                         An entry holds an identity and the descriptive
-                        fields, with a required description, an
-                        optional status, optional aliases and optional
-                        edges. An entry is addressable and
-                        describable, and it is not a standalone item,
-                        so it composes those two traits. It has no
+                        fields, with a required description, optional
+                        aliases and optional edges. An entry is
+                        addressable and describable, and it is not a
+                        standalone item, so it composes those two
+                        traits. It has no
                         rights of its own and is covered by the rights
                         of the register that holds it. Every register
                         entry schema composes this schema, and
@@ -66,11 +66,6 @@ properties:
     items:
       $ref:             https://capability-commons.org/schema/sch_trait_relation.yaml#/$defs/edge
 
-  status:
-    $ref:               '#/$defs/entry_status'
-    description:        |
-                        Optional. Lifecycle status of this entry.
-
   alias:
     type:               array
     description:        |
@@ -89,19 +84,3 @@ properties:
 
     items:
       $ref:             https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
-
-$defs:
-
-  entry_status:
-    type:               string
-
-    enum:
-      - proposed
-      - accepted
-      - deprecated
-
-    description:        |
-                        Lifecycle status of an individual entry.
-                        Deprecated entries remain resolvable for
-                        historical data; new writes should prefer any
-                        replacement named in note.

@@ -13,12 +13,12 @@ protective_mark:
 title:                  Decision schema
 brief:                  |
                         The shape of a decision: one choice about
-                        something in the graph, and where it stands.
+                        something in the graph.
 description:            |
                         Identity, the descriptive fields and rights
                         come from sch_standalone. The edges come from
-                        sch_trait_relation. A decision adds only its
-                        status.
+                        sch_trait_relation. A decision carries nothing
+                        beyond them, and requires a brief.
 
                         title names the decision and brief states it.
                         The brief is required, because a decision that
@@ -33,11 +33,16 @@ usage:                  |
                         Named by t_decision as the schema of every
                         item in _data/decision/.
 note:                   |
-                        There is no superseded status. A decision that
-                        has been replaced keeps the status it had, and
-                        the r_supersedes edge from its successor
-                        records the replacement, so that the fact is
-                        held once.
+                        Whether a decision has been taken is not a
+                        field. Nothing yet decides how an outcome is
+                        reached or by whom, so every decision is open
+                        to argument. An outcome will be recorded as an
+                        item of its own, made by someone and pointing
+                        at the decision, when the argument is given
+                        machinery to settle it.
+
+                        A decision that has been replaced is named by
+                        the r_supersedes edge from its successor.
 type:                   object
 
 allOf:
@@ -48,32 +53,5 @@ allOf:
 
     required:
       - brief
-      - status
-
-    properties:
-
-      status:
-        $ref:           '#/$defs/decision_status'
-        description:    |
-                        Where the decision stands. Distinct from the
-                        status of a register entry, which records the
-                        lifecycle of the entry rather than a choice.
-
-$defs:
-
-  decision_status:
-    type:               string
-
-    enum:
-      - proposed
-      - accepted
-      - rejected
-
-    description:        |
-                        proposed: put forward and open to argument.
-                        accepted: taken, and in force unless a later
-                        decision supersedes it. rejected: considered
-                        and not taken, kept so that the reasons stay
-                        on record.
 
 unevaluatedProperties:  false

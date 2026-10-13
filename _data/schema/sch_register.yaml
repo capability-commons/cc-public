@@ -55,21 +55,12 @@ allOf:
   - type:               object
 
     required:
-      - status
       - description
       - usage
       - note
       - table
 
     properties:
-
-      status:
-        $ref:           '#/$defs/register_status'
-        description:    |
-                        Lifecycle status of this register as a whole.
-                        Distinct from the status of any individual
-                        entry -- a register may be accepted while some
-                        of its entries are still proposed.
 
       table:
         type:           object
@@ -85,21 +76,5 @@ allOf:
 
         additionalProperties:
           $ref:         https://capability-commons.org/schema/sch_register_entry.yaml
-
-$defs:
-
-  register_status:
-    type:               string
-
-    enum:
-      - draft
-      - under_review
-      - accepted
-      - superseded
-      - withdrawn
-
-    description:        |
-                        Lifecycle status of a register relative to
-                        review and use.
 
 unevaluatedProperties:  false
