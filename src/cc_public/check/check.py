@@ -17,10 +17,12 @@ brief:                  |
                         tree, by evaluating check.dl over facts
                         extracted from it.
 description:            |
-                        This module extracts the facts of the tree and
-                        evaluates check.dl over them. Each output
-                        relation of check.dl is one check, and each
-                        row of it is one failure.
+                        This module extracts the facts of the tree,
+                        evaluates check.dl over them, and validates
+                        each document against its schemas. Each
+                        output relation of check.dl is one check, as
+                        is schema validation, and each row of a check
+                        is one failure.
 usage:                  |
                         cctool check [--root DIR]
 
@@ -35,11 +37,18 @@ relation:               []
 
 import pathlib
 
+import cc_public.check.schema
 import cc_public.graph.datalog
 import cc_public.graph.extract
 
 
 RULES             = pathlib.Path(__file__).with_name('check.dl')
+
+# The checks of check.dl, and one more that is not Datalog: each
+# document conforms to the schemas that document_schema names for it.
+#
+NAME_PAIR         = 'document_schema'
+NAME_SCHEMA       = 'schema_violation'
 
 Failures          = dict[str, list[tuple[str, ...]]]
 
@@ -52,7 +61,14 @@ def check(root: pathlib.Path) -> Failures:
 
     """
 
-    rows = cc_public.graph.datalog.run(cc_public.graph.extract.extract(root),
-                                       RULES.read_text(encoding = 'utf-8'))
+    map_document = cc_public.graph.extract.documents(root)
+    facts        = cc_public.graph.extract.facts_of(map_document)
+    rows         = cc_public.graph.datalog.run(facts,
+                                               RULES.read_text(encoding = 'utf-8')
+                                               + '\n.output {name}\n'.format(name = NAME_PAIR))
+
+    rows[NAME_SCHEMA] = cc_public.check.schema.violations(map_document,
+                                                          facts,
+                                                          set(rows.pop(NAME_PAIR)))
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}

@@ -29,23 +29,28 @@ relation:               []
 
 
 import io
+import re
 import uuid
 
 import ruamel.yaml
 
 import cc_public.check.check
-import cc_public.graph.extract
 from cc_public.conftest import DIR_REPO
 
 
 ID_ABOUT     = 'concern_safety'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
+# The widest forms of an id and a guid, from sch_primitive.
+#
+REGEX_ID     = '^[a-z]{1,8}_[a-z0-9][a-z0-9_]*(\\.[a-z0-9_][a-z0-9_]*)*$'
+REGEX_GUID   = '^[a-z]{1,8}_[0-9a-f]{32}$'
+
 # An item written by _item has id_self on its first line, and the
-# id_target of its first edge on its sixth.
+# id_target of its first edge on its fourteenth.
 #
 LINE_ITEM    = '1'
-LINE_TARGET  = '6'
+LINE_TARGET  = '14'
 
 
 # -----------------------------------------------------------------------------
@@ -62,11 +67,19 @@ def _guid(prefix):
 def _guid_of(root, id_self):
     """
     Return the guid of the item in the tree under root with id_self.
+    The guid is read from the text, which is quicker than extracting
+    every fact of the tree.
 
     """
 
-    return next(guid for (ident, guid, *_) in cc_public.graph.extract.extract(root)['item']
-                     if ident == id_self)
+    regex = re.compile(r'id_self:\s+{id}\n\s*guid_self:\s+(\S+)'.format(id = re.escape(id_self)))
+
+    for path in sorted((root / '_data').rglob('*.yaml')):
+        match = regex.search(path.read_text())
+        if match:
+            return match.group(1)
+
+    raise KeyError(id_self)
 
 
 # -----------------------------------------------------------------------------
@@ -91,10 +104,27 @@ def _item(root, relative, id_self, list_edge = (), guid = None):
 
     path = root / relative
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text(_dump({'id_self':   id_self,
-                           'guid_self': guid or _guid(id_self.split('_')[0]),
-                           'relation':  list(list_edge)}))
+    path.write_text(_dump(_fields(root, id_self, list_edge, guid)))
     return relative
+
+
+# -----------------------------------------------------------------------------
+def _fields(root, id_self, list_edge = (), guid = None):
+    """
+    Return the fields of an item with id_self that its schema accepts.
+
+    """
+
+    return {'id_self':         id_self,
+            'guid_self':       guid or _guid(id_self.split('_')[0]),
+            'copyright':       'Copyright 2026 William Payne',
+            'license':         'Apache-2.0',
+            'protective_mark': [{'id_mark':   'mark_public',
+                                 'guid_mark': _guid_of(root, 'mark_public')}],
+            'title':           'Test item',
+            'brief':           'A test item.',
+            'description':     'A test item.',
+            'relation':        list(list_edge)}
 
 
 # -----------------------------------------------------------------------------
@@ -118,9 +148,7 @@ def _module(root, relative, id_self):
 
     path = root / relative
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text('"""\n---\nid_self: {id_self}\nguid_self: {guid}\n'
-                    'relation: []\n...\n"""\n'.format(id_self = id_self,
-                                                      guid    = _guid(id_self.split('_')[0])))
+    path.write_text('"""\n---\n{item}...\n"""\n'.format(item = _dump(_fields(root, id_self))))
 
 
 # -----------------------------------------------------------------------------
@@ -165,13 +193,19 @@ def test_an_id_with_no_known_prefix_is_reported(tree):
 def test_an_id_against_the_pattern_of_its_type_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_X',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
-    assert cc_public.check.check.check(tree) == {'bad_id': [('ann_X', REGEX_ANN, location, LINE_ITEM)]}
+    assert cc_public.check.check.check(tree) == {
+        'bad_id':           [('ann_X', REGEX_ANN, location, LINE_ITEM)],
+        'schema_violation': [('ann_X', 'sch_annotation', location, LINE_ITEM, 'id_self',
+                              "'ann_X' does not match " + repr(REGEX_ID))]}
 
 
 def test_a_malformed_guid_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)], guid = 'ann_123')
-    assert cc_public.check.check.check(tree) == {'bad_guid': [('ann_x', 'ann_123', location, LINE_ITEM)]}
+    assert cc_public.check.check.check(tree) == {
+        'bad_guid':         [('ann_x', 'ann_123', location, LINE_ITEM)],
+        'schema_violation': [('ann_x', 'sch_annotation', location, '2', 'guid_self',
+                              "'ann_123' does not match " + repr(REGEX_GUID))]}
 
 
 def test_two_types_sharing_a_prefix_are_reported(tree):
@@ -276,9 +310,13 @@ def test_a_package_named_as_a_module_is_reported(tree):
 
 
 def test_an_item_in_a_comment_header_is_read(tree):
-    (tree / 'tool.cfg').write_text('# ---\n# id_self: file_tool\n# guid_self: file_123\n'
-                                   '# relation: []\n# ...\nsetting = 1\n')
-    assert cc_public.check.check.check(tree) == {'bad_guid': [('file_tool', 'file_123', 'tool.cfg', '2')]}
+    item = _dump(_fields(tree, 'file_tool', guid = 'file_123'))
+    (tree / 'tool.cfg').write_text('# ---\n' + ''.join('# ' + line for line in item.splitlines(True))
+                                   + '# ...\nsetting = 1\n')
+    assert cc_public.check.check.check(tree) == {
+        'bad_guid':         [('file_tool', 'file_123', 'tool.cfg', '2')],
+        'schema_violation': [('file_tool', 'sch_file', 'tool.cfg', '3', 'guid_self',
+                              "'file_123' does not match " + repr(REGEX_GUID))]}
 
 
 def test_files_that_hold_no_item_are_passed_over(tree):
@@ -287,3 +325,27 @@ def test_files_that_hold_no_item_are_passed_over(tree):
     (tree / 'loose.yaml').write_text('id_self: xyz_x\n')
     (tree / 'notes.txt').write_text('# A heading, not an item.\n')
     assert cc_public.check.check.check(tree) == {}
+
+
+def test_a_field_no_schema_allows_is_reported(tree):
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
+                     [_edge(tree, 'r_is_about', ID_ABOUT)])
+    path     = tree / location
+    path.write_text(path.read_text() + 'colour: red\n')
+    assert cc_public.check.check.check(tree) == {'schema_violation': [
+        ('ann_x', 'sch_annotation', location, LINE_ITEM, '',
+         "Unevaluated properties are not allowed ('colour' was unexpected)")]}
+
+
+def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
+    path     = tree / '_data/register/reg_concern.yaml'
+    register = ruamel.yaml.YAML().load(path.read_text())
+    register['table']['concern_cost']['title'] = 7
+    path.write_text(_dump(register))
+    line     = next(index + 1 for (index, text) in enumerate(path.read_text().splitlines())
+                    if text.strip() == 'title: 7')
+    row      = ('_data/register/reg_concern.yaml', str(line), 'table/concern_cost/title',
+                "7 is not of type 'string'")
+    assert cc_public.check.check.check(tree) == {'schema_violation': [
+        ('reg_concern', 'sch_reg_concern', *row),
+        ('reg_concern', 'sch_register', *row)]}

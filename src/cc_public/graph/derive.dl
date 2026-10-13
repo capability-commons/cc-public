@@ -20,3 +20,14 @@ type_of(i, t) :- prefix_of(i, p), type_prefix(t, p, _).
 .decl primary_edge(source:symbol, relation:symbol, target:symbol)
 primary_edge(s, r, t) :- edge(s, r, t), !relation_inverse(r, _).
 primary_edge(t, r, s) :- edge(s, i, t), relation_inverse(i, r).
+
+// The schemas a document must conform to: the schema its type names
+// for the items of that type, and any schema the document names for
+// itself. A document is an item held by no other, and the items
+// inside it conform as part of it.
+.decl document_schema(id:symbol, schema:symbol)
+document_schema(i, s) :-
+    item(i, _, "", _, _), type_of(i, t),
+    primary_edge(t, "r_is_specified_by_schema", s).
+document_schema(i, s) :-
+    item(i, _, "", _, _), primary_edge(i, "r_is_specified_by_schema", s).

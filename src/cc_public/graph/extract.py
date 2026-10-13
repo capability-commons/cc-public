@@ -115,6 +115,7 @@ NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
 
 Facts             = dict[str, set[tuple[str, ...]]]
+Documents         = dict[str, tuple[typing.Any, int]]
 
 
 # -----------------------------------------------------------------------------
@@ -122,25 +123,51 @@ def extract(root: pathlib.Path) -> Facts:
     """
     Return the facts of the tree under root, keyed by relation.
 
-    Items are read from YAML files under a _data directory, from the
-    module docstring of a python module, and from the comment header
-    of any other file.
+    """
+
+    return facts_of(documents(root))
+
+
+# -----------------------------------------------------------------------------
+def documents(root: pathlib.Path) -> Documents:
+    """
+    Return each document in the tree under root, with the line of its
+    file that its first line is on, keyed by the file's path relative
+    to root.
+
+    Documents are read from YAML files under a _data directory, from
+    the module docstring of a python module, and from the comment
+    header of any other file.
 
     """
 
-    facts = {name: set() for name in RELATION}
+    map_document = {}
 
     for path in sorted(root.rglob('*')):
         relative = path.relative_to(root)
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
-        (document, base) = _read(path, relative)
-        if document is None:
-            continue
-        _walk(document, '', (str(relative), base), facts)
-        if path.suffix == SUFFIX_PYTHON and isinstance(document, dict):
+        (document, base) = read(path, relative)
+        if document is not None:
+            map_document[str(relative)] = (document, base)
+
+    return map_document
+
+
+# -----------------------------------------------------------------------------
+def facts_of(map_document: Documents) -> Facts:
+    """
+    Return the facts that the documents hold, keyed by relation.
+
+    """
+
+    facts = {name: set() for name in RELATION}
+
+    for (file, (document, base)) in map_document.items():
+        _walk(document, '', (file, base), facts)
+        if file.endswith(SUFFIX_PYTHON) and isinstance(document, dict):
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
-                                      _module_name(relative)))
+                                      _module_name(pathlib.Path(file))))
 
     return facts
 
@@ -179,7 +206,7 @@ def _module_name(relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
+def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
     Return the document that the file at path holds, or None if it
     holds none, and the line of the file that its first line is on.
