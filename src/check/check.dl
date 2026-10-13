@@ -15,9 +15,10 @@
 .decl relation_range(relation:symbol, type:symbol)
 .decl relation_inverse(inverse:symbol, relation:symbol)
 .decl entry_key(register:symbol, key:symbol, id:symbol)
+.decl module_name(id:symbol, expected:symbol)
 
 .input item, reference, edge, type_prefix, relation_domain
-.input relation_range, relation_inverse, entry_key
+.input relation_range, relation_inverse, entry_key, module_name
 
 // ---------------------------------------------------------------------
 // Derived
@@ -71,6 +72,11 @@ duplicate_id(i, g, h) :- item(i, g, _, _), item(i, h, _, _), g != h.
 .decl duplicate_guid(guid:symbol, id:symbol, other:symbol)
 .output duplicate_guid
 duplicate_guid(g, i, j) :- item(i, g, _, _), item(j, g, _, _), i != j.
+
+// A python module item is named for the module that holds it.
+.decl misplaced_module(id:symbol, expected:symbol)
+.output misplaced_module
+misplaced_module(i, e) :- module_name(i, e), i != e.
 
 // The key of a register entry is its id.
 .decl key_mismatch(register:symbol, key:symbol, id:symbol)

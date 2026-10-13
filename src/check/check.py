@@ -84,9 +84,17 @@ TUPLE_RELATION    = ('item',
                      'relation_domain',
                      'relation_range',
                      'relation_inverse',
-                     'entry_key')
+                     'entry_key',
+                     'module_name')
+
+# Python modules are imported with src as the root of the path.
+#
+DIR_IMPORT_ROOT   = 'src'
+PREFIX_MODULE     = 'pym_'
+DELIM_MODULE      = '.'
 
 Facts             = dict[str, set[tuple[str, ...]]]
+Failures          = dict[str, list[tuple[str, ...]]]
 
 
 # -----------------------------------------------------------------------------
@@ -107,10 +115,30 @@ def extract(root: pathlib.Path) -> Facts:
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
         document = _read(path, relative)
-        if document is not None:
-            _walk(document, '', str(relative), facts)
+        if document is None:
+            continue
+        _walk(document, '', str(relative), facts)
+        if path.suffix == SUFFIX_PYTHON and isinstance(document, dict):
+            facts['module_name'].add((str(document.get(KEY_ID_SELF)),
+                                      _module_name(relative)))
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _module_name(relative: pathlib.Path) -> str:
+    """
+    Return the id that names the python module at relative: the prefix
+    and the dotted name it is imported under, in lower case.
+
+    """
+
+    list_part = list(relative.with_suffix('').parts)
+
+    if list_part and list_part[0] == DIR_IMPORT_ROOT:
+        list_part = list_part[1:]
+
+    return PREFIX_MODULE + DELIM_MODULE.join(list_part).lower()
 
 
 # -----------------------------------------------------------------------------
@@ -281,16 +309,15 @@ def write(facts: Facts, dir_fact: pathlib.Path) -> None:
 
 
 # -----------------------------------------------------------------------------
-def main(list_arg: list[str]) -> int:
+def check(root: pathlib.Path) -> Failures:
     """
-    Check the tree named by the first argument, or the current
-    directory, and return the exit status.
+    Return the failures of the tree under root, keyed by check, with
+    the checks that pass left out.
 
     """
 
-    root    = pathlib.Path(list_arg[1] if len(list_arg) > 1 else '.').resolve()
-    souffle = os.environ.get('SOUFFLE', 'souffle')
-    count   = 0
+    souffle  = os.environ.get('SOUFFLE', 'souffle')
+    failures = {}
 
     with tempfile.TemporaryDirectory() as dir_temp:
 
@@ -304,10 +331,30 @@ def main(list_arg: list[str]) -> int:
                        check = True)
 
         for path in sorted(dir_out.glob('*.csv')):
-            for row in path.read_text(encoding = 'utf-8').splitlines():
-                print('{check}: {row}'.format(check = path.stem,
-                                              row   = row.replace(DELIM_FIELD, '  ')))
-                count += 1
+            list_row = [tuple(line.split(DELIM_FIELD))
+                            for line in path.read_text(encoding = 'utf-8').splitlines()]
+            if list_row:
+                failures[path.stem] = sorted(list_row)
+
+    return failures
+
+
+# -----------------------------------------------------------------------------
+def main(list_arg: list[str]) -> int:
+    """
+    Check the tree named by the first argument, or the current
+    directory, print every failure, and return the exit status.
+
+    """
+
+    root     = pathlib.Path(list_arg[1] if len(list_arg) > 1 else '.').resolve()
+    failures = check(root)
+    count    = 0
+
+    for (name, list_row) in failures.items():
+        for row in list_row:
+            print('{name}: {row}'.format(name = name, row = '  '.join(row)))
+            count += 1
 
     print('{count} failures'.format(count = count))
     return 1 if count else 0
