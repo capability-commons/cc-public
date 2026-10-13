@@ -69,7 +69,14 @@ table:
     description:        |
                         The schema data item identified by OBJ
                         specifies the structure of the data item
-                        identified by SUBJ.
+                        identified by SUBJ itself.
+
+                        The edge is about SUBJ, not about the items of
+                        a type. A type names the schema of its items
+                        with r_has_items_specified_by_schema.
+
+    domain:
+      - t_register
 
     range:
       - t_schema
@@ -78,22 +85,57 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # r_is_held_in_register -- Is held in register relation
+  # r_has_items_specified_by_schema -- Has items specified by schema relation
   #
-  r_is_held_in_register:
-    id_self:            r_is_held_in_register
-    guid_self:          r_016e74a0abea4a3990cc3259942baf92
-    title:              Is held in register relation
-    brief:              SUBJ is held in register OBJ
+  r_has_items_specified_by_schema:
+    id_self:            r_has_items_specified_by_schema
+    guid_self:          r_c233cc9d78af4ec6bbaec8a4bbc43344
+    title:              Has items specified by schema relation
+    brief:              SUBJ has items specified by schema OBJ
     description:        |
-                        The register data item identified by OBJ
-                        records the metadata of the item identified by
-                        SUBJ.
+                        The schema data item identified by OBJ
+                        specifies the structure of each item of the
+                        type identified by SUBJ.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. The shape of a type entry is
+                        named by the edge on t_type.
+
+    domain:
+      - t_type
+
+    range:
+      - t_schema
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_held_in_register -- Has items held in register relation
+  #
+  r_has_items_held_in_register:
+    id_self:            r_has_items_held_in_register
+    guid_self:          r_016e74a0abea4a3990cc3259942baf92
+    title:              Has items held in register relation
+    brief:              SUBJ has items held in register OBJ
+    description:        |
+                        The register data item identified by OBJ holds
+                        each item of the type identified by SUBJ, as
+                        an entry in its table.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. A type entry is held in the data
+                        item type register by containment, and needs
+                        no edge to say so.
+
+    domain:
+      - t_type
 
     range:
       - t_register
 
-    alias:              []
+    alias:
+      - r_is_held_in_register
     relation:           []
 
   # ---------------------------------------------------------------------------

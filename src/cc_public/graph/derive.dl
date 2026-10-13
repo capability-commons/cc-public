@@ -28,6 +28,6 @@ primary_edge(t, r, s) :- edge(s, i, t), relation_inverse(i, r).
 .decl document_schema(id:symbol, schema:symbol)
 document_schema(i, s) :-
     item(i, _, "", _, _), type_of(i, t),
-    primary_edge(t, "r_is_specified_by_schema", s).
+    primary_edge(t, "r_has_items_specified_by_schema", s).
 document_schema(i, s) :-
     item(i, _, "", _, _), primary_edge(i, "r_is_specified_by_schema", s).
