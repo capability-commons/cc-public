@@ -117,6 +117,41 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
+  # con_register_entry -- Register entry
+  #
+  con_register_entry:
+    id_self:            con_register_entry
+    guid_self:          con_ccc4194959314e669edb4d83514b58e4
+    title:              Register entry
+    brief:              |
+                        One record in the table of a register, keyed
+                        by its id.
+    description:        |
+                        A register entry is embedded in its register
+                        and travels with it, so it carries no rights
+                        of its own. Its shape is the general register
+                        entry shape composed with the shape specific
+                        to its register.
+    usage:              |
+                        The admitted term regentry is used in the ids
+                        of schemas specific to one register, such as
+                        sch_regentry_concept, in the way that reg is
+                        used in sch_reg_concept. The schemas that
+                        apply to every register spell the term out, as
+                        in sch_register_entry.
+    term_preferred:     register entry
+
+    term_admitted:
+      - regentry
+
+    term_deprecated:
+      - entry
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
   # con_relation -- Relation
   #
   con_relation:
@@ -213,6 +248,38 @@ table:
 
     term_admitted:
       - style rule
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_annotation -- Annotation
+  #
+  con_annotation:
+    id_self:            con_annotation
+    guid_self:          con_b0fd9a9d0569454ebccd4b5fc1721029
+    title:              Annotation
+    brief:              |
+                        One assertion about one or more items in the
+                        graph, held as an item of its own so that it
+                        can be answered.
+    description:        |
+                        An annotation is not a finding, is not
+                        evidence, and is not true for want of an
+                        answer. Its role is carried by its edges: what
+                        it is about, what it rests on, and what it
+                        supports or challenges.
+    note:               |
+                        Note is deprecated because it already names
+                        the descriptive field every item carries.
+                        Comment is deprecated because it suggests
+                        threads and ordering, which nothing needs.
+    term_preferred:     annotation
+
+    term_deprecated:
+      - note
+      - comment
 
     status:             proposed
     alias:              []

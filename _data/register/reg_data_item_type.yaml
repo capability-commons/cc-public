@@ -71,7 +71,7 @@ table:
                         register may hold other types as well.
 
                         The shape of type data items is defined by the
-                        sch_register_entry_type schema.
+                        sch_regentry_type schema.
 
                         The shape of the data item type register is
                         defined by the sch_reg_data_item_type schema.
@@ -91,7 +91,7 @@ table:
 
       - id_relation:    r_is_specified_by_schema
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
-        id_target:      sch_register_entry_type
+        id_target:      sch_regentry_type
         guid_target:    sch_4a17e1ea6a1143c59c0a634b38f902bc
 
   # ---------------------------------------------------------------------------
@@ -214,7 +214,7 @@ table:
                         its own.
 
                         The shape of relation data items is defined by
-                        the sch_register_entry_relation schema.
+                        the sch_regentry_relation schema.
 
                         The shape of the relation register is defined
                         by the sch_reg_relation schema.
@@ -234,7 +234,7 @@ table:
 
       - id_relation:    r_is_specified_by_schema
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
-        id_target:      sch_register_entry_relation
+        id_target:      sch_regentry_relation
         guid_target:    sch_4efc46f1bf2c4f7a99b68763cd8d6432
 
   # ---------------------------------------------------------------------------
@@ -261,7 +261,7 @@ table:
 
                         The shape of protective mark data items is
                         defined by the
-                        sch_register_entry_protective_mark schema.
+                        sch_regentry_protective_mark schema.
 
                         The shape of the protective mark register is
                         defined by the sch_reg_protective_mark schema.
@@ -281,7 +281,7 @@ table:
 
       - id_relation:    r_is_specified_by_schema
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
-        id_target:      sch_register_entry_protective_mark
+        id_target:      sch_regentry_protective_mark
         guid_target:    sch_749dc2bbaf6c4a238ca4e02044a633fa
 
   # ---------------------------------------------------------------------------
@@ -313,7 +313,7 @@ table:
                         many.
 
                         The shape of concept data items is defined by
-                        the sch_register_entry_concept schema.
+                        the sch_regentry_concept schema.
 
                         The shape of the concept register is defined
                         by the sch_reg_concept schema.
@@ -333,7 +333,7 @@ table:
 
       - id_relation:    r_is_specified_by_schema
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
-        id_target:      sch_register_entry_concept
+        id_target:      sch_regentry_concept
         guid_target:    sch_62e63ec5ebe24650856fe2d275be3b4b
 
   # ---------------------------------------------------------------------------
@@ -361,7 +361,7 @@ table:
 
                         The shape of writing style rule data items is
                         defined by the
-                        sch_register_entry_writing_style_rule schema.
+                        sch_regentry_writing_style_rule schema.
 
                         The shape of the writing style rule register
                         is defined by the sch_reg_writing_style_rule
@@ -382,5 +382,54 @@ table:
 
       - id_relation:    r_is_specified_by_schema
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
-        id_target:      sch_register_entry_writing_style_rule
+        id_target:      sch_regentry_writing_style_rule
         guid_target:    sch_4895339a23364c1f87462a80ceb3cf24
+
+  # ---------------------------------------------------------------------------
+  # t_annotation -- Annotation type
+  #
+  t_annotation:
+    id_self:            t_annotation
+    guid_self:          t_885b28187d9742a282deddea22e02bad
+    title:              Annotation type
+    brief:              |
+                        Type of annotation data items.
+    description:        |
+                        Each annotation data item holds one assertion
+                        about one or more items in the graph, offered
+                        for consideration.
+    usage:              |
+                        Annotation data items let anyone record
+                        something worth saying about an item, such as
+                        a worry, an opportunity or a reason to keep a
+                        design as it is, in a form that can be pointed
+                        at and answered.
+    note:               |
+                        Annotation data items travel on their own, one
+                        per file, in _data/annotation/.
+
+                        Two assertions that could be answered
+                        separately are two annotations.
+
+                        The role of an annotation is carried by its
+                        edges rather than by its fields: what it is
+                        about, what it rests on, and what it supports
+                        or challenges. It has no status, severity or
+                        category, and nothing decides which of two
+                        annotations prevails.
+
+                        The shape of annotation data items is defined
+                        by the sch_annotation schema.
+    status:             proposed
+    alias:              []
+    prefix:             ann
+    regex_id:           ^ann_[a-z][a-z0-9_]*$
+    id_concept:         con_annotation
+    guid_concept:       con_b0fd9a9d0569454ebccd4b5fc1721029
+
+    relation:
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_annotation
+        guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
