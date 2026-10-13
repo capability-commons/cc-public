@@ -61,14 +61,40 @@ def check(root: pathlib.Path) -> Failures:
 
     """
 
-    map_document = cc_public.graph.extract.documents(root)
-    facts        = cc_public.graph.extract.facts_of(map_document)
-    rows         = cc_public.graph.datalog.run(facts,
-                                               RULES.read_text(encoding = 'utf-8')
-                                               + '\n.output {name}\n'.format(name = NAME_PAIR))
+    return check_documents(cc_public.graph.extract.documents(root))
+
+
+# -----------------------------------------------------------------------------
+def check_documents(map_document: cc_public.graph.extract.Documents) -> Failures:
+    """
+    Return the failures of the documents, keyed by check, with the
+    checks that pass left out. An edit is checked this way before it
+    is written, with its documents in place of those it changes.
+
+    """
+
+    facts = cc_public.graph.extract.facts_of(map_document)
+    rows  = cc_public.graph.datalog.run(facts,
+                                        RULES.read_text(encoding = 'utf-8')
+                                        + '\n.output {name}\n'.format(name = NAME_PAIR))
 
     rows[NAME_SCHEMA] = cc_public.check.schema.violations(map_document,
                                                           facts,
                                                           set(rows.pop(NAME_PAIR)))
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}
+
+
+# -----------------------------------------------------------------------------
+def columns() -> dict[str, tuple[str, ...]]:
+    """
+    Return the names of the columns of each check, keyed by check.
+
+    """
+
+    map_column = {name: tuple(column for (column, _) in tuple_column)
+                  for (name, tuple_column)
+                  in cc_public.graph.datalog.declared(RULES.read_text(encoding = 'utf-8')).items()}
+
+    map_column[NAME_SCHEMA] = cc_public.check.schema.COLUMNS
+    return map_column

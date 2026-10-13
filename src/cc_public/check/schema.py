@@ -36,6 +36,7 @@ import cc_public.graph.extract
 
 
 KEY_ID_SCHEMA     = '$id'
+COLUMNS           = ('id', 'schema', 'file', 'line', 'path', 'message')
 LENGTH_MESSAGE    = 200
 DELIM_PATH        = '/'
 KEY_UNEVALUATED   = 'unevaluatedProperties'

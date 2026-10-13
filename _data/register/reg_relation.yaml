@@ -190,12 +190,18 @@ table:
                         may both support and challenge another, where
                         it qualifies it.
 
+                        A chain of support may not lead back to where
+                        it began, since an argument cannot be its own
+                        reason.
+
     domain:
       - t_annotation
 
     range:
       - t_annotation
       - t_decision
+
+    acyclic:            true
 
     alias:              []
     relation:           []
@@ -244,14 +250,19 @@ table:
 
                         OBJ keeps its argument, so that the reasons
                         it was taken stay on record.
+
                         A decision may supersede several, where one
-                        choice replaces a number of earlier ones.
+                        choice replaces a number of earlier ones. A
+                        chain of supersession may not lead back to
+                        where it began.
 
     domain:
       - t_decision
 
     range:
       - t_decision
+
+    acyclic:            true
 
     alias:              []
     relation:           []

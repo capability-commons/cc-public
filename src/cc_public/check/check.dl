@@ -46,6 +46,28 @@ duplicate_guid(g, i, j) :- item(i, g, _, _, _), item(j, g, _, _, _), i != j.
 .output misplaced_module
 misplaced_module(i, e) :- module_name(i, e), i != e.
 
+// A document under a _data directory is in the folder named for its
+// type, less the t_, in a file named for its id.
+.decl misplaced_document(id:symbol, file:symbol, expected:symbol)
+.output misplaced_document
+misplaced_document(i, f, e) :-
+    item(i, _, "", f, _), match("(.*/)?_data/.*\\.yaml", f), type_of(i, t),
+    e = cat("_data/", substr(t, 2, strlen(t) - 2), "/", i, ".yaml"),
+    !match(cat("(.*/)?", e), f).
+
+// A register holds only entries of a type whose items it holds.
+.decl misplaced_entry(register:symbol, id:symbol, type:symbol)
+.output misplaced_entry
+misplaced_entry(r, i, t) :-
+    entry_key(r, _, i), type_of(i, t),
+    !primary_edge(t, "r_has_items_held_in_register", r).
+
+// Every python file under src holds an item.
+.decl unrecorded_module(file:symbol)
+.output unrecorded_module
+unrecorded_module(f) :-
+    tree_file(f), match("src/.*\\.py", f), !item(_, _, "", f, _).
+
 // The key of a register entry is its id.
 .decl key_mismatch(register:symbol, key:symbol, id:symbol)
 .output key_mismatch
@@ -59,7 +81,7 @@ key_mismatch(r, k, i) :- entry_key(r, k, i), k != i.
                           file:symbol, line:number)
 .output dangling_reference
 dangling_reference(h, r, i, f, n) :-
-    reference(h, r, i, _, f, n), !item(i, _, _, _, _).
+    reference(h, r, i, _, f, n), !item(i, _, _, _, _), !alias(_, i).
 
 // Every reference carries the guid of the item it names.
 .decl stale_guid(holder:symbol, role:symbol, id:symbol, guid:symbol,
@@ -89,3 +111,89 @@ missing_about(i) :-
     type_of(i, "t_annotation"), !primary_edge(i, "r_is_about", _).
 missing_about(i) :-
     type_of(i, "t_decision"), !primary_edge(i, "r_is_about", _).
+
+// ---------------------------------------------------------------------
+// Checks on prose and on old ids
+
+// Every id that a text mentions, if it has the prefix of a known type,
+// names an item, or an old id of one. A guid may be mentioned too.
+.decl dangling_mention(holder:symbol, id:symbol, file:symbol, line:number)
+.output dangling_mention
+dangling_mention(h, i, f, n) :-
+    mention(h, i, f, n), type_prefix(_, p, _), match(cat(p, "_.*"), i),
+    !item(i, _, _, _, _), !item(_, i, _, _, _), !alias(_, i).
+
+// An alias is an old id, so no item has it.
+.decl alias_in_use(alias:symbol, id:symbol)
+.output alias_in_use
+alias_in_use(a, i) :- alias(i, a), item(a, _, _, _, _).
+
+// A reference names an item by its current id, not an old one.
+.decl outdated_reference(holder:symbol, role:symbol, alias:symbol, id:symbol,
+                         file:symbol, line:number)
+.output outdated_reference
+outdated_reference(h, r, a, i, f, n) :-
+    reference(h, r, a, _, f, n), alias(i, a), !item(a, _, _, _, _).
+
+// A text names an item by its current id, except in the item itself,
+// where it may record what the item was once called.
+.decl outdated_mention(holder:symbol, alias:symbol, id:symbol,
+                       file:symbol, line:number)
+.output outdated_mention
+outdated_mention(h, a, i, f, n) :-
+    mention(h, a, f, n), alias(i, a), !item(a, _, _, _, _), h != i.
+
+// ---------------------------------------------------------------------
+// Checks on the shape of the graph
+
+// No chain of edges of an acyclic relation leads from an item back to
+// itself.
+.decl reaches(relation:symbol, source:symbol, target:symbol)
+reaches(r, s, t) :- relation_acyclic(r), primary_edge(s, r, t).
+reaches(r, s, u) :- reaches(r, s, t), primary_edge(t, r, u).
+
+.decl cycle(relation:symbol, id:symbol)
+.output cycle
+cycle(r, i) :- reaches(r, i, i).
+
+// An annotation that supports or challenges speaks for exactly one
+// concern.
+.decl arguing(id:symbol)
+arguing(a) :- type_of(a, "t_annotation"), primary_edge(a, "r_supports", _).
+arguing(a) :- type_of(a, "t_annotation"), primary_edge(a, "r_challenges", _).
+
+.decl concern_count(id:symbol, concerns:number)
+.output concern_count
+concern_count(a, n) :-
+    arguing(a), n = count : { primary_edge(a, "r_argues_for_concern", _) },
+    n != 1.
+
+// ---------------------------------------------------------------------
+// Checks on the completeness of the kernel
+
+// Every type names exactly one schema for its items.
+.decl schema_count(type:symbol, schemas:number)
+.output schema_count
+schema_count(t, n) :-
+    type_prefix(t, _, _),
+    n = count : { primary_edge(t, "r_has_items_specified_by_schema", _) },
+    n != 1.
+
+// Every schema is used: named for the items of a type, named by a
+// register for itself, or referred to by another schema.
+.decl unused_schema(id:symbol)
+.output unused_schema
+unused_schema(s) :-
+    type_of(s, "t_schema"),
+    !primary_edge(_, "r_has_items_specified_by_schema", s),
+    !primary_edge(_, "r_is_specified_by_schema", s),
+    !schema_ref(_, s, _, _).
+
+// Every concept is named by some item other than itself.
+.decl named_by_other(id:symbol)
+named_by_other(c) :- reference(h, _, c, _, _, _), h != c.
+named_by_other(c) :- mention(h, c, _, _), h != c.
+
+.decl unused_concept(id:symbol)
+.output unused_concept
+unused_concept(c) :- type_of(c, "t_concept"), !named_by_other(c).

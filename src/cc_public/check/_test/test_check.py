@@ -35,6 +35,8 @@ import uuid
 import ruamel.yaml
 
 import cc_public.check.check
+import cc_public.graph.datalog
+import cc_public.graph.extract
 from cc_public.conftest import DIR_REPO
 
 
@@ -46,11 +48,12 @@ REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 REGEX_ID     = '^[a-z]{1,8}_[a-z0-9][a-z0-9_]*(\\.[a-z0-9_][a-z0-9_]*)*$'
 REGEX_GUID   = '^[a-z]{1,8}_[0-9a-f]{32}$'
 
-# An item written by _item has id_self on its first line, and the
-# id_target of its first edge on its fourteenth.
+# An item written by _item has id_self on its first line, description
+# on its tenth, and the id_target of its first edge on its fourteenth.
 #
-LINE_ITEM    = '1'
-LINE_TARGET  = '14'
+LINE_ITEM        = '1'
+LINE_DESCRIPTION = '10'
+LINE_TARGET      = '14'
 
 
 # -----------------------------------------------------------------------------
@@ -171,7 +174,8 @@ def test_the_repository_passes_every_check(souffle):
 def test_an_annotation_and_a_decision_about_an_item_pass(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                         _edge(tree, 'r_supports', 'dec_x')])
+                                                         _edge(tree, 'r_supports', 'dec_x'),
+                                                         _edge(tree, 'r_argues_for_concern', ID_ABOUT)])
     assert cc_public.check.check.check(tree) == {}
 
 
@@ -191,7 +195,7 @@ def test_an_id_with_no_known_prefix_is_reported(tree):
 
 
 def test_an_id_against_the_pattern_of_its_type_is_reported(tree):
-    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_X',
+    location = _item(tree, '_data/annotation/ann_X.yaml', 'ann_X',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
     assert cc_public.check.check.check(tree) == {
         'bad_id':           [('ann_X', REGEX_ANN, location, LINE_ITEM)],
@@ -219,7 +223,7 @@ def test_an_id_given_to_two_items_is_reported(tree):
     list_edge = [_edge(tree, 'r_is_about', ID_ABOUT)]
     (one, two) = (_guid('ann'), _guid('ann'))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = one)
-    _item(tree, '_data/annotation/ann_y.yaml', 'ann_x', list_edge, guid = two)
+    _item(tree, 'src/x/_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = two)
     assert cc_public.check.check.check(tree) == {'duplicate_id': sorted([('ann_x', one, two),
                                                          ('ann_x', two, one)])}
 
@@ -269,7 +273,8 @@ def test_an_edge_from_outside_the_domain_is_reported(tree):
 def test_an_edge_to_outside_the_range_is_reported(tree):
     # Support runs to an assertion or a choice, not to a concern.
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                         _edge(tree, 'r_supports', ID_ABOUT)])
+                                                         _edge(tree, 'r_supports', ID_ABOUT),
+                                                         _edge(tree, 'r_argues_for_concern', ID_ABOUT)])
     assert cc_public.check.check.check(tree) == {'range_violation': [(ID_ABOUT, 'r_supports', 't_concern')]}
 
 
@@ -349,3 +354,110 @@ def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
     assert cc_public.check.check.check(tree) == {'schema_violation': [
         ('reg_concern', 'sch_reg_concern', *row),
         ('reg_concern', 'sch_register', *row)]}
+
+
+def test_a_mention_of_nothing_is_reported(tree):
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
+                     [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _replace(tree, location, 'description: A test item.', 'description: See concern_absent.')
+    assert cc_public.check.check.check(tree) == {'dangling_mention': [
+        ('ann_x', 'concern_absent', location, LINE_DESCRIPTION)]}
+
+
+def test_a_mention_of_a_guid_a_pattern_or_an_unknown_prefix_passes(tree):
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
+                     [_edge(tree, 'r_is_about', ID_ABOUT)])
+    text     = 'See {guid}, sch_regentry_* and xyz_absent.'.format(guid = _guid_of(tree, ID_ABOUT))
+    _replace(tree, location, 'description: A test item.', 'description: ' + text)
+    assert cc_public.check.check.check(tree) == {}
+
+
+def test_a_mention_of_an_old_id_is_reported(tree):
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
+                     [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _replace(tree, location, 'description: A test item.', 'description: See concern_correctness.')
+    assert cc_public.check.check.check(tree) == {'outdated_mention': [
+        ('ann_x', 'concern_correctness', 'concern_functional_suitability', location,
+         LINE_DESCRIPTION)]}
+
+
+def test_a_reference_by_an_old_id_is_reported(tree):
+    edge = dict(_edge(tree, 'r_is_about', 'concern_functional_suitability'),
+                id_target = 'concern_correctness')
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
+    assert cc_public.check.check.check(tree) == {'outdated_reference': [
+        ('ann_x', 'target', 'concern_correctness', 'concern_functional_suitability', location,
+         LINE_TARGET)]}
+
+
+def test_an_alias_that_an_item_has_as_its_id_is_reported(tree):
+    _replace(tree, '_data/register/reg_concern.yaml',
+             '      - concern_correctness\n', '      - concern_cost\n')
+    assert cc_public.check.check.check(tree) == {'alias_in_use': [
+        ('concern_cost', 'concern_functional_suitability')]}
+
+
+def test_a_document_in_the_wrong_folder_is_reported(tree):
+    location = _item(tree, '_data/decision/ann_x.yaml', 'ann_x',
+                     [_edge(tree, 'r_is_about', ID_ABOUT)])
+    assert cc_public.check.check.check(tree) == {'misplaced_document': [
+        ('ann_x', location, '_data/annotation/ann_x.yaml')]}
+
+
+def test_a_python_file_without_an_item_is_reported(tree):
+    (tree / 'src/x').mkdir(parents = True)
+    (tree / 'src/x/y.py').write_text('"""A module with no item."""\n')
+    assert cc_public.check.check.check(tree) == {'unrecorded_module': [('src/x/y.py',)]}
+
+
+def test_a_cycle_of_supersession_is_reported(tree):
+    about    = _edge(tree, 'r_is_about', ID_ABOUT)
+    (gx, gy) = (_guid('dec'), _guid('dec'))
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x',
+          [about, dict(about, id_relation = 'r_supersedes', id_target = 'dec_y', guid_target = gy,
+                       guid_relation = _guid_of(tree, 'r_supersedes'))], guid = gx)
+    _item(tree, '_data/decision/dec_y.yaml', 'dec_y',
+          [about, dict(about, id_relation = 'r_supersedes', id_target = 'dec_x', guid_target = gx,
+                       guid_relation = _guid_of(tree, 'r_supersedes'))], guid = gy)
+    assert cc_public.check.check.check(tree) == {'cycle': [('r_supersedes', 'dec_x'),
+                                                           ('r_supersedes', 'dec_y')]}
+
+
+def test_an_argument_without_a_concern_is_reported(tree):
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
+                                                         _edge(tree, 'r_challenges', 'dec_x')])
+    assert cc_public.check.check.check(tree) == {'concern_count': [('ann_x', '0')]}
+
+
+def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'r_has_items_specified_by_schema\n        guid_relation:  '
+             'r_c233cc9d78af4ec6bbaec8a4bbc43344\n        id_target:      sch_file\n',
+             'r_is_specified_by_schema\n        guid_relation:  '
+             'r_d70024bd40444f93b4fc1903379ded81\n        id_target:      sch_file\n')
+    assert cc_public.check.check.check(tree) == {
+        'domain_violation': [('t_file', 'r_is_specified_by_schema', 't_type')],
+        'schema_count':     [('t_file', '0')]}
+
+
+def test_a_schema_nothing_uses_is_reported(tree):
+    text = (tree / '_data/schema/sch_file.yaml').read_text()
+    text = text.replace('sch_file', 'sch_x').replace(_guid_of(tree, 'sch_file'), _guid('sch'))
+    (tree / '_data/schema/sch_x.yaml').write_text(text)
+    assert cc_public.check.check.check(tree) == {'unused_schema': [('sch_x',)]}
+
+
+def test_a_concept_nothing_names_is_reported(tree):
+    _replace(tree, '_data/schema/sch_register_entry.yaml',
+             'con_register_entry.', 'a register entry.')
+    assert cc_public.check.check.check(tree) == {'unused_concept': [('con_register_entry',)]}
+
+
+def test_an_entry_in_a_register_that_holds_another_type_is_reported(souffle):
+    facts = {name: set() for name in cc_public.graph.extract.RELATION}
+    facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
+    facts['type_prefix'].update({('t_register', 'reg', '.*'), ('t_annotation', 'ann', '.*')})
+    facts['entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
+    rows  = cc_public.graph.datalog.run(facts, cc_public.check.check.RULES.read_text())
+    assert rows['misplaced_entry'] == [('reg_x', 'ann_x', 't_annotation')]

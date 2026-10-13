@@ -33,9 +33,11 @@ relation:               []
 
 import ast
 import pathlib
+import re
 import typing
 
 import ruamel.yaml
+import ruamel.yaml.scalarstring
 
 
 # Round trip loading keeps the line and column of every key and value,
@@ -51,6 +53,26 @@ KEY_TABLE         = 'table'
 KEY_PREFIX        = 'prefix'
 KEY_REGEX_ID      = 'regex_id'
 KEY_INVERSE       = 'inverse'
+KEY_ALIAS         = 'alias'
+KEY_ACYCLIC       = 'acyclic'
+KEY_REF           = '$ref'
+
+# Fields whose text names no item: identity, aliases, which name what
+# no longer exists, and patterns. A field named id_<role> or
+# guid_<role> is a reference, and is read as one.
+#
+SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pattern',
+                     '$id', '$schema', '$ref'}
+
+# A word shaped like an id, not part of a path or of a longer word. A
+# file name is read as the id it is named for, and a word that a * ends
+# is a pattern, not a mention.
+#
+REGEX_MENTION     = re.compile(r'(?<![A-Za-z0-9_$./-])[a-z]{1,8}_[a-z0-9][a-z0-9_]*'
+                               r'(?:\.[a-z0-9_][a-z0-9_]*)*')
+REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|dl|toml|json|md)$')
+MARK_GLOB         = '*'
+REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
@@ -103,6 +125,21 @@ RELATION          = {
     'module_name':      (('id', 'expected'),
                          'A python module or package holds the item id, and its '
                          'place in the tree calls for the id expected.'),
+    'tree_file':        (('file',),
+                         'The tree holds file, whether or not the file holds an '
+                         'item.'),
+    'mention':          (('holder', 'id', 'file', 'line:number'),
+                         'The text of a field of the item holder names id, in file '
+                         'at line. Any word shaped like an id is a mention, but only '
+                         'one with the prefix of a known type need name an item.'),
+    'alias':            (('id', 'alias'),
+                         'The item id was once named alias.'),
+    'relation_acyclic': (('relation',),
+                         'No chain of edges of relation may lead from an item back '
+                         'to itself.'),
+    'schema_ref':       (('holder', 'schema', 'file', 'line:number'),
+                         'The schema holder refers to the schema with a $ref, in '
+                         'file at line.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -137,7 +174,8 @@ def documents(root: pathlib.Path) -> Documents:
 
     Documents are read from YAML files under a _data directory, from
     the module docstring of a python module, and from the comment
-    header of any other file.
+    header of any other file. A file that holds no document is kept,
+    with None in its place, so that the tree's files are known.
 
     """
 
@@ -147,9 +185,7 @@ def documents(root: pathlib.Path) -> Documents:
         relative = path.relative_to(root)
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
-        (document, base) = read(path, relative)
-        if document is not None:
-            map_document[str(relative)] = (document, base)
+        map_document[str(relative)] = read(path, relative)
 
     return map_document
 
@@ -164,6 +200,9 @@ def facts_of(map_document: Documents) -> Facts:
     facts = {name: set() for name in RELATION}
 
     for (file, (document, base)) in map_document.items():
+        facts['tree_file'].add((file,))
+        if document is None:
+            continue
         _walk(document, '', (file, base), facts)
         if file.endswith(SUFFIX_PYTHON) and isinstance(document, dict):
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
@@ -210,31 +249,49 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
     Return the document that the file at path holds, or None if it
     holds none, and the line of the file that its first line is on.
+    relative is the path of the file relative to the root of the tree.
 
     """
 
-    if path.suffix == SUFFIX_YAML:
-        if DIR_DATA not in relative.parts:
-            return (None, 1)
-        with open(path, encoding = 'utf-8') as file:
-            return (YAML.load(file), 1)
+    if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON):
+        return parse(path.read_text(encoding = 'utf-8'), relative)
 
-    if path.suffix == SUFFIX_PYTHON:
-        return _docstring(path)
-
-    return (_header(path), 1)
+    # Any other file may be large, or not text, so only its head is
+    # read, and only as far as a comment header could go.
+    #
+    return (_header(_line_of_file(path)), 1)
 
 
 # -----------------------------------------------------------------------------
-def _docstring(path: pathlib.Path) -> tuple[typing.Any, int]:
+def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
-    Return the document in the module docstring of the python module at
-    path, or None if it holds none, and the line of the file that its
+    Return the document that text holds, as the content of the file at
+    relative, or None if it holds none, and the line of the file that
+    its first line is on.
+
+    """
+
+    if relative.suffix == SUFFIX_YAML:
+        if DIR_DATA not in relative.parts:
+            return (None, 1)
+        return (YAML.load(text), 1)
+
+    if relative.suffix == SUFFIX_PYTHON:
+        return _docstring(text)
+
+    return (_header(iter(text.splitlines())), 1)
+
+
+# -----------------------------------------------------------------------------
+def _docstring(text: str) -> tuple[typing.Any, int]:
+    """
+    Return the document in the module docstring of the python module
+    text, or None if it holds none, and the line of the file that its
     first line is on.
 
     """
 
-    module    = ast.parse(path.read_text(encoding = 'utf-8'))
+    module    = ast.parse(text)
     docstring = ast.get_docstring(module)
 
     if not (docstring and docstring.startswith(LINE_OPEN)):
@@ -250,29 +307,40 @@ def _docstring(path: pathlib.Path) -> tuple[typing.Any, int]:
 
 
 # -----------------------------------------------------------------------------
-def _header(path: pathlib.Path) -> typing.Any:
+def _line_of_file(path: pathlib.Path) -> typing.Iterator[str]:
     """
-    Return the document in the comment header of the file at path, or
-    None if the file does not open with one.
+    Yield the lines of the file at path, and stop at the first that is
+    not text.
+
+    """
+
+    try:
+        with open(path, encoding = 'utf-8') as file:
+            yield from file
+    except UnicodeDecodeError:
+        return
+
+
+# -----------------------------------------------------------------------------
+def _header(iter_line: typing.Iterator[str]) -> typing.Any:
+    """
+    Return the document in the comment header that the lines open
+    with, or None if they do not open with one.
 
     """
 
     list_line = []
 
-    try:
-        with open(path, encoding = 'utf-8') as file:
-            for line in file:
-                text = line.rstrip('\n')
-                if not text.startswith(MARK_COMMENT):
-                    return None
-                text = text[len(MARK_COMMENT):].removeprefix(' ')
-                if (not list_line) and text != LINE_OPEN:
-                    return None
-                list_line.append(text)
-                if text == LINE_CLOSE:
-                    return YAML.load('\n'.join(list_line))
-    except UnicodeDecodeError:
-        return None
+    for line in iter_line:
+        text = line.rstrip('\n')
+        if not text.startswith(MARK_COMMENT):
+            return None
+        text = text[len(MARK_COMMENT):].removeprefix(' ')
+        if (not list_line) and text != LINE_OPEN:
+            return None
+        list_line.append(text)
+        if text == LINE_CLOSE:
+            return YAML.load('\n'.join(list_line))
 
     return None
 
@@ -305,9 +373,12 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
                            location[0],
                            _line(node, KEY_ID_SELF, location)))
         _signature(id_self, node, facts)
+        for alias in _list_str(node.get(KEY_ALIAS)):
+            facts['alias'].add((id_self, alias))
         holder = id_self
 
     _reference(node, holder, location, facts)
+    _text(node, holder, location, facts)
 
     table = node.get(KEY_TABLE)
 
@@ -347,6 +418,68 @@ def _reference(node:     dict[str, typing.Any],
 
 
 # -----------------------------------------------------------------------------
+def _text(node:     dict[str, typing.Any],
+          holder:   str,
+          location: tuple[str, int],
+          facts:    Facts) -> None:
+    """
+    Add a fact for each id that the text of a field of node mentions,
+    and for each schema that node refers to with a $ref.
+
+    """
+
+    for (key, value) in node.items():
+        if key == KEY_REF and isinstance(value, str):
+            for match in REGEX_REF.finditer(value):
+                facts['schema_ref'].add((holder, match.group(1), location[0],
+                                         _line(node, key, location)))
+        if key in SET_KEY_UNNAMED or key.startswith((PREFIX_ID, PREFIX_GUID)):
+            continue
+        if isinstance(value, str):
+            _mention(value, holder, location[0], int(_line(node, key, location)), facts)
+        elif isinstance(value, list):
+            for (index, each) in enumerate(value):
+                if isinstance(each, str):
+                    _mention(each, holder, location[0],
+                             int(_line_item(value, index, location)), facts)
+
+
+# -----------------------------------------------------------------------------
+def _mention(text: str, holder: str, file: str, line: int, facts: Facts) -> None:
+    """
+    Add a fact for each id that text mentions. line is the line of the
+    file that the field holding text is on. The text of a block scalar
+    begins on the line below its key.
+
+    """
+
+    offset = 1 if isinstance(text, ruamel.yaml.scalarstring.LiteralScalarString) else 0
+
+    for match in REGEX_MENTION.finditer(text):
+        if text.startswith(MARK_GLOB, match.end()):
+            continue
+        word = REGEX_SUFFIX.sub('', match.group(0))
+        facts['mention'].add((holder, word, file,
+                              str(line + offset + text.count('\n', 0, match.start()))))
+
+
+# -----------------------------------------------------------------------------
+def _line_item(node: list[typing.Any], index: int, location: tuple[str, int]) -> str:
+    """
+    Return the line of the file that item index of node is on, or 0 if
+    the loader did not record it.
+
+    """
+
+    lc = getattr(node, 'lc', None)
+
+    if lc is None:
+        return '0'
+
+    return str(location[1] + lc.item(index)[0])
+
+
+# -----------------------------------------------------------------------------
 def _line(node: dict[str, typing.Any], key: str, location: tuple[str, int]) -> str:
     """
     Return the line of the file that key is on in node, or 0 if the
@@ -378,6 +511,9 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     for name in ('domain', 'range'):
         for id_type in _list_str(node.get(name)):
             facts['relation_' + name].add((id_self, id_type))
+
+    if node.get(KEY_ACYCLIC) is True:
+        facts['relation_acyclic'].add((id_self,))
 
     inverse = node.get(KEY_INVERSE)
 

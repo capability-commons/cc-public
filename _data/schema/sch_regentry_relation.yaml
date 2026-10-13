@@ -16,7 +16,8 @@ brief:                  |
                         the general register entry.
 description:            |
                         A relation entry holds the semantics of one
-                        relation: the types of thing it may join, and
+                        relation: the types of thing it may join,
+                        whether its edges may form a cycle, and
                         optionally an embedded inverse reading.
 
                         The brief of a relation entry is its surface
@@ -36,7 +37,8 @@ note:                   |
 
                         Cardinality and other properties that a
                         checker might read are not yet declared. Each
-                        is added when a relation needs it.
+                        is added when a relation needs it, as acyclic
+                        was.
 type:                   object
 
 properties:
@@ -56,6 +58,13 @@ properties:
                         Optional. The types of item that an edge of
                         this relation may target. Absent means any
                         type.
+
+  acyclic:
+    type:               boolean
+    description:        |
+                        Optional. True when no chain of edges of this
+                        relation may lead from an item back to itself.
+                        Absent means a cycle is allowed.
 
   inverse:
     type:               object

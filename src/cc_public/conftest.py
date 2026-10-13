@@ -14,7 +14,7 @@ protective_mark:
 title:                  Test fixtures
 brief:                  |
                         The fixtures the tests share: a copy of the
-                        repository's data items to break.
+                        repository to break.
 description:            |
                         This module holds the fixtures. A test that
                         needs souffle is skipped where souffle cannot
@@ -34,7 +34,12 @@ import pytest
 
 
 DIR_REPO  = pathlib.Path(__file__).resolve().parents[2]
-DIR_DATA  = '_data'
+
+# What a copy leaves out: version control, environments, caches and
+# local tools.
+#
+TUPLE_SKIP = ('.git', '.pixi', '.venv', '_tools', '__pycache__', '.ruff_cache',
+              '.pytest_cache', '*.egg-info')
 
 
 # -----------------------------------------------------------------------------
@@ -53,9 +58,13 @@ def souffle():
 @pytest.fixture
 def tree(souffle, tmp_path):
     """
-    Return the root of a copy of the repository's data items.
+    Return the root of a copy of the repository: its data items, its
+    source and the files at its root, without version control,
+    environments or caches.
 
     """
 
-    shutil.copytree(DIR_REPO / DIR_DATA, tmp_path / DIR_DATA)
+    shutil.copytree(DIR_REPO, tmp_path,
+                    ignore        = shutil.ignore_patterns(*TUPLE_SKIP),
+                    dirs_exist_ok = True)
     return tmp_path
