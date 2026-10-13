@@ -1,0 +1,111 @@
+// Checks over the graph of data items.
+//
+// The facts are extracted from the tree by check.py. Each output
+// relation is one check, and each row of it is one failure.
+
+// ---------------------------------------------------------------------
+// Facts
+
+.decl item(id:symbol, guid:symbol, holder:symbol, file:symbol)
+.decl reference(holder:symbol, role:symbol, id:symbol, guid:symbol,
+                file:symbol)
+.decl edge(source:symbol, relation:symbol, target:symbol)
+.decl type_prefix(type:symbol, prefix:symbol, regex:symbol)
+.decl relation_domain(relation:symbol, type:symbol)
+.decl relation_range(relation:symbol, type:symbol)
+.decl relation_inverse(inverse:symbol, relation:symbol)
+.decl entry_key(register:symbol, key:symbol, id:symbol)
+
+.input item, reference, edge, type_prefix, relation_domain
+.input relation_range, relation_inverse, entry_key
+
+// ---------------------------------------------------------------------
+// Derived
+
+// The prefix of an id is that of the type whose prefix and an
+// underscore begin it.
+.decl prefix_of(id:symbol, prefix:symbol)
+prefix_of(i, p) :-
+    item(i, _, _, _), type_prefix(_, p, _), match(cat(p, "_.*"), i).
+
+.decl type_of(id:symbol, type:symbol)
+type_of(i, t) :- prefix_of(i, p), type_prefix(t, p, _).
+
+// An edge recorded with an inverse is read as the primary edge in the
+// opposite direction.
+.decl primary(source:symbol, relation:symbol, target:symbol)
+primary(s, r, t) :- edge(s, r, t), !relation_inverse(r, _).
+primary(t, r, s) :- edge(s, i, t), relation_inverse(i, r).
+
+// ---------------------------------------------------------------------
+// Checks on identity
+
+// Every id begins with the prefix of a known type.
+.decl unknown_prefix(id:symbol, file:symbol)
+.output unknown_prefix
+unknown_prefix(i, f) :- item(i, _, _, f), !prefix_of(i, _).
+
+// Every id matches the regex_id of its type.
+.decl bad_id(id:symbol, regex:symbol, file:symbol)
+.output bad_id
+bad_id(i, x, f) :-
+    item(i, _, _, f), type_of(i, t), type_prefix(t, _, x), !match(x, i).
+
+// Every guid is the prefix of its id and 32 hex digits.
+.decl bad_guid(id:symbol, guid:symbol, file:symbol)
+.output bad_guid
+bad_guid(i, g, f) :-
+    item(i, g, _, f), prefix_of(i, p), !match(cat(p, "_[0-9a-f]{32}"), g).
+
+// No two types share a prefix.
+.decl duplicate_prefix(prefix:symbol, type:symbol, other:symbol)
+.output duplicate_prefix
+duplicate_prefix(p, t, u) :-
+    type_prefix(t, p, _), type_prefix(u, p, _), t != u.
+
+// No id names two items, and no guid identifies two.
+.decl duplicate_id(id:symbol, guid:symbol, other:symbol)
+.output duplicate_id
+duplicate_id(i, g, h) :- item(i, g, _, _), item(i, h, _, _), g != h.
+
+.decl duplicate_guid(guid:symbol, id:symbol, other:symbol)
+.output duplicate_guid
+duplicate_guid(g, i, j) :- item(i, g, _, _), item(j, g, _, _), i != j.
+
+// The key of a register entry is its id.
+.decl key_mismatch(register:symbol, key:symbol, id:symbol)
+.output key_mismatch
+key_mismatch(r, k, i) :- entry_key(r, k, i), k != i.
+
+// ---------------------------------------------------------------------
+// Checks on references and edges
+
+// Every reference names an item that exists.
+.decl dangling_reference(holder:symbol, role:symbol, id:symbol, file:symbol)
+.output dangling_reference
+dangling_reference(h, r, i, f) :- reference(h, r, i, _, f), !item(i, _, _, _).
+
+// Every reference carries the guid of the item it names.
+.decl stale_guid(holder:symbol, role:symbol, id:symbol, guid:symbol)
+.output stale_guid
+stale_guid(h, r, i, g) :- reference(h, r, i, g, _), item(i, h2, _, _), g != h2.
+
+// The source of an edge is of a type its relation's domain allows.
+.decl domain_violation(source:symbol, relation:symbol, type:symbol)
+.output domain_violation
+domain_violation(s, r, t) :-
+    primary(s, r, _), relation_domain(r, _), type_of(s, t),
+    !relation_domain(r, t).
+
+// The target of an edge is of a type its relation's range allows.
+.decl range_violation(target:symbol, relation:symbol, type:symbol)
+.output range_violation
+range_violation(o, r, t) :-
+    primary(_, r, o), relation_range(r, _), type_of(o, t),
+    !relation_range(r, t).
+
+// Every annotation and every decision is about something.
+.decl missing_about(id:symbol)
+.output missing_about
+missing_about(i) :- type_of(i, "t_annotation"), !primary(i, "r_is_about", _).
+missing_about(i) :- type_of(i, "t_decision"), !primary(i, "r_is_about", _).
