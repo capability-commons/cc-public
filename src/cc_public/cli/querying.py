@@ -111,8 +111,9 @@ def sql(text, path_file, root, limit, is_json):
     """
     Evaluate one SQL query over the graph.
 
-    Each relation is a SQLite table, and every value is text. Give the
-    query as QUERY, as - to read it from stdin, or with --file.
+    Each relation is a SQLite table. A line is an integer, and every
+    other value is text. Give the query as QUERY, as - to read it from
+    stdin, or with --file.
 
     \b
     Examples:
@@ -145,8 +146,8 @@ def datalog(text, path_file, root, limit, is_json):
 
     The rules are added to a program that already declares every
     relation, so they may use any of them. Each relation the rules
-    name in an .output directive is printed. Every value is a symbol.
-    Give the rules as QUERY, as - to read them from stdin, or with
+    name in an .output directive is printed. A line is a number, and
+    every other value is a symbol. Give the rules as QUERY, as - to read them from stdin, or with
     --file.
 
     \b
@@ -170,7 +171,8 @@ def datalog(text, path_file, root, limit, is_json):
     except cc_public.graph.datalog.ErrorDatalog as error:
         _fail('Datalog error: {error}'.format(error = error), EXAMPLE_DATALOG)
 
-    map_column = cc_public.graph.datalog.declared(text)
+    map_column = {name: tuple(column for (column, _) in tuple_column)
+                  for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()}
 
     if is_json:
         click.echo(json.dumps({name: _result(map_column.get(name, ()), list_row, limit)
@@ -203,8 +205,8 @@ def schema():
 
     click.echo('\nDerived relations, as defined in cc_public/graph/derive.dl:\n')
     click.echo(cc_public.graph.datalog.PATH_DERIVE.read_text(encoding = 'utf-8'))
-    click.echo('In SQL each relation is a table of text columns. In Datalog each')
-    click.echo('is a relation of symbols.\n')
+    click.echo('A column is a symbol, or text in SQL, unless it is marked :number,')
+    click.echo('an integer in SQL. In SQL each relation is a table.\n')
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_DATALOG)

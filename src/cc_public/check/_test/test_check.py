@@ -41,6 +41,12 @@ from cc_public.conftest import DIR_REPO
 ID_ABOUT     = 'concern_safety'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
+# An item written by _item has id_self on its first line, and the
+# id_target of its first edge on its sixth.
+#
+LINE_ITEM    = '1'
+LINE_TARGET  = '6'
+
 
 # -----------------------------------------------------------------------------
 def _guid(prefix):
@@ -59,7 +65,7 @@ def _guid_of(root, id_self):
 
     """
 
-    return next(guid for (ident, guid, _, _) in cc_public.graph.extract.extract(root)['item']
+    return next(guid for (ident, guid, *_) in cc_public.graph.extract.extract(root)['item']
                      if ident == id_self)
 
 
@@ -153,19 +159,19 @@ def test_a_decision_about_nothing_is_reported(tree):
 
 def test_an_id_with_no_known_prefix_is_reported(tree):
     location = _item(tree, '_data/x/xyz_x.yaml', 'xyz_x')
-    assert cc_public.check.check.check(tree) == {'unknown_prefix': [('xyz_x', location)]}
+    assert cc_public.check.check.check(tree) == {'unknown_prefix': [('xyz_x', location, LINE_ITEM)]}
 
 
 def test_an_id_against_the_pattern_of_its_type_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_X',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
-    assert cc_public.check.check.check(tree) == {'bad_id': [('ann_X', REGEX_ANN, location)]}
+    assert cc_public.check.check.check(tree) == {'bad_id': [('ann_X', REGEX_ANN, location, LINE_ITEM)]}
 
 
 def test_a_malformed_guid_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)], guid = 'ann_123')
-    assert cc_public.check.check.check(tree) == {'bad_guid': [('ann_x', 'ann_123', location)]}
+    assert cc_public.check.check.check(tree) == {'bad_guid': [('ann_x', 'ann_123', location, LINE_ITEM)]}
 
 
 def test_two_types_sharing_a_prefix_are_reported(tree):
@@ -208,14 +214,14 @@ def test_a_reference_to_nothing_is_reported(tree):
             'guid_target':   _guid('concern')}
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
     assert cc_public.check.check.check(tree) == {'dangling_reference': [('ann_x', 'target', 'concern_absent',
-                                                         location)]}
+                                                         location, LINE_TARGET)]}
 
 
 def test_a_reference_with_a_stale_guid_is_reported(tree):
     edge = dict(_edge(tree, 'r_is_about', ID_ABOUT), guid_target = _guid('concern'))
-    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
     assert cc_public.check.check.check(tree) == {'stale_guid': [('ann_x', 'target', ID_ABOUT,
-                                                 edge['guid_target'])]}
+                                                 edge['guid_target'], location, LINE_TARGET)]}
 
 
 def test_an_edge_from_outside_the_domain_is_reported(tree):
@@ -272,7 +278,7 @@ def test_a_package_named_as_a_module_is_reported(tree):
 def test_an_item_in_a_comment_header_is_read(tree):
     (tree / 'tool.cfg').write_text('# ---\n# id_self: file_tool\n# guid_self: file_123\n'
                                    '# relation: []\n# ...\nsetting = 1\n')
-    assert cc_public.check.check.check(tree) == {'bad_guid': [('file_tool', 'file_123', 'tool.cfg')]}
+    assert cc_public.check.check.check(tree) == {'bad_guid': [('file_tool', 'file_123', 'tool.cfg', '2')]}
 
 
 def test_files_that_hold_no_item_are_passed_over(tree):

@@ -44,7 +44,6 @@ import cc_public.graph.extract
 
 PATH_DERIVE       = pathlib.Path(__file__).with_name('derive.dl')
 DELIM_FIELD       = '\t'
-TYPE_COLUMN       = 'symbol'
 
 # A declaration names a relation and its columns, as name:type pairs.
 # An output directive names one or more relations to be written out.
@@ -75,27 +74,29 @@ def declaration() -> str:
     for (name, (tuple_column, _)) in cc_public.graph.extract.RELATION.items():
         list_line.append('.decl {name}({column})'.format(
                             name   = name,
-                            column = ', '.join('{c}:{t}'.format(c = column, t = TYPE_COLUMN)
-                                              for column in tuple_column)))
+                            column = ', '.join('{c}:{t}'.format(c = column, t = type_column)
+                                              for (column, type_column)
+                                              in map(cc_public.graph.extract.column,
+                                                     tuple_column))))
         list_line.append('.input {name}'.format(name = name))
 
     return '\n'.join(list_line) + '\n'
 
 
 # -----------------------------------------------------------------------------
-def declared(text: str) -> dict[str, tuple[str, ...]]:
+def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
     """
-    Return the columns of each relation that text declares, keyed by
-    relation.
+    Return the name and the type of each column of each relation that
+    text declares, keyed by relation.
 
     """
 
     map_column = {}
 
     for match in REGEX_DECL.finditer(text):
-        map_column[match.group(1)] = tuple(part.split(':')[0].strip()
-                                           for part in match.group(2).split(',')
-                                           if part.strip())
+        map_column[match.group(1)] = tuple(cc_public.graph.extract.column(spec)
+                                           for spec in match.group(2).split(',')
+                                           if spec.strip())
 
     return map_column
 
@@ -117,9 +118,10 @@ def output(text: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
-def derived() -> dict[str, tuple[str, ...]]:
+def derived() -> dict[str, tuple[tuple[str, str], ...]]:
     """
-    Return the columns of each derived relation, keyed by relation.
+    Return the name and the type of each column of each derived
+    relation, keyed by relation.
 
     """
 

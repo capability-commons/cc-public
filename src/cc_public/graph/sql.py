@@ -36,6 +36,11 @@ import cc_public.graph.datalog
 import cc_public.graph.extract
 
 
+# A number is an integer in SQL, and a symbol is text.
+#
+MAP_TYPE          = {'symbol': 'TEXT', 'number': 'INTEGER'}
+
+
 # -----------------------------------------------------------------------------
 def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
     """
@@ -44,8 +49,8 @@ def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
 
     """
 
-    map_column = {name: tuple_column for (name, (tuple_column, _))
-                                      in cc_public.graph.extract.RELATION.items()}
+    map_column = {name: tuple(cc_public.graph.extract.column(spec) for spec in tuple_spec)
+                  for (name, (tuple_spec, _)) in cc_public.graph.extract.RELATION.items()}
     map_derive = cc_public.graph.datalog.derived()
     rules      = ''.join('.output {name}\n'.format(name = name) for name in map_derive)
     rows       = {name: sorted(set_row) for (name, set_row) in facts.items()}
@@ -58,8 +63,9 @@ def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
     for (name, tuple_column) in map_column.items():
         connection.execute('CREATE TABLE "{name}" ({column})'.format(
                               name   = name,
-                              column = ', '.join('"{c}" TEXT'.format(c = column)
-                                                 for column in tuple_column)))
+                              column = ', '.join('"{c}" {t}'.format(c = column,
+                                                                     t = MAP_TYPE[type_column])
+                                                 for (column, type_column) in tuple_column)))
         # The names are those declared in RELATION and derive.dl, not input.
         connection.executemany('INSERT INTO "{name}" VALUES ({mark})'.format(  # noqa: S608
                                   name = name,

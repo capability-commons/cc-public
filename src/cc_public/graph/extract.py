@@ -70,16 +70,23 @@ MARK_COMMENT      = '#'
 #
 SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
 
-# Each base relation: its columns, and what one row of it states.
-# Every value is a string.
+# Each base relation: its columns, and what one row of it states. A
+# column is a symbol unless its name is followed by :number. A line
+# is the line of the file, counted from 1, that the key of the field
+# is on: id_self for an item, and id_<role> for a reference.
 #
+TYPE_SYMBOL       = 'symbol'
+DELIM_TYPE        = ':'
+
 RELATION          = {
-    'item':             (('id', 'guid', 'holder', 'file'),
-                         'The item id, with guid, is held in file. holder is the id '
-                         'of the item that contains it, or empty if none does.'),
-    'reference':        (('holder', 'role', 'id', 'guid', 'file'),
+    'item':             (('id', 'guid', 'holder', 'file', 'line:number'),
+                         'The item id, with guid, is written in file at line. holder '
+                         'is the id of the item that contains it, or empty if none '
+                         'does.'),
+    'reference':        (('holder', 'role', 'id', 'guid', 'file', 'line:number'),
                          'The item holder names the item id, with guid, in a pair '
-                         'of fields id_<role> and guid_<role>.'),
+                         'of fields id_<role> and guid_<role>, written in file at '
+                         'line.'),
     'edge':             (('source', 'relation', 'target'),
                          'The item source records an edge of relation to target, '
                          'as written. primary_edge reads edges through inverses.'),
@@ -127,15 +134,26 @@ def extract(root: pathlib.Path) -> Facts:
         relative = path.relative_to(root)
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
-        document = _read(path, relative)
+        (document, base) = _read(path, relative)
         if document is None:
             continue
-        _walk(document, '', str(relative), facts)
+        _walk(document, '', (str(relative), base), facts)
         if path.suffix == SUFFIX_PYTHON and isinstance(document, dict):
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       _module_name(relative)))
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def column(spec: str) -> tuple[str, str]:
+    """
+    Return the name and the type of the column that spec declares.
+
+    """
+
+    (name, _, type_column) = spec.partition(DELIM_TYPE)
+    return (name.strip(), type_column.strip() or TYPE_SYMBOL)
 
 
 # -----------------------------------------------------------------------------
@@ -161,26 +179,47 @@ def _module_name(relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _read(path: pathlib.Path, relative: pathlib.Path) -> typing.Any:
+def _read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
     Return the document that the file at path holds, or None if it
-    holds none.
+    holds none, and the line of the file that its first line is on.
 
     """
 
     if path.suffix == SUFFIX_YAML:
         if DIR_DATA not in relative.parts:
-            return None
+            return (None, 1)
         with open(path, encoding = 'utf-8') as file:
-            return YAML.load(file)
+            return (YAML.load(file), 1)
 
     if path.suffix == SUFFIX_PYTHON:
-        docstring = ast.get_docstring(ast.parse(path.read_text(encoding = 'utf-8')))
-        if docstring and docstring.startswith(LINE_OPEN):
-            return YAML.load(docstring)
-        return None
+        return _docstring(path)
 
-    return _header(path)
+    return (_header(path), 1)
+
+
+# -----------------------------------------------------------------------------
+def _docstring(path: pathlib.Path) -> tuple[typing.Any, int]:
+    """
+    Return the document in the module docstring of the python module at
+    path, or None if it holds none, and the line of the file that its
+    first line is on.
+
+    """
+
+    module    = ast.parse(path.read_text(encoding = 'utf-8'))
+    docstring = ast.get_docstring(module)
+
+    if not (docstring and docstring.startswith(LINE_OPEN)):
+        return (None, 1)
+
+    # The docstring is cleaned of the blank lines that open it, so its
+    # first line is that many lines below the opening quotes.
+    #
+    raw     = module.body[0].value.value
+    leading = raw[:len(raw) - len(raw.lstrip())].count('\n')
+
+    return (YAML.load(docstring), module.body[0].lineno + leading)
 
 
 # -----------------------------------------------------------------------------
@@ -212,9 +251,11 @@ def _header(path: pathlib.Path) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _walk(node: typing.Any, holder: str, location: str, facts: Facts) -> None:
+def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts) -> None:
     """
     Add the facts held by node, whose nearest enclosing item is holder.
+    location is the file that holds node, and the line of the file that
+    the first line of its document is on.
 
     """
 
@@ -234,7 +275,8 @@ def _walk(node: typing.Any, holder: str, location: str, facts: Facts) -> None:
         facts['item'].add((id_self,
                            str(node.get(KEY_GUID_SELF, '')),
                            holder,
-                           location))
+                           location[0],
+                           _line(node, KEY_ID_SELF, location)))
         _signature(id_self, node, facts)
         holder = id_self
 
@@ -256,7 +298,7 @@ def _walk(node: typing.Any, holder: str, location: str, facts: Facts) -> None:
 # -----------------------------------------------------------------------------
 def _reference(node:     dict[str, typing.Any],
                holder:   str,
-               location: str,
+               location: tuple[str, int],
                facts:    Facts) -> None:
     """
     Add a fact for each reference that node makes, and for the edge
@@ -268,12 +310,29 @@ def _reference(node:     dict[str, typing.Any],
         if key.startswith(PREFIX_ID) and key != KEY_ID_SELF and isinstance(value, str):
             role = key[len(PREFIX_ID):]
             guid = str(node.get(PREFIX_GUID + role, ''))
-            facts['reference'].add((holder, role, value, guid, location))
+            facts['reference'].add((holder, role, value, guid, location[0],
+                                    _line(node, key, location)))
 
     if isinstance(node.get(KEY_ID_RELATION), str):
         facts['edge'].add((holder,
                            node[KEY_ID_RELATION],
                            str(node.get(KEY_ID_TARGET))))
+
+
+# -----------------------------------------------------------------------------
+def _line(node: dict[str, typing.Any], key: str, location: tuple[str, int]) -> str:
+    """
+    Return the line of the file that key is on in node, or 0 if the
+    loader did not record it.
+
+    """
+
+    lc = getattr(node, 'lc', None)
+
+    if lc is None:
+        return '0'
+
+    return str(location[1] + lc.key(key)[0])
 
 
 # -----------------------------------------------------------------------------

@@ -2,27 +2,28 @@
 //
 // Each output relation is one check, and each row of it is one
 // failure. The base relations and the relations of derive.dl in
-// cc_public.graph come before this file in the program.
+// cc_public.graph come before this file in the program. A check that
+// reports a file reports the line of it too.
 
 // ---------------------------------------------------------------------
 // Checks on identity
 
 // Every id begins with the prefix of a known type.
-.decl unknown_prefix(id:symbol, file:symbol)
+.decl unknown_prefix(id:symbol, file:symbol, line:number)
 .output unknown_prefix
-unknown_prefix(i, f) :- item(i, _, _, f), !prefix_of(i, _).
+unknown_prefix(i, f, n) :- item(i, _, _, f, n), !prefix_of(i, _).
 
 // Every id matches the regex_id of its type.
-.decl bad_id(id:symbol, regex:symbol, file:symbol)
+.decl bad_id(id:symbol, regex:symbol, file:symbol, line:number)
 .output bad_id
-bad_id(i, x, f) :-
-    item(i, _, _, f), type_of(i, t), type_prefix(t, _, x), !match(x, i).
+bad_id(i, x, f, n) :-
+    item(i, _, _, f, n), type_of(i, t), type_prefix(t, _, x), !match(x, i).
 
 // Every guid is the prefix of its id and 32 hex digits.
-.decl bad_guid(id:symbol, guid:symbol, file:symbol)
+.decl bad_guid(id:symbol, guid:symbol, file:symbol, line:number)
 .output bad_guid
-bad_guid(i, g, f) :-
-    item(i, g, _, f), prefix_of(i, p), !match(cat(p, "_[0-9a-f]{32}"), g).
+bad_guid(i, g, f, n) :-
+    item(i, g, _, f, n), prefix_of(i, p), !match(cat(p, "_[0-9a-f]{32}"), g).
 
 // No two types share a prefix.
 .decl duplicate_prefix(prefix:symbol, type:symbol, other:symbol)
@@ -33,11 +34,11 @@ duplicate_prefix(p, t, u) :-
 // No id names two items, and no guid identifies two.
 .decl duplicate_id(id:symbol, guid:symbol, other:symbol)
 .output duplicate_id
-duplicate_id(i, g, h) :- item(i, g, _, _), item(i, h, _, _), g != h.
+duplicate_id(i, g, h) :- item(i, g, _, _, _), item(i, h, _, _, _), g != h.
 
 .decl duplicate_guid(guid:symbol, id:symbol, other:symbol)
 .output duplicate_guid
-duplicate_guid(g, i, j) :- item(i, g, _, _), item(j, g, _, _), i != j.
+duplicate_guid(g, i, j) :- item(i, g, _, _, _), item(j, g, _, _, _), i != j.
 
 // A python module or package item is named for the module or package
 // that holds it.
@@ -54,14 +55,18 @@ key_mismatch(r, k, i) :- entry_key(r, k, i), k != i.
 // Checks on references and edges
 
 // Every reference names an item that exists.
-.decl dangling_reference(holder:symbol, role:symbol, id:symbol, file:symbol)
+.decl dangling_reference(holder:symbol, role:symbol, id:symbol,
+                          file:symbol, line:number)
 .output dangling_reference
-dangling_reference(h, r, i, f) :- reference(h, r, i, _, f), !item(i, _, _, _).
+dangling_reference(h, r, i, f, n) :-
+    reference(h, r, i, _, f, n), !item(i, _, _, _, _).
 
 // Every reference carries the guid of the item it names.
-.decl stale_guid(holder:symbol, role:symbol, id:symbol, guid:symbol)
+.decl stale_guid(holder:symbol, role:symbol, id:symbol, guid:symbol,
+                  file:symbol, line:number)
 .output stale_guid
-stale_guid(h, r, i, g) :- reference(h, r, i, g, _), item(i, h2, _, _), g != h2.
+stale_guid(h, r, i, g, f, n) :-
+    reference(h, r, i, g, f, n), item(i, h2, _, _, _), g != h2.
 
 // The source of an edge is of a type its relation's domain allows.
 .decl domain_violation(source:symbol, relation:symbol, type:symbol)

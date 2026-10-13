@@ -38,8 +38,9 @@ ID_CONCERN = 'concern_safety'
 
 
 def test_declared_reads_the_columns_of_each_relation():
-    text = '.decl a(x:symbol, y:number)\n.decl b(\n    z:symbol)'
-    assert cc_public.graph.datalog.declared(text) == {'a': ('x', 'y'), 'b': ('z',)}
+    text = '.decl a(x:symbol, y:number)\n.decl b(\n    z)'
+    assert cc_public.graph.datalog.declared(text) == {'a': (('x', 'symbol'), ('y', 'number')),
+                                                      'b': (('z', 'symbol'),)}
 
 
 def test_output_reads_every_relation_named_in_order():
@@ -51,7 +52,7 @@ def test_datalog_returns_each_output_relation_in_order(tree):
     facts = cc_public.graph.extract.extract(tree)
     rules = ('.decl t(type:symbol) .decl i(id:symbol) .output t, i\n'
              't(x) :- type_of("{c}", x).\n'
-             'i(x) :- item(x, _, _, _), x = "{c}".').format(c = ID_CONCERN)
+             'i(x) :- item(x, _, _, _, _), x = "{c}".').format(c = ID_CONCERN)
     rows  = cc_public.graph.datalog.run(facts, rules)
     assert list(rows.items()) == [('t', [('t_concern',)]), ('i', [(ID_CONCERN,)])]
 
@@ -73,3 +74,18 @@ def test_sql_reports_an_error(tree):
     facts = cc_public.graph.extract.extract(tree)
     with pytest.raises(sqlite3.Error):
         cc_public.graph.sql.query(facts, 'SELECT nothing FROM nowhere')
+
+
+def test_an_item_in_a_docstring_is_placed_on_its_line_of_the_file(tree):
+    path = tree / 'src/x/y.py'
+    path.parent.mkdir(parents = True)
+    path.write_text('# A comment.\n"""\n\n---\nid_self: pym_x.y\nguid_self: pym_1\n...\n"""\n')
+    facts = cc_public.graph.extract.extract(tree)
+    assert ('pym_x.y', 'pym_1', '', 'src/x/y.py', '5') in facts['item']
+
+
+def test_a_line_is_an_integer_in_sql(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    text  = ("SELECT typeof(line) AS t FROM item "
+             "UNION SELECT typeof(line) AS t FROM reference")
+    assert cc_public.graph.sql.query(facts, text) == (('t',), [('integer',)])
