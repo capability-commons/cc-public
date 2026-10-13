@@ -35,14 +35,15 @@ import cc_public.cli.group
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.argument('root',
-                default = '.',
-                type    = click.Path(exists    = True,
-                                     file_okay = False,
-                                     path_type = pathlib.Path))
+@click.option('--root',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The tree to check. Defaults to the working directory.')
 def check(root: pathlib.Path) -> None:
     """
-    Check the tree under ROOT, or the working directory.
+    Check the tree under --root, or the working directory.
 
     Each failure is printed as the name of the check and the row that
     fails it. The exit status is 1 when any check fails.

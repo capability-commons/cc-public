@@ -15,8 +15,9 @@ title:                  Capability commons
 brief:                  |
                         Tooling for the capability commons.
 description:            |
-                        This is the root package. It holds the
-                        checker and the command line interface.
+                        This is the root package. It holds the graph
+                        of facts, the checker and the command line
+                        interface.
 relation:               []
 
 ...

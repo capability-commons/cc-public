@@ -1,42 +1,8 @@
 // Checks over the graph of data items.
 //
-// The facts are extracted from the tree by check.py. Each output
-// relation is one check, and each row of it is one failure.
-
-// ---------------------------------------------------------------------
-// Facts
-
-.decl item(id:symbol, guid:symbol, holder:symbol, file:symbol)
-.decl reference(holder:symbol, role:symbol, id:symbol, guid:symbol,
-                file:symbol)
-.decl edge(source:symbol, relation:symbol, target:symbol)
-.decl type_prefix(type:symbol, prefix:symbol, regex:symbol)
-.decl relation_domain(relation:symbol, type:symbol)
-.decl relation_range(relation:symbol, type:symbol)
-.decl relation_inverse(inverse:symbol, relation:symbol)
-.decl entry_key(register:symbol, key:symbol, id:symbol)
-.decl module_name(id:symbol, expected:symbol)
-
-.input item, reference, edge, type_prefix, relation_domain
-.input relation_range, relation_inverse, entry_key, module_name
-
-// ---------------------------------------------------------------------
-// Derived
-
-// The prefix of an id is that of the type whose prefix and an
-// underscore begin it.
-.decl prefix_of(id:symbol, prefix:symbol)
-prefix_of(i, p) :-
-    item(i, _, _, _), type_prefix(_, p, _), match(cat(p, "_.*"), i).
-
-.decl type_of(id:symbol, type:symbol)
-type_of(i, t) :- prefix_of(i, p), type_prefix(t, p, _).
-
-// An edge recorded with an inverse is read as the primary edge in the
-// opposite direction.
-.decl primary(source:symbol, relation:symbol, target:symbol)
-primary(s, r, t) :- edge(s, r, t), !relation_inverse(r, _).
-primary(t, r, s) :- edge(s, i, t), relation_inverse(i, r).
+// Each output relation is one check, and each row of it is one
+// failure. The base relations and the relations of derive.dl in
+// cc_public.graph come before this file in the program.
 
 // ---------------------------------------------------------------------
 // Checks on identity
@@ -101,18 +67,20 @@ stale_guid(h, r, i, g) :- reference(h, r, i, g, _), item(i, h2, _, _), g != h2.
 .decl domain_violation(source:symbol, relation:symbol, type:symbol)
 .output domain_violation
 domain_violation(s, r, t) :-
-    primary(s, r, _), relation_domain(r, _), type_of(s, t),
+    primary_edge(s, r, _), relation_domain(r, _), type_of(s, t),
     !relation_domain(r, t).
 
 // The target of an edge is of a type its relation's range allows.
 .decl range_violation(target:symbol, relation:symbol, type:symbol)
 .output range_violation
 range_violation(o, r, t) :-
-    primary(_, r, o), relation_range(r, _), type_of(o, t),
+    primary_edge(_, r, o), relation_range(r, _), type_of(o, t),
     !relation_range(r, t).
 
 // Every annotation and every decision is about something.
 .decl missing_about(id:symbol)
 .output missing_about
-missing_about(i) :- type_of(i, "t_annotation"), !primary(i, "r_is_about", _).
-missing_about(i) :- type_of(i, "t_decision"), !primary(i, "r_is_about", _).
+missing_about(i) :-
+    type_of(i, "t_annotation"), !primary_edge(i, "r_is_about", _).
+missing_about(i) :-
+    type_of(i, "t_decision"), !primary_edge(i, "r_is_about", _).

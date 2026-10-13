@@ -34,7 +34,8 @@ import uuid
 import ruamel.yaml
 
 import cc_public.check.check
-from conftest import DIR_REPO
+import cc_public.graph.extract
+from cc_public.conftest import DIR_REPO
 
 
 ID_ABOUT     = 'concern_safety'
@@ -58,7 +59,7 @@ def _guid_of(root, id_self):
 
     """
 
-    return next(guid for (ident, guid, _, _) in cc_public.check.check.extract(root)['item']
+    return next(guid for (ident, guid, _, _) in cc_public.graph.extract.extract(root)['item']
                      if ident == id_self)
 
 

@@ -17,14 +17,12 @@ brief:                  |
                         tree, by evaluating check.dl over facts
                         extracted from it.
 description:            |
-                        This module extracts facts from every YAML
-                        file under a _data directory, writes them as
-                        Souffle input, evaluates check.dl over them,
-                        and reports every row of every output
-                        relation. Each output relation is one check,
-                        and each row is one failure.
+                        This module extracts the facts of the tree and
+                        evaluates check.dl over them. Each output
+                        relation of check.dl is one check, and each
+                        row of it is one failure.
 usage:                  |
-                        cctool check [root]
+                        cctool check [--root DIR]
 
                         The souffle executable is taken from the
                         SOUFFLE environment variable, or from the
@@ -35,289 +33,15 @@ relation:               []
 """
 
 
-import ast
-import os
 import pathlib
-import subprocess
-import tempfile
-import typing
 
-import ruamel.yaml
+import cc_public.graph.datalog
+import cc_public.graph.extract
 
 
 RULES             = pathlib.Path(__file__).with_name('check.dl')
 
-# Round trip loading keeps the line and column of every key and value,
-# so that a fact can later be traced to where it is written.
-#
-YAML              = ruamel.yaml.YAML(typ = 'rt')
-
-KEY_ID_SELF       = 'id_self'
-KEY_GUID_SELF     = 'guid_self'
-KEY_ID_RELATION   = 'id_relation'
-KEY_ID_TARGET     = 'id_target'
-KEY_TABLE         = 'table'
-KEY_PREFIX        = 'prefix'
-KEY_REGEX_ID      = 'regex_id'
-KEY_INVERSE       = 'inverse'
-
-PREFIX_ID         = 'id_'
-PREFIX_GUID       = 'guid_'
-DIR_DATA          = '_data'
-SUFFIX_YAML       = '.yaml'
-SUFFIX_PYTHON     = '.py'
-DELIM_FIELD       = '\t'
-
-# A document opens with this line and closes with the next. In a
-# comment header each line also begins with the comment marker.
-#
-LINE_OPEN         = '---'
-LINE_CLOSE        = '...'
-MARK_COMMENT      = '#'
-
-# Directories that hold no items: version control, environments,
-# caches and local tools.
-#
-SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
-
-TUPLE_RELATION    = ('item',
-                     'reference',
-                     'edge',
-                     'type_prefix',
-                     'relation_domain',
-                     'relation_range',
-                     'relation_inverse',
-                     'entry_key',
-                     'module_name')
-
-# Python modules are imported with src as the root of the path. The
-# item of a package is held in the docstring of its __init__ module.
-#
-DIR_IMPORT_ROOT   = 'src'
-PREFIX_MODULE     = 'pym_'
-PREFIX_PACKAGE    = 'pyp_'
-NAME_PACKAGE      = '__init__'
-DELIM_MODULE      = '.'
-
-Facts             = dict[str, set[tuple[str, ...]]]
 Failures          = dict[str, list[tuple[str, ...]]]
-
-
-# -----------------------------------------------------------------------------
-def extract(root: pathlib.Path) -> Facts:
-    """
-    Return the facts of the tree under root, keyed by relation.
-
-    Items are read from YAML files under a _data directory, from the
-    module docstring of a python module, and from the comment header
-    of any other file.
-
-    """
-
-    facts = {name: set() for name in TUPLE_RELATION}
-
-    for path in sorted(root.rglob('*')):
-        relative = path.relative_to(root)
-        if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
-            continue
-        document = _read(path, relative)
-        if document is None:
-            continue
-        _walk(document, '', str(relative), facts)
-        if path.suffix == SUFFIX_PYTHON and isinstance(document, dict):
-            facts['module_name'].add((str(document.get(KEY_ID_SELF)),
-                                      _module_name(relative)))
-
-    return facts
-
-
-# -----------------------------------------------------------------------------
-def _module_name(relative: pathlib.Path) -> str:
-    """
-    Return the id that names the python module at relative: the prefix
-    and the dotted name it is imported under, in lower case. An
-    __init__ module is named for its package.
-
-    """
-
-    list_part = list(relative.with_suffix('').parts)
-    prefix    = PREFIX_MODULE
-
-    if list_part and list_part[0] == DIR_IMPORT_ROOT:
-        list_part = list_part[1:]
-
-    if list_part and list_part[-1] == NAME_PACKAGE:
-        list_part = list_part[:-1]
-        prefix    = PREFIX_PACKAGE
-
-    return prefix + DELIM_MODULE.join(list_part).lower()
-
-
-# -----------------------------------------------------------------------------
-def _read(path: pathlib.Path, relative: pathlib.Path) -> typing.Any:
-    """
-    Return the document that the file at path holds, or None if it
-    holds none.
-
-    """
-
-    if path.suffix == SUFFIX_YAML:
-        if DIR_DATA not in relative.parts:
-            return None
-        with open(path, encoding = 'utf-8') as file:
-            return YAML.load(file)
-
-    if path.suffix == SUFFIX_PYTHON:
-        docstring = ast.get_docstring(ast.parse(path.read_text(encoding = 'utf-8')))
-        if docstring and docstring.startswith(LINE_OPEN):
-            return YAML.load(docstring)
-        return None
-
-    return _header(path)
-
-
-# -----------------------------------------------------------------------------
-def _header(path: pathlib.Path) -> typing.Any:
-    """
-    Return the document in the comment header of the file at path, or
-    None if the file does not open with one.
-
-    """
-
-    list_line = []
-
-    try:
-        with open(path, encoding = 'utf-8') as file:
-            for line in file:
-                text = line.rstrip('\n')
-                if not text.startswith(MARK_COMMENT):
-                    return None
-                text = text[len(MARK_COMMENT):].removeprefix(' ')
-                if (not list_line) and text != LINE_OPEN:
-                    return None
-                list_line.append(text)
-                if text == LINE_CLOSE:
-                    return YAML.load('\n'.join(list_line))
-    except UnicodeDecodeError:
-        return None
-
-    return None
-
-
-# -----------------------------------------------------------------------------
-def _walk(node: typing.Any, holder: str, location: str, facts: Facts) -> None:
-    """
-    Add the facts held by node, whose nearest enclosing item is holder.
-
-    """
-
-    if isinstance(node, list):
-
-        for value in node:
-            _walk(value, holder, location, facts)
-        return
-
-    if not isinstance(node, dict):
-        return
-
-    id_self = node.get(KEY_ID_SELF)
-
-    if isinstance(id_self, str):
-
-        facts['item'].add((id_self,
-                           str(node.get(KEY_GUID_SELF, '')),
-                           holder,
-                           location))
-        _signature(id_self, node, facts)
-        holder = id_self
-
-    _reference(node, holder, location, facts)
-
-    table = node.get(KEY_TABLE)
-
-    if isinstance(id_self, str) and isinstance(table, dict):
-        for (key, entry) in table.items():
-            if isinstance(entry, dict):
-                facts['entry_key'].add((id_self,
-                                        str(key),
-                                        str(entry.get(KEY_ID_SELF))))
-
-    for value in node.values():
-        _walk(value, holder, location, facts)
-
-
-# -----------------------------------------------------------------------------
-def _reference(node:     dict[str, typing.Any],
-               holder:   str,
-               location: str,
-               facts:    Facts) -> None:
-    """
-    Add a fact for each reference that node makes, and for the edge
-    that node is, if it is one.
-
-    """
-
-    for (key, value) in node.items():
-        if key.startswith(PREFIX_ID) and key != KEY_ID_SELF and isinstance(value, str):
-            role = key[len(PREFIX_ID):]
-            guid = str(node.get(PREFIX_GUID + role, ''))
-            facts['reference'].add((holder, role, value, guid, location))
-
-    if isinstance(node.get(KEY_ID_RELATION), str):
-        facts['edge'].add((holder,
-                           node[KEY_ID_RELATION],
-                           str(node.get(KEY_ID_TARGET))))
-
-
-# -----------------------------------------------------------------------------
-def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
-    """
-    Add the type and relation facts that an entry declares.
-
-    """
-
-    prefix   = node.get(KEY_PREFIX)
-    regex_id = node.get(KEY_REGEX_ID)
-
-    if isinstance(prefix, str) and isinstance(regex_id, str):
-        facts['type_prefix'].add((id_self, prefix, regex_id))
-
-    for name in ('domain', 'range'):
-        for id_type in _list_str(node.get(name)):
-            facts['relation_' + name].add((id_self, id_type))
-
-    inverse = node.get(KEY_INVERSE)
-
-    if isinstance(inverse, dict) and isinstance(inverse.get(KEY_ID_SELF), str):
-        facts['relation_inverse'].add((inverse[KEY_ID_SELF], id_self))
-
-
-# -----------------------------------------------------------------------------
-def _list_str(value: typing.Any) -> list[str]:
-    """
-    Return value if it is a list of strings, and an empty list if not.
-
-    """
-
-    if isinstance(value, list) and all(isinstance(each, str) for each in value):
-        return value
-    return []
-
-
-# -----------------------------------------------------------------------------
-def write(facts: Facts, dir_fact: pathlib.Path) -> None:
-    """
-    Write each relation as a tab separated Souffle .facts file.
-
-    """
-
-    for (name, set_row) in facts.items():
-        path = dir_fact / '{name}.facts'.format(name = name)
-        with open(path, 'w', encoding = 'utf-8') as file:
-            for row in sorted(set_row):
-                if any((DELIM_FIELD in field) or ('\n' in field) for field in row):
-                    raise ValueError('{name}: {row!r}'.format(name = name, row = row))
-                file.write(DELIM_FIELD.join(row) + '\n')
 
 
 # -----------------------------------------------------------------------------
@@ -328,24 +52,7 @@ def check(root: pathlib.Path) -> Failures:
 
     """
 
-    souffle  = os.environ.get('SOUFFLE', 'souffle')
-    failures = {}
+    rows = cc_public.graph.datalog.run(cc_public.graph.extract.extract(root),
+                                       RULES.read_text(encoding = 'utf-8'))
 
-    with tempfile.TemporaryDirectory() as dir_temp:
-
-        dir_fact = pathlib.Path(dir_temp, 'fact')
-        dir_out  = pathlib.Path(dir_temp, 'out')
-        dir_fact.mkdir()
-        dir_out.mkdir()
-
-        write(extract(root), dir_fact)
-        subprocess.run([souffle, '-F', str(dir_fact), '-D', str(dir_out), str(RULES)],
-                       check = True)
-
-        for path in sorted(dir_out.glob('*.csv')):
-            list_row = [tuple(line.split(DELIM_FIELD))
-                            for line in path.read_text(encoding = 'utf-8').splitlines()]
-            if list_row:
-                failures[path.stem] = sorted(list_row)
-
-    return failures
+    return {name: list_row for (name, list_row) in rows.items() if list_row}

@@ -30,6 +30,7 @@ relation:               []
 
 import cc_public.cli.checking  # each registers its commands on the group
 import cc_public.cli.group
+import cc_public.cli.querying
 
 
 main = cc_public.cli.group.main
