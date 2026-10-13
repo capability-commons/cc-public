@@ -313,9 +313,9 @@ table:
                         changed and repaired.
     description:        |
                         Maintainability covers how readily the system
-                        can be analysed, modified, tested and reused,
-                        and how far a change in one part stays in that
-                        part.
+                        can be analysed, modified, repaired and
+                        reused, and how far a change in one part stays
+                        in that part.
     note:               |
                         Corresponds to the maintainability
                         characteristic of ISO/IEC 25010:2023, Systems
@@ -324,7 +324,7 @@ table:
     question:
       - How readily can a newcomer understand the design?
       - How far does a change in one part spread to others?
-      - How readily can a change be checked before it ships?
+      - What does it take to repair a fault once in use?
 
     measure:
       - Time to make a representative change, in person hours.
@@ -332,6 +332,7 @@ table:
 
     excludes:
       - Adapting to a new environment (concern_portability).
+      - How readily it can be checked (concern_testability).
 
     status:             proposed
     alias:              []
@@ -369,6 +370,263 @@ table:
     excludes:
       - Keeping the system available (concern_reliability).
       - Harm caused deliberately by others (concern_security).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_testability -- Testability
+  #
+  concern_testability:
+    id_self:            concern_testability
+    guid_self:          concern_96bd2df1e7544e8f885ec8f28b345881
+    title:              Testability
+    brief:              |
+                        How readily the system can be checked, and a
+                        failure traced to its cause.
+    description:        |
+                        Testability covers how readily each part can
+                        be exercised in isolation, how completely its
+                        behaviour can be observed, and how quickly a
+                        failing check leads to the fault behind it.
+    note:               |
+                        Testability is a subcharacteristic of
+                        maintainability in ISO/IEC 25010:2023. It is
+                        held as a concern of its own so that it can be
+                        argued for separately.
+    question:
+      - Can each part be exercised without the rest of the system?
+      - Can its behaviour be observed well enough to judge it?
+      - How quickly does a failing check lead to its cause?
+
+    measure:
+      - Time to run the full set of checks, in minutes.
+      - Time from a failing check to its cause, in hours.
+
+    excludes:
+      - Ease of making a change (concern_maintainability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_simplicity -- Simplicity
+  #
+  concern_simplicity:
+    id_self:            concern_simplicity
+    guid_self:          concern_f0ae400f8e794889b26e28a580ce7b27
+    title:              Simplicity
+    brief:              |
+                        How few mechanisms the system has, each doing
+                        one job.
+    description:        |
+                        Simplicity covers how few concepts and
+                        mechanisms the system needs, whether each does
+                        one job, and whether anything is done twice. A
+                        simple design follows from a small number of
+                        early decisions.
+    question:
+      - How many mechanisms does the design add, and why?
+      - Does it do anything that another mechanism already does?
+      - Does it follow from decisions already made?
+
+    measure:
+      - Distinct mechanisms the design introduces, by count.
+      - Jobs done by more than one mechanism, by count.
+
+    excludes:
+      - Ease of making a change (concern_maintainability).
+      - Ease of judging one change (concern_reviewability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_reviewability -- Reviewability
+  #
+  concern_reviewability:
+    id_self:            concern_reviewability
+    guid_self:          concern_452361f6b58a4d7f8bdb90de9f96590b
+    title:              Reviewability
+    brief:              |
+                        Whether a person can read and judge each
+                        change to the system.
+    description:        |
+                        Reviewability covers whether each change,
+                        including material that a model generated, is
+                        small and clear enough for a person to read in
+                        full and judge, and whether the volume of
+                        change stays within what people can review.
+    question:
+      - Can a person read this change in full and judge it?
+      - Does the change carry only what it needs?
+      - Does the rate of change stay within what can be reviewed?
+
+    measure:
+      - Size of a change, in lines.
+      - Changes awaiting review, by count.
+
+    excludes:
+      - How many mechanisms there are (concern_simplicity).
+      - Why an element exists (concern_traceability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_traceability -- Traceability
+  #
+  concern_traceability:
+    id_self:            concern_traceability
+    guid_self:          concern_56ade060661647b791ba21265e30daac
+    title:              Traceability
+    brief:              |
+                        Whether each element can be traced to the
+                        reason it exists.
+    description:        |
+                        Traceability covers whether each element of
+                        the system can be followed to the need,
+                        constraint or decision that called for it, and
+                        back again, so that nothing exists without a
+                        reason and no reason goes unmet.
+    question:
+      - Can each element be traced to the reason it exists?
+      - Can each need be traced to what meets it?
+      - Does anything exist that nothing calls for?
+
+    measure:
+      - Elements with no traced reason, by count.
+      - Needs with nothing that meets them, by count.
+
+    excludes:
+      - Whether a change can be judged (concern_reviewability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_cost -- Cost
+  #
+  concern_cost:
+    id_self:            concern_cost
+    guid_self:          concern_81e01128257c4e0d9129b70682dd122e
+    title:              Cost
+    brief:              |
+                        What the system costs to build and to run.
+    description:        |
+                        Cost covers the money and effort spent on the
+                        system across its life, from development
+                        through operation to retirement, including the
+                        services and infrastructure it runs on.
+    question:
+      - What does the design cost to build?
+      - What does it cost to run and to support?
+      - How does that cost grow with use?
+
+    measure:
+      - Development effort, in person days.
+      - Running cost, in currency per month.
+
+    excludes:
+      - Time to a useful result (concern_schedule).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_schedule -- Schedule
+  #
+  concern_schedule:
+    id_self:            concern_schedule
+    guid_self:          concern_5351117ee5d3497092c1f1e0b648cc1b
+    title:              Schedule
+    brief:              |
+                        How soon the system delivers a useful result.
+    description:        |
+                        Schedule covers how soon the system, or a
+                        useful part of it, can be put to use, and how
+                        much the date depends on things outside the
+                        team.
+    question:
+      - How soon can a useful part of the design be in use?
+      - What must be finished before anything is usable?
+      - What outside the team does the date depend on?
+
+    measure:
+      - Time to the first useful release, in weeks.
+      - External dependencies on the critical path, by count.
+
+    excludes:
+      - Money and effort spent (concern_cost).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_dependency_risk -- Dependency risk
+  #
+  concern_dependency_risk:
+    id_self:            concern_dependency_risk
+    guid_self:          concern_4ed3af08871f47c9af5d63a1b75d6a9e
+    title:              Dependency risk
+    brief:              |
+                        Exposure to third-party code, services and
+                        licences.
+    description:        |
+                        Dependency risk covers what the system takes
+                        from others, such as libraries, services, data
+                        and tools, and what happens if any of them
+                        changes, is withdrawn, or comes under a
+                        licence that can no longer be met.
+    question:
+      - What does the design take from third parties?
+      - What happens if one of them is changed or withdrawn?
+      - Are their licences compatible with ours?
+
+    measure:
+      - Direct and indirect dependencies, by count.
+      - Dependencies with no active maintainer, by count.
+
+    excludes:
+      - Vulnerabilities in a dependency (concern_security).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_privacy -- Privacy
+  #
+  concern_privacy:
+    id_self:            concern_privacy
+    guid_self:          concern_21836c761c2e41a4894d8c8968508a94
+    title:              Privacy
+    brief:              |
+                        Whether personal data is collected, held and
+                        used only as it should be.
+    description:        |
+                        Privacy covers what personal data the system
+                        collects, why, who can see it, how long it is
+                        kept, and whether the people it describes can
+                        see, correct and remove it.
+    question:
+      - What personal data does the design collect, and why?
+      - Who can see it, and for how long is it kept?
+      - Can a person see, correct and remove their own data?
+
+    measure:
+      - Personal data fields held, by count.
+      - Time to fulfil a request to remove data, in days.
+
+    excludes:
+      - The mechanisms that enforce access (concern_security).
 
     status:             proposed
     alias:              []
