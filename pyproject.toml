@@ -1,0 +1,101 @@
+# ---
+#
+# id_self:                file_pyproject
+# guid_self:              file_db37a056b6f3467c82134c30f201f391
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  CC-Public pyproject.toml
+# brief:                  |
+#                         Project configuration for cc-public: the pixi
+#                         environment, its tasks, and the settings of
+#                         the linter and the test runner.
+# description:            |
+#                         pixi install builds the environment from
+#                         conda-forge. pixi run check runs the checker
+#                         over the repository, pixi run test runs the
+#                         tests, and pixi run lint runs the linter.
+# note:                   |
+#                         Souffle is not on conda-forge, so the
+#                         environment does not provide it. The checker
+#                         and its tests expect it on the PATH, or named
+#                         by the SOUFFLE environment variable.
+# relation:               []
+#
+# ...
+
+[project]
+authors                 = [{name = "William Payne", email = "wtpayne@gmail.com"}]
+name                    = "cc-public"
+version                 = "0.1.0"
+description             = "Capability commons: a document-oriented engineering system in which every artifact is a checked data item."
+license                 = "Apache-2.0"
+requires-python         = ">= 3.12"
+dependencies            = []
+
+[tool.pixi.workspace]
+channels                = ["conda-forge"]
+platforms               = ["osx-arm64", "linux-64"]
+
+[tool.pixi.dependencies]
+python                  = ">=3.12"
+pyyaml                  = ">=6.0,<7"
+pytest                  = ">=9.1.1,<10"
+ruff                    = ">=0.16.6,<0.17"
+
+[tool.pixi.tasks]
+check                   = "python src/check/check.py ."
+test                    = "pytest"
+lint                    = "ruff check src"
+
+# What pytest is allowed to assume. strict_config refuses an ini key it
+# does not know, strict_markers a marker nobody registered, and
+# xfail_strict an expected failure that passed.
+#
+[tool.pytest.ini_options]
+minversion              = "9.1"
+testpaths               = ["src"]
+addopts                 = "-q"
+strict_config           = true
+strict_markers          = true
+xfail_strict            = true
+
+# Lint. The house style aligns values in columns and formats strings
+# with format rather than f-strings, so the rules that would fight it
+# are off. The complexity and size thresholds are those of the legacy
+# tool.
+#
+[tool.ruff]
+line-length             = 100
+target-version          = "py312"
+
+[tool.ruff.lint]
+select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
+                           "ARG", "S", "DTZ", "PIE", "FURB",
+                           "SLF",     # an underscore name is its module's
+                           "RUF100",  # a suppression that suppresses nothing
+                           "PTH119"]  # basename(str(p)) is a roundabout p.name
+ignore                  = ["UP032",   # format() is the house form
+                           "PLC0415", # a lazy import keeps an optional dependency optional
+                           "PLR2004", # a literal beside its comparison reads
+                           "N818",    # exceptions are named Error<Thing>
+                           "S603",    # subprocess runs souffle, by name, on purpose
+                           "S607"]
+
+[tool.ruff.lint.mccabe]
+max-complexity          = 11
+
+[tool.ruff.lint.pylint]
+max-args                = 9
+max-positional-args     = 9
+max-branches            = 10
+max-statements          = 40
+
+[tool.ruff.lint.per-file-ignores]
+"src/**/_test/*.py"     = ["S101", "E501", "PLR0913", "PLR0917", "ARG001",
+                           "SLF001"]  # a test may be long, and reach the internals of what it tests
