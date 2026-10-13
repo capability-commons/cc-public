@@ -433,3 +433,53 @@ table:
         guid_relation:  r_d70024bd40444f93b4fc1903379ded81
         id_target:      sch_annotation
         guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
+
+  # ---------------------------------------------------------------------------
+  # t_concern -- Concern type
+  #
+  t_concern:
+    id_self:            t_concern
+    guid_self:          t_a23b9ed36b244b2181c96d386ab12d3d
+    title:              Concern type
+    brief:              |
+                        Type of concern data items.
+    description:        |
+                        Each concern data item names one matter of
+                        interest in a system, such as correctness,
+                        security or usability, that an argument about
+                        a design may speak for.
+    usage:              |
+                        Concern data items let the argument behind a
+                        decision be read concern by concern.
+    note:               |
+                        Concern data items only ever exist as entries
+                        in the concern register, never as data items
+                        that travel on their own.
+
+                        The prefix is concern rather than an
+                        abbreviation, because con already marks the
+                        concept type.
+
+                        The shape of concern data items is defined by
+                        the sch_regentry_concern schema.
+
+                        The shape of the concern register is defined
+                        by the sch_reg_concern schema.
+    status:             proposed
+    alias:              []
+    prefix:             concern
+    regex_id:           ^concern_[a-z][a-z0-9_]*$
+    id_concept:         con_concern
+    guid_concept:       con_a8a3fb947d264ab286b5d4077298321c
+
+    relation:
+
+      - id_relation:    r_is_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_concern
+        guid_target:    reg_f1772854ec5947c08f93f8ef2f766b0d
+
+      - id_relation:    r_is_specified_by_schema
+        guid_relation:  r_d70024bd40444f93b4fc1903379ded81
+        id_target:      sch_regentry_concern
+        guid_target:    sch_c3c151bc793c468faa80f97ceb67d669

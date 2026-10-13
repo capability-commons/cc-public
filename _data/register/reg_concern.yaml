@@ -1,0 +1,375 @@
+id_self:                reg_concern
+guid_self:              reg_f1772854ec5947c08f93f8ef2f766b0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+status:                 draft
+title:                  Concern register
+brief:                  |
+                        Register of the engineering concerns that
+                        arguments about a design speak for.
+description:            |
+                        The concern register holds one entry per
+                        concern, such as correctness, security or
+                        usability. A concern is a matter of interest
+                        in a system, in the sense of ISO/IEC/IEEE
+                        42010.
+usage:                  |
+                        An annotation that argues for or against a
+                        design names the concern it speaks for with an
+                        r_argues_for_concern edge. The argument behind
+                        a decision can then be read concern by
+                        concern, and a decision that proves wrong can
+                        be traced to the concerns that were given too
+                        much or too little weight.
+note:                   |
+                        A concern is what an argument speaks for, not
+                        who made the argument. Several agents may
+                        argue for one concern, and one agent may argue
+                        for several.
+
+                        A concern is added here when an argument first
+                        needs it.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_concern
+    guid_target:        sch_cca032062b3f433689d41fb41e306309
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # concern_correctness -- Correctness
+  #
+  concern_correctness:
+    id_self:            concern_correctness
+    guid_self:          concern_a5e005c2c7944e178ade4790d0851ac1
+    title:              Correctness
+    brief:              |
+                        Whether the system does what it is meant to
+                        do.
+    description:        |
+                        Correctness covers whether each function gives
+                        the right result, does everything it is meant
+                        to do, and does nothing it is not meant to do,
+                        under the conditions it was designed for.
+    note:               |
+                        Corresponds to the functional suitability
+                        characteristic of ISO/IEC 25010:2023, Systems
+                        and software Quality Requirements and
+                        Evaluation (SQuaRE) -- Product quality model.
+    question:
+      - Does each function give the right result?
+      - Is every function that is needed present?
+      - Does the design do anything it should not?
+
+    measure:
+      - Proportion of acceptance checks passed, in percent.
+      - Defects found after release, per release.
+
+    excludes:
+      - Behaviour over time and under faults (concern_reliability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_reliability -- Reliability
+  #
+  concern_reliability:
+    id_self:            concern_reliability
+    guid_self:          concern_a94909f7acba471c8e258d8a7bb81024
+    title:              Reliability
+    brief:              |
+                        Whether the system keeps working, and recovers
+                        when it does not.
+    description:        |
+                        Reliability covers whether the system stays
+                        available, tolerates faults in its parts and
+                        its inputs, and recovers its state after a
+                        failure without losing or corrupting data.
+    note:               |
+                        Corresponds to the reliability characteristic
+                        of ISO/IEC 25010:2023, Systems and software
+                        Quality Requirements and Evaluation (SQuaRE)
+                        -- Product quality model.
+    question:
+      - How often does the design fail, and for how long?
+      - What happens when a part or an input is faulty?
+      - Can it recover without losing or corrupting data?
+
+    measure:
+      - Availability, in percent of scheduled time.
+      - Mean time between failures, in hours.
+      - Mean time to recover, in minutes.
+
+    excludes:
+      - Whether a result is right (concern_correctness).
+      - Failures caused deliberately (concern_security).
+      - Harm caused by a failure (concern_safety).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_security -- Security
+  #
+  concern_security:
+    id_self:            concern_security
+    guid_self:          concern_8826722e74c34e70ba6191b692938c83
+    title:              Security
+    brief:              |
+                        Whether the system resists misuse and protects
+                        what it holds.
+    description:        |
+                        Security covers the confidentiality and
+                        integrity of data, the authentication of those
+                        who act, accountability for what they do, and
+                        resistance to deliberate attack.
+    note:               |
+                        Corresponds to the security characteristic of
+                        ISO/IEC 25010:2023, Systems and software
+                        Quality Requirements and Evaluation (SQuaRE)
+                        -- Product quality model.
+    question:
+      - Who can read or change what, and how is that enforced?
+      - Can every action be traced to whoever took it?
+      - What can an attacker reach, and what would it cost?
+
+    measure:
+      - Known vulnerabilities open, by severity.
+      - Time to remedy a reported vulnerability, in days.
+
+    excludes:
+      - Accidental failure and recovery (concern_reliability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_performance -- Performance
+  #
+  concern_performance:
+    id_self:            concern_performance
+    guid_self:          concern_ddd0eb5942824a0e944f2fde58b485c0
+    title:              Performance
+    brief:              |
+                        How fast the system responds and how much it
+                        consumes.
+    description:        |
+                        Performance covers response time, throughput
+                        and the resources the system uses, such as
+                        processor time, memory, storage and network,
+                        under the loads it is expected to carry.
+    note:               |
+                        Corresponds to the performance efficiency
+                        characteristic of ISO/IEC 25010:2023, Systems
+                        and software Quality Requirements and
+                        Evaluation (SQuaRE) -- Product quality model.
+    question:
+      - How quickly does the design respond under expected load?
+      - What resources does it consume to do so?
+      - How does that change as the load grows?
+
+    measure:
+      - Response time at the 50th and 99th percentiles, in ms.
+      - Throughput, in operations per second.
+      - Peak memory, in megabytes.
+
+    excludes:
+      - How long a task takes a person (concern_usability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_usability -- Usability
+  #
+  concern_usability:
+    id_self:            concern_usability
+    guid_self:          concern_7c525ec6beee404bbf327469a5fbc281
+    title:              Usability
+    brief:              |
+                        How readily people can use the system to do
+                        their work.
+    description:        |
+                        Usability covers the time, attention and
+                        effort the system asks of the people who use
+                        it, how readily they learn it, and how well it
+                        guards them against mistakes.
+    note:               |
+                        Corresponds to the interaction capability
+                        characteristic of ISO/IEC 25010:2023, Systems
+                        and software Quality Requirements and
+                        Evaluation (SQuaRE) -- Product quality model.
+    question:
+      - How much time and attention does a task take a person?
+      - How readily does a new user learn to do it?
+      - How well does the design prevent and recover from mistakes?
+
+    measure:
+      - Time to complete a representative task, in seconds.
+      - Errors per task, for a representative set of users.
+
+    excludes:
+      - Machine response time (concern_performance).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_interoperability -- Interoperability
+  #
+  concern_interoperability:
+    id_self:            concern_interoperability
+    guid_self:          concern_787f6c2b26ad4848b703c8d4224b9a06
+    title:              Interoperability
+    brief:              |
+                        Whether the system exchanges data and works
+                        with other systems.
+    description:        |
+                        Interoperability covers whether the system can
+                        exchange data with the systems of partners,
+                        and use what it receives, without either side
+                        having to adopt the tools of the other.
+    note:               |
+                        Corresponds to the compatibility
+                        characteristic of ISO/IEC 25010:2023, Systems
+                        and software Quality Requirements and
+                        Evaluation (SQuaRE) -- Product quality model.
+    question:
+      - Can a partner read and use what the design produces?
+      - Can the design read and use what a partner produces?
+      - What must a partner adopt in order to do either?
+
+    measure:
+      - Partner formats read and written without loss, by count.
+      - Tools a partner must install to take part, by count.
+
+    excludes:
+      - Running on another platform (concern_portability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_portability -- Portability
+  #
+  concern_portability:
+    id_self:            concern_portability
+    guid_self:          concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+    title:              Portability
+    brief:              |
+                        Whether the system runs in environments other
+                        than the one it was built in.
+    description:        |
+                        Portability covers how readily the system can
+                        be installed, run and moved across operating
+                        systems, hardware and hosting environments,
+                        and adapted when they change.
+    note:               |
+                        Corresponds to the flexibility characteristic
+                        of ISO/IEC 25010:2023, Systems and software
+                        Quality Requirements and Evaluation (SQuaRE)
+                        -- Product quality model.
+    question:
+      - On which platforms and environments does the design run?
+      - What does it take to install it on a new one?
+      - What does it assume about its environment?
+
+    measure:
+      - Supported platforms, by count.
+      - Effort to install on a new platform, in person hours.
+
+    excludes:
+      - Exchanging data with other systems (concern_interoperability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_maintainability -- Maintainability
+  #
+  concern_maintainability:
+    id_self:            concern_maintainability
+    guid_self:          concern_a507a1fac6d94fe79a4c2a76413270f4
+    title:              Maintainability
+    brief:              |
+                        How readily the system can be understood,
+                        changed and repaired.
+    description:        |
+                        Maintainability covers how readily the system
+                        can be analysed, modified, tested and reused,
+                        and how far a change in one part stays in that
+                        part.
+    note:               |
+                        Corresponds to the maintainability
+                        characteristic of ISO/IEC 25010:2023, Systems
+                        and software Quality Requirements and
+                        Evaluation (SQuaRE) -- Product quality model.
+    question:
+      - How readily can a newcomer understand the design?
+      - How far does a change in one part spread to others?
+      - How readily can a change be checked before it ships?
+
+    measure:
+      - Time to make a representative change, in person hours.
+      - Parts touched by a representative change, by count.
+
+    excludes:
+      - Adapting to a new environment (concern_portability).
+
+    status:             proposed
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # concern_safety -- Safety
+  #
+  concern_safety:
+    id_self:            concern_safety
+    guid_self:          concern_d604c77c736a4e738e8e3056193c331e
+    title:              Safety
+    brief:              |
+                        Whether the system avoids causing harm to
+                        people, property or the environment.
+    description:        |
+                        Safety covers whether the system avoids states
+                        in which it could cause harm, warns of hazards
+                        it cannot avoid, and falls back to a safe
+                        state when something goes wrong.
+    note:               |
+                        Corresponds to the safety characteristic of
+                        ISO/IEC 25010:2023, Systems and software
+                        Quality Requirements and Evaluation (SQuaRE)
+                        -- Product quality model.
+    question:
+      - What harm could the design cause, and to whom?
+      - How does it avoid or limit each hazard?
+      - What state does it fall back to when it fails?
+
+    measure:
+      - Identified hazards without a mitigation, by count.
+      - Time to reach a safe state after a failure, in ms.
+
+    excludes:
+      - Keeping the system available (concern_reliability).
+      - Harm caused deliberately by others (concern_security).
+
+    status:             proposed
+    alias:              []
+    relation:           []

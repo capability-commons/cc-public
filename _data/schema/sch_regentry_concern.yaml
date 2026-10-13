@@ -1,0 +1,75 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_regentry_concern.yaml
+id_self:                sch_regentry_concern
+guid_self:              sch_c3c151bc793c468faa80f97ceb67d669
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concern register entry schema
+brief:                  |
+                        What a concern register entry carries beyond
+                        the general register entry.
+description:            |
+                        A concern entry states what the concern asks
+                        of a design, how it is measured, and what it
+                        leaves to other concerns.
+
+                        These fields are the material from which an
+                        agent that argues for the concern is briefed.
+                        They say what to argue for. How to argue is
+                        stated once, for every concern, elsewhere.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_concern as the shape of every entry in
+                        the concern register.
+note:                   |
+                        The excludes field keeps concerns from
+                        overlapping. Where two concerns cover the same
+                        ground, one point is argued twice, and the
+                        concern behind it looks more strongly
+                        represented than it was.
+type:                   object
+
+required:
+  - question
+  - measure
+
+properties:
+
+  question:
+    $ref:               '#/$defs/statement_list'
+    description:        |
+                        The questions this concern asks of any design,
+                        each a single sentence.
+
+  measure:
+    $ref:               '#/$defs/statement_list'
+    description:        |
+                        How the concern is quantified, each with its
+                        unit where it has one. A measure says what
+                        counts as evidence for or against a design.
+
+  excludes:
+    $ref:               '#/$defs/statement_list'
+    description:        |
+                        Optional. What this concern leaves to another,
+                        each naming the concern that covers it.
+
+$defs:
+
+  statement_list:
+    type:               array
+    minItems:           1
+    uniqueItems:        true
+
+    items:
+      type:             string
+      minLength:        1
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml
