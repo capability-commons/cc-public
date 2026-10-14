@@ -309,14 +309,19 @@ def header(tree:       Tree,
     while list_line and not list_line[0].strip():
         list_line.pop(0)
 
+    # A module docstring is set apart from the code by two blank lines,
+    # as a definition is, and a comment header by one.
+    #
     if path.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
         _refuse_docstring(text, relative)
-        list_new = [QUOTE_DOCSTRING, *list_doc, QUOTE_DOCSTRING]
+        list_new   = [QUOTE_DOCSTRING, *list_doc, QUOTE_DOCSTRING]
+        list_blank = ['', '']
     else:
-        mark     = cc_public.graph.extract.mark_comment(path)
-        list_new = [mark + (' ' + line if line else '') for line in list_doc]
+        mark       = cc_public.graph.extract.mark_comment(path)
+        list_new   = [mark + (' ' + line if line else '') for line in list_doc]
+        list_blank = ['']
 
-    list_new = [*list_head, *list_new, *(['', '', *list_line] if list_line else [''])]
+    list_new = [*list_head, *list_new, *([*list_blank, *list_line] if list_line else [''])]
 
     return {relative: _format('\n'.join(list_new), relative)}
 

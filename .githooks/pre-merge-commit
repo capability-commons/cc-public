@@ -1,0 +1,32 @@
+#!/bin/sh
+# ---
+#
+# id_self:                file_githooks_pre_merge_commit
+# guid_self:              file_f13cc344af044e2bb71c67131aa400a0
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Pre-merge-commit hook
+# brief:                  |
+#                         Refuse a merge whose merged content fails the
+#                         check, the lint or the tests.
+# description:            |
+#                         git runs this hook before it records a merge
+#                         that it makes without stopping, once
+#                         core.hooksPath names .githooks. git runs no
+#                         pre-commit hook for such a merge, so this hook
+#                         runs cctool gate in the pixi environment in
+#                         its place, and a failure stops the merge. A
+#                         merge that stops for a conflict is finished
+#                         with git commit, which runs the pre-commit
+#                         hook.
+# relation:               []
+#
+# ...
+
+exec pixi run --frozen gate

@@ -48,7 +48,10 @@ templates in `sch_commit`, and checks the commit against the graph
 before and after it: no item disappears or changes type without the
 commit naming it, and the verb of the title is true of the change.
 For a merge or a revert, the prepare-commit-msg hook first makes the
-message git drafts into one that passes.
+message git drafts into one that passes. git runs no pre-commit hook
+for a merge, so the pre-merge-commit hook runs the gate in its place.
+A revert is not gated: it restores content that passed when it was
+committed.
 
 ## cctool
 

@@ -299,7 +299,7 @@ def test_header_writes_a_comment_header_after_the_interpreter_line(tree, zero):
     assert _edit(tree, {'header': 'tool/run', 'id': 'file_tool_run', 'field': FIELD_HEADER}) == {}
     text = path.read_text()
     assert text.startswith('#!/bin/sh\n# ---\n#\n# id_self:                file_tool_run\n')
-    assert text.endswith('#\n# ...\n\n\necho run\n')
+    assert text.endswith('#\n# ...\n\necho run\n')
 
 
 def test_header_makes_a_datalog_file_that_is_not_there(tree, zero):
