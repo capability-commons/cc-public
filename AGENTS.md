@@ -19,6 +19,9 @@ work in it.
   `Change OBJECT so that STATEMENT`. One commit does one thing. The
   commit-msg hook checks the message, and checks the commit against
   the graph before and after it.
+- For a merge or a revert, keep the message git drafts. The
+  prepare-commit-msg hook gives it its commit item, and names what it
+  removes or renames.
 - Name in the commit item (title, brief or description) the id of
   every item the commit removes or renames. A renamed register entry
   keeps its old id in `alias`. The verb must be true of the change:

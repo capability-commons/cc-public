@@ -26,12 +26,26 @@ description:            |
                         read from the tree. The id must end with the
                         first six hex digits of the guid, which a
                         schema cannot say.
+
+                        git drafts the message of a merge or a revert
+                        itself, with no item. draft turns such a draft
+                        into a message that conforms: it keeps the
+                        subject git wrote, adds the branch merged into
+                        where git leaves it out, makes the body the
+                        brief, and names in the description each item
+                        that the commit removes or renames, as the
+                        check of the commit requires. Any other
+                        message is left as it is.
 usage:                  |
-                        cctool message new TITLE --brief TEXT cctool
-                        message check FILE
+                        cctool message new TITLE --brief TEXT
+
+                        cctool message check FILE
+
+                        cctool message draft FILE
 
                         The commit-msg hook in .githooks runs the
-                        check on every commit.
+                        check on every commit, and the
+                        prepare-commit-msg hook runs draft before it.
 relation:               []
 
 ...
@@ -40,12 +54,15 @@ relation:               []
 
 import datetime
 import pathlib
+import re
+import subprocess
 import uuid
 
 import jsonschema
 import ruamel.yaml
 
 import cc_public.check.schema
+import cc_public.commit.change
 import cc_public.edit.layout
 import cc_public.graph.extract
 
@@ -63,6 +80,19 @@ KEY_TITLE       = 'title'
 KEY_BRIEF       = 'brief'
 KEY_DESCRIPTION = 'description'
 KEY_RELATION    = 'relation'
+
+# The subject lines that git drafts for a merge and for a revert. A
+# merge into the main branch is drafted without the branch it is into.
+#
+REGEX_MERGE     = re.compile(r'^Merge (branch|branches|remote-tracking branch|tag|commit) [^ ]')
+REGEX_INTO      = re.compile(r' into [^ ]+$')
+REGEX_REVERT    = re.compile(r'^(Revert|Reapply) "(.+)"$')
+
+# A title is at most this long. A revert of a long title quotes as much
+# of it as fits, and the brief names the commit it reverts.
+#
+LENGTH_TITLE    = 80
+MARK_CUT        = '...'
 
 
 # -----------------------------------------------------------------------------
@@ -104,6 +134,83 @@ def compose(title:       str,
                                                            open  = LINE_OPEN,
                                                            body  = body,
                                                            close = LINE_CLOSE)
+
+
+# -----------------------------------------------------------------------------
+def draft(root: pathlib.Path, text: str) -> str:
+    """
+    Return the message text, as git drafted it for a commit of the
+    staged content of the repository at root, made into one that
+    conforms if git drafted it for a merge or a revert and it has no
+    item. Any other message is returned as it is.
+
+    """
+
+    list_line    = text.split('\n')
+    list_kept    = [line for line in list_line if not line.startswith(MARK_COMMENT)]
+    list_comment = [line for line in list_line if line.startswith(MARK_COMMENT)]
+    subject      = list_kept[0].strip() if list_kept else ''
+    body         = '\n'.join(list_kept[1:]).strip()
+
+    if LINE_OPEN in (line.strip() for line in list_kept[1:]):
+        return text
+
+    if REGEX_MERGE.match(subject):
+        if not REGEX_INTO.search(subject):
+            subject = '{subject} into {branch}'.format(subject = subject, branch = _branch(root))
+    elif REGEX_REVERT.match(subject):
+        subject = _fitted(subject)
+    else:
+        return text
+
+    item        = {KEY_TITLE: subject, KEY_BRIEF: body or subject + '.'}
+    failures    = cc_public.commit.change.check(root, item)
+    list_part   = []
+    list_remove = sorted(row[0] for row in failures.get('unannounced_removal', []))
+    list_rename = sorted(failures.get('unannounced_rename', []))
+
+    if list_remove:
+        list_part.append('It removes {list}.'.format(list = ', '.join(list_remove)))
+    if list_rename:
+        list_part.append('It renames {list}.'.format(
+                            list = ', '.join('{old} to {new}'.format(old = old, new = new)
+                                             for (old, new) in list_rename)))
+
+    message = compose(subject, item[KEY_BRIEF], ' '.join(list_part) or None)
+
+    return message + ''.join('\n' + line for line in list_comment)
+
+
+# -----------------------------------------------------------------------------
+def _branch(root: pathlib.Path) -> str:
+    """
+    Return the name of the branch checked out in the repository at
+    root, which a merge is made into.
+
+    """
+
+    return subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+                          cwd            = root,
+                          capture_output = True,
+                          text           = True,
+                          check          = True).stdout.strip()
+
+
+# -----------------------------------------------------------------------------
+def _fitted(subject: str) -> str:
+    """
+    Return the subject line of a revert, with the title it quotes cut
+    to fit in the length of a title.
+
+    """
+
+    if len(subject) <= LENGTH_TITLE:
+        return subject
+
+    (verb, quoted) = REGEX_REVERT.match(subject).groups()
+    room           = LENGTH_TITLE - len(verb) - len(' ""') - len(MARK_CUT)
+
+    return '{verb} "{quoted}{cut}"'.format(verb = verb, quoted = quoted[:room], cut = MARK_CUT)
 
 
 # -----------------------------------------------------------------------------

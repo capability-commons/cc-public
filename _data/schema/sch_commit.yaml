@@ -47,7 +47,7 @@ allOf:
     properties:
 
       title:
-        pattern:        '^((Add|Remove|Reformat) [^ ].*|(Rename|Move) [^ ].* to [^ ].*|(Split|Fold) [^ ].* into [^ ].*|(Change|Fix) [^ ].* so that [^ ].*|Lock [^ ].* at [^ ].*|Merge branch [^ ].* into [^ ].*)[^.]$|^Revert "[^"]+"$'
+        pattern:        ^((Add|Remove|Reformat) [^ ].*|(Rename|Move) [^ ].* to [^ ].*|(Split|Fold) [^ ].* into [^ ].*|(Change|Fix) [^ ].* so that [^ ].*|Lock [^ ].* at [^ ].*|Merge (branch|branches|remote-tracking branch|tag|commit) [^ ].* into [^ ].*)[^.]$|^(Revert|Reapply) ".+"$
         description:    |
                         The subject line of the commit message: one
                         imperative sentence built from one of these
@@ -59,11 +59,17 @@ allOf:
                         Change OBJECT so that STATEMENT. Fix OBJECT so
                         that STATEMENT. Lock DEPENDENCY at VERSION.
 
-                        Two templates are for the commits that git
-                        makes from others. Merge branch BRANCH into
-                        BRANCH joins two lines of history. Revert
-                        "TITLE" undoes the commit whose title is
-                        quoted. Fold, not Merge, joins one item into
+                        Three templates are for the commits that git
+                        makes from others, in the words git drafts for
+                        them. Merge branch BRANCH into BRANCH joins
+                        two lines of history; git may also write
+                        remote-tracking branch, branches, tag or
+                        commit in place of branch, and the
+                        prepare-commit-msg hook adds the into clause
+                        that git leaves out of a merge into the main
+                        branch. Revert "TITLE" undoes the commit whose
+                        title is quoted, and Reapply "TITLE" undoes a
+                        revert. Fold, not Merge, joins one item into
                         another, so that Merge keeps the meaning git
                         gives it.
 

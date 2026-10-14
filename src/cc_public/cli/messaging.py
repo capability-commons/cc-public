@@ -109,6 +109,34 @@ def check(file, root: pathlib.Path) -> None:
 
 
 # -----------------------------------------------------------------------------
+@message.command()
+@click.argument('path', metavar = 'FILE', type = click.Path(dir_okay  = False,
+                                                            path_type = pathlib.Path))
+@OPTION_ROOT
+def draft(path: pathlib.Path, root: pathlib.Path) -> None:
+    """
+    Make the message that git drafted in FILE for a merge or a revert
+    into one that conforms, in place, for a commit of what is staged.
+    Any other message is left as it is.
+
+    Run by the prepare-commit-msg hook. A draft that cannot be made is
+    reported and the message left as it is, so that the commit-msg hook
+    says what is wrong.
+
+    """
+
+    text = path.read_text(encoding = 'utf-8')
+    try:
+        drafted = cc_public.commit.message.draft(root.resolve(), text)
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+        click.echo('No draft: {error}'.format(error = error), err = True)
+        return
+
+    if drafted != text:
+        path.write_text(drafted, encoding = 'utf-8')
+
+
+# -----------------------------------------------------------------------------
 def _report(list_found: list[str]) -> None:
     """
     Print each way the message fails, and exit with 1 if there is any.

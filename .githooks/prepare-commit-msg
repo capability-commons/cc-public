@@ -1,0 +1,31 @@
+#!/bin/sh
+# ---
+#
+# id_self:                file_githooks_prepare_commit_msg
+# guid_self:              file_c226b953b60e4a3ea8826ae9cce3b60c
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Prepare-commit-msg hook
+# brief:                  |
+#                         Make the message git drafts for a merge or a
+#                         revert into one that conforms to sch_commit.
+# description:            |
+#                         git runs this hook with the file that holds
+#                         the draft message, once core.hooksPath names
+#                         .githooks, before the editor opens. It runs
+#                         cctool message draft on that file in the pixi
+#                         environment, which gives a merge or revert
+#                         draft its commit item and leaves any other
+#                         message as it is. The commit-msg hook then
+#                         checks the result.
+# relation:               []
+#
+# ...
+
+exec pixi run --frozen cctool message draft "$1"
