@@ -205,6 +205,65 @@ def test_a_link_is_added_after_the_edges_there_are(tree):
         '    guid_target:        con_58ca7869cf9443168d8d96d8d70b972c\n')
 
 
+def test_remove_takes_out_a_register_entry_and_its_banner(tree, zero):
+    path = tree / '_data/register/reg_concern.yaml'
+    text = path.read_text()
+    assert _edit(tree, {'new': 'concern_x', 'field': FIELD_CONCERN}) == {}
+    assert path.read_text() != text
+    assert _edit(tree, {'remove': 'concern_x'}) == {}
+    assert path.read_text() == text
+
+
+def test_remove_takes_out_the_file_of_a_standalone_item(tree):
+    assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'con_concept']]}) == {}
+    assert _edit(tree, {'remove': 'ann_x'}) == {}
+    assert not (tree / '_data/annotation/ann_x.yaml').exists()
+
+
+def test_removing_an_item_that_is_named_is_refused(tree):
+    text = (tree / '_data/register/reg_concept.yaml').read_text()
+    assert _edit(tree, {'remove': 'con_annotation'}) != {}
+    assert (tree / '_data/register/reg_concept.yaml').read_text() == text
+
+
+def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
+    assert _edit(tree, {'rename': ['con_annotation', 'con_remark']}) == {}
+    text = (tree / '_data/register/reg_concept.yaml').read_text()
+    assert '  con_remark:\n    id_self:            con_remark\n' in text
+    assert '  # con_remark -- Annotation\n' in text
+    assert '    alias:\n      - con_annotation\n' in text
+    assert 'con_annotation' not in text.replace('      - con_annotation\n', '')
+    assert 'id_concept:         con_remark\n' in (
+        tree / '_data/register/reg_data_item_type.yaml').read_text()
+
+
+def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
+    assert _edit(tree, {'new': 'dec_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'con_concept']]},
+                       {'new': 'ann_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'dec_x']]}) == {}
+    assert _edit(tree, {'rename': ['dec_x', 'dec_y']}) == {}
+    assert not (tree / '_data/decision/dec_x.yaml').exists()
+    assert 'id_self:                dec_y\n' in (tree / '_data/decision/dec_y.yaml').read_text()
+    assert 'id_target:          dec_y\n' in (tree / '_data/annotation/ann_x.yaml').read_text()
+
+
+@pytest.mark.parametrize(('operation', 'message'), [
+    ({'rename': ['con_concept', 'sch_concept']},
+     'A rename keeps the type, so sch_concept must have the prefix of con_concept.'),
+    ({'rename': ['con_concept', 'con_relation']}, 'An item with the id con_relation exists.'),
+    ({'rename': ['pym_cc_public.edit.edit', 'pym_x']},
+     'An item of t_python_module lives in the file it names, so move or remove the file '
+     'by hand.'),
+    ({'remove': 'con_none'}, 'No item has the id con_none.'),
+])
+def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
+    with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
+        cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
+    assert str(info.value) == message
+
+
 def test_set_rewrites_a_field_in_a_comment_header(tree):
     path = tree / 'src/cc_public/graph/derive.dl'
     text = path.read_text()
@@ -237,8 +296,8 @@ def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
     ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),
     ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way.'),
     ({'set': ['con_none', 'note', 'x']}, 'No item has the id con_none.'),
-    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, link or set: "
-                                  "{'unlink': ['con_concept']}"),
+    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, link, set, "
+                                  "remove or rename: {'unlink': ['con_concept']}"),
 ])
 def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     edited = cc_public.edit.edit.Tree(tree)

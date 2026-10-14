@@ -104,6 +104,21 @@ def test_batch_makes_items_that_need_each_other_together(tree):
                              'Wrote _data/annotation/ann_x.yaml\n')
 
 
+def test_remove_says_which_file_it_removed(tree):
+    assert _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept').exit_code == 0
+    result = _run(tree, 'remove', 'ann_x')
+    assert result.exit_code == 0
+    assert result.stdout == 'Removed _data/annotation/ann_x.yaml\n'
+
+
+def test_rename_lists_the_files_that_still_name_the_old_id(tree):
+    result = _run(tree, 'rename', 'con_annotation', 'con_remark')
+    assert result.exit_code == 0
+    assert 'Wrote _data/register/reg_concept.yaml\n' in result.stdout
+    assert ('Still names con_annotation: src/cc_public/edit/_test/test_edit.py\n'
+            in result.stderr)
+
+
 def test_format_names_the_files_it_would_change_and_then_changes_them(tree):
     path = tree / '_data/register/reg_concern.yaml'
     path.write_text(path.read_text().replace('title:                  Concern register',

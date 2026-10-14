@@ -30,6 +30,10 @@ usage:                  |
 
                         cctool set ID NAME VALUE
 
+                        cctool remove ID
+
+                        cctool rename OLD NEW
+
                         cctool batch FILE
 
                         cctool format [--check]
@@ -41,6 +45,7 @@ relation:               []
 
 import difflib
 import pathlib
+import re
 import sys
 
 import click
@@ -152,6 +157,51 @@ def set_field(id_self, key, value, root, is_dry_run):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
+@click.argument('id_self', metavar = 'ID')
+@_option
+def remove(id_self, root, is_dry_run):
+    """
+    Remove the item ID: the file of a standalone item, or the entry of
+    a register entry. An item that anything still names is refused.
+
+    """
+
+    _run(root, is_dry_run, [{'remove': id_self}])
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('id_old', metavar = 'OLD')
+@click.argument('id_new', metavar = 'NEW')
+@_option
+def rename(id_old, id_new, root, is_dry_run):
+    """
+    Give the item OLD the id NEW, in every document that names it, and
+    in the name of its file. A register entry keeps OLD as an alias.
+
+    Text outside documents, such as code, is not changed. Each file
+    that still names OLD is listed afterwards.
+
+    """
+
+    _run(root, is_dry_run, [{'rename': [id_old, id_new]}])
+    if is_dry_run:
+        return
+
+    regex = re.compile(cc_public.edit.edit.PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
+    for relative in sorted(cc_public.graph.extract.documents(root.resolve())):
+        try:
+            text = (root / relative).read_text(encoding = 'utf-8')
+        except UnicodeDecodeError:
+            continue
+        if any(regex.search(line) and line.strip() != '- ' + id_old
+               for line in text.splitlines()):
+            click.echo('Still names {id}: {file}'.format(id = id_old, file = relative),
+                       err = True)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
 @click.argument('path_file', metavar = 'FILE', type = click.File(encoding = 'utf-8'))
 @_option
 def batch(path_file, root, is_dry_run):
@@ -249,7 +299,7 @@ def _run(root, is_dry_run, list_operation):
             path = tree.root / relative
             old  = path.read_text(encoding = 'utf-8') if path.exists() else ''
             click.echo(''.join(difflib.unified_diff(old.splitlines(True),
-                                                    text.splitlines(True),
+                                                    (text or '').splitlines(True),
                                                     'a/' + relative,
                                                     'b/' + relative)),
                        nl = False)
@@ -266,5 +316,6 @@ def _run(root, is_dry_run, list_operation):
         sys.exit(cc_public.cli.group.EXIT_NONCONFORMITY)
 
     if not is_dry_run:
-        for relative in tree.edit:
-            click.echo('Wrote {file}'.format(file = relative))
+        for (relative, text) in tree.edit.items():
+            click.echo('{verb} {file}'.format(verb = 'Removed' if text is None else 'Wrote',
+                                              file = relative))

@@ -16,15 +16,16 @@ brief:                  |
                         Edit the data items in a tree, and keep only
                         the edits that add no failure.
 description:            |
-                        An edit is a set of new texts for files. new,
-                        link and set_field each return one, written as
-                        small changes to the text, after which the
-                        file is laid out by pym_cc_public.edit.layout.
-                        A tree holds the edits made so far, and each
-                        edit is made on top of them. apply checks the
-                        tree with the edits in place, and writes them
-                        only if they add no failure to those the tree
-                        already has.
+                        An edit is a set of new texts for files, in
+                        which None removes a file. new, link,
+                        set_field, remove and rename each return one,
+                        written as small changes to the text, after
+                        which the file is laid out by
+                        pym_cc_public.edit.layout. A tree holds the
+                        edits made so far, and each edit is made on
+                        top of them. apply checks the tree with the
+                        edits in place, and writes them only if they
+                        add no failure to those the tree already has.
 
                         batch makes a list of operations in one go, so
                         that items that need each other, such as a
@@ -41,6 +42,7 @@ relation:               []
 
 import collections
 import pathlib
+import re
 import typing
 import uuid
 
@@ -64,6 +66,8 @@ KEY_NEW           = 'new'
 KEY_FIELD         = 'field'
 KEY_LINK          = 'link'
 KEY_SET           = 'set'
+KEY_REMOVE        = 'remove'
+KEY_RENAME        = 'rename'
 COLUMN_LINE       = 'line'
 
 # The descriptive fields, in the order they are written. A new field
@@ -99,8 +103,14 @@ LENGTH_BANNER     = 79
 DELIM_PREFIX      = '_'
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
+MARK_COMMENT      = '#'
 
-Edit              = dict[str, str]
+# An id as a word of its own, and as the name of a file: not inside a
+# longer id, and not part of a dotted name.
+#
+PATTERN_WHOLE_ID  = r'(?<![A-Za-z0-9_$.-]){id}(?![A-Za-z0-9_])'
+
+Edit              = dict[str, str | None]
 YAML              = ruamel.yaml.YAML(typ = 'rt')
 
 
@@ -143,6 +153,10 @@ class Tree:
         """
 
         for (relative, text) in edit.items():
+            if text is None:
+                self.map_document.pop(relative, None)
+                self.edit[relative] = None
+                continue
             try:
                 self.map_document[relative] = cc_public.graph.extract.parse(
                                                             text, pathlib.Path(relative))
@@ -180,6 +194,9 @@ class Tree:
         Return the text of the file at relative.
 
         """
+
+        if relative in self.edit and self.edit[relative] is None:
+            raise ErrorEdit('The file {file} is removed.'.format(file = relative))
 
         if relative in self.edit:
             return self.edit[relative]
@@ -295,6 +312,104 @@ def set_field(tree: Tree, id_self: str, key: str, value: str) -> Edit:
 
 
 # -----------------------------------------------------------------------------
+def remove(tree: Tree, id_item: str) -> Edit:
+    """
+    Return the edit that removes the item id_item: the file of a
+    standalone item, or the entry of a register entry with its banner.
+
+    """
+
+    _refuse_source(tree, id_item)
+    _Item(tree, id_item)
+
+    (_, _, holder, relative, _) = tree.map_item[id_item]
+
+    if not holder:
+        if pathlib.Path(relative).stem != id_item:
+            raise ErrorEdit('{file} holds more than {id}, so it is not removed.'.format(
+                                                                file = relative, id = id_item))
+        return {relative: None}
+
+    item         = _Item(tree, holder)
+    item.node    = item.node[KEY_TABLE]
+    (start, end) = item.extent(id_item)
+
+    while start > 0 and item.line(start - 1).strip().startswith(MARK_COMMENT):
+        start -= 1
+    while start > 0 and not item.line(start - 1).strip():
+        start -= 1
+
+    return item.replace(start, end, [])
+
+
+# -----------------------------------------------------------------------------
+def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
+    """
+    Return the edit that gives the item id_old the id id_new: in its
+    own document, in every reference and mention of it in a document,
+    and in the name of its file if it is named for it. A register entry
+    keeps id_old in its alias list.
+
+    """
+
+    _refuse_source(tree, id_old)
+    _Item(tree, id_old)
+
+    if id_new.partition(DELIM_PREFIX)[0] != id_old.partition(DELIM_PREFIX)[0]:
+        raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
+                                                                    new = id_new, old = id_old))
+    if id_new in tree.map_item:
+        raise ErrorEdit('An item with the id {id} exists.'.format(id = id_new))
+
+    (_, _, holder, relative, _) = tree.map_item[id_old]
+    regex                       = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
+    edit                        = {}
+
+    for (file, (document, _)) in tree.map_document.items():
+        if document is None:
+            continue
+        text = tree.text(file)
+        (first, last) = cc_public.edit.layout.span(text, pathlib.Path(file))
+        list_line     = text.split('\n')
+        list_line[first:last + 1] = [regex.sub(id_new, line)
+                                     for line in list_line[first:last + 1]]
+        renamed = '\n'.join(list_line)
+        if renamed != text:
+            edit[file] = _format(renamed, file)
+
+    path = pathlib.Path(relative)
+    if not holder and path.stem == id_old:
+        edit[str(path.with_name(id_new + path.suffix))] = edit.pop(relative)
+        edit[relative] = None
+
+    tree.update(edit)
+
+    if holder:
+        item          = _Item(tree, id_new)
+        (start, end)  = item.extent(KEY_ALIAS)
+        list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []]
+        edit.update(item.replace(start, end, cc_public.edit.layout.dump(
+                                    {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS))))
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _refuse_source(tree: Tree, id_item: str) -> None:
+    """
+    Refuse an item that is written in the file it names, whose id
+    follows from the place of the file.
+
+    """
+
+    (prefix, _, _) = id_item.partition(DELIM_PREFIX)
+    if prefix in SET_PREFIX_SOURCE:
+        map_type = {row[1]: row[0] for row in tree.facts['type_prefix']}
+        raise ErrorEdit('An item of {type} lives in the file it names, so move or remove '
+                        'the file by hand.'.format(type = map_type.get(prefix, prefix)))
+
+
+# -----------------------------------------------------------------------------
 def batch(tree: Tree, list_operation: list) -> None:
     """
     Make each operation of list_operation on the tree, in order. An
@@ -307,6 +422,10 @@ def batch(tree: Tree, list_operation: list) -> None:
         link:  [SOURCE, RELATION, TARGET]
 
         set:   [ID, NAME, VALUE]
+
+        remove: ID
+
+        rename: [OLD, NEW]
 
     """
 
@@ -331,14 +450,18 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
                     in (operation.get(KEY_FIELD) or {}).items()],
                    [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
 
-    for (key, function) in ((KEY_LINK, link), (KEY_SET, set_field)):
+    if isinstance(operation, dict) and set(operation) == {KEY_REMOVE}:
+        return remove(tree, str(operation[KEY_REMOVE]))
+
+    for (key, function, count) in ((KEY_LINK, link, 3), (KEY_SET, set_field, 3),
+                                   (KEY_RENAME, rename, 2)):
         if isinstance(operation, dict) and set(operation) == {key}:
             list_arg = operation[key]
-            if isinstance(list_arg, list) and len(list_arg) == 3:
+            if isinstance(list_arg, list) and len(list_arg) == count:
                 return function(tree, *map(str, list_arg))
 
-    raise ErrorEdit('An operation of a batch is not one of new, link or set: {operation}'.format(
-                                                                        operation = operation))
+    raise ErrorEdit('An operation of a batch is not one of new, link, set, remove or rename: '
+                    '{operation}'.format(operation = operation))
 
 
 # -----------------------------------------------------------------------------
@@ -359,6 +482,9 @@ def apply(tree: Tree, is_written: bool = True) -> cc_public.check.check.Failures
     if is_written and not added:
         for (relative, text) in tree.edit.items():
             path = tree.root / relative
+            if text is None:
+                path.unlink(missing_ok = True)
+                continue
             path.parent.mkdir(parents = True, exist_ok = True)
             path.write_text(text, encoding = 'utf-8')
 

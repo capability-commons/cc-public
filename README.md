@@ -60,6 +60,8 @@ commit naming it, and the verb of the title is true of the change.
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
     cctool link SOURCE RELATION TARGET
     cctool set ID NAME VALUE
+    cctool remove ID
+    cctool rename OLD NEW
     cctool batch FILE                       several edits as one
 
 Each edit is checked with the tree as it would be, and written only if

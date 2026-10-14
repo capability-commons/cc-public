@@ -36,6 +36,8 @@ procedure, and the traps.
 | add one item                            | `cctool new ID --field ... --link ...` |
 | add an edge                             | `cctool link SOURCE RELATION TARGET` |
 | change a text field                     | `cctool set ID NAME VALUE`          |
+| remove an item                          | `cctool remove ID`                  |
+| give an item a new id                   | `cctool rename OLD NEW`             |
 | add items that need each other          | `cctool batch FILE` (or `-` for stdin) |
 
 A field named twice with `--field` becomes a list. In a batch, a field
@@ -57,11 +59,16 @@ are written as YAML.
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.
-- **`new` refuses pym, pyp, dls and file ids.** Those items live in the
-  file they name. Write the header by hand, then `cctool format`.
-- **Renaming an id:** add the old id to `alias` on the entry, and change
-  every reference and mention. `outdated_reference` and
-  `outdated_mention` find what is left.
+- **`new`, `remove` and `rename` refuse pym, pyp, dls and file ids.**
+  Those items live in the file they name. Write, move or remove the
+  file by hand, then `cctool format`.
+- **Renaming an id:** use `cctool rename`, never a search and replace.
+  It keeps the old id as an alias of a register entry, which the commit
+  check requires. Then fix each file it lists as still naming the old
+  id, and name both ids in the commit item.
+- **Removing an item is refused while anything names it.** Remove or
+  change what names it first, in the same `batch`, and name the removed
+  id in the commit item, or the commit-msg hook refuses the commit.
 - **A guid is never written by hand.** `new` mints it, and fills in
   `guid_<role>` for any `id_<role>` field you give it.
 

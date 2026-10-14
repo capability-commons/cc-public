@@ -27,16 +27,19 @@ work in it.
 
 ## Changing data items
 
-- Prefer `cctool new`, `link`, `set` and `batch` to editing YAML by
-  hand. They mint guids, fill in rights, keep the layout, and refuse an
+- Prefer `cctool new`, `link`, `set`, `remove`, `rename` and `batch`
+  to editing YAML by hand. They mint guids, fill in rights, keep the layout, and refuse an
   edit that adds a failure. Use `--dry-run` to see an edit first.
 - Never write a guid by hand. A guid is the prefix of the type and 32
   hex digits, minted once and never changed.
 - A new concept must be named by some other item, so make the concept
   and the item that names it together, with `cctool batch`.
 - After any edit by hand, run `cctool format`, then `cctool check`.
-- An id is renamed by adding the old id to the `alias` list of the
-  entry. Nothing else may still name the old id.
+- Rename an id with `cctool rename OLD NEW`. It changes every document
+  that names the id, moves the file of a standalone item, and keeps
+  the old id in the `alias` list of a register entry. It lists any
+  file, such as a test, that still names the old id outside a
+  document; change those by hand.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated.
 

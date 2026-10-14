@@ -179,6 +179,28 @@ def format_file(text: str, relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
+def span(text: str, relative: pathlib.Path) -> tuple[int | None, int | None]:
+    """
+    Return the indices of the first and the last line of text, the
+    content of the file at relative, that hold its document, or None if
+    it holds none.
+
+    """
+
+    list_line = text.split('\n')
+
+    if relative.suffix == cc_public.graph.extract.SUFFIX_YAML:
+        if cc_public.graph.extract.DIR_DATA not in relative.parts:
+            return (None, None)
+        return (0, len(list_line) - 1)
+
+    if relative.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
+        return _span_docstring(text, list_line)
+
+    return _span_header(list_line, cc_public.graph.extract.mark_comment(relative))
+
+
+# -----------------------------------------------------------------------------
 def format(text: str) -> str:
     """
     Return the YAML document text laid out.
