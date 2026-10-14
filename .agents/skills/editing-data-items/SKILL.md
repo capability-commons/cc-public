@@ -59,16 +59,24 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **A new concept is refused on its own** (`unused_concept`), because
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
-- **An annotation or decision is refused without `r_is_about`**
+- **An argument lives in the folder of its issue.** Start one with an
+  issue (`new iss_x --link r_is_about lc_y`), then give each decision
+  `--link r_answers iss_x` (`answer_count` refuses a decision that
+  answers no issue, or two) and each annotation `--link r_is_about
+  iss_x`. `new` writes all of them, and determinations, in
+  `_data/issue/iss_x/`; anything moved there by hand is checked by
+  `misplaced_document`.
+- **An annotation or issue is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
 - **A determination is refused unless it upholds or rejects a decision**
   (`determination_without_decision`). Give `--link r_upholds DEC` or
   `--link r_rejects DEC`. Only record a determination that a person
   has made; the commit that adds it says who and when.
 - **A determination is refused while a driver is unargued**
-  (`unargued_driver`). Every concern the subject's logical component
-  `r_is_driven_by` needs an annotation for it that supports or
-  challenges the decision or an alternative about the same subject.
+  (`unargued_driver`). Every concern that the logical component the
+  issue is about `r_is_driven_by` needs an annotation for it that
+  supports or challenges the decision or another answer to the same
+  issue.
   Argue it; do not drop the driver to pass.
 - **`domain_violation` or `range_violation`** means the relation does
   not run between those types. Read the relation's `domain` and `range`
@@ -81,7 +89,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.
-- **`new`, `remove` and `rename` refuse pym, pyp, dls and file ids.**
+- **`new`, `remove` and `rename` refuse pym, pyp, lpf and file ids.**
   Those items live in the file they name. Give a file its item with
   `cctool header PATH` (a module's id follows from its path; any other
   file needs ID, such as `file_githooks_pre_commit`). Move or remove

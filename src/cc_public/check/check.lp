@@ -131,8 +131,35 @@ misplaced_module(Id, Expected) :-
 
 
 % -----------------------------------------------------------------------------
+% The item belongs to the issue: it is the issue, a decision that
+% answers it, an annotation about it, or a determination that settles
+% a decision that answers it.
+%
+% decl issue_of(id:    symbol,
+%               issue: symbol)
+
+issue_of(Id, Id) :-
+    type_of(Id, "t_issue").
+
+issue_of(Id, Issue) :-
+    type_of(Id, "t_decision"),
+    primary_edge(Id, "r_answers", Issue).
+
+issue_of(Id, Issue) :-
+    type_of(Id, "t_annotation"),
+    primary_edge(Id, "r_is_about", Issue),
+    type_of(Issue, "t_issue").
+
+issue_of(Id, Issue) :-
+    settles(Id, Decision),
+    issue_of(Decision, Issue).
+
+
+% -----------------------------------------------------------------------------
 % A document under a _data directory is in the folder named for its
-% type, less the t_, in a file named for its id.
+% type, less the t_, in a file named for its id. A document that
+% belongs to an issue is in the folder of the issue instead, so that
+% everything argued about one issue is kept together.
 %
 % decl misplaced_document(id:       symbol,
 %                         file:     symbol,
@@ -142,9 +169,17 @@ misplaced_module(Id, Expected) :-
 misplaced_document(Id, File, Expected) :-
     item(Id, _, "", File, _),
     @match("(.*/)?_data/.*\\.yaml", File) = 1,
+    not issue_of(Id, _),
     type_of(Id, Type),
     Stem     = @substr(Type, 2, @strlen(Type) - 2),
     Expected = @cat("_data/", Stem, "/", Id, ".yaml"),
+    @match(@cat("(.*/)?", Expected), File) = 0.
+
+misplaced_document(Id, File, Expected) :-
+    item(Id, _, "", File, _),
+    @match("(.*/)?_data/.*\\.yaml", File) = 1,
+    issue_of(Id, Issue),
+    Expected = @cat("_data/issue/", Issue, "/", Id, ".yaml"),
     @match(@cat("(.*/)?", Expected), File) = 0.
 
 
@@ -252,7 +287,7 @@ range_violation(Target, Relation, Type) :-
 
 
 % -----------------------------------------------------------------------------
-% Every annotation and every decision is about something.
+% Every annotation and every issue is about something.
 %
 % decl missing_about(id: symbol)
 #show missing_about/1.
@@ -262,8 +297,22 @@ missing_about(Id) :-
     not primary_edge(Id, "r_is_about", _).
 
 missing_about(Id) :-
-    type_of(Id, "t_decision"),
+    type_of(Id, "t_issue"),
     not primary_edge(Id, "r_is_about", _).
+
+
+% -----------------------------------------------------------------------------
+% Every decision answers exactly one issue. The decisions that answer
+% an issue are its alternatives.
+%
+% decl answer_count(decision: symbol,
+%                   issues:   number)
+#show answer_count/2.
+
+answer_count(Decision, Issues) :-
+    type_of(Decision, "t_decision"),
+    Issues = #count { Issue : primary_edge(Decision, "r_answers", Issue) },
+    Issues != 1.
 
 
 % -----------------------------------------------------------------------------
@@ -294,24 +343,37 @@ settles(Determination, Decision) :-
 
 
 % -----------------------------------------------------------------------------
-% The decision, or an alternative to it about the same subject, has an
-% annotation that supports or challenges it for the concern.
+% A determination settles the decisions of one issue.
+%
+% decl determination_across_issues(determination: symbol,
+%                                  issue:         symbol,
+%                                  other:         symbol)
+#show determination_across_issues/3.
+
+determination_across_issues(Determination, Issue, Other) :-
+    type_of(Determination, "t_determination"),
+    issue_of(Determination, Issue),
+    issue_of(Determination, Other),
+    Issue < Other.
+
+
+% -----------------------------------------------------------------------------
+% The decision, or an alternative to it that answers the same issue,
+% has an annotation that supports or challenges it for the concern.
 %
 % decl argued(decision: symbol,
 %             concern:  symbol)
 
 argued(Decision, Concern) :-
-    primary_edge(Decision, "r_is_about", Subject),
-    primary_edge(Other, "r_is_about", Subject),
-    type_of(Other, "t_decision"),
+    primary_edge(Decision, "r_answers", Issue),
+    primary_edge(Other, "r_answers", Issue),
     practical(Id),
     primary_edge(Id, "r_supports", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
 
 argued(Decision, Concern) :-
-    primary_edge(Decision, "r_is_about", Subject),
-    primary_edge(Other, "r_is_about", Subject),
-    type_of(Other, "t_decision"),
+    primary_edge(Decision, "r_answers", Issue),
+    primary_edge(Other, "r_answers", Issue),
     practical(Id),
     primary_edge(Id, "r_challenges", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
@@ -319,7 +381,7 @@ argued(Decision, Concern) :-
 
 % -----------------------------------------------------------------------------
 % A determination settles a decision only once every concern that
-% drives the subject of the decision has been argued, for it or for an
+% drives the subject of its issue has been argued, for it or for an
 % alternative to it.
 %
 % decl unargued_driver(determination: symbol,
@@ -329,7 +391,8 @@ argued(Decision, Concern) :-
 
 unargued_driver(Determination, Decision, Concern) :-
     settles(Determination, Decision),
-    primary_edge(Decision, "r_is_about", Subject),
+    primary_edge(Decision, "r_answers", Issue),
+    primary_edge(Issue, "r_is_about", Subject),
     primary_edge(Subject, "r_is_driven_by", Concern),
     not argued(Decision, Concern).
 

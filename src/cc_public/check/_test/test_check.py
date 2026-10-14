@@ -42,6 +42,7 @@ from cc_public.conftest import DIR_REPO
 
 
 ID_ABOUT     = 'concern_safety'
+DIR_ISSUE    = '_data/issue/iss_x/'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
 # The widest forms of an id and a guid, from sch_primitive.
@@ -121,6 +122,21 @@ def _item(root, relative, id_self, list_edge = (), guid = None):
     path.parent.mkdir(parents = True, exist_ok = True)
     path.write_text(_dump(_fields(root, id_self, list_edge, guid)))
     return relative
+
+
+# -----------------------------------------------------------------------------
+def _decision(root, id_self, list_edge = (), guid = None):
+    """
+    Write a decision that answers iss_x, in the folder of iss_x, and
+    return its location. iss_x is written too, about ID_ABOUT, if it
+    is not there yet.
+
+    """
+
+    if not (root / DIR_ISSUE / 'iss_x.yaml').exists():
+        _item(root, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(root, 'r_is_about', ID_ABOUT)])
+    return _item(root, DIR_ISSUE + id_self + '.yaml', id_self,
+                 [_edge(root, 'r_answers', 'iss_x'), *list_edge], guid)
 
 
 # -----------------------------------------------------------------------------
@@ -213,7 +229,7 @@ def test_the_repository_passes_every_check():
 
 
 def test_an_annotation_and_a_decision_about_an_item_pass(tree):
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _decision(tree, 'dec_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', 'dec_x'),
                                                          _edge(tree, 'r_argues_for_concern', ID_ABOUT)])
@@ -225,17 +241,46 @@ def test_an_annotation_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('ann_x',)]}
 
 
-def test_a_decision_about_nothing_is_reported(tree):
+def test_a_decision_that_answers_no_issue_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x')
-    assert _check(tree) == {'missing_about': [('dec_x',)]}
+    assert _check(tree) == {'answer_count': [('dec_x', '0')]}
+
+
+def test_an_issue_about_nothing_is_reported(tree):
+    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x')
+    assert _check(tree) == {'missing_about': [('iss_x',)]}
+
+
+def test_a_decision_outside_the_folder_of_its_issue_is_reported(tree):
+    _decision(tree, 'dec_x')
+    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_answers', 'iss_x')])
+    assert _check(tree) == {'misplaced_document': [
+        ('dec_y', '_data/decision/dec_y.yaml', DIR_ISSUE + 'dec_y.yaml')]}
+
+
+def test_an_annotation_about_an_issue_is_kept_in_its_folder(tree):
+    _decision(tree, 'dec_x')
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_x')])
+    assert _check(tree) == {'misplaced_document': [
+        ('ann_x', '_data/annotation/ann_x.yaml', DIR_ISSUE + 'ann_x.yaml')]}
 
 
 def test_a_determination_that_upholds_a_decision_passes(tree):
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
-    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
-    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x'),
-                                                            _edge(tree, 'r_rejects', 'dec_y')])
+    _decision(tree, 'dec_x')
+    _decision(tree, 'dec_y')
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x'),
+                                                    _edge(tree, 'r_rejects', 'dec_y')])
     assert _check(tree) == {}
+
+
+def test_a_determination_across_two_issues_is_reported(tree):
+    _decision(tree, 'dec_x')
+    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/issue/iss_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_answers', 'iss_y')])
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x'),
+                                                    _edge(tree, 'r_rejects', 'dec_y')])
+    failures = _check(tree)
+    assert failures['determination_across_issues'] == [('det_x', 'iss_x', 'iss_y')]
 
 
 def test_a_determination_of_nothing_is_reported(tree):
@@ -245,29 +290,43 @@ def test_a_determination_of_nothing_is_reported(tree):
 
 def _driven_decisions(tree):
     """
-    Write lc_x, driven by concern_cost, and two decisions about it.
+    Write lc_x, driven by concern_cost, an issue about it, and two
+    decisions that answer the issue.
 
     """
 
     _item(tree, '_data/logical_component/lc_x.yaml', 'lc_x',
           [_edge(tree, 'r_is_driven_by', 'concern_cost')])
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', 'lc_x')])
-    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', 'lc_x')])
+    _decision(tree, 'dec_x')
+    _decision(tree, 'dec_y')
 
 
 def test_a_determination_with_a_driver_unargued_is_reported(tree):
     _driven_decisions(tree)
-    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    assert _check(tree) == {'unargued_driver': [('det_x', 'dec_x', 'concern_cost')]}
+
+
+def test_a_driver_argued_only_in_another_issue_is_unargued(tree):
+    _driven_decisions(tree)
+    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, '_data/issue/iss_y/dec_z.yaml', 'dec_z', [_edge(tree, 'r_answers', 'iss_y')])
+    _item(tree, '_data/issue/iss_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_y'),
+                                                          _edge(tree, 'r_challenges', 'dec_z'),
+                                                          _edge(tree, 'r_argues_for_concern',
+                                                                'concern_cost')])
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
     assert _check(tree) == {'unargued_driver': [('det_x', 'dec_x', 'concern_cost')]}
 
 
 def test_a_driver_argued_for_an_alternative_passes(tree):
     _driven_decisions(tree)
-    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'lc_x'),
-                                                         _edge(tree, 'r_challenges', 'dec_y'),
-                                                         _edge(tree, 'r_argues_for_concern',
-                                                               'concern_cost')])
-    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    _item(tree, DIR_ISSUE + 'ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_x'),
+                                                    _edge(tree, 'r_challenges', 'dec_y'),
+                                                    _edge(tree, 'r_argues_for_concern',
+                                                          'concern_cost')])
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
     assert _check(tree) == {}
 
 
@@ -351,9 +410,8 @@ def test_a_reference_with_a_stale_guid_is_reported(tree):
 
 def test_an_edge_from_outside_the_domain_is_reported(tree):
     # Support runs from an annotation. A decision gives no reasons.
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
-    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                       _edge(tree, 'r_supports', 'dec_x')])
+    _decision(tree, 'dec_x')
+    _decision(tree, 'dec_y', [_edge(tree, 'r_supports', 'dec_x')])
     assert _check(tree) == {'domain_violation': [('dec_y', 'r_supports', 't_decision')]}
 
 
@@ -374,8 +432,7 @@ def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
                                                   'brief':     'SUBJ is the subject of OBJ'}
     path.write_text(_dump(register))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                       _edge(tree, 'r_is_subject_of', 'ann_x')])
+    _decision(tree, 'dec_x', [_edge(tree, 'r_is_subject_of', 'ann_x')])
     assert _check(tree) == {}
 
 
@@ -443,7 +500,7 @@ def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
 
 
 def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _decision(tree, 'dec_x')
     _replace(tree, '_data/schema/sch_decision.yaml', '  - type:               object',
                                                      '  - type:               objct')
     line = _line(tree, '_data/schema/sch_decision.yaml', '  - type:               objct')
@@ -542,27 +599,23 @@ def test_a_python_file_without_an_item_is_reported(tree):
 
 
 def test_a_cycle_of_supersession_is_reported(tree):
-    about    = _edge(tree, 'r_is_about', ID_ABOUT)
     (gx, gy) = (_guid('dec'), _guid('dec'))
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x',
-          [about, dict(about, id_relation = 'r_supersedes', id_target = 'dec_y', guid_target = gy,
-                       guid_relation = _guid_of(tree, 'r_supersedes'))], guid = gx)
-    _item(tree, '_data/decision/dec_y.yaml', 'dec_y',
-          [about, dict(about, id_relation = 'r_supersedes', id_target = 'dec_x', guid_target = gx,
-                       guid_relation = _guid_of(tree, 'r_supersedes'))], guid = gy)
+    edge     = {'id_relation': 'r_supersedes', 'guid_relation': _guid_of(tree, 'r_supersedes')}
+    _decision(tree, 'dec_x', [dict(edge, id_target = 'dec_y', guid_target = gy)], guid = gx)
+    _decision(tree, 'dec_y', [dict(edge, id_target = 'dec_x', guid_target = gx)], guid = gy)
     assert _check(tree) == {'cycle': [('r_supersedes', 'dec_x'),
                                                            ('r_supersedes', 'dec_y')]}
 
 
 def test_an_argument_about_a_decision_without_a_concern_is_reported(tree):
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _decision(tree, 'dec_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'dec_x')])
     assert _check(tree) == {'argument_without_concern': [('ann_x',)]}
 
 
 def test_an_argument_about_a_decision_with_two_concerns_passes(tree):
-    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _decision(tree, 'dec_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'dec_x'),
                                                          _edge(tree, 'r_argues_for_concern',

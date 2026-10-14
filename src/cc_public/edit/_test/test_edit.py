@@ -242,14 +242,29 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
 
 
 def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
-    assert _edit(tree, {'new': 'dec_x', 'field': FIELD_ANN,
+    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'con_concept']]},
+                       {'new': 'dec_x', 'field': FIELD_ANN,
+                        'link': [['r_answers', 'iss_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'dec_x']]}) == {}
     assert _edit(tree, {'rename': ['dec_x', 'dec_y']}) == {}
-    assert not (tree / '_data/decision/dec_x.yaml').exists()
-    assert 'id_self:                dec_y\n' in (tree / '_data/decision/dec_y.yaml').read_text()
+    assert not (tree / '_data/issue/iss_x/dec_x.yaml').exists()
+    assert 'id_self:                dec_y\n' in (tree / '_data/issue/iss_x/dec_y.yaml').read_text()
     assert 'id_target:          dec_y\n' in (tree / '_data/annotation/ann_x.yaml').read_text()
+
+
+def test_new_writes_the_items_of_an_issue_in_its_folder(tree):
+    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'con_concept']]},
+                       {'new': 'dec_x', 'field': FIELD_ANN,
+                        'link': [['r_answers', 'iss_x']]},
+                       {'new': 'ann_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'iss_x']]},
+                       {'new': 'det_x', 'field': FIELD_ANN,
+                        'link': [['r_upholds', 'dec_x']]}) == {}
+    assert sorted(path.name for path in (tree / '_data/issue/iss_x').iterdir()) == [
+        'ann_x.yaml', 'dec_x.yaml', 'det_x.yaml', 'iss_x.yaml']
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
