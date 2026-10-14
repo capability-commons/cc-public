@@ -1,0 +1,48 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_logical_component.yaml
+id_self:                sch_logical_component
+guid_self:              sch_0f929ae944d14364aaf89735389eda7a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Logical component schema
+brief:                  |
+                        The shape of a logical component, one part of
+                        cc-public described apart from any technology.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A logical component
+                        carries nothing beyond them, and requires a
+                        brief.
+
+                        title names the logical component and brief
+                        says what it does. The brief is required,
+                        because a part whose job is not stated cannot
+                        be told apart from the parts that realize it.
+usage:                  |
+                        Named by t_logical_component as the schema of
+                        every item in _data/logical_component/.
+note:                   |
+                        What realizes a logical component is an edge
+                        from the realizing item, not a field of the
+                        logical component, so that a new realization
+                        needs no change to it.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - brief
+
+unevaluatedProperties:  false
+relation:               []
