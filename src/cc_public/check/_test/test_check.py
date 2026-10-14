@@ -242,6 +242,39 @@ def test_a_determination_of_nothing_is_reported(tree):
     assert _check(tree) == {'determination_without_decision': [('det_x',)]}
 
 
+def _driven_decisions(tree):
+    """
+    Write lc_x, driven by concern_cost, and two decisions about it.
+
+    """
+
+    _item(tree, '_data/logical_component/lc_x.yaml', 'lc_x',
+          [_edge(tree, 'r_is_driven_by', 'concern_cost')])
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', 'lc_x')])
+
+
+def test_a_determination_with_a_driver_unargued_is_reported(tree):
+    _driven_decisions(tree)
+    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    assert _check(tree) == {'unargued_driver': [('det_x', 'dec_x', 'concern_cost')]}
+
+
+def test_a_driver_argued_for_an_alternative_passes(tree):
+    _driven_decisions(tree)
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'lc_x'),
+                                                         _edge(tree, 'r_challenges', 'dec_y'),
+                                                         _edge(tree, 'r_argues_for_concern',
+                                                               'concern_cost')])
+    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    assert _check(tree) == {}
+
+
+def test_an_open_decision_with_a_driver_unargued_passes(tree):
+    _driven_decisions(tree)
+    assert _check(tree) == {}
+
+
 def test_an_id_with_no_known_prefix_is_reported(tree):
     location = _item(tree, '_data/x/xyz_x.yaml', 'xyz_x')
     assert _check(tree) == {'unknown_prefix': [('xyz_x', location, LINE_ITEM)]}

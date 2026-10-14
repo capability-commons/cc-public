@@ -65,6 +65,11 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   (`determination_without_decision`). Give `--link r_upholds DEC` or
   `--link r_rejects DEC`. Only record a determination that a person
   has made; the commit that adds it says who and when.
+- **A determination is refused while a driver is unargued**
+  (`unargued_driver`). Every concern the subject's logical component
+  `r_is_driven_by` needs an annotation for it that supports or
+  challenges the decision or an alternative about the same subject.
+  Argue it; do not drop the driver to pass.
 - **`domain_violation` or `range_violation`** means the relation does
   not run between those types. Read the relation's `domain` and `range`
   in `reg_relation.yaml`; do not pick another relation just to pass.

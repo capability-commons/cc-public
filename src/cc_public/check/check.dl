@@ -280,6 +280,62 @@ determination_without_decision(id) :-
 
 
 // ----------------------------------------------------------------------------
+// The determination upholds or rejects the decision.
+//
+.decl settles(determination: symbol,
+              decision:      symbol)
+
+settles(determination, decision) :-
+    type_of(determination, "t_determination"),
+    primary_edge(determination, "r_upholds", decision).
+
+settles(determination, decision) :-
+    type_of(determination, "t_determination"),
+    primary_edge(determination, "r_rejects", decision).
+
+
+// ----------------------------------------------------------------------------
+// The decision, or an alternative to it about the same subject, has an
+// annotation that supports or challenges it for the concern.
+//
+.decl argued(decision: symbol,
+             concern:  symbol)
+
+argued(decision, concern) :-
+    primary_edge(decision, "r_is_about", subject),
+    primary_edge(other, "r_is_about", subject),
+    type_of(other, "t_decision"),
+    practical(id),
+    primary_edge(id, "r_supports", other),
+    primary_edge(id, "r_argues_for_concern", concern).
+
+argued(decision, concern) :-
+    primary_edge(decision, "r_is_about", subject),
+    primary_edge(other, "r_is_about", subject),
+    type_of(other, "t_decision"),
+    practical(id),
+    primary_edge(id, "r_challenges", other),
+    primary_edge(id, "r_argues_for_concern", concern).
+
+
+// ----------------------------------------------------------------------------
+// A determination settles a decision only once every concern that
+// drives the subject of the decision has been argued, for it or for an
+// alternative to it.
+//
+.decl unargued_driver(determination: symbol,
+                      decision:      symbol,
+                      concern:       symbol)
+.output unargued_driver
+
+unargued_driver(determination, decision, concern) :-
+    settles(determination, decision),
+    primary_edge(decision, "r_is_about", subject),
+    primary_edge(subject, "r_is_driven_by", concern),
+    !argued(decision, concern).
+
+
+// ----------------------------------------------------------------------------
 // Every id that a text mentions, if it has the prefix of a known type,
 // names an item, or an old id of one. A guid may be mentioned too.
 //
