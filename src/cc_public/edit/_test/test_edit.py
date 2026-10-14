@@ -154,6 +154,36 @@ def test_a_new_concept_needs_an_item_that_names_it(tree):
                         'link':  [['r_is_about', 'con_x']]}) == {}
 
 
+def test_a_new_schema_opens_with_its_dialect_and_keeps_structured_values(tree, zero):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'new':   'sch_x',
+                                        'field': {'title':    'X',
+                                                  'brief':    'X.',
+                                                  '$id':      'https://x/sch_x.yaml',
+                                                  '$schema':  'https://x/dialect',
+                                                  'allOf':    [{'$ref': 'https://x/sch_y.yaml'}],
+                                                  'required': ['brief'],
+                                                  'unevaluatedProperties': False}}])
+    text = edited.text('_data/schema/sch_x.yaml')
+    assert text.startswith('$schema:                https://x/dialect\n'
+                           '$id:                    https://x/sch_x.yaml\n'
+                           'id_self:                sch_x\n')
+    assert ('allOf:\n'
+            '  - $ref:               https://x/sch_y.yaml\n') in text
+    assert 'unevaluatedProperties:  false\n' in text
+
+
+def test_a_new_field_that_names_an_item_is_given_its_guid(tree, zero):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'new':   't_x',
+                                        'field': {'title':      'X type',
+                                                  'brief':      'X.',
+                                                  'id_concept': 'con_concept'}}])
+    assert ('    id_concept:         con_concept\n'
+            '    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40\n') in (
+        edited.text('_data/register/reg_data_item_type.yaml'))
+
+
 def test_a_link_turns_an_empty_relation_into_a_list(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN, 'link': []},
                        {'link': ['ann_x', 'r_is_about', 'con_concept']}) == {}

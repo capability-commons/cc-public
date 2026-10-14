@@ -79,13 +79,14 @@ def violations(map_document: cc_public.graph.extract.Documents,
         if isinstance(document, dict) and KEY_ID_SCHEMA in document:
             map_schema[id_document] = document
 
-    registry = referencing.Registry().with_resources(
-                    (str(schema[KEY_ID_SCHEMA]), referencing.Resource.from_contents(schema))
-                    for schema in map_schema.values())
-    map_validator = {}
-    set_row       = set()
     set_invalid   = {id_schema for (id_schema, schema) in map_schema.items()
                      if not META.is_valid(schema)}
+    registry      = referencing.Registry().with_resources(
+                        (str(schema[KEY_ID_SCHEMA]), referencing.Resource.from_contents(schema))
+                        for (id_schema, schema) in map_schema.items()
+                        if id_schema not in set_invalid)
+    map_validator = {}
+    set_row       = set()
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:

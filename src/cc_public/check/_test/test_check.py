@@ -394,6 +394,16 @@ def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
          "'objct' is not valid under any of the given schemas")]}
 
 
+def test_a_schema_with_a_string_for_a_subschema_is_reported(tree):
+    _replace(tree, '_data/schema/sch_decision.yaml',
+             '  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml',
+             '  - https://capability-commons.org/schema/sch_trait_relation.yaml')
+    assert _check(tree) == {'schema_violation': [
+        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', '50', 'allOf/1',
+         "'https://capability-commons.org/schema/sch_trait_relation.yaml' "
+         "is not of type 'object', 'boolean'")]}
+
+
 def test_a_mention_of_nothing_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])

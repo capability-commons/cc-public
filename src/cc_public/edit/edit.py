@@ -71,6 +71,11 @@ COLUMN_LINE       = 'line'
 #
 TUPLE_KEY_PROSE   = ('title', 'brief', 'description', 'usage', 'note')
 
+# A schema opens with the fields that name its dialect and itself,
+# before its identity.
+#
+TUPLE_KEY_LEAD    = ('$schema', '$id')
+
 # Fields that set_field does not change: identity is fixed, and edges
 # and aliases are lists that other commands keep.
 #
@@ -92,6 +97,8 @@ DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
 LENGTH_BANNER     = 79
 DELIM_PREFIX      = '_'
+PREFIX_ID         = 'id_'
+PREFIX_GUID       = 'guid_'
 
 Edit              = dict[str, str]
 YAML              = ruamel.yaml.YAML(typ = 'rt')
@@ -182,7 +189,7 @@ class Tree:
 # -----------------------------------------------------------------------------
 def new(tree:       Tree,
         id_self:    str,
-        list_field: list[tuple[str, str | list[str]]],
+        list_field: list[tuple[str, typing.Any]],
         list_link:  list[tuple[str, str]]) -> Edit:
     """
     Return the edit that makes a new item with id_self, the fields in
@@ -204,14 +211,17 @@ def new(tree:       Tree,
         raise ErrorEdit('An item with the id {id} exists.'.format(id = id_self))
 
     id_type   = map_type[prefix]
-    map_field = {KEY_ID_SELF:   id_self,
-                 KEY_GUID_SELF: '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)}
+    map_given = dict(list_field)
+    map_field = {key: map_given.pop(key) for key in TUPLE_KEY_LEAD if key in map_given}
     register  = _register(tree, id_type)
+
+    map_field[KEY_ID_SELF]   = id_self
+    map_field[KEY_GUID_SELF] = '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)
 
     if register is None:
         map_field.update(_rights(tree))
 
-    map_field.update(_ordered(list_field))
+    map_field.update(_referenced(tree, _ordered(list(map_given.items()))))
 
     if register is not None:
         map_field[KEY_ALIAS] = []
@@ -291,7 +301,7 @@ def batch(tree: Tree, list_operation: list) -> None:
     operation is a mapping with one of these forms:
 
         new:   ID
-        field: {NAME: VALUE or [VALUE, ...], ...}
+        field: {NAME: VALUE, ...}
         link:  [[RELATION, TARGET], ...]
 
         link:  [SOURCE, RELATION, TARGET]
@@ -317,7 +327,7 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
     if isinstance(operation, dict) and isinstance(operation.get(KEY_NEW), str):
         return new(tree,
                    operation[KEY_NEW],
-                   [(str(key), _text(value)) for (key, value)
+                   [(str(key), _plain(value)) for (key, value)
                     in (operation.get(KEY_FIELD) or {}).items()],
                    [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
 
@@ -329,18 +339,6 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
 
     raise ErrorEdit('An operation of a batch is not one of new, link or set: {operation}'.format(
                                                                         operation = operation))
-
-
-# -----------------------------------------------------------------------------
-def _text(value: typing.Any) -> str | list[str]:
-    """
-    Return value as the text of a field, or as a list of texts.
-
-    """
-
-    if isinstance(value, list):
-        return [str(each) for each in value]
-    return str(value)
 
 
 # -----------------------------------------------------------------------------
@@ -444,7 +442,7 @@ def _plain(value):
 
 
 # -----------------------------------------------------------------------------
-def _ordered(list_field: list[tuple[str, str | list[str]]]) -> dict:
+def _ordered(list_field: list[tuple[str, typing.Any]]) -> dict:
     """
     Return the fields of list_field, the descriptive ones first and in
     their order, then the others in the order given.
@@ -458,6 +456,27 @@ def _ordered(list_field: list[tuple[str, str | list[str]]]) -> dict:
 
     return ({key: map_field[key] for key in TUPLE_KEY_PROSE if key in map_field}
             | {key: value for (key, value) in map_field.items() if key not in TUPLE_KEY_PROSE})
+
+
+# -----------------------------------------------------------------------------
+def _referenced(tree: Tree, map_field: dict) -> dict:
+    """
+    Return the fields of map_field, with the guid of each item that a
+    field id_<role> names put after it as guid_<role>, unless given.
+
+    """
+
+    map_new = {}
+
+    for (key, value) in map_field.items():
+        map_new[key] = value
+        if not (key.startswith(PREFIX_ID) and isinstance(value, str)):
+            continue
+        key_guid = PREFIX_GUID + key[len(PREFIX_ID):]
+        if key_guid not in map_field:
+            map_new[key_guid] = tree.guid(value)
+
+    return map_new
 
 
 # -----------------------------------------------------------------------------

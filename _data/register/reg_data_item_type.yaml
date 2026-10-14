@@ -679,3 +679,43 @@ table:
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
         id_target:      sch_file
         guid_target:    sch_416542a4956343bfa02a827fcdae43a9
+
+  # ---------------------------------------------------------------------------
+  # t_commit -- Commit type
+  #
+  t_commit:
+    id_self:            t_commit
+    guid_self:          t_d84300d97a444b43b10d17b8fd1cf737
+    title:              Commit type
+    brief:              |
+                        Type of commit data items.
+    description:        |
+                        Each commit data item records one commit, what
+                        it changes and why.
+    usage:              |
+                        Commit data items let the history of the tree
+                        be read, linked and checked like any other
+                        item.
+    note:               |
+                        A commit data item is held in the message of
+                        the git commit it records, after the subject
+                        line and before any trailers. It is not held
+                        in a file of the tree, because a commit cannot
+                        contain its own record. The id is the time the
+                        commit was made, in UTC, and the first six hex
+                        digits of its guid, so that ids sort by time
+                        and are minted without coordination. The shape
+                        of commit data items is defined by the
+                        sch_commit schema.
+    alias:              []
+    prefix:             cmt
+    regex_id:           ^cmt_[0-9]{14}_[0-9a-f]{6}$
+    id_concept:         con_commit
+    guid_concept:       con_bc87eae04b9c42869a3bc825f560b94b
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_commit
+        guid_target:    sch_ac7d8ef35a67417ca48cb47a3a98cda9

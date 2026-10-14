@@ -38,8 +38,9 @@ procedure, and the traps.
 | change a text field                     | `cctool set ID NAME VALUE`          |
 | add items that need each other          | `cctool batch FILE` (or `-` for stdin) |
 
-A field named twice with `--field` becomes a list. In a batch, give a
-list as a YAML list.
+A field named twice with `--field` becomes a list. In a batch, a field
+takes any YAML value, so lists and mappings (a schema's `allOf`, say)
+are written as YAML.
 
 ## The traps
 
@@ -61,7 +62,8 @@ list as a YAML list.
 - **Renaming an id:** add the old id to `alias` on the entry, and change
   every reference and mention. `outdated_reference` and
   `outdated_mention` find what is left.
-- **A guid is never written by hand.** `new` mints it.
+- **A guid is never written by hand.** `new` mints it, and fills in
+  `guid_<role>` for any `id_<role>` field you give it.
 
 ## By hand
 
