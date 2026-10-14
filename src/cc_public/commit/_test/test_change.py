@@ -125,6 +125,11 @@ def test_a_renamed_entry_without_its_old_id_as_alias_is_reported(repo):
         'rename_without_alias': [(ID_STYLE, 'style_commit_titles')]}
 
 
+def test_a_revert_of_a_rename_needs_no_alias(repo):
+    _replace(repo, REGISTER, ID_STYLE, 'style_commit_titles')
+    assert _check(repo, 'Revert "Rename {id} to style_commit_titles"'.format(id = ID_STYLE)) == {}
+
+
 def test_an_unannounced_rename_is_reported(repo):
     _replace(repo, REGISTER, ID_STYLE, 'style_commit_titles')
     assert _check(repo, 'Change the register so that it is tidy') == {

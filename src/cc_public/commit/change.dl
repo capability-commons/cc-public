@@ -152,7 +152,10 @@ unannounced_rename(id, other) :-
 
 // ----------------------------------------------------------------------------
 // A register entry given a new id keeps its old id in its alias list,
-// so that references by the old id can be found and resolved.
+// so that references by the old id can be found and resolved. A revert
+// is the exception: it restores an entry as it was, with the id and
+// the aliases it had then, and that content passed when it was first
+// committed.
 //
 .decl rename_without_alias(id:    symbol,
                            other: symbol)
@@ -162,7 +165,9 @@ rename_without_alias(id, other) :-
     renamed(guid, id, other),
     item(other, guid, holder, _, _),
     holder != "",
-    !alias(other, id).
+    !alias(other, id),
+    !commit_verb("Revert"),
+    !commit_verb("Reapply").
 
 
 // ----------------------------------------------------------------------------
