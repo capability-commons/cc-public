@@ -18,10 +18,10 @@ brief:                  |
 description:            |
                         The graph before the commit is read from HEAD,
                         and the graph after it from the staged
-                        content. change.dl is evaluated over the graph
+                        content. change.lp is evaluated over the graph
                         after the commit, the items before it, and the
                         verb and the mentions of the commit item. Each
-                        output relation of change.dl is one check, and
+                        shown relation of change.lp is one check, and
                         each row of it is one failure.
 
                         Before the first commit there is no HEAD, and
@@ -48,7 +48,7 @@ import cc_public.graph.datalog
 import cc_public.graph.extract
 
 
-RULES           = pathlib.Path(__file__).with_name('change.dl')
+RULES           = pathlib.Path(__file__).with_name('change.lp')
 TUPLE_KEY_TEXT  = ('title', 'brief', 'description')
 KEY_TITLE       = 'title'
 
@@ -106,7 +106,7 @@ def facts_of(dir_before: pathlib.Path,
              dir_after:  pathlib.Path,
              item:       dict) -> cc_public.graph.extract.Facts:
     """
-    Return the facts that change.dl is evaluated over: those of the
+    Return the facts that change.lp is evaluated over: those of the
     tree in dir_after, the items of the tree in dir_before, and the
     facts of the commit item.
 

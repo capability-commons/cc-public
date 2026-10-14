@@ -29,9 +29,9 @@ Development is supported on Linux and macOS. Windows is not
 supported as a development environment: the repository holds symbolic
 links, and the tools assume a POSIX shell.
 
-The environment is managed by [pixi](https://pixi.sh). Datalog is
-evaluated by [souffle](https://souffle-lang.github.io), which is found
-on the PATH or through the SOUFFLE environment variable.
+The environment is managed by [pixi](https://pixi.sh). It includes
+[clingo](https://potassco.org/clingo/), which evaluates the rules of
+the checker and of Datalog queries.
 
     pixi install
     pixi run hooks        # once per clone: gate every commit

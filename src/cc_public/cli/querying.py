@@ -52,8 +52,8 @@ HINT              = 'Run cctool query schema to list the relations and their col
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
                      'FROM type_of GROUP BY type"')
-EXAMPLE_DATALOG   = ("cctool query datalog '.decl out(id:symbol) .output out "
-                     "out(i) :- type_of(i, \"t_concern\").'")
+EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
+                     "out(Id) :- type_of(Id, \"t_concern\").'")
 
 
 # -----------------------------------------------------------------------------
@@ -142,26 +142,28 @@ def sql(text, path_file, root, limit, is_json):
 @_option
 def datalog(text, path_file, root, limit, is_json):
     """
-    Evaluate Datalog rules over the graph, with souffle.
+    Evaluate Datalog rules over the graph, with clingo.
 
-    The rules are added to a program that already declares every
-    relation, so they may use any of them. Each relation the rules
-    name in an .output directive is printed. A line is a number, and
-    every other value is a symbol. Give the rules as QUERY, as - to read them from stdin, or with
-    --file.
+    The rules are clingo rules. They are added to a program that
+    already holds every relation, so they may use any of them. Each
+    relation the rules name in a #show directive is printed. Its
+    columns are named by a comment such as "% decl out(id: symbol)",
+    or left unnamed. Variables begin with a capital letter, and a value
+    in quotes is a string. Give the rules as QUERY, as - to read them
+    from stdin, or with --file.
 
     \b
     Examples:
-      cctool query datalog '.decl out(id:symbol) .output out
-        out(i) :- type_of(i, "t_concern").'
-      cctool query datalog --file query.dl
+      cctool query datalog '#show out/1.
+        out(Id) :- type_of(Id, "t_concern").'
+      cctool query datalog --file query.lp
 
     """
 
     text = _read(text, path_file, EXAMPLE_DATALOG)
 
     if not cc_public.graph.datalog.output(text):
-        _fail('The rules name no relation in an .output directive, so there is '
+        _fail('The rules name no relation in a #show directive, so there is '
               'nothing to print.', EXAMPLE_DATALOG)
 
     facts = cc_public.graph.extract.extract(root.resolve())
@@ -203,7 +205,7 @@ def schema():
                                  initial_indent    = INDENT_TEXT,
                                  subsequent_indent = INDENT_TEXT))
 
-    click.echo('\nDerived relations, as defined in cc_public/graph/derive.dl:\n')
+    click.echo('\nDerived relations, as defined in cc_public/graph/derive.lp:\n')
     click.echo(cc_public.graph.datalog.PATH_DERIVE.read_text(encoding = 'utf-8'))
     click.echo('A column is a symbol, or text in SQL, unless it is marked :number,')
     click.echo('an integer in SQL. In SQL each relation is a table.\n')

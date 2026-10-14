@@ -16,17 +16,15 @@ brief:                  |
                         The fixtures the tests share: a copy of the
                         repository to break.
 description:            |
-                        This module holds the fixtures. A test that
-                        needs souffle is skipped where souffle cannot
-                        be found, since neither the checker nor a
-                        query can run without it.
+                        This module holds the fixtures. Every test
+                        runs wherever the environment is installed,
+                        since clingo is part of it.
 relation:               []
 
 ...
 """
 
 
-import os
 import pathlib
 import shutil
 
@@ -44,19 +42,7 @@ TUPLE_SKIP = ('.git', '.pixi', '.venv', '_tools', '__pycache__', '.ruff_cache',
 
 # -----------------------------------------------------------------------------
 @pytest.fixture
-def souffle():
-    """
-    Skip the test where souffle cannot be found.
-
-    """
-
-    if shutil.which(os.environ.get('SOUFFLE', 'souffle')) is None:
-        pytest.skip('souffle cannot be found')
-
-
-# -----------------------------------------------------------------------------
-@pytest.fixture
-def tree(souffle, tmp_path):
+def tree(tmp_path):
     """
     Return the root of a copy of the repository: its data items, its
     source and the files at its root, without version control,

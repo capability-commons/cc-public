@@ -35,6 +35,7 @@ import uuid
 import ruamel.yaml
 
 import cc_public.check.check
+import cc_public.commit.change
 import cc_public.graph.datalog
 import cc_public.graph.extract
 from cc_public.conftest import DIR_REPO
@@ -166,9 +167,9 @@ def _module(root, relative, id_self):
 
 
 # -----------------------------------------------------------------------------
-def _datalog(root, relative, id_self):
+def _program(root, relative, id_self):
     """
-    Write a Datalog source file whose comment header holds an item
+    Write a logic program file whose comment header holds an item
     with id_self.
 
     """
@@ -176,8 +177,8 @@ def _datalog(root, relative, id_self):
     item = _dump(_fields(root, id_self))
     path = root / relative
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text('// ---\n' + ''.join('// ' + line for line in item.splitlines(True))
-                    + '// ...\n')
+    path.write_text('% ---\n' + ''.join('% ' + line for line in item.splitlines(True))
+                    + '% ...\n')
 
 
 # -----------------------------------------------------------------------------
@@ -207,7 +208,7 @@ def _replace(root, relative, old, new):
     path.write_text(text.replace(old, new, 1))
 
 
-def test_the_repository_passes_every_check(souffle):
+def test_the_repository_passes_every_check():
     assert cc_public.check.check.check(DIR_REPO) == {}
 
 
@@ -504,20 +505,27 @@ def test_an_alias_that_an_item_has_as_its_id_is_reported(tree):
         ('concern_cost', 'concern_functional_suitability')]}
 
 
-def test_a_datalog_source_file_named_for_its_place_passes(tree):
-    _datalog(tree, 'src/x/y.dl', 'dls_x.y')
+def test_a_logic_program_file_named_for_its_place_passes(tree):
+    _program(tree, 'src/x/y.lp', 'lpf_x.y')
     assert _check(tree) == {}
 
 
-def test_a_datalog_source_file_named_for_another_place_is_reported(tree):
-    _datalog(tree, 'src/x/y.dl', 'dls_x.z')
-    assert _check(tree) == {'misplaced_module': [('dls_x.z', 'dls_x.y')]}
+def test_a_logic_program_file_named_for_another_place_is_reported(tree):
+    _program(tree, 'src/x/y.lp', 'lpf_x.z')
+    assert _check(tree) == {'misplaced_module': [('lpf_x.z', 'lpf_x.y')]}
 
 
-def test_a_datalog_file_without_an_item_is_reported(tree):
+def test_a_logic_program_file_without_an_item_is_reported(tree):
     (tree / 'src/x').mkdir(parents = True)
-    (tree / 'src/x/y.dl').write_text('// Rules with no item.\n')
-    assert _check(tree) == {'unrecorded_module': [('src/x/y.dl',)]}
+    (tree / 'src/x/y.lp').write_text('% Rules with no item.\n')
+    assert _check(tree) == {'unrecorded_module': [('src/x/y.lp',)]}
+
+
+def test_every_check_names_its_columns():
+    for path in (cc_public.check.check.RULES, cc_public.commit.change.RULES):
+        text = path.read_text()
+        assert set(cc_public.graph.datalog.output(text)) <= set(
+            cc_public.graph.datalog.declared(text))
 
 
 def test_a_document_in_the_wrong_folder_is_reported(tree):
@@ -604,7 +612,7 @@ def test_a_concept_nothing_names_is_reported(tree):
     assert _check(tree) == {'unused_concept': [('con_register_entry',)]}
 
 
-def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported(souffle):
+def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
     facts = {name: set() for name in cc_public.graph.extract.RELATION}
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
     facts['type_prefix'].update({('t_register', 'reg', '.*'), ('t_annotation', 'ann', '.*')})

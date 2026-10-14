@@ -102,7 +102,7 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # name of the file gives the id, so new does not make them.
 #
 ID_HELD           = 'r_has_items_held_in_register'
-SET_PREFIX_SOURCE = {'pym', 'pyp', 'dls', 'file'}
+SET_PREFIX_SOURCE = {'pym', 'pyp', 'lpf', 'file'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
@@ -270,7 +270,7 @@ def header(tree:       Tree,
     comment header if not, after any line that names an interpreter.
     The file is made if there is none.
 
-    The id of a python module or Datalog source file follows from its
+    The id of a python module or logic program file follows from its
     path, so id_self may be None for one. Any other file needs it.
 
     """

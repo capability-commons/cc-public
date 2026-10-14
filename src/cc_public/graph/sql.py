@@ -20,8 +20,8 @@ description:            |
                         derived relations into an in-memory SQLite
                         database, one table for each, with the columns
                         Datalog gives them. The derived relations are
-                        computed by souffle from derive.dl, so they
-                        are defined once, for both languages. A query
+                        computed by clingo from derive.lp, so they are
+                        defined once, for both languages. A query
                         changes nothing outside the database it runs
                         in.
 relation:               []
@@ -52,7 +52,7 @@ def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
     map_column = {name: tuple(cc_public.graph.extract.column(spec) for spec in tuple_spec)
                   for (name, (tuple_spec, _)) in cc_public.graph.extract.RELATION.items()}
     map_derive = cc_public.graph.datalog.derived()
-    rules      = ''.join('.output {name}\n'.format(name = name) for name in map_derive)
+    rules      = ''.join(cc_public.graph.datalog.show(name, map_derive) for name in map_derive)
     rows       = {name: sorted(set_row) for (name, set_row) in facts.items()}
 
     map_column.update(map_derive)
@@ -66,7 +66,7 @@ def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
                               column = ', '.join('"{c}" {t}'.format(c = column,
                                                                      t = MAP_TYPE[type_column])
                                                  for (column, type_column) in tuple_column)))
-        # The names are those declared in RELATION and derive.dl, not input.
+        # The names are those declared in RELATION and derive.lp, not input.
         connection.executemany('INSERT INTO "{name}" VALUES ({mark})'.format(  # noqa: S608
                                   name = name,
                                   mark = ', '.join('?' * len(tuple_column))),

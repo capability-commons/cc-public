@@ -38,21 +38,21 @@ ID_CONCERN = 'concern_safety'
 
 
 def test_declared_reads_the_columns_of_each_relation():
-    text = '.decl a(x:symbol, y:number)\n.decl b(\n    z)'
+    text = '% decl a(x: symbol,\n%        y: number)\n  %decl b(z)\nc(1). % decl c(w)'
     assert cc_public.graph.datalog.declared(text) == {'a': (('x', 'symbol'), ('y', 'number')),
                                                       'b': (('z', 'symbol'),)}
 
 
 def test_output_reads_every_relation_named_in_order():
-    text = '.output b\n.output a, c .output b'
+    text = '#show b/1.\n#show a/2. #show c / 0 . % #show d/1.\n#show b/1.'
     assert cc_public.graph.datalog.output(text) == ['b', 'a', 'c']
 
 
 def test_datalog_returns_each_output_relation_in_order(tree):
     facts = cc_public.graph.extract.extract(tree)
-    rules = ('.decl t(type:symbol) .decl i(id:symbol) .output t, i\n'
-             't(x) :- type_of("{c}", x).\n'
-             'i(x) :- item(x, _, _, _, _), x = "{c}".').format(c = ID_CONCERN)
+    rules = ('#show t/1. #show i/1.\n'
+             't(Type) :- type_of("{c}", Type).\n'
+             'i(Id) :- item(Id, _, _, _, _), Id = "{c}".').format(c = ID_CONCERN)
     rows  = cc_public.graph.datalog.run(facts, rules)
     assert list(rows.items()) == [('t', [('t_concern',)]), ('i', [(ID_CONCERN,)])]
 
@@ -60,7 +60,16 @@ def test_datalog_returns_each_output_relation_in_order(tree):
 def test_datalog_reports_where_the_rules_begin(tree):
     facts = cc_public.graph.extract.extract(tree)
     with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'rules given begin at line'):
-        cc_public.graph.datalog.run(facts, '.decl o(x:symbol) .output o o(x) :- item(x).')
+        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- item(X), not p(Y).')
+
+
+def test_a_fact_with_a_tab_or_a_newline_is_read_as_written(tree):
+    text = 'A tab\there, and a newline\nthere, with \\ and "quotes".'
+    facts = cc_public.graph.extract.extract(tree)
+    facts['tree_file'].add((text,))
+    rows  = cc_public.graph.datalog.run(facts, '#show f/1. f(F) :- tree_file(F), F = "{}".'.format(
+        text.translate(cc_public.graph.datalog.MAP_ESCAPE)))
+    assert rows == {'f': [(text,)]}
 
 
 def test_sql_sees_base_and_derived_relations(tree):

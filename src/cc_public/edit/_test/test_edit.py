@@ -302,11 +302,11 @@ def test_header_writes_a_comment_header_after_the_interpreter_line(tree, zero):
     assert text.endswith('#\n# ...\n\necho run\n')
 
 
-def test_header_makes_a_datalog_file_that_is_not_there(tree, zero):
-    assert _edit(tree, {'header': 'src/cc_public/edit/extra.dl', 'field': FIELD_HEADER}) == {}
-    text = (tree / 'src/cc_public/edit/extra.dl').read_text()
-    assert text.startswith('// ---\n//\n// id_self:                dls_cc_public.edit.extra\n')
-    assert text.endswith('// relation:               []\n//\n// ...\n')
+def test_header_makes_a_logic_program_file_that_is_not_there(tree, zero):
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp', 'field': FIELD_HEADER}) == {}
+    text = (tree / 'src/cc_public/edit/extra.lp').read_text()
+    assert text.startswith('% ---\n%\n% id_self:                lpf_cc_public.edit.extra\n')
+    assert text.endswith('% relation:               []\n%\n% ...\n')
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
@@ -333,16 +333,15 @@ def test_header_refuses_a_module_with_a_docstring_already(tree):
 
 
 def test_set_rewrites_a_field_in_a_comment_header(tree):
-    path = tree / 'src/cc_public/graph/derive.dl'
+    path = tree / 'src/cc_public/graph/derive.lp'
     text = path.read_text()
-    assert _edit(tree, {'set': ['dls_cc_public.graph.derive', 'brief', 'Derived relations.']}) == {}
+    assert _edit(tree, {'set': ['lpf_cc_public.graph.derive', 'brief', 'Derived relations.']}) == {}
     assert path.read_text() == text.replace(
-        '// brief:                  |\n'
-        '//                         Relations derived from the base relations, for\n'
-        '//                         every Datalog program over the graph of data\n'
-        '//                         items.\n',
-        '// brief:                  |\n'
-        '//                         Derived relations.\n')
+        '% brief:                  |\n'
+        '%                         Relations derived from the base relations, for\n'
+        '%                         every program over the graph of data items.\n',
+        '% brief:                  |\n'
+        '%                         Derived relations.\n')
 
 
 def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
@@ -492,9 +491,9 @@ def test_blank_lines_set_apart_lists_and_comments():
 
 
 def test_a_comment_header_is_laid_out_inside_its_markers():
-    text = '// ---\n// id_self: dls_x\n// ...\n\n.decl x(id: symbol)\n'
-    assert cc_public.edit.layout.format_file(text, pathlib.Path('src/x.dl')) == (
-        '// ---\n//\n// id_self:                dls_x\n//\n// ...\n\n.decl x(id: symbol)\n')
+    text = '% ---\n% id_self: lpf_x\n% ...\n\n% decl x(id)\n'
+    assert cc_public.edit.layout.format_file(text, pathlib.Path('src/x.lp')) == (
+        '% ---\n%\n% id_self:                lpf_x\n%\n% ...\n\n% decl x(id)\n')
 
 
 def test_a_comment_header_after_an_interpreter_line_is_laid_out():

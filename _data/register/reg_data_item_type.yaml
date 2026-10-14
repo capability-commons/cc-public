@@ -600,20 +600,20 @@ table:
         guid_target:    sch_c2b3fe510fa64c80a4c372a3816ef720
 
   # ---------------------------------------------------------------------------
-  # t_datalog_source_file -- Datalog source file type
+  # t_logic_program_file -- Logic program file type
   #
-  t_datalog_source_file:
-    id_self:            t_datalog_source_file
+  t_logic_program_file:
+    id_self:            t_logic_program_file
     guid_self:          t_5de85234c70e41c1ac6eeeffd2b86b7f
-    title:              Datalog source file type
+    title:              Logic program file type
     brief:              |
-                        Type of Datalog source file data items.
+                        Type of logic program file data items.
     description:        |
-                        Each Datalog source file data item holds the
-                        metadata of one Datalog source file, in a
+                        Each logic program file data item holds the
+                        metadata of one logic program file, in a
                         comment at the head of the file.
     usage:              |
-                        Datalog source file data items let a file of
+                        Logic program file data items let a file of
                         rules be traced, annotated and argued over
                         like any other item, without a second file to
                         keep in step with it.
@@ -621,23 +621,26 @@ table:
                         The id is the prefix and the dotted name the
                         file would be imported under if it were a
                         python module, in lower case.
-                        dls_cc_public.check.check names
-                        src/cc_public/check/check.dl. Each line of the
-                        comment begins with //.
+                        lpf_cc_public.check.check names
+                        src/cc_public/check/check.lp. Each line of the
+                        comment begins with %.
 
-                        The shape of Datalog source file data items is
-                        defined by the sch_datalog_source_file schema.
-    alias:              []
-    prefix:             dls
-    regex_id:           ^dls_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
-    id_concept:         con_datalog_source_file
+                        The shape of logic program file data items is
+                        defined by the sch_logic_program_file schema.
+
+    alias:
+      - t_datalog_source_file
+
+    prefix:             lpf
+    regex_id:           ^lpf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_logic_program_file
     guid_concept:       con_2d08686dcbbf4a2ebf93e3cb771cfcd9
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_datalog_source_file
+        id_target:      sch_logic_program_file
         guid_target:    sch_6724b60b83624c78938faa0f4355cb25
 
   # ---------------------------------------------------------------------------
@@ -662,8 +665,8 @@ table:
                         A module is not a file in this sense. The item
                         of a python module is held in its docstring
                         and has the type t_python_module. The item of
-                        a Datalog source file has the type
-                        t_datalog_source_file.
+                        a logic program file has the type
+                        t_logic_program_file.
 
                         The shape of file data items is defined by the
                         sch_file schema.

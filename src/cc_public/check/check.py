@@ -14,21 +14,17 @@ protective_mark:
 title:                  Check
 brief:                  |
                         Check the graph of data items held in the
-                        tree, by evaluating check.dl over facts
+                        tree, by evaluating check.lp over facts
                         extracted from it.
 description:            |
                         This module extracts the facts of the tree,
-                        evaluates check.dl over them, and validates
-                        each document against its schemas. Each output
-                        relation of check.dl is one check, as is
+                        evaluates check.lp over them, and validates
+                        each document against its schemas. Each shown
+                        relation of check.lp is one check, as is
                         schema validation, and each row of a check is
                         one failure.
 usage:                  |
                         cctool check [--root DIR]
-
-                        The souffle executable is taken from the
-                        SOUFFLE environment variable, or from the
-                        PATH.
 relation:               []
 
 ...
@@ -43,9 +39,9 @@ import cc_public.graph.datalog
 import cc_public.graph.extract
 
 
-RULES             = pathlib.Path(__file__).with_name('check.dl')
+RULES             = pathlib.Path(__file__).with_name('check.lp')
 
-# The checks of check.dl, and one more that is not Datalog: each
+# The checks of check.lp, and one more that is not Datalog: each
 # document conforms to the schemas that document_schema names for it.
 #
 NAME_PAIR         = 'document_schema'
@@ -98,8 +94,9 @@ def check_documents(map_document: cc_public.graph.extract.Documents,
 
     facts = cc_public.graph.extract.facts_of(map_document)
     rows  = cc_public.graph.datalog.run(facts,
-                                        RULES.read_text(encoding = 'utf-8')
-                                        + '\n.output {name}\n'.format(name = NAME_PAIR))
+                                        RULES.read_text(encoding = 'utf-8') + '\n'
+                                        + cc_public.graph.datalog.show(
+                                              NAME_PAIR, cc_public.graph.datalog.derived()))
 
     rows[NAME_SCHEMA] = cc_public.check.schema.violations(map_document,
                                                           facts,

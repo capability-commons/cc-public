@@ -43,7 +43,7 @@ import cc_public.gate.gate
 
 # -----------------------------------------------------------------------------
 @pytest.fixture
-def repo(souffle, tmp_path, monkeypatch):
+def repo(tmp_path, monkeypatch):
     """
     Return the root of a repository whose staged content is a module,
     src/marker.py, and whose working copy has an unstaged edit to it
@@ -112,17 +112,10 @@ def test_a_stage_runs_without_the_git_environment_of_the_hook(repo, monkeypatch)
     assert output.startswith('None\n')
 
 
-def test_a_tree_that_is_not_a_repository_cannot_be_gated(souffle, tmp_path):
+def test_a_tree_that_is_not_a_repository_cannot_be_gated(tmp_path):
     with pytest.raises(cc_public.gate.gate.ErrorGate) as info:
         cc_public.gate.gate.gate(tmp_path, (_stage('pass', 'pass'),))
     assert str(info.value).startswith('The staged content cannot be copied: ')
-
-
-def test_the_gate_cannot_run_without_souffle(repo, monkeypatch):
-    monkeypatch.setenv('SOUFFLE', str(repo / 'no_souffle'))
-    with pytest.raises(cc_public.gate.gate.ErrorGate) as info:
-        cc_public.gate.gate.gate(repo, (_stage('pass', 'pass'),))
-    assert str(info.value).startswith('souffle cannot be found.')
 
 
 def test_the_command_prints_a_failure_before_its_verdict(repo, monkeypatch):

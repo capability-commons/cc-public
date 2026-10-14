@@ -78,10 +78,10 @@ reads them through `.claude/skills`, a link to the same directory.
   in the module docstring, a 79-column `# ---` line above each
   function, aligned `=`, `.format()` rather than f-strings, whole-module
   imports, and names prefixed by type (`list_x`, `map_x`, `path_x`).
-- Datalog follows the house style of `check.dl`: a separator and a
-  comment above each relation, one declared column per line with names
-  and types aligned, variables named for the columns they fill, and one
-  body atom per line.
+- Logic programs follow the house style of `check.lp`: a separator and
+  a comment above each relation, a `% decl` line that names its
+  columns, variables named for the columns they fill (capitalised, as
+  clingo requires), and one body atom per line.
 - Where a recognised standard covers the ground (ISO 1087, ISO/IEC
   25010, ISO/IEC/IEEE 42010), follow its structure and terms, and cite
   it.

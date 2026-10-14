@@ -38,9 +38,7 @@ usage:                  |
                         cctool gate [--root DIR]
 
                         Run before each commit by
-                        .githooks/pre-commit. The gate refuses to run
-                        without souffle, because the tests that need
-                        souffle would otherwise be skipped and pass.
+                        .githooks/pre-commit.
 relation:               []
 
 ...
@@ -51,7 +49,6 @@ import concurrent.futures
 import io
 import os
 import pathlib
-import shutil
 import subprocess
 import sys
 import tarfile
@@ -92,11 +89,6 @@ def gate(root:        pathlib.Path,
     stages are TUPLE_STAGE unless tuple_stage names others.
 
     """
-
-    souffle = os.environ.get('SOUFFLE', 'souffle')
-    if shutil.which(souffle) is None:
-        raise ErrorGate('souffle cannot be found. Put it on the PATH, or name it in the '
-                        'SOUFFLE environment variable.')
 
     count = os.cpu_count() or 1
 

@@ -14,47 +14,69 @@ protective_mark:
 title:                  Datalog evaluation
 brief:                  |
                         Evaluate Datalog rules over the facts of the
-                        graph of data items, with souffle.
+                        graph of data items, with clingo.
 description:            |
-                        This module writes the facts as souffle input,
-                        and evaluates a program made of three parts:
-                        the declarations of the base relations, the
-                        derived relations of derive.dl, and the rules
-                        given. It returns the rows of every output
-                        relation of the rules given, in the order they
-                        are named.
-usage:                  |
-                        The souffle executable is taken from the
-                        SOUFFLE environment variable, or from the
-                        PATH.
+                        The rules are a clingo program. This module
+                        adds the facts and a program made of two
+                        parts, the derived relations of derive.lp and
+                        the rules given, to one clingo control, in the
+                        same process. It returns the rows of every
+                        relation the rules given name in a #show
+                        directive, in the order they are named.
+
+                        clingo has no declarations of its own, so a
+                        relation is declared in a comment, such as "%
+                        decl item(id: symbol, line: number)". The
+                        declaration gives the names of the columns,
+                        and marks those that are numbers. A relation
+                        shown without one has no column names, and one
+                        shown with one has as many columns as it
+                        declares. The base relations are declared by
+                        RELATION in pym_cc_public.graph.extract.
+
+                        clingo has no string functions of its own, so
+                        four are given in python and called with @:
+                        @match(regex, text) is 1 if regex matches the
+                        whole of text and 0 if not; @cat(a, b, ...)
+                        joins its arguments; @strlen(text) is the
+                        length of text; and @substr(text, start,
+                        length) is the part of text that begins at
+                        start, counted from 0.
 relation:               []
 
 ...
 """
 
 
-import os
+import functools
 import pathlib
 import re
-import subprocess
-import tempfile
+
+import clingo
 
 import cc_public.graph.extract
 
 
-PATH_DERIVE       = pathlib.Path(__file__).with_name('derive.dl')
-DELIM_FIELD       = '\t'
+PATH_DERIVE       = pathlib.Path(__file__).with_name('derive.lp')
+TYPE_NUMBER       = 'number'
 
-# A declaration names a relation and its columns, as name:type pairs.
-# An output directive names one or more relations to be written out.
+# A declaration is a comment that names a relation and its columns.
+# It may go on over more comment lines, one column on each. A show
+# directive names one relation and its arity.
 #
-REGEX_DECL        = re.compile(r'\.decl\s+(\w+)\s*\(([^)]*)\)')
-REGEX_OUTPUT      = re.compile(r'\.output\s+(\w+(?:\s*,\s*\w+)*)')
+REGEX_DECL        = re.compile(r'^[ \t]*%[ \t]*decl[ \t]+(\w+)[ \t]*\(((?:[^)\n]|\n[ \t]*%)*)\)',
+                               re.MULTILINE)
+REGEX_SHOW        = re.compile(r'#show[ \t]+(\w+)[ \t]*/[ \t]*(\d+)[ \t]*\.')
 
-# A comment takes a whole line, so that text in a comment, such as the
-# header of a module, is never read as a directive.
+# Text in a comment is never read as a directive. A comment runs from
+# % to the end of the line, or from %* to *%.
 #
-REGEX_COMMENT     = re.compile(r'^\s*//.*$', re.MULTILINE)
+REGEX_COMMENT     = re.compile(r'%\*.*?\*%|%[^\n]*', re.DOTALL)
+
+# Each string is written between double quotes, with a backslash
+# before a backslash or a double quote, and a newline as \n.
+#
+MAP_ESCAPE        = str.maketrans({'\\': '\\\\', '"': '\\"', '\n': '\\n'})
 
 Rows              = dict[str, list[tuple[str, ...]]]
 
@@ -62,30 +84,74 @@ Rows              = dict[str, list[tuple[str, ...]]]
 # -----------------------------------------------------------------------------
 class ErrorDatalog(Exception):
     """
-    The rules given could not be evaluated. The message is souffle's.
+    The rules given could not be evaluated. The message is clingo's,
+    or says what is missing.
 
     """
 
 
 # -----------------------------------------------------------------------------
-def declaration() -> str:
+class Context:
     """
-    Return the declarations of the base relations, each as input.
+    The functions that rules call with @.
 
     """
 
-    list_line = []
+    # -------------------------------------------------------------------------
+    def match(self, regex: clingo.Symbol, text: clingo.Symbol) -> clingo.Symbol:
+        """
+        Return 1 if regex matches the whole of text, and 0 if not.
 
-    for (name, (tuple_column, _)) in cc_public.graph.extract.RELATION.items():
-        list_line.append('.decl {name}({column})'.format(
-                            name   = name,
-                            column = ', '.join('{c}:{t}'.format(c = column, t = type_column)
-                                              for (column, type_column)
-                                              in map(cc_public.graph.extract.column,
-                                                     tuple_column))))
-        list_line.append('.input {name}'.format(name = name))
+        """
 
-    return '\n'.join(list_line) + '\n'
+        try:
+            is_match = _compiled(regex.string).fullmatch(text.string) is not None
+        except re.error as error:
+            raise ErrorDatalog('Bad regex {regex!r}: {error}'.format(
+                                    regex = regex.string, error = error)) from error
+        return clingo.Number(int(is_match))
+
+    # -------------------------------------------------------------------------
+    def cat(self, *args: clingo.Symbol) -> clingo.Symbol:
+        """
+        Return the strings joined.
+
+        """
+
+        return clingo.String(''.join(each.string for each in args))
+
+    # -------------------------------------------------------------------------
+    def strlen(self, text: clingo.Symbol) -> clingo.Symbol:
+        """
+        Return the length of text.
+
+        """
+
+        return clingo.Number(len(text.string))
+
+    # -------------------------------------------------------------------------
+    def substr(self,
+               text:   clingo.Symbol,
+               start:  clingo.Symbol,
+               length: clingo.Symbol) -> clingo.Symbol:
+        """
+        Return the part of text that begins at start and has length
+        characters.
+
+        """
+
+        return clingo.String(text.string[start.number:start.number + length.number])
+
+
+# -----------------------------------------------------------------------------
+@functools.lru_cache(maxsize = 1024)
+def _compiled(regex: str) -> re.Pattern:
+    """
+    Return regex, compiled.
+
+    """
+
+    return re.compile(regex)
 
 
 # -----------------------------------------------------------------------------
@@ -98,9 +164,9 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 
     map_column = {}
 
-    for match in REGEX_DECL.finditer(REGEX_COMMENT.sub('', text)):
+    for match in REGEX_DECL.finditer(text):
         map_column[match.group(1)] = tuple(cc_public.graph.extract.column(spec)
-                                           for spec in match.group(2).split(',')
+                                           for spec in match.group(2).replace('%', '').split(',')
                                            if spec.strip())
 
     return map_column
@@ -109,17 +175,24 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 # -----------------------------------------------------------------------------
 def output(text: str) -> list[str]:
     """
-    Return the relations that text names in output directives, in the
+    Return the relations that text names in show directives, in the
     order it first names them.
 
     """
 
-    list_name = []
+    return list(dict.fromkeys(match.group(1)
+                              for match in REGEX_SHOW.finditer(REGEX_COMMENT.sub('', text))))
 
-    for match in REGEX_OUTPUT.finditer(REGEX_COMMENT.sub('', text)):
-        list_name.extend(name.strip() for name in match.group(1).split(','))
 
-    return list(dict.fromkeys(list_name))
+# -----------------------------------------------------------------------------
+def show(name: str, map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
+    """
+    Return the directive that shows the relation name, whose columns
+    map_column declares.
+
+    """
+
+    return '#show {name}/{arity}.\n'.format(name = name, arity = len(map_column[name]))
 
 
 # -----------------------------------------------------------------------------
@@ -134,19 +207,63 @@ def derived() -> dict[str, tuple[tuple[str, str], ...]]:
 
 
 # -----------------------------------------------------------------------------
-def write(facts: cc_public.graph.extract.Facts, dir_fact: pathlib.Path) -> None:
+def base() -> dict[str, tuple[tuple[str, str], ...]]:
     """
-    Write each base relation as a tab separated souffle .facts file.
+    Return the name and the type of each column of each base relation,
+    keyed by relation.
 
     """
+
+    return {name: tuple(map(cc_public.graph.extract.column, tuple_column))
+            for (name, (tuple_column, _)) in cc_public.graph.extract.RELATION.items()}
+
+
+# -----------------------------------------------------------------------------
+def write(facts:      cc_public.graph.extract.Facts,
+          map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
+    """
+    Return the facts as a clingo program. A column declared a number
+    is written as one, and any other as a string.
+
+    """
+
+    list_line = []
 
     for (name, set_row) in facts.items():
-        path = dir_fact / '{name}.facts'.format(name = name)
-        with open(path, 'w', encoding = 'utf-8') as file:
-            for row in sorted(set_row):
-                if any((DELIM_FIELD in field) or ('\n' in field) for field in row):
-                    raise ValueError('{name}: {row!r}'.format(name = name, row = row))
-                file.write(DELIM_FIELD.join(row) + '\n')
+        tuple_type = tuple(type_column for (_, type_column) in map_column.get(name, ()))
+        for row in sorted(set_row):
+            list_line.append('{name}({args}).'.format(
+                                name = name,
+                                args = ', '.join(_term(field, tuple_type, index)
+                                                 for (index, field) in enumerate(row))))
+
+    return '\n'.join(list_line) + '\n'
+
+
+# -----------------------------------------------------------------------------
+def _term(field: str, tuple_type: tuple[str, ...], index: int) -> str:
+    """
+    Return the field at index of a row as a clingo term.
+
+    """
+
+    if index < len(tuple_type) and tuple_type[index] == TYPE_NUMBER:
+        return str(int(field))
+    return '"{text}"'.format(text = str(field).translate(MAP_ESCAPE))
+
+
+# -----------------------------------------------------------------------------
+def _field(symbol: clingo.Symbol) -> str:
+    """
+    Return the argument of a shown atom as text.
+
+    """
+
+    if symbol.type == clingo.SymbolType.String:
+        return symbol.string
+    if symbol.type == clingo.SymbolType.Number:
+        return str(symbol.number)
+    return str(symbol)
 
 
 # -----------------------------------------------------------------------------
@@ -157,41 +274,36 @@ def run(facts: cc_public.graph.extract.Facts, rules: str) -> Rows:
 
     """
 
-    souffle = os.environ.get('SOUFFLE', 'souffle')
-    rows    = {}
+    prelude    = PATH_DERIVE.read_text(encoding = 'utf-8') + '\n'
+    map_column = base() | derived() | declared(rules)
+    list_name  = output(rules)
+    rows       = {name: [] for name in list_name}
 
-    with tempfile.TemporaryDirectory() as dir_temp:
+    for (name, arity) in ((match.group(1), int(match.group(2)))
+                          for match in REGEX_SHOW.finditer(REGEX_COMMENT.sub('', rules))):
+        if (name in map_column) and (arity != len(map_column[name])):
+            raise ErrorDatalog('{name} is shown with arity {arity}, but declared with '
+                               '{count} columns.'.format(name  = name,
+                                                         arity = arity,
+                                                         count = len(map_column[name])))
 
-        dir_fact     = pathlib.Path(dir_temp, 'fact')
-        dir_out      = pathlib.Path(dir_temp, 'out')
-        path_program = pathlib.Path(dir_temp, 'program.dl')
-        dir_fact.mkdir()
-        dir_out.mkdir()
+    list_message = []
+    control      = clingo.Control(['--warn=none'],
+                                  logger = lambda _, message: list_message.append(message))
 
-        write(facts, dir_fact)
-        prelude = declaration() + '\n' + PATH_DERIVE.read_text(encoding = 'utf-8') + '\n'
-        path_program.write_text(prelude + rules, encoding = 'utf-8')
+    try:
+        control.add('base', [], write(facts, map_column))
+        control.add('base', [], prelude + rules)
+        control.ground([('base', [])], context = Context())
+    except RuntimeError as error:
+        raise ErrorDatalog('{error}\nThe rules given begin at line {line} of the '
+                           'program.'.format(error = (''.join(list_message) or str(error)).strip(),
+                                             line  = prelude.count('\n') + 1)) from error
 
-        try:
-            result = subprocess.run([souffle, '-F', str(dir_fact), '-D', str(dir_out),
-                                     str(path_program)],
-                                    capture_output = True,
-                                    text           = True,
-                                    check          = False)
-        except FileNotFoundError as error:
-            raise ErrorDatalog('souffle cannot be found at {souffle!r}. Put it on the '
-                               'PATH, or name it in the SOUFFLE environment '
-                               'variable.'.format(souffle = souffle)) from error
-        if result.returncode != 0:
-            raise ErrorDatalog('{error}\nThe rules given begin at line {line} of {path}.'.format(
-                                    error = (result.stderr or result.stdout).strip(),
-                                    line  = prelude.count('\n') + 1,
-                                    path  = path_program.name))
+    with control.solve(yield_ = True) as handle:
+        for model in handle:
+            for symbol in model.symbols(shown = True):
+                if symbol.name in rows:
+                    rows[symbol.name].append(tuple(map(_field, symbol.arguments)))
 
-        for name in output(rules):
-            path = dir_out / '{name}.csv'.format(name = name)
-            text = path.read_text(encoding = 'utf-8') if path.exists() else ''
-            rows[name] = sorted(tuple(line.split(DELIM_FIELD))
-                                for line in text.splitlines())
-
-    return rows
+    return {name: sorted(list_row) for (name, list_row) in rows.items()}

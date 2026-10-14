@@ -63,15 +63,15 @@ def test_sql_prints_json_with_the_count_of_all_rows(tree):
 
 
 def test_datalog_prints_each_output_relation(tree):
-    result = _run(tree, 'datalog', '.decl o(t:symbol) .output o o(t) :- type_of("concern_cost", t).')
+    result = _run(tree, 'datalog', '% decl o(t: symbol)\n#show o/1. o(T) :- type_of("concern_cost", T).')
     assert result.exit_code == 0
     assert result.stdout == '# o\nt\nt_concern\n'
 
 
 def test_datalog_without_an_output_is_refused(tree):
-    result = _run(tree, 'datalog', '.decl o(t:symbol) o(t) :- type_of(_, t).')
+    result = _run(tree, 'datalog', 'o(T) :- type_of(_, T).')
     assert result.exit_code == 2
-    assert 'no relation in an .output directive' in result.stderr
+    assert 'no relation in a #show directive' in result.stderr
 
 
 def test_a_missing_query_is_refused_with_an_example(tree):

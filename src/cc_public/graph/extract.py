@@ -80,16 +80,16 @@ PREFIX_GUID       = 'guid_'
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
-SUFFIX_DATALOG    = '.dl'
+SUFFIX_PROGRAM    = '.lp'
 
 # A document opens with this line and closes with the next. In a
 # comment header each line also begins with the comment marker: # in
-# most files, and // in Datalog.
+# most files, and % in a logic program.
 #
 LINE_OPEN         = '---'
 LINE_CLOSE        = '...'
 MARK_COMMENT      = '#'
-MAP_MARK_COMMENT  = {SUFFIX_DATALOG: '//'}
+MAP_MARK_COMMENT  = {SUFFIX_PROGRAM: '%'}
 
 # A script may open with a line that names its interpreter. Its comment
 # header then opens on the line after.
@@ -138,7 +138,7 @@ RELATION          = {
     'register_entry_key': (('register', 'key', 'id'),
                            'The register holds, under key, a register entry with id.'),
     'module_name':        (('id', 'expected'),
-                           'A python module or package, or a Datalog source file, '
+                           'A python module or package, or a logic program file, '
                            'holds the item id, and its place in the tree calls for the '
                            'id expected.'),
     'tree_file':          (('file',),
@@ -160,10 +160,10 @@ RELATION          = {
 
 # Python modules are imported with src as the root of the path. The
 # item of a package is held in the docstring of its __init__ module.
-# A Datalog source file is named in the same way as a python module.
+# A logic program file is named in the same way as a python module.
 #
 DIR_IMPORT_ROOT   = 'src'
-MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_DATALOG: 'dls_'}
+MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_PROGRAM: 'lpf_'}
 PREFIX_PACKAGE    = 'pyp_'
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
@@ -242,7 +242,7 @@ def column(spec: str) -> tuple[str, str]:
 # -----------------------------------------------------------------------------
 def module_name(relative: pathlib.Path) -> str:
     """
-    Return the id that names the python module or Datalog source file
+    Return the id that names the python module or logic program file
     at relative: the prefix and the dotted name it would be imported
     under, in lower case. An __init__ module is named for its package.
 
