@@ -79,13 +79,16 @@ PREFIX_GUID       = 'guid_'
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
+SUFFIX_DATALOG    = '.dl'
 
 # A document opens with this line and closes with the next. In a
-# comment header each line also begins with the comment marker.
+# comment header each line also begins with the comment marker: # in
+# most files, and // in Datalog.
 #
 LINE_OPEN         = '---'
 LINE_CLOSE        = '...'
 MARK_COMMENT      = '#'
+MAP_MARK_COMMENT  = {SUFFIX_DATALOG: '//'}
 
 # Directories that hold no items: version control, environments,
 # caches and local tools.
@@ -144,9 +147,10 @@ RELATION          = {
 
 # Python modules are imported with src as the root of the path. The
 # item of a package is held in the docstring of its __init__ module.
+# A Datalog module is named in the same way as a python module.
 #
 DIR_IMPORT_ROOT   = 'src'
-PREFIX_MODULE     = 'pym_'
+MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_DATALOG: 'dlm_'}
 PREFIX_PACKAGE    = 'pyp_'
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
@@ -204,7 +208,7 @@ def facts_of(map_document: Documents) -> Facts:
         if document is None:
             continue
         _walk(document, '', (file, base), facts)
-        if file.endswith(SUFFIX_PYTHON) and isinstance(document, dict):
+        if pathlib.Path(file).suffix in MAP_PREFIX_MODULE and isinstance(document, dict):
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       _module_name(pathlib.Path(file))))
 
@@ -225,14 +229,14 @@ def column(spec: str) -> tuple[str, str]:
 # -----------------------------------------------------------------------------
 def _module_name(relative: pathlib.Path) -> str:
     """
-    Return the id that names the python module at relative: the prefix
-    and the dotted name it is imported under, in lower case. An
-    __init__ module is named for its package.
+    Return the id that names the python or Datalog module at relative:
+    the prefix and the dotted name it is imported under, in lower case.
+    An __init__ module is named for its package.
 
     """
 
     list_part = list(relative.with_suffix('').parts)
-    prefix    = PREFIX_MODULE
+    prefix    = MAP_PREFIX_MODULE[relative.suffix]
 
     if list_part and list_part[0] == DIR_IMPORT_ROOT:
         list_part = list_part[1:]
@@ -259,7 +263,7 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     # Any other file may be large, or not text, so only its head is
     # read, and only as far as a comment header could go.
     #
-    return (_header(_line_of_file(path)), 1)
+    return (_header(_line_of_file(path), _mark_comment(relative)), 1)
 
 
 # -----------------------------------------------------------------------------
@@ -279,7 +283,7 @@ def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     if relative.suffix == SUFFIX_PYTHON:
         return _docstring(text)
 
-    return (_header(iter(text.splitlines())), 1)
+    return (_header(iter(text.splitlines()), _mark_comment(relative)), 1)
 
 
 # -----------------------------------------------------------------------------
@@ -322,10 +326,22 @@ def _line_of_file(path: pathlib.Path) -> typing.Iterator[str]:
 
 
 # -----------------------------------------------------------------------------
-def _header(iter_line: typing.Iterator[str]) -> typing.Any:
+def _mark_comment(relative: pathlib.Path) -> str:
+    """
+    Return the marker that begins a comment line in the file at
+    relative.
+
+    """
+
+    return MAP_MARK_COMMENT.get(relative.suffix, MARK_COMMENT)
+
+
+# -----------------------------------------------------------------------------
+def _header(iter_line: typing.Iterator[str], mark: str) -> typing.Any:
     """
     Return the document in the comment header that the lines open
-    with, or None if they do not open with one.
+    with, each line beginning with mark, or None if they do not open
+    with one.
 
     """
 
@@ -333,9 +349,9 @@ def _header(iter_line: typing.Iterator[str]) -> typing.Any:
 
     for line in iter_line:
         text = line.rstrip('\n')
-        if not text.startswith(MARK_COMMENT):
+        if not text.startswith(mark):
             return None
-        text = text[len(MARK_COMMENT):].removeprefix(' ')
+        text = text[len(mark):].removeprefix(' ')
         if (not list_line) and text != LINE_OPEN:
             return None
         list_line.append(text)

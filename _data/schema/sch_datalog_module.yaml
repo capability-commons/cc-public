@@ -1,0 +1,47 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_datalog_module.yaml
+id_self:                sch_datalog_module
+guid_self:              sch_6724b60b83624c78938faa0f4355cb25
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog module schema
+brief:                  |
+                        The shape of a Datalog module data item: the
+                        metadata of one Datalog module, held in a
+                        comment at the head of the file.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A Datalog module item adds
+                        nothing beyond them, and requires a
+                        description.
+
+                        What the item names and where it lives are not
+                        fields. The id names the module, and the item
+                        lives in the module it names.
+usage:                  |
+                        Named by t_datalog_module as the schema of the
+                        item at the head of every Datalog module.
+note:                   |
+                        The item is a YAML document in the comment, in
+                        which each line begins with //. The document
+                        is opened by --- and closed by three full
+                        stops.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+
+unevaluatedProperties:  false

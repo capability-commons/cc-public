@@ -155,6 +155,21 @@ def _module(root, relative, id_self):
 
 
 # -----------------------------------------------------------------------------
+def _datalog(root, relative, id_self):
+    """
+    Write a Datalog module whose comment header holds an item with
+    id_self.
+
+    """
+
+    item = _dump(_fields(root, id_self))
+    path = root / relative
+    path.parent.mkdir(parents = True, exist_ok = True)
+    path.write_text('// ---\n' + ''.join('// ' + line for line in item.splitlines(True))
+                    + '// ...\n')
+
+
+# -----------------------------------------------------------------------------
 def _replace(root, relative, old, new):
     """
     Replace the first old with new in the file at relative.
@@ -395,6 +410,22 @@ def test_an_alias_that_an_item_has_as_its_id_is_reported(tree):
              '      - concern_correctness\n', '      - concern_cost\n')
     assert cc_public.check.check.check(tree) == {'alias_in_use': [
         ('concern_cost', 'concern_functional_suitability')]}
+
+
+def test_a_datalog_module_named_for_its_place_passes(tree):
+    _datalog(tree, 'src/x/y.dl', 'dlm_x.y')
+    assert cc_public.check.check.check(tree) == {}
+
+
+def test_a_datalog_module_named_for_another_place_is_reported(tree):
+    _datalog(tree, 'src/x/y.dl', 'dlm_x.z')
+    assert cc_public.check.check.check(tree) == {'misplaced_module': [('dlm_x.z', 'dlm_x.y')]}
+
+
+def test_a_datalog_file_without_an_item_is_reported(tree):
+    (tree / 'src/x').mkdir(parents = True)
+    (tree / 'src/x/y.dl').write_text('// Rules with no item.\n')
+    assert cc_public.check.check.check(tree) == {'unrecorded_module': [('src/x/y.dl',)]}
 
 
 def test_a_document_in_the_wrong_folder_is_reported(tree):

@@ -1,199 +1,410 @@
-// Checks over the graph of data items.
+// ---
 //
-// Each output relation is one check, and each row of it is one
-// failure. The base relations and the relations of derive.dl in
-// cc_public.graph come before this file in the program. A check that
-// reports a file reports the line of it too.
+// id_self:                dlm_cc_public.check.check
+// guid_self:              dlm_b486151691284b839319bf76ec589c06
+// copyright:              Copyright 2026 William Payne
+// license:                Apache-2.0
+//
+// protective_mark:
+//
+//   - id_mark:            mark_public
+//     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+//
+// title:                  Checks
+// brief:                  |
+//                         Checks over the graph of data items.
+// description:            |
+//                         Each output relation is one check, and each
+//                         row of it is one failure. A check that
+//                         reports a file reports the line of it too.
+//
+//                         The checks come in this order: identity,
+//                         references and edges, prose and old ids,
+//                         the shape of the graph, and the
+//                         completeness of the kernel.
+// usage:                  |
+//                         Evaluated by pym_cc_public.check.check. The
+//                         base relations and the relations of
+//                         dlm_cc_public.graph.derive come before this
+//                         module in the program.
+// relation:               []
+//
+// ...
 
-// ---------------------------------------------------------------------
-// Checks on identity
 
+// ----------------------------------------------------------------------------
 // Every id begins with the prefix of a known type.
-.decl unknown_prefix(id:symbol, file:symbol, line:number)
+//
+.decl unknown_prefix(id: symbol, file: symbol, line: number)
 .output unknown_prefix
-unknown_prefix(i, f, n) :- item(i, _, _, f, n), !prefix_of(i, _).
 
+unknown_prefix(id, file, line) :-
+    item(id, _, _, file, line),
+    !prefix_of(id, _).
+
+
+// ----------------------------------------------------------------------------
 // Every id matches the regex_id of its type.
-.decl bad_id(id:symbol, regex:symbol, file:symbol, line:number)
+//
+.decl bad_id(id: symbol, regex: symbol, file: symbol, line: number)
 .output bad_id
-bad_id(i, x, f, n) :-
-    item(i, _, _, f, n), type_of(i, t), type_prefix(t, _, x), !match(x, i).
 
+bad_id(id, regex, file, line) :-
+    item(id, _, _, file, line),
+    type_of(id, type),
+    type_prefix(type, _, regex),
+    !match(regex, id).
+
+
+// ----------------------------------------------------------------------------
 // Every guid is the prefix of its id and 32 hex digits.
-.decl bad_guid(id:symbol, guid:symbol, file:symbol, line:number)
+//
+.decl bad_guid(id: symbol, guid: symbol, file: symbol, line: number)
 .output bad_guid
-bad_guid(i, g, f, n) :-
-    item(i, g, _, f, n), prefix_of(i, p), !match(cat(p, "_[0-9a-f]{32}"), g).
 
+bad_guid(id, guid, file, line) :-
+    item(id, guid, _, file, line),
+    prefix_of(id, prefix),
+    !match(cat(prefix, "_[0-9a-f]{32}"), guid).
+
+
+// ----------------------------------------------------------------------------
 // No two types share a prefix.
-.decl duplicate_prefix(prefix:symbol, type:symbol, other:symbol)
+//
+.decl duplicate_prefix(prefix: symbol, type: symbol, other: symbol)
 .output duplicate_prefix
-duplicate_prefix(p, t, u) :-
-    type_prefix(t, p, _), type_prefix(u, p, _), t != u.
 
-// No id names two items, and no guid identifies two.
-.decl duplicate_id(id:symbol, guid:symbol, other:symbol)
+duplicate_prefix(prefix, type, other) :-
+    type_prefix(type, prefix, _),
+    type_prefix(other, prefix, _),
+    type != other.
+
+
+// ----------------------------------------------------------------------------
+// No id names two items.
+//
+.decl duplicate_id(id: symbol, guid: symbol, other: symbol)
 .output duplicate_id
-duplicate_id(i, g, h) :- item(i, g, _, _, _), item(i, h, _, _, _), g != h.
 
-.decl duplicate_guid(guid:symbol, id:symbol, other:symbol)
+duplicate_id(id, guid, other) :-
+    item(id, guid, _, _, _),
+    item(id, other, _, _, _),
+    guid != other.
+
+
+// ----------------------------------------------------------------------------
+// No guid identifies two items.
+//
+.decl duplicate_guid(guid: symbol, id: symbol, other: symbol)
 .output duplicate_guid
-duplicate_guid(g, i, j) :- item(i, g, _, _, _), item(j, g, _, _, _), i != j.
 
+duplicate_guid(guid, id, other) :-
+    item(id, guid, _, _, _),
+    item(other, guid, _, _, _),
+    id != other.
+
+
+// ----------------------------------------------------------------------------
 // A python module or package item is named for the module or package
 // that holds it.
-.decl misplaced_module(id:symbol, expected:symbol)
+//
+.decl misplaced_module(id: symbol, expected: symbol)
 .output misplaced_module
-misplaced_module(i, e) :- module_name(i, e), i != e.
 
+misplaced_module(id, expected) :-
+    module_name(id, expected),
+    id != expected.
+
+
+// ----------------------------------------------------------------------------
 // A document under a _data directory is in the folder named for its
 // type, less the t_, in a file named for its id.
-.decl misplaced_document(id:symbol, file:symbol, expected:symbol)
+//
+.decl misplaced_document(id: symbol, file: symbol, expected: symbol)
 .output misplaced_document
-misplaced_document(i, f, e) :-
-    item(i, _, "", f, _), match("(.*/)?_data/.*\\.yaml", f), type_of(i, t),
-    e = cat("_data/", substr(t, 2, strlen(t) - 2), "/", i, ".yaml"),
-    !match(cat("(.*/)?", e), f).
 
+misplaced_document(id, file, expected) :-
+    item(id, _, "", file, _),
+    match("(.*/)?_data/.*\\.yaml", file),
+    type_of(id, type),
+    stem     = substr(type, 2, strlen(type) - 2),
+    expected = cat("_data/", stem, "/", id, ".yaml"),
+    !match(cat("(.*/)?", expected), file).
+
+
+// ----------------------------------------------------------------------------
 // A register holds only entries of a type whose items it holds.
-.decl misplaced_entry(register:symbol, id:symbol, type:symbol)
+//
+.decl misplaced_entry(register: symbol, id: symbol, type: symbol)
 .output misplaced_entry
-misplaced_entry(r, i, t) :-
-    entry_key(r, _, i), type_of(i, t),
-    !primary_edge(t, "r_has_items_held_in_register", r).
 
-// Every python file under src holds an item.
-.decl unrecorded_module(file:symbol)
+misplaced_entry(register, id, type) :-
+    entry_key(register, _, id),
+    type_of(id, type),
+    !primary_edge(type, "r_has_items_held_in_register", register).
+
+
+// ----------------------------------------------------------------------------
+// Every python or Datalog module under src holds an item.
+//
+.decl unrecorded_module(file: symbol)
 .output unrecorded_module
-unrecorded_module(f) :-
-    tree_file(f), match("src/.*\\.py", f), !item(_, _, "", f, _).
 
+unrecorded_module(file) :-
+    tree_file(file),
+    match("src/.*\\.(py|dl)", file),
+    !item(_, _, "", file, _).
+
+
+// ----------------------------------------------------------------------------
 // The key of a register entry is its id.
-.decl key_mismatch(register:symbol, key:symbol, id:symbol)
+//
+.decl key_mismatch(register: symbol, key: symbol, id: symbol)
 .output key_mismatch
-key_mismatch(r, k, i) :- entry_key(r, k, i), k != i.
 
-// ---------------------------------------------------------------------
-// Checks on references and edges
+key_mismatch(register, key, id) :-
+    entry_key(register, key, id),
+    key != id.
 
+
+// ----------------------------------------------------------------------------
 // Every reference names an item that exists.
-.decl dangling_reference(holder:symbol, role:symbol, id:symbol,
-                          file:symbol, line:number)
+//
+.decl dangling_reference(holder: symbol,
+                         role:   symbol,
+                         id:     symbol,
+                         file:   symbol,
+                         line:   number)
 .output dangling_reference
-dangling_reference(h, r, i, f, n) :-
-    reference(h, r, i, _, f, n), !item(i, _, _, _, _), !alias(_, i).
 
+dangling_reference(holder, role, id, file, line) :-
+    reference(holder, role, id, _, file, line),
+    !item(id, _, _, _, _),
+    !alias(_, id).
+
+
+// ----------------------------------------------------------------------------
 // Every reference carries the guid of the item it names.
-.decl stale_guid(holder:symbol, role:symbol, id:symbol, guid:symbol,
-                  file:symbol, line:number)
+//
+.decl stale_guid(holder: symbol,
+                 role:   symbol,
+                 id:     symbol,
+                 guid:   symbol,
+                 file:   symbol,
+                 line:   number)
 .output stale_guid
-stale_guid(h, r, i, g, f, n) :-
-    reference(h, r, i, g, f, n), item(i, h2, _, _, _), g != h2.
 
+stale_guid(holder, role, id, guid, file, line) :-
+    reference(holder, role, id, guid, file, line),
+    item(id, other, _, _, _),
+    guid != other.
+
+
+// ----------------------------------------------------------------------------
 // The source of an edge is of a type its relation's domain allows.
-.decl domain_violation(source:symbol, relation:symbol, type:symbol)
+//
+.decl domain_violation(source: symbol, relation: symbol, type: symbol)
 .output domain_violation
-domain_violation(s, r, t) :-
-    primary_edge(s, r, _), relation_domain(r, _), type_of(s, t),
-    !relation_domain(r, t).
 
+domain_violation(source, relation, type) :-
+    primary_edge(source, relation, _),
+    relation_domain(relation, _),
+    type_of(source, type),
+    !relation_domain(relation, type).
+
+
+// ----------------------------------------------------------------------------
 // The target of an edge is of a type its relation's range allows.
-.decl range_violation(target:symbol, relation:symbol, type:symbol)
+//
+.decl range_violation(target: symbol, relation: symbol, type: symbol)
 .output range_violation
-range_violation(o, r, t) :-
-    primary_edge(_, r, o), relation_range(r, _), type_of(o, t),
-    !relation_range(r, t).
 
+range_violation(target, relation, type) :-
+    primary_edge(_, relation, target),
+    relation_range(relation, _),
+    type_of(target, type),
+    !relation_range(relation, type).
+
+
+// ----------------------------------------------------------------------------
 // Every annotation and every decision is about something.
-.decl missing_about(id:symbol)
+//
+.decl missing_about(id: symbol)
 .output missing_about
-missing_about(i) :-
-    type_of(i, "t_annotation"), !primary_edge(i, "r_is_about", _).
-missing_about(i) :-
-    type_of(i, "t_decision"), !primary_edge(i, "r_is_about", _).
 
-// ---------------------------------------------------------------------
-// Checks on prose and on old ids
+missing_about(id) :-
+    type_of(id, "t_annotation"),
+    !primary_edge(id, "r_is_about", _).
 
+missing_about(id) :-
+    type_of(id, "t_decision"),
+    !primary_edge(id, "r_is_about", _).
+
+
+// ----------------------------------------------------------------------------
 // Every id that a text mentions, if it has the prefix of a known type,
 // names an item, or an old id of one. A guid may be mentioned too.
-.decl dangling_mention(holder:symbol, id:symbol, file:symbol, line:number)
+//
+.decl dangling_mention(holder: symbol, id: symbol, file: symbol, line: number)
 .output dangling_mention
-dangling_mention(h, i, f, n) :-
-    mention(h, i, f, n), type_prefix(_, p, _), match(cat(p, "_.*"), i),
-    !item(i, _, _, _, _), !item(_, i, _, _, _), !alias(_, i).
 
+dangling_mention(holder, id, file, line) :-
+    mention(holder, id, file, line),
+    type_prefix(_, prefix, _),
+    match(cat(prefix, "_.*"), id),
+    !item(id, _, _, _, _),
+    !item(_, id, _, _, _),
+    !alias(_, id).
+
+
+// ----------------------------------------------------------------------------
 // An alias is an old id, so no item has it.
-.decl alias_in_use(alias:symbol, id:symbol)
+//
+.decl alias_in_use(alias: symbol, id: symbol)
 .output alias_in_use
-alias_in_use(a, i) :- alias(i, a), item(a, _, _, _, _).
 
+alias_in_use(alias, id) :-
+    alias(id, alias),
+    item(alias, _, _, _, _).
+
+
+// ----------------------------------------------------------------------------
 // A reference names an item by its current id, not an old one.
-.decl outdated_reference(holder:symbol, role:symbol, alias:symbol, id:symbol,
-                         file:symbol, line:number)
+//
+.decl outdated_reference(holder: symbol,
+                         role:   symbol,
+                         alias:  symbol,
+                         id:     symbol,
+                         file:   symbol,
+                         line:   number)
 .output outdated_reference
-outdated_reference(h, r, a, i, f, n) :-
-    reference(h, r, a, _, f, n), alias(i, a), !item(a, _, _, _, _).
 
+outdated_reference(holder, role, alias, id, file, line) :-
+    reference(holder, role, alias, _, file, line),
+    alias(id, alias),
+    !item(alias, _, _, _, _).
+
+
+// ----------------------------------------------------------------------------
 // A text names an item by its current id, except in the item itself,
 // where it may record what the item was once called.
-.decl outdated_mention(holder:symbol, alias:symbol, id:symbol,
-                       file:symbol, line:number)
+//
+.decl outdated_mention(holder: symbol,
+                       alias:  symbol,
+                       id:     symbol,
+                       file:   symbol,
+                       line:   number)
 .output outdated_mention
-outdated_mention(h, a, i, f, n) :-
-    mention(h, a, f, n), alias(i, a), !item(a, _, _, _, _), h != i.
 
-// ---------------------------------------------------------------------
-// Checks on the shape of the graph
+outdated_mention(holder, alias, id, file, line) :-
+    mention(holder, alias, file, line),
+    alias(id, alias),
+    !item(alias, _, _, _, _),
+    holder != id.
 
+
+// ----------------------------------------------------------------------------
+// A chain of edges of an acyclic relation leads from source to target.
+//
+.decl reaches(relation: symbol, source: symbol, target: symbol)
+
+reaches(relation, source, target) :-
+    relation_acyclic(relation),
+    primary_edge(source, relation, target).
+
+reaches(relation, source, target) :-
+    reaches(relation, source, middle),
+    primary_edge(middle, relation, target).
+
+
+// ----------------------------------------------------------------------------
 // No chain of edges of an acyclic relation leads from an item back to
 // itself.
-.decl reaches(relation:symbol, source:symbol, target:symbol)
-reaches(r, s, t) :- relation_acyclic(r), primary_edge(s, r, t).
-reaches(r, s, u) :- reaches(r, s, t), primary_edge(t, r, u).
-
-.decl cycle(relation:symbol, id:symbol)
+//
+.decl cycle(relation: symbol, id: symbol)
 .output cycle
-cycle(r, i) :- reaches(r, i, i).
 
+cycle(relation, id) :-
+    reaches(relation, id, id).
+
+
+// ----------------------------------------------------------------------------
+// The annotation supports or challenges something.
+//
+.decl arguing(id: symbol)
+
+arguing(id) :-
+    type_of(id, "t_annotation"),
+    primary_edge(id, "r_supports", _).
+
+arguing(id) :-
+    type_of(id, "t_annotation"),
+    primary_edge(id, "r_challenges", _).
+
+
+// ----------------------------------------------------------------------------
 // An annotation that supports or challenges speaks for exactly one
 // concern.
-.decl arguing(id:symbol)
-arguing(a) :- type_of(a, "t_annotation"), primary_edge(a, "r_supports", _).
-arguing(a) :- type_of(a, "t_annotation"), primary_edge(a, "r_challenges", _).
-
-.decl concern_count(id:symbol, concerns:number)
+//
+.decl concern_count(id: symbol, concerns: number)
 .output concern_count
-concern_count(a, n) :-
-    arguing(a), n = count : { primary_edge(a, "r_argues_for_concern", _) },
-    n != 1.
 
-// ---------------------------------------------------------------------
-// Checks on the completeness of the kernel
+concern_count(id, concerns) :-
+    arguing(id),
+    concerns = count : {
+        primary_edge(id, "r_argues_for_concern", _)
+    },
+    concerns != 1.
 
+
+// ----------------------------------------------------------------------------
 // Every type names exactly one schema for its items.
-.decl schema_count(type:symbol, schemas:number)
+//
+.decl schema_count(type: symbol, schemas: number)
 .output schema_count
-schema_count(t, n) :-
-    type_prefix(t, _, _),
-    n = count : { primary_edge(t, "r_has_items_specified_by_schema", _) },
-    n != 1.
 
+schema_count(type, schemas) :-
+    type_prefix(type, _, _),
+    schemas = count : {
+        primary_edge(type, "r_has_items_specified_by_schema", _)
+    },
+    schemas != 1.
+
+
+// ----------------------------------------------------------------------------
 // Every schema is used: named for the items of a type, named by a
 // register for itself, or referred to by another schema.
-.decl unused_schema(id:symbol)
+//
+.decl unused_schema(id: symbol)
 .output unused_schema
-unused_schema(s) :-
-    type_of(s, "t_schema"),
-    !primary_edge(_, "r_has_items_specified_by_schema", s),
-    !primary_edge(_, "r_is_specified_by_schema", s),
-    !schema_ref(_, s, _, _).
 
+unused_schema(id) :-
+    type_of(id, "t_schema"),
+    !primary_edge(_, "r_has_items_specified_by_schema", id),
+    !primary_edge(_, "r_is_specified_by_schema", id),
+    !schema_ref(_, id, _, _).
+
+
+// ----------------------------------------------------------------------------
+// The item is named by some item other than itself.
+//
+.decl named_by_other(id: symbol)
+
+named_by_other(id) :-
+    reference(holder, _, id, _, _, _),
+    holder != id.
+
+named_by_other(id) :-
+    mention(holder, id, _, _),
+    holder != id.
+
+
+// ----------------------------------------------------------------------------
 // Every concept is named by some item other than itself.
-.decl named_by_other(id:symbol)
-named_by_other(c) :- reference(h, _, c, _, _, _), h != c.
-named_by_other(c) :- mention(h, c, _, _), h != c.
-
-.decl unused_concept(id:symbol)
+//
+.decl unused_concept(id: symbol)
 .output unused_concept
-unused_concept(c) :- type_of(c, "t_concept"), !named_by_other(c).
+
+unused_concept(id) :-
+    type_of(id, "t_concept"),
+    !named_by_other(id).

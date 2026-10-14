@@ -51,6 +51,11 @@ DELIM_FIELD       = '\t'
 REGEX_DECL        = re.compile(r'\.decl\s+(\w+)\s*\(([^)]*)\)')
 REGEX_OUTPUT      = re.compile(r'\.output\s+(\w+(?:\s*,\s*\w+)*)')
 
+# A comment takes a whole line, so that text in a comment, such as the
+# header of a module, is never read as a directive.
+#
+REGEX_COMMENT     = re.compile(r'^\s*//.*$', re.MULTILINE)
+
 Rows              = dict[str, list[tuple[str, ...]]]
 
 
@@ -93,7 +98,7 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 
     map_column = {}
 
-    for match in REGEX_DECL.finditer(text):
+    for match in REGEX_DECL.finditer(REGEX_COMMENT.sub('', text)):
         map_column[match.group(1)] = tuple(cc_public.graph.extract.column(spec)
                                            for spec in match.group(2).split(',')
                                            if spec.strip())
@@ -111,7 +116,7 @@ def output(text: str) -> list[str]:
 
     list_name = []
 
-    for match in REGEX_OUTPUT.finditer(text):
+    for match in REGEX_OUTPUT.finditer(REGEX_COMMENT.sub('', text)):
         list_name.extend(name.strip() for name in match.group(1).split(','))
 
     return list(dict.fromkeys(list_name))
