@@ -758,3 +758,44 @@ table:
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
         id_target:      sch_logical_component
         guid_target:    sch_0f929ae944d14364aaf89735389eda7a
+
+  # ---------------------------------------------------------------------------
+  # t_determination -- Determination type
+  #
+  t_determination:
+    id_self:            t_determination
+    guid_self:          t_98455ab5aded4a16b18756fe0f991d21
+    title:              Determination type
+    brief:              |
+                        Type of determination data items.
+    description:        |
+                        Each determination data item records that one
+                        or more decisions have been upheld or
+                        rejected.
+    usage:              |
+                        A decision that no determination names is
+                        open. A determination that upholds one
+                        decision may reject its alternatives in the
+                        same item.
+    note:               |
+                        Determination data items travel on their own,
+                        one per file, in _data/determination/.
+
+                        How a later determination replaces an earlier
+                        one about the same decision is not settled
+                        yet.
+
+                        The shape of determination data items is
+                        defined by the sch_determination schema.
+    prefix:             det
+    regex_id:           ^det_[a-z][a-z0-9_]*$
+    id_concept:         con_determination
+    guid_concept:       con_be674cf787004448ac2a890e84893d3a
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_determination
+        guid_target:    sch_bc22fad5b8e54f2fa6a099f34cc7dc6c

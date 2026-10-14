@@ -61,6 +61,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   it, such as the annotation or type that uses it.
 - **An annotation or decision is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
+- **A determination is refused unless it upholds or rejects a decision**
+  (`determination_without_decision`). Give `--link r_upholds DEC` or
+  `--link r_rejects DEC`. Only record a determination that a person
+  has made; the commit that adds it says who and when.
 - **`domain_violation` or `range_violation`** means the relation does
   not run between those types. Read the relation's `domain` and `range`
   in `reg_relation.yaml`; do not pick another relation just to pass.

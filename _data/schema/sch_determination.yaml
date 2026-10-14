@@ -1,0 +1,48 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_determination.yaml
+id_self:                sch_determination
+guid_self:              sch_bc22fad5b8e54f2fa6a099f34cc7dc6c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Determination schema
+brief:                  |
+                        The shape of a determination, the record that
+                        one or more decisions have been upheld or
+                        rejected.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A determination carries
+                        nothing beyond them, and requires a brief.
+
+                        title names the determination and brief states
+                        what was determined. Which decisions are
+                        upheld and which are rejected are edges, not
+                        fields, so that one determination can settle a
+                        set of alternatives at once.
+usage:                  |
+                        Named by t_determination as the schema of
+                        every item in _data/determination/.
+note:                   |
+                        Who made a determination, and when, is
+                        recorded by the commit that adds it, not by a
+                        field.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - brief
+
+unevaluatedProperties:  false
+relation:               []

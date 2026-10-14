@@ -86,6 +86,17 @@ def _guid_of(root, id_self):
 
 
 # -----------------------------------------------------------------------------
+def _line(root, relative, text):
+    """
+    Return the number of the line of the file at relative that is text.
+
+    """
+
+    list_line = (root / relative).read_text().splitlines()
+    return str(list_line.index(text) + 1)
+
+
+# -----------------------------------------------------------------------------
 def _edge(root, id_relation, id_target):
     """
     Return an edge to id_target, carrying the guids the tree gives.
@@ -216,6 +227,19 @@ def test_an_annotation_about_nothing_is_reported(tree):
 def test_a_decision_about_nothing_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x')
     assert _check(tree) == {'missing_about': [('dec_x',)]}
+
+
+def test_a_determination_that_upholds_a_decision_passes(tree):
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/decision/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/determination/det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x'),
+                                                            _edge(tree, 'r_rejects', 'dec_y')])
+    assert _check(tree) == {}
+
+
+def test_a_determination_of_nothing_is_reported(tree):
+    _item(tree, '_data/determination/det_x.yaml', 'det_x')
+    assert _check(tree) == {'determination_without_decision': [('det_x',)]}
 
 
 def test_an_id_with_no_known_prefix_is_reported(tree):
@@ -388,8 +412,9 @@ def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _replace(tree, '_data/schema/sch_decision.yaml', '  - type:               object',
                                                      '  - type:               objct')
+    line = _line(tree, '_data/schema/sch_decision.yaml', '  - type:               objct')
     assert _check(tree) == {'schema_violation': [
-        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', '52', 'allOf/2/type',
+        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', line, 'allOf/2/type',
          "'objct' is not valid under any of the given schemas")]}
 
 
@@ -397,8 +422,10 @@ def test_a_schema_with_a_string_for_a_subschema_is_reported(tree):
     _replace(tree, '_data/schema/sch_decision.yaml',
              '  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml',
              '  - https://capability-commons.org/schema/sch_trait_relation.yaml')
+    line = _line(tree, '_data/schema/sch_decision.yaml',
+                 '  - https://capability-commons.org/schema/sch_trait_relation.yaml')
     assert _check(tree) == {'schema_violation': [
-        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', '50', 'allOf/1',
+        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', line, 'allOf/1',
          "'https://capability-commons.org/schema/sch_trait_relation.yaml' "
          "is not of type 'object', 'boolean'")]}
 
