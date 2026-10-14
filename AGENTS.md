@@ -22,6 +22,11 @@ work in it.
 - For a merge or a revert, keep the message git drafts. The
   prepare-commit-msg hook gives it its commit item, and names what it
   removes or renames.
+- The commit hooks are early feedback; git skips them for a rebase or
+  a cherry-pick. `cctool history check RANGE` is the check of record,
+  and the pre-push hook runs it. After a rebase, run it on the
+  rebased commits. Do not add hooks to cover more of git's paths: a
+  rule that keeps needing exceptions is fixed in the rule.
 - Name in the commit item (title, brief or description) the id of
   every item the commit removes or renames. A renamed register entry
   keeps its old id in `alias`. The verb must be true of the change:

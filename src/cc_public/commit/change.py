@@ -25,20 +25,21 @@ description:            |
                         each row of it is one failure.
 
                         Before the first commit there is no HEAD, and
-                        the graph before it is empty.
+                        the graph before it is empty. check_trees
+                        checks the change between any two trees, which
+                        is how a commit already made is checked
+                        against its parent.
 usage:                  |
                         Run by cctool message check, and so by the
-                        commit-msg hook.
+                        commit-msg hook, and by cctool history check.
 relation:               []
 
 ...
 """
 
 
-import io
 import pathlib
 import subprocess
-import tarfile
 import tempfile
 
 import cc_public.edit.layout
@@ -67,37 +68,37 @@ def check(root: pathlib.Path, item: dict) -> Failures:
         dir_after  = pathlib.Path(name, 'after')
         dir_before.mkdir()
         dir_after.mkdir()
-        copy_head(root, dir_before)
+        if is_commit(root, 'HEAD'):
+            cc_public.gate.gate.copy_commit(root, 'HEAD', dir_before)
         cc_public.gate.gate.copy_staged(root, dir_after)
-        facts = facts_of(dir_before, dir_after, item)
+        return check_trees(dir_before, dir_after, item)
 
-    rows = cc_public.graph.datalog.run(facts, RULES.read_text(encoding = 'utf-8'))
+
+# -----------------------------------------------------------------------------
+def check_trees(dir_before: pathlib.Path, dir_after: pathlib.Path, item: dict) -> Failures:
+    """
+    Return the failures of the commit that item records, as the change
+    from the tree in dir_before to the tree in dir_after.
+
+    """
+
+    facts = facts_of(dir_before, dir_after, item)
+    rows  = cc_public.graph.datalog.run(facts, RULES.read_text(encoding = 'utf-8'))
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}
 
 
 # -----------------------------------------------------------------------------
-def copy_head(root: pathlib.Path, dir_copy: pathlib.Path) -> None:
+def is_commit(root: pathlib.Path, rev: str) -> bool:
     """
-    Write the content of HEAD of the repository at root into dir_copy,
-    or nothing if there is no HEAD yet.
+    Return True if rev names a commit in the repository at root.
 
     """
 
-    is_head = subprocess.run(['git', 'rev-parse', '--verify', '--quiet', 'HEAD'],
-                             cwd            = root,
-                             capture_output = True,
-                             check          = False).returncode == 0
-    if not is_head:
-        return
-
-    archive = subprocess.run(['git', 'archive', '--format=tar', 'HEAD'],
-                             cwd            = root,
-                             capture_output = True,
-                             check          = True).stdout
-
-    with tarfile.open(fileobj = io.BytesIO(archive)) as file:
-        file.extractall(dir_copy, filter = 'data')
+    return subprocess.run(['git', 'rev-parse', '--verify', '--quiet', rev + '^{commit}'],
+                          cwd            = root,
+                          capture_output = True,
+                          check          = False).returncode == 0
 
 
 # -----------------------------------------------------------------------------

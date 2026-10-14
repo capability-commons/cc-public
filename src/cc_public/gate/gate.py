@@ -48,11 +48,13 @@ relation:               []
 
 
 import concurrent.futures
+import io
 import os
 import pathlib
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 
 
@@ -80,12 +82,14 @@ class ErrorGate(Exception):
 
 
 # -----------------------------------------------------------------------------
-def gate(root: pathlib.Path,
-         tuple_stage: tuple | None = None) -> list[tuple[str, bool, str]]:
+def gate(root:        pathlib.Path,
+         tuple_stage: tuple | None = None,
+         rev:         str | None = None) -> list[tuple[str, bool, str]]:
     """
     Return, for each stage in order, its name, whether it passed, and
     what it printed, run over the staged content of the repository at
-    root. The stages are TUPLE_STAGE unless tuple_stage names others.
+    root, or over the content of the commit rev if it is given. The
+    stages are TUPLE_STAGE unless tuple_stage names others.
 
     """
 
@@ -98,7 +102,10 @@ def gate(root: pathlib.Path,
 
     with tempfile.TemporaryDirectory(prefix = PREFIX_COPY) as name:
         dir_copy = pathlib.Path(name)
-        copy_staged(root, dir_copy)
+        if rev is None:
+            copy_staged(root, dir_copy)
+        else:
+            copy_commit(root, rev, dir_copy)
         env      = _environment(dir_copy)
         list_job = []
         for (name_stage, tuple_arg) in (tuple_stage or TUPLE_STAGE):
@@ -181,6 +188,27 @@ def copy_staged(root: pathlib.Path, dir_copy: pathlib.Path) -> None:
     except subprocess.CalledProcessError as error:
         raise ErrorGate('The staged content cannot be copied: {text}'.format(
                                                 text = error.stderr.strip())) from error
+
+
+# -----------------------------------------------------------------------------
+def copy_commit(root: pathlib.Path, rev: str, dir_copy: pathlib.Path) -> None:
+    """
+    Write the content of the commit rev of the repository at root into
+    dir_copy.
+
+    """
+
+    try:
+        archive = subprocess.run(['git', 'archive', '--format=tar', rev],
+                                 cwd            = root,
+                                 capture_output = True,
+                                 check          = True).stdout
+    except subprocess.CalledProcessError as error:
+        raise ErrorGate('The commit {rev} cannot be copied: {text}'.format(
+                            rev = rev, text = error.stderr.decode().strip())) from error
+
+    with tarfile.open(fileobj = io.BytesIO(archive)) as file:
+        file.extractall(dir_copy, filter = 'data')
 
 
 # -----------------------------------------------------------------------------

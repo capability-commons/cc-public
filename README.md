@@ -53,12 +53,19 @@ for a merge, so the pre-merge-commit hook runs the gate in its place.
 A revert is not gated: it restores content that passed when it was
 committed.
 
+The commit hooks give early feedback, and git skips them for a rebase
+or a cherry-pick, as does anyone with `--no-verify` or a clone without
+`pixi run hooks`. The check of record is `cctool history check`: it
+checks each commit from what it records, however it was made. The
+pre-push hook runs it with `--gate` on what a push would send.
+
 ## cctool
 
     cctool check                            check the tree
     cctool gate                             check, lint and test what is staged
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILE               check a commit message
+    cctool history check [RANGE] [--gate]   check commits already made
     cctool format [--check]                 lay out every document
     cctool query sql|datalog QUERY          query the graph
     cctool query schema                     list the relations and columns

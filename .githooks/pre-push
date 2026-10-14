@@ -1,0 +1,33 @@
+#!/bin/sh
+# ---
+#
+# id_self:                file_githooks_pre_push
+# guid_self:              file_78059044dc424d3384dbfc6940c471d1
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Pre-push hook
+# brief:                  |
+#                         Refuse a push that would send a commit that
+#                         fails its checks, or content that fails the
+#                         gate.
+# description:            |
+#                         git runs this hook before a push, with the
+#                         remote as its first argument and the refs it
+#                         updates on stdin, once core.hooksPath names
+#                         .githooks. It runs cctool history check on the
+#                         commits the remote does not have, however they
+#                         were made, and the gate on the content of each
+#                         ref the push updates. The commit hooks give
+#                         early feedback and can be skipped; this is the
+#                         check of record until CI runs it too.
+# relation:               []
+#
+# ...
+
+exec pixi run --frozen cctool history check --gate --pre-push "$1"
