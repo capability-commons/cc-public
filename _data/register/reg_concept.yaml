@@ -382,22 +382,31 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # con_datalog_module -- Datalog module
+  # con_datalog_source_file -- Datalog source file
   #
-  con_datalog_module:
-    id_self:            con_datalog_module
+  con_datalog_source_file:
+    id_self:            con_datalog_source_file
     guid_self:          con_2d08686dcbbf4a2ebf93e3cb771cfcd9
-    title:              Datalog module
+    title:              Datalog source file
     brief:              |
                         One file of Datalog source code: declarations
                         and rules that are placed in a program with
                         others.
     description:        |
-                        A Datalog module is named by a dotted path in
-                        the same way as a python module. It carries
-                        its own metadata in a comment at the head of
-                        the file.
-    term_preferred:     Datalog module
+                        A Datalog source file is named by a dotted
+                        path in the same way as a python module. It
+                        carries its own metadata in a comment at the
+                        head of the file.
+    note:               |
+                        Souffle calls the whole a program, and its
+                        source files are combined by include
+                        directives. Souffle has no module. A souffle
+                        component is a template of declarations and
+                        rules within a program, not a file.
+    term_preferred:     Datalog source file
+
+    term_deprecated:
+      - Datalog module
 
     alias:              []
     relation:           []

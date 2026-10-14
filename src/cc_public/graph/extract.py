@@ -126,9 +126,9 @@ RELATION          = {
     'register_entry_key': (('register', 'key', 'id'),
                            'The register holds, under key, a register entry with id.'),
     'module_name':        (('id', 'expected'),
-                           'A python module or package, or a Datalog module, holds '
-                           'the item id, and its place in the tree calls for the id '
-                           'expected.'),
+                           'A python module or package, or a Datalog source file, '
+                           'holds the item id, and its place in the tree calls for the '
+                           'id expected.'),
     'tree_file':          (('file',),
                            'The tree holds file, whether or not the file holds an '
                            'item.'),
@@ -148,10 +148,10 @@ RELATION          = {
 
 # Python modules are imported with src as the root of the path. The
 # item of a package is held in the docstring of its __init__ module.
-# A Datalog module is named in the same way as a python module.
+# A Datalog source file is named in the same way as a python module.
 #
 DIR_IMPORT_ROOT   = 'src'
-MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_DATALOG: 'dlm_'}
+MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_DATALOG: 'dls_'}
 PREFIX_PACKAGE    = 'pyp_'
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
@@ -230,9 +230,9 @@ def column(spec: str) -> tuple[str, str]:
 # -----------------------------------------------------------------------------
 def _module_name(relative: pathlib.Path) -> str:
     """
-    Return the id that names the python or Datalog module at relative:
-    the prefix and the dotted name it is imported under, in lower case.
-    An __init__ module is named for its package.
+    Return the id that names the python module or Datalog source file
+    at relative: the prefix and the dotted name it would be imported
+    under, in lower case. An __init__ module is named for its package.
 
     """
 

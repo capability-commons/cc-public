@@ -600,44 +600,44 @@ table:
         guid_target:    sch_c2b3fe510fa64c80a4c372a3816ef720
 
   # ---------------------------------------------------------------------------
-  # t_datalog_module -- Datalog module type
+  # t_datalog_source_file -- Datalog source file type
   #
-  t_datalog_module:
-    id_self:            t_datalog_module
+  t_datalog_source_file:
+    id_self:            t_datalog_source_file
     guid_self:          t_5de85234c70e41c1ac6eeeffd2b86b7f
-    title:              Datalog module type
+    title:              Datalog source file type
     brief:              |
-                        Type of Datalog module data items.
+                        Type of Datalog source file data items.
     description:        |
-                        Each Datalog module data item holds the
-                        metadata of one Datalog module, in a comment
-                        at the head of the file.
+                        Each Datalog source file data item holds the
+                        metadata of one Datalog source file, in a
+                        comment at the head of the file.
     usage:              |
-                        Datalog module data items let a module of
+                        Datalog source file data items let a file of
                         rules be traced, annotated and argued over
                         like any other item, without a second file to
                         keep in step with it.
     note:               |
                         The id is the prefix and the dotted name the
-                        module would be imported under if it were a
+                        file would be imported under if it were a
                         python module, in lower case.
-                        dlm_cc_public.check.check names
+                        dls_cc_public.check.check names
                         src/cc_public/check/check.dl. Each line of the
                         comment begins with //.
 
-                        The shape of Datalog module data items is
-                        defined by the sch_datalog_module schema.
+                        The shape of Datalog source file data items is
+                        defined by the sch_datalog_source_file schema.
     alias:              []
-    prefix:             dlm
-    regex_id:           ^dlm_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
-    id_concept:         con_datalog_module
+    prefix:             dls
+    regex_id:           ^dls_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_datalog_source_file
     guid_concept:       con_2d08686dcbbf4a2ebf93e3cb771cfcd9
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_datalog_module
+        id_target:      sch_datalog_source_file
         guid_target:    sch_6724b60b83624c78938faa0f4355cb25
 
   # ---------------------------------------------------------------------------
@@ -662,8 +662,8 @@ table:
                         A module is not a file in this sense. The
                         item of a python module is held in its
                         docstring and has the type t_python_module.
-                        The item of a Datalog module has the type
-                        t_datalog_module.
+                        The item of a Datalog source file has the
+                        type t_datalog_source_file.
 
                         The shape of file data items is defined by the
                         sch_file schema.
