@@ -64,8 +64,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`domain_violation` or `range_violation`** means the relation does
   not run between those types. Read the relation's `domain` and `range`
   in `reg_relation.yaml`; do not pick another relation just to pass.
-- **An annotation that supports or challenges needs exactly one
-  concern** (`concern_count`): add `--link r_argues_for_concern ...`.
+- **An annotation that supports or challenges a decision needs exactly
+  one concern; any other annotation needs none** (`concern_count`
+  gives the count and the count expected). A fact or a measurement
+  that bears on another annotation speaks for no concern.
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.

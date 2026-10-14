@@ -302,8 +302,7 @@ def test_an_edge_from_outside_the_domain_is_reported(tree):
 def test_an_edge_to_outside_the_range_is_reported(tree):
     # Support runs to an assertion or a choice, not to a concern.
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                         _edge(tree, 'r_supports', ID_ABOUT),
-                                                         _edge(tree, 'r_argues_for_concern', ID_ABOUT)])
+                                                         _edge(tree, 'r_supports', ID_ABOUT)])
     assert _check(tree) == {'range_violation': [(ID_ABOUT, 'r_supports', 't_concern')]}
 
 
@@ -487,11 +486,27 @@ def test_a_cycle_of_supersession_is_reported(tree):
                                                            ('r_supersedes', 'dec_y')]}
 
 
-def test_an_argument_without_a_concern_is_reported(tree):
+def test_an_argument_about_a_decision_without_a_concern_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'dec_x')])
-    assert _check(tree) == {'concern_count': [('ann_x', '0')]}
+    assert _check(tree) == {'concern_count': [('ann_x', '0', '1')]}
+
+
+def test_an_argument_about_an_annotation_with_a_concern_is_reported(tree):
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/annotation/ann_y.yaml', 'ann_y', [_edge(tree, 'r_is_about', ID_ABOUT),
+                                                         _edge(tree, 'r_challenges', 'ann_x'),
+                                                         _edge(tree, 'r_argues_for_concern',
+                                                               'concern_cost')])
+    assert _check(tree) == {'concern_count': [('ann_y', '1', '0')]}
+
+
+def test_an_argument_about_an_annotation_without_a_concern_passes(tree):
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/annotation/ann_y.yaml', 'ann_y', [_edge(tree, 'r_is_about', ID_ABOUT),
+                                                         _edge(tree, 'r_supports', 'ann_x')])
+    assert _check(tree) == {}
 
 
 def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):

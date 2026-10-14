@@ -362,33 +362,48 @@ cycle(relation, id) :-
 
 
 // ----------------------------------------------------------------------------
-// The annotation supports or challenges something.
+// The annotation supports or challenges a decision.
 //
-.decl arguing(id: symbol)
+.decl practical(id: symbol)
 
-arguing(id) :-
+practical(id) :-
     type_of(id, "t_annotation"),
-    primary_edge(id, "r_supports", _).
+    primary_edge(id, "r_supports", target),
+    type_of(target, "t_decision").
 
-arguing(id) :-
+practical(id) :-
     type_of(id, "t_annotation"),
-    primary_edge(id, "r_challenges", _).
+    primary_edge(id, "r_challenges", target),
+    type_of(target, "t_decision").
 
 
 // ----------------------------------------------------------------------------
-// An annotation that supports or challenges speaks for exactly one
-// concern.
+// An annotation that supports or challenges a decision speaks for
+// exactly one concern. Any other annotation speaks for none, since it
+// is answered with evidence and not outweighed.
 //
 .decl concern_count(id:       symbol,
-                    concerns: number)
+                    concerns: number,
+                    expected: number)
 .output concern_count
 
-concern_count(id, concerns) :-
-    arguing(id),
+concern_count(id, concerns, expected) :-
+    type_of(id, "t_annotation"),
     concerns = count : {
         primary_edge(id, "r_argues_for_concern", _)
     },
-    concerns != 1.
+    expected = 1,
+    practical(id),
+    concerns != expected.
+
+concern_count(id, concerns, expected) :-
+    type_of(id, "t_annotation"),
+    concerns = count : {
+        primary_edge(id, "r_argues_for_concern", _)
+    },
+    expected = 0,
+    !practical(id),
+    concerns != expected.
 
 
 // ----------------------------------------------------------------------------
