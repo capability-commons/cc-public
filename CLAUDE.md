@@ -1,6 +1,6 @@
-# Guidance for agents
+# Guidance for Claude Code
 
-This file is for any coding agent working in cc-public. `README.md`
+This file is for Claude Code working in cc-public. `README.md`
 says what the repository is and how to run it. This file says how to
 work in it.
 
@@ -25,6 +25,11 @@ work in it.
   entry. Nothing else may still name the old id.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated.
+
+## Skills
+
+Procedures, and the traps in them, are skills in `.claude/skills/`.
+`editing-data-items` covers adding and changing items with cctool.
 
 ## Finding things out
 
