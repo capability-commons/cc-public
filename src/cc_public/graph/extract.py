@@ -216,7 +216,7 @@ def facts_of(map_document: Documents) -> Facts:
         _walk(document, '', (file, base), facts)
         if pathlib.Path(file).suffix in MAP_PREFIX_MODULE and isinstance(document, dict):
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
-                                      _module_name(pathlib.Path(file))))
+                                      module_name(pathlib.Path(file))))
 
     return facts
 
@@ -233,7 +233,7 @@ def column(spec: str) -> tuple[str, str]:
 
 
 # -----------------------------------------------------------------------------
-def _module_name(relative: pathlib.Path) -> str:
+def module_name(relative: pathlib.Path) -> str:
     """
     Return the id that names the python module or Datalog source file
     at relative: the prefix and the dotted name it would be imported

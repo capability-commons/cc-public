@@ -54,6 +54,9 @@ TEXT_RIGHTS   = ('copyright:              Copyright 2026 William Payne\n'
 FIELD_ANN     = {'title': 'Edits work',
                  'brief': 'The editing commands keep the tree free of new failures, '
                           'whatever they change.'}
+FIELD_HEADER  = {'title':       'Extra',
+                 'brief':       'An extra module.',
+                 'description': 'It is extra.'}
 FIELD_CONCERN = {'title':       'Reviewability',
                  'brief':       'Whether a change can be reviewed.',
                  'description': 'Reviewability covers how easily a change is read.',
@@ -264,6 +267,71 @@ def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, messa
     assert str(info.value) == message
 
 
+def test_header_puts_a_module_docstring_above_the_code(tree, zero):
+    path = tree / 'src/cc_public/edit/extra.py'
+    path.write_text('import os\n')
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.py', 'field': FIELD_HEADER}) == {}
+    assert path.read_text() == ('"""\n'
+                                '---\n'
+                                '\n'
+                                'id_self:                pym_cc_public.edit.extra\n'
+                                'guid_self:              pym_' + HEX_ZERO + '\n'
+                                + TEXT_RIGHTS +
+                                '\n'
+                                'title:                  Extra\n'
+                                'brief:                  |\n'
+                                '                        An extra module.\n'
+                                'description:            |\n'
+                                '                        It is extra.\n'
+                                'relation:               []\n'
+                                '\n'
+                                '...\n'
+                                '"""\n'
+                                '\n'
+                                '\n'
+                                'import os\n')
+
+
+def test_header_writes_a_comment_header_after_the_interpreter_line(tree, zero):
+    path = tree / 'tool/run'
+    path.parent.mkdir()
+    path.write_text('#!/bin/sh\necho run\n')
+    assert _edit(tree, {'header': 'tool/run', 'id': 'file_tool_run', 'field': FIELD_HEADER}) == {}
+    text = path.read_text()
+    assert text.startswith('#!/bin/sh\n# ---\n#\n# id_self:                file_tool_run\n')
+    assert text.endswith('#\n# ...\n\n\necho run\n')
+
+
+def test_header_makes_a_datalog_file_that_is_not_there(tree, zero):
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.dl', 'field': FIELD_HEADER}) == {}
+    text = (tree / 'src/cc_public/edit/extra.dl').read_text()
+    assert text.startswith('// ---\n//\n// id_self:                dls_cc_public.edit.extra\n')
+    assert text.endswith('// relation:               []\n//\n// ...\n')
+
+
+@pytest.mark.parametrize(('operation', 'message'), [
+    ({'header': 'README.md', 'id': 'file_readme'}, 'README.md cannot hold a header.'),
+    ({'header': 'src/cc_public/edit/extra.py', 'id': 'pym_extra'},
+     'The item of src/cc_public/edit/extra.py has the id pym_cc_public.edit.extra, not pym_extra.'),
+    ({'header': 'tool/run'}, 'Give the id of the item of tool/run.'),
+    ({'header': 'src/cc_public/edit/edit.py'}, 'src/cc_public/edit/edit.py already holds an item.'),
+    ({'header': 'tool/run', 'id': 'zzz_run'}, 'No type has the prefix zzz.'),
+])
+def test_a_header_that_cannot_be_made_says_why(tree, operation, message):
+    with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
+        cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
+    assert str(info.value) == message
+
+
+def test_header_refuses_a_module_with_a_docstring_already(tree):
+    (tree / 'src/cc_public/edit/extra.py').write_text('"""Extra."""\n')
+    with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
+        cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree),
+                                  [{'header': 'src/cc_public/edit/extra.py'}])
+    assert str(info.value).startswith('src/cc_public/edit/extra.py has a module docstring that '
+                                      'is not an item.')
+
+
 def test_set_rewrites_a_field_in_a_comment_header(tree):
     path = tree / 'src/cc_public/graph/derive.dl'
     text = path.read_text()
@@ -346,13 +414,15 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'new': 'zzz_x'}, 'No type has the prefix zzz.'),
     ({'new': 'con_concept'}, 'An item with the id con_concept exists.'),
-    ({'new': 'pym_x'}, 'An item of t_python_module is written in the file it names, by hand.'),
+    ({'new': 'pym_x'}, 'An item of t_python_module is written in the file it names: give the '
+                       'file its item with header.'),
     ({'new': 'ann_x', 'link': [['r_is_about', 'con_none']]}, 'No item has the id con_none.'),
     ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),
     ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way.'),
     ({'set': ['con_none', 'note', 'x']}, 'No item has the id con_none.'),
-    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, link, unlink, "
-                                  "set, unset, remove or rename: {'unlink': ['con_concept']}"),
+    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, header, link, "
+                                  "unlink, set, unset, remove or rename: "
+                                  "{'unlink': ['con_concept']}"),
     ({'unlink': ['con_concept', 'r_is_about', 'con_type']},
      'con_concept has no edge of r_is_about to con_type.'),
     ({'unset': ['con_concept', 'note']}, 'con_concept has no field note.'),

@@ -120,6 +120,17 @@ def test_set_refuses_a_value_that_is_not_yaml(tree):
     assert result.stderr.startswith('VALUE is not YAML: ')
 
 
+def test_header_gives_a_file_its_item_and_says_where(tree):
+    (tree / 'src/cc_public/cli/extra.py').write_text('X = 1\n')
+    result = _run(tree, 'header', 'src/cc_public/cli/extra.py',
+                  '--field', 'title', 'Extra', '--field', 'brief', 'Extra.',
+                  '--field', 'description', 'Extra.')
+    assert result.exit_code == 0
+    assert result.stdout == 'Wrote src/cc_public/cli/extra.py\n'
+    assert (tree / 'src/cc_public/cli/extra.py').read_text().startswith(
+        '"""\n---\n\nid_self:                pym_cc_public.cli.extra\n')
+
+
 def test_remove_says_which_file_it_removed(tree):
     assert _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept').exit_code == 0
     result = _run(tree, 'remove', 'ann_x')

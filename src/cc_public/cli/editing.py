@@ -16,15 +16,19 @@ brief:                  |
                         The commands that edit the data items in the
                         tree.
 description:            |
-                        This module holds the new, link, unlink, set,
-                        unset, remove, rename, batch and format
-                        commands. Each makes its edit, checks the tree
-                        with the edit in place, and writes it only if
-                        it adds no failure. With --dry-run, each
-                        prints the edit as a diff and writes nothing.
+                        This module holds the new, header, link,
+                        unlink, set, unset, remove, rename, batch and
+                        format commands. Each makes its edit, checks
+                        the tree with the edit in place, and writes it
+                        only if it adds no failure. With --dry-run,
+                        each prints the edit as a diff and writes
+                        nothing.
 usage:                  |
                         cctool new ID [--field NAME VALUE]... [--link
                         RELATION TARGET]...
+
+                        cctool header PATH [ID] [--field NAME
+                        VALUE]... [--link RELATION TARGET]...
 
                         cctool link SOURCE RELATION TARGET
 
@@ -113,14 +117,69 @@ def new(id_self, list_field, list_link, root, is_dry_run):
 
     """
 
+    _run(root, is_dry_run, [{'new':   id_self,
+                             'field': _fields(list_field),
+                             'link':  [list(pair) for pair in list_link]}])
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('path', metavar = 'PATH', type = click.Path(dir_okay = False,
+                                                            path_type = pathlib.Path))
+@click.argument('id_self', metavar = 'ID', required = False)
+@click.option('--field',
+              'list_field',
+              nargs    = 2,
+              multiple = True,
+              metavar  = 'NAME VALUE',
+              help     = 'A field of the new item. Repeat for each field. A NAME given '
+                         'more than once makes a list.')
+@click.option('--link',
+              'list_link',
+              nargs    = 2,
+              multiple = True,
+              metavar  = 'RELATION TARGET',
+              help     = 'An edge from the new item. Repeat for each edge.')
+@_option
+def header(path, id_self, list_field, list_link, root, is_dry_run):
+    """
+    Give the file at PATH a new item, made as new makes one, and write
+    it at the head of the file: in the module docstring of a python
+    module, and in a comment header in any other file. The file is
+    made if there is none. A relative PATH is taken from the root of
+    the tree.
+
+    The id of a python module or Datalog source file follows from its
+    path, so ID is left out for one. Any other file needs ID.
+
+    """
+
+    try:
+        relative = (root / path).resolve().relative_to(root.resolve())
+    except ValueError:
+        click.echo('{path} is not in the tree.'.format(path = path), err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    _run(root, is_dry_run, [{'header': str(relative),
+                             'id':     id_self,
+                             'field':  _fields(list_field),
+                             'link':   [list(pair) for pair in list_link]}])
+
+
+# -----------------------------------------------------------------------------
+def _fields(list_field):
+    """
+    Return the fields of list_field as a mapping, in which a name given
+    more than once has a list of its values.
+
+    """
+
     map_field = {}
     for (key, value) in list_field:
         map_field.setdefault(key, []).append(value)
 
-    _run(root, is_dry_run, [{'new':   id_self,
-                             'field': {key: list_value if len(list_value) > 1 else list_value[0]
-                                       for (key, list_value) in map_field.items()},
-                             'link':  [list(pair) for pair in list_link]}])
+    return {key: list_value if len(list_value) > 1 else list_value[0]
+            for (key, list_value) in map_field.items()}
 
 
 # -----------------------------------------------------------------------------
@@ -256,8 +315,8 @@ def rename(id_old, id_new, root, is_dry_run):
 def batch(path_file, root, is_dry_run):
     """
     Make the operations listed in the YAML file FILE, or - for stdin,
-    as one edit. An operation is one of new, link, unlink, set, unset,
-    remove and rename. Items that need each other, such as a concept
+    as one edit. An operation is one of new, header, link, unlink,
+    set, unset, remove and rename. Items that need each other, such as a concept
     and the item that names it, are made this way. For example:
 
     \b

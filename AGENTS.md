@@ -27,9 +27,12 @@ work in it.
 
 ## Changing data items
 
-- Prefer `cctool new`, `link`, `set`, `remove`, `rename` and `batch`
-  to editing YAML by hand. They mint guids, fill in rights, keep the layout, and refuse an
-  edit that adds a failure. Use `--dry-run` to see an edit first.
+- Prefer `cctool new`, `header`, `link`, `unlink`, `set`, `unset`,
+  `remove`, `rename` and `batch` to editing YAML by hand. They mint
+  guids, fill in rights, keep the layout, and refuse an edit that adds
+  a failure. Use `--dry-run` to see an edit first.
+- Give a new python module, Datalog file or script its item with
+  `cctool header PATH`. The id of a module follows from its path.
 - Never write a guid by hand. A guid is the prefix of the type and 32
   hex digits, minted once and never changed.
 - A new concept must be named by some other item, so make the concept

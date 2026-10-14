@@ -17,15 +17,16 @@ brief:                  |
                         the edits that add no failure.
 description:            |
                         An edit is a set of new texts for files, in
-                        which None removes a file. new, link, unlink,
-                        set_field, unset_field, remove and rename each
-                        return one, written as small changes to the
-                        text, after which the file is laid out by
-                        pym_cc_public.edit.layout. A tree holds the
-                        edits made so far, and each edit is made on
-                        top of them. apply checks the tree with the
-                        edits in place, and writes them only if they
-                        add no failure to those the tree already has.
+                        which None removes a file. new, header, link,
+                        unlink, set_field, unset_field, remove and
+                        rename each return one, written as small
+                        changes to the text, after which the file is
+                        laid out by pym_cc_public.edit.layout. A tree
+                        holds the edits made so far, and each edit is
+                        made on top of them. apply checks the tree
+                        with the edits in place, and writes them only
+                        if they add no failure to those the tree
+                        already has.
 
                         batch makes a list of operations in one go, so
                         that items that need each other, such as a
@@ -40,6 +41,7 @@ relation:               []
 """
 
 
+import ast
 import collections
 import pathlib
 import re
@@ -63,6 +65,8 @@ KEY_GUID_RELATION = 'guid_relation'
 KEY_ID_TARGET     = 'id_target'
 KEY_GUID_TARGET   = 'guid_target'
 KEY_NEW           = 'new'
+KEY_HEADER        = 'header'
+KEY_ID            = 'id'
 KEY_FIELD         = 'field'
 KEY_LINK          = 'link'
 KEY_UNLINK        = 'unlink'
@@ -98,6 +102,14 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 #
 ID_HELD           = 'r_has_items_held_in_register'
 SET_PREFIX_SOURCE = {'pym', 'pyp', 'dls', 'file'}
+
+# A file of any other type takes its item in a header: a python module
+# in its module docstring, and any other file in a comment header. A
+# YAML file is a document already, and JSON and Markdown have no
+# comment for a header.
+#
+SET_SUFFIX_BARE   = {'.yaml', '.json', '.md'}
+QUOTE_DOCSTRING   = '"""'
 
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
@@ -225,15 +237,129 @@ def new(tree:       Tree,
     if prefix not in map_type:
         raise ErrorEdit('No type has the prefix {prefix}.'.format(prefix = prefix))
     if prefix in SET_PREFIX_SOURCE:
-        raise ErrorEdit('An item of {type} is written in the file it names, by hand.'.format(
-                                                                    type = map_type[prefix]))
+        raise ErrorEdit('An item of {type} is written in the file it names: give the file '
+                        'its item with header.'.format(type = map_type[prefix]))
+
+    id_type   = map_type[prefix]
+    register  = _register(tree, id_type)
+    map_field = _fields(tree, id_self, list_field, list_link, register)
+
+    if register is None:
+        relative = '{dir}/{stem}/{id}{suffix}'.format(dir    = DIR_DATA,
+                                                      stem   = id_type[2:],
+                                                      id     = id_self,
+                                                      suffix = SUFFIX_YAML)
+        if relative in tree.map_document:
+            raise ErrorEdit('The file {file} exists.'.format(file = relative))
+        text = '\n'.join(cc_public.edit.layout.dump(map_field, 0)) + '\n'
+        return {relative: _format(text, relative)}
+
+    return _append_entry(tree, register, map_field)
+
+
+# -----------------------------------------------------------------------------
+def header(tree:       Tree,
+           relative:   str,
+           id_self:    str | None,
+           list_field: list[tuple[str, typing.Any]],
+           list_link:  list[tuple[str, str]]) -> Edit:
+    """
+    Return the edit that gives the file at relative a new item, at its
+    head: in its module docstring if it is a python module, and in a
+    comment header if not, after any line that names an interpreter.
+    The file is made if there is none.
+
+    The id of a python module or Datalog source file follows from its
+    path, so id_self may be None for one. Any other file needs it.
+
+    """
+
+    path = pathlib.Path(relative)
+
+    if path.suffix in SET_SUFFIX_BARE:
+        raise ErrorEdit('{file} cannot hold a header.'.format(file = relative))
+
+    if path.suffix in cc_public.graph.extract.MAP_PREFIX_MODULE:
+        expected = cc_public.graph.extract.module_name(path)
+        if id_self not in (None, expected):
+            raise ErrorEdit('The item of {file} has the id {expected}, not {id}.'.format(
+                                                file = relative, expected = expected, id = id_self))
+        id_self = expected
+    elif id_self is None:
+        raise ErrorEdit('Give the id of the item of {file}.'.format(file = relative))
+
+    if relative in tree.map_document and tree.map_document[relative][0] is not None:
+        raise ErrorEdit('{file} already holds an item.'.format(file = relative))
+
+    (prefix, _, _) = id_self.partition(DELIM_PREFIX)
+    if prefix not in {row[1] for row in tree.facts['type_prefix']}:
+        raise ErrorEdit('No type has the prefix {prefix}.'.format(prefix = prefix))
+
+    map_field = _fields(tree, id_self, list_field, list_link, None)
+    list_doc  = [cc_public.graph.extract.LINE_OPEN, '',
+                 *cc_public.edit.layout.dump(map_field, 0),
+                 '', cc_public.graph.extract.LINE_CLOSE]
+    text      = tree.text(relative) if relative in tree.map_document else ''
+    list_line = text.split('\n') if text else []
+    list_head = []
+
+    if list_line and list_line[0].startswith(cc_public.graph.extract.MARK_SHEBANG):
+        list_head = [list_line.pop(0)]
+    while list_line and not list_line[0].strip():
+        list_line.pop(0)
+
+    if path.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
+        _refuse_docstring(text, relative)
+        list_new = [QUOTE_DOCSTRING, *list_doc, QUOTE_DOCSTRING]
+    else:
+        mark     = cc_public.graph.extract.mark_comment(path)
+        list_new = [mark + (' ' + line if line else '') for line in list_doc]
+
+    list_new = [*list_head, *list_new, *(['', '', *list_line] if list_line else [''])]
+
+    return {relative: _format('\n'.join(list_new), relative)}
+
+
+# -----------------------------------------------------------------------------
+def _refuse_docstring(text: str, relative: str) -> None:
+    """
+    Refuse a python module that cannot be parsed, or that has a module
+    docstring already, which the item would take the place of.
+
+    """
+
+    try:
+        module = ast.parse(text)
+    except SyntaxError as error:
+        raise ErrorEdit('{file} is not python: {error}'.format(
+                                                file = relative, error = error)) from error
+
+    if ast.get_docstring(module) is not None:
+        raise ErrorEdit('{file} has a module docstring that is not an item. Take it out, and '
+                        'give its text to the item as a field.'.format(file = relative))
+
+
+# -----------------------------------------------------------------------------
+def _fields(tree:       Tree,
+            id_self:    str,
+            list_field: list[tuple[str, typing.Any]],
+            list_link:  list[tuple[str, str]],
+            register:   str | None) -> dict:
+    """
+    Return the fields of a new item with id_self, the fields in
+    list_field, and an edge for each relation and target in list_link,
+    in the order they are written. A standalone item, whose register is
+    None, takes its rights from the item of the project; a register
+    entry gets an empty alias list.
+
+    """
+
     if id_self in tree.map_item:
         raise ErrorEdit('An item with the id {id} exists.'.format(id = id_self))
 
-    id_type   = map_type[prefix]
-    map_given = dict(list_field)
-    map_field = {key: map_given.pop(key) for key in TUPLE_KEY_LEAD if key in map_given}
-    register  = _register(tree, id_type)
+    (prefix, _, _) = id_self.partition(DELIM_PREFIX)
+    map_given      = dict(list_field)
+    map_field      = {key: map_given.pop(key) for key in TUPLE_KEY_LEAD if key in map_given}
 
     map_field[KEY_ID_SELF]   = id_self
     map_field[KEY_GUID_SELF] = '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)
@@ -248,17 +374,7 @@ def new(tree:       Tree,
     map_field[KEY_RELATION] = [_edge(tree, id_relation, id_target)
                                for (id_relation, id_target) in list_link]
 
-    if register is None:
-        relative = '{dir}/{stem}/{id}{suffix}'.format(dir    = DIR_DATA,
-                                                      stem   = id_type[2:],
-                                                      id     = id_self,
-                                                      suffix = SUFFIX_YAML)
-        if relative in tree.map_document:
-            raise ErrorEdit('The file {file} exists.'.format(file = relative))
-        text = '\n'.join(cc_public.edit.layout.dump(map_field, 0)) + '\n'
-        return {relative: _format(text, relative)}
-
-    return _append_entry(tree, register, map_field)
+    return map_field
 
 
 # -----------------------------------------------------------------------------
@@ -617,6 +733,11 @@ def batch(tree: Tree, list_operation: list) -> None:
         field: {NAME: VALUE, ...}
         link:  [[RELATION, TARGET], ...]
 
+        header: PATH
+        id:     ID
+        field:  {NAME: VALUE, ...}
+        link:   [[RELATION, TARGET], ...]
+
         link:   [SOURCE, RELATION, TARGET]
 
         unlink: [SOURCE, RELATION, TARGET]
@@ -652,6 +773,14 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
                     in (operation.get(KEY_FIELD) or {}).items()],
                    [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
 
+    if isinstance(operation, dict) and isinstance(operation.get(KEY_HEADER), str):
+        return header(tree,
+                      operation[KEY_HEADER],
+                      None if operation.get(KEY_ID) is None else str(operation[KEY_ID]),
+                      [(str(key), _plain(value)) for (key, value)
+                       in (operation.get(KEY_FIELD) or {}).items()],
+                      [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
+
     if isinstance(operation, dict) and set(operation) == {KEY_REMOVE}:
         return remove(tree, str(operation[KEY_REMOVE]))
 
@@ -667,8 +796,8 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
             if isinstance(list_arg, list) and len(list_arg) == count:
                 return function(tree, *map(str, list_arg))
 
-    raise ErrorEdit('An operation of a batch is not one of new, link, unlink, set, unset, '
-                    'remove or rename: {operation}'.format(operation = operation))
+    raise ErrorEdit('An operation of a batch is not one of new, header, link, unlink, set, '
+                    'unset, remove or rename: {operation}'.format(operation = operation))
 
 
 # -----------------------------------------------------------------------------

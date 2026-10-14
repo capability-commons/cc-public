@@ -34,6 +34,7 @@ procedure, and the traps.
 | to                                      | use                                 |
 |-----------------------------------------|-------------------------------------|
 | add one item                            | `cctool new ID --field ... --link ...` |
+| give a source file its item             | `cctool header PATH [ID] --field ...` |
 | add an edge                             | `cctool link SOURCE RELATION TARGET` |
 | take an edge away                       | `cctool unlink SOURCE RELATION TARGET` |
 | change a field                          | `cctool set ID PATH VALUE [--yaml]` |
@@ -69,8 +70,12 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   given once on the command line is a string; name it twice, or use a
   batch.
 - **`new`, `remove` and `rename` refuse pym, pyp, dls and file ids.**
-  Those items live in the file they name. Write, move or remove the
-  file by hand, then `cctool format`.
+  Those items live in the file they name. Give a file its item with
+  `cctool header PATH` (a module's id follows from its path; any other
+  file needs ID, such as `file_githooks_pre_commit`). Move or remove
+  the file by hand, then `cctool format`.
+- **`header` refuses a module that has a docstring already.** Take
+  the docstring out, and give its text to the item as `description`.
 - **Renaming an id:** use `cctool rename`, never a search and replace.
   It keeps the old id as an alias of a register entry, which the commit
   check requires. Then fix each file it lists as still naming the old

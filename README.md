@@ -58,6 +58,7 @@ commit naming it, and the verb of the title is true of the change.
     cctool query sql|datalog QUERY          query the graph
     cctool query schema                     list the relations and columns
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
+    cctool header PATH [ID] [--field NAME VALUE]... [--link ...]
     cctool link SOURCE RELATION TARGET
     cctool unlink SOURCE RELATION TARGET
     cctool set ID PATH VALUE [--yaml]
