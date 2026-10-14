@@ -49,6 +49,7 @@ import typing
 import uuid
 
 import ruamel.yaml
+import ruamel.yaml.scalarstring
 
 import cc_public.check.check
 import cc_public.edit.layout
@@ -544,7 +545,7 @@ def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) 
         node[part] = _put(tree, node.get(part, {}), rest, value)
         return node
 
-    node[part] = value
+    node[part] = _styled(part, value, node.get(part))
     if not _is_reference(part, value):
         return node
 
@@ -560,6 +561,23 @@ def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) 
         if key == part:
             map_new[key_guid] = guid
     return map_new
+
+
+# -----------------------------------------------------------------------------
+def _styled(key: str, value: typing.Any, old: typing.Any) -> typing.Any:
+    """
+    Return value, put in place of old as the field key, as a block if
+    it is text and the field is prose: if key names a prose field, or
+    old was written as a block.
+
+    """
+
+    is_prose = (key in cc_public.edit.layout.SET_KEY_PROSE
+                or isinstance(old, ruamel.yaml.scalarstring.LiteralScalarString))
+
+    if is_prose and isinstance(value, str):
+        return ruamel.yaml.scalarstring.LiteralScalarString(value.rstrip('\n') + '\n')
+    return value
 
 
 # -----------------------------------------------------------------------------
@@ -892,7 +910,8 @@ def _rights(tree: Tree) -> dict:
 def _plain(value):
     """
     Return value with the mappings and lists that YAML read it into
-    made plain.
+    made plain. Text written as a block keeps its style, since that is
+    what marks it as prose.
 
     """
 
@@ -900,6 +919,8 @@ def _plain(value):
         return {key: _plain(each) for (key, each) in value.items()}
     if isinstance(value, list):
         return [_plain(each) for each in value]
+    if isinstance(value, ruamel.yaml.scalarstring.LiteralScalarString):
+        return value
     return str(value) if isinstance(value, str) else value
 
 

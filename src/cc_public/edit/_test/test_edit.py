@@ -391,6 +391,16 @@ def test_set_takes_a_structured_value_and_a_path_into_one(tree, zero):
             '    measure:\n      - Lines changed.\n      - Files changed.\n') in text
 
 
+def test_set_by_path_keeps_prose_as_a_block(tree):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'set': ['sch_commit',
+                                                'allOf.3.properties.title.description',
+                                                'A subject line.']}])
+    assert ('        description:    |\n'
+            '                        A subject line.\n') in (
+                edited.edit['_data/schema/sch_commit.yaml'])
+
+
 def test_a_field_that_names_an_item_keeps_its_guid_beside_it(tree):
     path   = 'src/cc_public/edit/layout.py'
     id_pym = 'pym_cc_public.edit.layout'
