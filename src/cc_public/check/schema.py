@@ -23,6 +23,12 @@ description:            |
                         Schema. The items inside a document conform as
                         part of it. Each violation is reported with
                         the line of the file it is found at.
+
+                        A schema is itself a document, and sch_schema
+                        holds it to the metaschema of JSON Schema. No
+                        document is validated against a schema that
+                        fails the metaschema, which could not be used
+                        and is reported already.
 relation:               []
 
 ...
@@ -30,7 +36,9 @@ relation:               []
 
 
 import jsonschema
+import jsonschema.exceptions
 import referencing
+import referencing.exceptions
 
 import cc_public.graph.extract
 
@@ -40,6 +48,16 @@ COLUMNS           = ('id', 'schema', 'file', 'line', 'path', 'message')
 LENGTH_MESSAGE    = 200
 DELIM_PATH        = '/'
 KEY_UNEVALUATED   = 'unevaluatedProperties'
+
+# A schema that fails the metaschema of JSON Schema cannot be used to
+# validate, and using one, or one that refers to it, raises one of
+# these errors.
+#
+META              = jsonschema.Draft202012Validator(
+                        jsonschema.Draft202012Validator.META_SCHEMA)
+TUPLE_ERROR_USE   = (jsonschema.exceptions.SchemaError,
+                     jsonschema.exceptions.UnknownType,
+                     referencing.exceptions.Unresolvable)
 
 
 # -----------------------------------------------------------------------------
@@ -66,24 +84,43 @@ def violations(map_document: cc_public.graph.extract.Documents,
                     for schema in map_schema.values())
     map_validator = {}
     set_row       = set()
+    set_invalid   = {id_schema for (id_schema, schema) in map_schema.items()
+                     if not META.is_valid(schema)}
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:
+            continue
+        if id_schema in set_invalid:
             continue
         if id_schema not in map_validator:
             map_validator[id_schema] = jsonschema.Draft202012Validator(map_schema[id_schema],
                                                                        registry = registry)
         file             = map_file[id_document]
         (document, base) = map_document[file]
-        for error in _error(map_validator[id_schema], document):
-            set_row.add((id_document,
-                         id_schema,
-                         file,
-                         str(_line(document, list(error.absolute_path), base)),
-                         DELIM_PATH.join(str(part) for part in error.absolute_path),
-                         ' '.join(error.message.split())[:LENGTH_MESSAGE]))
+        try:
+            list_error = _error(map_validator[id_schema], document)
+        except TUPLE_ERROR_USE:
+            continue
+        for error in list_error:
+            set_row.add(_row(id_document, id_schema, file, document, base, error))
 
     return sorted(set_row)
+
+
+# -----------------------------------------------------------------------------
+def _row(id_document, id_schema, file, document, base, error):
+    """
+    Return the row that reports error, found in document under the
+    schema id_schema.
+
+    """
+
+    return (id_document,
+            id_schema,
+            file,
+            str(_line(document, list(error.absolute_path), base)),
+            DELIM_PATH.join(str(part) for part in error.absolute_path),
+            ' '.join(error.message.split())[:LENGTH_MESSAGE])
 
 
 # -----------------------------------------------------------------------------

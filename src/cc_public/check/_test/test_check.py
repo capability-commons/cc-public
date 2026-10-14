@@ -371,6 +371,15 @@ def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
         ('reg_concern', 'sch_register', *row)]}
 
 
+def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _replace(tree, '_data/schema/sch_decision.yaml', '  - type:               object',
+                                                     '  - type:               objct')
+    assert cc_public.check.check.check(tree) == {'schema_violation': [
+        ('sch_decision', 'sch_schema', '_data/schema/sch_decision.yaml', '52', 'allOf/2/type',
+         "'objct' is not valid under any of the given schemas")]}
+
+
 def test_a_mention_of_nothing_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
