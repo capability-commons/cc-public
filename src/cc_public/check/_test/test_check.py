@@ -550,7 +550,18 @@ def test_an_argument_about_a_decision_without_a_concern_is_reported(tree):
     _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'dec_x')])
-    assert _check(tree) == {'concern_count': [('ann_x', '0', '1')]}
+    assert _check(tree) == {'argument_without_concern': [('ann_x',)]}
+
+
+def test_an_argument_about_a_decision_with_two_concerns_passes(tree):
+    _item(tree, '_data/decision/dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
+                                                         _edge(tree, 'r_challenges', 'dec_x'),
+                                                         _edge(tree, 'r_argues_for_concern',
+                                                               'concern_cost'),
+                                                         _edge(tree, 'r_argues_for_concern',
+                                                               'concern_schedule')])
+    assert _check(tree) == {}
 
 
 def test_an_argument_about_an_annotation_with_a_concern_is_reported(tree):
@@ -559,7 +570,7 @@ def test_an_argument_about_an_annotation_with_a_concern_is_reported(tree):
                                                          _edge(tree, 'r_challenges', 'ann_x'),
                                                          _edge(tree, 'r_argues_for_concern',
                                                                'concern_cost')])
-    assert _check(tree) == {'concern_count': [('ann_y', '1', '0')]}
+    assert _check(tree) == {'concern_without_decision': [('ann_y', 'concern_cost')]}
 
 
 def test_an_argument_about_an_annotation_without_a_concern_passes(tree):

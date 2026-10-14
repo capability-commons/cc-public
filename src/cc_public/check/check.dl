@@ -446,32 +446,30 @@ practical(id) :-
 
 
 // ----------------------------------------------------------------------------
-// An annotation that supports or challenges a decision speaks for
-// exactly one concern. Any other annotation speaks for none, since it
-// is answered with evidence and not outweighed.
+// An annotation that supports or challenges a decision speaks for at
+// least one concern. A premise that several concerns rest on is one
+// annotation that speaks for each of them.
 //
-.decl concern_count(id:       symbol,
-                    concerns: number,
-                    expected: number)
-.output concern_count
+.decl argument_without_concern(id: symbol)
+.output argument_without_concern
 
-concern_count(id, concerns, expected) :-
-    type_of(id, "t_annotation"),
-    concerns = count : {
-        primary_edge(id, "r_argues_for_concern", _)
-    },
-    expected = 1,
+argument_without_concern(id) :-
     practical(id),
-    concerns != expected.
+    !primary_edge(id, "r_argues_for_concern", _).
 
-concern_count(id, concerns, expected) :-
+
+// ----------------------------------------------------------------------------
+// An annotation that bears on no decision speaks for no concern, since
+// it is answered with evidence and not outweighed.
+//
+.decl concern_without_decision(id:      symbol,
+                               concern: symbol)
+.output concern_without_decision
+
+concern_without_decision(id, concern) :-
     type_of(id, "t_annotation"),
-    concerns = count : {
-        primary_edge(id, "r_argues_for_concern", _)
-    },
-    expected = 0,
     !practical(id),
-    concerns != expected.
+    primary_edge(id, "r_argues_for_concern", concern).
 
 
 // ----------------------------------------------------------------------------
