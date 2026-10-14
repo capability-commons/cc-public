@@ -10,6 +10,9 @@ work in it.
 - `cctool check` reports 0 failures. A failure that was there before
   your change is still yours to report, not to hide.
 - Commit locally. Do not push unless asked.
+- The pre-commit hook runs `cctool gate`, which checks, lints and
+  tests the staged content. Never bypass it with `--no-verify`. If it
+  fails, fix the cause, or report it.
 
 ## Changing data items
 

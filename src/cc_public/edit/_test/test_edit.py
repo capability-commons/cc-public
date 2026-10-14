@@ -265,6 +265,12 @@ def test_a_comment_header_is_laid_out_inside_its_markers():
         '// ---\n//\n// id_self:                dls_x\n//\n// ...\n\n.decl x(id: symbol)\n')
 
 
+def test_a_comment_header_after_an_interpreter_line_is_laid_out():
+    text = '#!/bin/sh\n# ---\n# id_self: file_x\n# ...\n\nexit 0\n'
+    assert cc_public.edit.layout.format_file(text, pathlib.Path('x')) == (
+        '#!/bin/sh\n# ---\n#\n# id_self:                file_x\n#\n# ...\n\nexit 0\n')
+
+
 def test_a_document_outside_the_subset_is_refused():
     with pytest.raises(cc_public.edit.layout.Unsupported):
         cc_public.edit.layout.format('- a\n- b\n')

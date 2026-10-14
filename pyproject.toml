@@ -21,7 +21,9 @@
 #                         with cctool as its command line entry point.
 #                         pixi run check runs the checker over the
 #                         repository, pixi run test runs the tests, and
-#                         pixi run lint runs the linter.
+#                         pixi run lint runs the linter. pixi run hooks
+#                         points git at the hooks in .githooks, so that
+#                         pixi run gate runs before each commit.
 # note:                   |
 #                         Souffle is not on conda-forge, so the
 #                         environment does not provide it. The checker
@@ -65,6 +67,8 @@ ruff                    = ">=0.16.6,<0.17"
 check                   = "cctool check"
 test                    = "pytest"
 lint                    = "ruff check src"
+gate                    = "cctool gate"
+hooks                   = "git config core.hooksPath .githooks"
 
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and

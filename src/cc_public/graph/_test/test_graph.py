@@ -84,6 +84,14 @@ def test_an_item_in_a_docstring_is_placed_on_its_line_of_the_file(tree):
     assert ('pym_x.y', 'pym_1', '', 'src/x/y.py', '5') in facts['item']
 
 
+def test_a_comment_header_may_follow_the_line_that_names_an_interpreter(tree):
+    path = tree / 'src/x.sh'
+    path.parent.mkdir(exist_ok = True)
+    path.write_text('#!/bin/sh\n# ---\n# id_self: file_x\n# guid_self: file_1\n# ...\n')
+    facts = cc_public.graph.extract.extract(tree)
+    assert ('file_x', 'file_1', '', 'src/x.sh', '3') in facts['item']
+
+
 def test_a_line_is_an_integer_in_sql(tree):
     facts = cc_public.graph.extract.extract(tree)
     text  = ("SELECT typeof(line) AS t FROM item "

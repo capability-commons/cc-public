@@ -90,6 +90,11 @@ LINE_CLOSE        = '...'
 MARK_COMMENT      = '#'
 MAP_MARK_COMMENT  = {SUFFIX_DATALOG: '//'}
 
+# A script may open with a line that names its interpreter. Its comment
+# header then opens on the line after.
+#
+MARK_SHEBANG      = '#!'
+
 # Directories that hold no items: version control, environments,
 # caches and local tools.
 #
@@ -264,7 +269,7 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     # Any other file may be large, or not text, so only its head is
     # read, and only as far as a comment header could go.
     #
-    return (_header(_line_of_file(path), mark_comment(relative)), 1)
+    return _header(_line_of_file(path), mark_comment(relative))
 
 
 # -----------------------------------------------------------------------------
@@ -284,7 +289,7 @@ def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     if relative.suffix == SUFFIX_PYTHON:
         return _docstring(text)
 
-    return (_header(iter(text.splitlines()), mark_comment(relative)), 1)
+    return _header(iter(text.splitlines()), mark_comment(relative))
 
 
 # -----------------------------------------------------------------------------
@@ -338,28 +343,33 @@ def mark_comment(relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _header(iter_line: typing.Iterator[str], mark: str) -> typing.Any:
+def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int]:
     """
     Return the document in the comment header that the lines open
     with, each line beginning with mark, or None if they do not open
-    with one.
+    with one, and the line of the file that its first line is on. A
+    line that names an interpreter may come before the header.
 
     """
 
     list_line = []
+    base      = 1
 
     for line in iter_line:
         text = line.rstrip('\n')
+        if base == 1 and (not list_line) and text.startswith(MARK_SHEBANG):
+            base = 2
+            continue
         if not text.startswith(mark):
-            return None
+            return (None, 1)
         text = text[len(mark):].removeprefix(' ')
         if (not list_line) and text != LINE_OPEN:
-            return None
+            return (None, 1)
         list_line.append(text)
         if text == LINE_CLOSE:
-            return YAML.load('\n'.join(list_line))
+            return (YAML.load('\n'.join(list_line)), base)
 
-    return None
+    return (None, 1)
 
 
 # -----------------------------------------------------------------------------

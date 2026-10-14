@@ -260,18 +260,21 @@ def _span_docstring(text: str, list_line: list[str]) -> tuple[int | None, int | 
 def _span_header(list_line: list[str], mark: str) -> tuple[int | None, int | None]:
     """
     Return the indices of the lines that open and close the document in
-    the comment header the lines open with, or None if there is none.
+    the comment header the lines open with, or None if there is none. A
+    line that names an interpreter may come before the header.
 
     """
 
-    end = 0
+    start = int(bool(list_line) and list_line[0].startswith(
+                                            cc_public.graph.extract.MARK_SHEBANG))
+    end   = start
     while end < len(list_line) and list_line[end].startswith(mark):
         end += 1
 
-    if not end or _unmark(list_line[0], mark) != LINE_OPEN:
+    if end == start or _unmark(list_line[start], mark) != LINE_OPEN:
         return (None, None)
 
-    return _span(list_line, 0, end, mark)
+    return _span(list_line, start, end, mark)
 
 
 # -----------------------------------------------------------------------------

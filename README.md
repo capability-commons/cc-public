@@ -34,13 +34,20 @@ evaluated by [souffle](https://souffle-lang.github.io), which is found
 on the PATH or through the SOUFFLE environment variable.
 
     pixi install
+    pixi run hooks        # once per clone: gate every commit
     pixi run check        # cctool check: every check over the tree
     pixi run test         # pytest
     pixi run lint         # ruff
 
+Once `pixi run hooks` has run, git runs `cctool gate` before each
+commit. It copies the staged content, which is what the commit will
+record, and runs the check, the lint and the tests over the copy. A
+failure stops the commit.
+
 ## cctool
 
     cctool check                            check the tree
+    cctool gate                             check, lint and test what is staged
     cctool format [--check]                 lay out every document
     cctool query sql|datalog QUERY          query the graph
     cctool query schema                     list the relations and columns
