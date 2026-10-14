@@ -134,3 +134,30 @@ def test_the_command_prints_a_failure_before_its_verdict(repo, monkeypatch):
     assert result.exit_code == 1
     assert result.stdout.startswith('pass: passed\nWrong.\n')
     assert result.stdout.endswith('\nfail: failed\n')
+
+
+def test_the_test_files_are_split_into_shards_of_about_equal_size(tmp_path):
+    for (name, size) in (('a', 30), ('b', 20), ('c', 15), ('d', 5)):
+        path = tmp_path / 'src' / name / '_test' / 'test_{name}.py'.format(name = name)
+        path.parent.mkdir(parents = True)
+        path.write_text('#' * size)
+    assert cc_public.gate.gate.shards(tmp_path, 2) == [['src/a/_test/test_a.py',
+                                                        'src/d/_test/test_d.py'],
+                                                       ['src/b/_test/test_b.py',
+                                                        'src/c/_test/test_c.py']]
+    assert len(cc_public.gate.gate.shards(tmp_path, 8)) == 4
+
+
+def test_a_sharded_stage_runs_once_for_each_shard_and_reports_once(repo, monkeypatch):
+    for name in ('a', 'b'):
+        path = repo / 'src' / name / 'test_{name}.py'.format(name = name)
+        path.parent.mkdir(parents = True)
+        path.write_text('#')
+    subprocess.run(['git', 'add', '.'], cwd = repo, check = True, capture_output = True)
+    monkeypatch.setattr(cc_public.gate.gate.os, 'cpu_count', lambda: 2)
+    stage = ('shard', ('{python}', '-c', 'import sys; print(sys.argv[1:])',
+                       cc_public.gate.gate.ARG_SHARD))
+    [(name, is_passed, output)] = cc_public.gate.gate.gate(repo, (stage,))
+    assert (name, is_passed) == ('shard', True)
+    assert "['src/a/test_a.py']\n" in output
+    assert "['src/b/test_b.py']\n" in output

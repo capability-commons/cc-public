@@ -29,6 +29,11 @@ description:            |
                         the hook that started it, so that a test which
                         makes a repository of its own cannot touch the
                         index of the commit.
+
+                        The stages run side by side, one to a
+                        processor, and the tests are split by file
+                        into one shard for each processor, so that the
+                        gate takes about as long as its longest shard.
 usage:                  |
                         cctool gate [--root DIR]
 
@@ -42,6 +47,7 @@ relation:               []
 """
 
 
+import concurrent.futures
 import os
 import pathlib
 import shutil
@@ -51,11 +57,15 @@ import tempfile
 
 
 # Each stage: its name, and the command that runs it in the root of the
-# copy. {python} is the interpreter that runs the gate.
+# copy. {python} is the interpreter that runs the gate. A stage with
+# {shard} in its command runs once for each shard of the test files,
+# with the files of the shard in place of {shard}.
 #
+ARG_SHARD     = '{shard}'
 TUPLE_STAGE   = (('check', ('{python}', '-m', 'cc_public.cli.command', 'check')),
                  ('lint',  ('ruff', 'check', '--no-cache', 'src')),
-                 ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider')))
+                 ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider', ARG_SHARD)))
+GLOB_TEST     = 'test_*.py'
 DIR_SOURCE    = 'src'
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
@@ -84,26 +94,74 @@ def gate(root: pathlib.Path,
         raise ErrorGate('souffle cannot be found. Put it on the PATH, or name it in the '
                         'SOUFFLE environment variable.')
 
-    list_result = []
+    count = os.cpu_count() or 1
 
     with tempfile.TemporaryDirectory(prefix = PREFIX_COPY) as name:
         dir_copy = pathlib.Path(name)
         copy_staged(root, dir_copy)
         env      = _environment(dir_copy)
+        list_job = []
         for (name_stage, tuple_arg) in (tuple_stage or TUPLE_STAGE):
-            list_arg = [arg.format(python = sys.executable) for arg in tuple_arg]
-            try:
-                done = subprocess.run(list_arg,
-                                      cwd            = dir_copy,
-                                      env            = env,
-                                      capture_output = True,
-                                      text           = True,
-                                      check          = False)
-            except FileNotFoundError as error:
-                raise ErrorGate('{name} cannot be found.'.format(name = list_arg[0])) from error
-            list_result.append((name_stage, done.returncode == 0, done.stdout + done.stderr))
+            list_arg = [arg.format(python = sys.executable) if arg != ARG_SHARD else arg
+                        for arg in tuple_arg]
+            if ARG_SHARD not in list_arg:
+                list_job.append((name_stage, list_arg))
+                continue
+            index = list_arg.index(ARG_SHARD)
+            for list_file in shards(dir_copy, count):
+                list_job.append((name_stage, list_arg[:index] + list_file + list_arg[index + 1:]))
 
-    return list_result
+        with concurrent.futures.ThreadPoolExecutor(max_workers = count) as executor:
+            list_done = list(executor.map(lambda job: _run(job[1], dir_copy, env), list_job))
+
+    map_result = {}
+    for ((name_stage, _), (is_passed, text)) in zip(list_job, list_done, strict = True):
+        (was_passed, before) = map_result.get(name_stage, (True, ''))
+        map_result[name_stage] = (was_passed and is_passed, before + text)
+
+    return [(name_stage, *result) for (name_stage, result) in map_result.items()]
+
+
+# -----------------------------------------------------------------------------
+def shards(dir_copy: pathlib.Path, count: int) -> list[list[str]]:
+    """
+    Return the test files under the source of dir_copy, split into at
+    most count shards of about equal size, the largest file first, each
+    file put in the shard that is smallest so far.
+
+    """
+
+    list_path  = sorted((dir_copy / DIR_SOURCE).rglob(GLOB_TEST),
+                        key = lambda path: (-path.stat().st_size, str(path)))
+    list_shard = [[0, []] for _ in range(max(1, min(count, len(list_path))))]
+
+    for path in list_path:
+        shard     = min(list_shard, key = lambda each: each[0])
+        shard[0] += path.stat().st_size
+        shard[1].append(str(path.relative_to(dir_copy)))
+
+    return [sorted(list_file) for (_, list_file) in list_shard]
+
+
+# -----------------------------------------------------------------------------
+def _run(list_arg: list[str], dir_copy: pathlib.Path, env: dict[str, str]) -> tuple[bool, str]:
+    """
+    Return whether the command list_arg passed in dir_copy, and what it
+    printed.
+
+    """
+
+    try:
+        done = subprocess.run(list_arg,
+                              cwd            = dir_copy,
+                              env            = env,
+                              capture_output = True,
+                              text           = True,
+                              check          = False)
+    except FileNotFoundError as error:
+        raise ErrorGate('{name} cannot be found.'.format(name = list_arg[0])) from error
+
+    return (done.returncode == 0, done.stdout + done.stderr)
 
 
 # -----------------------------------------------------------------------------
