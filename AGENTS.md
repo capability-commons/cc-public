@@ -1,6 +1,6 @@
-# Guidance for Claude Code
+# Guidance for agents
 
-This file is for Claude Code working in cc-public. `README.md`
+This file is for any coding agent working in cc-public. `README.md`
 says what the repository is and how to run it. This file says how to
 work in it.
 
@@ -28,7 +28,9 @@ work in it.
 
 ## Skills
 
-Procedures, and the traps in them, are skills in `.claude/skills/`.
+Procedures, and the traps in them, are skills in `.agents/skills/`,
+in the Agent Skills format. Codex reads them there, and Claude Code
+reads them through `.claude/skills`, a link to the same directory.
 `editing-data-items` covers adding and changing items with cctool.
 
 ## Finding things out
