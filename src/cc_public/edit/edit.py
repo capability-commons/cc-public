@@ -1,0 +1,644 @@
+"""
+---
+
+id_self:                pym_cc_public.edit.edit
+guid_self:              pym_91cd5af6b2164bd483c8422e09416896
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edit
+brief:                  |
+                        Edit the data items in a tree, and keep only
+                        the edits that add no failure.
+description:            |
+                        An edit is a set of new texts for files. new,
+                        link and set_field each return one, written
+                        as small changes to the text so that the rest
+                        of each file is kept as it is. A tree holds
+                        the edits made so far, and each edit is made
+                        on top of them. apply checks the tree with the
+                        edits in place, and writes them only if they
+                        add no failure to those the tree already has.
+
+                        batch makes a list of operations in one go, so
+                        that items that need each other, such as a
+                        concept and the item that names it, are made
+                        together.
+usage:                  |
+                        Called by the commands of
+                        pym_cc_public.cli.editing.
+relation:               []
+
+...
+"""
+
+
+import collections
+import pathlib
+import typing
+import uuid
+
+import ruamel.yaml
+
+import cc_public.check.check
+import cc_public.edit.layout
+import cc_public.graph.extract
+
+
+KEY_ID_SELF       = 'id_self'
+KEY_GUID_SELF     = 'guid_self'
+KEY_RELATION      = 'relation'
+KEY_ALIAS         = 'alias'
+KEY_TABLE         = 'table'
+KEY_ID_RELATION   = 'id_relation'
+KEY_GUID_RELATION = 'guid_relation'
+KEY_ID_TARGET     = 'id_target'
+KEY_GUID_TARGET   = 'guid_target'
+KEY_NEW           = 'new'
+KEY_FIELD         = 'field'
+KEY_LINK          = 'link'
+KEY_SET           = 'set'
+COLUMN_LINE       = 'line'
+
+# The descriptive fields, in the order they are written. A new field
+# that is not one of them goes after them.
+#
+TUPLE_KEY_PROSE   = ('title', 'brief', 'description', 'usage', 'note')
+
+# Fields that set_field does not change: identity is fixed, and edges
+# and aliases are lists that other commands keep.
+#
+SET_KEY_FIXED     = {KEY_ID_SELF, KEY_GUID_SELF, KEY_RELATION, KEY_ALIAS}
+
+# A standalone item takes its rights from the item of the project.
+#
+ID_RIGHTS         = 'file_pyproject'
+TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
+
+# A type is held in a register when it has this edge to one. A type
+# with one of these prefixes has its items in source files, where the
+# name of the file gives the id, so new does not make them.
+#
+ID_HELD           = 'r_has_items_held_in_register'
+SET_PREFIX_SOURCE = {'pym', 'pyp', 'dls', 'file'}
+
+DIR_DATA          = '_data'
+SUFFIX_YAML       = '.yaml'
+LENGTH_BANNER     = 79
+DELIM_PREFIX      = '_'
+
+Edit              = dict[str, str]
+YAML              = ruamel.yaml.YAML(typ = 'rt')
+
+
+# -----------------------------------------------------------------------------
+class ErrorEdit(Exception):
+    """
+    The edit asked for cannot be made. The message says why.
+
+    """
+
+
+# -----------------------------------------------------------------------------
+class Tree:
+    """
+    The documents of a tree and the facts they hold, read once for an
+    edit, with the texts of the edits made so far in place of those
+    they change.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, root: pathlib.Path) -> None:
+        """
+        Read the tree under root.
+
+        """
+
+        self.root         = root
+        self.map_original = cc_public.graph.extract.documents(root)
+        self.map_document = dict(self.map_original)
+        self.edit         = {}
+        self._index()
+
+    # -------------------------------------------------------------------------
+    def update(self, edit: Edit) -> None:
+        """
+        Put the texts of edit in place, so that a later edit is made on
+        top of it.
+
+        """
+
+        for (relative, text) in edit.items():
+            try:
+                self.map_document[relative] = cc_public.graph.extract.parse(
+                                                            text, pathlib.Path(relative))
+            except ruamel.yaml.YAMLError as error:
+                raise ErrorEdit('The edit leaves {file} unreadable: {error}'.format(
+                                                    file = relative, error = error)) from error
+            self.edit[relative] = text
+
+        self._index()
+
+    # -------------------------------------------------------------------------
+    def _index(self) -> None:
+        """
+        Find the facts of the documents, and index the items by id.
+
+        """
+
+        self.facts    = cc_public.graph.extract.facts_of(self.map_document)
+        self.map_item = {row[0]: row for row in self.facts['item']}
+
+    # -------------------------------------------------------------------------
+    def guid(self, id_item: str) -> str:
+        """
+        Return the guid of the item id_item.
+
+        """
+
+        if id_item not in self.map_item:
+            raise ErrorEdit('No item has the id {id}.'.format(id = id_item))
+        return self.map_item[id_item][1]
+
+    # -------------------------------------------------------------------------
+    def text(self, relative: str) -> str:
+        """
+        Return the text of the file at relative.
+
+        """
+
+        if relative in self.edit:
+            return self.edit[relative]
+        return (self.root / relative).read_text(encoding = 'utf-8')
+
+
+# -----------------------------------------------------------------------------
+def new(tree:       Tree,
+        id_self:    str,
+        list_field: list[tuple[str, str | list[str]]],
+        list_link:  list[tuple[str, str]]) -> Edit:
+    """
+    Return the edit that makes a new item with id_self, the fields in
+    list_field, and an edge for each relation and target in list_link.
+    A type held in a register gets an entry at the end of the table of
+    its register. Any other gets a file of its own under _data.
+
+    """
+
+    (prefix, _, _) = id_self.partition(DELIM_PREFIX)
+    map_type       = {row[1]: row[0] for row in tree.facts['type_prefix']}
+
+    if prefix not in map_type:
+        raise ErrorEdit('No type has the prefix {prefix}.'.format(prefix = prefix))
+    if prefix in SET_PREFIX_SOURCE:
+        raise ErrorEdit('An item of {type} is written in the file it names, by hand.'.format(
+                                                                    type = map_type[prefix]))
+    if id_self in tree.map_item:
+        raise ErrorEdit('An item with the id {id} exists.'.format(id = id_self))
+
+    id_type   = map_type[prefix]
+    map_field = {KEY_ID_SELF:   id_self,
+                 KEY_GUID_SELF: '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)}
+    register  = _register(tree, id_type)
+
+    if register is None:
+        map_field.update(_rights(tree))
+
+    map_field.update(_ordered(list_field))
+
+    if register is not None:
+        map_field[KEY_ALIAS] = []
+    map_field[KEY_RELATION] = [_edge(tree, id_relation, id_target)
+                               for (id_relation, id_target) in list_link]
+
+    if register is None:
+        relative = '{dir}/{stem}/{id}{suffix}'.format(dir    = DIR_DATA,
+                                                      stem   = id_type[2:],
+                                                      id     = id_self,
+                                                      suffix = SUFFIX_YAML)
+        if relative in tree.map_document:
+            raise ErrorEdit('The file {file} exists.'.format(file = relative))
+        list_line = cc_public.edit.layout.lines_of_fields(map_field, 0)
+        return {relative: '\n'.join(list_line) + '\n'}
+
+    return _append_entry(tree, register, map_field)
+
+
+# -----------------------------------------------------------------------------
+def link(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
+    """
+    Return the edit that adds an edge of id_relation from id_source to
+    id_target, at the end of the relation field of id_source.
+
+    """
+
+    edge = _edge(tree, id_relation, id_target)
+    item = _Item(tree, id_source)
+
+    if KEY_RELATION not in item.node:
+        raise ErrorEdit('{id} has no relation field.'.format(id = id_source))
+
+    list_edge = item.node[KEY_RELATION]
+    if any(dict(each) == edge for each in list_edge):
+        raise ErrorEdit('{id} already has that edge.'.format(id = id_source))
+
+    (start, end) = item.extent(KEY_RELATION)
+    column       = item.column(KEY_RELATION)
+
+    if list_edge:
+        list_line = [''] + cc_public.edit.layout.lines_of_mapping(edge, column + 2)
+        return item.replace(end, end, list_line)
+
+    list_line = cc_public.edit.layout.lines_of_field(KEY_RELATION, [edge], column)
+    if start > 0 and item.line(start - 1):
+        list_line = [''] + list_line
+    if end < len(item.list_line) and item.line(end):
+        list_line = list_line + ['']
+
+    return item.replace(start, end, list_line)
+
+
+# -----------------------------------------------------------------------------
+def set_field(tree: Tree, id_self: str, key: str, value: str) -> Edit:
+    """
+    Return the edit that sets the field key of the item id_self to the
+    text value, in place if the item has the field, and among the
+    fields it is ordered with if not.
+
+    """
+
+    if key in SET_KEY_FIXED:
+        raise ErrorEdit('The field {key} is not set this way.'.format(key = key))
+
+    item = _Item(tree, id_self)
+
+    if key in item.node:
+        if not isinstance(item.node[key], str):
+            raise ErrorEdit('The field {key} of {id} is not text.'.format(key = key, id = id_self))
+        (start, end) = item.extent(key)
+        return item.replace(start, end,
+                            cc_public.edit.layout.lines_of_field(key, value, item.column(key)))
+
+    after     = _after(list(item.node.keys()), key)
+    (_, end)  = item.extent(after)
+    list_line = cc_public.edit.layout.lines_of_field(key, value, item.column(after))
+
+    return item.replace(end, end, list_line)
+
+
+# -----------------------------------------------------------------------------
+def batch(tree: Tree, list_operation: list) -> None:
+    """
+    Make each operation of list_operation on the tree, in order. An
+    operation is a mapping with one of these forms:
+
+        new:   ID
+        field: {NAME: VALUE or [VALUE, ...], ...}
+        link:  [[RELATION, TARGET], ...]
+
+        link:  [SOURCE, RELATION, TARGET]
+
+        set:   [ID, NAME, VALUE]
+
+    """
+
+    if not isinstance(list_operation, list):
+        raise ErrorEdit('A batch is a list of operations.')
+
+    for operation in list_operation:
+        tree.update(_operation(tree, operation))
+
+
+# -----------------------------------------------------------------------------
+def _operation(tree: Tree, operation: typing.Any) -> Edit:
+    """
+    Return the edit that one operation of a batch makes.
+
+    """
+
+    if isinstance(operation, dict) and isinstance(operation.get(KEY_NEW), str):
+        return new(tree,
+                   operation[KEY_NEW],
+                   [(str(key), _text(value)) for (key, value)
+                    in (operation.get(KEY_FIELD) or {}).items()],
+                   [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
+
+    for (key, function) in ((KEY_LINK, link), (KEY_SET, set_field)):
+        if isinstance(operation, dict) and set(operation) == {key}:
+            list_arg = operation[key]
+            if isinstance(list_arg, list) and len(list_arg) == 3:
+                return function(tree, *map(str, list_arg))
+
+    raise ErrorEdit('An operation of a batch is not one of new, link or set: {operation}'.format(
+                                                                        operation = operation))
+
+
+# -----------------------------------------------------------------------------
+def _text(value: typing.Any) -> str | list[str]:
+    """
+    Return value as the text of a field, or as a list of texts.
+
+    """
+
+    if isinstance(value, list):
+        return [str(each) for each in value]
+    return str(value)
+
+
+# -----------------------------------------------------------------------------
+def apply(tree: Tree, is_written: bool = True) -> cc_public.check.check.Failures:
+    """
+    Check the tree with the edits made so far in place, and return the
+    failures they add. Write them only if they add none and is_written.
+
+    A failure is compared without its line, since an edit moves the
+    lines below it.
+
+    """
+
+    before = cc_public.check.check.check_documents(tree.map_original)
+    after  = cc_public.check.check.check_documents(tree.map_document)
+    added  = _added(before, after)
+
+    if is_written and not added:
+        for (relative, text) in tree.edit.items():
+            path = tree.root / relative
+            path.parent.mkdir(parents = True, exist_ok = True)
+            path.write_text(text, encoding = 'utf-8')
+
+    return added
+
+
+# -----------------------------------------------------------------------------
+def _added(before: cc_public.check.check.Failures,
+           after:  cc_public.check.check.Failures) -> cc_public.check.check.Failures:
+    """
+    Return the failures in after that are not in before, compared
+    without their lines.
+
+    """
+
+    map_column = cc_public.check.check.columns()
+    added      = {}
+
+    for (name, list_row) in after.items():
+        tuple_keep = tuple(index for (index, column) in enumerate(map_column[name])
+                           if column != COLUMN_LINE)
+        counter    = collections.Counter(tuple(row[index] for index in tuple_keep)
+                                         for row in before.get(name, []))
+        for row in list_row:
+            key = tuple(row[index] for index in tuple_keep)
+            if counter[key]:
+                counter[key] -= 1
+            else:
+                added.setdefault(name, []).append(row)
+
+    return added
+
+
+# -----------------------------------------------------------------------------
+def _register(tree: Tree, id_type: str) -> str | None:
+    """
+    Return the id of the register that holds the items of id_type, or
+    None if they are standalone.
+
+    """
+
+    set_inverse = {row[0] for row in tree.facts['relation_inverse'] if row[1] == ID_HELD}
+
+    for (source, relation, target) in sorted(tree.facts['edge']):
+        if source == id_type and relation == ID_HELD:
+            return target
+        if target == id_type and relation in set_inverse:
+            return source
+
+    return None
+
+
+# -----------------------------------------------------------------------------
+def _rights(tree: Tree) -> dict:
+    """
+    Return the rights fields of the item of the project.
+
+    """
+
+    if ID_RIGHTS not in tree.map_item:
+        raise ErrorEdit('No item {id} gives the rights of a new item.'.format(id = ID_RIGHTS))
+
+    (document, _) = tree.map_document[tree.map_item[ID_RIGHTS][3]]
+
+    return {key: _plain(document[key]) for key in TUPLE_KEY_RIGHTS if key in document}
+
+
+# -----------------------------------------------------------------------------
+def _plain(value):
+    """
+    Return value with the mappings and lists that YAML read it into
+    made plain.
+
+    """
+
+    if isinstance(value, dict):
+        return {key: _plain(each) for (key, each) in value.items()}
+    if isinstance(value, list):
+        return [_plain(each) for each in value]
+    return str(value) if isinstance(value, str) else value
+
+
+# -----------------------------------------------------------------------------
+def _ordered(list_field: list[tuple[str, str | list[str]]]) -> dict:
+    """
+    Return the fields of list_field, the descriptive ones first and in
+    their order, then the others in the order given.
+
+    """
+
+    map_field = dict(list_field)
+    for key in SET_KEY_FIXED:
+        if key in map_field:
+            raise ErrorEdit('The field {key} is not set this way.'.format(key = key))
+
+    return ({key: map_field[key] for key in TUPLE_KEY_PROSE if key in map_field}
+            | {key: value for (key, value) in map_field.items() if key not in TUPLE_KEY_PROSE})
+
+
+# -----------------------------------------------------------------------------
+def _edge(tree: Tree, id_relation: str, id_target: str) -> dict[str, str]:
+    """
+    Return an edge of id_relation to id_target, with their guids.
+
+    """
+
+    return {KEY_ID_RELATION:   id_relation,
+            KEY_GUID_RELATION: tree.guid(id_relation),
+            KEY_ID_TARGET:     id_target,
+            KEY_GUID_TARGET:   tree.guid(id_target)}
+
+
+# -----------------------------------------------------------------------------
+def _after(list_key: list[str], key: str) -> str:
+    """
+    Return the field of list_key that a new field key goes after: the
+    last descriptive field before it in order, or for any other field
+    the last field before the aliases and edges.
+
+    """
+
+    if key in TUPLE_KEY_PROSE:
+        tuple_before = TUPLE_KEY_PROSE[:TUPLE_KEY_PROSE.index(key)]
+        list_before  = [each for each in list_key if each in tuple_before]
+        if list_before:
+            return list_before[-1]
+        return KEY_GUID_SELF if KEY_GUID_SELF in list_key else list_key[0]
+
+    list_before = [each for each in list_key if each not in (KEY_ALIAS, KEY_RELATION)]
+    list_tail   = [each for each in list_key if each in (KEY_ALIAS, KEY_RELATION)]
+    if list_tail:
+        list_before = list_key[:list_key.index(list_tail[0])]
+    return list_before[-1]
+
+
+# -----------------------------------------------------------------------------
+def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
+    """
+    Return the edit that adds an entry with map_field at the end of the
+    table of the register id_register, under a banner.
+
+    """
+
+    item = _Item(tree, id_register)
+
+    if not item.node.get(KEY_TABLE):
+        raise ErrorEdit('{id} has no entries to add to.'.format(id = id_register))
+
+    table       = item.node[KEY_TABLE]
+    item.node   = table
+    (_, end)    = item.extent(list(table.keys())[-1])
+    column      = item.column(list(table.keys())[-1])
+    id_self     = map_field[KEY_ID_SELF]
+    head        = ' ' * column + '# '
+    list_line   = ['',
+                   head + '-' * (LENGTH_BANNER - len(head)),
+                   head + '{id} -- {title}'.format(id    = id_self,
+                                                   title = map_field.get('title', '')),
+                   head.rstrip(),
+                   ' ' * column + id_self + ':']
+
+    list_line += cc_public.edit.layout.lines_of_fields(map_field, column + 2)
+
+    return item.replace(end, end, list_line)
+
+
+# -----------------------------------------------------------------------------
+class _Item:
+    """
+    An item in the text of its file: its node as YAML reads it, and the
+    lines of the file, with the comment marker taken off the lines of
+    a comment header.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, tree: Tree, id_item: str) -> None:
+        """
+        Find the item id_item in the text of its file.
+
+        """
+
+        if id_item not in tree.map_item:
+            raise ErrorEdit('No item has the id {id}.'.format(id = id_item))
+
+        (_, _, holder, relative, _) = tree.map_item[id_item]
+        path                        = pathlib.Path(relative)
+
+        text             = tree.text(relative)
+        (document, base) = cc_public.graph.extract.parse(text, path)
+
+        self.relative  = relative
+        self.list_line = text.split('\n')
+        self.base      = base - 1
+        self.mark      = ('' if path.suffix in (cc_public.graph.extract.SUFFIX_YAML,
+                                                cc_public.graph.extract.SUFFIX_PYTHON)
+                          else cc_public.graph.extract.mark_comment(path))
+
+        if holder:
+            if not (isinstance(document.get(KEY_TABLE), dict) and id_item in document[KEY_TABLE]):
+                raise ErrorEdit('{id} is not an entry of the table of {holder}.'.format(
+                                                                    id = id_item, holder = holder))
+            self.node = document[KEY_TABLE][id_item]
+        else:
+            self.node = document
+
+    # -------------------------------------------------------------------------
+    def line(self, index: int) -> str:
+        """
+        Return the line of the file at index, without its comment
+        marker.
+
+        """
+
+        text = self.list_line[index]
+        if self.mark and text.startswith(self.mark):
+            text = text[len(self.mark):].removeprefix(' ')
+        return text
+
+    # -------------------------------------------------------------------------
+    def column(self, key: str) -> int:
+        """
+        Return the column that the field key starts at.
+
+        """
+
+        return self.node.lc.key(key)[1]
+
+    # -------------------------------------------------------------------------
+    def extent(self, key: str) -> tuple[int, int]:
+        """
+        Return the first line of the field key, and the line after its
+        last, leaving out the blank lines after it.
+
+        """
+
+        start  = self.base + self.node.lc.key(key)[0]
+        column = self.column(key)
+        end    = start + 1
+
+        while end < len(self.list_line):
+            text = self.line(end)
+            if text.strip() and (len(text) - len(text.lstrip())) <= column:
+                break
+            end += 1
+
+        while end > start + 1 and not self.line(end - 1).strip():
+            end -= 1
+
+        return (start, end)
+
+    # -------------------------------------------------------------------------
+    def replace(self, start: int, end: int, list_line: list[str]) -> Edit:
+        """
+        Return the edit that puts list_line in place of the lines from
+        start to end, with the comment marker on each.
+
+        """
+
+        list_marked = [self._marked(text) for text in list_line]
+        list_new    = self.list_line[:start] + list_marked + self.list_line[end:]
+        return {self.relative: '\n'.join(list_new)}
+
+    # -------------------------------------------------------------------------
+    def _marked(self, text: str) -> str:
+        """
+        Return text with the comment marker of the file put back on.
+
+        """
+
+        if not self.mark:
+            return text
+        return self.mark + (' ' + text if text else '')

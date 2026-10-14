@@ -29,6 +29,7 @@ relation:               []
 
 
 import cc_public.cli.checking  # each registers its commands on the group
+import cc_public.cli.editing
 import cc_public.cli.group
 import cc_public.cli.querying
 

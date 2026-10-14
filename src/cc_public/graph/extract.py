@@ -264,7 +264,7 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     # Any other file may be large, or not text, so only its head is
     # read, and only as far as a comment header could go.
     #
-    return (_header(_line_of_file(path), _mark_comment(relative)), 1)
+    return (_header(_line_of_file(path), mark_comment(relative)), 1)
 
 
 # -----------------------------------------------------------------------------
@@ -284,7 +284,7 @@ def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     if relative.suffix == SUFFIX_PYTHON:
         return _docstring(text)
 
-    return (_header(iter(text.splitlines()), _mark_comment(relative)), 1)
+    return (_header(iter(text.splitlines()), mark_comment(relative)), 1)
 
 
 # -----------------------------------------------------------------------------
@@ -327,7 +327,7 @@ def _line_of_file(path: pathlib.Path) -> typing.Iterator[str]:
 
 
 # -----------------------------------------------------------------------------
-def _mark_comment(relative: pathlib.Path) -> str:
+def mark_comment(relative: pathlib.Path) -> str:
     """
     Return the marker that begins a comment line in the file at
     relative.
