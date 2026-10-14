@@ -81,10 +81,8 @@ def violations(map_document: cc_public.graph.extract.Documents,
 
     set_invalid   = {id_schema for (id_schema, schema) in map_schema.items()
                      if not META.is_valid(schema)}
-    registry      = referencing.Registry().with_resources(
-                        (str(schema[KEY_ID_SCHEMA]), referencing.Resource.from_contents(schema))
-                        for (id_schema, schema) in map_schema.items()
-                        if id_schema not in set_invalid)
+    registry      = registry_of([schema for (id_schema, schema) in map_schema.items()
+                                 if id_schema not in set_invalid])
     map_validator = {}
     set_row       = set()
 
@@ -106,6 +104,19 @@ def violations(map_document: cc_public.graph.extract.Documents,
             set_row.add(_row(id_document, id_schema, file, document, base, error))
 
     return sorted(set_row)
+
+
+# -----------------------------------------------------------------------------
+def registry_of(list_schema: list[dict]) -> referencing.Registry:
+    """
+    Return the registry that resolves a reference to each schema of
+    list_schema by its $id.
+
+    """
+
+    return referencing.Registry().with_resources(
+                (str(schema[KEY_ID_SCHEMA]), referencing.Resource.from_contents(schema))
+                for schema in list_schema)
 
 
 # -----------------------------------------------------------------------------

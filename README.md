@@ -42,12 +42,16 @@ on the PATH or through the SOUFFLE environment variable.
 Once `pixi run hooks` has run, git runs `cctool gate` before each
 commit. It copies the staged content, which is what the commit will
 record, and runs the check, the lint and the tests over the copy. A
-failure stops the commit.
+failure stops the commit. The commit-msg hook then checks that the
+message holds a commit item whose title is built from one of the
+templates in `sch_commit`.
 
 ## cctool
 
     cctool check                            check the tree
     cctool gate                             check, lint and test what is staged
+    cctool message new TITLE --brief TEXT   write a commit message
+    cctool message check FILE               check a commit message
     cctool format [--check]                 lay out every document
     cctool query sql|datalog QUERY          query the graph
     cctool query schema                     list the relations and columns

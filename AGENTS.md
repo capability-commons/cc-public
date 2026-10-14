@@ -13,6 +13,11 @@ work in it.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
   tests the staged content. Never bypass it with `--no-verify`. If it
   fails, fix the cause, or report it.
+- Write each commit message with `cctool message new TITLE --brief
+  TEXT`, then add the trailers. The title is an imperative sentence
+  built from a template in `sch_commit`, such as `Add OBJECT` or
+  `Change OBJECT so that STATEMENT`. One commit does one thing. The
+  commit-msg hook checks the message.
 
 ## Changing data items
 

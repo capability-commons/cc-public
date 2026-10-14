@@ -1,0 +1,29 @@
+#!/bin/sh
+# ---
+#
+# id_self:                file_githooks_commit_msg
+# guid_self:              file_b733c0ef3cf14049bef58f5bce854548
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Commit-msg hook
+# brief:                  |
+#                         Refuse a commit whose message does not hold a
+#                         commit item that conforms to sch_commit.
+# description:            |
+#                         git runs this hook with the file that holds
+#                         the message, once core.hooksPath names
+#                         .githooks. It runs cctool message check on
+#                         that file in the pixi environment, and a
+#                         failure stops the commit. cctool message new
+#                         writes a message that passes.
+# relation:               []
+#
+# ...
+
+exec pixi run --frozen cctool message check "$1"
