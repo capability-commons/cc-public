@@ -16,20 +16,23 @@ brief:                  |
                         The commands that edit the data items in the
                         tree.
 description:            |
-                        This module holds the new, link, set and batch
-                        commands. Each makes its edit, checks the tree
-                        with the edit in place, and writes it only if
-                        it adds no failure. With --dry-run, each
-                        prints the edit as a diff and writes nothing.
+                        This module holds the new, link, set, batch
+                        and format commands. Each makes its edit,
+                        checks the tree with the edit in place, and
+                        writes it only if it adds no failure. With
+                        --dry-run, each prints the edit as a diff and
+                        writes nothing.
 usage:                  |
-                        cctool new ID [--field NAME VALUE]...
-                        [--link RELATION TARGET]...
+                        cctool new ID [--field NAME VALUE]... [--link
+                        RELATION TARGET]...
 
                         cctool link SOURCE RELATION TARGET
 
                         cctool set ID NAME VALUE
 
                         cctool batch FILE
+
+                        cctool format [--check]
 relation:               []
 
 ...
@@ -45,6 +48,8 @@ import ruamel.yaml
 
 import cc_public.cli.group
 import cc_public.edit.edit
+import cc_public.edit.layout
+import cc_public.graph.extract
 
 
 # -----------------------------------------------------------------------------
@@ -173,6 +178,53 @@ def batch(path_file, root, is_dry_run):
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
     _run(root, is_dry_run, list_operation)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command('format')
+@click.option('--root',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The tree to lay out. Defaults to the working directory.')
+@click.option('--check', 'is_check',
+              is_flag = True,
+              help    = 'Name the files that would change, and write nothing. The exit '
+                        'status is 1 when any would.')
+def format_(root, is_check):
+    """
+    Lay out every document in the tree under --root, or the working
+    directory: the YAML files under _data, the module docstrings of
+    python modules, and the comment headers of other files.
+
+    """
+
+    root         = root.resolve()
+    map_document = cc_public.graph.extract.documents(root)
+    list_changed = []
+
+    for (relative, (document, _)) in sorted(map_document.items()):
+        if document is None:
+            continue
+        path = root / relative
+        text = path.read_text(encoding = 'utf-8')
+        try:
+            laid_out = cc_public.edit.layout.format_file(text, pathlib.Path(relative))
+        except cc_public.edit.layout.Unsupported as error:
+            click.echo('{file}: {error}'.format(file = relative, error = error), err = True)
+            continue
+        if laid_out != text:
+            list_changed.append(relative)
+            if not is_check:
+                path.write_text(laid_out, encoding = 'utf-8')
+
+    for relative in list_changed:
+        click.echo('{verb} {file}'.format(verb = 'Would change' if is_check else 'Changed',
+                                          file = relative))
+
+    sys.exit(cc_public.cli.group.EXIT_NONCONFORMITY if (is_check and list_changed)
+             else cc_public.cli.group.EXIT_OK)
 
 
 # -----------------------------------------------------------------------------

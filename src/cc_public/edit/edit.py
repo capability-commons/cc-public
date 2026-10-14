@@ -17,13 +17,14 @@ brief:                  |
                         the edits that add no failure.
 description:            |
                         An edit is a set of new texts for files. new,
-                        link and set_field each return one, written
-                        as small changes to the text so that the rest
-                        of each file is kept as it is. A tree holds
-                        the edits made so far, and each edit is made
-                        on top of them. apply checks the tree with the
-                        edits in place, and writes them only if they
-                        add no failure to those the tree already has.
+                        link and set_field each return one, written as
+                        small changes to the text, after which the
+                        file is laid out by pym_cc_public.edit.layout.
+                        A tree holds the edits made so far, and each
+                        edit is made on top of them. apply checks the
+                        tree with the edits in place, and writes them
+                        only if they add no failure to those the tree
+                        already has.
 
                         batch makes a list of operations in one go, so
                         that items that need each other, such as a
@@ -224,8 +225,8 @@ def new(tree:       Tree,
                                                       suffix = SUFFIX_YAML)
         if relative in tree.map_document:
             raise ErrorEdit('The file {file} exists.'.format(file = relative))
-        list_line = cc_public.edit.layout.lines_of_fields(map_field, 0)
-        return {relative: '\n'.join(list_line) + '\n'}
+        text = '\n'.join(cc_public.edit.layout.dump(map_field, 0)) + '\n'
+        return {relative: _format(text, relative)}
 
     return _append_entry(tree, register, map_field)
 
@@ -252,16 +253,9 @@ def link(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
     column       = item.column(KEY_RELATION)
 
     if list_edge:
-        list_line = [''] + cc_public.edit.layout.lines_of_mapping(edge, column + 2)
-        return item.replace(end, end, list_line)
+        return item.replace(end, end, cc_public.edit.layout.dump([edge], column + 2))
 
-    list_line = cc_public.edit.layout.lines_of_field(KEY_RELATION, [edge], column)
-    if start > 0 and item.line(start - 1):
-        list_line = [''] + list_line
-    if end < len(item.list_line) and item.line(end):
-        list_line = list_line + ['']
-
-    return item.replace(start, end, list_line)
+    return item.replace(start, end, cc_public.edit.layout.dump({KEY_RELATION: [edge]}, column))
 
 
 # -----------------------------------------------------------------------------
@@ -282,14 +276,12 @@ def set_field(tree: Tree, id_self: str, key: str, value: str) -> Edit:
         if not isinstance(item.node[key], str):
             raise ErrorEdit('The field {key} of {id} is not text.'.format(key = key, id = id_self))
         (start, end) = item.extent(key)
-        return item.replace(start, end,
-                            cc_public.edit.layout.lines_of_field(key, value, item.column(key)))
+        return item.replace(start, end, cc_public.edit.layout.dump({key: value}, item.column(key)))
 
-    after     = _after(list(item.node.keys()), key)
-    (_, end)  = item.extent(after)
-    list_line = cc_public.edit.layout.lines_of_field(key, value, item.column(after))
+    after    = _after(list(item.node.keys()), key)
+    (_, end) = item.extent(after)
 
-    return item.replace(end, end, list_line)
+    return item.replace(end, end, cc_public.edit.layout.dump({key: value}, item.column(after)))
 
 
 # -----------------------------------------------------------------------------
@@ -505,6 +497,20 @@ def _after(list_key: list[str], key: str) -> str:
 
 
 # -----------------------------------------------------------------------------
+def _format(text: str, relative: str) -> str:
+    """
+    Return text, the new content of the file at relative, laid out.
+
+    """
+
+    try:
+        return cc_public.edit.layout.format_file(text, pathlib.Path(relative))
+    except cc_public.edit.layout.Unsupported as error:
+        raise ErrorEdit('The edit leaves {file} unlaid: {error}'.format(
+                                                file = relative, error = error)) from error
+
+
+# -----------------------------------------------------------------------------
 def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
     """
     Return the edit that adds an entry with map_field at the end of the
@@ -530,7 +536,7 @@ def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
                    head.rstrip(),
                    ' ' * column + id_self + ':']
 
-    list_line += cc_public.edit.layout.lines_of_fields(map_field, column + 2)
+    list_line += cc_public.edit.layout.dump(map_field, column + 2)
 
     return item.replace(end, end, list_line)
 
@@ -624,13 +630,14 @@ class _Item:
     def replace(self, start: int, end: int, list_line: list[str]) -> Edit:
         """
         Return the edit that puts list_line in place of the lines from
-        start to end, with the comment marker on each.
+        start to end, with the comment marker on each, and the file laid
+        out.
 
         """
 
         list_marked = [self._marked(text) for text in list_line]
         list_new    = self.list_line[:start] + list_marked + self.list_line[end:]
-        return {self.relative: '\n'.join(list_new)}
+        return {self.relative: _format('\n'.join(list_new), self.relative)}
 
     # -------------------------------------------------------------------------
     def _marked(self, text: str) -> str:

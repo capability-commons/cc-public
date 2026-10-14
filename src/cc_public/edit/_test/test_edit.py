@@ -18,18 +18,23 @@ brief:                  |
 description:            |
                         Each test makes an edit over a copy of the
                         repository, and checks the text it writes and
-                        the failures it adds. A new guid is made
-                        from zeros, so that the text is known.
+                        the failures it adds. A new guid is made from
+                        zeros, so that the text is known.
 relation:               []
 
 ...
 """
 
 
+import pathlib
+
 import pytest
+import ruamel.yaml.scalarstring
 
 import cc_public.edit.edit
 import cc_public.edit.layout
+import cc_public.graph.extract
+from cc_public.conftest import DIR_REPO
 
 
 HEX_ZERO      = '0' * 32
@@ -117,6 +122,7 @@ def test_a_new_entry_is_written_at_the_end_of_its_register(tree, zero):
         '    description:        |\n'
         '                        Reviewability covers how easily a change is\n'
         '                        read.\n'
+        '\n'
         '    question:\n'
         '      - Can a change be read in one sitting?\n'
         '\n'
@@ -175,22 +181,22 @@ def test_set_rewrites_a_field_in_a_comment_header(tree):
     assert _edit(tree, {'set': ['dls_cc_public.graph.derive', 'brief', 'Derived relations.']}) == {}
     assert path.read_text() == text.replace(
         '// brief:                  |\n'
-        '//                         Relations derived from the base relations,\n'
-        '//                         for every Datalog program over the graph of\n'
-        '//                         data items.\n',
+        '//                         Relations derived from the base relations, for\n'
+        '//                         every Datalog program over the graph of data\n'
+        '//                         items.\n',
         '// brief:                  |\n'
         '//                         Derived relations.\n')
 
 
 def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
-    path = tree / 'src/cc_public/edit/layout.py'
+    path = tree / 'src/cc_public/edit/_test/test_edit.py'
     text = path.read_text()
-    assert _edit(tree, {'set': ['pym_cc_public.edit.layout', 'usage', 'Used by edit.']}) == {}
+    assert _edit(tree, {'set': ['pym_cc_public.edit._test.test_edit', 'usage', 'By pytest.']}) == {}
     assert path.read_text() == text.replace(
-        '                        blank line before it and after each mapping.\n',
-        '                        blank line before it and after each mapping.\n'
+        '                        zeros, so that the text is known.\n',
+        '                        zeros, so that the text is known.\n'
         'usage:                  |\n'
-        '                        Used by edit.\n')
+        '                        By pytest.\n', 1)
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
@@ -213,16 +219,70 @@ def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     assert str(info.value) == message
 
 
-def test_prose_is_wrapped_by_paragraph():
-    assert cc_public.edit.layout.lines_of_field('note', 'One two.\n\nThree\nfour.', 4) == [
-        '    note:               |',
-        '                        One two.',
-        '',
-        '                        Three four.']
+@pytest.mark.parametrize('relative', sorted(
+    relative for (relative, (document, _))
+    in cc_public.graph.extract.documents(DIR_REPO).items() if document is not None))
+def test_layout_keeps_the_data_and_is_a_fixpoint(relative):
+    text     = (DIR_REPO / relative).read_text()
+    laid_out = cc_public.edit.layout.format_file(text, pathlib.Path(relative))
+    assert cc_public.edit.layout.format_file(laid_out, pathlib.Path(relative)) == laid_out
+    assert _shape(cc_public.graph.extract.parse(laid_out, pathlib.Path(relative))[0]) == (
+           _shape(cc_public.graph.extract.parse(text, pathlib.Path(relative))[0]))
 
 
-def test_a_scalar_is_quoted_only_where_it_must_be():
-    assert cc_public.edit.layout.lines_of_field('title', 'Plain', 0) == [
-        'title:                  Plain']
-    assert cc_public.edit.layout.lines_of_field('title', 'Not: plain', 0) == [
-        "title:                  'Not: plain'"]
+def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
+    text = ('note:                   |\n'
+            '                        One\n'
+            '                        two.\n'
+            '\n'
+            '                        Three.\n'
+            'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
+    assert cc_public.edit.layout.format(text) == (
+            'note:                   |\n'
+            '                        One two.\n'
+            '\n'
+            '                        Three.\n'
+            'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
+
+
+def test_blank_lines_set_apart_lists_and_comments():
+    text = ('a: 1\nlist: [x, y]\nb: 2\n# A comment.\nc: 3\n')
+    assert cc_public.edit.layout.format(text) == ('a:                      1\n'
+                                                  '\n'
+                                                  'list:\n'
+                                                  '  - x\n'
+                                                  '  - y\n'
+                                                  '\n'
+                                                  'b:                      2\n'
+                                                  '\n'
+                                                  '# A comment.\n'
+                                                  'c:                      3\n')
+
+
+def test_a_comment_header_is_laid_out_inside_its_markers():
+    text = '// ---\n// id_self: dls_x\n// ...\n\n.decl x(id: symbol)\n'
+    assert cc_public.edit.layout.format_file(text, pathlib.Path('src/x.dl')) == (
+        '// ---\n//\n// id_self:                dls_x\n//\n// ...\n\n.decl x(id: symbol)\n')
+
+
+def test_a_document_outside_the_subset_is_refused():
+    with pytest.raises(cc_public.edit.layout.Unsupported):
+        cc_public.edit.layout.format('- a\n- b\n')
+
+
+# -----------------------------------------------------------------------------
+def _shape(node):
+    """
+    Return node with each literal block reduced to its words, so that
+    two documents compare equal when only the breaks in their prose
+    differ.
+
+    """
+
+    if isinstance(node, dict):
+        return {key: _shape(value) for (key, value) in node.items()}
+    if isinstance(node, list):
+        return [_shape(value) for value in node]
+    if isinstance(node, ruamel.yaml.scalarstring.LiteralScalarString):
+        return ('|', ' '.join(node.split()))
+    return node

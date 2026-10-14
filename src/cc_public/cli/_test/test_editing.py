@@ -102,3 +102,16 @@ def test_batch_makes_items_that_need_each_other_together(tree):
     assert result.exit_code == 0
     assert result.stdout == ('Wrote _data/register/reg_concept.yaml\n'
                              'Wrote _data/annotation/ann_x.yaml\n')
+
+
+def test_format_names_the_files_it_would_change_and_then_changes_them(tree):
+    path = tree / '_data/register/reg_concern.yaml'
+    path.write_text(path.read_text().replace('title:                  Concern register',
+                                             'title: Concern register'))
+    result = _run(tree, 'format', '--check')
+    assert result.exit_code == 1
+    assert result.stdout == 'Would change _data/register/reg_concern.yaml\n'
+    result = _run(tree, 'format')
+    assert result.exit_code == 0
+    assert result.stdout == 'Changed _data/register/reg_concern.yaml\n'
+    assert _run(tree, 'format', '--check').stdout == ''

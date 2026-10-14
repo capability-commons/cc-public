@@ -19,10 +19,10 @@ brief:                  |
 description:            |
                         This module extracts the facts of the tree,
                         evaluates check.dl over them, and validates
-                        each document against its schemas. Each
-                        output relation of check.dl is one check, as
-                        is schema validation, and each row of a check
-                        is one failure.
+                        each document against its schemas. Each output
+                        relation of check.dl is one check, as is
+                        schema validation, and each row of a check is
+                        one failure.
 usage:                  |
                         cctool check [--root DIR]
 
@@ -38,6 +38,7 @@ relation:               []
 import pathlib
 
 import cc_public.check.schema
+import cc_public.edit.layout
 import cc_public.graph.datalog
 import cc_public.graph.extract
 
@@ -50,6 +51,12 @@ RULES             = pathlib.Path(__file__).with_name('check.dl')
 NAME_PAIR         = 'document_schema'
 NAME_SCHEMA       = 'schema_violation'
 
+# One more again: each document is laid out as cctool format lays it
+# out. An edit lays out every file it writes, so this is checked over
+# the files of a tree, and not over the documents of an edit.
+#
+NAME_LAYOUT       = 'unformatted_file'
+
 Failures          = dict[str, list[tuple[str, ...]]]
 
 
@@ -61,7 +68,14 @@ def check(root: pathlib.Path) -> Failures:
 
     """
 
-    return check_documents(cc_public.graph.extract.documents(root))
+    map_document = cc_public.graph.extract.documents(root)
+    failures     = check_documents(map_document)
+    list_row     = cc_public.edit.layout.violations(root, map_document)
+
+    if list_row:
+        failures[NAME_LAYOUT] = list_row
+
+    return failures
 
 
 # -----------------------------------------------------------------------------
@@ -97,4 +111,5 @@ def columns() -> dict[str, tuple[str, ...]]:
                   in cc_public.graph.datalog.declared(RULES.read_text(encoding = 'utf-8')).items()}
 
     map_column[NAME_SCHEMA] = cc_public.check.schema.COLUMNS
+    map_column[NAME_LAYOUT] = cc_public.edit.layout.COLUMNS
     return map_column
