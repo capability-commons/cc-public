@@ -358,6 +358,62 @@ determination_across_issues(Determination, Issue, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% An item supersedes only an item of its own type: a decision another
+% decision, and a determination another determination.
+%
+% decl supersession_across_types(source: symbol,
+%                                target: symbol)
+#show supersession_across_types/2.
+
+supersession_across_types(Source, Target) :-
+    primary_edge(Source, "r_supersedes", Target),
+    type_of(Source, Type),
+    not type_of(Target, Type).
+
+
+% -----------------------------------------------------------------------------
+% A determination supersedes only a determination of its own issue.
+%
+% decl supersession_across_issues(determination: symbol,
+%                                 other:         symbol)
+#show supersession_across_issues/2.
+
+supersession_across_issues(Determination, Other) :-
+    type_of(Determination, "t_determination"),
+    primary_edge(Determination, "r_supersedes", Other),
+    issue_of(Determination, Issue),
+    not issue_of(Other, Issue).
+
+
+% -----------------------------------------------------------------------------
+% The determination is the current one of its issue: nothing
+% supersedes it.
+%
+% decl current_determination(determination: symbol,
+%                            issue:         symbol)
+
+current_determination(Determination, Issue) :-
+    type_of(Determination, "t_determination"),
+    issue_of(Determination, Issue),
+    not primary_edge(_, "r_supersedes", Determination).
+
+
+% -----------------------------------------------------------------------------
+% An issue has at most one current determination. A later
+% determination names the one it replaces.
+%
+% decl competing_determinations(issue:         symbol,
+%                               determination: symbol,
+%                               other:         symbol)
+#show competing_determinations/3.
+
+competing_determinations(Issue, Determination, Other) :-
+    current_determination(Determination, Issue),
+    current_determination(Other, Issue),
+    Determination < Other.
+
+
+% -----------------------------------------------------------------------------
 % The decision, or an alternative to it that answers the same issue,
 % has an annotation that supports or challenges it for the concern.
 %

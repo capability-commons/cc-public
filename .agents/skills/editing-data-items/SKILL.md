@@ -78,6 +78,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   supports or challenges the decision or another answer to the same
   issue.
   Argue it; do not drop the driver to pass.
+- **A second determination of an issue is refused**
+  (`competing_determinations`) unless it replaces the current one:
+  give it `--link r_supersedes DET`. Never edit or remove the earlier
+  determination; it stays as the record of what was determined before.
 - **`domain_violation` or `range_violation`** means the relation does
   not run between those types. Read the relation's `domain` and `range`
   in `reg_relation.yaml`; do not pick another relation just to pass.
