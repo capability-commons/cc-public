@@ -485,10 +485,10 @@ def test_a_concept_nothing_names_is_reported(tree):
     assert cc_public.check.check.check(tree) == {'unused_concept': [('con_register_entry',)]}
 
 
-def test_an_entry_in_a_register_that_holds_another_type_is_reported(souffle):
+def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported(souffle):
     facts = {name: set() for name in cc_public.graph.extract.RELATION}
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
     facts['type_prefix'].update({('t_register', 'reg', '.*'), ('t_annotation', 'ann', '.*')})
-    facts['entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
+    facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
     rows  = cc_public.graph.datalog.run(facts, cc_public.check.check.RULES.read_text())
-    assert rows['misplaced_entry'] == [('reg_x', 'ann_x', 't_annotation')]
+    assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 't_annotation')]

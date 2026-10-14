@@ -35,7 +35,9 @@
 // ----------------------------------------------------------------------------
 // Every id begins with the prefix of a known type.
 //
-.decl unknown_prefix(id: symbol, file: symbol, line: number)
+.decl unknown_prefix(id:   symbol,
+                     file: symbol,
+                     line: number)
 .output unknown_prefix
 
 unknown_prefix(id, file, line) :-
@@ -46,7 +48,10 @@ unknown_prefix(id, file, line) :-
 // ----------------------------------------------------------------------------
 // Every id matches the regex_id of its type.
 //
-.decl bad_id(id: symbol, regex: symbol, file: symbol, line: number)
+.decl bad_id(id:    symbol,
+             regex: symbol,
+             file:  symbol,
+             line:  number)
 .output bad_id
 
 bad_id(id, regex, file, line) :-
@@ -59,7 +64,10 @@ bad_id(id, regex, file, line) :-
 // ----------------------------------------------------------------------------
 // Every guid is the prefix of its id and 32 hex digits.
 //
-.decl bad_guid(id: symbol, guid: symbol, file: symbol, line: number)
+.decl bad_guid(id:   symbol,
+               guid: symbol,
+               file: symbol,
+               line: number)
 .output bad_guid
 
 bad_guid(id, guid, file, line) :-
@@ -71,7 +79,9 @@ bad_guid(id, guid, file, line) :-
 // ----------------------------------------------------------------------------
 // No two types share a prefix.
 //
-.decl duplicate_prefix(prefix: symbol, type: symbol, other: symbol)
+.decl duplicate_prefix(prefix: symbol,
+                       type:   symbol,
+                       other:  symbol)
 .output duplicate_prefix
 
 duplicate_prefix(prefix, type, other) :-
@@ -83,7 +93,9 @@ duplicate_prefix(prefix, type, other) :-
 // ----------------------------------------------------------------------------
 // No id names two items.
 //
-.decl duplicate_id(id: symbol, guid: symbol, other: symbol)
+.decl duplicate_id(id:    symbol,
+                   guid:  symbol,
+                   other: symbol)
 .output duplicate_id
 
 duplicate_id(id, guid, other) :-
@@ -95,7 +107,9 @@ duplicate_id(id, guid, other) :-
 // ----------------------------------------------------------------------------
 // No guid identifies two items.
 //
-.decl duplicate_guid(guid: symbol, id: symbol, other: symbol)
+.decl duplicate_guid(guid:  symbol,
+                     id:    symbol,
+                     other: symbol)
 .output duplicate_guid
 
 duplicate_guid(guid, id, other) :-
@@ -105,10 +119,11 @@ duplicate_guid(guid, id, other) :-
 
 
 // ----------------------------------------------------------------------------
-// A python module or package item is named for the module or package
-// that holds it.
+// A python module, python package or Datalog module item is named for
+// the module or package that holds it.
 //
-.decl misplaced_module(id: symbol, expected: symbol)
+.decl misplaced_module(id:       symbol,
+                       expected: symbol)
 .output misplaced_module
 
 misplaced_module(id, expected) :-
@@ -120,7 +135,9 @@ misplaced_module(id, expected) :-
 // A document under a _data directory is in the folder named for its
 // type, less the t_, in a file named for its id.
 //
-.decl misplaced_document(id: symbol, file: symbol, expected: symbol)
+.decl misplaced_document(id:       symbol,
+                         file:     symbol,
+                         expected: symbol)
 .output misplaced_document
 
 misplaced_document(id, file, expected) :-
@@ -133,13 +150,16 @@ misplaced_document(id, file, expected) :-
 
 
 // ----------------------------------------------------------------------------
-// A register holds only entries of a type whose items it holds.
+// A register holds only register entries of a type whose items it
+// holds.
 //
-.decl misplaced_entry(register: symbol, id: symbol, type: symbol)
-.output misplaced_entry
+.decl misplaced_register_entry(register: symbol,
+                               id:       symbol,
+                               type:     symbol)
+.output misplaced_register_entry
 
-misplaced_entry(register, id, type) :-
-    entry_key(register, _, id),
+misplaced_register_entry(register, id, type) :-
+    register_entry_key(register, _, id),
     type_of(id, type),
     !primary_edge(type, "r_has_items_held_in_register", register).
 
@@ -159,11 +179,13 @@ unrecorded_module(file) :-
 // ----------------------------------------------------------------------------
 // The key of a register entry is its id.
 //
-.decl key_mismatch(register: symbol, key: symbol, id: symbol)
+.decl key_mismatch(register: symbol,
+                   key:      symbol,
+                   id:       symbol)
 .output key_mismatch
 
 key_mismatch(register, key, id) :-
-    entry_key(register, key, id),
+    register_entry_key(register, key, id),
     key != id.
 
 
@@ -203,7 +225,9 @@ stale_guid(holder, role, id, guid, file, line) :-
 // ----------------------------------------------------------------------------
 // The source of an edge is of a type its relation's domain allows.
 //
-.decl domain_violation(source: symbol, relation: symbol, type: symbol)
+.decl domain_violation(source:   symbol,
+                       relation: symbol,
+                       type:     symbol)
 .output domain_violation
 
 domain_violation(source, relation, type) :-
@@ -216,7 +240,9 @@ domain_violation(source, relation, type) :-
 // ----------------------------------------------------------------------------
 // The target of an edge is of a type its relation's range allows.
 //
-.decl range_violation(target: symbol, relation: symbol, type: symbol)
+.decl range_violation(target:   symbol,
+                      relation: symbol,
+                      type:     symbol)
 .output range_violation
 
 range_violation(target, relation, type) :-
@@ -245,7 +271,10 @@ missing_about(id) :-
 // Every id that a text mentions, if it has the prefix of a known type,
 // names an item, or an old id of one. A guid may be mentioned too.
 //
-.decl dangling_mention(holder: symbol, id: symbol, file: symbol, line: number)
+.decl dangling_mention(holder: symbol,
+                       id:     symbol,
+                       file:   symbol,
+                       line:   number)
 .output dangling_mention
 
 dangling_mention(holder, id, file, line) :-
@@ -260,7 +289,8 @@ dangling_mention(holder, id, file, line) :-
 // ----------------------------------------------------------------------------
 // An alias is an old id, so no item has it.
 //
-.decl alias_in_use(alias: symbol, id: symbol)
+.decl alias_in_use(alias: symbol,
+                   id:    symbol)
 .output alias_in_use
 
 alias_in_use(alias, id) :-
@@ -306,7 +336,9 @@ outdated_mention(holder, alias, id, file, line) :-
 // ----------------------------------------------------------------------------
 // A chain of edges of an acyclic relation leads from source to target.
 //
-.decl reaches(relation: symbol, source: symbol, target: symbol)
+.decl reaches(relation: symbol,
+              source:   symbol,
+              target:   symbol)
 
 reaches(relation, source, target) :-
     relation_acyclic(relation),
@@ -321,7 +353,8 @@ reaches(relation, source, target) :-
 // No chain of edges of an acyclic relation leads from an item back to
 // itself.
 //
-.decl cycle(relation: symbol, id: symbol)
+.decl cycle(relation: symbol,
+            id:       symbol)
 .output cycle
 
 cycle(relation, id) :-
@@ -346,7 +379,8 @@ arguing(id) :-
 // An annotation that supports or challenges speaks for exactly one
 // concern.
 //
-.decl concern_count(id: symbol, concerns: number)
+.decl concern_count(id:       symbol,
+                    concerns: number)
 .output concern_count
 
 concern_count(id, concerns) :-
@@ -360,7 +394,8 @@ concern_count(id, concerns) :-
 // ----------------------------------------------------------------------------
 // Every type names exactly one schema for its items.
 //
-.decl schema_count(type: symbol, schemas: number)
+.decl schema_count(type:    symbol,
+                   schemas: number)
 .output schema_count
 
 schema_count(type, schemas) :-

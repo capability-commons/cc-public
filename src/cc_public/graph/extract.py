@@ -104,45 +104,46 @@ TYPE_SYMBOL       = 'symbol'
 DELIM_TYPE        = ':'
 
 RELATION          = {
-    'item':             (('id', 'guid', 'holder', 'file', 'line:number'),
-                         'The item id, with guid, is written in file at line. holder '
-                         'is the id of the item that contains it, or empty if none '
-                         'does.'),
-    'reference':        (('holder', 'role', 'id', 'guid', 'file', 'line:number'),
-                         'The item holder names the item id, with guid, in a pair '
-                         'of fields id_<role> and guid_<role>, written in file at '
-                         'line.'),
-    'edge':             (('source', 'relation', 'target'),
-                         'The item source records an edge of relation to target, '
-                         'as written. primary_edge reads edges through inverses.'),
-    'type_prefix':      (('type', 'prefix', 'regex'),
-                         'The type has the id prefix, and its ids match regex.'),
-    'relation_domain':  (('relation', 'type'),
-                         'The source of an edge of relation may be of type.'),
-    'relation_range':   (('relation', 'type'),
-                         'The target of an edge of relation may be of type.'),
-    'relation_inverse': (('inverse', 'relation'),
-                         'An edge of inverse is an edge of relation, reversed.'),
-    'entry_key':        (('register', 'key', 'id'),
-                         'The register holds, under key, an entry with id.'),
-    'module_name':      (('id', 'expected'),
-                         'A python module or package holds the item id, and its '
-                         'place in the tree calls for the id expected.'),
-    'tree_file':        (('file',),
-                         'The tree holds file, whether or not the file holds an '
-                         'item.'),
-    'mention':          (('holder', 'id', 'file', 'line:number'),
-                         'The text of a field of the item holder names id, in file '
-                         'at line. Any word shaped like an id is a mention, but only '
-                         'one with the prefix of a known type need name an item.'),
-    'alias':            (('id', 'alias'),
-                         'The item id was once named alias.'),
-    'relation_acyclic': (('relation',),
-                         'No chain of edges of relation may lead from an item back '
-                         'to itself.'),
-    'schema_ref':       (('holder', 'schema', 'file', 'line:number'),
-                         'The schema holder refers to the schema with a $ref, in '
-                         'file at line.'),
+    'item':               (('id', 'guid', 'holder', 'file', 'line:number'),
+                           'The item id, with guid, is written in file at line. holder '
+                           'is the id of the item that contains it, or empty if none '
+                           'does.'),
+    'reference':          (('holder', 'role', 'id', 'guid', 'file', 'line:number'),
+                           'The item holder names the item id, with guid, in a pair '
+                           'of fields id_<role> and guid_<role>, written in file at '
+                           'line.'),
+    'edge':               (('source', 'relation', 'target'),
+                           'The item source records an edge of relation to target, '
+                           'as written. primary_edge reads edges through inverses.'),
+    'type_prefix':        (('type', 'prefix', 'regex'),
+                           'The type has the id prefix, and its ids match regex.'),
+    'relation_domain':    (('relation', 'type'),
+                           'The source of an edge of relation may be of type.'),
+    'relation_range':     (('relation', 'type'),
+                           'The target of an edge of relation may be of type.'),
+    'relation_inverse':   (('inverse', 'relation'),
+                           'An edge of inverse is an edge of relation, reversed.'),
+    'register_entry_key': (('register', 'key', 'id'),
+                           'The register holds, under key, a register entry with id.'),
+    'module_name':        (('id', 'expected'),
+                           'A python module or package, or a Datalog module, holds '
+                           'the item id, and its place in the tree calls for the id '
+                           'expected.'),
+    'tree_file':          (('file',),
+                           'The tree holds file, whether or not the file holds an '
+                           'item.'),
+    'mention':            (('holder', 'id', 'file', 'line:number'),
+                           'The text of a field of the item holder names id, in file '
+                           'at line. Any word shaped like an id is a mention, but only '
+                           'one with the prefix of a known type need name an item.'),
+    'alias':              (('id', 'alias'),
+                           'The item id was once named alias.'),
+    'relation_acyclic':   (('relation',),
+                           'No chain of edges of relation may lead from an item back '
+                           'to itself.'),
+    'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
+                           'The schema holder refers to the schema with a $ref, in '
+                           'file at line.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -401,9 +402,9 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
     if isinstance(id_self, str) and isinstance(table, dict):
         for (key, entry) in table.items():
             if isinstance(entry, dict):
-                facts['entry_key'].add((id_self,
-                                        str(key),
-                                        str(entry.get(KEY_ID_SELF))))
+                facts['register_entry_key'].add((id_self,
+                                                 str(key),
+                                                 str(entry.get(KEY_ID_SELF))))
 
     for value in node.values():
         _walk(value, holder, location, facts)

@@ -31,7 +31,8 @@
 // The prefix of an id is that of the type whose prefix and an underscore
 // begin it.
 //
-.decl prefix_of(id: symbol, prefix: symbol)
+.decl prefix_of(id:     symbol,
+                prefix: symbol)
 
 prefix_of(id, prefix) :-
     item(id, _, _, _, _),
@@ -42,7 +43,8 @@ prefix_of(id, prefix) :-
 // ----------------------------------------------------------------------------
 // The type of an id is the type whose prefix it has.
 //
-.decl type_of(id: symbol, type: symbol)
+.decl type_of(id:   symbol,
+              type: symbol)
 
 type_of(id, type) :-
     prefix_of(id, prefix),
@@ -53,7 +55,9 @@ type_of(id, type) :-
 // An edge recorded with an inverse is read as the primary edge in the
 // opposite direction.
 //
-.decl primary_edge(source: symbol, relation: symbol, target: symbol)
+.decl primary_edge(source:   symbol,
+                   relation: symbol,
+                   target:   symbol)
 
 primary_edge(source, relation, target) :-
     edge(source, relation, target),
@@ -70,7 +74,8 @@ primary_edge(target, relation, source) :-
 // A document is an item held by no other, and the items inside it
 // conform as part of it.
 //
-.decl document_schema(id: symbol, schema: symbol)
+.decl document_schema(id:     symbol,
+                      schema: symbol)
 
 document_schema(id, schema) :-
     item(id, _, "", _, _),
