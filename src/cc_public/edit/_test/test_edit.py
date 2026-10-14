@@ -360,6 +360,10 @@ def test_a_comment_header_after_an_interpreter_line_is_laid_out():
         '#!/bin/sh\n# ---\n#\n# id_self:                file_x\n#\n# ...\n\nexit 0\n')
 
 
+def test_an_empty_mapping_in_a_list_is_kept():
+    assert cc_public.edit.layout.format('a:\n  - {}\n') == 'a:\n  - {}\n'
+
+
 def test_a_document_outside_the_subset_is_refused():
     with pytest.raises(cc_public.edit.layout.Unsupported):
         cc_public.edit.layout.format('- a\n- b\n')

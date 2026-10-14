@@ -507,7 +507,10 @@ def _emit_seq(sequence: Seq, indent: int, lead: dict, out: list[str]) -> None:
                                                       for each in value.values()))
         _emit_lead(line, indent, lead, out, is_multi, was_multi)
 
-        if isinstance(value, Map):
+        # An empty mapping has no key to put on the line of the item
+        # mark, so it is written as a scalar would be.
+        #
+        if isinstance(value, Map) and value:
             _emit_map(value, indent + INDENT_STEP, lead, out, is_item = True)
         else:
             out.append(' ' * indent + MARK_ITEM + _render(value))
