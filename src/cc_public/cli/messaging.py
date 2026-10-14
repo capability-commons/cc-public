@@ -32,7 +32,10 @@ import sys
 import click
 
 import cc_public.cli.group
+import cc_public.commit.change
 import cc_public.commit.message
+import cc_public.gate.gate
+import cc_public.graph.datalog
 
 
 OPTION_ROOT = click.option('--root',
@@ -81,13 +84,28 @@ def new(title: str, brief: str, description: str | None, root: pathlib.Path) -> 
 @OPTION_ROOT
 def check(file, root: pathlib.Path) -> None:
     """
-    Check the commit message in FILE, or - for stdin, against sch_commit.
+    Check the commit message in FILE, or - for stdin, and the commit of
+    the staged content that it records.
 
-    The exit status is 1 when the message fails.
+    The message is checked against sch_commit. If it passes, the commit
+    is checked against the graph before and after it: nothing
+    disappears or changes type unannounced, and the verb of the title
+    is true of the change. The exit status is 1 when either fails.
 
     """
 
-    _report(cc_public.commit.message.violations(root.resolve(), file.read()))
+    text = file.read()
+    _report(cc_public.commit.message.violations(root.resolve(), text))
+
+    (_, item) = cc_public.commit.message.parse(text)
+    try:
+        failures = cc_public.commit.change.check(root.resolve(), item)
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+        click.echo(str(error), err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    _report(['{name}: {row}'.format(name = name, row = '  '.join(row))
+             for (name, list_row) in failures.items() for row in list_row])
 
 
 # -----------------------------------------------------------------------------

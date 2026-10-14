@@ -1,0 +1,160 @@
+"""
+---
+
+id_self:                pym_cc_public.commit.change
+guid_self:              pym_538a536ce0f34b61a7e2cda6a3ece5f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit change
+brief:                  |
+                        Check a commit against the graph before and
+                        after it.
+description:            |
+                        The graph before the commit is read from HEAD,
+                        and the graph after it from the staged
+                        content. change.dl is evaluated over the graph
+                        after the commit, the items before it, and the
+                        verb and the mentions of the commit item. Each
+                        output relation of change.dl is one check, and
+                        each row of it is one failure.
+
+                        Before the first commit there is no HEAD, and
+                        the graph before it is empty.
+usage:                  |
+                        Run by cctool message check, and so by the
+                        commit-msg hook.
+relation:               []
+
+...
+"""
+
+
+import io
+import pathlib
+import subprocess
+import tarfile
+import tempfile
+
+import cc_public.edit.layout
+import cc_public.gate.gate
+import cc_public.graph.datalog
+import cc_public.graph.extract
+
+
+RULES           = pathlib.Path(__file__).with_name('change.dl')
+TUPLE_KEY_TEXT  = ('title', 'brief', 'description')
+KEY_TITLE       = 'title'
+
+Failures        = dict[str, list[tuple[str, ...]]]
+
+
+# -----------------------------------------------------------------------------
+def check(root: pathlib.Path, item: dict) -> Failures:
+    """
+    Return the failures of the commit that item records, as a commit of
+    the staged content of the repository at root onto its HEAD.
+
+    """
+
+    with tempfile.TemporaryDirectory() as name:
+        dir_before = pathlib.Path(name, 'before')
+        dir_after  = pathlib.Path(name, 'after')
+        dir_before.mkdir()
+        dir_after.mkdir()
+        copy_head(root, dir_before)
+        cc_public.gate.gate.copy_staged(root, dir_after)
+        facts = facts_of(dir_before, dir_after, item)
+
+    rows = cc_public.graph.datalog.run(facts, RULES.read_text(encoding = 'utf-8'))
+
+    return {name: list_row for (name, list_row) in rows.items() if list_row}
+
+
+# -----------------------------------------------------------------------------
+def copy_head(root: pathlib.Path, dir_copy: pathlib.Path) -> None:
+    """
+    Write the content of HEAD of the repository at root into dir_copy,
+    or nothing if there is no HEAD yet.
+
+    """
+
+    is_head = subprocess.run(['git', 'rev-parse', '--verify', '--quiet', 'HEAD'],
+                             cwd            = root,
+                             capture_output = True,
+                             check          = False).returncode == 0
+    if not is_head:
+        return
+
+    archive = subprocess.run(['git', 'archive', '--format=tar', 'HEAD'],
+                             cwd            = root,
+                             capture_output = True,
+                             check          = True).stdout
+
+    with tarfile.open(fileobj = io.BytesIO(archive)) as file:
+        file.extractall(dir_copy, filter = 'data')
+
+
+# -----------------------------------------------------------------------------
+def facts_of(dir_before: pathlib.Path,
+             dir_after:  pathlib.Path,
+             item:       dict) -> cc_public.graph.extract.Facts:
+    """
+    Return the facts that change.dl is evaluated over: those of the
+    tree in dir_after, the items of the tree in dir_before, and the
+    facts of the commit item.
+
+    """
+
+    facts  = cc_public.graph.extract.extract(dir_after)
+    before = cc_public.graph.extract.extract(dir_before)
+    text   = ' '.join(str(item.get(key, '')) for key in TUPLE_KEY_TEXT)
+
+    facts['before_item']    = {(row[0], row[1]) for row in before['item']}
+    facts['commit_verb']    = {(str(item.get(KEY_TITLE, '')).partition(' ')[0],)}
+    facts['commit_mention'] = {(id_item,) for id_item
+                               in cc_public.graph.extract.REGEX_MENTION.findall(text)}
+    facts['content_change'] = {(file,) for file in _changed(dir_before, dir_after)}
+
+    return facts
+
+
+# -----------------------------------------------------------------------------
+def _changed(dir_before: pathlib.Path, dir_after: pathlib.Path) -> list[str]:
+    """
+    Return each file that differs between the two trees beyond what
+    the layout printer changes, relative to the root of each.
+
+    """
+
+    set_file = {str(path.relative_to(root))
+                for root in (dir_before, dir_after)
+                for path in root.rglob('*') if path.is_file()}
+
+    return sorted(file for file in set_file
+                  if _laid_out(dir_before, file) != _laid_out(dir_after, file))
+
+
+# -----------------------------------------------------------------------------
+def _laid_out(root: pathlib.Path, file: str) -> str | bytes | None:
+    """
+    Return the content of file in the tree at root as the layout
+    printer would write it, its bytes if it is not text it can lay
+    out, or None if there is no such file.
+
+    """
+
+    path = root / file
+    if not path.is_file():
+        return None
+
+    data = path.read_bytes()
+    try:
+        return cc_public.edit.layout.format_file(data.decode('utf-8'), pathlib.Path(file))
+    except (UnicodeDecodeError, cc_public.edit.layout.Unsupported):
+        return data

@@ -44,7 +44,9 @@ commit. It copies the staged content, which is what the commit will
 record, and runs the check, the lint and the tests over the copy. A
 failure stops the commit. The commit-msg hook then checks that the
 message holds a commit item whose title is built from one of the
-templates in `sch_commit`.
+templates in `sch_commit`, and checks the commit against the graph
+before and after it: no item disappears or changes type without the
+commit naming it, and the verb of the title is true of the change.
 
 ## cctool
 

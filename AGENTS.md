@@ -17,7 +17,13 @@ work in it.
   TEXT`, then add the trailers. The title is an imperative sentence
   built from a template in `sch_commit`, such as `Add OBJECT` or
   `Change OBJECT so that STATEMENT`. One commit does one thing. The
-  commit-msg hook checks the message.
+  commit-msg hook checks the message, and checks the commit against
+  the graph before and after it.
+- Name in the commit item (title, brief or description) the id of
+  every item the commit removes or renames. A renamed register entry
+  keeps its old id in `alias`. The verb must be true of the change:
+  `Add` removes nothing, `Remove` adds nothing, `Rename` and `Move`
+  neither add nor remove, and `Reformat` changes only layout.
 
 ## Changing data items
 
