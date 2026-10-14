@@ -32,6 +32,7 @@ relation:               []
 
 
 import ast
+import hashlib
 import pathlib
 import re
 import typing
@@ -99,6 +100,12 @@ MARK_SHEBANG      = '#!'
 # caches and local tools.
 #
 SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
+
+# The documents read so far, keyed by the path and the digest of the
+# file that holds each. It is emptied when it holds this many.
+#
+MAP_READ          = {}
+COUNT_READ        = 4096
 
 # Each base relation: its columns, and what one row of it states. A
 # column is a symbol unless its name is followed by :number. A line
@@ -261,10 +268,21 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
     holds none, and the line of the file that its first line is on.
     relative is the path of the file relative to the root of the tree.
 
+    A YAML file or python module that holds what it held when it was
+    last read gives the same document as then, the same object, so
+    that what was found by checking it can be reused. A document is
+    never changed once read.
+
     """
 
     if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON):
-        return parse(path.read_text(encoding = 'utf-8'), relative)
+        data = path.read_bytes()
+        key  = (str(relative), hashlib.blake2b(data, digest_size = 16).digest())
+        if key not in MAP_READ:
+            if len(MAP_READ) >= COUNT_READ:
+                MAP_READ.clear()
+            MAP_READ[key] = parse(data.decode('utf-8'), relative)
+        return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
     # read, and only as far as a comment header could go.

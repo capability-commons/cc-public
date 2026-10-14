@@ -63,11 +63,17 @@ TUPLE_ERROR_USE   = (jsonschema.exceptions.SchemaError,
 # -----------------------------------------------------------------------------
 def violations(map_document: cc_public.graph.extract.Documents,
                facts:        cc_public.graph.extract.Facts,
-               set_pair:     set[tuple[str, ...]]) -> list[tuple[str, ...]]:
+               set_pair:     set[tuple[str, ...]],
+               cache:        dict | None = None) -> list[tuple[str, ...]]:
     """
     Return a row for each violation of a schema by one of the
     documents. set_pair holds the document_schema rows: each names a
     document and a schema it must conform to.
+
+    cache, if given, keeps what each validation found, so that a later
+    call with the same schemas reuses it for a document that is the
+    same object as before. An edit checks the tree before and after it
+    with one cache, and so validates only the documents it changes.
 
     """
 
@@ -85,11 +91,17 @@ def violations(map_document: cc_public.graph.extract.Documents,
                                  if id_schema not in set_invalid])
     map_validator = {}
     set_row       = set()
+    map_found     = _cached(cache, map_schema)
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:
             continue
         if id_schema in set_invalid:
+            continue
+        document = map_document[map_file[id_document]][0]
+        found    = map_found.get((id_document, id_schema))
+        if found is not None and found[0] is document:
+            set_row.update(found[1])
             continue
         if id_schema not in map_validator:
             map_validator[id_schema] = jsonschema.Draft202012Validator(map_schema[id_schema],
@@ -100,10 +112,33 @@ def violations(map_document: cc_public.graph.extract.Documents,
             list_error = _error(map_validator[id_schema], document)
         except TUPLE_ERROR_USE:
             continue
-        for error in list_error:
-            set_row.add(_row(id_document, id_schema, file, document, base, error))
+        list_row = [_row(id_document, id_schema, file, document, base, error)
+                    for error in list_error]
+        map_found[(id_document, id_schema)] = (document, list_row)
+        set_row.update(list_row)
 
     return sorted(set_row)
+
+
+# -----------------------------------------------------------------------------
+def _cached(cache: dict | None, map_schema: dict[str, dict]) -> dict:
+    """
+    Return what the validations kept in cache found, keyed by document
+    and schema, emptied first unless every schema is the same object as
+    when they were made. With no cache, return a mapping to throw away.
+
+    """
+
+    if cache is None:
+        return {}
+
+    signature = sorted((id_schema, id(schema)) for (id_schema, schema) in map_schema.items())
+    if cache.get('signature') != signature:
+        cache['signature'] = signature
+        cache['schema']    = list(map_schema.values())
+        cache['found']     = {}
+
+    return cache['found']
 
 
 # -----------------------------------------------------------------------------

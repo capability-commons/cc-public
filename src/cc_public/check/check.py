@@ -59,6 +59,12 @@ NAME_LAYOUT       = 'unformatted_file'
 
 Failures          = dict[str, list[tuple[str, ...]]]
 
+# What validation against the schemas has found, kept between checks
+# in one process, for the documents that are the same objects as the
+# last time they were read.
+#
+CACHE_SCHEMA      = {}
+
 
 # -----------------------------------------------------------------------------
 def check(root: pathlib.Path) -> Failures:
@@ -69,7 +75,7 @@ def check(root: pathlib.Path) -> Failures:
     """
 
     map_document = cc_public.graph.extract.documents(root)
-    failures     = check_documents(map_document)
+    failures     = check_documents(map_document, CACHE_SCHEMA)
     list_row     = cc_public.edit.layout.violations(root, map_document)
 
     if list_row:
@@ -79,11 +85,14 @@ def check(root: pathlib.Path) -> Failures:
 
 
 # -----------------------------------------------------------------------------
-def check_documents(map_document: cc_public.graph.extract.Documents) -> Failures:
+def check_documents(map_document: cc_public.graph.extract.Documents,
+                    cache:        dict | None = None) -> Failures:
     """
     Return the failures of the documents, keyed by check, with the
     checks that pass left out. An edit is checked this way before it
-    is written, with its documents in place of those it changes.
+    is written, with its documents in place of those it changes, and
+    with one cache for both checks, so that a document the edit leaves
+    as it was is not validated against its schema again.
 
     """
 
@@ -94,7 +103,8 @@ def check_documents(map_document: cc_public.graph.extract.Documents) -> Failures
 
     rows[NAME_SCHEMA] = cc_public.check.schema.violations(map_document,
                                                           facts,
-                                                          set(rows.pop(NAME_PAIR)))
+                                                          set(rows.pop(NAME_PAIR)),
+                                                          cache)
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}
 

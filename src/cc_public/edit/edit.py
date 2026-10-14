@@ -834,8 +834,9 @@ def apply(tree: Tree, is_written: bool = True) -> cc_public.check.check.Failures
 
     """
 
-    before = cc_public.check.check.check_documents(tree.map_original)
-    after  = cc_public.check.check.check_documents(tree.map_document)
+    cache  = cc_public.check.check.CACHE_SCHEMA
+    before = cc_public.check.check.check_documents(tree.map_original, cache)
+    after  = cc_public.check.check.check_documents(tree.map_document, cache)
     added  = _added(before, after)
 
     if is_written and not added:
