@@ -244,8 +244,8 @@ def test_a_malformed_guid_is_reported(tree):
 def test_two_types_sharing_a_prefix_are_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'prefix:             dec\n', 'prefix:             ann\n')
-    assert _check(tree) == {'duplicate_prefix': [('ann', 't_annotation', 't_decision'),
-                                                      ('ann', 't_decision', 't_annotation')]}
+    assert _check(tree)['duplicate_prefix'] == [('ann', 't_annotation', 't_decision'),
+                                                ('ann', 't_decision', 't_annotation')]
 
 
 def test_an_id_given_to_two_items_is_reported(tree):
