@@ -59,7 +59,9 @@ commit naming it, and the verb of the title is true of the change.
     cctool query schema                     list the relations and columns
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
     cctool link SOURCE RELATION TARGET
-    cctool set ID NAME VALUE
+    cctool unlink SOURCE RELATION TARGET
+    cctool set ID PATH VALUE [--yaml]
+    cctool unset ID PATH
     cctool remove ID
     cctool rename OLD NEW
     cctool batch FILE                       several edits as one

@@ -104,6 +104,22 @@ def test_batch_makes_items_that_need_each_other_together(tree):
                              'Wrote _data/annotation/ann_x.yaml\n')
 
 
+def test_set_with_yaml_writes_a_list_and_unset_takes_it_out(tree):
+    path = tree / '_data/register/reg_concept.yaml'
+    text = path.read_text()
+    result = _run(tree, 'set', 'con_concept', 'term_admitted', '[idea, notion]', '--yaml')
+    assert result.exit_code == 0
+    assert '    term_admitted:\n      - idea\n      - notion\n' in path.read_text()
+    assert _run(tree, 'unset', 'con_concept', 'term_admitted').exit_code == 0
+    assert path.read_text() == text
+
+
+def test_set_refuses_a_value_that_is_not_yaml(tree):
+    result = _run(tree, 'set', 'con_concept', 'term_admitted', '[idea', '--yaml')
+    assert result.exit_code == 2
+    assert result.stderr.startswith('VALUE is not YAML: ')
+
+
 def test_remove_says_which_file_it_removed(tree):
     assert _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept').exit_code == 0
     result = _run(tree, 'remove', 'ann_x')

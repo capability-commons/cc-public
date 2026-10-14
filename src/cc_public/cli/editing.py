@@ -16,19 +16,23 @@ brief:                  |
                         The commands that edit the data items in the
                         tree.
 description:            |
-                        This module holds the new, link, set, batch
-                        and format commands. Each makes its edit,
-                        checks the tree with the edit in place, and
-                        writes it only if it adds no failure. With
-                        --dry-run, each prints the edit as a diff and
-                        writes nothing.
+                        This module holds the new, link, unlink, set,
+                        unset, remove, rename, batch and format
+                        commands. Each makes its edit, checks the tree
+                        with the edit in place, and writes it only if
+                        it adds no failure. With --dry-run, each
+                        prints the edit as a diff and writes nothing.
 usage:                  |
                         cctool new ID [--field NAME VALUE]... [--link
                         RELATION TARGET]...
 
                         cctool link SOURCE RELATION TARGET
 
-                        cctool set ID NAME VALUE
+                        cctool unlink SOURCE RELATION TARGET
+
+                        cctool set ID PATH VALUE [--yaml]
+
+                        cctool unset ID PATH
 
                         cctool remove ID
 
@@ -135,24 +139,69 @@ def link(id_source, id_relation, id_target, root, is_dry_run):
 
 
 # -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('id_source', metavar = 'SOURCE')
+@click.argument('id_relation', metavar = 'RELATION')
+@click.argument('id_target', metavar = 'TARGET')
+@_option
+def unlink(id_source, id_relation, id_target, root, is_dry_run):
+    """
+    Take the edge of RELATION from SOURCE to TARGET away.
+
+    """
+
+    _run(root, is_dry_run, [{'unlink': [id_source, id_relation, id_target]}])
+
+
+# -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command('set')
 @click.argument('id_self', metavar = 'ID')
-@click.argument('key', metavar = 'NAME')
+@click.argument('path', metavar = 'PATH')
 @click.argument('value', metavar = 'VALUE')
+@click.option('--yaml', 'is_yaml',
+              is_flag = True,
+              help    = 'Read VALUE as YAML, for a number, a list or a mapping.')
 @_option
-def set_field(id_self, key, value, root, is_dry_run):
+def set_field(id_self, path, value, is_yaml, root, is_dry_run):
     """
-    Set the text field NAME of the item ID to VALUE.
+    Set the field at PATH in the item ID to VALUE.
 
-    A prose field is wrapped to the width of prose, and a blank line in
-    VALUE starts a new paragraph. Pass - as VALUE to read it from stdin.
+    PATH is a field name, or a dotted path into its value, in which a
+    number picks an element of a list, as in protective_mark.0.id_mark.
+    A field id_ROLE that names an item gets guid_ROLE beside it.
+
+    VALUE is text unless --yaml is given. A prose field is wrapped to
+    the width of prose, and a blank line in VALUE starts a new
+    paragraph. Pass - as VALUE to read it from stdin.
 
     """
 
     if value == '-':
         value = sys.stdin.read()
 
-    _run(root, is_dry_run, [{'set': [id_self, key, value]}])
+    if is_yaml:
+        try:
+            value = cc_public.edit.edit.YAML.load(value)
+        except ruamel.yaml.YAMLError as error:
+            click.echo('VALUE is not YAML: {error}'.format(error = error), err = True)
+            sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    _run(root, is_dry_run, [{'set': [id_self, path, value]}])
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('id_self', metavar = 'ID')
+@click.argument('path', metavar = 'PATH')
+@_option
+def unset(id_self, path, root, is_dry_run):
+    """
+    Take the field at PATH out of the item ID, with guid_ROLE if it is
+    id_ROLE. PATH is as for set.
+
+    """
+
+    _run(root, is_dry_run, [{'unset': [id_self, path]}])
 
 
 # -----------------------------------------------------------------------------
@@ -207,8 +256,9 @@ def rename(id_old, id_new, root, is_dry_run):
 def batch(path_file, root, is_dry_run):
     """
     Make the operations listed in the YAML file FILE, or - for stdin,
-    as one edit. Items that need each other, such as a concept and the
-    item that names it, are made this way. For example:
+    as one edit. An operation is one of new, link, unlink, set, unset,
+    remove and rename. Items that need each other, such as a concept
+    and the item that names it, are made this way. For example:
 
     \b
     - new:   con_x

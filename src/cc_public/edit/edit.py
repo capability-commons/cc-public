@@ -17,10 +17,10 @@ brief:                  |
                         the edits that add no failure.
 description:            |
                         An edit is a set of new texts for files, in
-                        which None removes a file. new, link,
-                        set_field, remove and rename each return one,
-                        written as small changes to the text, after
-                        which the file is laid out by
+                        which None removes a file. new, link, unlink,
+                        set_field, unset_field, remove and rename each
+                        return one, written as small changes to the
+                        text, after which the file is laid out by
                         pym_cc_public.edit.layout. A tree holds the
                         edits made so far, and each edit is made on
                         top of them. apply checks the tree with the
@@ -65,7 +65,9 @@ KEY_GUID_TARGET   = 'guid_target'
 KEY_NEW           = 'new'
 KEY_FIELD         = 'field'
 KEY_LINK          = 'link'
+KEY_UNLINK        = 'unlink'
 KEY_SET           = 'set'
+KEY_UNSET         = 'unset'
 KEY_REMOVE        = 'remove'
 KEY_RENAME        = 'rename'
 COLUMN_LINE       = 'line'
@@ -104,6 +106,7 @@ DELIM_PREFIX      = '_'
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
 MARK_COMMENT      = '#'
+DELIM_PATH        = '.'
 
 # An id as a word of its own, and as the name of a file: not inside a
 # longer id, and not part of a dotted name.
@@ -286,22 +289,113 @@ def link(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
 
 
 # -----------------------------------------------------------------------------
-def set_field(tree: Tree, id_self: str, key: str, value: str) -> Edit:
+def unlink(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
     """
-    Return the edit that sets the field key of the item id_self to the
-    text value, in place if the item has the field, and among the
-    fields it is ordered with if not.
+    Return the edit that takes the edge of id_relation from id_source
+    to id_target out of the relation field of id_source.
 
     """
+
+    item      = _Item(tree, id_source)
+    list_edge = [_plain(edge) for edge in item.node.get(KEY_RELATION) or []]
+    pair      = (id_relation, id_target)
+    list_keep = [edge for edge in list_edge
+                 if (edge.get(KEY_ID_RELATION), edge.get(KEY_ID_TARGET)) != pair]
+
+    if len(list_keep) == len(list_edge):
+        raise ErrorEdit('{id} has no edge of {relation} to {target}.'.format(
+                                    id = id_source, relation = id_relation, target = id_target))
+
+    return _put_field(item, KEY_RELATION, list_keep)
+
+
+# -----------------------------------------------------------------------------
+def set_field(tree: Tree, id_self: str, path: str, value: typing.Any) -> Edit:
+    """
+    Return the edit that sets the field at path in the item id_self to
+    value, in place if the item has the field, and among the fields it
+    is ordered with if not.
+
+    A path is a field name, or a dotted path into the value of one, in
+    which a number picks an element of a list. A field id_<role> that
+    names an item is given guid_<role> beside it.
+
+    """
+
+    (key, list_part) = _path(path)
+    item             = _Item(tree, id_self)
+
+    if not list_part:
+        edit = _put_field(item, key, value)
+        if _is_reference(key, value):
+            tree.update(edit)
+            edit.update(_put_field(_Item(tree, id_self), _key_guid(key), tree.guid(value)))
+        return edit
+
+    whole = _plain(item.node[key]) if key in item.node else {}
+    return _put_field(item, key, _put(tree, whole, list_part, value))
+
+
+# -----------------------------------------------------------------------------
+def unset_field(tree: Tree, id_self: str, path: str) -> Edit:
+    """
+    Return the edit that takes the field at path out of the item
+    id_self, with guid_<role> if the field is id_<role>.
+
+    """
+
+    (key, list_part) = _path(path)
+    item             = _Item(tree, id_self)
+
+    if key not in item.node:
+        raise ErrorEdit('{id} has no field {path}.'.format(id = id_self, path = path))
+
+    if list_part:
+        whole = _plain(item.node[key])
+        _drop(whole, list_part, path, id_self)
+        return _put_field(item, key, whole)
+
+    (start, end) = item.extent(key)
+    edit         = item.replace(start, end, [])
+    key_guid     = _key_guid(key)
+
+    if key.startswith(PREFIX_ID) and key_guid in item.node:
+        tree.update(edit)
+        item         = _Item(tree, id_self)
+        (start, end) = item.extent(key_guid)
+        edit.update(item.replace(start, end, []))
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _path(path: str) -> tuple[str, list[str]]:
+    """
+    Return the field that path starts with, and the parts of the path
+    into its value. A field that other commands keep is refused.
+
+    """
+
+    (key, *list_part) = path.split(DELIM_PATH)
 
     if key in SET_KEY_FIXED:
         raise ErrorEdit('The field {key} is not set this way.'.format(key = key))
+    if not all([key, *list_part]):
+        raise ErrorEdit('The path {path} has an empty part.'.format(path = path))
 
-    item = _Item(tree, id_self)
+    return (key, list_part)
+
+
+# -----------------------------------------------------------------------------
+def _put_field(item: '_Item', key: str, value: typing.Any) -> Edit:
+    """
+    Return the edit that writes the field key of item with value, in
+    place of the field if the item has it, and among the fields it is
+    ordered with if not.
+
+    """
 
     if key in item.node:
-        if not isinstance(item.node[key], str):
-            raise ErrorEdit('The field {key} of {id} is not text.'.format(key = key, id = id_self))
         (start, end) = item.extent(key)
         return item.replace(start, end, cc_public.edit.layout.dump({key: value}, item.column(key)))
 
@@ -309,6 +403,110 @@ def set_field(tree: Tree, id_self: str, key: str, value: str) -> Edit:
     (_, end) = item.extent(after)
 
     return item.replace(end, end, cc_public.edit.layout.dump({key: value}, item.column(after)))
+
+
+# -----------------------------------------------------------------------------
+def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) -> typing.Any:
+    """
+    Return node with value put at the path list_part into it. A missing
+    mapping on the way is made, and a field id_<role> that names an
+    item is given guid_<role> after it.
+
+    """
+
+    (part, rest) = (list_part[0], list_part[1:])
+
+    if isinstance(node, list):
+        index       = _index(node, part)
+        node[index] = _put(tree, node[index], rest, value) if rest else value
+        return node
+
+    if not isinstance(node, dict):
+        raise ErrorEdit('The path goes into {value}, which has no fields.'.format(value = node))
+
+    if rest:
+        node[part] = _put(tree, node.get(part, {}), rest, value)
+        return node
+
+    node[part] = value
+    if not _is_reference(part, value):
+        return node
+
+    key_guid = _key_guid(part)
+    guid     = tree.guid(value)
+    if key_guid in node:
+        node[key_guid] = guid
+        return node
+
+    map_new = {}
+    for (key, each) in node.items():
+        map_new[key] = each
+        if key == part:
+            map_new[key_guid] = guid
+    return map_new
+
+
+# -----------------------------------------------------------------------------
+def _drop(node: typing.Any, list_part: list[str], path: str, id_self: str) -> None:
+    """
+    Take the value at the path list_part out of node, with guid_<role>
+    if it is id_<role>.
+
+    """
+
+    (part, rest) = (list_part[0], list_part[1:])
+
+    if isinstance(node, list):
+        index = _index(node, part)
+        if rest:
+            _drop(node[index], rest, path, id_self)
+        else:
+            del node[index]
+        return
+
+    if not (isinstance(node, dict) and part in node):
+        raise ErrorEdit('{id} has no field {path}.'.format(id = id_self, path = path))
+
+    if rest:
+        _drop(node[part], rest, path, id_self)
+        return
+
+    del node[part]
+    if part.startswith(PREFIX_ID):
+        node.pop(_key_guid(part), None)
+
+
+# -----------------------------------------------------------------------------
+def _index(list_value: list, part: str) -> int:
+    """
+    Return the index into list_value that part gives.
+
+    """
+
+    if not (part.isdigit() and int(part) < len(list_value)):
+        raise ErrorEdit('{part} is not the index of an element of a list of {count}.'.format(
+                                                            part = part, count = len(list_value)))
+    return int(part)
+
+
+# -----------------------------------------------------------------------------
+def _is_reference(key: str, value: typing.Any) -> bool:
+    """
+    Return True if the field key with value names an item.
+
+    """
+
+    return key.startswith(PREFIX_ID) and isinstance(value, str)
+
+
+# -----------------------------------------------------------------------------
+def _key_guid(key: str) -> str:
+    """
+    Return guid_<role> for the field id_<role>.
+
+    """
+
+    return PREFIX_GUID + key.removeprefix(PREFIX_ID)
 
 
 # -----------------------------------------------------------------------------
@@ -419,9 +617,13 @@ def batch(tree: Tree, list_operation: list) -> None:
         field: {NAME: VALUE, ...}
         link:  [[RELATION, TARGET], ...]
 
-        link:  [SOURCE, RELATION, TARGET]
+        link:   [SOURCE, RELATION, TARGET]
 
-        set:   [ID, NAME, VALUE]
+        unlink: [SOURCE, RELATION, TARGET]
+
+        set:    [ID, PATH, VALUE]
+
+        unset:  [ID, PATH]
 
         remove: ID
 
@@ -453,15 +655,20 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
     if isinstance(operation, dict) and set(operation) == {KEY_REMOVE}:
         return remove(tree, str(operation[KEY_REMOVE]))
 
-    for (key, function, count) in ((KEY_LINK, link, 3), (KEY_SET, set_field, 3),
-                                   (KEY_RENAME, rename, 2)):
+    if isinstance(operation, dict) and set(operation) == {KEY_SET}:
+        list_arg = operation[KEY_SET]
+        if isinstance(list_arg, list) and len(list_arg) == 3:
+            return set_field(tree, str(list_arg[0]), str(list_arg[1]), _plain(list_arg[2]))
+
+    for (key, function, count) in ((KEY_LINK, link, 3), (KEY_UNLINK, unlink, 3),
+                                   (KEY_UNSET, unset_field, 2), (KEY_RENAME, rename, 2)):
         if isinstance(operation, dict) and set(operation) == {key}:
             list_arg = operation[key]
             if isinstance(list_arg, list) and len(list_arg) == count:
                 return function(tree, *map(str, list_arg))
 
-    raise ErrorEdit('An operation of a batch is not one of new, link, set, remove or rename: '
-                    '{operation}'.format(operation = operation))
+    raise ErrorEdit('An operation of a batch is not one of new, link, unlink, set, unset, '
+                    'remove or rename: {operation}'.format(operation = operation))
 
 
 # -----------------------------------------------------------------------------
@@ -623,9 +830,14 @@ def _after(list_key: list[str], key: str) -> str:
     """
     Return the field of list_key that a new field key goes after: the
     last descriptive field before it in order, or for any other field
-    the last field before the aliases and edges.
+    the last field before the aliases and edges. A field guid_<role>
+    goes after id_<role>.
 
     """
+
+    key_id = PREFIX_ID + key.removeprefix(PREFIX_GUID)
+    if key.startswith(PREFIX_GUID) and key_id in list_key:
+        return key_id
 
     if key in TUPLE_KEY_PROSE:
         tuple_before = TUPLE_KEY_PROSE[:TUPLE_KEY_PROSE.index(key)]

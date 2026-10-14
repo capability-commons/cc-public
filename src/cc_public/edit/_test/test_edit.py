@@ -288,6 +288,61 @@ def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
         '                        By pytest.\n', 1)
 
 
+def test_unlink_takes_one_edge_out_and_keeps_the_others(tree):
+    assert _edit(tree, {'new':   'ann_x',
+                        'field': FIELD_ANN,
+                        'link':  [['r_is_about', 'con_concept'], ['r_is_about', 'con_relation']]},
+                       {'unlink': ['ann_x', 'r_is_about', 'con_relation']}) == {}
+    assert (tree / '_data/annotation/ann_x.yaml').read_text().endswith(
+        'whatever they change.\n\n' + TEXT_ABOUT)
+
+
+def test_unlink_of_the_last_edge_leaves_an_empty_relation(tree):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'new': 'ann_x', 'field': FIELD_ANN,
+                                        'link': [['r_is_about', 'con_concept']]},
+                                       {'unlink': ['ann_x', 'r_is_about', 'con_concept']}])
+    assert edited.edit['_data/annotation/ann_x.yaml'].endswith(
+        'whatever they change.\nrelation:               []\n')
+
+
+def test_unset_takes_out_a_field_that_set_added(tree):
+    path = tree / 'src/cc_public/edit/_test/test_edit.py'
+    text = path.read_text()
+    assert _edit(tree, {'set': ['pym_cc_public.edit._test.test_edit', 'usage', 'By pytest.']},
+                       {'unset': ['pym_cc_public.edit._test.test_edit', 'usage']}) == {}
+    assert path.read_text() == text
+
+
+def test_set_takes_a_structured_value_and_a_path_into_one(tree, zero):
+    assert _edit(tree, {'new': 'concern_x', 'field': FIELD_CONCERN},
+                       {'set': ['concern_x', 'measure', ['Lines changed.', 'Files changed.']]},
+                       {'set': ['concern_x', 'question.0', 'Can it be read?']}) == {}
+    text = (tree / '_data/register/reg_concern.yaml').read_text()
+    assert ('    question:\n      - Can it be read?\n\n'
+            '    measure:\n      - Lines changed.\n      - Files changed.\n') in text
+
+
+def test_a_field_that_names_an_item_keeps_its_guid_beside_it(tree):
+    path   = 'src/cc_public/edit/layout.py'
+    id_pym = 'pym_cc_public.edit.layout'
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'unset': [id_pym, 'protective_mark.0.id_mark']}])
+    assert 'protective_mark:\n  - {}\n' in edited.edit[path]
+    assert 'id_mark' not in edited.edit[path]
+    cc_public.edit.edit.batch(edited, [{'set': [id_pym, 'protective_mark.0.id_mark',
+                                                'mark_public']}])
+    assert edited.edit[path] == (tree / path).read_text()
+
+
+def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'set': ['t_annotation', 'id_concept', 'con_concept']}])
+    assert ('    id_concept:         con_concept\n'
+            '    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40\n') in (
+                edited.edit['_data/register/reg_data_item_type.yaml'])
+
+
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'new': 'zzz_x'}, 'No type has the prefix zzz.'),
     ({'new': 'con_concept'}, 'An item with the id con_concept exists.'),
@@ -296,8 +351,16 @@ def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
     ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),
     ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way.'),
     ({'set': ['con_none', 'note', 'x']}, 'No item has the id con_none.'),
-    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, link, set, "
-                                  "remove or rename: {'unlink': ['con_concept']}"),
+    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, link, unlink, "
+                                  "set, unset, remove or rename: {'unlink': ['con_concept']}"),
+    ({'unlink': ['con_concept', 'r_is_about', 'con_type']},
+     'con_concept has no edge of r_is_about to con_type.'),
+    ({'unset': ['con_concept', 'note']}, 'con_concept has no field note.'),
+    ({'unset': ['con_concept', 'alias']}, 'The field alias is not set this way.'),
+    ({'set': ['con_register_entry', 'term_admitted.9', 'x']},
+     '9 is not the index of an element of a list of 1.'),
+    ({'set': ['con_concept', 'title.x', 'x']},
+     'The path goes into Concept, which has no fields.'),
 ])
 def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     edited = cc_public.edit.edit.Tree(tree)
