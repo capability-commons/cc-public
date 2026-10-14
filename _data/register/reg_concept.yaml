@@ -1,0 +1,454 @@
+id_self:                reg_concept
+guid_self:              reg_bcba1ab65d824ac2b2f7af2ded66835a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept register
+brief:                  |
+                        Register of the concepts used in the cc-public
+                        repository.
+description:            |
+                        The concept register holds one entry per
+                        concept. Each entry defines the concept and
+                        gives its preferred term, any admitted terms,
+                        and any deprecated terms, as ISO 1087 uses
+                        those words.
+usage:                  |
+                        The concept register keeps the vocabulary of
+                        the repository consistent. A data item that
+                        introduces a concept enters it here. Prose is
+                        judged against it: a term that names a concept
+                        is used in that sense, and a deprecated term
+                        is not used for it.
+
+                        A partner may hold a concept register of their
+                        own. A concept arriving from a partner names
+                        an entry there and not here.
+note:                   |
+                        A concept is entered here whether or not it is
+                        a data item type. What has a type is a subset
+                        of what has a name.
+
+                        One term may name several concepts, and
+                        several terms may name one concept.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_concept
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # con_type -- Type
+  #
+  con_type:
+    id_self:            con_type
+    guid_self:          con_0d0e04ed926841818a9ef3a06243a4fa
+    title:              Type
+    brief:              |
+                        A kind of data item, declared as an entry in
+                        the data item type register and owning one
+                        prefix.
+    description:        |
+                        A type names the schema its data items are
+                        validated against. A data item is never
+                        retyped.
+    term_preferred:     type
+
+    term_deprecated:
+      - kind
+      - class
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_schema -- Schema
+  #
+  con_schema:
+    id_self:            con_schema
+    guid_self:          con_3ce8de2f2d6f422fb6b31309884e798d
+    title:              Schema
+    brief:              |
+                        A JSON Schema, held as a data item, against
+                        which data items of a type are validated.
+    description:        |
+                        A schema is itself a data item with an
+                        identity, and travels on its own, one per
+                        file.
+    term_preferred:     schema
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_register -- Register
+  #
+  con_register:
+    id_self:            con_register
+    guid_self:          con_374dca1dc078449f89c61caae71611e1
+    title:              Register
+    brief:              |
+                        A data item holding a keyed table of entries,
+                        and the source of truth for a vocabulary.
+    description:        |
+                        Entries are keyed by readable id, so a key
+                        appears once. A register names a schema of its
+                        own, which composes sch_register.
+    term_preferred:     register
+
+    term_deprecated:
+      - registry
+      - list
+      - table
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_register_entry -- Register entry
+  #
+  con_register_entry:
+    id_self:            con_register_entry
+    guid_self:          con_ccc4194959314e669edb4d83514b58e4
+    title:              Register entry
+    brief:              |
+                        One record in the table of a register, keyed
+                        by its id.
+    description:        |
+                        A register entry is embedded in its register
+                        and travels with it, so it carries no rights
+                        of its own. Its shape is the general register
+                        entry shape composed with the shape specific
+                        to its register.
+    usage:              |
+                        The admitted term regentry is used in the ids
+                        of schemas specific to one register, such as
+                        sch_regentry_concept, in the way that reg is
+                        used in sch_reg_concept. The schemas that
+                        apply to every register spell the term out, as
+                        in sch_register_entry.
+    term_preferred:     register entry
+
+    term_admitted:
+      - regentry
+
+    term_deprecated:
+      - entry
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_relation -- Relation
+  #
+  con_relation:
+    id_self:            con_relation
+    guid_self:          con_58ca7869cf9443168d8d96d8d70b972c
+    title:              Relation
+    brief:              |
+                        A kind of directed edge between data items,
+                        declared as an entry in the relation register.
+    description:        |
+                        A relation is directional. Where the opposite
+                        reading is useful, the entry embeds an
+                        inverse: a second identity and surface form
+                        for the same relation, and not a relation of
+                        its own.
+    term_preferred:     relation
+
+    term_admitted:
+      - relation type
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_protective_mark -- Protective mark
+  #
+  con_protective_mark:
+    id_self:            con_protective_mark
+    guid_self:          con_547c4fe6a53547e98ed177520f3f6968
+    title:              Protective mark
+    brief:              |
+                        An entry in the protective mark register that
+                        says how a data item may be handled and with
+                        whom it may be shared.
+    description:        |
+                        A data item names one or more protective marks
+                        by reference. Several are conjunctive: the
+                        most restrictive governs.
+    term_preferred:     protective mark
+
+    term_admitted:
+      - mark
+
+    term_deprecated:
+      - classification
+      - label
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_concept -- Concept
+  #
+  con_concept:
+    id_self:            con_concept
+    guid_self:          con_820f9604e6134b9fbefd5a75146d4c40
+    title:              Concept
+    brief:              |
+                        One idea the repository uses, held as an entry
+                        in the concept register.
+    description:        |
+                        A concept carries its preferred term, any
+                        admitted terms, and any deprecated terms. A
+                        concept need not have a type.
+    term_preferred:     concept
+
+    term_deprecated:
+      - term
+      - keyword
+      - tag
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_writing_style_rule -- Writing style rule
+  #
+  con_writing_style_rule:
+    id_self:            con_writing_style_rule
+    guid_self:          con_4c23b1dfc6974fadb122852cdbe5093c
+    title:              Writing style rule
+    brief:              |
+                        One rule that prose in the repository follows,
+                        stated in a sentence with its reasoning and an
+                        example each way.
+    description:        |
+                        An entry in the writing style rule register,
+                        followed by whoever writes prose in the
+                        repository.
+    term_preferred:     writing style rule
+
+    term_admitted:
+      - style rule
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_annotation -- Annotation
+  #
+  con_annotation:
+    id_self:            con_annotation
+    guid_self:          con_b0fd9a9d0569454ebccd4b5fc1721029
+    title:              Annotation
+    brief:              |
+                        One assertion about one or more items in the
+                        graph, held as an item of its own so that it
+                        can be answered.
+    description:        |
+                        An annotation is not a finding, is not
+                        evidence, and is not true for want of an
+                        answer. Its role is carried by its edges: what
+                        it is about, what it rests on, and what it
+                        supports or challenges.
+    note:               |
+                        Note is deprecated because it already names
+                        the descriptive field every item carries.
+                        Comment is deprecated because it suggests
+                        threads and ordering, which nothing needs.
+    term_preferred:     annotation
+
+    term_deprecated:
+      - note
+      - comment
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_decision -- Decision
+  #
+  con_decision:
+    id_self:            con_decision
+    guid_self:          con_26a4625162d2482ab375384b716f164a
+    title:              Decision
+    brief:              |
+                        One choice about one or more items in the
+                        graph, held as an item of its own so that it
+                        can be argued over.
+    description:        |
+                        A decision is not an annotation. An annotation
+                        asserts something and a decision chooses
+                        something. Annotations give the reasons for
+                        and against a decision, and those reasons are
+                        its rationale.
+    note:               |
+                        The concept follows architecture decisions and
+                        rationale in ISO/IEC/IEEE 42010:2011, Systems
+                        and software engineering -- Architecture
+                        description, clauses 4.2.7 and 5.8.
+
+                        Of the points 5.8.2 asks a record to consider,
+                        the id identifies the decision, the brief
+                        states it, r_is_about links it to the items it
+                        affects, annotations carry its rationale and
+                        link it to concerns, sibling decisions record
+                        the alternatives, and r_supersedes relates it
+                        to the decision it replaces. Owner, outcome
+                        and timestamps are left for now.
+    term_preferred:     decision
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_concern -- Concern
+  #
+  con_concern:
+    id_self:            con_concern
+    guid_self:          con_a8a3fb947d264ab286b5d4077298321c
+    title:              Concern
+    brief:              |
+                        A matter of interest in a system, such as its
+                        security, reliability or safety.
+    description:        |
+                        A concern is something a stakeholder cares
+                        about in a system. An argument about a design
+                        speaks for one or more concerns, and a
+                        decision weighs the concerns its arguments
+                        speak for.
+    note:               |
+                        The concept follows ISO/IEC/IEEE 42010:2022,
+                        Software, systems and enterprise --
+                        Architecture description, which defines a
+                        concern as a matter of interest or importance
+                        to a stakeholder.
+
+                        A concern is distinct from a concept. The two
+                        share no prefix: a concern id begins concern_
+                        and a concept id begins con_.
+    term_preferred:     concern
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_module -- Python module
+  #
+  con_python_module:
+    id_self:            con_python_module
+    guid_self:          con_1f7d2eb2ccc94944b3dd731f63f8284b
+    title:              Python module
+    brief:              |
+                        One file of python source code, as the unit
+                        that python imports.
+    description:        |
+                        A python module is named by the dotted path it
+                        is imported under. It carries its own metadata
+                        in its module docstring.
+    term_preferred:     python module
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_package -- Python package
+  #
+  con_python_package:
+    id_self:            con_python_package
+    guid_self:          con_53a6b71e9dec4a42a8100e03e692f84e
+    title:              Python package
+    brief:              |
+                        A directory of python modules, as a unit that
+                        python imports.
+    description:        |
+                        A python package is named by the dotted path
+                        it is imported under. It carries its own
+                        metadata in the docstring of its __init__
+                        module.
+    term_preferred:     python package
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_datalog_source_file -- Datalog source file
+  #
+  con_datalog_source_file:
+    id_self:            con_datalog_source_file
+    guid_self:          con_2d08686dcbbf4a2ebf93e3cb771cfcd9
+    title:              Datalog source file
+    brief:              |
+                        One file of Datalog source code: declarations
+                        and rules that are placed in a program with
+                        others.
+    description:        |
+                        A Datalog source file is named by a dotted
+                        path in the same way as a python module. It
+                        carries its own metadata in a comment at the
+                        head of the file.
+    note:               |
+                        Souffle calls the whole a program, and its
+                        source files are combined by include
+                        directives. Souffle has no module. A souffle
+                        component is a template of declarations and
+                        rules within a program, not a file.
+    term_preferred:     Datalog source file
+
+    term_deprecated:
+      - Datalog module
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_file -- File
+  #
+  con_file:
+    id_self:            con_file
+    guid_self:          con_75e8c140d26c4fe6bdd8ad37030611cd
+    title:              File
+    brief:              |
+                        One file in the repository that is neither a
+                        data item nor source code with a docstring.
+    description:        |
+                        A file in this sense, such as .gitignore,
+                        carries its metadata in a comment at its head,
+                        because its format has no other place for it.
+    term_preferred:     file
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_commit -- Commit
+  #
+  con_commit:
+    id_self:            con_commit
+    guid_self:          con_bc87eae04b9c42869a3bc825f560b94b
+    title:              Commit
+    brief:              |
+                        One recorded change to the tree, integrated
+                        into a branch of its repository.
+    description:        |
+                        A commit is the change, not the message that
+                        explains it. The commit message is where the
+                        item that records a commit is held.
+    note:               |
+                        The concept follows ISO/IEC/IEEE 24765:2017,
+                        Systems and software engineering --
+                        Vocabulary, which defines a commit (3.644) as
+                        the integration of changes into a branch that
+                        the version control system's repository makes
+                        accessible, and a commit message (3.645) as
+                        the explanatory message that accompanies a
+                        commit. The nearest concept in configuration
+                        management is a change record (3.546).
+    term_preferred:     commit
+    alias:              []
+    relation:           []

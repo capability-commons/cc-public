@@ -1,0 +1,119 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_trait_identity.yaml
+id_self:                sch_trait_identity
+guid_self:              sch_2bad9002fef7435b90cd20c19b8e6ab7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Identity trait
+brief:                  |
+                        Trait with the identity fields.
+description:            |
+                        This is the single, universal identity trait.
+                        It holds only two fields: guid_self and
+                        id_self.
+
+                        A field named id_self or guid_self declares an
+                        identity, wherever it appears in a document
+                        and at whatever depth. Every other identifier
+                        field refers to an identity declared
+                        elsewhere, and names the role it plays (for
+                        example id_target or guid_relation).
+
+                        guid_self is the value that resolves an item,
+                        and that distinguishes two items whose id_self
+                        values have collided across repositories in
+                        the federation.
+usage:                  |
+                        Anything that can be the target of a relation
+                        edge composes this trait via allOf, and
+                        thereby becomes addressable. This includes
+                        both standalone data items and embedded ones.
+note:                   |
+                        Identifier strings take their shape from
+                        sch_primitive.yaml. This trait defines what it
+                        means for an item to have one of each as its
+                        identity.
+
+                        An item that also describes itself composes
+                        sch_trait_descriptive.yaml. An item that also
+                        carries rights composes sch_trait_rights.yaml.
+                        A standalone item composes
+                        sch_standalone.yaml, which brings all three
+                        traits together.
+type:                   object
+
+required:
+  - id_self
+  - guid_self
+
+properties:
+
+  id_self:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+    description:        |
+                        Human-readable identifier with a type prefix.
+                        It identifies the same item as guid_self.
+
+                        Unlike guid_self, id_self has no guarantee of
+                        uniqueness or immutability. It cannot be used
+                        to retrieve a cross-repository reference
+                        reliably. It carries the same type prefix as
+                        guid_self, and can be grepped in the same way.
+
+                        Simple mechanistic tooling assigns guid_self.
+                        Human or LLM authors choose id_self for
+                        readability. When a data item is persisted as
+                        a file that holds nothing but that item, the
+                        file root name should be its id_self.
+
+                        That rule does not apply to a data item
+                        embedded in a file that is primarily something
+                        else, such as a Python module carrying its own
+                        metadata. Such a file is named by the
+                        conventions of whatever it is, and the id_self
+                        is derived from the position of the embedded
+                        item instead.
+
+                        Global uniqueness is strictly impossible
+                        across a federation, so some effort should
+                        still be made to reduce the collisions that
+                        will later need reconciliation.
+
+                        Note the distinction between a guarantee and a
+                        requirement. No uniqueness guarantee is made,
+                        because none can be enforced across a
+                        federation. Within a single scope, a collision
+                        is nonetheless a fault to be resolved by
+                        renaming: nothing there can resolve the name
+                        to either item, and tooling that indexes by
+                        readable id silently keeps whichever it saw
+                        last. Bringing two items into one scope is
+                        what turns a tolerable difference into a
+                        collision.
+
+                        Changes to id_self should be infrequent and
+                        deliberate, such as a rename to avoid a
+                        collision, so that excessive identifier churn
+                        is avoided.
+
+  guid_self:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+    description:        |
+                        Opaque, immutable, globally unique identifier.
+                        It is assigned once, on first creation, and
+                        preserved unchanged across every later edit,
+                        including promotion from an embedded item to a
+                        standalone one. It is the canonical target for
+                        relation edges, and identifies the same item
+                        as id_self.
+
+                        It consists of a type prefix, an underscore,
+                        and 32 lowercase hexadecimal digits forming a
+                        GUID, such as a UUIDv4. The data item type
+                        register records the prefix.

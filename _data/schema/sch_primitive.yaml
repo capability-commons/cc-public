@@ -1,0 +1,115 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_primitive.yaml
+id_self:                sch_primitive
+guid_self:              sch_b7c5238250bd403cadd8bc0844c23e2d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Primitive value types
+brief:                  |
+                        Library of shared value types.
+description:            |
+                        Shared value-type definitions that have no
+                        object shape of their own. This file is a
+                        $defs library only: it has no type, no
+                        properties and no required list, and is never
+                        referenced via allOf.
+
+                        It is kept separate from
+                        sch_trait_identity.yaml and the other trait
+                        schemas so that a value type (what a guid or a
+                        readable id looks like) can be reused without
+                        pulling in any object shape (what it means for
+                        something to be addressable).
+usage:                  |
+                        Other schemas $ref individual $defs entries by
+                        full URL fragment, for example:
+                          https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+note:                   |
+                        These defs describe only what an identifier
+                        looks like. They say nothing about what an
+                        occurrence of one means. Meaning is carried by
+                        the name of the field that holds it: a _self
+                        field declares an identity; any other
+                        identifier field refers to one and names its
+                        role as it does so. See
+                        sch_trait_identity.yaml. No role therefore
+                        appears in these names.
+
+$defs:
+
+  prefix:
+    type:               string
+    pattern:            ^[a-z]{1,8}$
+    description:        |
+                        Type prefix: one to eight lowercase letters,
+                        with no digits and no underscore.
+
+                        Because the prefix contains no underscore, the
+                        first underscore in a prefixed identifier is
+                        always the separator. Prefix and body can
+                        therefore be split deterministically without
+                        consulting any register.
+
+                        The one constraint on the prefix vocabulary
+                        that JSON Schema cannot express is plain
+                        uniqueness: no two types may claim the same
+                        prefix. Tooling enforces that over the data
+                        item type register.
+
+  id:
+    type:               string
+    pattern:            ^[a-z]{1,8}_[a-z0-9][a-z0-9_]*(\.[a-z0-9_][a-z0-9_]*)*$
+    description:        |
+                        Readable, prefixed identifier for a thing: a
+                        type prefix, an underscore, then a lowercase
+                        body of letters, digits and underscores (for
+                        example t_schema, reg_relation,
+                        r_is_specified_by_schema). The body may itself
+                        contain underscores; the first underscore is
+                        always the prefix separator.
+
+                        The body may begin with a digit so that an
+                        identifier can sort by time. The id of a
+                        commit begins with the time it was made, for
+                        example. What distinguishes a readable id from
+                        a guid is not the letter it begins with, but
+                        the fact that a guid has an exact form of 32
+                        hexadecimal digits and nothing else.
+
+                        The body may also consist of several segments
+                        separated by full stops. This allows a type
+                        whose things are already named hierarchically
+                        to reflect that structure: for example
+                        pym_cc_public.check.check names a Python
+                        module by the name under which it is imported.
+                        A segment after the first may begin with an
+                        underscore or a digit.
+
+                        This is the widest form an identifier may
+                        take. What a given type permits is narrower,
+                        and is stated by the regex_id of its entry in
+                        the data item type register.
+
+  guid:
+    type:               string
+    pattern:            ^[a-z]{1,8}_[0-9a-f]{32}$
+    description:        |
+                        Globally unique identifier for a thing: a type
+                        prefix, an underscore, then a lowercase
+                        32-character GUID (for example
+                        t_a4fb6d3ae5ff4452a45804e2f57b06a2, the guid
+                        of t_schema). What a guid means is stated by
+                        guid_self in sch_trait_identity.yaml.
+
+                        This is not a bare UUID. A standard UUID
+                        parser, or a database column of UUID type,
+                        will reject it. Where a guid has to cross into
+                        something that expects a bare UUID, split it
+                        on its first underscore and carry the prefix
+                        separately.

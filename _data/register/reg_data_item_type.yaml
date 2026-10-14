@@ -1,0 +1,721 @@
+id_self:                reg_data_item_type
+guid_self:              reg_c377bd8e87ec4b1ca2bd398488392a3d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data item type register
+brief:                  |
+                        Register of data item types.
+description:            |
+                        The data item type register lists every type
+                        together with the metadata associated with it.
+usage:                  |
+                        The data item type register enables
+                        type-specific system functions, such as the
+                        automated validation of a data item.
+note:                   |
+                        Types are analogous to programming-language
+                        types: they describe the kinds of thing the
+                        system can handle. The system is primarily
+                        intended to process data items. A data item
+                        can be any digital asset, but most typically
+                        it is an engineering document, such as a
+                        requirements specification or a test report,
+                        encoded in a defined structure, serialised as
+                        YAML and stored as a text file.
+
+                        A requirements specification is the canonical
+                        example of a data item. Its type defines the
+                        metadata common to every requirements
+                        specification.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_data_item_type
+    guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # t_type -- Type type
+  #
+  t_type:
+    id_self:            t_type
+    guid_self:          t_2a196326eaf84759b37d43d5b1f0b118
+    title:              Type type
+    brief:              |
+                        Type of type data items.
+    description:        |
+                        Each type data item describes one type of
+                        thing that can be held and processed by the
+                        system.
+    usage:              |
+                        Type data items hold type-specific metadata,
+                        such as the schemas that validate data items
+                        of that type.
+    note:               |
+                        Type data items only ever exist as entries in
+                        the data item type register, never as data
+                        items that travel on their own. Every entry in
+                        this register is a type data item.
+
+                        Most types are data item types, but the
+                        register may hold other types as well.
+
+                        The shape of type data items is defined by the
+                        sch_regentry_type schema.
+
+                        The shape of the data item type register is
+                        defined by the sch_reg_data_item_type schema.
+    alias:              []
+    prefix:             t
+    regex_id:           ^t_[a-z][a-z0-9_]*$
+    id_concept:         con_type
+    guid_concept:       con_0d0e04ed926841818a9ef3a06243a4fa
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_data_item_type
+        guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_type
+        guid_target:    sch_4a17e1ea6a1143c59c0a634b38f902bc
+
+  # ---------------------------------------------------------------------------
+  # t_schema -- Schema type
+  #
+  t_schema:
+    id_self:            t_schema
+    guid_self:          t_a4fb6d3ae5ff4452a45804e2f57b06a2
+    title:              Schema type
+    brief:              |
+                        Type of schema data items.
+    description:        |
+                        Each schema data item defines the structure of
+                        a data item type, either in part or in whole.
+    usage:              |
+                        A schema data item validates the structure of
+                        the data items its type covers.
+    note:               |
+                        Schema data items travel on their own, one per
+                        file.
+
+                        Trait schemas hold elements common to several
+                        types, such as data primitives, so there is no
+                        simple one-to-one relationship between data
+                        item types and schemas. Most data item types
+                        are nonetheless expected to have at least one
+                        schema, and most schemas to validate at most
+                        one data item type.
+
+                        The schema for a data item type is named by
+                        the r_has_items_specified_by_schema edge on
+                        its entry in the data item type register. It
+                        can also be inferred from the schema file
+                        name.
+
+                        The shape of schema data items is defined by
+                        the sch_schema schema.
+    alias:              []
+    prefix:             sch
+    regex_id:           ^sch_[a-z][a-z0-9_]*$
+    id_concept:         con_schema
+    guid_concept:       con_3ce8de2f2d6f422fb6b31309884e798d
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_schema
+        guid_target:    sch_19b746511dc84ae1b822a98afa81a196
+
+  # ---------------------------------------------------------------------------
+  # t_register -- Register type
+  #
+  t_register:
+    id_self:            t_register
+    guid_self:          t_dcd4c5f697c945829094914ff868a43b
+    title:              Register type
+    brief:              |
+                        Type of register data items.
+    description:        |
+                        Each register data item provides a controlled
+                        list of register entry data items.
+    usage:              |
+                        Register data items are used wherever an
+                        automated process needs a controlled set of
+                        identifiers.
+    note:               |
+                        Register data items travel on their own, one
+                        per file. The data item type register, which
+                        is this document, is one.
+
+                        The shape every register shares is defined by
+                        the sch_register schema.
+
+                        A register whose entries carry fields of their
+                        own composes sch_register with a register
+                        entry schema, in a schema of its own such as
+                        sch_reg_writing_style_rule.
+    alias:              []
+    prefix:             reg
+    regex_id:           ^reg_[a-z][a-z0-9_]*$
+    id_concept:         con_register
+    guid_concept:       con_374dca1dc078449f89c61caae71611e1
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_register
+        guid_target:    sch_a4620d79fab546b3be6c756f0325e069
+
+  # ---------------------------------------------------------------------------
+  # t_relation -- Relation type
+  #
+  t_relation:
+    id_self:            t_relation
+    guid_self:          t_250febd9728346e98029ef9b587304f1
+    title:              Relation type
+    brief:              |
+                        Type of relation data items.
+    description:        |
+                        Each relation data item defines a formal
+                        meaning for a set of directed edges between
+                        identifiable items.
+    usage:              |
+                        Relation data items control how edges are
+                        interpreted. Labelling edges with different
+                        relation ids causes them to be treated
+                        differently.
+    note:               |
+                        Relation data items only ever exist as entries
+                        in the relation register, never as data items
+                        that travel on their own.
+
+                        Relations are directional. Where the opposite
+                        reading is useful, the entry embeds an
+                        inverse: a second identity and surface form
+                        for the same relation, and not a relation of
+                        its own.
+
+                        The shape of relation data items is defined by
+                        the sch_regentry_relation schema.
+
+                        The shape of the relation register is defined
+                        by the sch_reg_relation schema.
+    alias:              []
+    prefix:             r
+    regex_id:           ^r_[a-z][a-z0-9_]*$
+    id_concept:         con_relation
+    guid_concept:       con_58ca7869cf9443168d8d96d8d70b972c
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_relation
+        guid_target:    reg_512fbf5c51be4efaa4517b52310ddf80
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_relation
+        guid_target:    sch_4efc46f1bf2c4f7a99b68763cd8d6432
+
+  # ---------------------------------------------------------------------------
+  # t_protective_mark -- Protective mark type
+  #
+  t_protective_mark:
+    id_self:            t_protective_mark
+    guid_self:          t_d0fe8b855eb4467fb00f238fe180225b
+    title:              Protective mark type
+    brief:              |
+                        Type of protective mark data items.
+    description:        |
+                        Each protective mark data item names an
+                        authority and a level, and states what may be
+                        done with an item that bears it.
+    usage:              |
+                        Protective mark data items are used to decide
+                        what may be disclosed, to whom, and under
+                        whose rules.
+    note:               |
+                        Protective mark data items only ever exist as
+                        entries in the protective mark register, never
+                        as data items that travel on their own.
+
+                        The shape of protective mark data items is
+                        defined by the sch_regentry_protective_mark
+                        schema.
+
+                        The shape of the protective mark register is
+                        defined by the sch_reg_protective_mark schema.
+    alias:              []
+    prefix:             mark
+    regex_id:           ^mark_[a-z][a-z0-9_]*$
+    id_concept:         con_protective_mark
+    guid_concept:       con_547c4fe6a53547e98ed177520f3f6968
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_protective_mark
+        guid_target:    reg_0653174dda274015aa95754a37073797
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_protective_mark
+        guid_target:    sch_749dc2bbaf6c4a238ca4e02044a633fa
+
+  # ---------------------------------------------------------------------------
+  # t_concept -- Concept type
+  #
+  t_concept:
+    id_self:            t_concept
+    guid_self:          t_e0d624b5a7a6406581eda544e5213cb1
+    title:              Concept type
+    brief:              |
+                        Type of concept data items.
+    description:        |
+                        Each concept data item defines one concept the
+                        repository uses, with its preferred term, any
+                        admitted terms, and any deprecated terms.
+    usage:              |
+                        Concept data items keep the vocabulary
+                        consistent: prose uses the preferred term for
+                        each concept, and not its deprecated terms.
+    note:               |
+                        Concept data items only ever exist as entries
+                        in the concept register, never as data items
+                        that travel on their own.
+
+                        There is one entry per concept rather than one
+                        per term. Several terms may name one concept,
+                        and one term may name several concepts, so the
+                        mapping between terms and concepts is many to
+                        many.
+
+                        The shape of concept data items is defined by
+                        the sch_regentry_concept schema.
+
+                        The shape of the concept register is defined
+                        by the sch_reg_concept schema.
+    alias:              []
+    prefix:             con
+    regex_id:           ^con_[a-z][a-z0-9_]*$
+    id_concept:         con_concept
+    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_concept
+        guid_target:    reg_bcba1ab65d824ac2b2f7af2ded66835a
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_concept
+        guid_target:    sch_62e63ec5ebe24650856fe2d275be3b4b
+
+  # ---------------------------------------------------------------------------
+  # t_writing_style_rule -- Writing style rule type
+  #
+  t_writing_style_rule:
+    id_self:            t_writing_style_rule
+    guid_self:          t_854481855e61404ab53d2766077cb2f9
+    title:              Writing style rule type
+    brief:              |
+                        Type of writing style rule data items.
+    description:        |
+                        Each writing style rule data item states one
+                        rule that prose in the repository follows,
+                        with a sentence that follows it and a sentence
+                        that breaks it.
+    usage:              |
+                        Writing style rule data items guide whoever
+                        writes prose in the repository, a person or a
+                        model.
+    note:               |
+                        Writing style rule data items only ever exist
+                        as entries in the writing style rule register,
+                        never as data items that travel on their own.
+
+                        The shape of writing style rule data items is
+                        defined by the sch_regentry_writing_style_rule
+                        schema.
+
+                        The shape of the writing style rule register
+                        is defined by the sch_reg_writing_style_rule
+                        schema.
+    alias:              []
+    prefix:             style
+    regex_id:           ^style_[a-z][a-z0-9_]*$
+    id_concept:         con_writing_style_rule
+    guid_concept:       con_4c23b1dfc6974fadb122852cdbe5093c
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_writing_style_rule
+        guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_writing_style_rule
+        guid_target:    sch_4895339a23364c1f87462a80ceb3cf24
+
+  # ---------------------------------------------------------------------------
+  # t_annotation -- Annotation type
+  #
+  t_annotation:
+    id_self:            t_annotation
+    guid_self:          t_885b28187d9742a282deddea22e02bad
+    title:              Annotation type
+    brief:              |
+                        Type of annotation data items.
+    description:        |
+                        Each annotation data item holds one assertion
+                        about one or more items in the graph, offered
+                        for consideration.
+    usage:              |
+                        Annotation data items let anyone record
+                        something worth saying about an item, such as
+                        a worry, an opportunity or a reason to keep a
+                        design as it is, in a form that can be pointed
+                        at and answered.
+    note:               |
+                        Annotation data items travel on their own, one
+                        per file, in _data/annotation/.
+
+                        Two assertions that could be answered
+                        separately are two annotations.
+
+                        The role of an annotation is carried by its
+                        edges rather than by its fields: what it is
+                        about, what it rests on, and what it supports
+                        or challenges. It has no status, severity or
+                        category, and nothing decides which of two
+                        annotations prevails.
+
+                        The shape of annotation data items is defined
+                        by the sch_annotation schema.
+    alias:              []
+    prefix:             ann
+    regex_id:           ^ann_[a-z][a-z0-9_]*$
+    id_concept:         con_annotation
+    guid_concept:       con_b0fd9a9d0569454ebccd4b5fc1721029
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_annotation
+        guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
+
+  # ---------------------------------------------------------------------------
+  # t_decision -- Decision type
+  #
+  t_decision:
+    id_self:            t_decision
+    guid_self:          t_db4130e5642c4c019f0c95c9f956875c
+    title:              Decision type
+    brief:              |
+                        Type of decision data items.
+    description:        |
+                        Each decision data item records one choice
+                        about one or more items in the graph.
+    usage:              |
+                        Decision data items are what annotations argue
+                        over. The annotations that support or
+                        challenge a decision, and the concerns they
+                        argue for, are its rationale, so that a
+                        decision that proves wrong can be traced back
+                        to the concerns that shaped it.
+    note:               |
+                        Decision data items travel on their own, one
+                        per file, in _data/decision/.
+
+                        Alternatives are sibling decisions about the
+                        same item, each argued over on its own, and
+                        each is kept whatever becomes of it.
+
+                        The shape of decision data items is defined by
+                        the sch_decision schema.
+    alias:              []
+    prefix:             dec
+    regex_id:           ^dec_[a-z][a-z0-9_]*$
+    id_concept:         con_decision
+    guid_concept:       con_26a4625162d2482ab375384b716f164a
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_decision
+        guid_target:    sch_6fd91c76629042f394ce1addf6f0cd1b
+
+  # ---------------------------------------------------------------------------
+  # t_concern -- Concern type
+  #
+  t_concern:
+    id_self:            t_concern
+    guid_self:          t_a23b9ed36b244b2181c96d386ab12d3d
+    title:              Concern type
+    brief:              |
+                        Type of concern data items.
+    description:        |
+                        Each concern data item names one matter of
+                        interest in a system, such as security,
+                        reliability or safety, that an argument about
+                        a design may speak for.
+    usage:              |
+                        Concern data items let the argument behind a
+                        decision be read concern by concern.
+    note:               |
+                        Concern data items only ever exist as entries
+                        in the concern register, never as data items
+                        that travel on their own.
+
+                        The prefix is concern rather than an
+                        abbreviation, because con already marks the
+                        concept type.
+
+                        The shape of concern data items is defined by
+                        the sch_regentry_concern schema.
+
+                        The shape of the concern register is defined
+                        by the sch_reg_concern schema.
+    alias:              []
+    prefix:             concern
+    regex_id:           ^concern_[a-z][a-z0-9_]*$
+    id_concept:         con_concern
+    guid_concept:       con_a8a3fb947d264ab286b5d4077298321c
+
+    relation:
+
+      - id_relation:    r_has_items_held_in_register
+        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+        id_target:      reg_concern
+        guid_target:    reg_f1772854ec5947c08f93f8ef2f766b0d
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_regentry_concern
+        guid_target:    sch_c3c151bc793c468faa80f97ceb67d669
+
+  # ---------------------------------------------------------------------------
+  # t_python_module -- Python module type
+  #
+  t_python_module:
+    id_self:            t_python_module
+    guid_self:          t_25f5d95ef9e24c339175ec182eb959a4
+    title:              Python module type
+    brief:              |
+                        Type of python module data items.
+    description:        |
+                        Each python module data item holds the
+                        metadata of one python module, in the module
+                        docstring.
+    usage:              |
+                        Python module data items let a module be
+                        traced, annotated and argued over like any
+                        other item, without a second file to keep in
+                        step with it.
+    note:               |
+                        The id is the prefix and the name the module
+                        is imported under, with src as the root of the
+                        import path, in lower case and with its parts
+                        separated by full stops.
+                        pym_cc_public.check.check names
+                        src/cc_public/check/check.py.
+
+                        The shape of python module data items is
+                        defined by the sch_python_module schema.
+    alias:              []
+    prefix:             pym
+    regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_python_module
+    guid_concept:       con_1f7d2eb2ccc94944b3dd731f63f8284b
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_python_module
+        guid_target:    sch_d1d9d093e52d47a9ba8b4fdd8c47db07
+
+  # ---------------------------------------------------------------------------
+  # t_python_package -- Python package type
+  #
+  t_python_package:
+    id_self:            t_python_package
+    guid_self:          t_bd462575484043a39c573ed2fb58eb0f
+    title:              Python package type
+    brief:              |
+                        Type of python package data items.
+    description:        |
+                        Each python package data item holds the
+                        metadata of one python package, in the
+                        docstring of its __init__ module.
+    usage:              |
+                        Python package data items let a package be
+                        traced, annotated and argued over as a whole,
+                        apart from the modules it holds.
+    note:               |
+                        The id is the prefix and the name the package
+                        is imported under, with src as the root of the
+                        import path, in lower case and with its parts
+                        separated by full stops. pyp_cc_public.check
+                        names src/cc_public/check. The __init__ module
+                        holds the package item and has no python
+                        module item of its own.
+
+                        The shape of python package data items is
+                        defined by the sch_python_package schema.
+    alias:              []
+    prefix:             pyp
+    regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_python_package
+    guid_concept:       con_53a6b71e9dec4a42a8100e03e692f84e
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_python_package
+        guid_target:    sch_c2b3fe510fa64c80a4c372a3816ef720
+
+  # ---------------------------------------------------------------------------
+  # t_datalog_source_file -- Datalog source file type
+  #
+  t_datalog_source_file:
+    id_self:            t_datalog_source_file
+    guid_self:          t_5de85234c70e41c1ac6eeeffd2b86b7f
+    title:              Datalog source file type
+    brief:              |
+                        Type of Datalog source file data items.
+    description:        |
+                        Each Datalog source file data item holds the
+                        metadata of one Datalog source file, in a
+                        comment at the head of the file.
+    usage:              |
+                        Datalog source file data items let a file of
+                        rules be traced, annotated and argued over
+                        like any other item, without a second file to
+                        keep in step with it.
+    note:               |
+                        The id is the prefix and the dotted name the
+                        file would be imported under if it were a
+                        python module, in lower case.
+                        dls_cc_public.check.check names
+                        src/cc_public/check/check.dl. Each line of the
+                        comment begins with //.
+
+                        The shape of Datalog source file data items is
+                        defined by the sch_datalog_source_file schema.
+    alias:              []
+    prefix:             dls
+    regex_id:           ^dls_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_datalog_source_file
+    guid_concept:       con_2d08686dcbbf4a2ebf93e3cb771cfcd9
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_datalog_source_file
+        guid_target:    sch_6724b60b83624c78938faa0f4355cb25
+
+  # ---------------------------------------------------------------------------
+  # t_file -- File type
+  #
+  t_file:
+    id_self:            t_file
+    guid_self:          t_b1ad4688e8fa46e18255de8783c72c23
+    title:              File type
+    brief:              |
+                        Type of file data items.
+    description:        |
+                        Each file data item holds the metadata of one
+                        file that is neither a data item itself nor a
+                        module of source code, in a comment at the
+                        head of the file.
+    usage:              |
+                        File data items let configuration files and
+                        the like be traced and owned like any other
+                        item.
+    note:               |
+                        A module is not a file in this sense. The item
+                        of a python module is held in its docstring
+                        and has the type t_python_module. The item of
+                        a Datalog source file has the type
+                        t_datalog_source_file.
+
+                        The shape of file data items is defined by the
+                        sch_file schema.
+    alias:              []
+    prefix:             file
+    regex_id:           ^file_[a-z][a-z0-9_]*$
+    id_concept:         con_file
+    guid_concept:       con_75e8c140d26c4fe6bdd8ad37030611cd
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_file
+        guid_target:    sch_416542a4956343bfa02a827fcdae43a9
+
+  # ---------------------------------------------------------------------------
+  # t_commit -- Commit type
+  #
+  t_commit:
+    id_self:            t_commit
+    guid_self:          t_d84300d97a444b43b10d17b8fd1cf737
+    title:              Commit type
+    brief:              |
+                        Type of commit data items.
+    description:        |
+                        Each commit data item records one commit, what
+                        it changes and why.
+    usage:              |
+                        Commit data items let the history of the tree
+                        be read, linked and checked like any other
+                        item.
+    note:               |
+                        A commit data item is held in the message of
+                        the git commit it records, after the subject
+                        line and before any trailers. It is not held
+                        in a file of the tree, because a commit cannot
+                        contain its own record. The id is the time the
+                        commit was made, in UTC, and the first six hex
+                        digits of its guid, so that ids sort by time
+                        and are minted without coordination. The shape
+                        of commit data items is defined by the
+                        sch_commit schema.
+    alias:              []
+    prefix:             cmt
+    regex_id:           ^cmt_[0-9]{14}_[0-9a-f]{6}$
+    id_concept:         con_commit
+    guid_concept:       con_bc87eae04b9c42869a3bc825f560b94b
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_commit
+        guid_target:    sch_ac7d8ef35a67417ca48cb47a3a98cda9

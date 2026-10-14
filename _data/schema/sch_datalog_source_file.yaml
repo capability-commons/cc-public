@@ -1,0 +1,48 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_datalog_source_file.yaml
+id_self:                sch_datalog_source_file
+guid_self:              sch_6724b60b83624c78938faa0f4355cb25
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog source file schema
+brief:                  |
+                        The shape of a Datalog source file data item:
+                        the metadata of one Datalog source file, held
+                        in a comment at the head of the file.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A Datalog source file item
+                        adds nothing beyond them, and requires a
+                        description.
+
+                        What the item names and where it lives are not
+                        fields. The id names the file, and the item
+                        lives in the file it names.
+usage:                  |
+                        Named by t_datalog_source_file as the schema
+                        of the item at the head of every Datalog
+                        source file.
+note:                   |
+                        The item is a YAML document in the comment, in
+                        which each line begins with //. The document
+                        is opened by --- and closed by three full
+                        stops.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+
+unevaluatedProperties:  false

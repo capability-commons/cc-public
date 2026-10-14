@@ -1,0 +1,115 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_regentry_relation.yaml
+id_self:                sch_regentry_relation
+guid_self:              sch_4efc46f1bf2c4f7a99b68763cd8d6432
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation register entry schema
+brief:                  |
+                        What a relation register entry carries beyond
+                        the general register entry.
+description:            |
+                        A relation entry holds the semantics of one
+                        relation: the types of thing it may join,
+                        whether its edges may form a cycle, and
+                        optionally an embedded inverse reading.
+
+                        The brief of a relation entry is its surface
+                        form. It reads as a sentence with SUBJ
+                        standing for the item that records the edge
+                        and OBJ standing for the target of the edge.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_relation as the shape of every entry
+                        in the relation register.
+note:                   |
+                        An inverse holds an identity and a surface
+                        form and nothing else. Every other fact about
+                        the relation is held by the primary entry, and
+                        an edge recorded with the inverse is read as
+                        the primary edge in the opposite direction.
+
+                        Cardinality and other properties that a
+                        checker might read are not yet declared. Each
+                        is added when a relation needs it, as acyclic
+                        was.
+type:                   object
+
+properties:
+
+  brief:
+    $ref:               '#/$defs/surface_form'
+
+  domain:
+    $ref:               '#/$defs/type_list'
+    description:        |
+                        Optional. The types of item that may record an
+                        edge of this relation. Absent means any type.
+
+  range:
+    $ref:               '#/$defs/type_list'
+    description:        |
+                        Optional. The types of item that an edge of
+                        this relation may target. Absent means any
+                        type.
+
+  acyclic:
+    type:               boolean
+    description:        |
+                        Optional. True when no chain of edges of this
+                        relation may lead from an item back to itself.
+                        Absent means a cycle is allowed.
+
+  inverse:
+    type:               object
+    additionalProperties:  false
+    description:        |
+                        Optional. The inverse reading of this
+                        relation, used to record an edge from the
+                        other end.
+
+    required:
+      - id_self
+      - guid_self
+      - brief
+
+    properties:
+
+      id_self:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+        pattern:        ^r_
+
+      guid_self:
+        $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+        pattern:        ^r_
+
+      brief:
+        $ref:           '#/$defs/surface_form'
+
+$defs:
+
+  surface_form:
+    type:               string
+    pattern:            ^SUBJ .+ OBJ$
+    description:        |
+                        A sentence that reads the relation, with SUBJ
+                        for the item that records the edge and OBJ for
+                        the target.
+
+  type_list:
+    type:               array
+    minItems:           1
+    uniqueItems:        true
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+      pattern:          ^t_
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml

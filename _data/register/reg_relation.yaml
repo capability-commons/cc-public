@@ -1,0 +1,293 @@
+id_self:                reg_relation
+guid_self:              reg_512fbf5c51be4efaa4517b52310ddf80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation register
+brief:                  |
+                        Register of relations.
+description:            |
+                        The relation register lists every relation,
+                        with the metadata each relation carries. An
+                        entry may also hold an inverse reading of the
+                        same relation, embedded within it.
+usage:                  |
+                        The relation register enables general-purpose
+                        processing of networks of items. Any item that
+                        carries an identifier may take part in such a
+                        network as a node, and any pair of such items
+                        may be joined by a labelled edge. The label is
+                        drawn from this register, and the entry it
+                        names defines what the edge means.
+note:                   |
+                        The register holds one mechanism for labelling
+                        an edge between any pair of items that carry
+                        identifiers. A relation is added here before
+                        an edge uses it.
+
+                        An entry holds the semantics of its relation:
+                        the domain, the range, the cardinality at each
+                        end, and whatever else a checker reads. Where
+                        the opposite reading is useful, the entry
+                        embeds an inverse, which holds an identity and
+                        a surface form and nothing else. An inverse is
+                        minted when an item wants to record an edge
+                        that way, and not as a matter of course.
+
+                        An edge may be recorded in either direction,
+                        and tooling reads it in both. The choice of
+                        direction is not only a question of which
+                        reading is easier. An edge is held by the item
+                        that records it, so the direction decides
+                        which item carries the fact when it travels on
+                        its own, and in a federation it decides who is
+                        able to record the fact at all, since an
+                        author may write only to items they own.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # r_is_specified_by_schema -- Is specified by schema relation
+  #
+  r_is_specified_by_schema:
+    id_self:            r_is_specified_by_schema
+    guid_self:          r_d70024bd40444f93b4fc1903379ded81
+    title:              Is specified by schema relation
+    brief:              SUBJ is specified by schema OBJ
+    description:        |
+                        The schema data item identified by OBJ
+                        specifies the structure of the data item
+                        identified by SUBJ itself.
+
+                        The edge is about SUBJ, not about the items of
+                        a type. A type names the schema of its items
+                        with r_has_items_specified_by_schema.
+
+    domain:
+      - t_register
+
+    range:
+      - t_schema
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_specified_by_schema -- Has items specified by schema relation
+  #
+  r_has_items_specified_by_schema:
+    id_self:            r_has_items_specified_by_schema
+    guid_self:          r_c233cc9d78af4ec6bbaec8a4bbc43344
+    title:              Has items specified by schema relation
+    brief:              SUBJ has items specified by schema OBJ
+    description:        |
+                        The schema data item identified by OBJ
+                        specifies the structure of each item of the
+                        type identified by SUBJ.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. The shape of a type entry is
+                        named by the edge on t_type.
+
+    domain:
+      - t_type
+
+    range:
+      - t_schema
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_held_in_register -- Has items held in register relation
+  #
+  r_has_items_held_in_register:
+    id_self:            r_has_items_held_in_register
+    guid_self:          r_016e74a0abea4a3990cc3259942baf92
+    title:              Has items held in register relation
+    brief:              SUBJ has items held in register OBJ
+    description:        |
+                        The register data item identified by OBJ holds
+                        each item of the type identified by SUBJ, as
+                        an entry in its table.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. A type entry is held in the data
+                        item type register by containment, and needs
+                        no edge to say so.
+
+    domain:
+      - t_type
+
+    range:
+      - t_register
+
+    alias:
+      - r_is_held_in_register
+
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_is_about -- Is about relation
+  #
+  r_is_about:
+    id_self:            r_is_about
+    guid_self:          r_17ca99102b0b431b85235445a4635ae8
+    title:              Is about relation
+    brief:              SUBJ makes its assertion about OBJ
+    description:        |
+                        The annotation or decision identified by SUBJ
+                        makes its assertion or its choice about the
+                        item identified by OBJ.
+
+                        The edge says what the assertion or choice is
+                        about and nothing about it. It does not say
+                        that it is right, that it is adverse, or that
+                        anything follows from it.
+
+                        Every annotation and every decision holds at
+                        least one such edge, so that nothing is
+                        asserted or chosen about nothing. Either may
+                        hold several, where it concerns how two items
+                        meet. Decisions about the same item are
+                        alternatives to one another.
+
+    domain:
+      - t_annotation
+      - t_decision
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_supports -- Supports relation
+  #
+  r_supports:
+    id_self:            r_supports
+    guid_self:          r_5d87b0c1741548108f5b851ad76a8605
+    title:              Supports relation
+    brief:              SUBJ gives a reason to accept OBJ
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason to accept, or to hold with greater
+                        confidence, the annotation or decision
+                        identified by OBJ.
+
+                        Support does not establish what it supports,
+                        and an assertion or a choice with many
+                        supporters is not thereby right. An annotation
+                        may both support and challenge another, where
+                        it qualifies it.
+
+                        A chain of support may not lead back to where
+                        it began, since an argument cannot be its own
+                        reason.
+
+    domain:
+      - t_annotation
+
+    range:
+      - t_annotation
+      - t_decision
+
+    acyclic:            true
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_challenges -- Challenges relation
+  #
+  r_challenges:
+    id_self:            r_challenges
+    guid_self:          r_08792b8910554df3a181ecb43aae429d
+    title:              Challenges relation
+    brief:              SUBJ gives a reason not to accept OBJ
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason not to accept, or not to accept without
+                        qualification, the annotation or decision
+                        identified by OBJ.
+
+                        A challenge does not defeat what it
+                        challenges. Nothing here computes which
+                        assertion or choice prevails, and one that
+                        nothing answers is not thereby established.
+
+    domain:
+      - t_annotation
+
+    range:
+      - t_annotation
+      - t_decision
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_supersedes -- Supersedes relation
+  #
+  r_supersedes:
+    id_self:            r_supersedes
+    guid_self:          r_d687c4ca485e47b78c0a361b221fdf6a
+    title:              Supersedes relation
+    brief:              SUBJ supersedes OBJ
+    description:        |
+                        The decision identified by SUBJ replaces the
+                        decision identified by OBJ, which no longer
+                        governs.
+
+                        OBJ keeps its argument, so that the reasons it
+                        was taken stay on record.
+
+                        A decision may supersede several, where one
+                        choice replaces a number of earlier ones. A
+                        chain of supersession may not lead back to
+                        where it began.
+
+    domain:
+      - t_decision
+
+    range:
+      - t_decision
+
+    acyclic:            true
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_argues_for_concern -- Argues for concern relation
+  #
+  r_argues_for_concern:
+    id_self:            r_argues_for_concern
+    guid_self:          r_ded2d80983a74f7b8271530a881686bf
+    title:              Argues for concern relation
+    brief:              SUBJ argues for concern OBJ
+    description:        |
+                        The annotation identified by SUBJ makes its
+                        assertion on behalf of the concern identified
+                        by OBJ.
+
+                        The edge says which concern an argument speaks
+                        for, not who made it or whether it is sound.
+                        An annotation may argue for several concerns.
+
+    domain:
+      - t_annotation
+
+    range:
+      - t_concern
+
+    alias:              []
+    relation:           []
