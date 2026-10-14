@@ -47,7 +47,7 @@ allOf:
     properties:
 
       title:
-        pattern:        '^((Add|Remove|Reformat) [^ ].*|(Rename|Move) [^ ].* to [^ ].*|(Split|Merge) [^ ].* into [^ ].*|(Change|Fix) [^ ].* so that [^ ].*|Lock [^ ].* at [^ ].*)[^.]$'
+        pattern:        '^((Add|Remove|Reformat) [^ ].*|(Rename|Move) [^ ].* to [^ ].*|(Split|Fold) [^ ].* into [^ ].*|(Change|Fix) [^ ].* so that [^ ].*|Lock [^ ].* at [^ ].*|Merge branch [^ ].* into [^ ].*)[^.]$|^Revert "[^"]+"$'
         description:    |
                         The subject line of the commit message: one
                         imperative sentence built from one of these
@@ -55,9 +55,17 @@ allOf:
 
                         Add OBJECT. Remove OBJECT. Reformat OBJECT.
                         Rename OLD to NEW. Move OBJECT to PLACE. Split
-                        OBJECT into PARTS. Merge OBJECT into OTHER.
+                        OBJECT into PARTS. Fold OBJECT into OTHER.
                         Change OBJECT so that STATEMENT. Fix OBJECT so
                         that STATEMENT. Lock DEPENDENCY at VERSION.
+
+                        Two templates are for the commits that git
+                        makes from others. Merge branch BRANCH into
+                        BRANCH joins two lines of history. Revert
+                        "TITLE" undoes the commit whose title is
+                        quoted. Fold, not Merge, joins one item into
+                        another, so that Merge keeps the meaning git
+                        gives it.
 
                         An object is an item id, the preferred term of
                         a concept, or a path. This title is the one

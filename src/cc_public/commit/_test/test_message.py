@@ -74,7 +74,9 @@ def test_a_composed_message_passes_and_its_id_sorts_by_time():
     'Rename t_datalog_module to t_datalog_source_file',
     'Move the checker to cc_public.check',
     'Split r_is_specified_by_schema into two relations',
-    'Merge testability into maintainability',
+    'Fold testability into maintainability',
+    'Merge branch commit-items into main',
+    'Revert "Add the commit type t_commit"',
     'Change cctool batch so that a field keeps its YAML value',
     'Fix the checker so that a malformed subschema is reported',
     'Lock jsonschema at 4.26.0',
@@ -90,6 +92,10 @@ def test_a_title_from_a_template_passes(title):
     'Rename the commit type',
     'Change the checker',
     'add the commit type',
+    'Merge testability into maintainability',
+    "Merge branch 'commit-items'",
+    'Revert the commit type',
+    'Revert "Add the commit type t_commit',
 ])
 def test_a_title_from_no_template_is_reported(title):
     assert _found(_message(title)) == [
