@@ -29,8 +29,10 @@ relation:               []
 import os
 import subprocess
 
+import click.testing
 import pytest
 
+import cc_public.cli.command
 import cc_public.commit.change
 import cc_public.commit.message
 
@@ -125,6 +127,20 @@ def test_a_revert_of_a_long_title_quotes_as_much_as_fits(repo):
     assert subject == 'Revert "{quoted}..."'.format(quoted = title[:68])
     assert len(subject) == 80
     assert _passes(repo, text)
+
+
+def test_a_draft_that_cannot_be_made_leaves_the_message_and_exits_0(repo, monkeypatch):
+    def _fail(root, text):
+        raise ValueError('Bad YAML')
+
+    monkeypatch.setattr(cc_public.commit.message, 'draft', _fail)
+    path = repo / 'MSG'
+    path.write_text('Merge branch \'x\'\n')
+    result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
+                                              ['message', 'draft', str(path), '--root', str(repo)])
+    assert result.exit_code == 0
+    assert result.stderr == 'No draft: Bad YAML\n'
+    assert path.read_text() == 'Merge branch \'x\'\n'
 
 
 def test_the_comments_of_the_draft_are_kept_after_it(repo):

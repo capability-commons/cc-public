@@ -28,4 +28,8 @@
 #
 # ...
 
-exec pixi run --frozen cctool message draft "$1"
+# A draft that cannot be made must not stop a merge or a revert, which
+# --no-verify does not skip, so the hook succeeds whatever happens.
+#
+pixi run --frozen cctool message draft "$1" || echo "No draft was made." >&2
+exit 0

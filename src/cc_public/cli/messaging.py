@@ -119,16 +119,18 @@ def draft(path: pathlib.Path, root: pathlib.Path) -> None:
     into one that conforms, in place, for a commit of what is staged.
     Any other message is left as it is.
 
-    Run by the prepare-commit-msg hook. A draft that cannot be made is
-    reported and the message left as it is, so that the commit-msg hook
-    says what is wrong.
+    Run by the prepare-commit-msg hook. A draft that cannot be made,
+    for any reason, is reported and the message left as it is, so that
+    the commit-msg hook says what is wrong. The hook runs for a merge
+    or a revert that --no-verify does not skip, so it must never stop
+    one.
 
     """
 
     text = path.read_text(encoding = 'utf-8')
     try:
         drafted = cc_public.commit.message.draft(root.resolve(), text)
-    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+    except Exception as error:
         click.echo('No draft: {error}'.format(error = error), err = True)
         return
 
