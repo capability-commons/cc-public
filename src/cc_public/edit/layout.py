@@ -114,7 +114,7 @@ def violations(root: pathlib.Path, map_document: cc_public.graph.extract.Documen
     list_row = []
 
     for (relative, (document, _)) in sorted(map_document.items()):
-        if document is None:
+        if not cc_public.graph.extract.is_document(document):
             continue
         text = (root / relative).read_text(encoding = 'utf-8')
         try:

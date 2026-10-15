@@ -454,6 +454,20 @@ unargued_driver(Determination, Decision, Concern) :-
 
 
 % -----------------------------------------------------------------------------
+% Every file that ought to hold a document can be read: a YAML file
+% under _data, the module docstring of a python module, or a comment
+% header. One that cannot hides its items from every other check.
+%
+% decl unreadable_file(file:    symbol,
+%                      line:    number,
+%                      message: symbol)
+#show unreadable_file/3.
+
+unreadable_file(File, Line, Message) :-
+    unreadable(File, Line, Message).
+
+
+% -----------------------------------------------------------------------------
 % Every id that a text mentions, if it has the prefix of a known type,
 % names an item, or an old id of one. A guid may be mentioned too.
 %

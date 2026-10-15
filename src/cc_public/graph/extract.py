@@ -24,7 +24,11 @@ description:            |
                         relation. RELATION names each base relation,
                         its columns and what a row of it means, and is
                         the one place they are declared, for Datalog
-                        and for SQL alike.
+                        and for SQL alike. A file that ought to hold a
+                        document but cannot be read is not an error
+                        here: it gives a row of unreadable, so that
+                        the checker reports it with every other
+                        failure.
 relation:               []
 
 ...
@@ -156,6 +160,9 @@ RELATION          = {
     'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
                            'The schema holder refers to the schema with a $ref, in '
                            'file at line.'),
+    'unreadable':         (('file', 'line:number', 'message'),
+                           'The file ought to hold a document, but cannot be read: '
+                           'message says why, and line is where.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -170,6 +177,54 @@ DELIM_MODULE      = '.'
 
 Facts             = dict[str, set[tuple[str, ...]]]
 Documents         = dict[str, tuple[typing.Any, int]]
+
+
+# -----------------------------------------------------------------------------
+class ErrorRead(Exception):
+    """
+    A file that ought to hold a document cannot be read. line is the
+    line of the file where the fault is.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, message: str, line: int) -> None:
+        """
+        Keep message, on one line, and line.
+
+        """
+
+        super().__init__(' '.join(message.split()))
+        self.line = line
+
+
+# -----------------------------------------------------------------------------
+class Unreadable:
+    """
+    The document of a file that cannot be read, held in its place in
+    the documents of a tree, with the error that says why.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, error: ErrorRead) -> None:
+        """
+        Keep error.
+
+        """
+
+        self.error = error
+
+
+# -----------------------------------------------------------------------------
+def is_document(document: typing.Any) -> bool:
+    """
+    Return True if document is one that a file holds and that could be
+    read, not None or an Unreadable.
+
+    """
+
+    return document is not None and not isinstance(document, Unreadable)
 
 
 # -----------------------------------------------------------------------------
@@ -192,7 +247,8 @@ def documents(root: pathlib.Path) -> Documents:
     Documents are read from YAML files under a _data directory, from
     the module docstring of a python module, and from the comment
     header of any other file. A file that holds no document is kept,
-    with None in its place, so that the tree's files are known.
+    with None in its place, so that the tree's files are known. A file
+    that cannot be read has an Unreadable in place of its document.
 
     """
 
@@ -202,7 +258,10 @@ def documents(root: pathlib.Path) -> Documents:
         relative = path.relative_to(root)
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
-        map_document[str(relative)] = read(path, relative)
+        try:
+            map_document[str(relative)] = read(path, relative)
+        except ErrorRead as error:
+            map_document[str(relative)] = (Unreadable(error), error.line)
 
     return map_document
 
@@ -218,6 +277,9 @@ def facts_of(map_document: Documents) -> Facts:
 
     for (file, (document, base)) in map_document.items():
         facts['tree_file'].add((file,))
+        if isinstance(document, Unreadable):
+            facts['unreadable'].add((file, base, str(document.error)))
+            continue
         if document is None:
             continue
         _walk(document, '', (file, base), facts)
@@ -281,7 +343,12 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
         if key not in MAP_READ:
             if len(MAP_READ) >= COUNT_READ:
                 MAP_READ.clear()
-            MAP_READ[key] = parse(data.decode('utf-8'), relative)
+            try:
+                text = data.decode('utf-8')
+            except UnicodeDecodeError as error:
+                raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
+                                data.count(b'\n', 0, error.start) + 1) from error
+            MAP_READ[key] = parse(text, relative)
         return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
@@ -295,14 +362,14 @@ def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
     Return the document that text holds, as the content of the file at
     relative, or None if it holds none, and the line of the file that
-    its first line is on.
+    its first line is on. Raise ErrorRead if it cannot be read.
 
     """
 
     if relative.suffix == SUFFIX_YAML:
         if DIR_DATA not in relative.parts:
             return (None, 1)
-        return (YAML.load(text), 1)
+        return (_load(text, 1), 1)
 
     if relative.suffix == SUFFIX_PYTHON:
         return _docstring(text)
@@ -319,7 +386,12 @@ def _docstring(text: str) -> tuple[typing.Any, int]:
 
     """
 
-    module    = ast.parse(text)
+    try:
+        module = ast.parse(text)
+    except (SyntaxError, ValueError) as error:
+        raise ErrorRead('The module is not python: {error}'.format(error = error),
+                        getattr(error, 'lineno', None) or 1) from error
+
     docstring = ast.get_docstring(module)
 
     if not (docstring and docstring.startswith(LINE_OPEN)):
@@ -330,8 +402,25 @@ def _docstring(text: str) -> tuple[typing.Any, int]:
     #
     raw     = module.body[0].value.value
     leading = raw[:len(raw) - len(raw.lstrip())].count('\n')
+    base    = module.body[0].lineno + leading
 
-    return (YAML.load(docstring), module.body[0].lineno + leading)
+    return (_load(docstring, base), base)
+
+
+# -----------------------------------------------------------------------------
+def _load(text: str, base: int) -> typing.Any:
+    """
+    Return the YAML document text, whose first line is line base of
+    its file. Raise ErrorRead if it is not YAML, or repeats a key.
+
+    """
+
+    try:
+        return YAML.load(text)
+    except ruamel.yaml.YAMLError as error:
+        mark = getattr(error, 'problem_mark', None)
+        raise ErrorRead('The document is not YAML: {error}'.format(error = error),
+                        base + (mark.line if mark is not None else 0)) from error
 
 
 # -----------------------------------------------------------------------------
@@ -385,7 +474,7 @@ def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int
             return (None, 1)
         list_line.append(text)
         if text == LINE_CLOSE:
-            return (YAML.load('\n'.join(list_line)), base)
+            return (_load('\n'.join(list_line), base), base)
 
     return (None, 1)
 

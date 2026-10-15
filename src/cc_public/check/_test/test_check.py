@@ -228,6 +228,25 @@ def test_the_repository_passes_every_check():
     assert cc_public.check.check.check(DIR_REPO) == {}
 
 
+def test_a_document_with_a_repeated_key_is_reported(tree):
+    (tree / '_data/annotation').mkdir(exist_ok = True)
+    (tree / '_data/annotation/ann_x.yaml').write_text('title: one\ntitle: two\n')
+    failures = _check(tree)
+    assert list(failures) == ['unreadable_file']
+    [(file, line, message)] = failures['unreadable_file']
+    assert (file, line) == ('_data/annotation/ann_x.yaml', '2')
+    assert 'duplicate key "title"' in message
+
+
+def test_a_module_that_is_not_python_is_reported(tree):
+    (tree / 'src/cc_public/broken.py').write_text('\n\ndef (:\n')
+    failures = _check(tree)
+    [(file, line, message)] = failures.pop('unreadable_file')
+    assert (file, line) == ('src/cc_public/broken.py', '3')
+    assert message.startswith('The module is not python')
+    assert list(failures) == ['unrecorded_module']
+
+
 def test_an_annotation_and_a_decision_about_an_item_pass(tree):
     _decision(tree, 'dec_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),

@@ -62,7 +62,7 @@ def records(map_document: cc_public.graph.extract.Documents) -> list[dict]:
 
     return [{KEY_FILE: file, KEY_LINE: line, KEY_DOCUMENT: document}
             for (file, (document, line)) in map_document.items()
-            if document is not None]
+            if cc_public.graph.extract.is_document(document)]
 
 
 # -----------------------------------------------------------------------------

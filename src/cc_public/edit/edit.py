@@ -186,7 +186,7 @@ class Tree:
             try:
                 self.map_document[relative] = cc_public.graph.extract.parse(
                                                             text, pathlib.Path(relative))
-            except ruamel.yaml.YAMLError as error:
+            except cc_public.graph.extract.ErrorRead as error:
                 raise ErrorEdit('The edit leaves {file} unreadable: {error}'.format(
                                                     file = relative, error = error)) from error
             self.edit[relative] = text
@@ -742,7 +742,7 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     edit                        = {}
 
     for (file, (document, _)) in tree.map_document.items():
-        if document is None:
+        if not cc_public.graph.extract.is_document(document):
             continue
         text = tree.text(file)
         (first, last) = cc_public.edit.layout.span(text, pathlib.Path(file))

@@ -364,6 +364,10 @@ def format_(root, is_check):
     list_changed = []
 
     for (relative, (document, _)) in sorted(map_document.items()):
+        if isinstance(document, cc_public.graph.extract.Unreadable):
+            click.echo('{file}: {error}'.format(file = relative, error = document.error),
+                       err = True)
+            continue
         if document is None:
             continue
         path = root / relative
