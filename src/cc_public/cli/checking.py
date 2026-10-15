@@ -17,7 +17,9 @@ brief:                  |
 description:            |
                         This module holds the check command, which
                         runs the checker over a tree and prints every
-                        failure, one line for each.
+                        failure, one line for each. A checker that
+                        cannot run is an error, with its own exit
+                        status, never a pass.
 relation:               []
 
 ...
@@ -31,6 +33,7 @@ import click
 
 import cc_public.check.check
 import cc_public.cli.group
+import cc_public.graph.datalog
 
 
 # -----------------------------------------------------------------------------
@@ -46,12 +49,18 @@ def check(root: pathlib.Path) -> None:
     Check the tree under --root, or the working directory.
 
     Each failure is printed as the name of the check and the row that
-    fails it. The exit status is 1 when any check fails.
+    fails it. The exit status is 1 when any check fails, and 2 when
+    the checks cannot be run.
 
     """
 
-    failures = cc_public.check.check.check(root.resolve())
-    count    = 0
+    try:
+        failures = cc_public.check.check.check(root.resolve())
+    except cc_public.graph.datalog.ErrorDatalog as error:
+        click.echo('The checks could not be run: {error}'.format(error = error), err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    count = 0
 
     for (name, list_row) in failures.items():
         for row in list_row:

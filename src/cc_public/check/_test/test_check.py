@@ -32,9 +32,11 @@ import io
 import re
 import uuid
 
+import click.testing
 import ruamel.yaml
 
 import cc_public.check.check
+import cc_public.cli.command
 import cc_public.commit.change
 import cc_public.graph.datalog
 import cc_public.graph.extract
@@ -226,6 +228,17 @@ def _replace(root, relative, old, new):
 
 def test_the_repository_passes_every_check():
     assert cc_public.check.check.check(DIR_REPO) == {}
+
+
+def test_checks_that_cannot_run_exit_with_an_error(tree, tmp_path, monkeypatch):
+    path = tmp_path / 'check.lp'
+    path.write_text('% decl o(x)\n#show o/1.\no(X) :- itme(X, _, _, _, _).\n')
+    monkeypatch.setattr(cc_public.check.check, 'RULES', path)
+    result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
+                                              ['check', '--root', str(tree)])
+    assert result.exit_code == 2
+    assert result.stderr.startswith('The checks could not be run:')
+    assert 'does not occur in any rule head' in result.stderr
 
 
 def test_a_document_with_a_repeated_key_is_reported(tree):
