@@ -137,8 +137,24 @@ def _changed(dir_before: pathlib.Path, dir_after: pathlib.Path) -> list[str]:
                 for root in (dir_before, dir_after)
                 for path in root.rglob('*') if path.is_file()}
 
+    # Laying a file out is slow, and most files are the same byte for
+    # byte, so only those that differ are laid out.
+    #
     return sorted(file for file in set_file
-                  if _laid_out(dir_before, file) != _laid_out(dir_after, file))
+                  if _read(dir_before, file) != _read(dir_after, file)
+                  and _laid_out(dir_before, file) != _laid_out(dir_after, file))
+
+
+# -----------------------------------------------------------------------------
+def _read(root: pathlib.Path, file: str) -> bytes | None:
+    """
+    Return the bytes of file in the tree at root, or None if there is
+    no such file.
+
+    """
+
+    path = root / file
+    return path.read_bytes() if path.is_file() else None
 
 
 # -----------------------------------------------------------------------------
