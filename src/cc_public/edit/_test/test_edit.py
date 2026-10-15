@@ -545,6 +545,12 @@ def test_a_comment_on_a_line_of_its_own_is_kept():
     assert cc_public.edit.layout.format(text) == text
 
 
+def test_set_keeps_a_field_written_as_a_block_as_a_block(tree):
+    assert _edit(tree, {'set': ['style_write_for_the_reader', 'follows', 'One. Two.']}) == {}
+    text = (tree / '_data/register/reg_writing_style_rule.yaml').read_text()
+    assert '    follows:            |\n                        One. Two.\n' in text
+
+
 def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
     text = ('note:                   |\n'
             '                        A list:\n'

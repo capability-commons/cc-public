@@ -489,7 +489,7 @@ def set_field(tree: Tree, id_self: str, path: str, value: typing.Any) -> Edit:
     item             = _Item(tree, id_self)
 
     if not list_part:
-        edit = _put_field(item, key, value)
+        edit = _put_field(item, key, _styled(key, value, item.node.get(key)))
         if _is_reference(key, value):
             tree.update(edit)
             edit.update(_put_field(_Item(tree, id_self), _key_guid(key), tree.guid(value)))
