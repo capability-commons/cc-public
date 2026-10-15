@@ -14,15 +14,16 @@ protective_mark:
 title:                  Querying commands
 brief:                  |
                         The commands that query the graph of data
-                        items, in SQL or in Datalog.
+                        items, in SQL, in Datalog or in jq.
 description:            |
                         This module holds the query group and its
-                        commands: sql, datalog, and schema, which
-                        lists the relations both languages see. Output
-                        is tab separated text with a header row, or
-                        JSON with --json, and is cut at --limit rows,
-                        with a note on stderr of how many were left
-                        out.
+                        commands: sql, datalog, jq, and schema, which
+                        lists the relations SQL and Datalog see.
+                        Output is tab separated text with a header
+                        row, or JSON with --json, and is cut at
+                        --limit rows, with a note on stderr of how
+                        many were left out. A jq query prints one
+                        result to a line.
 relation:               []
 
 ...
@@ -40,6 +41,7 @@ import click
 import cc_public.cli.group
 import cc_public.graph.datalog
 import cc_public.graph.extract
+import cc_public.graph.jq
 import cc_public.graph.sql
 
 
@@ -49,22 +51,26 @@ WIDTH_TEXT        = 70
 INDENT_TEXT       = '      '
 
 HINT              = 'Run cctool query schema to list the relations and their columns.'
+HINT_JQ           = 'Run cctool query jq --help to see the shape of its input.'
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
                      'FROM type_of GROUP BY type"')
 EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
+EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/issue/\")) "
+                     "| .document.id_self'")
 
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.group()
 def query():
     """
-    Query the graph of data items, in SQL or in Datalog.
+    Query the graph of data items, in SQL, in Datalog or in jq.
 
-    Both languages see the same relations: the base relations
+    SQL and Datalog see the same relations: the base relations
     extracted from the tree, and the relations derived from them.
-    Run cctool query schema to list them.
+    Run cctool query schema to list them. jq sees the documents
+    themselves, as they are written.
 
     """
 
@@ -190,9 +196,50 @@ def datalog(text, path_file, root, limit, is_json):
 
 # -----------------------------------------------------------------------------
 @query.command()
+@_option
+def jq(text, path_file, root, limit, is_json):
+    """
+    Evaluate one jq filter over the documents of the tree.
+
+    The input is one array, with an object for each file that holds a
+    document: {"file": ..., "line": ..., "document": ...}, where line
+    is the line of the file the document starts on, and document is
+    the document as it is written, nested. Each result is printed on a
+    line: a string as it is, and any other value as compact JSON. Give
+    the filter as QUERY, as - to read it from stdin, or with --file.
+
+    \b
+    Examples:
+      cctool query jq 'length'
+      cctool query jq '.[] | select(.file | startswith("_data/issue/"))
+        | .document.id_self'
+      cctool query jq '[.[].document | objects | .title // empty]'
+
+    """
+
+    text         = _read(text, path_file, EXAMPLE_JQ)
+    map_document = cc_public.graph.extract.documents(root.resolve())
+
+    try:
+        list_result = cc_public.graph.jq.query(map_document, text)
+    except cc_public.graph.jq.ErrorJq as error:
+        _fail(str(error), EXAMPLE_JQ, HINT_JQ)
+
+    if is_json:
+        click.echo(json.dumps({'results': _cut(list_result, limit),
+                               'count':   len(list_result)}))
+        return
+
+    for result in _cut(list_result, limit):
+        click.echo(result if isinstance(result, str) else json.dumps(result))
+
+
+# -----------------------------------------------------------------------------
+@query.command()
 def schema():
     """
-    List the relations that a query may use, with their columns.
+    List the relations that an SQL or Datalog query may use, with
+    their columns.
 
     """
 
@@ -212,6 +259,7 @@ def schema():
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_DATALOG)
+    click.echo('\nA jq query sees the documents, not these relations. See cctool query jq --help.')
 
 
 # -----------------------------------------------------------------------------
@@ -229,20 +277,21 @@ def _read(text, path_file, example):
         return text
 
     return _fail('No query given. Give it as QUERY, as - for stdin, or with --file.',
-                 example)
+                 example,
+                 HINT_JQ if example == EXAMPLE_JQ else HINT)
 
 
 # -----------------------------------------------------------------------------
-def _fail(message, example):
+def _fail(message, example, hint = HINT):
     """
-    Print message, an example and a hint to stderr, and exit with the
+    Print message, an example and hint to stderr, and exit with the
     status of an error.
 
     """
 
     click.echo(message, err = True)
     click.echo('For example: {example}'.format(example = example), err = True)
-    click.echo(HINT, err = True)
+    click.echo(hint, err = True)
     sys.exit(cc_public.cli.group.EXIT_ERROR)
 
 

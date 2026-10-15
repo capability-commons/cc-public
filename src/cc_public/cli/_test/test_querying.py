@@ -74,6 +74,32 @@ def test_datalog_without_an_output_is_refused(tree):
     assert 'no relation in a #show directive' in result.stderr
 
 
+def test_jq_prints_each_result_on_a_line(tree):
+    result = _run(tree, 'jq', '[.[].document | .. | objects | .id_self? | strings '
+                              '| select(startswith("concern_"))] | sort | .[]',
+                  '--limit', '2')
+    assert result.exit_code == 0
+    assert result.stdout == 'concern_compatibility\nconcern_cost\n'
+    assert result.stderr == '2 of 16 rows shown. Pass --limit 0 to show all.\n'
+
+
+def test_jq_sees_the_file_and_line_of_each_document(tree):
+    result = _run(tree, 'jq', '.[] | select(.document.id_self? == "lc_tooling") '
+                              '| {file, line}', '--json')
+    assert result.exit_code == 0
+    assert json.loads(result.stdout) == {
+        'results': [{'file': '_data/logical_component/lc_tooling.yaml', 'line': 1}],
+        'count':   1}
+
+
+def test_jq_error_is_refused_with_an_example(tree):
+    result = _run(tree, 'jq', '.[] |')
+    assert result.exit_code == 2
+    assert result.stderr.startswith('jq: error')
+    assert 'For example: cctool query jq' in result.stderr
+    assert 'cctool query jq --help' in result.stderr
+
+
 def test_a_missing_query_is_refused_with_an_example(tree):
     result = _run(tree, 'sql')
     assert result.exit_code == 2
