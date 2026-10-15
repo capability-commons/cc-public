@@ -28,7 +28,9 @@ description:            |
                         holds it to the metaschema of JSON Schema. No
                         document is validated against a schema that
                         fails the metaschema, which could not be used
-                        and is reported already.
+                        and is reported already. A $ref that names no
+                        schema is reported once, against the schema
+                        that holds it.
 relation:               []
 
 ...
@@ -44,6 +46,7 @@ import cc_public.graph.extract
 
 
 KEY_ID_SCHEMA     = '$id'
+KEY_REF           = '$ref'
 COLUMNS           = ('id', 'schema', 'file', 'line', 'path', 'message')
 LENGTH_MESSAGE    = 200
 DELIM_PATH        = '/'
@@ -87,6 +90,7 @@ def violations(map_document: cc_public.graph.extract.Documents,
 
     set_invalid   = {id_schema for (id_schema, schema) in map_schema.items()
                      if not META.is_valid(schema)}
+    set_url_bad   = {str(map_schema[id_schema][KEY_ID_SCHEMA]) for id_schema in set_invalid}
     registry      = registry_of([schema for (id_schema, schema) in map_schema.items()
                                  if id_schema not in set_invalid])
     map_validator = {}
@@ -110,6 +114,14 @@ def violations(map_document: cc_public.graph.extract.Documents,
         (document, base) = map_document[file]
         try:
             list_error = _error(map_validator[id_schema], document)
+        except referencing.exceptions.Unresolvable as error:
+            # A $ref to a schema that fails the metaschema is reported
+            # already. One to a schema that does not exist is reported
+            # here, once, against the schema that holds it.
+            #
+            if str(error.ref) not in set_url_bad:
+                set_row.add(_unresolved(id_schema, map_file[id_schema], map_document, error))
+            continue
         except TUPLE_ERROR_USE:
             continue
         list_row = [_row(id_document, id_schema, file, document, base, error)
@@ -152,6 +164,23 @@ def registry_of(list_schema: list[dict]) -> referencing.Registry:
     return referencing.Registry().with_resources(
                 (str(schema[KEY_ID_SCHEMA]), referencing.Resource.from_contents(schema))
                 for schema in list_schema)
+
+
+# -----------------------------------------------------------------------------
+def _unresolved(id_schema, file, map_document, error):
+    """
+    Return the row that reports a $ref in the schema id_schema, held
+    in file, that names no schema.
+
+    """
+
+    return (id_schema,
+            id_schema,
+            file,
+            str(map_document[file][1]),
+            KEY_REF,
+            'The $ref {ref} names no schema, so nothing is validated against '
+            '{id}.'.format(ref = error.ref, id = id_schema)[:LENGTH_MESSAGE])
 
 
 # -----------------------------------------------------------------------------

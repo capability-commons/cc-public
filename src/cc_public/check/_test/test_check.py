@@ -241,6 +241,14 @@ def test_checks_that_cannot_run_exit_with_an_error(tree, tmp_path, monkeypatch):
     assert 'does not occur in any rule head' in result.stderr
 
 
+def test_a_schema_ref_to_no_schema_is_reported(tree):
+    _replace(tree, '_data/schema/sch_annotation.yaml', 'sch_standalone.yaml', 'sch_missing.yaml')
+    assert _check(tree) == {'schema_violation': [(
+        'sch_annotation', 'sch_annotation', '_data/schema/sch_annotation.yaml', '1', '$ref',
+        'The $ref https://capability-commons.org/schema/sch_missing.yaml names no schema, '
+        'so nothing is validated against sch_annotation.')]}
+
+
 def test_a_document_with_a_repeated_key_is_reported(tree):
     (tree / '_data/annotation').mkdir(exist_ok = True)
     (tree / '_data/annotation/ann_x.yaml').write_text('title: one\ntitle: two\n')
