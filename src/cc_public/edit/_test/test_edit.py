@@ -527,6 +527,24 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
             'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
 
 
+@pytest.mark.parametrize(('text', 'message'), [
+    ('a: 1  # why\nb: 2\n',          'The document has a comment at the end of line 1.'),
+    ('a:\n  - x\n  - y  # why\n',   'The document has a comment at the end of line 3.'),
+    ('a: &n 1\nb: 2\n',              'The document has an anchor, &n.'),
+    ('a: !t 1\n',                    'The document has a tag, !t.'),
+    ('a: !t {k: 1}\n',               'The document has a tag, !t.'),
+])
+def test_what_the_printer_would_drop_or_expand_is_refused(text, message):
+    with pytest.raises(cc_public.edit.layout.Unsupported) as info:
+        cc_public.edit.layout.format(text)
+    assert str(info.value) == message
+
+
+def test_a_comment_on_a_line_of_its_own_is_kept():
+    text = 'a:                      1\n\n# Why b.\nb:                      2\n'
+    assert cc_public.edit.layout.format(text) == text
+
+
 def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
     text = ('note:                   |\n'
             '                        A list:\n'

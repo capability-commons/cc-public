@@ -57,6 +57,7 @@ import typing
 import ruamel.yaml
 import ruamel.yaml.comments
 import ruamel.yaml.scalarstring
+import ruamel.yaml.tokens
 
 import cc_public.graph.extract
 
@@ -102,8 +103,9 @@ Seq               = ruamel.yaml.comments.CommentedSeq
 class Unsupported(Exception):
     """
     The document is outside the subset this printer lays out: anchors,
-    tags, nested sequences, folded scalars and documents that are not
-    mappings. Refusing is better than guessing at a layout for them.
+    aliases, tags, comments at the end of a line, nested sequences,
+    folded scalars and documents that are not mappings. Refusing is
+    better than guessing at a layout for them, or dropping them.
 
     """
 
@@ -222,12 +224,55 @@ def format(text: str) -> str:
     if not isinstance(document, Map):
         raise Unsupported('The document is not a mapping.')
 
+    _refuse(document, text.splitlines(), set())
+
     lead = _lead(text.splitlines())
     out  = []
 
     _emit_map(document, 0, lead, out, is_item = False)
 
     return '\n'.join(out).rstrip('\n') + '\n'
+
+
+# -----------------------------------------------------------------------------
+def _refuse(node: typing.Any, list_line: list[str], set_seen: set[int]) -> None:
+    """
+    Raise Unsupported if node, or anything in it, has an anchor, is an
+    alias, has a tag, or has a comment at the end of a line, which the
+    printer would expand, keep wrongly or drop. list_line holds the
+    lines of the text node was read from.
+
+    """
+
+    anchor = getattr(node, 'anchor', None)
+    if anchor is not None and anchor.value:
+        raise Unsupported('The document has an anchor, &{name}.'.format(name = anchor.value))
+    if isinstance(node, ruamel.yaml.comments.TaggedScalar):
+        raise Unsupported('The document has a tag, {tag}.'.format(tag = node.tag.value))
+    if not isinstance(node, (Map, Seq)):
+        return
+
+    if id(node) in set_seen:
+        raise Unsupported('The document has an alias.')
+    set_seen.add(id(node))
+    if node.tag.value is not None:
+        raise Unsupported('The document has a tag, {tag}.'.format(tag = node.tag.value))
+
+    for list_token in node.ca.items.values():
+        for token in list_token:
+            # A comment token also carries the blank lines and the whole
+            # line comments after a value, which the printer keeps. Only
+            # one that opens with # on the line of a value is dropped.
+            #
+            if (isinstance(token, ruamel.yaml.tokens.CommentToken)
+                    and token.value.lstrip(' ').startswith('#')):
+                (line, column) = (token.start_mark.line, token.start_mark.column)
+                if list_line[line][:column].strip():
+                    raise Unsupported('The document has a comment at the end of line '
+                                      '{line}.'.format(line = line + 1))
+
+    for child in (node.values() if isinstance(node, Map) else node):
+        _refuse(child, list_line, set_seen)
 
 
 # -----------------------------------------------------------------------------
