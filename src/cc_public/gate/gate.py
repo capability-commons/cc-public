@@ -69,6 +69,12 @@ DIR_SOURCE    = 'src'
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
 
+# A stage that runs longer than this, in seconds, is stopped and fails,
+# so that a stage that hangs cannot hold a commit for ever. The whole
+# gate takes about a minute and a half on two processors.
+#
+SECONDS_STAGE = 600
+
 
 # -----------------------------------------------------------------------------
 class ErrorGate(Exception):
@@ -81,12 +87,14 @@ class ErrorGate(Exception):
 # -----------------------------------------------------------------------------
 def gate(root:        pathlib.Path,
          tuple_stage: tuple | None = None,
-         rev:         str | None = None) -> list[tuple[str, bool, str]]:
+         rev:         str | None = None,
+         seconds:     float = SECONDS_STAGE) -> list[tuple[str, bool, str]]:
     """
     Return, for each stage in order, its name, whether it passed, and
     what it printed, run over the staged content of the repository at
     root, or over the content of the commit rev if it is given. The
-    stages are TUPLE_STAGE unless tuple_stage names others.
+    stages are TUPLE_STAGE unless tuple_stage names others. A stage
+    that runs for longer than seconds is stopped, and fails.
 
     """
 
@@ -111,7 +119,8 @@ def gate(root:        pathlib.Path,
                 list_job.append((name_stage, list_arg[:index] + list_file + list_arg[index + 1:]))
 
         with concurrent.futures.ThreadPoolExecutor(max_workers = count) as executor:
-            list_done = list(executor.map(lambda job: _run(job[1], dir_copy, env), list_job))
+            list_done = list(executor.map(lambda job: _run(job[1], dir_copy, env, seconds),
+                                          list_job))
 
     map_result = {}
     for ((name_stage, _), (is_passed, text)) in zip(list_job, list_done, strict = True):
@@ -143,10 +152,13 @@ def shards(dir_copy: pathlib.Path, count: int) -> list[list[str]]:
 
 
 # -----------------------------------------------------------------------------
-def _run(list_arg: list[str], dir_copy: pathlib.Path, env: dict[str, str]) -> tuple[bool, str]:
+def _run(list_arg: list[str],
+         dir_copy: pathlib.Path,
+         env:      dict[str, str],
+         seconds:  float) -> tuple[bool, str]:
     """
-    Return whether the command list_arg passed in dir_copy, and what it
-    printed.
+    Return whether the command list_arg passed in dir_copy within
+    seconds, and what it printed.
 
     """
 
@@ -156,9 +168,15 @@ def _run(list_arg: list[str], dir_copy: pathlib.Path, env: dict[str, str]) -> tu
                               env            = env,
                               capture_output = True,
                               text           = True,
-                              check          = False)
+                              check          = False,
+                              timeout        = seconds)
     except FileNotFoundError as error:
         raise ErrorGate('{name} cannot be found.'.format(name = list_arg[0])) from error
+    except subprocess.TimeoutExpired as error:
+        printed = ''.join(each.decode(errors = 'replace') if isinstance(each, bytes) else each
+                          for each in (error.stdout, error.stderr) if each)
+        return (False, printed + 'Stopped after {seconds:g} s, the time limit of a '
+                                 'stage.\n'.format(seconds = seconds))
 
     return (done.returncode == 0, done.stdout + done.stderr)
 

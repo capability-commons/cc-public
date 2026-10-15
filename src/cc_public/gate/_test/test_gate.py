@@ -105,6 +105,14 @@ def test_each_stage_reports_whether_it_passed_and_what_it_printed(repo):
     assert output.startswith('Wrong.\n')
 
 
+def test_a_stage_that_runs_too_long_is_stopped_and_fails(repo):
+    stage = _stage('slow', 'import time; print("Started.", flush = True); time.sleep(30)')
+    [(_, is_passed, output)] = cc_public.gate.gate.gate(repo, (stage,), seconds = 2)
+    assert not is_passed
+    assert output.startswith('Started.\n')
+    assert output.endswith('Stopped after 2 s, the time limit of a stage.\n')
+
+
 def test_a_stage_runs_without_the_git_environment_of_the_hook(repo, monkeypatch):
     monkeypatch.setenv('GIT_INDEX_FILE', str(repo / '.git/index'))
     stage = _stage('env', 'import os; print(os.environ.get("GIT_INDEX_FILE"))')
