@@ -527,6 +527,23 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
             'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
 
 
+def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
+    text = ('note:                   |\n'
+            '                        A list:\n'
+            '                        - one\n'
+            '                        - two, which goes on ' + 'and on ' * 6 + 'to the end.\n'
+            '                        1. three\n')
+    laid_out = cc_public.edit.layout.format(text)
+    assert laid_out == (
+            'note:                   |\n'
+            '                        A list:\n'
+            '                        - one\n'
+            '                        - two, which goes on and on and on and on and\n'
+            '                          on and on and on to the end.\n'
+            '                        1. three\n')
+    assert cc_public.edit.layout.format(laid_out) == laid_out
+
+
 def test_blank_lines_set_apart_lists_and_comments():
     text = ('a: 1\nlist: [x, y]\nb: 2\n# A comment.\nc: 3\n')
     assert cc_public.edit.layout.format(text) == ('a:                      1\n'

@@ -68,6 +68,12 @@ WIDTH_WRAP        = 70
 MARK_ITEM         = '- '
 REGEX_COMMENT     = re.compile(r'^\s*#')
 
+# A line of prose that opens with a list marker, such as "- " or "2. ",
+# begins an item of a list, which is a paragraph of its own.
+#
+REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]+[.)]) ')
+INDENT_LIST_ITEM  = '  '
+
 # The lines that open and close a document, and the blank lines that
 # frame it inside them.
 #
@@ -552,7 +558,9 @@ def _body(value: str, column: int) -> list[str]:
     Return the lines of the body of a block scalar, indented to column
     and filled to width. A line indented further than the rest of its
     paragraph was laid out on purpose, and is moved with the body but
-    not refilled.
+    not refilled. An item of a list is filled on its own, and the lines
+    it goes on to are indented under its text, so they are kept as
+    they are when it is laid out again.
 
     """
 
@@ -564,9 +572,10 @@ def _body(value: str, column: int) -> list[str]:
         if not list_para:
             return
         text = ' '.join(' '.join(line.split()) for line in list_para)
+        more = INDENT_LIST_ITEM if REGEX_LIST_ITEM.match(list_para[0]) else ''
         list_out.extend(textwrap.wrap(text, WIDTH_WRAP,
                                       initial_indent    = pad,
-                                      subsequent_indent = pad,
+                                      subsequent_indent = pad + more,
                                       break_long_words  = False,
                                       break_on_hyphens  = False))
         list_para.clear()
@@ -579,6 +588,8 @@ def _body(value: str, column: int) -> list[str]:
             flush()
             list_out.append(pad + line.rstrip())
         else:
+            if REGEX_LIST_ITEM.match(line):
+                flush()
             list_para.append(line)
 
     flush()
