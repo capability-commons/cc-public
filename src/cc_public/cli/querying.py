@@ -179,8 +179,11 @@ def datalog(text, path_file, root, limit, is_json):
     except cc_public.graph.datalog.ErrorDatalog as error:
         _fail('Datalog error: {error}'.format(error = error), EXAMPLE_DATALOG)
 
-    map_column = {name: tuple(column for (column, _) in tuple_column)
-                  for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()}
+    map_declared = cc_public.graph.datalog.declared(text)
+    map_column   = {name: tuple(column for (column, _) in tuple_column)
+                    for (name, tuple_column) in map_declared.items()}
+    rows         = {name: _typed(list_row, map_declared.get(name, ()))
+                    for (name, list_row) in rows.items()}
 
     if is_json:
         click.echo(json.dumps({name: _result(map_column.get(name, ()), list_row, limit)
@@ -260,6 +263,22 @@ def schema():
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_DATALOG)
     click.echo('\nA jq query sees the documents, not these relations. See cctool query jq --help.')
+
+
+# -----------------------------------------------------------------------------
+def _typed(list_row, tuple_column):
+    """
+    Return the rows, with each value of a column declared a number as
+    an integer, sorted, so that numbers sort and print as numbers.
+
+    """
+
+    set_index = {index for (index, (_, type_column)) in enumerate(tuple_column)
+                 if type_column == cc_public.graph.datalog.TYPE_NUMBER}
+
+    return sorted(tuple(int(value) if index in set_index else value
+                        for (index, value) in enumerate(row))
+                  for row in list_row)
 
 
 # -----------------------------------------------------------------------------

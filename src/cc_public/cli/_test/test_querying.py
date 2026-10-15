@@ -68,6 +68,11 @@ def test_datalog_prints_each_output_relation(tree):
     assert result.stdout == '# o\nt\nt_concern\n'
 
 
+def test_datalog_gives_a_number_column_as_numbers(tree):
+    result = _run(tree, 'datalog', '% decl o(n: number)\n#show o/1. o(9). o(10).', '--json')
+    assert json.loads(result.stdout) == {'o': {'columns': ['n'], 'rows': [[9], [10]], 'count': 2}}
+
+
 def test_datalog_without_an_output_is_refused(tree):
     result = _run(tree, 'datalog', 'o(T) :- type_of(_, T).')
     assert result.exit_code == 2
