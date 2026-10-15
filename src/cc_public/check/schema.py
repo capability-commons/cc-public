@@ -37,8 +37,12 @@ relation:               []
 """
 
 
+import functools
+import re
+
 import jsonschema
 import jsonschema.exceptions
+import jsonschema.validators
 import referencing
 import referencing.exceptions
 
@@ -58,9 +62,83 @@ KEY_UNEVALUATED   = 'unevaluatedProperties'
 #
 META              = jsonschema.Draft202012Validator(
                         jsonschema.Draft202012Validator.META_SCHEMA)
+ESCAPE            = '\\'
+CLASS_OPEN        = '['
+CLASS_CLOSE       = ']'
+END_ECMA          = '$'
+END_PYTHON        = '\\Z'
 TUPLE_ERROR_USE   = (jsonschema.exceptions.SchemaError,
                      jsonschema.exceptions.UnknownType,
                      referencing.exceptions.Unresolvable)
+
+
+# -----------------------------------------------------------------------------
+def ecma(pattern: str) -> str:
+    """
+    Return pattern, a regular expression of ECMA 262 as JSON Schema
+    defines it, rewritten for python's re, so that each $ outside a
+    character class matches only at the end of the text. In python, $
+    also matches before a newline that ends the text, so ^[^\\n]+$
+    would admit a title that ends in a newline.
+
+    """
+
+    list_part = []
+    is_class  = False
+    index     = 0
+
+    while index < len(pattern):
+        char = pattern[index]
+        if char == ESCAPE:
+            list_part.append(pattern[index:index + 2])
+            index += 2
+            continue
+        if is_class:
+            is_class = char != CLASS_CLOSE
+        elif char == CLASS_OPEN:
+            is_class = True
+        elif char == END_ECMA:
+            char = END_PYTHON
+        list_part.append(char)
+        index += 1
+
+    return ''.join(list_part)
+
+
+# -----------------------------------------------------------------------------
+@functools.lru_cache(maxsize = 1024)
+def _compiled(pattern: str) -> re.Pattern:
+    """
+    Return pattern, rewritten by ecma and compiled.
+
+    """
+
+    return re.compile(ecma(pattern))
+
+
+# -----------------------------------------------------------------------------
+def _pattern(validator, pattern, instance, _):
+    """
+    Yield an error if the string instance does not match pattern, read
+    as ECMA 262 reads it.
+
+    """
+
+    if validator.is_type(instance, 'string') and not _compiled(pattern).search(instance):
+        yield jsonschema.exceptions.ValidationError(
+                  '{instance!r} does not match {pattern!r}'.format(instance = instance,
+                                                                   pattern  = pattern))
+
+
+# The validator of JSON Schema 2020-12, but with pattern read as JSON
+# Schema reads it. A $ref is followed with the validator registered
+# for the $schema of the schema it names, so this one is registered
+# for 2020-12 in place of jsonschema's own.
+#
+Validator         = jsonschema.validators.validates(
+                        jsonschema.Draft202012Validator.META_SCHEMA['$id'])(
+                            jsonschema.validators.extend(jsonschema.Draft202012Validator,
+                                                         {'pattern': _pattern}))
 
 
 # -----------------------------------------------------------------------------
@@ -108,8 +186,7 @@ def violations(map_document: cc_public.graph.extract.Documents,
             set_row.update(found[1])
             continue
         if id_schema not in map_validator:
-            map_validator[id_schema] = jsonschema.Draft202012Validator(map_schema[id_schema],
-                                                                       registry = registry)
+            map_validator[id_schema] = Validator(map_schema[id_schema], registry = registry)
         file             = map_file[id_document]
         (document, base) = map_document[file]
         try:

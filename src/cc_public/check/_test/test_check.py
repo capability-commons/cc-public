@@ -249,6 +249,21 @@ def test_a_schema_ref_to_no_schema_is_reported(tree):
         'so nothing is validated against sch_annotation.')]}
 
 
+def test_a_pattern_end_matches_only_at_the_end_of_the_text():
+    validator = cc_public.check.schema.Validator({'type': 'string', 'pattern': '^[^\\n]+$'})
+    assert validator.is_valid('A title')
+    assert not validator.is_valid('A title\n')
+    assert cc_public.check.schema.ecma('^a[$]\\$b$') == '^a[$]\\$b\\Z'
+
+
+def test_a_title_that_ends_in_a_newline_is_reported(tree):
+    _decision(tree, 'dec_x')
+    _replace(tree, DIR_ISSUE + 'dec_x.yaml', 'title: Test item', 'title: "Test item\\n"')
+    failures = _check(tree)
+    assert list(failures) == ['schema_violation']
+    assert [row[4] for row in failures['schema_violation']] == ['title']
+
+
 def test_a_document_with_a_repeated_key_is_reported(tree):
     (tree / '_data/annotation').mkdir(exist_ok = True)
     (tree / '_data/annotation/ann_x.yaml').write_text('title: one\ntitle: two\n')

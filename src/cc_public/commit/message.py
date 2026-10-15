@@ -267,7 +267,7 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
     if ID_SCHEMA not in map_schema:
         return ['{id} cannot be found in the tree.'.format(id = ID_SCHEMA)]
 
-    validator = jsonschema.Draft202012Validator(
+    validator = cc_public.check.schema.Validator(
                     map_schema[ID_SCHEMA],
                     registry = cc_public.check.schema.registry_of(list_schema))
 
