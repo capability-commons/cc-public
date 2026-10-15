@@ -118,6 +118,21 @@ duplicate_guid(Guid, Id, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% No item is written twice. A copy carries the id and the guid of the
+% item it copies, so neither duplicate_id nor duplicate_guid finds it.
+%
+% decl repeated_item(id:   symbol,
+%                    file: symbol,
+%                    line: number)
+#show repeated_item/3.
+
+repeated_item(Id, File, Line) :-
+    item(Id, Guid, _, File, Line),
+    item(Id, Guid, _, Other, Where),
+    (File, Line) != (Other, Where).
+
+
+% -----------------------------------------------------------------------------
 % A python module, python package or logic program file item is named
 % for the module, package or file that holds it.
 %

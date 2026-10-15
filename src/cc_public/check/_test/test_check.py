@@ -380,6 +380,14 @@ def test_a_determination_that_supersedes_one_of_another_issue_is_reported(tree):
                                                             'det_cross_item_checks_engine')]}
 
 
+def test_a_copy_of_an_item_is_reported(tree):
+    path = tree / '_data/logical_component/lc_tooling.yaml'
+    (tree / '_data/logical_component/lc_tooling_copy.yaml').write_text(path.read_text())
+    assert _check(tree)['repeated_item'] == [
+        ('lc_tooling', '_data/logical_component/lc_tooling.yaml', '1'),
+        ('lc_tooling', '_data/logical_component/lc_tooling_copy.yaml', '1')]
+
+
 def test_a_determination_of_nothing_is_reported(tree):
     _item(tree, '_data/determination/det_x.yaml', 'det_x')
     assert _check(tree) == {'determination_without_decision': [('det_x',)]}
