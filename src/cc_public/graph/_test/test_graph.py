@@ -63,6 +63,31 @@ def test_datalog_reports_where_the_rules_begin(tree):
         cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- item(X), not p(Y).')
 
 
+def test_datalog_refuses_a_relation_that_nothing_defines(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'does not occur in any rule head'):
+        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- itme(X, _, _, _, _).')
+
+
+def test_datalog_accepts_an_input_relation_with_no_rows(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    facts['relation_inverse'] = set()
+    rows  = cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- relation_inverse(X, _).')
+    assert rows == {'o': []}
+
+
+def test_datalog_refuses_rules_with_no_answer_set(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'no answer set'):
+        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- tree_file(X). :- tree_file(_).')
+
+
+def test_datalog_refuses_rules_with_more_than_one_answer_set(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'more than one answer set'):
+        cc_public.graph.datalog.run(facts, '#show o/1. {o(1); o(2)}.')
+
+
 def test_a_fact_with_a_tab_or_a_newline_is_read_as_written(tree):
     text = 'A tab\there, and a newline\nthere, with \\ and "quotes".'
     facts = cc_public.graph.extract.extract(tree)

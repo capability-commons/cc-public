@@ -24,6 +24,12 @@ description:            |
                         relation the rules given name in a #show
                         directive, in the order they are named.
 
+                        Any message clingo gives is an error, a
+                        warning included, and the program must have
+                        exactly one answer set. So a misspelt relation
+                        or a violated constraint is reported, and
+                        never reads as an empty result.
+
                         clingo has no declarations of its own, so a
                         relation is declared in a comment, such as "%
                         decl item(id: symbol, line: number)". The
@@ -287,23 +293,73 @@ def run(facts: cc_public.graph.extract.Facts, rules: str) -> Rows:
                                                          arity = arity,
                                                          count = len(map_column[name])))
 
+    # Every message clingo gives is an error, a warning included: an
+    # atom that occurs in no rule head is most often a misspelt
+    # relation, and would otherwise make its rule silently never fire.
+    # An input relation may be empty, so each is declared defined.
+    #
     list_message = []
-    control      = clingo.Control(['--warn=none'],
+    control      = clingo.Control(['--models=2'],
                                   logger = lambda _, message: list_message.append(message))
+    line         = prelude.count('\n') + 1
 
     try:
-        control.add('base', [], write(facts, map_column))
+        control.add('base', [], defined(facts, map_column) + write(facts, map_column))
         control.add('base', [], prelude + rules)
         control.ground([('base', [])], context = Context())
     except RuntimeError as error:
-        raise ErrorDatalog('{error}\nThe rules given begin at line {line} of the '
-                           'program.'.format(error = (''.join(list_message) or str(error)).strip(),
-                                             line  = prelude.count('\n') + 1)) from error
+        raise ErrorDatalog(_message(''.join(list_message) or str(error), line)) from error
+
+    if list_message:
+        raise ErrorDatalog(_message(''.join(list_message), line))
+
+    # A stratified program has exactly one model, so clingo is asked
+    # for two to show that there is no second. None means that a
+    # constraint is violated, and more than one that the rules choose:
+    # either way, no rows can be trusted, and an empty result must not
+    # read as no failures.
+    #
+    count = 0
 
     with control.solve(yield_ = True) as handle:
         for model in handle:
+            count += 1
+            if count > 1:
+                raise ErrorDatalog('The rules have more than one answer set, so their '
+                                   'rows are not determined. Remove any choice rule.')
             for symbol in model.symbols(shown = True):
                 if symbol.name in rows:
                     rows[symbol.name].append(tuple(map(_field, symbol.arguments)))
 
+    if count == 0:
+        raise ErrorDatalog('The rules have no answer set, so they give no rows. A '
+                           'constraint (a rule with no head) holds, or the program '
+                           'contradicts itself.')
+
     return {name: sorted(list_row) for (name, list_row) in rows.items()}
+
+
+# -----------------------------------------------------------------------------
+def defined(facts:      cc_public.graph.extract.Facts,
+            map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
+    """
+    Return a directive that declares each input relation of facts
+    defined, so that one with no rows is not taken for a misspelling.
+
+    """
+
+    return ''.join('#defined {name}/{arity}.\n'.format(name = name, arity = len(map_column[name]))
+                   for name in sorted(set(facts) | set(base()))
+                   if name in map_column)
+
+
+# -----------------------------------------------------------------------------
+def _message(text: str, line: int) -> str:
+    """
+    Return clingo's message text, with the line the rules begin on.
+
+    """
+
+    return '{text}\nThe rules given begin at line {line} of the program.'.format(
+               text = text.strip(),
+               line = line)
