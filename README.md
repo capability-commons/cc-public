@@ -51,7 +51,8 @@ For a merge or a revert, the prepare-commit-msg hook first makes the
 message git drafts into one that passes. git runs no pre-commit hook
 for a merge, so the pre-merge-commit hook runs the gate in its place.
 A revert is not gated: it restores content that passed when it was
-committed.
+committed. git runs no commit-msg hook for a revert either, so the
+message of a revert is first checked by the pre-push hook.
 
 The commit hooks give early feedback, and git skips them for a rebase
 or a cherry-pick, as does anyone with `--no-verify` or a clone without
