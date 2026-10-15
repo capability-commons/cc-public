@@ -726,8 +726,8 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     Return the edit that gives the item id_old the id id_new: in its
     own document, in every reference and mention of it in a document,
     in every string of a logic program that is id_old, and in the name
-    of its file if it is named for it. A register entry keeps id_old in
-    its alias list.
+    of its file, or of its folder, if it is named for it. A register
+    entry keeps id_old in its alias list.
 
     The rules match items by id, in strings such as "r_answers". Left
     as they were, the rules that name id_old would match nothing, and
@@ -745,20 +745,7 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
         raise ErrorEdit('An item with the id {id} exists.'.format(id = id_new))
 
     (_, _, holder, relative, _) = tree.map_item[id_old]
-    regex                       = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
-    edit                        = {}
-
-    for (file, (document, _)) in tree.map_document.items():
-        if not cc_public.graph.extract.is_document(document):
-            continue
-        text = tree.text(file)
-        (first, last) = cc_public.edit.layout.span(text, pathlib.Path(file))
-        list_line     = text.split('\n')
-        list_line[first:last + 1] = [regex.sub(id_new, line)
-                                     for line in list_line[first:last + 1]]
-        renamed = '\n'.join(list_line)
-        if renamed != text:
-            edit[file] = _format(renamed, file)
+    edit                        = _renamed_documents(tree, id_old, id_new)
 
     for file in tree.map_document:
         if pathlib.Path(file).suffix != cc_public.graph.extract.SUFFIX_PROGRAM:
@@ -772,6 +759,8 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     if not holder and path.stem == id_old:
         edit[str(path.with_name(id_new + path.suffix))] = edit.pop(relative)
         edit[relative] = None
+    if not holder and path.parent.name == id_old:
+        _move_folder(tree, edit, path.parent, id_new)
 
     tree.update(edit)
 
@@ -783,6 +772,55 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
                                     {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS))))
 
     return edit
+
+
+# -----------------------------------------------------------------------------
+def _renamed_documents(tree: Tree, id_old: str, id_new: str) -> Edit:
+    """
+    Return the edit that gives id_old the id id_new in every document
+    that names it.
+
+    """
+
+    regex = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
+    edit  = {}
+
+    for (file, (document, _)) in tree.map_document.items():
+        if not cc_public.graph.extract.is_document(document):
+            continue
+        text = tree.text(file)
+        (first, last) = cc_public.edit.layout.span(text, pathlib.Path(file))
+        list_line     = text.split('\n')
+        list_line[first:last + 1] = [regex.sub(id_new, line)
+                                     for line in list_line[first:last + 1]]
+        renamed = '\n'.join(list_line)
+        if renamed != text:
+            edit[file] = _format(renamed, file)
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> None:
+    """
+    Add to edit the move of every file in dir_old, as edit leaves it,
+    to a folder named id_new beside it. An item that gathers others, as
+    an issue gathers its argument, is kept in a folder named for it,
+    and the folder moves with it.
+
+    """
+
+    dir_new = dir_old.with_name(id_new)
+
+    for file in sorted(set(tree.map_document) | set(edit)):
+        moved = pathlib.Path(file)
+        if dir_old not in moved.parents:
+            continue
+        text = edit[file] if file in edit else tree.text(file)
+        if text is None:
+            continue
+        edit[str(dir_new / moved.relative_to(dir_old))] = text
+        edit[file] = None
 
 
 # -----------------------------------------------------------------------------

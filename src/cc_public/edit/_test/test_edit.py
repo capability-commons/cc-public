@@ -257,6 +257,19 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
         tree / '_data/register/reg_data_item_type.yaml').read_text()
 
 
+def test_rename_of_an_issue_moves_its_folder(tree):
+    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'con_concept']]},
+                       {'new': 'dec_x', 'field': FIELD_ANN,
+                        'link': [['r_answers', 'iss_x']]}) == {}
+    assert _edit(tree, {'rename': ['iss_x', 'iss_y']}) == {}
+    assert sorted(path.name for path in (tree / '_data/issue/iss_y').iterdir()) == [
+        'dec_x.yaml', 'iss_y.yaml']
+    assert not (tree / '_data/issue/iss_x').exists() or not any(
+        (tree / '_data/issue/iss_x').iterdir())
+    assert 'id_target:          iss_y\n' in (tree / '_data/issue/iss_y/dec_x.yaml').read_text()
+
+
 def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
     assert _edit(tree, {'rename': ['r_upholds', 'r_endorses']}) == {}
     text = (tree / 'src/cc_public/check/check.lp').read_text()
