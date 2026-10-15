@@ -51,7 +51,6 @@ import ast
 import io
 import pathlib
 import re
-import textwrap
 import typing
 
 import ruamel.yaml
@@ -72,7 +71,7 @@ REGEX_COMMENT     = re.compile(r'^\s*#')
 # A line of prose that opens with a list marker, such as "- " or "2. ",
 # begins an item of a list, which is a paragraph of its own.
 #
-REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]+[.)]) ')
+REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]{1,2}[.)]) ')
 INDENT_LIST_ITEM  = '  '
 
 # The lines that open and close a document, and the blank lines that
@@ -598,6 +597,42 @@ def _render(value: typing.Any) -> str:
 
 
 # -----------------------------------------------------------------------------
+def _fill(list_word: list[str], initial: str, subsequent: str) -> list[str]:
+    """
+    Return the words filled into lines of at most WIDTH_WRAP, the first
+    indented by initial and the rest by subsequent, as many on each as
+    fit. No line but the first opens with a word that would read as a
+    list marker, such as - or 2., since laying the lines out again
+    would make it an item of a list: the word before it goes down with
+    it, or, if there is none, it stays on the line before.
+
+    """
+
+    list_line = []
+    list_now  = []
+
+    for word in list_word:
+        pad = subsequent if list_line else initial
+        if not list_now or len(pad + ' '.join([*list_now, word])) <= WIDTH_WRAP:
+            list_now.append(word)
+            continue
+        if not REGEX_LIST_ITEM.match(word + ' '):
+            list_line.append(pad + ' '.join(list_now))
+            list_now = [word]
+        elif len(list_now) > 1:
+            carry = list_now.pop()
+            list_line.append(pad + ' '.join(list_now))
+            list_now = [carry, word]
+        else:
+            list_now.append(word)
+
+    if list_now:
+        list_line.append((subsequent if list_line else initial) + ' '.join(list_now))
+
+    return list_line
+
+
+# -----------------------------------------------------------------------------
 def _body(value: str, column: int) -> list[str]:
     """
     Return the lines of the body of a block scalar, indented to column
@@ -616,13 +651,8 @@ def _body(value: str, column: int) -> list[str]:
     def flush():
         if not list_para:
             return
-        text = ' '.join(' '.join(line.split()) for line in list_para)
         more = INDENT_LIST_ITEM if REGEX_LIST_ITEM.match(list_para[0]) else ''
-        list_out.extend(textwrap.wrap(text, WIDTH_WRAP,
-                                      initial_indent    = pad,
-                                      subsequent_indent = pad + more,
-                                      break_long_words  = False,
-                                      break_on_hyphens  = False))
+        list_out.extend(_fill(' '.join(list_para).split(), pad, pad + more))
         list_para.clear()
 
     for line in value.rstrip('\n').split('\n'):

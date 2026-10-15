@@ -551,6 +551,14 @@ def test_set_keeps_a_field_written_as_a_block_as_a_block(tree):
     assert '    follows:            |\n                        One. Two.\n' in text
 
 
+def test_a_filled_line_never_opens_with_a_list_marker():
+    text = ('note:                   |\n'
+            '                        wordy ' + 'word ' * 7 + 'and 2. more words to fill the line up.\n')
+    laid_out = cc_public.edit.layout.format(text)
+    assert [line.split()[0] for line in laid_out.split('\n')[1:] if line] == ['wordy', 'and']
+    assert cc_public.edit.layout.format(laid_out) == laid_out
+
+
 def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
     text = ('note:                   |\n'
             '                        A list:\n'
