@@ -723,8 +723,13 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     """
     Return the edit that gives the item id_old the id id_new: in its
     own document, in every reference and mention of it in a document,
-    and in the name of its file if it is named for it. A register entry
-    keeps id_old in its alias list.
+    in every string of a logic program that is id_old, and in the name
+    of its file if it is named for it. A register entry keeps id_old in
+    its alias list.
+
+    The rules match items by id, in strings such as "r_answers". Left
+    as they were, the rules that name id_old would match nothing, and
+    so pass without a word.
 
     """
 
@@ -752,6 +757,14 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
         renamed = '\n'.join(list_line)
         if renamed != text:
             edit[file] = _format(renamed, file)
+
+    for file in tree.map_document:
+        if pathlib.Path(file).suffix != cc_public.graph.extract.SUFFIX_PROGRAM:
+            continue
+        text    = edit.get(file) or tree.text(file)
+        renamed = text.replace('"{id}"'.format(id = id_old), '"{id}"'.format(id = id_new))
+        if renamed != text:
+            edit[file] = renamed
 
     path = pathlib.Path(relative)
     if not holder and path.stem == id_old:

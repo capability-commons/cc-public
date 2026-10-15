@@ -284,11 +284,12 @@ def remove(id_self, root, is_dry_run):
 @_option
 def rename(id_old, id_new, root, is_dry_run):
     """
-    Give the item OLD the id NEW, in every document that names it, and
+    Give the item OLD the id NEW, in every document that names it, in
+    the strings of the logic programs that the rules match it by, and
     in the name of its file. A register entry keeps OLD as an alias.
 
-    Text outside documents, such as code, is not changed. Each file
-    that still names OLD is listed afterwards.
+    Other text outside documents, such as python code, is not changed.
+    Each file that still names OLD is listed afterwards.
 
     """
 

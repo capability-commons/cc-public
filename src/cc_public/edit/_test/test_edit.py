@@ -241,6 +241,13 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
         tree / '_data/register/reg_data_item_type.yaml').read_text()
 
 
+def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
+    assert _edit(tree, {'rename': ['r_upholds', 'r_endorses']}) == {}
+    text = (tree / 'src/cc_public/check/check.lp').read_text()
+    assert '"r_endorses"' in text
+    assert '"r_upholds"' not in text
+
+
 def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
     assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'con_concept']]},
