@@ -43,6 +43,7 @@ relation:               []
 
 import ast
 import collections
+import os
 import pathlib
 import re
 import typing
@@ -75,6 +76,7 @@ KEY_SET           = 'set'
 KEY_UNSET         = 'unset'
 KEY_REMOVE        = 'remove'
 KEY_RENAME        = 'rename'
+SUFFIX_STAGED     = '.cctool-staged'
 COLUMN_LINE       = 'line'
 
 # The descriptive fields, in the order they are written. A new field
@@ -892,15 +894,44 @@ def apply(tree: Tree, is_written: bool = True) -> cc_public.check.check.Failures
     added  = _added(before, after)
 
     if is_written and not added:
-        for (relative, text) in tree.edit.items():
-            path = tree.root / relative
-            if text is None:
-                path.unlink(missing_ok = True)
-                continue
-            path.parent.mkdir(parents = True, exist_ok = True)
-            path.write_text(text, encoding = 'utf-8')
+        _write(tree)
 
     return added
+
+
+# -----------------------------------------------------------------------------
+def _write(tree: Tree) -> None:
+    """
+    Write the edits of tree, all or none. Each new text is written
+    beside its file first, and only once every one is written does any
+    take the place of its file, so that a write that fails leaves the
+    tree as it was. Raise ErrorEdit if one fails.
+
+    """
+
+    list_staged = []
+
+    try:
+        for (relative, text) in tree.edit.items():
+            if text is None:
+                continue
+            path   = tree.root / relative
+            staged = path.with_name(path.name + SUFFIX_STAGED)
+            path.parent.mkdir(parents = True, exist_ok = True)
+            list_staged.append((staged, path))
+            staged.write_text(text, encoding = 'utf-8')
+    except OSError as error:
+        for (staged, _) in list_staged:
+            staged.unlink(missing_ok = True)
+        raise ErrorEdit('The edit could not be written, so nothing was changed: '
+                        '{error}'.format(error = error)) from error
+
+    for (staged, path) in list_staged:
+        os.replace(staged, path)
+
+    for (relative, text) in tree.edit.items():
+        if text is None:
+            (tree.root / relative).unlink(missing_ok = True)
 
 
 # -----------------------------------------------------------------------------

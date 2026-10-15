@@ -88,6 +88,22 @@ def _edit(tree, *list_operation, is_written = True):
     return cc_public.edit.edit.apply(edited, is_written = is_written)
 
 
+def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
+    write_text = pathlib.Path.write_text
+
+    def _refuse(path, *list_arg, **map_arg):
+        if path.name.startswith('dec_x'):
+            raise OSError('No space left on device')
+        return write_text(path, *list_arg, **map_arg)
+
+    monkeypatch.setattr(pathlib.Path, 'write_text', _refuse)
+    with pytest.raises(cc_public.edit.edit.ErrorEdit, match = 'nothing was changed'):
+        _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'con_concept']]},
+                    {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['r_answers', 'iss_x']]})
+    assert [path for path in (tree / '_data/issue/iss_x').rglob('*') if path.is_file()] == []
+    assert list(tree.rglob('*' + cc_public.edit.edit.SUFFIX_STAGED)) == []
+
+
 def test_a_new_standalone_item_is_written_in_a_file_of_its_own(tree, zero):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
