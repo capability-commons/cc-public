@@ -106,6 +106,12 @@ def test_a_title_from_no_template_is_reported(title):
         'The title is not built from a template in sch_commit: ' + title]
 
 
+def test_a_title_that_is_too_long_is_the_only_failure_reported():
+    title = 'Fix the gate so that ' + 'a' * 80
+    [found] = _found(_message(title))
+    assert found.startswith('title: ') and found.endswith('is too long')
+
+
 def test_a_subject_line_that_is_not_the_title_is_reported():
     text = _message().replace('Add the commit-msg hook\n', 'Add a hook\n', 1)
     assert _found(text) == ['The subject line is not the title of the commit item.']

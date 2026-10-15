@@ -190,7 +190,7 @@ def violations(map_document: cc_public.graph.extract.Documents,
         file             = map_file[id_document]
         (document, base) = map_document[file]
         try:
-            list_error = _error(map_validator[id_schema], document)
+            list_error = errors(map_validator[id_schema], document)
         except referencing.exceptions.Unresolvable as error:
             # A $ref to a schema that fails the metaschema is reported
             # already. One to a schema that does not exist is reported
@@ -277,7 +277,7 @@ def _row(id_document, id_schema, file, document, base, error):
 
 
 # -----------------------------------------------------------------------------
-def _error(validator, document):
+def errors(validator, document):
     """
     Return the errors of document under validator.
 

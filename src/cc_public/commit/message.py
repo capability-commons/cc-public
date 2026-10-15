@@ -271,7 +271,7 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
                     map_schema[ID_SCHEMA],
                     registry = cc_public.check.schema.registry_of(list_schema))
 
-    list_found = [_sentence(error) for error in validator.iter_errors(item)]
+    list_found = [_sentence(error) for error in cc_public.check.schema.errors(validator, item)]
 
     if item.get(KEY_TITLE) != subject:
         list_found.append('The subject line is not the title of the commit item.')
