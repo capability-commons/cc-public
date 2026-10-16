@@ -378,6 +378,34 @@ determination_across_issues(Determination, Issue, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% An annotation argues within its issue: what it supports or challenges
+% belongs to the same issue as it does.
+%
+% decl argument_across_issues(annotation: symbol,
+%                             issue:      symbol,
+%                             target:     symbol,
+%                             other:      symbol)
+#show argument_across_issues/4.
+
+argument_across_issues(Annotation, Issue, Target, Other) :-
+    type_of(Annotation, "t_annotation"),
+    primary_edge(Annotation, Relation, Target),
+    argues(Relation),
+    issue_of(Annotation, Issue),
+    issue_of(Target, Other),
+    Issue != Other.
+
+
+% -----------------------------------------------------------------------------
+% An annotation argues with what it supports or challenges.
+%
+% decl argues(relation: symbol)
+
+argues("r_supports").
+argues("r_challenges").
+
+
+% -----------------------------------------------------------------------------
 % An item supersedes only an item of its own type: a decision another
 % decision, and a determination another determination.
 %

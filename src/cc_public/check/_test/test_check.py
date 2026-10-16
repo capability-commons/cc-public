@@ -328,6 +328,24 @@ def test_a_determination_that_upholds_a_decision_passes(tree):
     assert _check(tree) == {}
 
 
+def test_an_argument_across_two_issues_is_reported(tree):
+    _decision(tree, 'dec_x')
+    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/issue/iss_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_answers', 'iss_y')])
+    _item(tree, '_data/issue/iss_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_y'),
+                                                          _edge(tree, 'r_challenges', 'dec_x')])
+    failures = _check(tree)
+    assert failures['argument_across_issues'] == [('ann_x', 'iss_y', 'dec_x', 'iss_x')]
+
+
+def test_an_issue_no_decision_answers_is_advice(tree):
+    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    (failures, advice) = cc_public.check.check.review(tree)
+    failures.pop('unformatted_file', None)
+    assert failures == {}
+    assert advice == {'unanswered_issue': [('iss_x',)]}
+
+
 def test_a_determination_across_two_issues_is_reported(tree):
     _decision(tree, 'dec_x')
     _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', ID_ABOUT)])

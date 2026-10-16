@@ -48,3 +48,24 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
     not item(Id, _, _, _, _),
     not item(_, Guid, _, _, _),
     not alias(_, Id).
+
+
+% -----------------------------------------------------------------------------
+% An issue that no decision answers is open, which is normal while it
+% is argued. It is reported so that it is not forgotten.
+%
+% decl unanswered_issue(issue: symbol)
+#show unanswered_issue/1.
+
+unanswered_issue(Issue) :-
+    type_of(Issue, "t_issue"),
+    not answers_some(Issue).
+
+
+% -----------------------------------------------------------------------------
+% Some decision answers the issue.
+%
+% decl answers_some(issue: symbol)
+
+answers_some(Issue) :-
+    primary_edge(_, "r_answers", Issue).
