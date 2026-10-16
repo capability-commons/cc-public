@@ -45,7 +45,9 @@ unknown_prefix(Id, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% Every id matches the regex_id of its type.
+% Every id matches the regex_id of its type. sch_primitive checks only
+% the form every id shares; the regex_id of each type is data, which a
+% fixed schema cannot read.
 %
 % decl bad_id(id:    symbol,
 %             regex: symbol,
@@ -61,7 +63,8 @@ bad_id(Id, Regex, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% Every guid is the prefix of its id and 32 hex digits.
+% Every guid is the prefix of its id and 32 hex digits. sch_primitive
+% checks the form, but not that the two prefixes agree.
 %
 % decl bad_guid(id:   symbol,
 %               guid: symbol,
