@@ -303,6 +303,16 @@ def test_new_writes_the_items_of_an_issue_in_its_folder(tree):
         'ann_x.yaml', 'dec_x.yaml', 'det_x.yaml', 'iss_x.yaml']
 
 
+def test_new_follows_an_edge_to_an_issue_made_later_in_the_batch(tree):
+    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'con_concept']]},
+                       {'new': 'ann_x', 'field': FIELD_ANN},
+                       {'link': ['ann_x', 'r_is_about', 'iss_x']}) == {}
+    assert sorted(path.name for path in (tree / '_data/issue/iss_x').iterdir()) == [
+        'ann_x.yaml', 'iss_x.yaml']
+    assert not (tree / '_data/annotation/ann_x.yaml').exists()
+
+
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'rename': ['con_concept', 'sch_concept']},
      'A rename keeps the type, so sch_concept must have the prefix of con_concept.'),

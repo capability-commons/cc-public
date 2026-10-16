@@ -114,15 +114,11 @@ SET_PREFIX_SOURCE = {'pym', 'pyp', 'lpf', 'file'}
 SET_SUFFIX_BARE   = {'.yaml', '.json', '.md'}
 QUOTE_DOCSTRING   = '"""'
 
-# An item that belongs to an issue is written in the folder of the
-# issue, as issue_of in check.lp says: the issue itself, a decision
-# that answers it, an annotation about it, and a determination that
-# settles a decision that answers it.
+# A new file is first written in the folder of its type. Where the
+# check says it belongs elsewhere, as an item of an issue belongs in
+# the folder of the issue, apply moves it there.
 #
-PREFIX_ISSUE      = 'iss'
-DIR_ISSUE         = 'issue'
-SET_LINK_ISSUE    = {'r_answers', 'r_is_about'}
-SET_LINK_SETTLE   = {'r_upholds', 'r_rejects'}
+NAME_MISPLACED    = 'misplaced_document'
 
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
@@ -260,7 +256,7 @@ def new(tree:       Tree,
     if register is None:
         relative = '{dir}/{folder}/{id}{suffix}'.format(
                                     dir    = DIR_DATA,
-                                    folder = _folder(tree, id_self, id_type, list_link),
+                                    folder = id_type[2:],
                                     id     = id_self,
                                     suffix = SUFFIX_YAML)
         if relative in tree.map_document:
@@ -269,34 +265,6 @@ def new(tree:       Tree,
         return {relative: _format(text, relative)}
 
     return _append_entry(tree, register, map_field)
-
-
-# -----------------------------------------------------------------------------
-def _folder(tree:      Tree,
-            id_self:   str,
-            id_type:   str,
-            list_link: list[tuple[str, str]]) -> str:
-    """
-    Return the folder under _data that the new item id_self of id_type
-    is written in, given its edges: that of its issue if it belongs to
-    one, and that of its type, less the t_, if not.
-
-    """
-
-    if id_self.partition(DELIM_PREFIX)[0] == PREFIX_ISSUE:
-        return '{dir}/{id}'.format(dir = DIR_ISSUE, id = id_self)
-
-    dir_issue = pathlib.PurePosixPath(DIR_DATA, DIR_ISSUE)
-
-    for (relation, target) in list_link:
-        if relation in SET_LINK_ISSUE and target.partition(DELIM_PREFIX)[0] == PREFIX_ISSUE:
-            return '{dir}/{id}'.format(dir = DIR_ISSUE, id = target)
-        if relation in SET_LINK_SETTLE and target in tree.map_item:
-            parent = pathlib.PurePosixPath(tree.map_item[target][3]).parent
-            if parent.parent == dir_issue:
-                return str(parent.relative_to(DIR_DATA))
-
-    return id_type[2:]
 
 
 # -----------------------------------------------------------------------------
@@ -929,12 +897,38 @@ def apply(tree: Tree, is_written: bool = True) -> cc_public.check.check.Failures
     cache  = cc_public.check.check.CACHE_SCHEMA
     before = cc_public.check.check.check_documents(tree.map_original, cache)
     after  = cc_public.check.check.check_documents(tree.map_document, cache)
+
+    if _place(tree, after):
+        after = cc_public.check.check.check_documents(tree.map_document, cache)
+
     added  = _added(before, after)
 
     if is_written and not added:
         _write(tree)
 
     return added
+
+
+# -----------------------------------------------------------------------------
+def _place(tree: Tree, failures: cc_public.check.check.Failures) -> bool:
+    """
+    Move each file the edits of tree make, and that failures say is in
+    the wrong place, to where it belongs. Return True if any moved.
+
+    """
+
+    edit = {}
+
+    for (_, relative, expected) in failures.get(NAME_MISPLACED, []):
+        is_new = relative not in tree.map_original and tree.edit.get(relative) is not None
+        if is_new and expected not in tree.map_document:
+            edit[expected] = tree.edit.pop(relative)
+            tree.map_document.pop(relative)
+
+    if edit:
+        tree.update(edit)
+
+    return bool(edit)
 
 
 # -----------------------------------------------------------------------------
