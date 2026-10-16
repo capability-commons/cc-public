@@ -378,6 +378,23 @@ determination_across_issues(Determination, Issue, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% An issue is about logical components, since their drivers say which
+% concerns must be argued before a decision of the issue is settled.
+% An issue about anything else would escape that check.
+%
+% decl issue_about_non_component(issue:  symbol,
+%                                target: symbol,
+%                                type:   symbol)
+#show issue_about_non_component/3.
+
+issue_about_non_component(Issue, Target, Type) :-
+    type_of(Issue, "t_issue"),
+    primary_edge(Issue, "r_is_about", Target),
+    type_of(Target, Type),
+    Type != "t_logical_component".
+
+
+% -----------------------------------------------------------------------------
 % An annotation argues within its issue: what it supports or challenges
 % belongs to the same issue as it does.
 %

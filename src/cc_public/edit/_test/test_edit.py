@@ -51,6 +51,10 @@ TEXT_RIGHTS   = ('copyright:              Copyright 2026 William Payne\n'
                  '\n'
                  '  - id_mark:            mark_public\n'
                  '    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f\n')
+# A logical component with no drivers, for an issue to be about.
+#
+NEW_SUBJECT   = {'new': 'lc_x', 'field': {'title': 'Subject',
+                                          'brief': 'A logical component for an issue.'}}
 FIELD_ANN     = {'title': 'Edits work',
                  'brief': 'The editing commands keep the tree free of new failures, '
                           'whatever they change.'}
@@ -98,7 +102,8 @@ def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
 
     monkeypatch.setattr(pathlib.Path, 'write_text', _refuse)
     with pytest.raises(cc_public.edit.edit.ErrorEdit, match = 'nothing was changed'):
-        _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'con_concept']]},
+        _edit(tree, NEW_SUBJECT,
+                    {'new': 'iss_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'lc_x']]},
                     {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['r_answers', 'iss_x']]})
     assert [path for path in (tree / '_data/issue/iss_x').rglob('*') if path.is_file()] == []
     assert list(tree.rglob('*' + cc_public.edit.edit.SUFFIX_STAGED)) == []
@@ -258,8 +263,9 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
 
 
 def test_rename_of_an_issue_moves_its_folder(tree):
-    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'con_concept']]},
+    assert _edit(tree, NEW_SUBJECT,
+                       {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'lc_x']]},
                        {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_answers', 'iss_x']]}) == {}
     assert _edit(tree, {'rename': ['iss_x', 'iss_y']}) == {}
@@ -278,8 +284,9 @@ def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
 
 
 def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
-    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'con_concept']]},
+    assert _edit(tree, NEW_SUBJECT,
+                       {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'lc_x']]},
                        {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_answers', 'iss_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
@@ -291,8 +298,9 @@ def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
 
 
 def test_new_writes_the_items_of_an_issue_in_its_folder(tree):
-    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'con_concept']]},
+    assert _edit(tree, NEW_SUBJECT,
+                       {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'lc_x']]},
                        {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_answers', 'iss_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
@@ -304,8 +312,9 @@ def test_new_writes_the_items_of_an_issue_in_its_folder(tree):
 
 
 def test_new_follows_an_edge_to_an_issue_made_later_in_the_batch(tree):
-    assert _edit(tree, {'new': 'iss_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'con_concept']]},
+    assert _edit(tree, NEW_SUBJECT,
+                       {'new': 'iss_x', 'field': FIELD_ANN,
+                        'link': [['r_is_about', 'lc_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN},
                        {'link': ['ann_x', 'r_is_about', 'iss_x']}) == {}
     assert sorted(path.name for path in (tree / '_data/issue/iss_x').iterdir()) == [

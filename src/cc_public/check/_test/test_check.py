@@ -44,6 +44,8 @@ from cc_public.conftest import DIR_REPO
 
 
 ID_ABOUT     = 'concern_safety'
+ID_SUBJECT   = 'lc_x'
+FILE_SUBJECT = '_data/logical_component/lc_x.yaml'
 DIR_ISSUE    = '_data/issue/iss_x/'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
@@ -127,16 +129,29 @@ def _item(root, relative, id_self, list_edge = (), guid = None):
 
 
 # -----------------------------------------------------------------------------
+def _subject(root):
+    """
+    Write ID_SUBJECT, a logical component with no drivers, if it is not
+    there yet, and return an edge to it for an issue to be about.
+
+    """
+
+    if not (root / FILE_SUBJECT).exists():
+        _item(root, FILE_SUBJECT, ID_SUBJECT)
+    return _edge(root, 'r_is_about', ID_SUBJECT)
+
+
+# -----------------------------------------------------------------------------
 def _decision(root, id_self, list_edge = (), guid = None):
     """
     Write a decision that answers iss_x, in the folder of iss_x, and
-    return its location. iss_x is written too, about ID_ABOUT, if it
+    return its location. iss_x is written too, about ID_SUBJECT, if it
     is not there yet.
 
     """
 
     if not (root / DIR_ISSUE / 'iss_x.yaml').exists():
-        _item(root, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(root, 'r_is_about', ID_ABOUT)])
+        _item(root, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_subject(root)])
     return _item(root, DIR_ISSUE + id_self + '.yaml', id_self,
                  [_edge(root, 'r_answers', 'iss_x'), *list_edge], guid)
 
@@ -328,9 +343,15 @@ def test_a_determination_that_upholds_a_decision_passes(tree):
     assert _check(tree) == {}
 
 
+def test_an_issue_about_other_than_a_component_is_reported(tree):
+    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    failures = _check(tree)
+    assert failures['issue_about_non_component'] == [('iss_x', ID_ABOUT, 't_concern')]
+
+
 def test_an_argument_across_two_issues_is_reported(tree):
     _decision(tree, 'dec_x')
-    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_subject(tree)])
     _item(tree, '_data/issue/iss_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_answers', 'iss_y')])
     _item(tree, '_data/issue/iss_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_y'),
                                                           _edge(tree, 'r_challenges', 'dec_x')])
@@ -339,7 +360,7 @@ def test_an_argument_across_two_issues_is_reported(tree):
 
 
 def test_an_issue_no_decision_answers_is_advice(tree):
-    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_subject(tree)])
     (failures, advice) = cc_public.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
@@ -348,7 +369,7 @@ def test_an_issue_no_decision_answers_is_advice(tree):
 
 def test_a_determination_across_two_issues_is_reported(tree):
     _decision(tree, 'dec_x')
-    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_subject(tree)])
     _item(tree, '_data/issue/iss_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_answers', 'iss_y')])
     _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x'),
                                                     _edge(tree, 'r_rejects', 'dec_y')])
