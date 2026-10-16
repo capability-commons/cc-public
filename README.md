@@ -25,9 +25,12 @@ head.
 
 ## Getting started
 
-Development is supported on Linux and macOS. Windows is not
-supported as a development environment: the repository holds symbolic
-links, and the tools assume a POSIX shell.
+Development is supported on Linux and on macOS with Apple silicon.
+The environment is also locked for Intel Macs, but it is not tested
+there, so that platform is unsupported: it should work, and nobody has
+checked that it does. Windows is not supported as a development
+environment: the repository holds symbolic links, and the tools assume
+a POSIX shell.
 
 The environment is managed by [pixi](https://pixi.sh). It includes
 [clingo](https://potassco.org/clingo/), which evaluates the rules of
@@ -38,6 +41,10 @@ the checker and of Datalog queries.
     pixi run check        # cctool check: every check over the tree
     pixi run test         # pytest
     pixi run lint         # ruff
+    pixi run slow         # the tests on Python 3.12, 3.13 and 3.14
+
+The slow run is too slow for every commit, so the gate leaves it out.
+Run it on its own, such as overnight or before a release.
 
 Once `pixi run hooks` has run, git runs `cctool gate` before each
 commit. It copies the staged content, which is what the commit will

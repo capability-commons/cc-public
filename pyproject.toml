@@ -51,7 +51,7 @@ requires                = ["hatchling"]
 
 [tool.pixi.workspace]
 channels                = ["conda-forge"]
-platforms               = ["osx-arm64", "linux-64"]
+platforms               = ["osx-arm64", "osx-64", "linux-64"]
 
 [tool.pixi.pypi-dependencies]
 cc_public               = { path = ".", editable = true }
@@ -69,6 +69,28 @@ test                    = "pytest"
 lint                    = "ruff check src"
 gate                    = "cctool gate"
 hooks                   = "git config core.hooksPath .githooks"
+
+# The slow run: the tests on every Python that requires-python admits,
+# each in an environment of its own. It is too slow for the gate, so it
+# is run on its own, such as overnight: pixi run slow.
+#
+slow                    = { depends-on = [{ task = "test", environment = "py312" },
+                                          { task = "test", environment = "py313" },
+                                          { task = "test", environment = "py314" }] }
+
+[tool.pixi.feature.py312.dependencies]
+python                  = "3.12.*"
+
+[tool.pixi.feature.py313.dependencies]
+python                  = "3.13.*"
+
+[tool.pixi.feature.py314.dependencies]
+python                  = "3.14.*"
+
+[tool.pixi.environments]
+py312                   = ["py312"]
+py313                   = ["py313"]
+py314                   = ["py314"]
 
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and
