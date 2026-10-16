@@ -49,16 +49,21 @@ def check(root: pathlib.Path) -> None:
     Check the tree under --root, or the working directory.
 
     Each failure is printed as the name of the check and the row that
-    fails it. The exit status is 1 when any check fails, and 2 when
-    the checks cannot be run.
+    fails it. Advice is printed first, as "advice:" and then the same,
+    and is not a failure. The exit status is 1 when any check fails,
+    and 2 when the checks cannot be run.
 
     """
 
     try:
-        failures = cc_public.check.check.check(root.resolve())
+        (failures, advice) = cc_public.check.check.review(root.resolve())
     except cc_public.graph.datalog.ErrorDatalog as error:
         click.echo('The checks could not be run: {error}'.format(error = error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    for (name, list_row) in advice.items():
+        for row in list_row:
+            click.echo('advice: {name}: {row}'.format(name = name, row = '  '.join(row)))
 
     count = 0
 

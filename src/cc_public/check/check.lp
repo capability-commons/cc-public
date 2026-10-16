@@ -239,7 +239,9 @@ key_mismatch(Register, Key, Id) :-
 
 
 % -----------------------------------------------------------------------------
-% Every reference names an item that exists.
+% Every reference names an item that exists. A protective mark that
+% names nothing here is not a failure: it may be held in a partner's
+% register, and advise.lp reports it.
 %
 % decl dangling_reference(holder: symbol,
 %                         role:   symbol,
@@ -251,7 +253,8 @@ key_mismatch(Register, Key, Id) :-
 dangling_reference(Holder, Role, Id, File, Line) :-
     reference(Holder, Role, Id, _, File, Line),
     not item(Id, _, _, _, _),
-    not alias(_, Id).
+    not alias(_, Id),
+    Role != "mark".
 
 
 % -----------------------------------------------------------------------------

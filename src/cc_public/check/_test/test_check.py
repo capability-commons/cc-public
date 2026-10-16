@@ -506,6 +506,18 @@ def test_a_reference_to_nothing_is_reported(tree):
                                                          location, LINE_TARGET)]}
 
 
+def test_a_mark_held_nowhere_here_is_advice_not_a_failure(tree):
+    path = tree / '_data/annotation/ann_x.yaml'
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+    guid = _guid('mark')
+    path.write_text(path.read_text().replace(
+        _guid_of(tree, 'mark_public'), guid).replace('mark_public', 'mark_partner'))
+    (failures, advice) = cc_public.check.check.review(tree)
+    failures.pop('unformatted_file', None)
+    assert failures == {}
+    assert [row[:3] for row in advice['unresolved_mark']] == [('ann_x', 'mark_partner', guid)]
+
+
 def test_a_reference_with_a_stale_guid_is_reported(tree):
     edge = dict(_edge(tree, 'r_is_about', ID_ABOUT), guid_target = _guid('concern'))
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
@@ -684,7 +696,9 @@ def test_a_logic_program_file_without_an_item_is_reported(tree):
 
 
 def test_every_check_names_its_columns():
-    for path in (cc_public.check.check.RULES, cc_public.commit.change.RULES):
+    for path in (cc_public.check.check.RULES,
+                 cc_public.check.check.ADVICE,
+                 cc_public.commit.change.RULES):
         text = path.read_text()
         assert set(cc_public.graph.datalog.output(text)) <= set(
             cc_public.graph.datalog.declared(text))
