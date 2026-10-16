@@ -29,6 +29,28 @@ description:            |
                         and that distinguishes two items whose id_self
                         values have collided across repositories in
                         the federation.
+
+                        HOW A NAME RESOLVES
+
+                        Prose names an item by its id_self, the form a
+                        reader can follow. Every id named in prose
+                        must resolve, so that prose takes part in the
+                        traceability graph. Prose may name a guid
+                        where an id alone would be ambiguous, but the
+                        id is the usual form.
+
+                        A reference is a pair of fields, id_<role> and
+                        guid_<role>, and tooling that writes one
+                        writes both. The guid is the final arbiter. A
+                        reference resolves by its id. Where the id
+                        names nothing here, as after a rename, the
+                        guid finds the item, and the id is reported as
+                        outdated. Where the id and the guid name
+                        different items, the reference is ambiguous,
+                        which is a failure. Where neither resolves,
+                        the reference dangles, except for a protective
+                        mark, which may be held in a partner's
+                        register and is reported as advice.
 usage:                  |
                         Anything that can be the target of a relation
                         edge composes this trait via allOf, and

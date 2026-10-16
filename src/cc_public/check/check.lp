@@ -239,9 +239,10 @@ key_mismatch(Register, Key, Id) :-
 
 
 % -----------------------------------------------------------------------------
-% Every reference names an item that exists. A protective mark that
-% names nothing here is not a failure: it may be held in a partner's
-% register, and advise.lp reports it.
+% Every reference names an item that exists, by its id or, where the
+% id names nothing, by its guid. A protective mark that names nothing
+% here is not a failure: it may be held in a partner's register, and
+% advise.lp reports it.
 %
 % decl dangling_reference(holder: symbol,
 %                         role:   symbol,
@@ -251,8 +252,9 @@ key_mismatch(Register, Key, Id) :-
 #show dangling_reference/5.
 
 dangling_reference(Holder, Role, Id, File, Line) :-
-    reference(Holder, Role, Id, _, File, Line),
+    reference(Holder, Role, Id, Guid, File, Line),
     not item(Id, _, _, _, _),
+    not item(_, Guid, _, _, _),
     not alias(_, Id),
     Role != "mark".
 
@@ -517,7 +519,9 @@ alias_in_use(Alias, Id) :-
 
 
 % -----------------------------------------------------------------------------
-% A reference names an item by its current id, not an old one.
+% A reference names an item by its current id, not an old one. An old
+% id is found through an alias or, where the id names nothing, through
+% the guid, which decides.
 %
 % decl outdated_reference(holder: symbol,
 %                         role:   symbol,
@@ -531,6 +535,12 @@ outdated_reference(Holder, Role, Alias, Id, File, Line) :-
     reference(Holder, Role, Alias, _, File, Line),
     alias(Id, Alias),
     not item(Alias, _, _, _, _).
+
+outdated_reference(Holder, Role, Old, Id, File, Line) :-
+    reference(Holder, Role, Old, Guid, File, Line),
+    item(Id, Guid, _, _, _),
+    not item(Old, _, _, _, _),
+    not alias(Id, Old).
 
 
 % -----------------------------------------------------------------------------

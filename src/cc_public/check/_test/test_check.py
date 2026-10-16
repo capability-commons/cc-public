@@ -506,6 +506,13 @@ def test_a_reference_to_nothing_is_reported(tree):
                                                          location, LINE_TARGET)]}
 
 
+def test_a_reference_by_an_old_id_is_resolved_by_its_guid(tree):
+    edge = dict(_edge(tree, 'r_is_about', ID_ABOUT), id_target = 'concern_old')
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
+    assert _check(tree) == {'outdated_reference': [('ann_x', 'target', 'concern_old', ID_ABOUT,
+                                                         location, LINE_TARGET)]}
+
+
 def test_a_mark_held_nowhere_here_is_advice_not_a_failure(tree):
     path = tree / '_data/annotation/ann_x.yaml'
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
