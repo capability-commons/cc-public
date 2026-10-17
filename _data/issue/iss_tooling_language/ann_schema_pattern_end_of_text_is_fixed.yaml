@@ -1,0 +1,45 @@
+id_self:                ann_schema_pattern_end_of_text_is_fixed
+guid_self:              ann_519f572c91454c079544bda5602b7e46
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema patterns now read as ECMA-262
+brief:                  |
+                        Commit 6cbc563 "Fix schema patterns so that $
+                        matches only at the end of the text" makes the
+                        validator read $ as JSON Schema does. At
+                        360ec14 a title that ends in a newline is
+                        reported, so the defect is fixed inside
+                        Python.
+description:            |
+                        The validator replaces the pattern keyword
+                        with one that rewrites each unescaped $ to \Z
+                        before it compiles the pattern
+                        (src/cc_public/check/schema.py lines 68-69,
+                        76-141 at 360ec14).
+                        test_a_title_that_ends_in_a_newline_is_reported
+                        covers it
+                        (src/cc_public/check/_test/test_check.py line
+                        259). The commit message check builds the same
+                        Validator (src/cc_public/commit/message.py
+                        lines 270-274). This confirms the annotation's
+                        own assumption that the fix stays in Python;
+                        the rest of the regex dialect is still that of
+                        Python re.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_tooling_language
+    guid_target:        iss_89e23ea1541f45ac8e19fe25e62252a7
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_schema_patterns_follow_python_re
+    guid_target:        ann_e49b1ad6d81c4df8ad02d36efe436476

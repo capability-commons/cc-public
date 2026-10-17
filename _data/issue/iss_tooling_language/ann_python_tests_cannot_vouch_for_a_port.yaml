@@ -1,0 +1,58 @@
+id_self:                ann_python_tests_cannot_vouch_for_a_port
+guid_self:              ann_38ba1bb7390f4feea7aaa03c044f2af2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Present tests that cannot vouch for a port
+brief:                  |
+                        Most tests call Python functions directly, not
+                        cctool, and the rules call string functions
+                        that follow Python semantics. A Rust port has
+                        no evidence that it gives the same results
+                        until new checks are written against it.
+description:            |
+                        161 test functions in ten files (count of def
+                        test_ under src/**/_test/, 2026-10-15).
+                        test_check.py (59), test_edit.py (38) and
+                        test_graph.py (10) hold 107 of them and import
+                        cc_public modules rather than drive cctool.
+                        The rest run in the same Python process too,
+                        through click.testing or by calling modules,
+                        with git as the only program they start, so no
+                        present test runs cctool as a separate
+                        program. The rules call @match, @strlen and
+                        @substr (src/cc_public/graph/datalog.py:38-43,
+                        101-143; check.lp:60, 75, 171-183, 209, 469;
+                        change.lp 115-118). @match uses re.fullmatch,
+                        @strlen and @substr count code points, while
+                        Rust str::len counts bytes and the Rust regex
+                        crate has no lookaround or backreferences. The
+                        regexes the rules use today have no lookaround
+                        or backreference and the strings measured are
+                        ASCII ids and guids, so no present result is
+                        known to differ; the point is the missing
+                        evidence. ASSUMPTION: tests rewritten to run
+                        cctool as a separate program could serve both
+                        languages.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_tooling_language
+    guid_target:        iss_89e23ea1541f45ac8e19fe25e62252a7
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_tooling_in_rust
+    guid_target:        dec_a0c71fb3fb89486aaa3a1e6ce2d6b06b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
