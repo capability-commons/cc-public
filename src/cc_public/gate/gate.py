@@ -30,10 +30,11 @@ description:            |
                         makes a repository of its own cannot touch the
                         index of the commit.
 
-                        The stages run side by side, one to a
-                        processor, and the tests are split by file
-                        into one shard for each processor, so that the
-                        gate takes about as long as its longest shard.
+                        The stages run side by side, and pytest-xdist
+                        hands the tests out to one worker for each
+                        processor, so that the gate takes about as
+                        long as its tests take divided among the
+                        processors.
 usage:                  |
                         cctool gate [--root DIR]
 
@@ -56,17 +57,15 @@ import tempfile
 
 
 # Each stage: its name, and the command that runs it in the root of the
-# copy. {python} is the interpreter that runs the gate. A stage with
-# {shard} in its command runs once for each shard of the test files,
-# with the files of the shard in place of {shard}. The tests marked
-# slow are left out: they grow with the data, or repeat the check stage.
+# copy. {python} is the interpreter that runs the gate. The tests run on
+# one worker for each processor, each worker taking the next test when
+# it is free, and the tests marked slow are left out: they grow with the
+# data, or repeat the check stage.
 #
-ARG_SHARD     = '{shard}'
 TUPLE_STAGE   = (('check', ('{python}', '-m', 'cc_public.cli.command', 'check')),
                  ('lint',  ('ruff', 'check', '--no-cache', 'src')),
                  ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider',
-                            '-m', 'not slow', ARG_SHARD)))
-GLOB_TEST     = 'test_*.py'
+                            '-n', 'auto', '--dist', 'worksteal', '-m', 'not slow')))
 DIR_SOURCE    = 'src'
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
@@ -100,7 +99,7 @@ def gate(root:        pathlib.Path,
 
     """
 
-    count = os.cpu_count() or 1
+    tuple_stage = tuple_stage or TUPLE_STAGE
 
     with tempfile.TemporaryDirectory(prefix = PREFIX_COPY) as name:
         dir_copy = pathlib.Path(name)
@@ -109,48 +108,15 @@ def gate(root:        pathlib.Path,
         else:
             copy_commit(root, rev, dir_copy)
         env      = _environment(dir_copy)
-        list_job = []
-        for (name_stage, tuple_arg) in (tuple_stage or TUPLE_STAGE):
-            list_arg = [arg.format(python = sys.executable) if arg != ARG_SHARD else arg
-                        for arg in tuple_arg]
-            if ARG_SHARD not in list_arg:
-                list_job.append((name_stage, list_arg))
-                continue
-            index = list_arg.index(ARG_SHARD)
-            for list_file in shards(dir_copy, count):
-                list_job.append((name_stage, list_arg[:index] + list_file + list_arg[index + 1:]))
+        list_job = [[arg.format(python = sys.executable) for arg in tuple_arg]
+                    for (_, tuple_arg) in tuple_stage]
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers = count) as executor:
-            list_done = list(executor.map(lambda job: _run(job[1], dir_copy, env, seconds),
+        with concurrent.futures.ThreadPoolExecutor(max_workers = len(list_job)) as executor:
+            list_done = list(executor.map(lambda list_arg: _run(list_arg, dir_copy, env, seconds),
                                           list_job))
 
-    map_result = {}
-    for ((name_stage, _), (is_passed, text)) in zip(list_job, list_done, strict = True):
-        (was_passed, before) = map_result.get(name_stage, (True, ''))
-        map_result[name_stage] = (was_passed and is_passed, before + text)
-
-    return [(name_stage, *result) for (name_stage, result) in map_result.items()]
-
-
-# -----------------------------------------------------------------------------
-def shards(dir_copy: pathlib.Path, count: int) -> list[list[str]]:
-    """
-    Return the test files under the source of dir_copy, split into at
-    most count shards of about equal size, the largest file first, each
-    file put in the shard that is smallest so far.
-
-    """
-
-    list_path  = sorted((dir_copy / DIR_SOURCE).rglob(GLOB_TEST),
-                        key = lambda path: (-path.stat().st_size, str(path)))
-    list_shard = [[0, []] for _ in range(max(1, min(count, len(list_path))))]
-
-    for path in list_path:
-        shard     = min(list_shard, key = lambda each: each[0])
-        shard[0] += path.stat().st_size
-        shard[1].append(str(path.relative_to(dir_copy)))
-
-    return [sorted(list_file) for (_, list_file) in list_shard]
+    return [(name_stage, *done)
+            for ((name_stage, _), done) in zip(tuple_stage, list_done, strict = True)]
 
 
 # -----------------------------------------------------------------------------

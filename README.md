@@ -39,7 +39,7 @@ the checker and of Datalog queries.
     pixi install
     pixi run hooks        # once per clone: gate every commit
     pixi run check        # cctool check: every check over the tree
-    pixi run test         # pytest
+    pixi run test         # pytest, one worker for each processor
     pixi run lint         # ruff
     pixi run slow         # the tests on Python 3.12, 3.13 and 3.14
 

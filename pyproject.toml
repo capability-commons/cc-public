@@ -62,11 +62,12 @@ clingo                  = ">=5.8.2,<6"
 jq                      = ">=1.7.1,<2"
 python                  = ">=3.12"
 pytest                  = ">=9.1.1,<10"
+pytest-xdist            = ">=3.8,<4"
 ruff                    = ">=0.16.6,<0.17"
 
 [tool.pixi.tasks]
 check                   = "cctool check"
-test                    = "pytest"
+test                    = "pytest -n auto --dist worksteal"
 lint                    = "ruff check src"
 gate                    = "cctool gate"
 hooks                   = "git config core.hooksPath .githooks"
