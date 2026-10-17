@@ -239,7 +239,8 @@ details p {
 }
 
 /* The argument: annotations grouped by concern, each folded to one
-   line that opens to its claim, its evidence and its answers. */
+   line, its title, that opens to its brief and its answers. The brief
+   has a mark of its own and opens in turn to the description. */
 
 .concern-group h3 {
   font-weight: normal;
@@ -702,11 +703,11 @@ form.determine button.uphold { border-color: var(--ink-upheld); color: var(--ink
 form.determine button.reject { border-color: var(--ink-rejected); color: var(--ink-rejected); }
 form.determine button:disabled { cursor: default; opacity: 0.8; }
 
-/* The evidence of an annotation: prose with its sources numbered in the
-   margin beside it. An assumption is set apart from what was checked,
+/* The description of an annotation: prose with its sources numbered in
+   the margin beside it. An assumption is set apart from what was checked,
    and an item the prose names reads by its title. */
 
-details.annotation > .body .evidence .main > p.evidence {
+details.annotation .block.description .main > p.description {
   font-size: 1.2rem;
   line-height: 1.5;
 }
@@ -760,12 +761,50 @@ a.mention {
   text-underline-offset: 0.15em;
 }
 
-details.annotation > .body > .block {
+details.annotation > .body > .block,
+details.annotation > .body > details.brief > summary > .block {
   margin-bottom: 0.2rem;
 }
 
-details.annotation > .body > .block.evidence .main > p.evidence {
+details.annotation .block.description .main > p.description {
   margin-top: 0;
+}
+
+/* The brief of an annotation that has a description folds over it, with
+   its mark in the gutter under the mark of the title. */
+
+details.annotation > .body > details.brief {
+  font-size: inherit;
+  margin: 0;
+}
+
+details.brief > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+details.brief > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.brief > summary .main > p {
+  position: relative;
+}
+
+details.brief > summary .main > p::before {
+  content: "\25B8";
+  position: absolute;
+  left: -1.1rem;
+  color: var(--ink-muted);
+}
+
+details.brief[open] > summary .main > p::before {
+  content: "\25BE";
+}
+
+details.brief > summary:hover .main > p::before {
+  color: var(--link);
 }
 
 /* The matrix scrolls in its own box when the page is too narrow for

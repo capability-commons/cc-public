@@ -172,6 +172,19 @@ def test_matrix_cell_opens_every_annotation_it_counts(tree):
             assert 'id="{key}" open'.format(key = key).encode() in opened
 
 
+def test_an_annotation_brief_folds_over_its_description(tree):
+    graph = cc_public.web.argument.Graph(tree)
+    issue = graph.issue(ID_ISSUE)
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text  = body.decode()
+    list_with = [annotation for annotation in issue.list_annotation if annotation.description]
+    assert list_with
+    assert text.count('<details class="brief">') >= len(list_with)
+    assert len(re.findall(r'<details class="brief">\s*<summary>\s*<div class="block">', text)) \
+        == text.count('<details class="brief">')
+    assert 'Evidence' not in text
+
+
 def test_item_page_names_the_issue_of_a_decision(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body

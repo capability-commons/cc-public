@@ -30,8 +30,9 @@ description:            |
                         an annotation that argues for several concerns
                         under each, and numbered as the diagram
                         numbers them. Each annotation folds to one
-                        line, and opens to its claim, its evidence and
-                        the annotations that answer it.
+                        line, its title, which opens to its brief and
+                        the annotations that answer it. The brief
+                        opens in turn to the description.
 relation:               []
 
 ...
@@ -564,8 +565,9 @@ def _annotation(graph:         Graph,
                 set_show:      set[str]) -> typing.Any:
     """
     Return an annotation folded to one line: its number, title and what
-    it bears on. Open, it shows its claim and evidence, then the
-    annotations that answer it, folded the same way. key places it in
+    it bears on. Open, it shows its brief, which opens in turn to its
+    description, then the annotations that answer it, folded the same
+    way. key places it in
     the outline, under id_concern if it is not an answer; set_path
     holds the annotations above it. It is opened if a key in set_show
     is key or lies within it.
@@ -600,11 +602,10 @@ def _annotation(graph:         Graph,
             [htpy.ul(class_ = 'bearing')[list_bearing],
              _summary_note(graph, list_also, len(list_answer))])],
         htpy.div(class_ = 'body')[
-            _block([htpy.p[_prose(annotation.brief)]],
+            _brief(graph, annotation, key,
                    [None if id_concern
                     else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
-                    _id(annotation.id)]),
-            _evidence(graph, annotation, key)],
+                    _id(annotation.id)])],
         [_annotation(graph, outline, id_answer,
                      cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
                      None, set_path | {id_annotation}, set_show)
@@ -644,21 +645,34 @@ def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typi
 
 
 # -----------------------------------------------------------------------------
-def _evidence(graph: Graph, annotation: Item, key: str) -> typing.Any:
+def _brief(graph: Graph, annotation: Item, key: str, list_margin: list) -> typing.Any:
     """
-    Return the evidence of the annotation, its description, as prose
-    with its sources numbered in the margin beside it, or None if it
-    has none. key makes the ids of the notes unique on the page.
+    Return the brief of the annotation with list_margin beside it. If
+    the annotation has a description, the brief folds over it and opens
+    to it.
 
     """
 
+    block = _block([htpy.p[_prose(annotation.brief)]], list_margin)
     if not annotation.description:
-        return None
+        return block
+    return htpy.details(class_ = 'brief')[htpy.summary[block],
+                                          _description(graph, annotation, key)]
+
+
+# -----------------------------------------------------------------------------
+def _description(graph: Graph, annotation: Item, key: str) -> typing.Any:
+    """
+    Return the description of the annotation as prose with its sources
+    numbered in the margin beside it. key makes the ids of the notes
+    unique on the page.
+
+    """
+
     (list_prose, list_note) = cc_public.web.evidence.evidence(graph, annotation.description, key)
-    return _block([htpy.p(class_ = 'evidence')[htpy.span(class_ = 'run-in')['Evidence'], ' ',
-                                               list_prose]],
+    return _block([htpy.p(class_ = 'description')[list_prose]],
                   [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
-                  class_ = 'evidence')
+                  class_ = 'description')
 
 
 # -----------------------------------------------------------------------------
