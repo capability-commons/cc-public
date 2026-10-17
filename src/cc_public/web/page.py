@@ -115,9 +115,7 @@ def issue(graph:      Graph,
                  [htpy.nav[htpy.a(href = '/')['Issues']],
                   htpy.h1[item.title],
                   _block([htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
-                         [_note_line('Subject', ', '.join(list_subject)),
-                          _note_line('Drivers', _drivers(graph, issue)),
-                          _id(item.id)]),
+                         [_facts(graph, issue, list_subject)]),
                   cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
                   htpy.section[
                       htpy.h2['Decisions'],
@@ -384,24 +382,31 @@ def _evidence(annotation: Item) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _drivers(graph: Graph, issue: Issue) -> typing.Any:
+def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
     """
-    Return the driver concerns of the issue's subject, with those that
-    no annotation argues for struck through.
+    Return the table of facts about an issue that stands beside its
+    brief: its standing, its subject, the drivers of its subject, how
+    much argument it holds, and its id.
 
     """
+
+    def row(label: str, value: typing.Any) -> typing.Any:
+        return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
 
     set_unspoken = set(issue.unspoken())
-    list_part    = []
+    list_driver  = [htpy.span(class_ = 'driver')[
+                        htpy.s(title = 'Not argued')[graph.title(id_concern)]
+                        if id_concern in set_unspoken else graph.title(id_concern)]
+                    for id_concern in issue.list_driver]
 
-    for id_concern in issue.list_driver:
-        if list_part:
-            list_part.append(', ')
-        name = graph.title(id_concern)
-        list_part.append(htpy.s(title = 'Not argued')[name] if id_concern in set_unspoken
-                         else name)
-
-    return list_part
+    return htpy.table(class_ = 'facts')[htpy.tbody[
+        row('Standing', _settlement(graph, issue)),
+        row('Subject',  ', '.join(list_subject)) if list_subject else None,
+        row('Drivers',  list_driver) if list_driver else None,
+        row('Argument', '{decisions} decisions, {annotations} annotations'.format(
+                            decisions   = len(issue.list_decision),
+                            annotations = len(issue.list_annotation))),
+        row('Id',       htpy.code[issue.item.id])]]
 
 
 # -----------------------------------------------------------------------------
