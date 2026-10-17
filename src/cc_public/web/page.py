@@ -174,7 +174,7 @@ def _issue_table(graph: Graph, list_issue: list[Issue]) -> typing.Any:
         htpy.thead[htpy.tr[htpy.th['Issue'],
                            htpy.th(class_ = 'number')['Decisions'],
                            htpy.th(class_ = 'number')['Annotations'],
-                           htpy.th(class_ = 'number')['Drivers argued'],
+                           htpy.th(class_ = 'number')['Concerns'],
                            htpy.th['Determined']]],
         htpy.tbody[[
             htpy.tr[
@@ -271,7 +271,8 @@ def _argument(graph:    Graph,
                         ' ',
                         htpy.span(class_ = ROLE_AGAINST)['−{count}'.format(
                                                              count = len(list_unit) - count_for)],
-                        ' driver' if id_concern in outline.issue.list_driver else None]]),
+                        ' driving concern' if id_concern in outline.issue.list_driver
+                        else None]]),
             [_annotation(graph, outline, id_annotation,
                          cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
                          id_concern, set(), key_show)
@@ -408,7 +409,7 @@ def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
     return htpy.table(class_ = 'facts')[htpy.tbody[
         row('Standing', _settlement(graph, issue)),
         row('Subject',  ', '.join(list_subject)) if list_subject else None,
-        row('Drivers',  list_driver) if list_driver else None,
+        row('Concerns', list_driver) if list_driver else None,
         row('Argument', '{decisions} decisions, {annotations} annotations'.format(
                             decisions   = len(issue.list_decision),
                             annotations = len(issue.list_annotation))),
