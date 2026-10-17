@@ -32,6 +32,7 @@ import http
 import http.server
 import mimetypes
 import pathlib
+import threading
 import urllib.parse
 
 import cc_public.web.argument
@@ -44,6 +45,7 @@ PORT_DEFAULT      = 8100
 DIR_STATIC        = pathlib.Path(__file__).resolve().parent / '_static'
 TYPE_HTML         = 'text/html; charset=utf-8'
 TYPE_DEFAULT      = 'application/octet-stream'
+LOCK_READ         = threading.Lock()
 
 
 # -----------------------------------------------------------------------------
@@ -62,21 +64,33 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
     if path.startswith(cc_public.web.page.PATH_STATIC):
         return _static(path.removeprefix(cc_public.web.page.PATH_STATIC))
 
-    graph = cc_public.web.argument.Graph(root)
-
     if path == '/':
-        return (http.HTTPStatus.OK, TYPE_HTML, cc_public.web.page.index(graph).encode())
+        return (http.HTTPStatus.OK, TYPE_HTML,
+                cc_public.web.page.index(_graph(root)).encode())
 
     for prefix in (cc_public.web.page.PATH_ISSUE, cc_public.web.page.PATH_ITEM):
         if path.startswith(prefix):
             id_item = urllib.parse.unquote(path.removeprefix(prefix))
-            body    = _item_page(graph, prefix, id_item, query)
+            body    = _item_page(_graph(root), prefix, id_item, query)
             if body is None:
                 return (http.HTTPStatus.NOT_FOUND, TYPE_HTML,
                         cc_public.web.page.missing(id_item).encode())
             return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
     return (http.HTTPStatus.NOT_FOUND, TYPE_HTML, cc_public.web.page.missing(path).encode())
+
+
+# -----------------------------------------------------------------------------
+def _graph(root: pathlib.Path) -> cc_public.web.argument.Graph:
+    """
+    Return the graph of the tree under root, read by one request at a
+    time: the reader of cc_public.graph.extract and its cache are shared,
+    and the server answers requests in threads.
+
+    """
+
+    with LOCK_READ:
+        return cc_public.web.argument.Graph(root)
 
 
 # -----------------------------------------------------------------------------

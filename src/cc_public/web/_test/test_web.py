@@ -26,6 +26,7 @@ relation:               []
 """
 
 
+import concurrent.futures
 import http
 import urllib.parse
 
@@ -226,3 +227,12 @@ def test_item_page_shows_edges_in_and_out(tree):
 def test_unknown_item_is_not_found(tree):
     (status, _, _) = cc_public.web.server.respond(tree, '/item/dec_no_such_decision')
     assert status == http.HTTPStatus.NOT_FOUND
+
+
+def test_requests_at_once_are_all_answered(tree):
+    list_path = (['/', '/issue/' + ID_ISSUE, '/item/' + ID_UPHELD, '/favicon.ico'] * 3)
+    with concurrent.futures.ThreadPoolExecutor(max_workers = len(list_path)) as pool:
+        list_status = list(pool.map(
+            lambda path: cc_public.web.server.respond(tree, path)[0], list_path))
+    assert list_status.count(http.HTTPStatus.NOT_FOUND) == 3
+    assert list_status.count(http.HTTPStatus.OK) == len(list_path) - 3
