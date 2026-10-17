@@ -48,6 +48,7 @@ relation:               []
 
 
 import ast
+import hashlib
 import io
 import pathlib
 import re
@@ -90,6 +91,13 @@ SET_KEY_PROSE     = {'brief', 'description', 'usage', 'note'}
 COLUMNS           = ('file', 'line', 'message')
 MESSAGE_LAYOUT    = 'Not laid out as cctool format lays it out.'
 
+# What the layout check found for a file, by its path and the digest of
+# its text, so that a file unchanged since the last check is not laid
+# out again. Cleared when it holds COUNT_VIOLATION entries.
+#
+MAP_VIOLATION     = {}
+COUNT_VIOLATION   = 4096
+
 YAML              = ruamel.yaml.YAML(typ = 'rt')
 YAML.width        = 10 ** 9        # a scalar is never folded across lines
 YAML.preserve_quotes = True
@@ -124,15 +132,33 @@ def violations(root: pathlib.Path, map_document: cc_public.graph.extract.Documen
         if not cc_public.graph.extract.is_document(document):
             continue
         text = (root / relative).read_text(encoding = 'utf-8')
-        try:
-            laid_out = format_file(text, pathlib.Path(relative))
-        except Unsupported as error:
-            list_row.append((relative, '1', str(error)))
-            continue
-        if laid_out != text:
-            list_row.append((relative, str(_first_difference(text, laid_out)), MESSAGE_LAYOUT))
+        key  = (relative, hashlib.blake2b(text.encode('utf-8'), digest_size = 16).digest())
+        if key not in MAP_VIOLATION:
+            if len(MAP_VIOLATION) >= COUNT_VIOLATION:
+                MAP_VIOLATION.clear()
+            MAP_VIOLATION[key] = _violation(relative, text)
+        if MAP_VIOLATION[key] is not None:
+            list_row.append(MAP_VIOLATION[key])
 
     return list_row
+
+
+# -----------------------------------------------------------------------------
+def _violation(relative: str, text: str) -> tuple | None:
+    """
+    Return the row of the layout check for the file at relative, which
+    holds text, or None if it is laid out.
+
+    """
+
+    try:
+        laid_out = format_file(text, pathlib.Path(relative))
+    except Unsupported as error:
+        return (relative, '1', str(error))
+    if laid_out != text:
+        return (relative, str(_first_difference(text, laid_out)), MESSAGE_LAYOUT)
+
+    return None
 
 
 # -----------------------------------------------------------------------------
