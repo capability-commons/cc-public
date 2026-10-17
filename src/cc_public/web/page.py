@@ -112,17 +112,17 @@ def issue(graph:      Graph,
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
-                 [htpy.nav[htpy.a(href = '/')['Issues']],
-                  htpy.h1[item.title],
-                  _block([htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
-                         [_facts(graph, issue, list_subject)]),
-                  cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
+                 [cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
-                  _argument(graph, outline, key_show)])
+                  _argument(graph, outline, key_show)],
+                 [htpy.nav[htpy.a(href = '/')['Issues']],
+                  htpy.h1[item.title],
+                  htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
+                 [_facts(graph, issue, list_subject)])
 
 
 # -----------------------------------------------------------------------------
@@ -139,9 +139,14 @@ def missing(id_item: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _page(title: str, body: typing.Any) -> str:
+def _page(title:       str,
+          body:        typing.Any,
+          head:        typing.Any = None,
+          head_margin: typing.Any = None) -> str:
     """
-    Return the HTML of a page with title and body.
+    Return the HTML of a page with title and body. head follows the
+    name of the site in the text column, with head_margin beside them
+    both in the margin, so the margin starts at the top of the page.
 
     """
 
@@ -152,8 +157,9 @@ def _page(title: str, body: typing.Any) -> str:
             htpy.title['{title} - {site}'.format(title = title, site = TITLE_SITE)],
             htpy.link(rel = 'stylesheet', href = PATH_STATIC + FILE_STYLE)],
         htpy.body[
-            htpy.header[TITLE_SITE],
-            htpy.article[body]]])
+            htpy.article[
+                _block([htpy.header[TITLE_SITE], head], [head_margin], class_ = 'masthead'),
+                body]]])
 
 
 # -----------------------------------------------------------------------------
