@@ -158,7 +158,8 @@ def _page(title:       str,
             htpy.link(rel = 'stylesheet', href = PATH_STATIC + FILE_STYLE)],
         htpy.body[
             htpy.article[
-                _block([htpy.header[TITLE_SITE], head], [head_margin], class_ = 'masthead'),
+                _block([htpy.header[TITLE_SITE], head], [head_margin],
+                       class_ = 'masthead ruled' if head_margin else 'masthead'),
                 body]]])
 
 
