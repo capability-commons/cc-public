@@ -1,0 +1,259 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_requirement.yaml
+id_self:                sch_requirement
+guid_self:              sch_2ff83912b89346af8ec760a8cc2a4a33
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requirement schema
+brief:                  |
+                        The shape of a requirement: the slots its
+                        statement is composed from, and the attributes
+                        that help to define it.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation.
+
+                        The statement is not a field. It is composed
+                        from the slots, in the SOPHIST MASTER form,
+                        wherever the requirement is shown. The slots
+                        that name items are edges: the subject, the
+                        actor and the process. The slots that are text
+                        are fields: the condition with its kind, the
+                        obligation, the activity, the object and the
+                        qualifier. The brief says in plain words what
+                        the requirement is for, as for any standalone
+                        item.
+
+                        A requirement has exactly one subject and one
+                        process. It has one actor when its activity is
+                        interaction, and none otherwise. A condition
+                        is given with its kind, and a kind with its
+                        condition.
+
+                        rationale and verification_method are the
+                        attributes A1 and A2 that the INCOSE guide
+                        marks as essential. verification_approach is
+                        A3.
+usage:                  |
+                        Named by t_requirement as the schema of every
+                        item in _data/requirement/.
+note:                   |
+                        Category, attribute A38, is left out: the
+                        INCOSE guide says each organization defines
+                        its own, so a fixed list here would not
+                        travel.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - obligation
+      - activity
+      - object
+      - rationale
+      - verification_method
+
+    dependentRequired:
+
+      condition:
+        - condition_kind
+
+      condition_kind:
+        - condition
+
+    properties:
+
+      condition_kind:
+        type:           string
+
+        enum:
+          - logic
+          - event
+          - time
+
+        description:    |
+                        Optional, with condition. logic: the condition
+                        is a state of affairs, written If. event: a
+                        moment, written As soon as. time: a period,
+                        written As long as.
+
+      condition:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional, with condition_kind. The condition
+                        under which the obligation holds, as a clause
+                        without its keyword.
+
+      obligation:
+        type:           string
+
+        enum:
+          - shall
+          - should
+          - will
+          - may
+
+        description:    |
+                        The keyword of ISO/IEC/IEEE 29148 clause
+                        5.2.4. shall is binding, should a preference,
+                        will a statement of fact or purpose, and may
+                        an allowance.
+
+      activity:
+        type:           string
+
+        enum:
+          - autonomous
+          - interaction
+          - interface
+
+        description:    |
+                        autonomous: the subject does the process by
+                        itself. interaction: the subject provides the
+                        actor with the ability to do it. interface:
+                        the subject is able to do it on what a third
+                        party gives it.
+
+      object:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        What the process acts on, with the details
+                        that complete it.
+
+      qualifier:
+        type:           string
+        minLength:      1
+        maxLength:      200
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. How well or in what manner, as a
+                        clause after the object.
+
+      rationale:
+        type:           string
+        minLength:      1
+        description:    |
+                        Attribute A1 of the INCOSE guide: why the
+                        requirement exists.
+
+      verification_method:
+        type:           string
+
+        enum:
+          - test
+          - demonstration
+          - inspection
+          - analysis
+
+        description:    |
+                        Attribute A2 of the INCOSE guide: the planned
+                        primary method of verification.
+
+      verification_approach:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. Attribute A3 of the INCOSE guide:
+                        how the method is to be applied, and what
+                        shows success.
+
+      relation:
+
+        allOf:
+
+          - contains:
+              type:     object
+
+              properties:
+
+                id_relation:
+                  const:  r_has_subject
+
+              required:
+                - id_relation
+
+            minContains:  1
+            maxContains:  1
+
+          - contains:
+              type:     object
+
+              properties:
+
+                id_relation:
+                  const:  r_has_process
+
+              required:
+                - id_relation
+
+            minContains:  1
+            maxContains:  1
+
+  - if:
+
+      properties:
+
+        activity:
+          const:        interaction
+
+      required:
+        - activity
+
+    then:
+
+      properties:
+
+        relation:
+
+          contains:
+            type:       object
+
+            properties:
+
+              id_relation:
+                const:  r_has_actor
+
+            required:
+              - id_relation
+
+          minContains:  1
+          maxContains:  1
+
+    else:
+
+      properties:
+
+        relation:
+
+          not:
+
+            contains:
+              type:     object
+
+              properties:
+
+                id_relation:
+                  const:  r_has_actor
+
+              required:
+                - id_relation
+
+unevaluatedProperties:  false
+relation:               []

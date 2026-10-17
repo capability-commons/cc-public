@@ -1,0 +1,40 @@
+id_self:                req_format_keeps_formatted_file
+guid_self:              req_c059b1aa983740379b7152443ecabae1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Idempotent formatting
+brief:                  |
+                        Formatting a file that is already formatted
+                        changes nothing.
+condition_kind:         event
+condition:              the Tooling formats a file that is already formatted
+obligation:             shall
+activity:               autonomous
+object:                 each byte of the file unchanged
+rationale:              |
+                        The layout check is that formatting a file
+                        gives back the file. That check means nothing
+                        unless a second pass changes nothing.
+verification_method:    test
+verification_approach:  |
+                        Every file the layout check reads, formatted
+                        twice, is byte for byte the same after the
+                        second pass as after the first.
+
+relation:
+
+  - id_relation:        r_has_subject
+    guid_relation:      r_6b34d5364abb4ddd8f2ff2a9b725e3ef
+    id_target:          lc_tooling
+    guid_target:        lc_cf7da552a58d4d2d91ee21271bd0f800
+
+  - id_relation:        r_has_process
+    guid_relation:      r_18d71931f0c8452c807448226ee71137
+    id_target:          con_keep
+    guid_target:        con_3eb073f9e45d435bbfb0432628c79b26
