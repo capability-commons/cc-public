@@ -97,19 +97,18 @@ class Unit:
 
 # -----------------------------------------------------------------------------
 def figure(graph:      Graph,
-           issue:      Issue,
-           map_number: dict[str, int],
+           outline:    'Outline',
            set_toggle: set[str]) -> typing.Any:
     """
-    Return the Sankey diagram of the argument on issue: its decisions on
-    the left, each joined to the concerns that are argued on it, with
-    support above challenge. A concern opens into its
+    Return the Sankey diagram of the argument in outline: its decisions
+    on the left, each joined to the concerns that are argued on it,
+    with support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
-    it. map_number numbers the annotations as the page does.
+    it.
 
     """
 
-    drawing = _Drawing(graph, issue, map_number, set_toggle)
+    drawing = _Drawing(graph, outline, set_toggle)
     height  = drawing.draw()
     width   = LIST_X[drawing.index_column_last] + ROOM_TITLE
 
@@ -160,6 +159,125 @@ def ordered_decisions(issue: Issue) -> list[cc_public.web.argument.Item]:
 
 
 # -----------------------------------------------------------------------------
+class Outline:
+    """
+    The order in which the diagram shows the argument on an issue, and
+    the numbers of its annotations.
+
+    The concerns run from most supportive to most opposed, then drivers
+    no annotation argues for. Each concern holds its annotations, most
+    supportive first, and each annotation the annotations that answer
+    it, support first. An annotation is numbered where it first
+    appears with everything open, read from the top down; those the
+    concerns do not reach come last.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, graph: Graph, issue: Issue) -> None:
+        """
+        Order the argument on issue.
+
+        """
+
+        self.issue         = issue
+        self.list_unit     = units(issue)
+        self.list_decision = [decision.id for decision in ordered_decisions(issue)]
+
+        map_annotation = {annotation.id: annotation for annotation in issue.list_annotation}
+        self.map_title = {id_item: item.title for (id_item, item) in map_annotation.items()}
+
+        self.map_answer = {}
+        for annotation in issue.list_annotation:
+            for (id_relation, role) in MAP_ROLE.items():
+                for id_target in annotation.targets(id_relation):
+                    if id_target in map_annotation:
+                        self.map_answer.setdefault(id_target, []).append((annotation.id, role))
+        for list_answer in self.map_answer.values():
+            list_answer.sort(key = lambda answer: (answer[1] != ROLE_FOR,
+                                                   self.map_title[answer[0]]))
+
+        set_argued        = {unit.concern for unit in self.list_unit}
+        self.list_concern = (sorted(set_argued,
+                                    key = lambda id_concern: (
+                                              lean(self.units(concern = id_concern)),
+                                              id_concern not in issue.list_driver,
+                                              graph.title(id_concern)))
+                             + [id_concern for id_concern in issue.list_driver
+                                if id_concern not in set_argued])
+
+        self.map_annotation = {id_concern: self._annotations(id_concern)
+                               for id_concern in self.list_concern}
+
+        self.map_number = {}
+        for id_concern in self.list_concern:
+            for id_annotation in self.map_annotation[id_concern]:
+                self._number(id_annotation, set())
+        self.list_other = [annotation.id for annotation in issue.list_annotation
+                           if annotation.id not in self.map_number]
+        for id_annotation in self.list_other:
+            self._number(id_annotation, set())
+
+    # -------------------------------------------------------------------------
+    def answers(self, id_annotation: str) -> list[tuple[str, str]]:
+        """
+        Return the annotations that answer id_annotation, each with its
+        role, support first.
+
+        """
+
+        return self.map_answer.get(id_annotation, [])
+
+    # -------------------------------------------------------------------------
+    def units(self,
+              decision:   str | None = None,
+              concern:    str | None = None,
+              annotation: str | None = None) -> list[Unit]:
+        """
+        Return the units on decision, concern and annotation, for those
+        given.
+
+        """
+
+        return [unit for unit in self.list_unit
+                if decision in (None, unit.decision)
+                and concern in (None, unit.concern)
+                and annotation in (None, unit.annotation)]
+
+    # -------------------------------------------------------------------------
+    def _annotations(self, id_concern: str) -> list[str]:
+        """
+        Return the annotations that argue for id_concern, most
+        supportive first, then by the first decision they bear on.
+
+        """
+
+        def key(id_annotation: str) -> tuple:
+            list_own = self.units(concern = id_concern, annotation = id_annotation)
+            return (lean(list_own),
+                    min(self.list_decision.index(unit.decision) for unit in list_own),
+                    self.map_title[id_annotation])
+
+        return sorted({unit.annotation for unit in self.units(concern = id_concern)},
+                      key = key)
+
+    # -------------------------------------------------------------------------
+    def _number(self, id_annotation: str, set_path: set[str]) -> None:
+        """
+        Number id_annotation if it has no number yet, then the
+        annotations that answer it, in order. set_path holds those
+        above it, so a loop of answers stops.
+
+        """
+
+        if id_annotation in set_path:
+            return
+        self.map_number.setdefault(id_annotation, len(self.map_number) + 1)
+        for (id_answer, _) in self.answers(id_annotation):
+            self._number(id_answer, set_path | {id_annotation})
+
+
+# -----------------------------------------------------------------------------
 def parse_toggle(query: str) -> set[str]:
     """
     Return the keys of the parts of a diagram toggled from their
@@ -181,44 +299,25 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def __init__(self,
                  graph:      Graph,
-                 issue:      Issue,
-                 map_number: dict[str, int],
+                 outline:    Outline,
                  set_toggle: set[str]) -> None:
         """
-        Gather the units of weight of issue, and order its concerns and
-        annotations from most supportive to most opposed.
+        Start an empty drawing of the argument in outline.
 
         """
 
-        self.graph      = graph
-        self.issue      = issue
-        self.map_number = map_number
-        self.set_toggle = set_toggle
-        self.list_band  = []
-        self.list_bar   = []
-        self.list_label = []
+        self.graph         = graph
+        self.outline       = outline
+        self.issue         = outline.issue
+        self.map_number    = outline.map_number
+        self.map_title     = outline.map_title
+        self.list_decision = outline.list_decision
+        self.list_concern  = outline.list_concern
+        self.set_toggle    = set_toggle
+        self.list_band     = []
+        self.list_bar      = []
+        self.list_label    = []
         self.index_column_last = 1
-
-        map_annotation     = {annotation.id: annotation for annotation in issue.list_annotation}
-        self.map_title     = {id_item: item.title for (id_item, item) in map_annotation.items()}
-        self.list_unit     = units(issue)
-        self.list_decision = [decision.id for decision in ordered_decisions(issue)]
-
-        self.map_answer = {}
-        for annotation in issue.list_annotation:
-            for (id_relation, role) in MAP_ROLE.items():
-                for id_target in annotation.targets(id_relation):
-                    if id_target in map_annotation:
-                        self.map_answer.setdefault(id_target, []).append((annotation.id, role))
-
-        set_argued        = {unit.concern for unit in self.list_unit}
-        self.list_concern = (sorted(set_argued,
-                                    key = lambda id_concern: (
-                                              lean(self._units(concern = id_concern)),
-                                              id_concern not in issue.list_driver,
-                                              graph.title(id_concern)))
-                             + [id_concern for id_concern in issue.list_driver
-                                if id_concern not in set_argued])
 
     # -------------------------------------------------------------------------
     def draw(self) -> float:
@@ -364,16 +463,10 @@ class _Drawing:
 
         """
 
-        list_unit       = self._units(concern = id_concern)
-        list_annotation = sorted({unit.annotation for unit in list_unit},
-                                 key = lambda id_annotation: (
-                                           lean(self._units(concern    = id_concern,
-                                                             annotation = id_annotation)),
-                                           self.map_number.get(id_annotation, 0)))
-        y               = top
-        y_from          = top
+        y      = top
+        y_from = top
 
-        for id_annotation in list_annotation:
+        for id_annotation in self.outline.map_annotation[id_concern]:
             key = DELIM_KEY.join((id_concern, id_annotation))
             y  += ROOM_LABEL if self._is_open(key, id_annotation) else 0
             list_own = sorted(self._units(concern = id_concern, annotation = id_annotation),
@@ -410,9 +503,7 @@ class _Drawing:
         if not self._is_open(key, id_annotation) or index_column >= len(LIST_X):
             return bottom
 
-        list_answer = sorted(self.map_answer[id_annotation],
-                             key = lambda answer: (answer[1] != ROLE_FOR,
-                                                   self.map_number.get(answer[0], 0)))
+        list_answer = self.outline.answers(id_annotation)
         width       = height / len(list_answer)
         y           = top
 
@@ -444,7 +535,7 @@ class _Drawing:
 
         x       = LIST_X[index_column]
         self.index_column_last = max(self.index_column_last, index_column)
-        count   = len(self.map_answer.get(id_annotation, []))
+        count   = len(self.outline.answers(id_annotation))
         content = [htpy.tspan(class_ = 'number')[str(self.map_number.get(id_annotation, ''))],
                    ' ',
                    self.map_title.get(id_annotation, id_annotation)]
@@ -461,7 +552,7 @@ class _Drawing:
             self.list_label.append(
                 htpy.text(x = str(x + WIDTH_BAR + 8), y = _num(top + height / 2 + 4),
                           class_ = 'annotation')[
-                    htpy.a(href = '#' + id_annotation)[content]])
+                    htpy.a(href = '#' + key)[content]])
 
     # -------------------------------------------------------------------------
     def _toggle(self, key: str, x: float, y: float, css: str, content: list) -> typing.Any:
@@ -488,7 +579,7 @@ class _Drawing:
 
         """
 
-        return self._open(key) and bool(self.map_answer.get(id_annotation))
+        return self._open(key) and bool(self.outline.answers(id_annotation))
 
     # -------------------------------------------------------------------------
     def _open(self, key: str) -> bool:
@@ -501,20 +592,14 @@ class _Drawing:
         return (key in self.set_toggle) != (DELIM_KEY not in key)
 
     # -------------------------------------------------------------------------
-    def _units(self,
-               decision:   str | None = None,
-               concern:    str | None = None,
-               annotation: str | None = None) -> list[Unit]:
+    def _units(self, **map_given: str) -> list[Unit]:
         """
-        Return the units on decision, concern and annotation, for those
-        given.
+        Return the units of the outline on the decision, concern and
+        annotation given.
 
         """
 
-        return [unit for unit in self.list_unit
-                if decision in (None, unit.decision)
-                and concern in (None, unit.concern)
-                and annotation in (None, unit.annotation)]
+        return self.outline.units(**map_given)
 
     # -------------------------------------------------------------------------
     def _height(self, list_unit: list[Unit]) -> float:

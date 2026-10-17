@@ -96,7 +96,7 @@ def test_issue_page_shows_each_annotation(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     assert status == http.HTTPStatus.OK
     for annotation in issue.list_annotation:
-        assert 'id="{id}"'.format(id = annotation.id).encode() in body
+        assert '<code>{id}</code>'.format(id = annotation.id).encode() in body
 
 
 def test_issue_page_escapes_prose(tree):
@@ -167,3 +167,26 @@ def test_closing_a_concern_closes_what_is_open_within_it(tree):
     assert status == http.HTTPStatus.OK
     assert '?toggle={key}"'.format(key = unit.concern).encode() in body
     assert cc_public.web.sankey.parse_toggle('toggle=a&toggle=a%2Fb') == {'a', 'a/b'}
+
+
+def test_numbers_follow_the_diagram_from_the_top(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    list_first = []
+    for id_concern in outline.list_concern:
+        for id_annotation in outline.map_annotation[id_concern]:
+            if id_annotation not in list_first:
+                list_first.append(id_annotation)
+    list_number = [outline.map_number[id_annotation] for id_annotation in list_first]
+    assert list_number == sorted(list_number)
+    assert list_number[0] == 1
+    assert sorted(outline.map_number.values()) == list(range(1, len(outline.map_number) + 1))
+
+
+def test_an_annotation_sits_under_each_of_its_concerns(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    for id_concern in outline.list_concern:
+        for id_annotation in outline.map_annotation[id_concern]:
+            assert 'id="{c}/{a}"'.format(c = id_concern, a = id_annotation).encode() in body

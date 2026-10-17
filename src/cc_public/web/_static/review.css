@@ -171,15 +171,6 @@ code {
   color: var(--ink-muted);
 }
 
-.annotation .main {
-  border-left: 1px solid transparent;
-}
-
-.answer .main {
-  padding-left: 1.25rem;
-  border-left-color: var(--rule);
-}
-
 details {
   font-size: 1.2rem;
   margin: -0.5rem 0 1rem;
@@ -194,6 +185,94 @@ summary {
 details p {
   margin: 0.4rem 0 0.6rem;
 }
+
+/* The argument: annotations grouped by concern, each folded to one
+   line that opens to its claim, its evidence and its answers. */
+
+.concern-group h3 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 1.5rem;
+  margin: 1.75rem 0 0.25rem;
+}
+
+.concern-group .tally {
+  margin: 2rem 0 0;
+  font-variant: small-caps;
+}
+
+details.annotation {
+  font-size: inherit;
+  margin: 0;
+}
+
+details.annotation > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+details.annotation > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.annotation > summary .block {
+  margin: 0;
+  padding: 0.2rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+details.annotation > summary p,
+details.annotation > summary ul {
+  margin: 0;
+}
+
+details.annotation > summary .number::before {
+  content: "\25B8\00A0";
+}
+
+details.annotation[open] > summary .number::before {
+  content: "\25BE\00A0";
+}
+
+details.annotation > summary:hover .run-in {
+  color: var(--link);
+}
+
+details.annotation:target > summary .block {
+  background: rgba(138, 115, 68, 0.12);
+}
+
+details.annotation > summary .main p {
+  padding-left: 1.3rem;
+  text-indent: -1.3rem;
+}
+
+details.annotation > summary .note {
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+details.annotation > .body {
+  margin: 0.2rem 0 0.6rem;
+}
+
+details.annotation > .body .main > p {
+  margin-left: 1.3rem;
+}
+
+details.annotation > .body details {
+  margin: -0.25rem 0 0.5rem 1.3rem;
+}
+
+.depth-1 > summary .main,
+.depth-1 > .body .main { padding-left: 1.3rem; border-left: 1px solid var(--rule); }
+.depth-2 > summary .main,
+.depth-2 > .body .main { padding-left: 2.6rem; border-left: 1px solid var(--rule); }
+.depth-3 > summary .main,
+.depth-3 > .body .main { padding-left: 3.9rem; border-left: 1px solid var(--rule); }
+.depth-4 > summary .main,
+.depth-4 > .body .main { padding-left: 5.2rem; border-left: 1px solid var(--rule); }
 
 .for {
   color: var(--ink-for);
@@ -282,23 +361,6 @@ figcaption {
   font-size: 1.05rem;
   color: var(--ink-muted);
   max-width: var(--width-text);
-}
-
-.matrix th.concern {
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 0.4rem 0.3rem 0.3rem;
-}
-
-.matrix th.other {
-  color: var(--ink-muted);
-}
-
-.matrix td {
-  text-align: center;
-  white-space: nowrap;
-  letter-spacing: 0.08em;
-  padding: 0.3rem 0.3rem;
 }
 
 /* On a narrow screen the margin folds in under the text. */

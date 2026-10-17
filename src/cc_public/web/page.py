@@ -25,9 +25,13 @@ description:            |
                         column, with its standing, what it bears on
                         and the concerns it argues for in the margin.
                         Decisions are read from most supported to most
-                        opposed, and annotations in that order: those
-                        on the first decision, each followed by those
-                        that answer it, then the next.
+                        opposed. The annotations follow the outline of
+                        the diagram: grouped by concern in its order,
+                        an annotation that argues for several concerns
+                        under each, and numbered as the diagram
+                        numbers them. Each annotation folds to one
+                        line, and opens to its claim, its evidence and
+                        the annotations that answer it.
 relation:               []
 
 ...
@@ -52,6 +56,7 @@ MARK_FOR          = '+'
 MARK_AGAINST      = '−'
 
 ROLE_FOR          = 'for'
+DEPTH_MAX         = 4
 ROLE_AGAINST      = 'against'
 MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
                      cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
@@ -98,8 +103,7 @@ def issue(graph: Graph, issue: Issue, set_toggle: set[str]) -> str:
     """
 
     item         = issue.item
-    map_number   = {annotation.id: index + 1
-                    for (index, annotation) in enumerate(_ordered(graph, issue))}
+    outline      = cc_public.web.sankey.Outline(graph, issue)
     list_subject = [graph.title(id_subject)
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
@@ -110,16 +114,13 @@ def issue(graph: Graph, issue: Issue, set_toggle: set[str]) -> str:
                          [_note_line('Subject', ', '.join(list_subject)),
                           _note_line('Drivers', _drivers(graph, issue)),
                           _id(item.id)]),
-                  cc_public.web.sankey.figure(graph, issue, map_number, set_toggle),
+                  cc_public.web.sankey.figure(graph, outline, set_toggle),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
-                  htpy.section[
-                      htpy.h2['Argument'],
-                      [_annotation(graph, annotation, map_number)
-                       for annotation in _ordered(graph, issue)]]])
+                  _argument(graph, outline)])
 
 
 # -----------------------------------------------------------------------------
@@ -238,46 +239,60 @@ def _determinations(graph: Graph, issue: Issue) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _ordered(graph: Graph, issue: Issue) -> list[Item]:
+def _argument(graph: Graph, outline: cc_public.web.sankey.Outline) -> typing.Any:
     """
-    Return the annotations on the issue in reading order: those that
-    bear on the first decision, then the next, each followed at once
-    by the annotations that answer it, and last any not reached so.
+    Return the annotations of the outline, grouped by concern in the
+    order of the diagram, then those no concern reaches.
 
     """
 
-    map_annotation = {annotation.id: annotation for annotation in issue.list_annotation}
-    list_ordered   = []
-    set_seen       = set()
+    list_group = []
+    for id_concern in outline.list_concern:
+        list_annotation = outline.map_annotation[id_concern]
+        if not list_annotation:
+            continue
+        list_unit = outline.units(concern = id_concern)
+        count_for = sum(1 for unit in list_unit if unit.is_for())
+        list_group.append(htpy.section(class_ = 'concern-group')[
+            _block([htpy.h3[graph.title(id_concern)]],
+                   [htpy.p(class_ = 'tally')[
+                        htpy.span(class_ = ROLE_FOR)['+{count}'.format(count = count_for)],
+                        ' ',
+                        htpy.span(class_ = ROLE_AGAINST)['−{count}'.format(
+                                                             count = len(list_unit) - count_for)],
+                        ' driver' if id_concern in outline.issue.list_driver else None]]),
+            [_annotation(graph, outline, id_annotation,
+                         cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
+                         id_concern, set())
+             for id_annotation in list_annotation]])
 
-    def visit(id_item: str) -> None:
-        for id_relation in MAP_ROLE:
-            for id_source in graph.sources(id_relation, id_item):
-                if id_source in map_annotation and id_source not in set_seen:
-                    set_seen.add(id_source)
-                    list_ordered.append(map_annotation[id_source])
-                    visit(id_source)
+    if outline.list_other:
+        list_group.append(htpy.section(class_ = 'concern-group')[
+            _block([htpy.h3['Other annotations']], []),
+            [_annotation(graph, outline, id_annotation, id_annotation, None, set())
+             for id_annotation in outline.list_other]])
 
-    for decision in cc_public.web.sankey.ordered_decisions(issue):
-        visit(decision.id)
-    for annotation in issue.list_annotation:
-        if annotation.id not in set_seen:
-            set_seen.add(annotation.id)
-            list_ordered.append(annotation)
-            visit(annotation.id)
-
-    return list_ordered
+    return htpy.section[htpy.h2['Argument'], list_group]
 
 
 # -----------------------------------------------------------------------------
-def _annotation(graph:      Graph,
-                annotation: Item,
-                map_number: dict[str, int]) -> typing.Any:
+def _annotation(graph:         Graph,
+                outline:       cc_public.web.sankey.Outline,
+                id_annotation: str,
+                key:           str,
+                id_concern:    str | None,
+                set_path:      set[str]) -> typing.Any:
     """
-    Return an annotation: its number, title, claim and evidence, with
-    what it bears on and the concerns it argues for in the margin.
+    Return an annotation folded to one line: its number, title and what
+    it bears on. Open, it shows its claim and evidence, then the
+    annotations that answer it, folded the same way. key places it in
+    the outline, under id_concern if it is not an answer; set_path
+    holds the annotations above it.
 
     """
+
+    annotation = graph.map_item[id_annotation]
+    map_number = outline.map_number
 
     list_bearing = []
     for (id_relation, role) in MAP_ROLE.items():
@@ -288,22 +303,50 @@ def _annotation(graph:      Graph,
                 MARK_FOR if role == ROLE_FOR else MARK_AGAINST, ' ', name])
 
     list_concern = annotation.targets(cc_public.web.argument.R_ARGUES_FOR)
-    is_answer    = any(id_target.startswith(cc_public.web.argument.PREFIX_ANNOTATION)
-                       for id_relation in MAP_ROLE
-                       for id_target in annotation.targets(id_relation))
+    list_also    = [id_other for id_other in list_concern if id_other != id_concern]
+    list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
+                    if id_answer not in set_path]
 
-    return _block([htpy.p[htpy.span(class_ = 'number')[
-                              '#{number}'.format(number = map_number[annotation.id])],
-                          ' ',
-                          htpy.span(class_ = 'run-in')[annotation.title], ' ',
-                          _prose(annotation.brief)],
-                   _evidence(annotation)],
-                  [htpy.ul(class_ = 'bearing')[list_bearing],
-                   htpy.p(class_ = 'concerns')[_titles(graph, list_concern)
-                                               or ('fact' if is_answer else None)],
-                   _id(annotation.id)],
-                  class_ = 'annotation answer' if is_answer else 'annotation',
-                  id     = annotation.id)
+    return htpy.details(class_ = 'annotation depth-{depth}'.format(depth = min(len(set_path),
+                                                                                DEPTH_MAX)),
+                        id     = key)[
+        htpy.summary[_block(
+            [htpy.p[htpy.span(class_ = 'number')[
+                        '#{number}'.format(number = map_number[id_annotation])],
+                    ' ',
+                    htpy.span(class_ = 'run-in')[annotation.title]]],
+            [htpy.ul(class_ = 'bearing')[list_bearing],
+             _summary_note(graph, list_also, len(list_answer))])],
+        _block([htpy.p[_prose(annotation.brief)], _evidence(annotation)],
+               [None if id_concern
+                else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
+                _id(annotation.id)],
+               class_ = 'body'),
+        [_annotation(graph, outline, id_answer,
+                     cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
+                     None, set_path | {id_annotation})
+         for id_answer in list_answer]]
+
+
+# -----------------------------------------------------------------------------
+def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typing.Any:
+    """
+    Return the note under what a folded annotation bears on: the other
+    concerns it sits under, and how many annotations answer it. None if
+    there is neither.
+
+    """
+
+    list_part = []
+    if list_also:
+        list_part.append('also ' + _titles(graph, list_also))
+    if count_answer:
+        list_part.append('{count} {noun}'.format(count = count_answer,
+                                                 noun  = 'answer' if count_answer == 1
+                                                         else 'answers'))
+    if not list_part:
+        return None
+    return htpy.p(class_ = 'note')[' · '.join(list_part)]
 
 
 # -----------------------------------------------------------------------------
