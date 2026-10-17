@@ -45,6 +45,7 @@ import urllib.parse
 import htpy
 
 import cc_public.web.argument
+import cc_public.web.evidence
 import cc_public.web.sankey
 
 
@@ -503,11 +504,12 @@ def _annotation(graph:         Graph,
                     htpy.span(class_ = 'run-in')[annotation.title]]],
             [htpy.ul(class_ = 'bearing')[list_bearing],
              _summary_note(graph, list_also, len(list_answer))])],
-        _block([htpy.p[_prose(annotation.brief)], _evidence(annotation)],
-               [None if id_concern
-                else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
-                _id(annotation.id)],
-               class_ = 'body'),
+        htpy.div(class_ = 'body')[
+            _block([htpy.p[_prose(annotation.brief)]],
+                   [None if id_concern
+                    else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
+                    _id(annotation.id)]),
+            _evidence(graph, annotation, key)],
         [_annotation(graph, outline, id_answer,
                      cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
                      None, set_path | {id_annotation}, key_show)
@@ -547,16 +549,21 @@ def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typi
 
 
 # -----------------------------------------------------------------------------
-def _evidence(annotation: Item) -> typing.Any:
+def _evidence(graph: Graph, annotation: Item, key: str) -> typing.Any:
     """
-    Return the description of the annotation, folded away, or None if
-    it has none.
+    Return the evidence of the annotation, its description, as prose
+    with its sources numbered in the margin beside it, or None if it
+    has none. key makes the ids of the notes unique on the page.
 
     """
 
     if not annotation.description:
         return None
-    return htpy.details[htpy.summary['Evidence'], _paragraphs(annotation.description)]
+    (list_prose, list_note) = cc_public.web.evidence.evidence(graph, annotation.description, key)
+    return _block([htpy.p(class_ = 'evidence')[htpy.span(class_ = 'run-in')['Evidence'], ' ',
+                                               list_prose]],
+                  [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
+                  class_ = 'evidence')
 
 
 # -----------------------------------------------------------------------------

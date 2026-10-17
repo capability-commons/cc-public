@@ -30,7 +30,10 @@ import concurrent.futures
 import http
 import urllib.parse
 
+import htpy
+
 import cc_public.web.argument
+import cc_public.web.evidence
 import cc_public.web.page
 import cc_public.web.sankey
 import cc_public.web.server
@@ -128,6 +131,20 @@ def test_matrix_cells_are_drawn_as_the_address_says(tree):
         style = matrix if matrix in cc_public.web.page.TUPLE_MATRIX else 'count'
         assert 'class="matrix matrix-{style}"'.format(style = style).encode() in body
         assert mark.encode() in body
+
+
+def test_evidence_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
+    graph = cc_public.web.argument.Graph(tree)
+    text  = ('It is so (check.py lines 3-4) and slow (a guess). ASSUMPTION: it stays so. '
+             'See dec_cross_item_checks_in_clingo (https://example.org/a).')
+    (list_prose, list_note) = cc_public.web.evidence.evidence(graph, text, 'k')
+    prose = str(htpy.p[list_prose])
+    assert [str(note) for note in list_note] == [
+        '<li id="k-note-1" value="1">check.py lines 3-4</li>',
+        '<li id="k-note-2" value="2"><a href="https://example.org/a">example.org/a</a></li>']
+    assert 'slow (a guess).' in prose
+    assert '<span class="label">assumption</span> it stays so</span>' in prose
+    assert '>{title}</a>'.format(title = graph.title(ID_UPHELD)) in prose
 
 
 def test_unknown_issue_is_not_found(tree):
