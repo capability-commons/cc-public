@@ -48,6 +48,7 @@ import cc_public.web.sankey
 
 
 TITLE_SITE        = 'Capability Commons'
+LIST_INDEX        = (('Issues', '/'),)
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
 PATH_ITEM         = '/item/'
@@ -121,8 +122,7 @@ def issue(graph:      Graph,
                   _determinations(graph, issue),
                   _argument(graph, outline, key_show),
                   _issue_references(graph, issue)],
-                 [htpy.nav[htpy.a(href = '/')['Issues']],
-                  htpy.h1[item.title],
+                 [htpy.h1[item.title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
                  [_facts(graph, issue, list_subject)])
 
@@ -152,8 +152,7 @@ def item(graph: Graph, id_item: str) -> str:
     return _page(title,
                  [_block(_paragraphs(item.description), []),
                   _references(graph, list_row)],
-                 [htpy.nav[htpy.a(href = '/')['Issues']],
-                  htpy.h1[title],
+                 [htpy.h1[title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)] if item.brief else None],
                  [htpy.table(class_ = 'facts')[htpy.tbody[
                      htpy.tr[htpy.th(scope = 'row')['Id'], htpy.td[htpy.code[item.id]]]]]])
@@ -167,8 +166,7 @@ def missing(id_item: str) -> str:
     """
 
     return _page('Not found',
-                 [htpy.nav[htpy.a(href = '/')['Issues']],
-                  htpy.h1['Not found'],
+                 [htpy.h1['Not found'],
                   htpy.p['The tree holds no issue ', htpy.code[id_item], '.']])
 
 
@@ -179,8 +177,9 @@ def _page(title:       str,
           head_margin: typing.Any = None) -> str:
     """
     Return the HTML of a page with title and body. head follows the
-    name of the site in the text column, with head_margin beside them
-    both in the margin, so the margin starts at the top of the page.
+    name of the site and the links to the indexes in the text column,
+    with head_margin beside them in the margin, so the margin starts at
+    the top of the page.
 
     """
 
@@ -192,7 +191,12 @@ def _page(title:       str,
             htpy.link(rel = 'stylesheet', href = PATH_STATIC + FILE_STYLE)],
         htpy.body[
             htpy.article[
-                _block([htpy.header[TITLE_SITE], head], [head_margin],
+                _block([htpy.header[TITLE_SITE,
+                                    [[htpy.span(class_ = 'bar')['|'],
+                                      htpy.a(href = href)[name]]
+                                     for (name, href) in LIST_INDEX]],
+                        head],
+                       [head_margin],
                        class_ = 'masthead ruled' if head_margin else 'masthead'),
                 body]]])
 
