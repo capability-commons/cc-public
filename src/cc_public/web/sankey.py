@@ -122,11 +122,7 @@ def figure(graph:      Graph,
                  role    = 'img')[
             drawing.list_band,
             drawing.list_bar,
-            drawing.list_label],
-        htpy.figcaption[
-            'Weight of the argument: one unit for each annotation, concern and decision. '
-            'Support above, challenge below. Open a concern, then an annotation, to see '
-            'what makes it up.']]
+            drawing.list_label]]
 
 
 # -----------------------------------------------------------------------------
