@@ -40,6 +40,7 @@ relation:               []
 
 import collections
 import typing
+import urllib.parse
 
 import htpy
 
@@ -56,6 +57,19 @@ FILE_STYLE        = 'review.css'
 
 MARK_FOR          = '+'
 MARK_AGAINST      = '−'
+MARK_BOTH         = '±'
+MARK_NONE         = '·'
+MARK_UNIT         = '■'
+
+# The ways the decision matrix can summarise a cell, chosen by the
+# query of the page address: counts for and against, one Pugh mark, or
+# one square for each unit of weight.
+#
+KEY_MATRIX        = 'matrix'
+MATRIX_COUNT      = 'count'
+MATRIX_PUGH       = 'pugh'
+MATRIX_UNIT       = 'unit'
+TUPLE_MATRIX      = (MATRIX_COUNT, MATRIX_PUGH, MATRIX_UNIT)
 
 ROLE_FOR          = 'for'
 DEPTH_MAX         = 4
@@ -100,11 +114,13 @@ def index(graph: Graph) -> str:
 def issue(graph:      Graph,
           issue:      Issue,
           set_toggle: set[str],
-          key_show:   str | None = None) -> str:
+          key_show:   str | None = None,
+          matrix:     str = MATRIX_COUNT) -> str:
     """
     Return the page that shows an issue and the argument on it, with the
-    parts of its diagram in set_toggle opened or closed, and the
-    annotation at key_show opened in the list.
+    parts of its diagram in set_toggle opened or closed, the annotation
+    at key_show opened in the list, and the cells of the decision matrix
+    drawn as matrix says.
 
     """
 
@@ -114,17 +130,132 @@ def issue(graph:      Graph,
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
-                 [cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
+                 [_matrix(graph, issue, outline, matrix),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
+                  cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
                   _argument(graph, outline, key_show),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
                  [_facts(graph, issue, list_subject)])
+
+
+# -----------------------------------------------------------------------------
+def parse_matrix(query: str) -> str:
+    """
+    Return how the decision matrix draws its cells, read from the query
+    of a page address: MATRIX_COUNT unless the query names another.
+
+    """
+
+    matrix = (urllib.parse.parse_qs(query).get(KEY_MATRIX) or [MATRIX_COUNT])[0]
+    return matrix if matrix in TUPLE_MATRIX else MATRIX_COUNT
+
+
+# -----------------------------------------------------------------------------
+def _matrix(graph:   Graph,
+            issue:   Issue,
+            outline: cc_public.web.sankey.Outline,
+            matrix:  str) -> typing.Any:
+    """
+    Return the decision matrix of the issue: a row for each decision
+    and a column for each concern, in the order of the diagram, each
+    cell summing what the annotations say for and against the decision
+    for the concern, with the standing of each decision and the
+    controls that settle it. A driver no annotation argues for is
+    marked, as a determination waits on it.
+
+    """
+
+    set_unspoken = set(issue.unspoken())
+
+    def head(id_concern: str) -> typing.Any:
+        css = 'concern' if id_concern in issue.list_driver else 'concern other'
+        return htpy.th(class_ = css, scope = 'col')[
+            htpy.a(href = _href(id_concern))[graph.title(id_concern)],
+            htpy.span(class_ = 'unargued')['not argued'] if id_concern in set_unspoken else None]
+
+    return htpy.section(class_ = 'matrix')[
+        htpy.h2['Decision matrix'],
+        htpy.nav(class_ = 'matrix-style')[
+            'Cells: ',
+            [[htpy.a(href = '?{key}={value}'.format(key = KEY_MATRIX, value = value),
+                     class_ = 'current' if value == matrix else None)[value],
+              ' '] for value in TUPLE_MATRIX]],
+        htpy.table(class_ = 'matrix matrix-' + matrix)[
+            htpy.thead[htpy.tr[
+                htpy.th(scope = 'col')['Decision'],
+                [head(id_concern) for id_concern in outline.list_concern],
+                htpy.th(class_ = 'total', scope = 'col')['All'],
+                htpy.th(scope = 'col')['']]],
+            htpy.tbody[[
+                htpy.tr[
+                    htpy.th(scope = 'row')[
+                        htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
+                        htpy.span(class_ = 'standing')[_stance(issue.map_stance.get(
+                            id_decision, cc_public.web.argument.STANCE_OPEN))]],
+                    [htpy.td(class_ = 'cell')[_cell(outline.units(decision = id_decision,
+                                                                  concern  = id_concern),
+                                                    matrix)]
+                     for id_concern in outline.list_concern],
+                    htpy.td(class_ = 'cell total')[_cell(outline.units(decision = id_decision),
+                                                         MATRIX_COUNT)],
+                    htpy.td(class_ = 'controls')[_controls(id_decision)]]
+                for id_decision in outline.list_decision]]]]
+
+
+# -----------------------------------------------------------------------------
+def _cell(list_unit: list, matrix: str) -> typing.Any:
+    """
+    Return what a cell of the decision matrix shows of list_unit, the
+    units of weight on one decision for one concern, drawn as matrix
+    says.
+
+    """
+
+    count_for     = sum(1 for unit in list_unit if unit.is_for())
+    count_against = len(list_unit) - count_for
+
+    if not list_unit:
+        return htpy.span(class_ = 'none')[MARK_NONE]
+
+    if matrix == MATRIX_PUGH:
+        if count_for and count_against:
+            return htpy.span(class_ = 'both')[MARK_BOTH]
+        if count_for:
+            return htpy.span(class_ = 'for')[MARK_FOR]
+        return htpy.span(class_ = 'against')[MARK_AGAINST]
+
+    if matrix == MATRIX_UNIT:
+        return [htpy.span(class_ = 'for')[MARK_UNIT * count_for] if count_for else None,
+                htpy.span(class_ = 'against')[MARK_UNIT * count_against]
+                if count_against else None]
+
+    return [htpy.span(class_ = 'for')[MARK_FOR + str(count_for)] if count_for else None,
+            ' ' if count_for and count_against else None,
+            htpy.span(class_ = 'against')[MARK_AGAINST + str(count_against)]
+            if count_against else None]
+
+
+# -----------------------------------------------------------------------------
+def _controls(id_decision: str) -> typing.Any:
+    """
+    Return the controls that settle the issue on id_decision: uphold
+    it, which rejects the other decisions, or reject it alone. This is
+    a mock: the controls send nothing yet.
+
+    """
+
+    return htpy.form(class_ = 'determine', method = 'post', action = '#')[
+        htpy.input(type = 'hidden', name = 'decision', value = id_decision),
+        htpy.button(type = 'button', class_ = 'uphold', disabled = True,
+                    title = 'Uphold this decision and reject the others')['Uphold'],
+        htpy.button(type = 'button', class_ = 'reject', disabled = True,
+                    title = 'Reject this decision')['Reject']]
 
 
 # -----------------------------------------------------------------------------
@@ -256,7 +387,8 @@ def _decision(issue: Issue, decision: Item) -> typing.Any:
                           _prose(decision.brief)]],
                   [_stance(issue.map_stance.get(decision.id,
                                                 cc_public.web.argument.STANCE_OPEN)),
-                   _id(decision.id)])
+                   _id(decision.id)],
+                  id = decision.id)
 
 
 # -----------------------------------------------------------------------------

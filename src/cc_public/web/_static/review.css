@@ -586,3 +586,118 @@ figure.map svg {
   fill: var(--link);
   text-decoration: underline;
 }
+
+/* The decision matrix: a row for each decision and a column for each
+   concern, across both columns of the page. Drivers are in ink and the
+   other concerns muted, as in the diagram. */
+
+section.matrix > table.matrix {
+  table-layout: auto;
+}
+
+section.matrix > table.matrix th:first-child {
+  width: auto;
+  min-width: 9rem;
+}
+
+table.matrix {
+  font-size: 1.05rem;
+}
+
+nav.matrix-style {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  margin: -0.5rem 0 0.6rem;
+}
+
+nav.matrix-style a.current {
+  color: var(--ink);
+  text-decoration: none;
+  font-style: italic;
+}
+
+table.matrix thead th.concern {
+  text-align: center;
+  padding: 0.4rem 0.2rem 0.3rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+table.matrix thead th.concern a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+table.matrix thead th.other a {
+  color: var(--ink-muted);
+}
+
+table.matrix .unargued {
+  display: block;
+  font-variant: normal;
+  font-style: italic;
+  color: var(--ink-open);
+}
+
+table.matrix .standing {
+  display: block;
+  font-size: 0.9rem;
+}
+
+table.matrix tbody th a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+table.matrix td.cell {
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  padding: 0.3rem 0.2rem;
+}
+
+table.matrix td.total,
+table.matrix th.total {
+  border-left: 1px solid var(--rule);
+  text-align: center;
+}
+
+table.matrix .for { color: var(--ink-for); }
+table.matrix .against { color: var(--ink-against); }
+table.matrix .both { color: var(--ink); }
+table.matrix .none { color: var(--rule); }
+
+table.matrix-unit td.cell:not(.total) {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+
+table.matrix-pugh td.cell:not(.total) {
+  font-size: 1.3rem;
+}
+
+form.determine {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: stretch;
+}
+
+form.determine button {
+  font: inherit;
+  font-size: 0.95rem;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0 0.4rem;
+  cursor: pointer;
+}
+
+form.determine button.uphold { border-color: var(--ink-upheld); color: var(--ink-upheld); }
+form.determine button.reject { border-color: var(--ink-rejected); color: var(--ink-rejected); }
+form.determine button:disabled { cursor: default; opacity: 0.8; }

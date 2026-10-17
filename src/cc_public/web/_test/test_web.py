@@ -31,6 +31,7 @@ import http
 import urllib.parse
 
 import cc_public.web.argument
+import cc_public.web.page
 import cc_public.web.sankey
 import cc_public.web.server
 
@@ -106,6 +107,27 @@ def test_issue_page_escapes_prose(tree):
     path.write_text(path.read_text().replace('one item?', '<b>one</b> item?'))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     assert b'&lt;b&gt;one&lt;/b&gt; item?' in body
+
+
+def test_matrix_has_a_row_for_each_decision_and_a_column_for_each_concern(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text    = body.decode()
+    matrix  = text[text.index('<table class="matrix'):text.index('</table>',
+                                                               text.index('<table class="matrix'))]
+    assert matrix.count('<th scope="row">') == len(outline.list_decision)
+    assert matrix.count('scope="col"') == len(outline.list_concern) + 3
+    assert text.index('class="matrix"') < text.index('<h2>Decisions</h2>') < text.index('<figure')
+
+
+def test_matrix_cells_are_drawn_as_the_address_says(tree):
+    for (matrix, mark) in (('count', '+1'), ('pugh', '±'), ('unit', '■'), ('nonsense', '+1')):
+        (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix={matrix}'.format(
+                                                              id = ID_ISSUE, matrix = matrix))
+        style = matrix if matrix in cc_public.web.page.TUPLE_MATRIX else 'count'
+        assert 'class="matrix matrix-{style}"'.format(style = style).encode() in body
+        assert mark.encode() in body
 
 
 def test_unknown_issue_is_not_found(tree):
