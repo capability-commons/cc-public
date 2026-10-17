@@ -35,6 +35,7 @@ import cc_public.cli.gating
 import cc_public.cli.group
 import cc_public.cli.messaging
 import cc_public.cli.querying
+import cc_public.cli.serving
 
 
 main = cc_public.cli.group.main

@@ -1,0 +1,392 @@
+/*
+ * Review pages of cc-public.
+ *
+ * After Tufte: serif text on cream paper, a wide margin beside the
+ * text column for notes, hairline rules, and colour only in the few
+ * marks that carry meaning. The paper and the inks come from the
+ * earlier capability-commons web prototype. ET Book is under the MIT
+ * licence, in LICENSE-et-book.
+ */
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-roman-old-style-figures.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-display-italic-old-style-figures.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-semi-bold-old-style-figures.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f3eadc;
+  --ink: #1f1b16;
+  --ink-muted: #5e5648;
+  --rule: #cfc4b0;
+  --link: #3d4a5c;
+
+  --ink-upheld: #4a6b52;
+  --ink-open: #8a7344;
+  --ink-rejected: #8b4a44;
+  --ink-for: #4a6b52;
+  --ink-against: #8b4a44;
+
+  --width-text: 34rem;
+  --width-margin: 17rem;
+  --gap: 2.5rem;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  margin: 0;
+  padding: 0 1rem 6rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  font-variant-numeric: oldstyle-nums;
+}
+
+body > header,
+article {
+  max-width: calc(var(--width-text) + var(--gap) + var(--width-margin));
+  margin: 0 auto;
+}
+
+body > header {
+  padding: 1.5rem 0 0;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  font-size: 1.1rem;
+  color: var(--ink-muted);
+}
+
+nav {
+  font-size: 1.1rem;
+  margin: 0.5rem 0 0;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 2.8rem;
+  line-height: 1.1;
+  margin: 2rem 0 1rem;
+  max-width: var(--width-text);
+}
+
+h2 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 1.9rem;
+  margin: 3rem 0 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+code {
+  font-family: Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.8em;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.35;
+}
+
+/* A block sets its text in the text column and its notes beside it. */
+
+.block {
+  display: grid;
+  grid-template-columns: minmax(0, var(--width-text)) var(--width-margin);
+  column-gap: var(--gap);
+  margin: 0 0 0.75rem;
+}
+
+.margin {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--ink-muted);
+  padding-top: 0.25rem;
+}
+
+.margin p,
+.margin ul {
+  margin: 0 0 0.3rem;
+}
+
+.margin ul {
+  list-style: none;
+  padding: 0;
+}
+
+.label,
+.run-in,
+.concerns {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+.run-in {
+  font-size: 1.05em;
+}
+
+.label {
+  color: var(--ink);
+}
+
+.id code {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.number {
+  color: var(--ink-muted);
+}
+
+.annotation .main {
+  border-left: 1px solid transparent;
+}
+
+.answer .main {
+  padding-left: 1.25rem;
+  border-left-color: var(--rule);
+}
+
+details {
+  font-size: 1.2rem;
+  margin: -0.5rem 0 1rem;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+details p {
+  margin: 0.4rem 0 0.6rem;
+}
+
+.for {
+  color: var(--ink-for);
+}
+
+.against {
+  color: var(--ink-against);
+}
+
+.stance {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+.stance::before {
+  content: "\25CF\00A0";
+  font-size: 0.8em;
+}
+
+.stance-upheld { color: var(--ink-upheld); }
+.stance-open { color: var(--ink-open); }
+.stance-rejected { color: var(--ink-rejected); }
+
+.superseded {
+  font-style: italic;
+}
+
+s {
+  text-decoration-color: var(--ink-against);
+}
+
+/* Tables: rules only above and below the head and at the foot. */
+
+table {
+  border-collapse: collapse;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  margin: 0 0 1.5rem;
+  width: 100%;
+}
+
+section > table {
+  table-layout: fixed;
+}
+
+section > table th:first-child {
+  width: 50%;
+}
+
+thead th {
+  font-weight: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  text-align: left;
+  vertical-align: bottom;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.4rem 0.6rem 0.3rem 0;
+}
+
+tbody td,
+tbody th {
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+  padding: 0.3rem 0.6rem 0.3rem 0;
+}
+
+tbody tr:last-child td,
+tbody tr:last-child th {
+  border-bottom: 1px solid var(--ink);
+}
+
+th.number,
+td.number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+figure {
+  margin: 1.5rem 0 0;
+  overflow-x: auto;
+}
+
+figcaption {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  max-width: var(--width-text);
+}
+
+.matrix th.concern {
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0.4rem 0.3rem 0.3rem;
+}
+
+.matrix th.other {
+  color: var(--ink-muted);
+}
+
+.matrix td {
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.3rem;
+}
+
+/* On a narrow screen the margin folds in under the text. */
+
+@media (max-width: 760px) {
+  html {
+    font-size: 13px;
+  }
+
+  .block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .margin {
+    padding: 0 0 0 1rem;
+    border-left: 1px solid var(--rule);
+    margin: -0.5rem 0 1rem;
+  }
+}
+
+/* The diagram of an argument breaks out of the text column. */
+
+figure.map {
+  width: calc(100vw - 2rem);
+  margin: 2rem 0 0 calc(50% - 50vw + 1rem);
+  overflow-x: auto;
+}
+
+figure.map figcaption {
+  margin: 0.5rem auto 0;
+}
+
+figure.map svg {
+  display: block;
+  margin: 0 auto;
+  font-family: "et-book", Palatino, Georgia, serif;
+}
+
+.map text {
+  fill: var(--ink);
+  font-size: 12.5px;
+}
+
+.map text.decision {
+  font-size: 15px;
+  font-style: italic;
+}
+
+.map text.concern {
+  font-size: 13px;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+.map text.tally {
+  font-size: 12px;
+  font-variant: small-caps;
+}
+
+.map text.other,
+.map .note,
+.map .number {
+  fill: var(--ink-muted);
+}
+
+.map .note,
+.map .number {
+  font-size: 11px;
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+.map a:hover text {
+  fill: var(--link);
+  text-decoration: underline;
+}
+
+.map .for { fill: var(--ink-for); }
+.map .against { fill: var(--ink-against); }
+.map .stance-upheld { fill: var(--ink-upheld); }
+.map .stance-open { fill: var(--ink-open); }
+.map .stance-rejected { fill: var(--ink-rejected); }
+
+.bar-for { fill: var(--ink-for); }
+.bar-against { fill: var(--ink-against); }
+.bar-driver { fill: var(--ink); }
+.bar-other,
+.bar-none { fill: var(--ink-muted); }
+
+.band-for { fill: var(--ink-for); fill-opacity: 0.36; }
+.band-against { fill: var(--ink-against); fill-opacity: 0.36; }
