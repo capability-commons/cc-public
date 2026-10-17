@@ -73,7 +73,7 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
         if issue is not None:
             return (http.HTTPStatus.OK, TYPE_HTML,
                     cc_public.web.page.issue(
-                        graph, issue, cc_public.web.sankey.parse_open(query)).encode())
+                        graph, issue, cc_public.web.sankey.parse_toggle(query)).encode())
         return (http.HTTPStatus.NOT_FOUND, TYPE_HTML,
                 cc_public.web.page.missing(id_issue).encode())
 

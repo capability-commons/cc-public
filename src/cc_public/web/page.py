@@ -90,10 +90,10 @@ def index(graph: Graph) -> str:
 
 
 # -----------------------------------------------------------------------------
-def issue(graph: Graph, issue: Issue, set_open: set[str]) -> str:
+def issue(graph: Graph, issue: Issue, set_toggle: set[str]) -> str:
     """
     Return the page that shows an issue and the argument on it, with the
-    parts of its diagram in set_open opened.
+    parts of its diagram in set_toggle opened or closed.
 
     """
 
@@ -110,7 +110,7 @@ def issue(graph: Graph, issue: Issue, set_open: set[str]) -> str:
                          [_note_line('Subject', ', '.join(list_subject)),
                           _note_line('Drivers', _drivers(graph, issue)),
                           _id(item.id)]),
-                  cc_public.web.sankey.figure(graph, issue, map_number, set_open),
+                  cc_public.web.sankey.figure(graph, issue, map_number, set_toggle),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)

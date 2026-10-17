@@ -144,24 +144,26 @@ def test_decisions_are_ordered_from_most_supported(tree):
     assert list_lean == sorted(list_lean)
 
 
-def test_map_shows_annotations_only_of_an_open_concern(tree):
+def test_map_opens_concerns_and_closes_annotations_by_default(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     unit  = cc_public.web.sankey.units(issue)[0]
     title = cc_public.web.argument.Graph(tree).title(unit.annotation)
     path  = '/issue/' + ID_ISSUE
-    (_, _, closed) = cc_public.web.server.respond(tree, path)
-    (_, _, opened) = cc_public.web.server.respond(tree, path + '?open=' + unit.concern)
-    assert '?open={key}'.format(key = unit.concern).encode() in closed
-    assert '<a href="#{id}">'.format(id = unit.annotation).encode() not in closed
+    (_, _, opened) = cc_public.web.server.respond(tree, path)
+    query = '&'.join('toggle=' + other.concern for other in cc_public.web.sankey.units(issue)
+                     if other.annotation == unit.annotation)
+    (_, _, closed) = cc_public.web.server.respond(tree, path + '?' + query)
     assert title.encode() in opened.split(b'</svg>')[0]
+    assert title.encode() not in closed.split(b'</svg>')[0]
+    assert '?toggle={key}'.format(key = unit.concern).encode() in opened
 
 
-def test_closing_a_part_closes_what_is_open_within_it(tree):
-    issue  = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
-    unit   = cc_public.web.sankey.units(issue)[0]
-    inner  = unit.concern + '/' + unit.annotation
-    path   = '/issue/{id}?open={c}&open={i}'.format(id = ID_ISSUE, c = unit.concern, i = inner)
+def test_closing_a_concern_closes_what_is_open_within_it(tree):
+    issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
+    unit  = cc_public.web.sankey.units(issue)[0]
+    inner = unit.concern + '/' + unit.annotation
+    path  = '/issue/{id}?toggle={i}'.format(id = ID_ISSUE, i = inner)
     (status, _, body) = cc_public.web.server.respond(tree, path)
     assert status == http.HTTPStatus.OK
-    assert b'href="?"' in body
-    assert cc_public.web.sankey.parse_open('open=a&open=a%2Fb') == {'a', 'a/b'}
+    assert '?toggle={key}"'.format(key = unit.concern).encode() in body
+    assert cc_public.web.sankey.parse_toggle('toggle=a&toggle=a%2Fb') == {'a', 'a/b'}

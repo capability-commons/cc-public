@@ -23,11 +23,13 @@ description:            |
                         the right, joined by a band for each unit,
                         with support above challenge throughout:
                         decisions, concerns and annotations are each
-                        ordered from most supported to most opposed. A
-                        concern opens into its annotations, and an
-                        annotation into the annotations that answer
-                        it, by links that name the open parts in the
-                        address of the page, so no script is needed.
+                        ordered from most supported to most opposed.
+                        Each concern is open by default, showing its
+                        annotations, and an annotation opens into the
+                        annotations that answer it. Links that name
+                        the parts toggled from their default in the
+                        address of the page open and close them, so no
+                        script is needed.
 relation:               []
 
 ...
@@ -61,7 +63,7 @@ ROOM_TITLE        = 300
 LIST_X            = (270, 500, 730, 960, 1190)
 
 DELIM_KEY         = '/'
-KEY_OPEN          = 'open'
+KEY_TOGGLE        = 'toggle'
 MARK_OPEN         = '▾'
 MARK_CLOSED       = '▸'
 
@@ -97,17 +99,17 @@ class Unit:
 def figure(graph:      Graph,
            issue:      Issue,
            map_number: dict[str, int],
-           set_open:   set[str]) -> typing.Any:
+           set_toggle: set[str]) -> typing.Any:
     """
     Return the Sankey diagram of the argument on issue: its decisions on
     the left, each joined to the concerns that are argued on it, with
-    support above challenge. A concern in set_open opens into its
+    support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
     it. map_number numbers the annotations as the page does.
 
     """
 
-    drawing = _Drawing(graph, issue, map_number, set_open)
+    drawing = _Drawing(graph, issue, map_number, set_toggle)
     height  = drawing.draw()
     width   = LIST_X[drawing.index_column_last] + ROOM_TITLE
 
@@ -162,14 +164,15 @@ def ordered_decisions(issue: Issue) -> list[cc_public.web.argument.Item]:
 
 
 # -----------------------------------------------------------------------------
-def parse_open(query: str) -> set[str]:
+def parse_toggle(query: str) -> set[str]:
     """
-    Return the keys of the open parts of a diagram, read from the query
-    of a page address.
+    Return the keys of the parts of a diagram toggled from their
+    default, read from the query of a page address. A concern is open
+    by default, and an annotation closed.
 
     """
 
-    return set(urllib.parse.parse_qs(query).get(KEY_OPEN, []))
+    return set(urllib.parse.parse_qs(query).get(KEY_TOGGLE, []))
 
 
 # -----------------------------------------------------------------------------
@@ -184,7 +187,7 @@ class _Drawing:
                  graph:      Graph,
                  issue:      Issue,
                  map_number: dict[str, int],
-                 set_open:   set[str]) -> None:
+                 set_toggle: set[str]) -> None:
         """
         Gather the units of weight of issue, and order its concerns and
         annotations from most supportive to most opposed.
@@ -194,7 +197,7 @@ class _Drawing:
         self.graph      = graph
         self.issue      = issue
         self.map_number = map_number
-        self.set_open   = set_open
+        self.set_toggle = set_toggle
         self.list_band  = []
         self.list_bar   = []
         self.list_label = []
@@ -228,28 +231,27 @@ class _Drawing:
 
         """
 
-        map_top_decision = self._column_decisions()
-        map_top_concern  = self._column_concerns()
+        (map_top_concern, bottom) = self._column_concerns()
+        height_decision           = (sum(self._height(self._units(decision = id_decision))
+                                         for id_decision in self.list_decision)
+                                     + GAP_DECISION * (len(self.list_decision) - 1))
+        map_top_decision          = self._column_decisions(max(0.0,
+                                                               (bottom - height_decision) / 2))
         self._bands_to_concerns(map_top_decision, map_top_concern)
-        bottom           = self._column_annotations(map_top_concern)
 
-        return max([bottom]
-                   + [top + self._height(self._units(decision = id_decision)) + GAP
-                      for (id_decision, top) in map_top_decision.items()]
-                   + [top + self._height(self._units(concern = id_concern)) + GAP
-                      for (id_concern, top) in map_top_concern.items()])
+        return max(bottom, height_decision) + GAP
 
     # -------------------------------------------------------------------------
-    def _column_decisions(self) -> dict[str, float]:
+    def _column_decisions(self, top: float) -> dict[str, float]:
         """
-        Draw the decisions, each a bar of its support above its
-        challenge, labelled with its standing and its tally. Return the
-        top of each.
+        Draw the decisions from top down, each a bar of its support
+        above its challenge, labelled with its standing and its tally.
+        Return the top of each.
 
         """
 
         map_top = {}
-        y       = 0.0
+        y       = top
 
         for decision in ordered_decisions(self.issue):
             list_unit   = self._units(decision = decision.id)
@@ -283,10 +285,12 @@ class _Drawing:
         return map_top
 
     # -------------------------------------------------------------------------
-    def _column_concerns(self) -> dict[str, float]:
+    def _column_concerns(self) -> tuple[dict[str, float], float]:
         """
         Draw the concerns, each a bar as tall as its weight, labelled
-        with a link that opens or closes it. Return the top of each.
+        with a link that opens or closes it, and beside each open one
+        its annotations. Return the top of each concern, and the bottom
+        of what is drawn.
 
         """
 
@@ -295,7 +299,7 @@ class _Drawing:
 
         for id_concern in self.list_concern:
             list_unit = self._units(concern = id_concern)
-            is_open   = id_concern in self.set_open and bool(list_unit)
+            is_open   = self._open(id_concern) and bool(list_unit)
             y        += ROOM_LABEL if is_open else 0
             height    = self._height(list_unit)
             map_top[id_concern] = y
@@ -320,9 +324,10 @@ class _Drawing:
                     [title, ' ', htpy.tspan(class_ = 'note')[
                                      '{mark} {count}'.format(mark = MARK_CLOSED,
                                                              count = count)]]))
-            y += height + GAP
+            bottom = self._annotations(id_concern, y) if is_open else 0.0
+            y      = max(y + height, bottom) + GAP
 
-        return map_top
+        return (map_top, y)
 
     # -------------------------------------------------------------------------
     def _bands_to_concerns(self,
@@ -355,46 +360,39 @@ class _Drawing:
                            UNIT, unit.role)
 
     # -------------------------------------------------------------------------
-    def _column_annotations(self, map_top_concern: dict[str, float]) -> float:
+    def _annotations(self, id_concern: str, top: float) -> float:
         """
-        Draw the annotations of each open concern, most supportive
-        first, each fed by a strand for each of its units. Return the
-        bottom of the column.
+        Draw the annotations of the open concern whose bar starts at
+        top, most supportive first, each fed by a strand for each of its
+        units. Return the bottom of what is drawn.
 
         """
 
-        y = 0.0
+        list_unit       = self._units(concern = id_concern)
+        list_annotation = sorted({unit.annotation for unit in list_unit},
+                                 key = lambda id_annotation: (
+                                           lean(self._units(concern    = id_concern,
+                                                             annotation = id_annotation)),
+                                           self.map_number.get(id_annotation, 0)))
+        y               = top
+        y_from          = top
 
-        for id_concern in self.list_concern:
-            list_unit = self._units(concern = id_concern)
-            if id_concern not in self.set_open or not list_unit:
-                continue
+        for id_annotation in list_annotation:
+            key = DELIM_KEY.join((id_concern, id_annotation))
+            y  += ROOM_LABEL if self._is_open(key, id_annotation) else 0
+            list_own = sorted(self._units(concern = id_concern, annotation = id_annotation),
+                              key = lambda unit: (not unit.is_for(),
+                                                  self.list_decision.index(unit.decision)))
+            for (index, unit) in enumerate(list_own):
+                self._band(LIST_X[1] + WIDTH_BAR, y_from, LIST_X[2], y + index * UNIT,
+                           UNIT, unit.role)
+                self._bar(LIST_X[2], y + index * UNIT, UNIT, unit.role)
+                y_from += UNIT
 
-            list_annotation = sorted({unit.annotation for unit in list_unit},
-                                     key = lambda id_annotation: (
-                                               lean(self._units(concern    = id_concern,
-                                                                 annotation = id_annotation)),
-                                               self.map_number.get(id_annotation, 0)))
-            y      = max(y, map_top_concern[id_concern])
-            y_from = map_top_concern[id_concern]
-
-            for id_annotation in list_annotation:
-                key = DELIM_KEY.join((id_concern, id_annotation))
-                y  += ROOM_LABEL if self._is_open(key, id_annotation) else 0
-                list_own = sorted(self._units(concern = id_concern, annotation = id_annotation),
-                                  key = lambda unit: (not unit.is_for(),
-                                                      self.list_decision.index(unit.decision)))
-                for (index, unit) in enumerate(list_own):
-                    self._band(LIST_X[1] + WIDTH_BAR, y_from, LIST_X[2], y + index * UNIT,
-                               UNIT, unit.role)
-                    self._bar(LIST_X[2], y + index * UNIT, UNIT, unit.role)
-                    y_from += UNIT
-
-                height = len(list_own) * UNIT
-                self._label(key, id_annotation, 2, y, height)
-                y = self._answers(key, id_annotation, 3, y, height,
-                                  y + max(height, ROW) + 4)
-            y += GAP
+            height = len(list_own) * UNIT
+            self._label(key, id_annotation, 2, y, height)
+            y = self._answers(key, id_annotation, 3, y, height,
+                              y + max(height, ROW) + 4)
 
         return y
 
@@ -478,14 +476,13 @@ class _Drawing:
 
         """
 
-        if key in self.set_open:
-            set_next = {key_open for key_open in self.set_open
-                        if key_open != key and not key_open.startswith(key + DELIM_KEY)}
-        else:
-            set_next = self.set_open | {key}
+        set_next = self.set_toggle ^ {key}
+        if self._open(key):
+            set_next = {key_toggle for key_toggle in set_next
+                        if not key_toggle.startswith(key + DELIM_KEY)}
 
-        href = '?' + urllib.parse.urlencode([(KEY_OPEN, key_open)
-                                             for key_open in sorted(set_next)])
+        href = '?' + urllib.parse.urlencode([(KEY_TOGGLE, key_toggle)
+                                             for key_toggle in sorted(set_next)])
         return htpy.a(href = href)[htpy.text(x = _num(x), y = _num(y), class_ = css)[content]]
 
     # -------------------------------------------------------------------------
@@ -495,7 +492,17 @@ class _Drawing:
 
         """
 
-        return key in self.set_open and bool(self.map_answer.get(id_annotation))
+        return self._open(key) and bool(self.map_answer.get(id_annotation))
+
+    # -------------------------------------------------------------------------
+    def _open(self, key: str) -> bool:
+        """
+        Return True if the part at key is open. A concern is open unless
+        toggled, and an annotation is closed unless toggled.
+
+        """
+
+        return (key in self.set_toggle) != (DELIM_KEY not in key)
 
     # -------------------------------------------------------------------------
     def _units(self,
