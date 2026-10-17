@@ -45,6 +45,7 @@ import urllib.parse
 
 import htpy
 
+import cc_public.requirement.compose
 import cc_public.web.argument
 import cc_public.web.description
 import cc_public.web.sankey
@@ -307,17 +308,38 @@ def item(graph: Graph, id_item: str) -> str:
                  ('Mentioned by', graph.mentioned_by(id_item))]
 
     list_issue = _issues_of(graph, item)
+    statement  = _statement(graph, item)
+    list_prose = (_paragraphs(item.brief) if statement else []) + _paragraphs(item.description)
+    subtitle   = statement or _prose(item.brief)
 
     return _page(title,
-                 [_block(_paragraphs(item.description), []),
+                 [_block(list_prose, []),
                   _references(graph, list_row, is_open = not item.description)],
                  [htpy.h1[title],
-                  htpy.p(class_ = 'subtitle')[_prose(item.brief)] if item.brief else None],
+                  htpy.p(class_ = 'subtitle')[subtitle] if subtitle else None],
                  [htpy.table(class_ = 'facts')[htpy.tbody[
                      htpy.tr[htpy.th(scope = 'row')['Issue'],
                              htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_issue)]
                                       for id_issue in list_issue]]] if list_issue else None,
                      htpy.tr[htpy.th(scope = 'row')['Id'], htpy.td[htpy.code[item.id]]]]]])
+
+
+# -----------------------------------------------------------------------------
+def _statement(graph: Graph, item: Item) -> str:
+    """
+    Return the statement composed from the slots of item if it is a
+    requirement, or an empty string if it is not, or if its slots do
+    not compose.
+
+    """
+
+    if not item.id.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT):
+        return ''
+
+    try:
+        return cc_public.requirement.compose.statement(item.node, graph.node)
+    except cc_public.requirement.compose.ErrorCompose:
+        return ''
 
 
 # -----------------------------------------------------------------------------

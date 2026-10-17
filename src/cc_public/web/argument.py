@@ -82,6 +82,7 @@ class Item:
     brief:       str
     description: str
     map_edge:    dict[str, list[str]]
+    node:        dict = dataclasses.field(default_factory = dict, repr = False)
 
     # -------------------------------------------------------------------------
     def targets(self, id_relation: str) -> list[str]:
@@ -191,6 +192,17 @@ class Graph:
 
         item = self.map_item.get(id_item)
         return item.title if (item is not None and item.title) else id_item
+
+    # -------------------------------------------------------------------------
+    def node(self, id_item: str) -> dict | None:
+        """
+        Return the document of the item id_item as written, or None if
+        it is not in the tree.
+
+        """
+
+        item = self.map_item.get(id_item)
+        return item.node if item is not None else None
 
     # -------------------------------------------------------------------------
     def sources(self, id_relation: str, id_target: str) -> list[str]:
@@ -316,7 +328,8 @@ def _collect(node: typing.Any, map_item: dict[str, Item]) -> None:
                                  title       = _text(node.get(KEY_TITLE)),
                                  brief       = _text(node.get(KEY_BRIEF)),
                                  description = _text(node.get(KEY_DESCRIPTION)),
-                                 map_edge    = _edges(node.get(KEY_RELATION)))
+                                 map_edge    = _edges(node.get(KEY_RELATION)),
+                                 node        = node)
 
     for (key, value) in node.items():
         if key != KEY_RELATION:

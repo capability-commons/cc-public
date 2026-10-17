@@ -318,3 +318,11 @@ def test_requests_at_once_are_all_answered(tree):
             lambda path: cc_public.web.server.respond(tree, path)[0], list_path))
     assert list_status.count(http.HTTPStatus.NOT_FOUND) == 3
     assert list_status.count(http.HTTPStatus.OK) == len(list_path) - 3
+
+
+def test_requirement_page_shows_its_statement(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/item/req_rename_keeps_guid')
+    assert status == http.HTTPStatus.OK
+    assert (b'As soon as the Tooling renames an item, the Tooling shall keep the guid of '
+            b'the item.') in body
+    assert b'Renaming an item leaves its guid as it was.' in body

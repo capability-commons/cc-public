@@ -46,6 +46,8 @@ KEY_RELATION         = 'relation'
 KEY_ID_RELATION      = 'id_relation'
 KEY_ID_TARGET        = 'id_target'
 
+PREFIX_REQUIREMENT   = 'req_'
+
 R_HAS_SUBJECT        = 'r_has_subject'
 R_HAS_ACTOR          = 'r_has_actor'
 R_HAS_PROCESS        = 'r_has_process'
