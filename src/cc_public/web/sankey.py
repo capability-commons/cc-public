@@ -29,7 +29,9 @@ description:            |
                         annotations that answer it. Links that name
                         the parts toggled from their default in the
                         address of the page open and close them, so no
-                        script is needed.
+                        script is needed. The title of an annotation
+                        links to the same annotation opened in the
+                        list below the diagram.
 relation:               []
 
 ...
@@ -64,6 +66,7 @@ LIST_X            = (270, 500, 730, 960, 1190)
 
 DELIM_KEY         = '/'
 KEY_TOGGLE        = 'toggle'
+KEY_SHOW          = 'show'
 MARK_OPEN         = '▾'
 MARK_CLOSED       = '▸'
 
@@ -98,17 +101,19 @@ class Unit:
 # -----------------------------------------------------------------------------
 def figure(graph:      Graph,
            outline:    'Outline',
-           set_toggle: set[str]) -> typing.Any:
+           set_toggle: set[str],
+           key_show:   str | None) -> typing.Any:
     """
     Return the Sankey diagram of the argument in outline: its decisions
     on the left, each joined to the concerns that are argued on it,
     with support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
-    it.
+    it. The title of an annotation links to it, opened, in the list
+    below; key_show is the one the page shows opened, if any.
 
     """
 
-    drawing = _Drawing(graph, outline, set_toggle)
+    drawing = _Drawing(graph, outline, set_toggle, key_show)
     height  = drawing.draw()
     width   = LIST_X[drawing.index_column_last] + ROOM_TITLE
 
@@ -290,6 +295,17 @@ def parse_toggle(query: str) -> set[str]:
 
 
 # -----------------------------------------------------------------------------
+def parse_show(query: str) -> str | None:
+    """
+    Return the key of the annotation the list shows opened, read from
+    the query of a page address, or None.
+
+    """
+
+    return (urllib.parse.parse_qs(query).get(KEY_SHOW) or [None])[0]
+
+
+# -----------------------------------------------------------------------------
 class _Drawing:
     """
     The marks of one Sankey diagram, built column by column.
@@ -300,7 +316,8 @@ class _Drawing:
     def __init__(self,
                  graph:      Graph,
                  outline:    Outline,
-                 set_toggle: set[str]) -> None:
+                 set_toggle: set[str],
+                 key_show:   str | None) -> None:
         """
         Start an empty drawing of the argument in outline.
 
@@ -314,6 +331,7 @@ class _Drawing:
         self.list_decision = outline.list_decision
         self.list_concern  = outline.list_concern
         self.set_toggle    = set_toggle
+        self.key_show      = key_show
         self.list_band     = []
         self.list_bar      = []
         self.list_label    = []
@@ -527,39 +545,55 @@ class _Drawing:
                top:           float,
                height:        float) -> None:
         """
-        Label the annotation at key with its number and title: above
-        its bar if it is open, beside it otherwise, with a link that
-        opens or closes it if anything answers it.
+        Label the annotation at key with its number and title, linked to
+        the annotation opened in the list: above its bar if it is open,
+        beside it otherwise. If anything answers it, a mark beside the
+        title opens or closes it in the diagram.
 
         """
 
         x       = LIST_X[index_column]
         self.index_column_last = max(self.index_column_last, index_column)
         count   = len(self.outline.answers(id_annotation))
-        content = [htpy.tspan(class_ = 'number')[str(self.map_number.get(id_annotation, ''))],
-                   ' ',
-                   self.map_title.get(id_annotation, id_annotation)]
+        css     = 'annotation shown' if key == self.key_show else 'annotation'
+        title   = htpy.a(href = self._href_show(key))[
+                      htpy.tspan(class_ = 'number')[
+                          str(self.map_number.get(id_annotation, ''))],
+                      ' ',
+                      self.map_title.get(id_annotation, id_annotation)]
 
         if self._is_open(key, id_annotation):
-            self.list_label.append(self._toggle(key, x - 2, top - 4, 'annotation',
-                                                [MARK_OPEN, ' '] + content))
+            content = [htpy.a(href = self._href_toggle(key))[MARK_OPEN], ' ', title]
+            (x, y)  = (x - 2, top - 4)
         elif count:
-            self.list_label.append(self._toggle(
-                key, x + WIDTH_BAR + 8, top + height / 2 + 4, 'annotation',
-                content + [' ', htpy.tspan(class_ = 'note')[
-                                    '{mark} {count}'.format(mark = MARK_CLOSED, count = count)]]))
+            content = [title, ' ', htpy.a(href = self._href_toggle(key))[
+                                       htpy.tspan(class_ = 'note')[
+                                           '{mark} {count}'.format(mark  = MARK_CLOSED,
+                                                                   count = count)]]]
+            (x, y)  = (x + WIDTH_BAR + 8, top + height / 2 + 4)
         else:
-            self.list_label.append(
-                htpy.text(x = str(x + WIDTH_BAR + 8), y = _num(top + height / 2 + 4),
-                          class_ = 'annotation')[
-                    htpy.a(href = '#' + key)[content]])
+            content = [title]
+            (x, y)  = (x + WIDTH_BAR + 8, top + height / 2 + 4)
+
+        self.list_label.append(htpy.text(x = _num(x), y = _num(y), class_ = css)[content])
 
     # -------------------------------------------------------------------------
     def _toggle(self, key: str, x: float, y: float, css: str, content: list) -> typing.Any:
         """
         Return a label at x and y that links to the page with the part
-        at key opened, or closed if it is open. Closing a part closes
-        everything opened within it.
+        at key opened, or closed if it is open.
+
+        """
+
+        return htpy.a(href = self._href_toggle(key))[
+            htpy.text(x = _num(x), y = _num(y), class_ = css)[content]]
+
+    # -------------------------------------------------------------------------
+    def _href_toggle(self, key: str) -> str:
+        """
+        Return the address of the page with the part at key opened, or
+        closed if it is open. Closing a part closes everything opened
+        within it.
 
         """
 
@@ -568,9 +602,22 @@ class _Drawing:
             set_next = {key_toggle for key_toggle in set_next
                         if not key_toggle.startswith(key + DELIM_KEY)}
 
-        href = '?' + urllib.parse.urlencode([(KEY_TOGGLE, key_toggle)
-                                             for key_toggle in sorted(set_next)])
-        return htpy.a(href = href)[htpy.text(x = _num(x), y = _num(y), class_ = css)[content]]
+        list_param = [(KEY_TOGGLE, key_toggle) for key_toggle in sorted(set_next)]
+        if self.key_show:
+            list_param.append((KEY_SHOW, self.key_show))
+        return '?' + urllib.parse.urlencode(list_param)
+
+    # -------------------------------------------------------------------------
+    def _href_show(self, key: str) -> str:
+        """
+        Return the address of the page with the annotation at key
+        opened in the list, and the diagram as it is.
+
+        """
+
+        list_param = [(KEY_TOGGLE, key_toggle) for key_toggle in sorted(self.set_toggle)]
+        list_param.append((KEY_SHOW, key))
+        return '?{query}#{key}'.format(query = urllib.parse.urlencode(list_param), key = key)
 
     # -------------------------------------------------------------------------
     def _is_open(self, key: str, id_annotation: str) -> bool:

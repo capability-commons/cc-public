@@ -95,10 +95,14 @@ def index(graph: Graph) -> str:
 
 
 # -----------------------------------------------------------------------------
-def issue(graph: Graph, issue: Issue, set_toggle: set[str]) -> str:
+def issue(graph:      Graph,
+          issue:      Issue,
+          set_toggle: set[str],
+          key_show:   str | None = None) -> str:
     """
     Return the page that shows an issue and the argument on it, with the
-    parts of its diagram in set_toggle opened or closed.
+    parts of its diagram in set_toggle opened or closed, and the
+    annotation at key_show opened in the list.
 
     """
 
@@ -114,13 +118,13 @@ def issue(graph: Graph, issue: Issue, set_toggle: set[str]) -> str:
                          [_note_line('Subject', ', '.join(list_subject)),
                           _note_line('Drivers', _drivers(graph, issue)),
                           _id(item.id)]),
-                  cc_public.web.sankey.figure(graph, outline, set_toggle),
+                  cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
-                  _argument(graph, outline)])
+                  _argument(graph, outline, key_show)])
 
 
 # -----------------------------------------------------------------------------
@@ -239,10 +243,13 @@ def _determinations(graph: Graph, issue: Issue) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _argument(graph: Graph, outline: cc_public.web.sankey.Outline) -> typing.Any:
+def _argument(graph:    Graph,
+              outline:  cc_public.web.sankey.Outline,
+              key_show: str | None) -> typing.Any:
     """
     Return the annotations of the outline, grouped by concern in the
-    order of the diagram, then those no concern reaches.
+    order of the diagram, then those no concern reaches. The annotation
+    at key_show is opened, with those it sits within.
 
     """
 
@@ -263,13 +270,13 @@ def _argument(graph: Graph, outline: cc_public.web.sankey.Outline) -> typing.Any
                         ' driver' if id_concern in outline.issue.list_driver else None]]),
             [_annotation(graph, outline, id_annotation,
                          cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
-                         id_concern, set())
+                         id_concern, set(), key_show)
              for id_annotation in list_annotation]])
 
     if outline.list_other:
         list_group.append(htpy.section(class_ = 'concern-group')[
             _block([htpy.h3['Other annotations']], []),
-            [_annotation(graph, outline, id_annotation, id_annotation, None, set())
+            [_annotation(graph, outline, id_annotation, id_annotation, None, set(), key_show)
              for id_annotation in outline.list_other]])
 
     return htpy.section[htpy.h2['Argument'], list_group]
@@ -281,13 +288,15 @@ def _annotation(graph:         Graph,
                 id_annotation: str,
                 key:           str,
                 id_concern:    str | None,
-                set_path:      set[str]) -> typing.Any:
+                set_path:      set[str],
+                key_show:      str | None) -> typing.Any:
     """
     Return an annotation folded to one line: its number, title and what
     it bears on. Open, it shows its claim and evidence, then the
     annotations that answer it, folded the same way. key places it in
     the outline, under id_concern if it is not an answer; set_path
-    holds the annotations above it.
+    holds the annotations above it. It is opened if key_show is key
+    or lies within it.
 
     """
 
@@ -309,7 +318,8 @@ def _annotation(graph:         Graph,
 
     return htpy.details(class_ = 'annotation depth-{depth}'.format(depth = min(len(set_path),
                                                                                 DEPTH_MAX)),
-                        id     = key)[
+                        id     = key,
+                        open   = _is_within(key_show, key))[
         htpy.summary[_block(
             [htpy.p[htpy.span(class_ = 'number')[
                         '#{number}'.format(number = map_number[id_annotation])],
@@ -324,8 +334,19 @@ def _annotation(graph:         Graph,
                class_ = 'body'),
         [_annotation(graph, outline, id_answer,
                      cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
-                     None, set_path | {id_annotation})
+                     None, set_path | {id_annotation}, key_show)
          for id_answer in list_answer]]
+
+
+# -----------------------------------------------------------------------------
+def _is_within(key_show: str | None, key: str) -> bool:
+    """
+    Return True if key_show is key or lies within it.
+
+    """
+
+    return key_show is not None and (key_show == key
+                                     or key_show.startswith(key + cc_public.web.sankey.DELIM_KEY))
 
 
 # -----------------------------------------------------------------------------

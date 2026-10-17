@@ -27,6 +27,7 @@ relation:               []
 
 
 import http
+import urllib.parse
 
 import cc_public.web.argument
 import cc_public.web.sankey
@@ -190,3 +191,19 @@ def test_an_annotation_sits_under_each_of_its_concerns(tree):
     for id_concern in outline.list_concern:
         for id_annotation in outline.map_annotation[id_concern]:
             assert 'id="{c}/{a}"'.format(c = id_concern, a = id_annotation).encode() in body
+
+
+def test_an_annotation_title_in_the_map_opens_it_in_the_list(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    id_concern    = outline.list_concern[0]
+    id_annotation = outline.map_annotation[id_concern][0]
+    key           = id_concern + '/' + id_annotation
+    path          = '/issue/' + ID_ISSUE
+    (_, _, body)  = cc_public.web.server.respond(tree, path)
+    assert '?show={q}#{k}"'.format(q = urllib.parse.quote(key, safe = ''),
+                                   k = key).encode() in body
+    assert b' open' not in body.split(b'</svg>')[1]
+    (_, _, shown) = cc_public.web.server.respond(
+        tree, path + '?show=' + urllib.parse.quote(key, safe = ''))
+    assert 'id="{k}" open'.format(k = key).encode() in shown
