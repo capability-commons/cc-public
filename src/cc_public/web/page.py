@@ -392,8 +392,8 @@ def _evidence(annotation: Item) -> typing.Any:
 def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
     """
     Return the table of facts about an issue that stands beside its
-    brief: its standing, its subject, the drivers of its subject, how
-    much argument it holds, and its id.
+    brief: its standing, its subject, the drivers of its subject and how
+    much argument it holds.
 
     """
 
@@ -412,8 +412,7 @@ def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
         row('Concerns', list_driver) if list_driver else None,
         row('Argument', '{decisions} decisions, {annotations} annotations'.format(
                             decisions   = len(issue.list_decision),
-                            annotations = len(issue.list_annotation))),
-        row('Id',       htpy.code[issue.item.id])]]
+                            annotations = len(issue.list_annotation)))]]
 
 
 # -----------------------------------------------------------------------------
