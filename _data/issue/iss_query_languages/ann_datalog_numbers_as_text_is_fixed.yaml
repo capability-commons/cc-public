@@ -1,0 +1,41 @@
+id_self:                ann_datalog_numbers_as_text_is_fixed
+guid_self:              ann_d3fa4b14fa884e0cb678112032d08287
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog numbers now returned as numbers
+brief:                  |
+                        Commit 0e4408b "Fix cctool query datalog so
+                        that numbers come back as numbers" turns each
+                        value of a column declared a number into an
+                        integer and sorts by it. At 360ec14 both
+                        languages give a declared number column the
+                        same type and order.
+description:            |
+                        _typed converts the values of each :number
+                        column and sorts the rows
+                        (src/cc_public/cli/querying.py lines 182-186,
+                        268-280 at 360ec14);
+                        test_datalog_gives_a_number_column_as_numbers
+                        covers it
+                        (src/cc_public/cli/_test/test_querying.py line
+                        71). A column with no declaration is still a
+                        symbol, so an undeclared count still comes
+                        back as text.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_query_languages
+    guid_target:        iss_177a664dee5c458b877a733d35a29c5d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_datalog_command_gives_numbers_as_text
+    guid_target:        ann_73c144d9c7f64b73a2be95f2242453ca

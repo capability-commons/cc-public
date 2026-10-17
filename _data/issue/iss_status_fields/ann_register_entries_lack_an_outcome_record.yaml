@@ -1,0 +1,58 @@
+id_self:                ann_register_entries_lack_an_outcome_record
+guid_self:              ann_e1fe76a770454bc9bfe88749177fe4a0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register entries with no outcome record
+brief:                  |
+                        Status was removed from registers and entries
+                        as well as decisions, but the outcome item
+                        that replaces it covers decisions only.
+                        Nothing now records that an entry was adopted,
+                        or marks one as retired.
+description:            |
+                        Commit 44034ef removed status from
+                        sch_register, sch_register_entry and
+                        sch_decision. The range of r_upholds and
+                        r_rejects is t_decision only
+                        (_data/register/reg_relation.yaml lines 374,
+                        401); r_supersedes covers t_decision and
+                        t_determination only (lines 262-268). The
+                        removed entry_status held deprecated, "new
+                        writes should prefer any replacement named in
+                        note"; term_deprecated survives on concept
+                        entries only
+                        (_data/schema/sch_regentry_concept.yaml line
+                        70). Concern entries carry no edges, for
+                        example concern_traceability
+                        (_data/register/reg_concern.yaml line 521). At
+                        44034ef no entry was deprecated. The enum gave
+                        no reason either, so this is a gap in the
+                        replacement, not a case for the enum.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_status_fields
+    guid_target:        iss_3d90f9e0087e447e97c14946bd8fb8a3
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_no_status_fields
+    guid_target:        dec_7c557b5d53164d279a6a18e36d971323
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

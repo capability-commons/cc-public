@@ -1,0 +1,41 @@
+id_self:                ann_history_check_reuses_commit_check
+guid_self:              ann_349cb24322384a98878bbb7f6c5091e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One tree comparison for both checks
+brief:                  |
+                        With nothing stored, the later check of
+                        commits already made reuses the same tree
+                        comparison, so there is one change-checking
+                        mechanism.
+description:            |
+                        7520f91 (2026-10-14 12:45Z) adds the commit
+                        check and no store. 18d6181 adds cctool
+                        history check, which calls check_trees from
+                        cc_public.commit.change
+                        (src/cc_public/commit/history.py lines 21-26
+                        and 121). The pre-push hook runs it as the
+                        check of record.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_graph_history_storage
+    guid_target:        iss_e75e86b41a684e35a6f6c84724656a65
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_defer_graph_history
+    guid_target:        dec_fe5fd22d1b2a429fbf7a635fa0a66e64
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

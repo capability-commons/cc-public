@@ -1,0 +1,49 @@
+id_self:                ann_edge_shape_defined_once_in_relation_trait
+guid_self:              ann_274ab1cfc5ee47969677b38769c36488
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One edge shape for every item that holds a reason
+brief:                  |
+                        The edge that records why an item exists is
+                        defined once, in sch_trait_relation, and every
+                        item type with edges takes it from there, so
+                        one extractor reads every reason in one form.
+description:            |
+                        sch_trait_relation calls itself "The single
+                        traceability mechanism for the whole
+                        repository"
+                        (_data/schema/sch_trait_relation.yaml lines
+                        16-20, 63-79). Eleven schemas, ten item types
+                        and sch_register, compose it with allOf;
+                        sch_register_entry refers to its $defs/edge
+                        "rather than restated, so the two cannot
+                        drift" (sch_register_entry.yaml lines 45-66).
+                        The extractor reads every edge the same way
+                        (src/cc_public/graph/extract.py near line
+                        460). ASSUMPTION: the older arrangement also
+                        defined the edge once, so this separates
+                        composition from copying more than from
+                        inheritance.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_schema_composition
+    guid_target:        iss_e3eb3349b94540e8a63cdaad3e2871ea
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_traits_composed_with_allof
+    guid_target:        dec_79ae9c72e24c40878cec31a86cc79635
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

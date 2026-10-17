@@ -1,0 +1,54 @@
+id_self:                ann_sql_only_still_keeps_datalog_engine
+guid_self:              ann_2c996f9ad9d640e6bfac6b76af8e13a0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog engine kept under SQL only
+brief:                  |
+                        The checks and the derived relations are in
+                        clingo, so SQL only would hide Datalog without
+                        removing it, or would define the derived
+                        relations a second time in SQL.
+description:            |
+                        cc_public.graph.datalog is imported by
+                        check/check.py (line 38), commit/change.py
+                        (line 47), cli/messaging.py (line 38),
+                        cli/auditing.py (line 43) and cli/querying.py
+                        (line 41). Checks are in check.lp (643 lines).
+                        Derived SQL tables come from clingo on
+                        derive.lp (sql.py lines 54-59); no SQL
+                        definition of a derived relation exists. So
+                        SQL only removes no part that can fail. Grows
+                        with the checks.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_query_languages
+    guid_target:        iss_177a664dee5c458b877a733d35a29c5d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_sql_only
+    guid_target:        dec_a9aaae607eb140c5a06fa26815f2f234
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

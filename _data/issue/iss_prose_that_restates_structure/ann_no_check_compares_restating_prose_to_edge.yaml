@@ -1,0 +1,69 @@
+id_self:                ann_no_check_compares_restating_prose_to_edge
+guid_self:              ann_45c45020f8fa417cbf9c9401dddc21c1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No check of restating prose against its edge
+brief:                  |
+                        If an edge or an allOf entry is moved to
+                        another schema that still exists, the old
+                        sentence still names a real item, so no check
+                        fires. Readers, reviewers and partner tools
+                        can then get two different facts from one item
+                        with no warning.
+description:            |
+                        Sources: dangling_mention and outdated_mention
+                        fire only on an id that names no item or on an
+                        old id (src/cc_public/check/check.lp lines
+                        457-473 and 505-519). No rule in check.lp
+                        relates a mention to an edge or to allOf
+                        (search of check.lp for mention, and of src
+                        for "defined by" and "come from sch_";
+                        assumption, not every rule read). The stale
+                        sentence can sit outside the three lines of
+                        context that git diff shows
+                        (https://git-scm.com/docs/git-diff, option
+                        -U). Today every restating sentence agrees
+                        with its edge or allOf (advocates' scripts
+                        over reg_data_item_type.yaml and
+                        _data/schema/*.yaml at 89c74d8). The risk
+                        grows with the number of sentences, and a
+                        check that compares the named schema with the
+                        edge would remove it.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_prose_that_restates_structure
+    guid_target:        iss_0017f3cfbaee4d2c95a8adf632a92c49
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_keep_restating_prose
+    guid_target:        dec_70e1938b5a194b93a50bd7abae3be3e9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

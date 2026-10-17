@@ -1,0 +1,45 @@
+id_self:                ann_rules_need_an_engine_a_port_would_not
+guid_self:              ann_6c4d4277b5ba407ab6c0363aa41e6442
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine dependency a port would not need
+brief:                  |
+                        Rules add a logic engine as a dependency. At
+                        the time of the decision it was a Souffle
+                        binary copied by hand and kept outside the
+                        locked environment.
+description:            |
+                        Commit ba66f33, src/check/check.py lines 10,
+                        115-123 (souffle by subprocess). Owner's
+                        statement 2026-10-13T20:12:49Z (binaries
+                        copied). Needed libffi.so.7 from a gitignored
+                        folder (memory/MEMORY.md line 21). Now clingo
+                        5.8.2, MIT, locked by pixi (pyproject.toml;
+                        pixi.lock lines 191-205; commits 5665ace,
+                        6230e98), so the exposure is mostly closed. An
+                        engine stays for queries in any case
+                        (ann_python_checks_add_no_third_party).
+                        Assumption: a port would take no logic engine.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_checker_approach
+    guid_target:        iss_49388bed9a3f4fab908c89f8271cf59c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_json_schema_plus_rules_over_facts
+    guid_target:        dec_67ed1239d8304048898124ded99e4cfc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

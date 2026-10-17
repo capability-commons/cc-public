@@ -1,0 +1,38 @@
+id_self:                ann_check_fault_status_two_is_fixed
+guid_self:              ann_33edb47f6d3d488abf1fdbc3138c71e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fault status 2 now given by cctool check
+brief:                  |
+                        Commit 400f1be "Fix cctool check so that
+                        checks that cannot run exit with status 2"
+                        catches a rule evaluation fault in cctool
+                        check. At 360ec14 the command follows the exit
+                        convention of the other commands.
+description:            |
+                        check catches ErrorDatalog, prints "The checks
+                        could not be run" and exits with EXIT_ERROR
+                        (src/cc_public/cli/checking.py lines 57-61 at
+                        360ec14). The gate still counts a stage as
+                        passed only on return code 0
+                        (src/cc_public/gate/gate.py line 181), so no
+                        automatic caller yet reads status 2 apart from
+                        status 1.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_cctool_check_leaves_faults_at_status_one
+    guid_target:        ann_b4ce5268251047a0a020c098ad8e06ed

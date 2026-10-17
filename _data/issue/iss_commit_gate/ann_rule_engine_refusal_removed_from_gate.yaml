@@ -1,0 +1,40 @@
+id_self:                ann_rule_engine_refusal_removed_from_gate
+guid_self:              ann_373bc420077941339aaa1d04bdef900a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Removal of the rule engine refusal
+brief:                  |
+                        The gate no longer refuses to run without the
+                        rule engine. Since 6230e98 the rules run in
+                        clingo through its Python API, so a missing
+                        engine fails at import instead of skipping.
+description:            |
+                        653e172 checked for souffle with shutil.which
+                        (src/cc_public/gate/gate.py lines 82-85 at
+                        653e172). 6230e98 removed that check and the
+                        Souffle bridge. The current gate.py has no
+                        check for any rule engine (lines 1-221).
+                        clingo is imported in
+                        src/cc_public/graph/datalog.py line
+                        55. A search of src for "skip" finds no
+                          skipped tests in the Python sources. The aim
+                          of the reason still holds, by a different
+                          means.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commit_gate
+    guid_target:        iss_a16285400e794e03bc0b9566a852621c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_staged_content_is_what_commit_records
+    guid_target:        ann_85b8774aa19f4e39808d5f3386daff8f

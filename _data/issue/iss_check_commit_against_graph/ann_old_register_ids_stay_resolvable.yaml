@@ -1,0 +1,46 @@
+id_self:                ann_old_register_ids_stay_resolvable
+guid_self:              ann_25e5c3c8dda7460fbe2ee140a5110435
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Old register ids kept resolvable after a rename
+brief:                  |
+                        A renamed register entry must carry its old id
+                        as an alias, and the checks resolve references
+                        through aliases, so a link made before a
+                        rename still finds its item. The rule covers
+                        register entries only.
+description:            |
+                        rename_without_alias, condition Holder != ""
+                        (src/cc_public/commit/change.lp lines
+                        159-165). dangling_reference and
+                        dangling_mention accept an alias
+                        (src/cc_public/check/check.lp lines 236-239,
+                        466-472). alias is defined only in
+                        _data/schema/sch_register_entry.yaml line 68.
+                        ASSUMPTION: a renamed item that is a whole
+                        file has no field for its old id, so
+                        references to it from outside the tree, such
+                        as old commit text, cannot be resolved.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_check_commit_against_graph
+    guid_target:        iss_c4001a6dd2a949008dc8a0c5e2b410eb
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_before_after_commit_check
+    guid_target:        dec_dc9b12ea18d64252bf9ae14671958b55
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,53 @@
+id_self:                ann_bare_entry_deprecation_has_no_check
+guid_self:              ann_d530ba00e3134c52ab6d45254f4cfce1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deprecation of bare entry with no check
+brief:                  |
+                        Bare "entry" is deprecated, but no tool reads
+                        deprecated terms and the data still uses the
+                        bare word, so the rule holds only as far as
+                        reviewers catch it by hand.
+description:            |
+                        con_register_entry lists entry under
+                        term_deprecated
+                        (_data/register/reg_concept.yaml lines
+                        143-144). No file under src/ refers to
+                        term_deprecated or "deprecated" (grep at
+                        89c74d8). Roughly 80 to 90 lines under _data
+                        use "entry" or "entries" without "register"
+                        before it on the same line, for example
+                        _data/schema/sch_regentry_type.yaml line 18
+                        ("A type entry"); the count is a rough grep,
+                        some are line-wrapped "register entry" and
+                        some uses may be acceptable. ASSUMPTION: a
+                        reviewer will not reliably notice a deprecated
+                        term in running prose without a check.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_naming
+    guid_target:        iss_67a8e9160b5347ec8565a8e02ef39db2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_spelled_generic_abbreviated_specific
+    guid_target:        dec_8d88ff962f9344f49b7d93f7b497115e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

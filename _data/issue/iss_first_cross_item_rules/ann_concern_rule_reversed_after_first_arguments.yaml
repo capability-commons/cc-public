@@ -1,0 +1,62 @@
+id_self:                ann_concern_rule_reversed_after_first_arguments
+guid_self:              ann_024d76bf053e4bc388cf4fb5256de036
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concern rule reversed once arguments were written
+brief:                  |
+                        The argument rule, as chosen, required exactly
+                        one concern per argument. Once real arguments
+                        were written, that result was judged wrong
+                        twice in one day and the rule was changed both
+                        times.
+description:            |
+                        At fd6323a, the one-concern check reports an
+                        annotation that supports or challenges and
+                        does not speak for exactly one concern (git
+                        show fd6323a:src/cc_public/check/check.dl
+                        lines 159-169). Will asked about "Plain
+                        conditions are forced to speak for a concern."
+                        (owner's statement, 2026-10-14T18:42:50Z,
+                        will-messages.md line 659). d03026b
+                        (2026-10-14T19:01:48Z) let an annotation that
+                        bears only on other annotations argue for no
+                        concern. Will wrote "Maybe we should allow
+                        more than one concern per annotation" (owner's
+                        statement, 2026-10-14T21:51:15Z,
+                        will-messages.md line 712). aa23286
+                        (21:52:18Z) split that check into
+                        argument_without_concern and a check on
+                        concerns of annotations that bear on no
+                        decision, and allows several concerns. A test
+                        now asserts that an argument with two concerns
+                        passes (src/cc_public/check/_test/
+                        test_check.py line 650). The rule was chosen
+                        at 2026-10-13T23:26:20Z. No annotation item
+                        existed then (git ls-tree fd6323a has none;
+                        the first was added in 6592fb5,
+                        2026-10-14T16:15:04Z). The failing rule is
+                        also what brought the question to Will. The
+                        defect is fixed.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_first_cross_item_rules
+    guid_target:        iss_09ed139b184142b88e499683c74aeab6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_seven_proposed_rules
+    guid_target:        dec_1442648a64ec4596b1a07c7cdaa9c3e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

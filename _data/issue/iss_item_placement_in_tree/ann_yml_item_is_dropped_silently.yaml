@@ -1,0 +1,45 @@
+id_self:                ann_yml_item_is_dropped_silently
+guid_self:              ann_3340a2b50a88499d90c6bd9a9131d310
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silent loss of a .yml item
+brief:                  |
+                        A YAML item spelled .yml is ignored by git and
+                        not read, and no check reports it, though .yml
+                        is a standard spelling partner tools produce.
+description:            |
+                        Sources: .gitignore lines 37, 79-81 and 85-87;
+                        git check-ignore -v --no-index at 89c74d8
+                        reports _data/annotation/ann_x.yml as ignored
+                        by line 37; src/cc_public/graph/extract.py
+                        lines 81, 278 and 302; check.lp lines 171 and
+                        180; RFC 9512 section 2.1; Jekyll reads both
+                        spellings
+                        (https://jekyllrb.com/docs/datafiles/).
+                        ASSUMPTION: some partner tools default to
+                        .yml. A check that names any non-whitelisted
+                        file under _data removes the harm without
+                        changing the decision.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_item_placement_in_tree
+    guid_target:        iss_06068f56213e425b96b3920ae706cf38
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_scope_by_position
+    guid_target:        dec_f0efd9a6b9514593a5f6ba6b36318849
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

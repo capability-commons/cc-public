@@ -1,0 +1,62 @@
+id_self:                ann_merge_brief_repeats_its_subject
+guid_self:              ann_87775982de9c49ed981c2e924e5b19d1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge brief that repeats its subject
+brief:                  |
+                        For a merge with no body, the drafted brief
+                        only repeats the subject and the check accepts
+                        it, so the item says neither why the merge was
+                        made nor how any conflict was resolved.
+description:            |
+                        draft sets the brief to git's body, or to the
+                        subject and a full stop
+                        (src/cc_public/commit/message.py line 166).
+                        The plain merge test expects the brief "Merge
+                        branch 'topic' into main." and a passing
+                        message
+                        (src/cc_public/commit/_test/test_draft.py
+                        lines 100-104). git's "# Conflicts:" lines are
+                        kept as comments (test_draft.py lines
+                        130-132), outside the item. git strips them
+                        when the message is edited and keeps them, as
+                        plain text, with --no-edit (default cleanup is
+                        strip when editing, whitespace otherwise;
+                        https://git-scm.com/docs/git-commit,
+                        --cleanup; tested with git 2.43.0). AGENTS.md
+                        lines 22-24 tell authors to keep the message
+                        git drafts. t_commit records "what it changes
+                        and why" (reg_data_item_type.yaml lines
+                        698-700). There are no merge commits yet (git
+                        log --merges). A revert does carry git's "This
+                        reverts commit HASH." as its brief.
+                        ASSUMPTION: a hand-written brief more often
+                        states a reason; nothing checks that it does.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_git_drafted_messages
+    guid_target:        iss_d32b1aedda464a04857526b59e8dfedb
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_prepare_commit_msg_converts
+    guid_target:        dec_6c034c3992ac4d8a834c7a7e13df92e9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

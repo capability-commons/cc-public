@@ -1,0 +1,57 @@
+id_self:                ann_revert_skips_commit_msg_hook
+guid_self:              ann_0a01de9c9ab54a23b0ae75fd484bfbb9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Revert seen by no commit-time check
+brief:                  |
+                        git runs prepare-commit-msg for a revert but
+                        not commit-msg, so a revert left with git's
+                        draft is caught only later, when the fix is a
+                        rewrite of history. The hook fixes the message
+                        at the one point git offers.
+description:            |
+                        Test with git 2.43.0 in a scratch repository:
+                        git revert --no-edit HEAD and GIT_EDITOR=true
+                        git revert HEAD ran prepare-commit-msg and
+                        neither pre-commit nor commit-msg. git merge
+                        --no-edit ran pre-merge-commit,
+                        prepare-commit-msg and commit-msg. ASSUMPTION:
+                        Will's git behaves the same; his version is
+                        not recorded. .githooks/commit-msg line 29
+                        runs cctool message check. The pre-push hook
+                        that runs cctool history check came in 18d6181
+                        (2026-10-14T15:27:30Z), after 4e6db4c
+                        (14:18:47Z), and it refuses a push but does
+                        not change commits (.githooks/pre-push lines
+                        19-28). README.md lines 45-51 imply, and
+                        memory/MEMORY.md line 46 says, that commit-msg
+                        checks the drafted revert message, which the
+                        test does not show.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_git_drafted_messages
+    guid_target:        iss_d32b1aedda464a04857526b59e8dfedb
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_prepare_commit_msg_converts
+    guid_target:        dec_6c034c3992ac4d8a834c7a7e13df92e9
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_hand_written_messages
+    guid_target:        dec_9320bd679aa148de8c46133fd8d84d7f
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

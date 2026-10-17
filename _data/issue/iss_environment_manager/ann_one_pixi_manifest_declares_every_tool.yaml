@@ -1,0 +1,62 @@
+id_self:                ann_one_pixi_manifest_declares_every_tool
+guid_self:              ann_f8d6372b218e4b4a91057b3637f9e2e6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One manifest for every tool
+brief:                  |
+                        Under pixi one file and its lock declare
+                        Python, the libraries, the linter, the test
+                        runner and the rule engine, so a tool change
+                        touches two files. A tool on the PATH needs
+                        its own setup steps, kept outside the
+                        repository.
+description:            |
+                        pyproject.toml lines 39-41 and 57-61 declare
+                        every dependency; pixi.lock pins them and is
+                        committed (.gitignore line 71, commit
+                        e232fb3). Adding clingo changed one line of
+                        pyproject.toml and 134 lines of pixi.lock (git
+                        show --stat 5665ace). README.md lines 32-36
+                        give one install command. While Souffle sat
+                        outside pixi it needed a hand-copied binary in
+                        a gitignored _tools folder, a libffi.so.7 from
+                        Ubuntu 20.04, LD_LIBRARY_PATH and a SOUFFLE
+                        variable read in three places
+                        (memory/MEMORY.md line 21;
+                        ann_souffle_is_outside_the_locked_environment).
+                        ASSUMPTION: future tools are on conda-forge or
+                        PyPI; each tool on neither brings a PATH setup
+                        back.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

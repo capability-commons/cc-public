@@ -1,0 +1,44 @@
+id_self:                ann_cctool_check_leaves_faults_at_status_one
+guid_self:              ann_b4ce5268251047a0a020c098ad8e06ed
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fault status missing from cctool check
+brief:                  |
+                        cctool check catches no error, so a fault in
+                        rule evaluation ends as a traceback with
+                        status 1, the same as a failed check. The
+                        convention is missing from the command the
+                        gate runs on every commit.
+description:            |
+                        src/cc_public/cli/checking.py lines 53-63 has
+                        no try around the call to check. check() runs
+                        cc_public.graph.datalog.run, which can raise
+                        ErrorDatalog (src/cc_public/graph/datalog.py
+                        lines 285 and 299). pixi run check is "cctool
+                        check" (pyproject.toml). The gate counts a
+                        stage as passed only on return code 0 (gate.py
+                        line 163), so no automatic caller reads status
+                        2 apart from status 1. Cheap to close.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,58 @@
+id_self:                ann_location_columns_reviewers_cannot_judge
+guid_self:              ann_eb74020721a54e3caa802f619b235e2a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Location and schema columns a reader cannot judge
+brief:                  |
+                        Some exact literals carry a line number, a
+                        schema path and a jsonschema message. A reader
+                        cannot confirm these by reading the test; only
+                        a run can, so they add lines to review that a
+                        person cannot judge.
+description:            |
+                        13 of the 59 checker tests expect rows with a
+                        file path and line number (test_check.py,
+                        first named at lines 372, 377, 386, 432, 439,
+                        499, 512, 521, 539, 549, 558, 574, 585); one
+                        more expects a file path and expected path
+                        with no line (line 622). 7 of them expect a
+                        schema_violation row with a schema path and
+                        message, such as 'allOf/2/type' with "'objct'
+                        is not valid under any of the given schemas"
+                        (lines 535-542). Some lines are found at test
+                        time by searching the written file (lines
+                        526-527, 539); others are constants (LINE_ITEM
+                        = '1', line 56). One fault can raise two rows
+                        (lines 375-381). ASSUMPTION: such columns are
+                        copied from a run of the checker, so a
+                        reviewer who accepts them confirms only that
+                        the checker agrees with itself; no source says
+                        how they were written. Comparing check name
+                        and item for every failure, with location and
+                        message in a few dedicated tests, would keep
+                        the whole-set rule. The other 45 of the 59
+                        tests expect no file path and are not
+                        affected.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_test_style
+    guid_target:        iss_e946d0cfc1924e3b8aa829f75f18dec8
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pytest_exact_failures
+    guid_target:        dec_16eadad232284399a7bc7e5d5db518ad
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

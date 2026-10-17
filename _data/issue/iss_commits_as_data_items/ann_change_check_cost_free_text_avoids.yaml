@@ -1,0 +1,68 @@
+id_self:                ann_change_check_cost_free_text_avoids
+guid_self:              ann_2598e08eb056450b8ce2744d8092bd3f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change check cost paid on every commit
+brief:                  |
+                        Checking one commit item against its parent
+                        takes about 3 to 8 seconds at 129 files, on
+                        each commit and on each commit pushed. Free
+                        text messages run no change check and pay
+                        nothing.
+description:            |
+                        The commit-msg hook runs cctool message check
+                        (.githooks/commit-msg line 29), which checks
+                        the staged tree against HEAD
+                        (src/cc_public/commit/ change.py lines 59-74);
+                        the pre-push hook runs cctool history check on
+                        each commit the remote lacks
+                        (.githooks/pre-push line 33); with no range
+                        the history check covers the whole history
+                        (src/cc_public/cli/auditing.py lines 77-78).
+                        Each check copies both trees, extracts both
+                        graphs and lays out every file of both
+                        (src/cc_public/commit/history.py lines
+                        105-121; src/cc_public/commit/change.py lines
+                        115-123 and 129-161). Measured by the
+                        performance efficiency advocate, 2026-10-15,
+                        at 89c74d8 (33 commits, 129 files, 660 KB),
+                        single runs without pixi start-up:
+                        history.check median 3.07 s, slowest 6.62 s,
+                        whole history 114.6 s. Re-run by the verifier,
+                        2026-10-15, in a fresh clone at 89c74d8 with
+                        the same scripts: median 3.95 s, slowest 7.69
+                        s, whole history 140.6 s. Will has acted on
+                        gate speed before: 5836f80 and 93a1428, both
+                        2026-10-14. ASSUMPTION: the cost grows about
+                        linearly with file count, so a tenfold tree
+                        puts one check near 30 s, which would invite
+                        --no-verify. The pre-push hook checks only
+                        unpushed commits, which bounds day-to-day
+                        cost. Bears equally on any alternative that
+                        keeps the change check. Not the same point as
+                        the argument, in the issue of the form of
+                        commit titles, that finer commits multiply
+                        this cost.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commits_as_data_items
+    guid_target:        iss_807b319367784c2f8d6a47063a9e356e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_commit_item_in_message
+    guid_target:        dec_0d70409bad614c94b995a3522b5e5448
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

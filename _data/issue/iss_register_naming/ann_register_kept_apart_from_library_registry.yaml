@@ -1,0 +1,45 @@
+id_self:                ann_register_kept_apart_from_library_registry
+guid_self:              ann_86f861a210944755973a1f04c1256670
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register kept apart from the library Registry
+brief:                  |
+                        Deprecating "registry" keeps the project's
+                        word apart from the Registry class of the
+                        referencing library the checker uses, so the
+                        two vocabularies share one environment without
+                        a clash.
+description:            |
+                        The checker builds a referencing.Registry
+                        (src/cc_public/check/schema.py lines 40 and
+                        145-155); the project depends on
+                        jsonschema>=4.23 (pyproject.toml line 40).
+                        con_register lists "registry" as deprecated
+                        (_data/register/reg_concept.yaml lines
+                        94-110). The held-in relation is renamed from
+                        registry to register (commit message of
+                        232f001), and is now
+                        r_has_items_held_in_register (f587284).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_naming
+    guid_target:        iss_67a8e9160b5347ec8565a8e02ef39db2
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_spelled_generic_abbreviated_specific
+    guid_target:        dec_8d88ff962f9344f49b7d93f7b497115e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

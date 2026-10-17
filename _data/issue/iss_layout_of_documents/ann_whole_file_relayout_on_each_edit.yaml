@@ -1,0 +1,42 @@
+id_self:                ann_whole_file_relayout_on_each_edit
+guid_self:              ann_b03321bba46f4d779ddfd1d8231a3b95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-file relayout on each edit
+brief:                  |
+                        Every edit lays out the whole file it writes,
+                        where the fragment writer wrote only changed
+                        lines. The extra cost is small next to the
+                        checks an edit already runs.
+description:            |
+                        b544e09 commit message; _Item.replace and
+                        _format in src/cc_public/edit/edit.py. Laying
+                        out the largest register file takes about 79
+                        ms (advocate measurement, 2026-10-15). apply
+                        runs check_documents twice per edit (edit.py
+                        lines 866-878), and that grows with the whole
+                        tree, so relayout stays a small share. Weak
+                        support.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_layout_of_documents
+    guid_target:        iss_a5613b3c89574276bdae905735fce2b0
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_fragment_writer
+    guid_target:        dec_1a3bcdb9186942ed8ed8b42c98103731
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

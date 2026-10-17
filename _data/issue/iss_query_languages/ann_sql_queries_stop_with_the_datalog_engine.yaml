@@ -1,0 +1,55 @@
+id_self:                ann_sql_queries_stop_with_the_datalog_engine
+guid_self:              ann_d964989486b2494fa2f5b810d49e612f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  SQL queries stopped by a Datalog engine fault
+brief:                  |
+                        Each SQL query first runs the Datalog engine
+                        to fill the derived tables, so a broken,
+                        changed or withdrawn engine stops both
+                        languages, and SQL gives no second route.
+description:            |
+                        sql.connect calls cc_public.graph.datalog.run
+                        before it fills any table
+                        (src/cc_public/graph/sql.py lines 54-59; at
+                        the decision, commit 12f83b7, with souffle as
+                        a subprocess raising ErrorDatalog). cctool
+                        query sql reports ErrorDatalog as an SQL error
+                        (querying.py lines 129-132). clingo is
+                        imported at module level (datalog.py line 55;
+                        querying.py lines 41-43). At the decision
+                        Souffle was a hand-kept binary outside the
+                        locked environment
+                        (ann_souffle_is_outside_the_locked_environment).
+                        Offsetting fact: the checker already needed
+                        the engine (commit ba66f33; check.py lines
+                        96-99), so this adds no new dependency to the
+                        tool as a whole.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_query_languages
+    guid_target:        iss_177a664dee5c458b877a733d35a29c5d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_sql_and_datalog_one_fact_set
+    guid_target:        dec_fc535b2a0fe2409683573e0172f2ebec
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

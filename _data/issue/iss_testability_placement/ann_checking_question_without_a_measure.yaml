@@ -1,0 +1,66 @@
+id_self:                ann_checking_question_without_a_measure
+guid_self:              ann_0636f8d18e1d4c56b6474b511e06d8fb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checking question without a measure
+brief:                  |
+                        After the fold, maintainability asks how
+                        readily a change can be checked but has no
+                        measure for it, so check-run time and
+                        fault-finding time are not measured anywhere.
+                        They were measured only by the separate entry,
+                        from 6cabbb1 to 373ff5d.
+description:            |
+                        Question and measures:
+                        repo/_data/register/reg_concern.yaml lines
+                        353-357. The removed testability entry
+                        measured "Time to run the full set of checks,
+                        in minutes" and "Time from a failing check to
+                        its cause, in hours" (git show 6cabbb1 and
+                        373ff5d). concern_cost measures effort in
+                        person days and running cost per month (lines
+                        548-550). Advocates are briefed from a
+                        concern's measures (templates/advocate.md line
+                        10). The commit gate took about 2 minutes
+                        against the 180 s limit of device tool calls,
+                        and about 75 s after later speed-ups
+                        (memory/MEMORY.md lines 45, 47 and 54).
+                        Maintainability had no checking measure before
+                        the split either (git show 6cabbb1^). The gap
+                        can be closed by adding a checking measure to
+                        maintainability, so this argues for a fix to
+                        the chosen entry more than for the separate
+                        concern.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_testability_placement
+    guid_target:        iss_dc029faa0ea64e7584c74d076eefb6db
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_testability_in_maintainability
+    guid_target:        dec_ef3e9607577f4e0f9db2120459082b80
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,51 @@
+id_self:                ann_shared_entry_shape_makes_entries_traceable
+guid_self:              ann_891f40d3a77f485fb40b9c29c2e34f95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Identity and edges on every register entry
+brief:                  |
+                        Every entry composes the one shared entry
+                        shape, so every entry in every register has an
+                        id and a guid, may carry the common edge list,
+                        and can be the end of a traced edge.
+                        Register-specific shapes would not guarantee
+                        this.
+description:            |
+                        sch_register_entry.yaml lines 36-38 (identity
+                        and descriptive traits) and lines 45-66 (edge
+                        definition shared "so the two cannot drift";
+                        the relation list is optional, lines 47-63).
+                        sch_register.yaml lines 77-78. The extractor
+                        records any node with id_self as an item
+                        (src/cc_public/graph/extract.py lines
+                        411-423). Entries are already edge targets,
+                        for example ann_python_is_fast_enough.yaml
+                        lines 29-32.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_shape
+    guid_target:        iss_7a7b7425d22243dd8d03d16c174bb795
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_one_shape_map_keyed_tables
+    guid_target:        dec_ef0f0bddb87c4412b1b441da9ebc812d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_register_specific_shapes
+    guid_target:        dec_6d22b7e09d2a4c43b87ebcdbf991a6df
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

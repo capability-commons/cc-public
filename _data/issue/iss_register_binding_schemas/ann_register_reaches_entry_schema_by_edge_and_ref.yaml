@@ -1,0 +1,44 @@
+id_self:                ann_register_reaches_entry_schema_by_edge_and_ref
+guid_self:              ann_5e459f69d18e4d0ab765e69a10064fe0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorded chain from register to entry schema
+brief:                  |
+                        Each register reaches its entry schema through
+                        recorded links: an edge to its sch_reg_*
+                        schema, then a $ref to its sch_regentry_*
+                        schema.
+description:            |
+                        r_is_specified_by_schema on each register
+                        (_data/register/reg_concern.yaml lines 39-42
+                        and the five others). $ref in
+                        _data/schema/sch_reg_concern.yaml lines 24-36.
+                        The extractor records each $ref as a
+                        schema_ref fact with file and line
+                        (src/cc_public/graph/extract.py lines 156-157,
+                        470-480). The checker reads the edge
+                        (src/cc_public/graph/derive.lp lines 83-85).
+                        From the traceability advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_binding_schemas
+    guid_target:        iss_742286e415d347efb484307e551a1c14
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_keep_per_register_binding
+    guid_target:        dec_bbb05a184e4a4cd88eae30188d08e0ae
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

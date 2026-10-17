@@ -1,0 +1,64 @@
+id_self:                ann_editing_code_is_a_third_of_tooling
+guid_self:              ann_af0a241c3a6348fda92a1b9363448e38
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Editing code as a third of the tooling
+brief:                  |
+                        The editing commands are about a third of the
+                        non-test source and were changed in 9 of the
+                        22 commits that changed src since the first
+                        version. Hand editing then checking carries
+                        none of this code.
+description:            |
+                        src/cc_public/edit/edit.py has 1203 lines and
+                        src/cc_public/cli/editing.py 430, of 5451
+                        non-test Python lines under src (wc -l at
+                        89c74d8). layout.py (586 lines) is shared with
+                        the checker and cctool format and is not
+                        counted. Tests add 544 lines (edit/_test/
+                        test_edit.py) and 159 lines (cli/_test/
+                        test_editing.py). Nine of the 22 commits since
+                        7dda99e that change src touch
+                        src/cc_public/edit (git log 7dda99e..89c74d8
+                        -- src), two of them fixes (3ba3a5c, 153c0b1).
+                        Against this: hand editing cannot mint a guid,
+                        which must never be written by hand (AGENTS.md
+                        lines 44-45). ASSUMPTION: one command that
+                        prints a fresh guid would cover that job at
+                        far smaller size. The cost is per command, not
+                        per item, so it weakens as the graph grows.
+                        ASSUMPTION: new item types mostly reuse new,
+                        link and set.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_editing_by_construction
+    guid_target:        iss_279419b2824746518b0c9dcf2026c4a0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_transactional_editing_commands
+    guid_target:        dec_8cfef655800240c6b859ec5189a272b7
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_hand_edit_then_check
+    guid_target:        dec_219cd96af9484970bef00e82f605a962
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

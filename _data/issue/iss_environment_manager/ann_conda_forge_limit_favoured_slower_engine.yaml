@@ -1,0 +1,47 @@
+id_self:                ann_conda_forge_limit_favoured_slower_engine
+guid_self:              ann_9500abe9e0094d028aa541ea09741984
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Channel limit steering toward the slower engine
+brief:                  |
+                        Taking every tool from conda-forge left
+                        Souffle out, and the move to clingo that
+                        followed, partly because pixi can pin it, made
+                        the checks slower at the current size.
+description:            |
+                        pyproject.toml line 51 lists only conda-forge.
+                        det_cross_item_checks_engine brief: "move to
+                        clingo, which pixi can pin". One evaluation
+                        took about 0.12 s with clingo and 0.07 s with
+                        Souffle; the serial test suite took 2m47s
+                        against 2m25s
+                        (ann_clingo_is_slower_at_this_size). Will gave
+                        graph size, not packaging, as the main reason
+                        for clingo (2026-10-14T22:11:54Z), and a 2025
+                        comparison does not show Souffle faster at
+                        scale (ann_benchmarks_do_not_favour_souffle).
+                        ASSUMPTION: pixi could take Souffle from a
+                        second channel or a source build; not checked.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,41 @@
+id_self:                ann_gate_stage_time_limit_is_fixed
+guid_self:              ann_8899866a147f482bb35d5eb9639c2a5b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate stage time limit of ten minutes
+brief:                  |
+                        Commit 4db8c7d "Fix the gate so that a stage
+                        that hangs is stopped" stops and fails any
+                        stage that runs past 600 s. At 360ec14 a hung
+                        stage no longer holds a commit open for ever,
+                        though the limit is above the 180 s at which a
+                        remote device call dies.
+description:            |
+                        SECONDS_STAGE = 600
+                        (src/cc_public/gate/gate.py lines 72-76 at
+                        360ec14); _run passes it to subprocess.run as
+                        timeout and reports "Stopped after" on
+                        TimeoutExpired (lines 158-181);
+                        test_a_stage_that_runs_too_long_is_stopped_and_fails
+                        covers it
+                        (src/cc_public/gate/_test/test_gate.py line
+                        108). So the remote-session half of the point
+                        still holds.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commit_gate
+    guid_target:        iss_a16285400e794e03bc0b9566a852621c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_gate_stages_have_no_time_limit
+    guid_target:        ann_f78b875a3d564a8184c8c4a9824b9320

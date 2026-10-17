@@ -1,0 +1,50 @@
+id_self:                ann_agents_md_can_silently_drop_out
+guid_self:              ann_b9b5a7535e664fc08499cd3ea46491dd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  AGENTS.md dropping out of Claude Code
+brief:                  |
+                        Claude Code reads AGENTS.md only under
+                        conditions a contributor can break without
+                        knowing, so procedures held only there can
+                        silently fail to reach it.
+description:            |
+                        Claude Code reads AGENTS.md only when there is
+                        no CLAUDE.md, .claude/CLAUDE.md or
+                        CLAUDE.local.md in the working directory or
+                        above. A CLAUDE.local.md stops it unless a
+                        setting is changed. It needs v2.1.277 or
+                        later, and some sessions, such as the first
+                        after an upgrade, read CLAUDE.md files only
+                        (https://code.claude.com/docs/en/memory,
+                        sections "When Claude Code reads AGENTS.md"
+                        and "When AGENTS.md support is unavailable",
+                        fetched 2026-10-15). .gitignore line 37
+                        ignores every file not listed, and lines 58-75
+                        do not list CLAUDE.local.md, so such a file
+                        stays local and unseen. AGENTS.md is kept
+                        under every alternative; this bears on putting
+                        all procedure there.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_agent_skills
+    guid_target:        iss_75e14c2d4108437ba6f44253fc800f5e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_no_skills
+    guid_target:        dec_9907f0ad177948f8822240231a1c0e3b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

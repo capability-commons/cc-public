@@ -1,0 +1,58 @@
+id_self:                ann_concern_old_ids_kept_as_alias
+guid_self:              ann_1fb0f57609da4d08ae443bd8ddf3b92e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Old plain ids kept as checked aliases
+brief:                  |
+                        Each renamed concern keeps its guid and lists
+                        its old id as an alias. An old reference can
+                        be followed to the current entry, and the
+                        checker reports it with the new id.
+description:            |
+                        guid_self is unchanged across 7053bfa (git
+                        show 7053bfa, reg_concern.yaml hunk at line
+                        46). Old ids are in alias
+                        (_data/register/reg_concern.yaml lines 81-82,
+                        197, 241, 285, 325). A mention of the old
+                        Correctness id is reported as outdated_mention
+                        and an edge to it as outdated_reference, each
+                        naming concern_functional_suitability
+                        (src/cc_public/check/_test/test_check.py lines
+                        573-588). An alias used as an id is reported
+                        as alias_in_use (src/cc_public/check/check.lp
+                        line 482). The extractor turns each alias into
+                        a fact (src/cc_public/graph/extract.py lines
+                        151-152, 421-422). These checks came later:
+                        the tree at 7053bfa holds no src/ files, so no
+                        checker or cctool existed then (git ls-tree -r
+                        7053bfa). Text outside the graph, such as chat
+                        and older commit messages, still names the old
+                        ids.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_concern_names
+    guid_target:        iss_3b570846a5ed45ba920f2316bd981dbf
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_standard_names
+    guid_target:        dec_8cc4b48a9fc144ff9083b03b1d61e3ee
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

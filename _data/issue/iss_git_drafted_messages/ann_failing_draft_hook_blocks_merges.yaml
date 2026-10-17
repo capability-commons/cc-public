@@ -1,0 +1,63 @@
+id_self:                ann_failing_draft_hook_blocks_merges
+guid_self:              ann_c027ba32b9e84f22a4e9e5668ff52e21
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Draft hook failure that no-verify cannot skip
+brief:                  |
+                        A failing prepare-commit-msg aborts the commit
+                        even with --no-verify and leaves a merge or
+                        revert half done. The draft catches only two
+                        exception types, so a fault in the tool or a
+                        staged file can block every merge and revert.
+description:            |
+                        Test with git 2.43.0: a prepare-commit-msg
+                        that exits 1 stops git commit --no-verify; git
+                        merge prints "Not committing merge"; git
+                        revert leaves MERGE_MSG and a staged change.
+                        The hook runs pixi run --frozen cctool message
+                        draft on every commit
+                        (.githooks/prepare-commit-msg line 31). For a
+                        merge or revert the draft extracts facts from
+                        HEAD and the staged tree
+                        (src/cc_public/commit/change.py lines 66-74,
+                        115-116). The command catches only ErrorGate
+                        and ErrorDatalog
+                        (src/cc_public/cli/messaging.py lines
+                        129-133), though its stated intent is to
+                        report and leave the message (lines 122-124).
+                        Extraction calls YAML.load and ast.parse with
+                        no handler (src/cc_public/graph/extract.py
+                        lines 305, 322, 334, 388), and the branch
+                        lookup runs git rev-parse with check=True
+                        (message.py lines 192-196). Bypass by git -c
+                        core.hooksPath=/dev/null commit is not in
+                        README.md or AGENTS.md. Under hand writing,
+                        --no-verify skips commit-msg (README.md line
+                        57; AGENTS.md line 14). ASSUMPTION: for a
+                        merge the gate in pre-merge-commit reports an
+                        unparseable item first; not checked. A revert
+                        runs no gate. The fix is small: catch broadly,
+                        leave the message, exit 0.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_git_drafted_messages
+    guid_target:        iss_d32b1aedda464a04857526b59e8dfedb
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_prepare_commit_msg_converts
+    guid_target:        dec_6c034c3992ac4d8a834c7a7e13df92e9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

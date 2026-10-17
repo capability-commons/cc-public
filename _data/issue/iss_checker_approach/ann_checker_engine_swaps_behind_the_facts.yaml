@@ -1,0 +1,66 @@
+id_self:                ann_checker_engine_swaps_behind_the_facts
+guid_self:              ann_9f2e60185bbd49878e8246ca37334656
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine replaceable behind the facts
+brief:                  |
+                        The checks are written as facts and rules
+                        apart from the engine that runs them, so the
+                        engine can be replaced for supply or for
+                        speed. The move from Souffle to clingo left
+                        the extractor almost untouched.
+description:            |
+                        Commit 6230e98 deletes check.dl (526 lines),
+                        adds check.lp (524 lines), changes
+                        src/cc_public/graph/datalog.py by 290 lines
+                        and extract.py by only 14 lines (git show
+                        --stat). It is dated 2026-10-14 22:51:31Z, 40
+                        minutes after the owner decided to switch at
+                        22:11:54Z. Commit 12f83b7 moves the extraction
+                        into cc_public.graph so that queries use the
+                        same facts. The schemas declare JSON Schema
+                        2020-12, a published standard
+                        (_data/schema/sch_register.yaml line 1;
+                        src/cc_public/check/schema.py lines 56-57,
+                        107). The engine decision says Souffle may
+                        return when the graph is large enough to
+                        measure (det_cross_item_checks_engine). The
+                        owner plans much larger graphs (owner's
+                        statement 2026-10-13T20:05:25Z). Assumption: a
+                        port would keep the checks in hand-written
+                        Python bound to its own data access, which
+                        only a rewrite can move or speed up; its
+                        source is not in this clone.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_checker_approach
+    guid_target:        iss_49388bed9a3f4fab908c89f8271cf59c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_json_schema_plus_rules_over_facts
+    guid_target:        dec_67ed1239d8304048898124ded99e4cfc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

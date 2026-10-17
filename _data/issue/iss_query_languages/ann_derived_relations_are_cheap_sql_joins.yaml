@@ -1,0 +1,47 @@
+id_self:                ann_derived_relations_are_cheap_sql_joins
+guid_self:              ann_fc164244179d406188d9560528f1fd09
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Derived relations as cheap SQL joins
+brief:                  |
+                        The present derived relations are
+                        non-recursive joins and one negation, which
+                        SQLite computes in a few milliseconds, so SQL
+                        as their home would cut the query step of the
+                        SQL path from about 89 ms to about 5 ms; the
+                        extraction of facts, about 46 ms, stays in
+                        every command.
+description:            |
+                        derive.lp has no recursion; primary_edge uses
+                        one negation. Measured by an advocate on
+                        2026-10-15 (advperf/m.py): loading facts and
+                        computing prefix_of in SQLite took about 5 ms
+                        (10 ms at ten times the size) and gave the
+                        same 203 rows as clingo. Only prefix_of was
+                        prototyped; ASSUMPTION: the other three cost
+                        about the same. Speeds queries, not the check
+                        gate, which stays in clingo. Recursive queries
+                        over much larger graphs are unmeasured.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_query_languages
+    guid_target:        iss_177a664dee5c458b877a733d35a29c5d
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_sql_only
+    guid_target:        dec_a9aaae607eb140c5a06fa26815f2f234
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,47 @@
+id_self:                ann_every_sql_query_pays_a_datalog_evaluation
+guid_self:              ann_189c30c3da5548efa9c8363f2b6d4ea4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full Datalog evaluation in every SQL query
+brief:                  |
+                        Each SQL query first runs clingo over all
+                        facts to derive relations, so it costs more
+                        than a Datalog query and scales with the
+                        Datalog engine.
+description:            |
+                        sql.py lines 54-59; the connection is rebuilt
+                        per query (sql.py lines 61, 87-94). Measured
+                        by an advocate on 2026-10-15 at HEAD 89c74d8,
+                        median of 7 runs on one machine (scratchpad
+                        advperf/m.py): SQL query about 89 ms, clingo
+                        derivation alone about 87-90 ms, Datalog query
+                        about 77 ms. At ten times the items and edges:
+                        derivation about 437 ms, SQL query about 425
+                        ms. Most of the gap between clingo and Souffle
+                        is regex matching called from Python
+                        (ann_clingo_is_slower_at_this_size). The
+                        SQLite load and the command layout add only
+                        about 2 ms.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_query_languages
+    guid_target:        iss_177a664dee5c458b877a733d35a29c5d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_sql_and_datalog_one_fact_set
+    guid_target:        dec_fc535b2a0fe2409683573e0172f2ebec
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

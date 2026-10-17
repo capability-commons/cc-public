@@ -1,0 +1,44 @@
+id_self:                ann_ported_legacy_code_brings_faults
+guid_self:              ann_250c38f060d84f0f87dc627a8b274212
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Legacy faults carried by ported code
+brief:                  |
+                        Regrowth ports legacy code into the seed, so
+                        it can carry legacy faults with it. The ported
+                        printer lost empty mappings, a fault the
+                        September review had reproduced, until a later
+                        fix.
+description:            |
+                        The September review reproduced "the printer
+                        deletes comments, retypes keys and loses empty
+                        maps" (note cc-public-session-context.md lines
+                        65-69). The layout module is the legacy
+                        printer (memory/MEMORY.md lines 37, 44).
+                        Commit 3ba3a5c fixes an empty mapping in a
+                        list written as nothing. Weak: found and fixed
+                        the same day. ASSUMPTION: the other reproduced
+                        defects were not checked against the new tree.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_growth_policy
+    guid_target:        iss_2c58e4c179664f6b9e3e4be482f6a14e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_regrow_from_small_seed
+    guid_target:        dec_0986d60f9f09429f8644784b702f726e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

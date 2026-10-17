@@ -1,0 +1,53 @@
+id_self:                ann_round_trip_parsing_is_slow
+guid_self:              ann_e72d3ab524e54eb6b791fe7e3925a8e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Slow round-trip parsing
+brief:                  |
+                        Round-trip loading with pure-Python
+                        ruamel.yaml takes about twenty times as long
+                        as PyYAML with libyaml on the same files, and
+                        about 1.7 times pure-Python PyYAML. Reading
+                        and validating documents was most of the time
+                        of a check before the read cache.
+description:            |
+                        Best of 5 over the 75 YAML files under _data
+                        (269,421 bytes), Python 3.13, ruamel.yaml
+                        0.19.1, PyYAML 6.0.2: ruamel rt 421-427 ms;
+                        ruamel safe 318-326 ms; PyYAML SafeLoader
+                        240-253 ms; PyYAML CSafeLoader 20 ms. Memory
+                        held: 2.9 MB against 0.5 MB. Script:
+                        scratchpad bench_adv_perf/b.py. Commit
+                        93a1428: reading and validating documents
+                        "took most of the time of each check". The
+                        lock has the pure-Python wheel (pixi.lock
+                        lines 54, 743-749). The old lock had PyYAML
+                        only as a source archive and no libyaml
+                        package (afac39c^:pixi.lock). ASSUMPTION:
+                        PyYAML built there would likely have been pure
+                        Python, so the 1.7 times figure is the nearer
+                        comparison. ASSUMPTION: about 4 s per full
+                        read at tenfold size, by linear extrapolation.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_yaml_library
+    guid_target:        iss_5528230e2f614c9ea8a4d3bb439f5c88
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_ruamel_round_trip
+    guid_target:        dec_676d5f93662540968c5ebedfeace1f17
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

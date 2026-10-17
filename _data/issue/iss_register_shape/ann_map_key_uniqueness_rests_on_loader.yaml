@@ -1,0 +1,56 @@
+id_self:                ann_map_key_uniqueness_rests_on_loader
+guid_self:              ann_0df46554b2294f4a9d38939b4d62e0b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Key uniqueness held by the YAML loader
+brief:                  |
+                        A duplicate entry key is rejected only by a
+                        loader that refuses duplicate keys.
+                        ruamel.yaml does, but PyYAML and Python json
+                        keep the last value silently, so a partner or
+                        a port on such a loader loses a duplicate
+                        entry without notice.
+description:            |
+                        cc-public loads with ruamel.yaml in round-trip
+                        mode (src/cc_public/graph/extract.py line 47),
+                        pinned >=0.19.1,<0.20 (pyproject.toml line
+                        41). Tested 2026-10-15: ruamel.yaml 0.19.1
+                        raises DuplicateKeyError on "a: 1\na: 2";
+                        PyYAML 6.0.1 safe_load and json.loads return
+                        the last value. RFC 8259 section 4 leaves
+                        duplicate names unpredictable; YAML 1.2.2
+                        section 3.2.1.1 requires unique keys.
+                        key_mismatch (check.lp lines 214-223) cannot
+                        see a key the loader dropped. An array does
+                        not make uniqueness a parse property for
+                        anyone, so this limits the reason rather than
+                        favouring arrays. Merged from the
+                        compatibility and flexibility advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_shape
+    guid_target:        iss_7a7b7425d22243dd8d03d16c174bb795
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_one_shape_map_keyed_tables
+    guid_target:        dec_ef0f0bddb87c4412b1b441da9ebc812d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

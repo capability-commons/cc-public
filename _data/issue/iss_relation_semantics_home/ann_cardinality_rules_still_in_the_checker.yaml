@@ -1,0 +1,69 @@
+id_self:                ann_cardinality_rules_still_in_the_checker
+guid_self:              ann_da1f20fd7ed54c75b57ccffb0206dbd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cardinality rules still in the checker
+brief:                  |
+                        Cardinality and other single-relation rules
+                        are written by relation name in check.lp, so
+                        the system today mixes the chosen design with
+                        hard-coded checks.
+description:            |
+                        check.lp names twelve of the thirteen
+                        relations by literal id, 31 times, with 2 more
+                        in derive.lp. Examples: missing_about
+                        (check.lp lines 290-301), answer_count
+                        (305-315), determination_without_decision
+                        (319-327), supersession_across_types
+                        (361-371), argument_without_concern (574-576).
+                        The same constraints are stated again in
+                        register prose (reg_relation.yaml lines
+                        160-162, 290-291), so a change touches two
+                        files, and a partner cannot see these rules in
+                        the register. They were ported by hand from
+                        Souffle in 6230e98 (6230e98^ check.dl lines
+                        263-314). Rules that join several relations,
+                        such as determination_across_issues (check.lp
+                        lines 346-356), belong in the checker under
+                        any alternative. The point fades if
+                        cardinality becomes a declared field, as
+                        sch_regentry_relation.yaml lines 38-41 allow.
+                        At HEAD 89c74d8.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_relation_semantics_home
+    guid_target:        iss_7703f347e35442a3b7c01dd89eebcc4a
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_one_entry_per_fact_type
+    guid_target:        dec_190ef6a7dd60484b8800741551b0b138
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,51 @@
+id_self:                ann_title_templates_refuse_some_git_drafts
+guid_self:              ann_91fd965a354848e293d04918d081f9ae
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Git drafts outside the closed list
+brief:                  |
+                        The title pattern copies the words git drafts
+                        for merges and reverts, so it refuses other
+                        drafts git writes on ordinary repair paths,
+                        and each new git path has needed a follow-up
+                        change.
+description:            |
+                        Pattern at sch_commit line 50. In a local test
+                        with git 2.43.0 on 2026-10-15 (reliability
+                        advocate), merge --squash drafts "Squashed
+                        commit of the following:" and commit --fixup
+                        drafts "fixup! TITLE"; neither matches. Merge
+                        and Revert were added in e25acf9 and Reapply
+                        in 4e6db4c; the brief of 4e6db4c says the
+                        commit-msg hook had refused git's merge and
+                        revert drafts. The project accepts that squash
+                        drafts are not converted (memory
+                        enforcement-approach.md). In that test git
+                        revert ran prepare-commit-msg but not
+                        commit-msg, so a bad revert draft is found
+                        only at pre-push. ASSUMPTION: a check of
+                        imperative mood under free imperatives would
+                        still refuse the squash and fixup drafts.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commit_title_form
+    guid_target:        iss_165e8cad04fd43f9b98de99d5e6b6e7e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_imperative_from_templates
+    guid_target:        dec_b50b2f4dde3e454db6c948d70232b324
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

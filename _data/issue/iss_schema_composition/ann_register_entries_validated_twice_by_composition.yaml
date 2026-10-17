@@ -1,0 +1,51 @@
+id_self:                ann_register_entries_validated_twice_by_composition
+guid_self:              ann_899e798c9ad64bc2945d4b5de4501b18
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register entries validated twice
+brief:                  |
+                        Composition lets one schema be reached by two
+                        routes, and every register entry is checked
+                        against sch_register_entry once through
+                        sch_register and again through its own
+                        sch_regentry_* schema.
+description:            |
+                        sch_register applies sch_register_entry to
+                        every table value
+                        (_data/schema/sch_register.yaml lines 77-78).
+                        Each of the six sch_regentry_* schemas
+                        composes sch_register_entry, for example
+                        sch_regentry_concern.yaml line 75, and each
+                        sch_reg_* applies its sch_regentry_* to table
+                        values (sch_reg_concern.yaml lines 25-38).
+                        Commit 97291f6 (pre-squash, 2026-10-13)
+                        removed six more such references after Will
+                        asked "Do we have any unnecessary duplication
+                        anywhere?" (W 2026-10-13T20:53:24Z).
+                        ASSUMPTION: no check detects a schema reached
+                        twice; only check.lp was searched. The result
+                        is the same either way, so this costs no
+                        correctness.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_schema_composition
+    guid_target:        iss_e3eb3349b94540e8a63cdaad3e2871ea
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_traits_composed_with_allof
+    guid_target:        dec_79ae9c72e24c40878cec31a86cc79635
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

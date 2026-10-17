@@ -1,0 +1,57 @@
+id_self:                ann_pixi_lock_diffs_too_large_to_read
+guid_self:              ann_bcc31bdfdbfb4836839725f7886f8e7e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lock diffs too large to read
+brief:                  |
+                        Each environment change also commits a
+                        machine-written pixi.lock diff of tens to
+                        hundreds of lines, mostly URLs and hashes,
+                        which adds to the review volume but gives a
+                        reviewer nothing to judge by reading.
+description:            |
+                        Apart from the squash commit 7dda99e, the
+                        commits that changed pixi.lock changed 607,
+                        117, 24, 71 and 134 lines of it, about 950 in
+                        all; the last came with a 1-line manifest
+                        change (git show --stat e232fb3, 21c315c,
+                        afac39c, c464728, 5665ace). pixi install
+                        writes the lock, and Will ran it
+                        (2026-10-13T20:50:13Z). There is no
+                        .gitattributes, so the lock is not marked as
+                        generated in diffs. Will calls the review
+                        burden "huge (and practically impossible)"
+                        when accepting reviewability for lc_tooling
+                        (will-messages.md line 786); see also
+                        memory/cc-public-design-principles.md line 11.
+                        Mitigation: four of the five commits touch
+                        pixi.lock only, so a reviewer can skip them.
+                        ASSUMPTION: the lock can be trusted by
+                        checking it came from the reviewed manifest;
+                        nothing in the gate checks this (see
+                        ann_frozen_lock_makes_gate_runs_repeatable).
+                        The point grows with the tooling, not the
+                        graph.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,43 @@
+id_self:                ann_pixi_mixes_conda_and_pypi_sources
+guid_self:              ann_f9296afc92204e51bce02c6482410959
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two package sources in one environment
+brief:                  |
+                        The environment mixes conda-forge packages and
+                        PyPI packages, declared in two tables, so
+                        where a dependency comes from has two answers.
+description:            |
+                        pyproject.toml line 51 sets conda-forge and
+                        lines 57-61 list python, clingo, pytest and
+                        ruff; lines 39-41 list click, jsonschema and
+                        ruamel.yaml, resolved as PyPI wheels
+                        (pixi.lock lines 48-55). At 2132eaf pyyaml
+                        came from conda-forge and the PyPI list was
+                        empty; it filled in 6c8d3d5, fcb71b0 and
+                        d1c4400 with no recorded reason for taking
+                        them from PyPI. A modest point: both tables
+                        sit in one file and one lock.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

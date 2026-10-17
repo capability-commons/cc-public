@@ -1,0 +1,57 @@
+id_self:                ann_traits_adoptable_piecemeal_by_partners
+guid_self:              ann_6c3d7afdfda84566937875954c1d819a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Small traits a partner can adopt piecemeal
+brief:                  |
+                        Because each trait is a separate schema and
+                        value types sit in a library with no object
+                        shape, a partner can take one piece, such as
+                        the guid format or the identity trait, without
+                        taking the rest.
+description:            |
+                        sch_trait_identity holds only id_self and
+                        guid_self
+                        (_data/schema/sch_trait_identity.yaml lines
+                        16-36). Each schema has an absolute $id under
+                        https://capability-commons.org/schema/
+                        (sch_schema.yaml lines 57-62). The project is
+                        meant to be federated: guid_self separates ids
+                        that collide "across repositories in the
+                        federation" (sch_trait_identity.yaml lines
+                        28-31), and binding files are kept for
+                        "portability for federated partners"
+                        (memory/MEMORY.md line 11). sch_primitive has
+                        no type, properties or required list
+                        (sch_primitive.yaml lines 15-28), and every
+                        reference to it is a $ref into $defs, never an
+                        allOf; for example sch_register_entry.yaml
+                        lines 84-85 takes the id value type from it
+                        without composing any object shape (checked by
+                        the maintainability and simplicity advocates
+                        and by grep at 89c74d8). The gain grows with
+                        the number of item types, if the traits stay
+                        small and stable.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_schema_composition
+    guid_target:        iss_e3eb3349b94540e8a63cdaad3e2871ea
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_traits_composed_with_allof
+    guid_target:        dec_79ae9c72e24c40878cec31a86cc79635
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

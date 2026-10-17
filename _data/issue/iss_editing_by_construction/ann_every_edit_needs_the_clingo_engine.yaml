@@ -1,0 +1,46 @@
+id_self:                ann_every_edit_needs_the_clingo_engine
+guid_self:              ann_bba9a3e72bf5448988cc7ef6adc340e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Editing dependent on the check engine
+brief:                  |
+                        Every edit runs the full check before it is
+                        written, so editing needs clingo installed and
+                        working. Under hand editing only checking
+                        stops when the engine is missing.
+description:            |
+                        apply runs check_documents before and after
+                        the edit (src/cc_public/edit/edit.py lines
+                        866-878), which runs the rules through
+                        cc_public.graph.datalog (src/cc_public/check/
+                        check.py lines 95-99), which imports clingo
+                        (src/cc_public/graph/datalog.py line 55).
+                        clingo is a pixi dependency >=5.8.2,<6
+                        (pyproject.toml; added in 5665ace). At c4a8721
+                        the engine was Souffle, expected on the PATH.
+                        Weak: the commit gate needs the same check, so
+                        a missing engine already blocks commits under
+                        both alternatives.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_editing_by_construction
+    guid_target:        iss_279419b2824746518b0c9dcf2026c4a0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_transactional_editing_commands
+    guid_target:        dec_8cfef655800240c6b859ec5189a272b7
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

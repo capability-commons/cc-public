@@ -1,0 +1,59 @@
+id_self:                ann_rename_three_mechanisms_for_one_job
+guid_self:              ann_90eabf6efde6401fb99be969899b08b2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Three mechanisms for one rename job
+brief:                  |
+                        A reference is kept correct across a rename by
+                        a guid, by a rewrite of every reference, and
+                        by an alias list. Inside the repository the
+                        first two do the job, so the alias list and
+                        its rules duplicate them.
+description:            |
+                        Every edge names its target by guid and by
+                        readable id
+                        (_data/schema/sch_trait_relation.yaml lines
+                        16-24). cctool rename rewrites every reference
+                        and mention in every document
+                        (src/cc_public/edit/edit.py lines 722-770).
+                        The checker reports any later use of an old
+                        id, as outdated where it is an alias and as
+                        dangling otherwise
+                        (src/cc_public/check/check.lp lines 236-239,
+                        466-472 and 486-521). Alias adds its own
+                        rules: the exemption in dangling_reference and
+                        dangling_mention, alias_in_use,
+                        outdated_reference, outdated_mention and
+                        rename_without_alias (check.lp lines 236-239
+                        and 466-521; src/cc_public/commit/change.lp
+                        lines 149-165). rename_without_alias already
+                        needed an exception for Revert and Reapply
+                        (memory/enforcement-approach.md line 12). What
+                        alias still serves is text the rewrite cannot
+                        reach, such as foreign repositories and
+                        imported data. ASSUMPTION: none exists in
+                        cc-public today. Weakens once a federation or
+                        import exists. From the simplicity advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_rename_safety
+    guid_target:        iss_ea5d1c79420b401e986a8c4be872be84
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_alias_list_of_old_ids
+    guid_target:        dec_72d4dc14f2be4ca7b8d25502650113d4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

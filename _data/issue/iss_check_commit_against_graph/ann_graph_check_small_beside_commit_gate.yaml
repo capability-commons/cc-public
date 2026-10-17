@@ -1,0 +1,50 @@
+id_self:                ann_graph_check_small_beside_commit_gate
+guid_self:              ann_f9f18adef5954e2bb122bf296c683f19
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph check small beside the commit gate today
+brief:                  |
+                        At today's size the graph check adds about 6 s
+                        to a commit path that the pre-commit gate
+                        already holds at over a minute, so a
+                        syntax-only check would save little time.
+description:            |
+                        Measured 2026-10-15 in a 4-CPU session
+                        container at 89c74d8: message check end to end
+                        6.7 s, its syntax part 0.75 s. The syntax part
+                        also reads every document in the tree to find
+                        sch_commit (src/cc_public/commit/message.py
+                        lines 260-265). The pre-commit gate runs on
+                        each ordinary commit (.githooks/pre-commit,
+                        last line) and took about 75 s after the
+                        clingo port, about 2 min on Will's 2-CPU VM; a
+                        device tool call dies at 180 s
+                        (memory/MEMORY.md lines 45, 54). Holds only
+                        while the gate dominates. Merges and reverts
+                        skip the gate (memory/MEMORY.md line 46), so
+                        there the graph check is most of the hook
+                        time. Proposed by the performance efficiency
+                        advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_check_commit_against_graph
+    guid_target:        iss_c4001a6dd2a949008dc8a0c5e2b410eb
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_before_after_commit_check
+    guid_target:        dec_dc9b12ea18d64252bf9ae14671958b55
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

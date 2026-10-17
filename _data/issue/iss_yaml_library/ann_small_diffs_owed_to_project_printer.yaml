@@ -1,0 +1,54 @@
+id_self:                ann_small_diffs_owed_to_project_printer
+guid_self:              ann_74c610e50c6e4b908cd8c28420cda398
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Small diffs owed to the printer
+brief:                  |
+                        Round-trip dumping does not keep diffs small
+                        here: ruamel's own dump of an unedited
+                        register rewrites most of its lines. The small
+                        diffs come from the project's printer and line
+                        splicing, which could stand on PyYAML compose
+                        nodes.
+description:            |
+                        Local run at HEAD 89c74d8, 2026-10-15,
+                        ruamel.yaml 0.19.1: YAML(typ='rt') load and
+                        dump with no edit rewrites 571 of the 669
+                        lines of reg_concern.yaml and 461 of the 576
+                        lines of reg_concept.yaml; values lose their
+                        alignment at column 25. The layout puts values
+                        at column 25 (COLUMN_VALUE 24, layout.py line
+                        64). The printer uses ruamel for key and item
+                        lines (layout.py lines 425, 496), literal
+                        block style (line 474) and quoting one scalar
+                        (lines 522-546). PyYAML 6.0.1 yaml.compose on
+                        "a: |\n x\nb: y\n" gives key a at line 0 with
+                        style '|' and key b at line 2. Lines on
+                        compose nodes are in
+                        ann_pyyaml_compose_nodes_carry_lines; this
+                        adds the style. ASSUMPTION: porting the
+                        printer and splice to compose nodes is a few
+                        hundred lines; not built. Proposed by the
+                        reviewability advocate as a challenge to the
+                        chosen decision; recorded as a fact against
+                        ann_positioned_edits_give_one_line_diffs,
+                        since it says the gain is neutral between the
+                        two libraries.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_yaml_library
+    guid_target:        iss_5528230e2f614c9ea8a4d3bb439f5c88
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_positioned_edits_give_one_line_diffs
+    guid_target:        ann_b30f7b0f6bca4c95809944b76c172cce

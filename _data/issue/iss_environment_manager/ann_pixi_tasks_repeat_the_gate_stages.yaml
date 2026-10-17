@@ -1,0 +1,43 @@
+id_self:                ann_pixi_tasks_repeat_the_gate_stages
+guid_self:              ann_8e7a530cf65e4a60a97e4f3bb44f5c54
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tasks repeating the gate
+brief:                  |
+                        The pixi tasks check, lint and test name the
+                        same jobs that cctool gate runs, spelt with
+                        different arguments, so one job is defined in
+                        two places.
+description:            |
+                        pyproject.toml lines 64-68 define check, test,
+                        lint, gate and hooks. cctool gate runs check,
+                        ruff with --no-cache and pytest with -p
+                        no:cacheprovider and a shard (gate.py lines
+                        64-66). AGENTS.md line 9 states done in terms
+                        of the tasks, while the commit gate uses
+                        cctool gate. pixi could manage the environment
+                        without tasks, so this challenges a part of
+                        the choice, not pixi itself.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,60 @@
+id_self:                ann_one_click_group_shares_parser_and_exits
+guid_self:              ann_8537428b94fc4333a41069d7369a9640
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One parser and one exit convention for every command
+brief:                  |
+                        One click group gives every command the same
+                        argument parsing and the same three exit
+                        statuses, declared once. Scripts run directly
+                        would each carry their own parsing and exit
+                        codes.
+description:            |
+                        EXIT_OK, EXIT_NONCONFORMITY and EXIT_ERROR are
+                        declared once in src/cc_public/cli/group.py
+                        lines 31-33, and every command module exits
+                        through them (grep EXIT_
+                        src/cc_public/cli/*.py). Each kind of command
+                        has its own module (auditing, checking,
+                        editing, gating, messaging, querying), and
+                        command.py only imports them (lines 31-40), so
+                        a new command adds one import line. Before
+                        6c8d3d5, check.py read list_arg[1] by hand and
+                        returned 1 or 0 itself (git show
+                        6c8d3d5^:src/check/check.py lines 343-365).
+                        ASSUMPTION: further scripts would have
+                        repeated this; no second script existed before
+                        6c8d3d5 to show it.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_scripts_run_directly
+    guid_target:        dec_3ce6c903dae94d7cb2a245e5f54ee4fa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

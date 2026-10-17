@@ -1,0 +1,61 @@
+id_self:                ann_exact_rows_check_reported_details
+guid_self:              ann_15999e82985b496394842bdd9ae97950
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Exact rows as a check of reported details
+brief:                  |
+                        An exact test compares every column of a
+                        reported row, such as the item, file, line and
+                        expected folder. A test that asks only for
+                        some failure passes when the checker names the
+                        right fault with a wrong item, line or folder.
+description:            |
+                        Added round for functional suitability, a
+                        driver Will added on 2026-10-15
+                        (will-messages.md lines 781 and 786,
+                        2026-10-15T10:59:29Z). Each check reports rows
+                        of named columns read from the decl comments
+                        of the rules (src/cc_public/check/check.py
+                        lines 110-121; check.lp, e.g. lines 164-167
+                        misplaced_document and 229-234
+                        dangling_reference). Fault tests compare rows
+                        in full, with line and expected place
+                        (test_check.py lines 373, 433-434, 440-441,
+                        479, 622-623). The three tests that index one
+                        key still compare that key's rows in full
+                        (line 283). edit.py compares failures before
+                        and after an edit by every column but the line
+                        (src/cc_public/edit/edit.py lines 895-910), so
+                        the other columns decide which failures an
+                        edit is said to add. The cost of pinned lines
+                        and wording is argued in
+                        ann_exact_tests_break_on_new_checks and
+                        ann_exact_tests_pin_jsonschema_wording.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_test_style
+    guid_target:        iss_e946d0cfc1924e3b8aa829f75f18dec8
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_pytest_exact_failures
+    guid_target:        dec_16eadad232284399a7bc7e5d5db518ad
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_assert_failure_present
+    guid_target:        dec_ff387342ab3d45349e623d8c1f612e4d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

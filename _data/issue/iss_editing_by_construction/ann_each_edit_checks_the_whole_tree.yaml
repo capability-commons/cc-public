@@ -1,0 +1,56 @@
+id_self:                ann_each_edit_checks_the_whole_tree
+guid_self:              ann_105d1e055d1949dbb59f01193bf105af
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-tree check on every edit
+brief:                  |
+                        Each editing command reads the whole tree and
+                        validates every document before it writes one
+                        field, so one small edit takes over two
+                        seconds today and its cost follows the tree,
+                        not the edit.
+description:            |
+                        Tree.__init__ reads every document
+                        (src/cc_public/edit/edit.py lines 160-171;
+                        src/cc_public/graph/extract.py lines 186-206).
+                        apply runs check_documents before and after
+                        the edit (edit.py lines 866-878). The schema
+                        cache lives within one process
+                        (src/cc_public/check/check.py, CACHE_SCHEMA).
+                        Measured by the advocate on 2026-10-15 at
+                        89c74d8, 128 files read (122 holding a
+                        document), 4 CPUs, Python 3.13: one dry-run
+                        set takes about 2.25 s, of which 0.19 s is
+                        start-up, 0.70 s reading the tree and about
+                        1.3 s schema validation. Will plans much
+                        larger graphs (W 2026-10-13T20:05:25Z;
+                        memory/MEMORY.md line 21). A tool call on
+                        Will's device dies at 180 s (memory/MEMORY.md
+                        line 45). ASSUMPTION: cost scales about
+                        linearly, near 20 s per edit at ten times the
+                        tree. The point is against the whole-tree
+                        build more than the decision; an incremental
+                        check would keep conformance by construction.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_editing_by_construction
+    guid_target:        iss_279419b2824746518b0c9dcf2026c4a0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_transactional_editing_commands
+    guid_target:        dec_8cfef655800240c6b859ec5189a272b7
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

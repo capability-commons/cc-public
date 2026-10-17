@@ -1,0 +1,52 @@
+id_self:                ann_source_header_parse_error_names_no_file
+guid_self:              ann_e794f955731d4facbc0051004bf26b31
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Source headers widen the crash surface of the check
+brief:                  |
+                        Every source file carries a data item header
+                        that the checker parses, and a YAML slip in a
+                        header, or a syntax error in a Python module
+                        that cctool does not import, stops cctool
+                        check with a traceback that does not name the
+                        file, which slows recovery.
+description:            |
+                        Sources: commit 150d0f7 message; commit
+                        beb23ab added Python item checks about five
+                        minutes after 09ac7a6;
+                        src/cc_public/graph/extract.py lines 278-290
+                        and 348 (only UnicodeDecodeError is caught).
+                        Reproduced by the advocate at 89c74d8: a YAML
+                        error in the header of derive.lp raises an
+                        error naming "<unicode string>". Checked by
+                        the verifier: a syntax error in a test module
+                        raises SyntaxError naming "<unknown>", but one
+                        in gate.py names the file, as cctool imports
+                        it. The gate fails closed, so no data is
+                        harmed. Naming the file in the error would fix
+                        this without changing the style. ASSUMPTION:
+                        under the common style source files would
+                        carry no items.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_source_code_house_style
+    guid_target:        iss_cb4b9e37d07d4d0bb5358a4bb9f3bccc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_owner_house_style
+    guid_target:        dec_a17f3323adf44e13b730489dadb3de8d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

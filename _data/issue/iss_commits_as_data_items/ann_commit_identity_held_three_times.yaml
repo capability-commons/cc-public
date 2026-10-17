@@ -1,0 +1,48 @@
+id_self:                ann_commit_identity_held_three_times
+guid_self:              ann_076338ac43b84412857a1652ee9ed17b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit identity held three times
+brief:                  |
+                        Each commit has a git hash, a cmt id and a
+                        guid, and the change check uses neither of the
+                        last two. Because a cherry-pick copies the
+                        message, a further check exists only to catch
+                        two commits that share one id.
+description:            |
+                        src/cc_public/commit/history.py line 53 (log
+                        read by hash) and lines 128-154 (duplicate
+                        ids); src/cc_public/commit/message.py lines
+                        107-125 (minting) and 278-283 (id suffix
+                        check); src/cc_public/commit/change.py lines
+                        105-124. No file in _data or src refers to a
+                        commit id except the regex in
+                        reg_data_item_type.yaml line 718 and one unit
+                        test (test_message.py line 66). Principle:
+                        "one mechanism does one job and nothing is
+                        done twice" (memory
+                        cc-public-design-principles.md). This weakens
+                        if something comes to link to commit ids.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commits_as_data_items
+    guid_target:        iss_807b319367784c2f8d6a47063a9e356e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_commit_item_in_message
+    guid_target:        dec_0d70409bad614c94b995a3522b5e5448
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

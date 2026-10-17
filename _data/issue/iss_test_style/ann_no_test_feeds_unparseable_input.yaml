@@ -1,0 +1,51 @@
+id_self:                ann_no_test_feeds_unparseable_input
+guid_self:              ann_4f271147f2864db9aaa038e58d32a129
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No test of unparseable input
+brief:                  |
+                        Each test breaks one thing in well-formed
+                        items, so no test shows whether the checker
+                        survives a file it cannot parse. A syntax
+                        error in one item may stop the whole check
+                        rather than be reported.
+description:            |
+                        test_check.py lines 18-23 say each test "adds
+                        or breaks one thing"; the helpers _item and
+                        _replace write well-formed YAML (lines
+                        112-224). No checker test feeds a file it
+                        cannot parse; the one syntax error any test
+                        feeds is a YAML value given to cctool set
+                        (src/cc_public/cli/_test/test_editing.py lines
+                        117-120). The "malformed" test at
+                        test_check.py line 385 uses a well-formed file
+                        with a bad guid. The extractor calls YAML.load
+                        and ast.parse with no handler for a parse
+                        error (src/cc_public/graph/extract.py lines
+                        305, 322, 334, 388); the only handler is for
+                        UnicodeDecodeError (line 348). ASSUMPTION: one
+                        such file ends the check with a traceback; not
+                        run. The other decision has the same gap.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_test_style
+    guid_target:        iss_e946d0cfc1924e3b8aa829f75f18dec8
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pytest_exact_failures
+    guid_target:        dec_16eadad232284399a7bc7e5d5db518ad
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

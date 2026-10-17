@@ -1,0 +1,54 @@
+id_self:                ann_concept_form_can_change_without_new_guids
+guid_self:              ann_a1f5f5fb9d40493ba9c28f23a1439ab1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept form open to later change
+brief:                  |
+                        An entry is addressed exactly as a standalone
+                        item is, a guid survives promotion, and one
+                        edge on t_concept sets the form. So register
+                        entries lock little in, and a later switch
+                        touches data, not code or references.
+description:            |
+                        guid_target addresses embedded and standalone
+                        items the same way
+                        (_data/schema/sch_trait_relation.yaml).
+                        guid_self is kept on promotion from embedded
+                        to standalone
+                        (_data/schema/sch_trait_identity.yaml lines
+                        105-113). t_concept has
+                        r_has_items_held_in_register to reg_concept
+                        (_data/register/reg_data_item_type.yaml lines
+                        323-326); the edit tool picks the form from
+                        that edge (src/cc_public/edit/edit.py lines
+                        236-269 and 921-936). ASSUMPTION: nothing yet
+                        performs such a move. A partner that wants one
+                        concept takes the whole register file.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_concept_register_form
+    guid_target:        iss_5cff6beb37734388b7af4506dbf93692
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_concepts_as_register_entries
+    guid_target:        dec_21ef9688232b4f9f9ec89423661f1c02
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,50 @@
+id_self:                ann_scripts_needed_no_third_party_parser
+guid_self:              ann_84856cb180b64305825c857e4a444520
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No third-party parser for scripts run directly
+brief:                  |
+                        Running check.py directly took no third-party
+                        code for its command line. The chosen shape
+                        adds click and a build backend for a job
+                        argparse in the standard library can do.
+description:            |
+                        git show 6c8d3d5^:pyproject.toml declares
+                        dependencies = []. check.py read sys.argv
+                        through main(sys.argv)
+                        (6c8d3d5^:src/check/check.py lines 343,
+                        364-365). Commit 6c8d3d5 added click and
+                        hatchling. The owner asked for click by name
+                        (owner's statement, 2026-10-13T21:57:52Z).
+                        argparse handles subcommands and options
+                        (https://docs.python.org/3/library/argparse.html).
+                        Weak: the extra exposure is one well-kept
+                        library.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_scripts_run_directly
+    guid_target:        dec_3ce6c903dae94d7cb2a245e5f54ee4fa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

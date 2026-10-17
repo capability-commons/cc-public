@@ -1,0 +1,55 @@
+id_self:                ann_no_fault_test_for_supersession_check
+guid_self:              ann_19c92d0eea8c4506bd32488c25ccd5e3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No fault test for the newest check
+brief:                  |
+                        No test plants the fault of the check
+                        supersession_across_issues, and nothing in the
+                        suite requires each check to have such a test.
+                        Neither decision asks that every check be
+                        shown to fire.
+description:            |
+                        check.lp shows 33 checks (#show lines);
+                        check.py adds schema_violation and
+                        unformatted_file (lines 48, 54).
+                        supersession_across_issues is declared and
+                        shown at check.lp lines 375-385 and came in
+                        commit 89c74d8 (HEAD, 2026-10-14). The name
+                        appears in no file under src/ but check.lp;
+                        every other shown check is named in some
+                        expected result in test_check.py. The suite
+                        tests that every check names its columns
+                        (test_check.py lines 614-618) but not that
+                        every check appears in some expected failure
+                        set. Owner's statement: "with a lot of test
+                        coverage, I can move faster and more
+                        confidently" (will-messages.md line 457,
+                        2026-10-14T07:22:55Z). ASSUMPTION: the check
+                        works; it was not run against a planted fault.
+                        A test comparing the #show names with the keys
+                        named in the tests would close the gap under
+                        either decision.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_test_style
+    guid_target:        iss_e946d0cfc1924e3b8aa829f75f18dec8
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pytest_exact_failures
+    guid_target:        dec_16eadad232284399a7bc7e5d5db518ad
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,47 @@
+id_self:                ann_edge_schema_and_tooling_disagree
+guid_self:              ann_4514289f75ea426fa55516647de24e74
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Documented edge model unlike the code
+brief:                  |
+                        The schema says the guid resolves and the
+                        readable id must never be used to resolve, but
+                        the tooling does the reverse. A newcomer who
+                        learns the design from the schema learns the
+                        opposite of what the code does.
+description:            |
+                        The schema calls the guid "the sole resolvable
+                        reference in the edge" and says of id_target
+                        "Never resolve by this field"
+                        (_data/schema/sch_trait_relation.yaml lines
+                        116 and 131-132). The editor removes an edge
+                        by matching (id_relation, id_target)
+                        (src/cc_public/edit/edit.py lines 462-464).
+                        See ann_edge_tooling_resolves_by_readable_id
+                        for the checks. The gap widens as tools are
+                        added, since new tools written from the schema
+                        would resolve by guid. From the
+                        maintainability advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_edge_shape
+    guid_target:        iss_2ea2e61b0cf14faca39491a4e6da24fe
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_four_field_edge_guid_resolves
+    guid_target:        dec_e38d795a110f426b9107a111f0f28ded
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

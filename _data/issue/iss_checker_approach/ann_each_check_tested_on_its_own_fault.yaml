@@ -1,0 +1,55 @@
+id_self:                ann_each_check_tested_on_its_own_fault
+guid_self:              ann_5068ecea6f374d22922c0d33131dca3e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each check shown to fire on its own fault
+brief:                  |
+                        Each check is one named output relation, so
+                        each can be tested alone against an exact
+                        expected result. 33 of the 35 checks have a
+                        test that makes them fire, and the whole tree
+                        passes every check.
+description:            |
+                        check.lp at 89c74d8 has 33 #show relations;
+                        check.py adds schema_violation and
+                        unformatted_file (src/cc_public/check/check.py
+                        lines 47-54). Each shown relation is one check
+                        and each row one failure (check.py lines
+                        22-25). Each check test compares the whole
+                        failures dict with an exact expected value,
+                        for example
+                        src/cc_public/check/_test/test_check.py lines
+                        371-373; the file has 59 test functions.
+                        test_the_repository_passes_every_check expects
+                        no failures on a copy of the whole tree
+                        (test_check.py lines 227-228). No test names
+                        supersession_across_issues, added in 89c74d8.
+                        The check tests drop unformatted_file
+                        (test_check.py lines 201-211), and no test
+                        names it. Assumption: the legacy module's
+                        checks were not each tested this way; its
+                        source is not in this clone. Holds only while
+                        new checks keep getting a firing test.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_checker_approach
+    guid_target:        iss_49388bed9a3f4fab908c89f8271cf59c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_json_schema_plus_rules_over_facts
+    guid_target:        dec_67ed1239d8304048898124ded99e4cfc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

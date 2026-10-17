@@ -1,0 +1,46 @@
+id_self:                ann_gate_elements_lack_realizes_links
+guid_self:              ann_3269f35a6a884b28bd4d2b0d55a39685
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate elements with no realizes link
+brief:                  |
+                        The gate module, its command and its hooks
+                        have no relations, so nothing in the graph
+                        traces them to lc_change_control or to this
+                        decision.
+description:            |
+                        relation is empty in
+                        src/cc_public/gate/gate.py line 42,
+                        src/cc_public/gate/__init__.py line 22,
+                        src/cc_public/cli/gating.py line 22, and the
+                        three hooks (.githooks/pre-commit line 24,
+                        pre-merge-commit line 28, pre-push line 29).
+                        The only r_realizes edge goes from the root
+                        package to lc_tooling
+                        (src/cc_public/__init__.py lines 22-27).
+                        lc_change_control covers the gate and the
+                        hooks. A gap in the build, cheap to fix, not
+                        in the choice.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commit_gate
+    guid_target:        iss_a16285400e794e03bc0b9566a852621c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pre_commit_gate_on_staged_copy
+    guid_target:        dec_0ff38acc0ff54688b23427c0f4606fea
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

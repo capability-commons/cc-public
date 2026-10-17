@@ -1,0 +1,53 @@
+id_self:                ann_each_new_rule_has_planted_defect_test
+guid_self:              ann_c0fa320b4de3475db259996096e324d2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each new rule shown to fire on a known defect
+brief:                  |
+                        Every rule added under this decision has a
+                        test that plants a defect and expects that
+                        exact failure, and the whole repository
+                        passes. Each rule gives the right result in at
+                        least the planted case.
+description:            |
+                        Planted-defect tests for dangling_mention,
+                        misplaced_document, misplaced_register_entry,
+                        unrecorded_module, cycle,
+                        argument_without_concern, alias_in_use,
+                        outdated_reference, outdated_mention,
+                        schema_count, unused_schema and unused_concept
+                        (src/cc_public/check/_test/test_check.py lines
+                        557-707). Two carry later names: fd6323a added
+                        them as the concern count check (split by
+                        aa23286) and misplaced_entry (renamed by
+                        dc5f35f). Near-case tests that expect no
+                        failure exist for the mention and concern
+                        rules (lines 565, 650, 670). The cycle rule
+                        has no passing-chain test other than the whole
+                        repository, which holds 13 r_supports edges
+                        (line 227). One planted case does not show
+                        that a rule never fails a correct item (see
+                        ann_mention_rule_keyed_on_prefix_shape).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_first_cross_item_rules
+    guid_target:        iss_09ed139b184142b88e499683c74aeab6
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_seven_proposed_rules
+    guid_target:        dec_1442648a64ec4596b1a07c7cdaa9c3e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

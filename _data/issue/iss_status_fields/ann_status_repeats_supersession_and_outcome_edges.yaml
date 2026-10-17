@@ -1,0 +1,56 @@
+id_self:                ann_status_repeats_supersession_and_outcome_edges
+guid_self:              ann_2505ce25e97544cb8d5eb867f3b2411f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Status restating supersession and outcome edges
+brief:                  |
+                        A decision status enum would record a fact
+                        that edges already record. Accepted or
+                        rejected would now repeat r_upholds and
+                        r_rejects, as a superseded status would have
+                        repeated r_supersedes, so one job would have
+                        two mechanisms.
+description:            |
+                        register_status held draft, under_review,
+                        accepted, superseded and withdrawn (git show
+                        44034ef^:_data/schema/sch_register.yaml lines
+                        92-99), but r_supersedes then ran between
+                        decisions only (git show
+                        44034ef^:_data/register/reg_relation.yaml
+                        lines 214-218), so those register values had
+                        no edge to repeat. sch_decision already
+                        dropped a superseded status so that "the fact
+                        is held once" (git show
+                        44034ef^:_data/schema/sch_decision.yaml lines
+                        36-40). r_supersedes:
+                        _data/register/reg_relation.yaml lines
+                        241-270. r_upholds and r_rejects: same file,
+                        lines 358-401, added in 7db4229.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_status_fields
+    guid_target:        iss_3d90f9e0087e447e97c14946bd8fb8a3
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_no_status_fields
+    guid_target:        dec_7c557b5d53164d279a6a18e36d971323
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_status_enum_on_items
+    guid_target:        dec_6dec27b9ccca42fb90f707d636443987
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,78 @@
+id_self:                ann_hand_restyle_not_confirmed_by_any_tool
+guid_self:              ann_9a1d80ad58714eb9ad227e1f30a0cf08
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hand restyles confirmed by no tool
+brief:                  |
+                        No tool produces the house layout, so a
+                        restyle is made by hand or by an agent, and
+                        only the tests and a full line by line read
+                        can confirm it changes nothing else. Under the
+                        common style a formatter check could confirm a
+                        pure layout diff, and black also checks that
+                        its output has the same syntax tree as its
+                        input.
+description:            |
+                        Sources: commit 09ac7a6 restyles check.py with
+                        206 added and 95 removed lines, still 205 and
+                        94 with whitespace ignored (git show --numstat
+                        with and without -w), and in the same commit
+                        splits _walk; its message says "Behaviour is
+                        unchanged." The tree at 09ac7a6 holds no test
+                        file; the first checker tests come in 0b69eb4.
+                        Commit 150d0f7 restyles check.dl in the same
+                        commit as a new item type, a new schema and an
+                        extractor change. The gate runs check, ruff
+                        check and pytest and no formatter
+                        (src/cc_public/gate/gate.py lines 64-66); 161
+                        test functions exist under src at 89c74d8. The
+                        restyle commits carry a Claude co-author line,
+                        so a person must judge a model's layout.
+                        Black: "By default, Black performs an AST
+                        safety check after formatting your code"
+                        (https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html).
+                        ruff provides "ruff format --check" but its
+                        formatter page states no such safety check
+                        (https://docs.astral.sh/ruff/formatter/, read
+                        2026-10-15). Run by the functional suitability
+                        advocate on 2026-10-15: extract() of check.py
+                        at ba66f33 and at 09ac7a6 gives identical
+                        facts in all 8 relations, so the one restyle
+                        measured kept its results. ASSUMPTION: the
+                        tests at 09ac7a6 did not cover every path of
+                        check.py. Weak today; grows with the code. It
+                        bears on one-off restyles and mixed commits,
+                        not on new code written in the house style.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_source_code_house_style
+    guid_target:        iss_cb4b9e37d07d4d0bb5358a4bb9f3bccc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_owner_house_style
+    guid_target:        dec_a17f3323adf44e13b730489dadb3de8d
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_common_python_style
+    guid_target:        dec_93009589db884a78b5e942178bd3ae48
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

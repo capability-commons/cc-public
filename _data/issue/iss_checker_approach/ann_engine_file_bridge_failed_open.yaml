@@ -1,0 +1,48 @@
+id_self:                ann_engine_file_bridge_failed_open
+guid_self:              ann_a5a22b94cce347df8cde8a88721ba4aa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fail-open fault at the engine boundary
+brief:                  |
+                        Facts plus rules puts a bridge between the
+                        extractor and an engine. When the engine ran
+                        out of process, a missing output file read as
+                        no failures, so a check could pass without its
+                        result being read.
+description:            |
+                        The bridge wrote .facts files, ran souffle as
+                        a subprocess and read .csv outputs (git show
+                        ba66f33:src/check/check.py lines 108-129; git
+                        show 6230e98^:src/cc_public/graph/datalog.py
+                        lines 137-197). A missing .csv read as empty
+                        (same file, line 193), recorded as a bug in
+                        memory/MEMORY.md line 53. The fault ended with
+                        in-process clingo (commit 6230e98 message).
+                        The engine is to be revisited when the graph
+                        is much larger (commit 6c0a949), and an
+                        out-of-process engine would bring the file
+                        boundary back. The fault is in the bridge, not
+                        in rules over facts as such.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_checker_approach
+    guid_target:        iss_49388bed9a3f4fab908c89f8271cf59c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_json_schema_plus_rules_over_facts
+    guid_target:        dec_67ed1239d8304048898124ded99e4cfc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

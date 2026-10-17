@@ -1,0 +1,63 @@
+id_self:                ann_unresolved_mark_fails_reference_check
+guid_self:              ann_35c98b22eade46c1b7c8f58815285788
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unresolved mark reported as a failure
+brief:                  |
+                        The register says an unresolved partner mark
+                        is reported as advisory, but the generic
+                        reference check reports it as a failure that
+                        blocks a commit. The federated case the rule
+                        exists for cannot pass the gate.
+description:            |
+                        reg_protective_mark.yaml lines 43-53
+                        (advisory). extract.py lines 62-63 and 442-457
+                        read any id_/guid_ pair as a reference.
+                        check.lp lines 229-239 report
+                        dangling_reference with no exception for
+                        marks. Every row is a failure (check.py lines
+                        21-24, 84-106). The check exits 1
+                        (cli/checking.py lines 46-53), the gate runs
+                        it (gate/gate.py line 64), and the pre-commit
+                        hook runs the gate. Latent with one mark and
+                        no partner. Honouring the rule needs a
+                        mark-specific exception that no decision
+                        records.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_rights_field_forms
+    guid_target:        iss_fecf1f05e0eb4be888d66b88c66fcf74
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_notice_spdx_marks_by_reference
+    guid_target:        dec_ab54682cdeac49e79a2e21118bf69595
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

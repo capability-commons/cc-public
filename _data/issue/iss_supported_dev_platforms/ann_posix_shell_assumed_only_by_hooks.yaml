@@ -1,0 +1,45 @@
+id_self:                ann_posix_shell_assumed_only_by_hooks
+guid_self:              ann_045359790d844164af764b49f4ba86fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  POSIX shell assumed only by the hooks
+brief:                  |
+                        Only the five git hooks need a shell, each for
+                        one exec line, and Git for Windows runs a
+                        /bin/sh hook through its own bash, so the
+                        POSIX shell half of the reason is narrower
+                        than it reads.
+description:            |
+                        README.md line 30 says the tools assume a
+                        POSIX shell (assistant-written, commit
+                        a60b8d9). The hooks are one exec pixi run
+                        --frozen line each (.githooks/*, lines 28-33).
+                        The pixi tasks and the Python subprocess calls
+                        use no shell syntax (pyproject.toml lines
+                        63-68; no shell=True in src). Git for Windows
+                        runs a hook that starts with #!/bin/sh through
+                        its bundled bash
+                        (https://til.jakelazaroff.com/git/add-a-git-hook-on-windows/;
+                        a personal note, not Git for Windows
+                        documentation, so this premise is weaker than
+                        it reads). This does not show Windows works:
+                        exec, path handling in pixi run and the test
+                        suite are untested there.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_supported_dev_platforms
+    guid_target:        iss_796f53d958044c7eb2e628eababd96fd
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_symlinks_and_posix_shell_rule_out_windows
+    guid_target:        ann_ca869573cf204217b60d98b96f55ed43

@@ -1,0 +1,58 @@
+id_self:                ann_prefixed_guid_split_at_uuid_boundary
+guid_self:              ann_3ac35adc04a54bc888357736596e35fb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prefixed guid split at every UUID boundary
+brief:                  |
+                        A standard UUID parser or a UUID column
+                        rejects a prefixed guid, so every partner
+                        system, and any move to a store with a native
+                        UUID type, must split off the prefix and keep
+                        it apart.
+description:            |
+                        Guid pattern ^[a-z]{1,8}_[0-9a-f]{32}$ and the
+                        rule to split on the first underscore:
+                        _data/schema/sch_primitive.yaml lines 99-115.
+                        Python 3.13 uuid.UUID rejects the prefixed
+                        string and accepts the 32 hex digits (local
+                        test, 2026-10-14). The body is uuid4().hex
+                        (src/cc_public/edit/edit.py line 410), so the
+                        split is mechanical. PostgreSQL uuid input has
+                        no letter prefix
+                        (https://www.postgresql.org/docs/current/datatype-uuid.html).
+                        Items are stored as YAML text, and the query
+                        database is in-memory SQLite with TEXT columns
+                        (src/cc_public/graph/sql.py lines 41, 61), so
+                        neither pays this cost today. ASSUMPTION:
+                        other UUID parsers and column types also
+                        reject the prefix. ASSUMPTION: the store may
+                        one day move to a server database; nothing
+                        plans this.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_item_identity_scheme
+    guid_target:        iss_fb7b72d95abb41c9b12061f1948b162e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_prefixed_id_and_guid
+    guid_target:        dec_0409fbdf85634d1c8b213e83e834299b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

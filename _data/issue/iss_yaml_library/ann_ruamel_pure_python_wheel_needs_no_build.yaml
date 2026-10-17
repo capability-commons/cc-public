@@ -1,0 +1,49 @@
+id_self:                ann_ruamel_pure_python_wheel_needs_no_build
+guid_self:              ann_bcc98fc8e1e6480a9258051935787161
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  ruamel.yaml as one pure-Python wheel
+brief:                  |
+                        In the locked environment ruamel.yaml installs
+                        as one pure-Python wheel with no required
+                        dependencies, while PyYAML had to be built
+                        from a source archive. Both are MIT licensed.
+description:            |
+                        Python 3.15 on linux-64 and osx-arm64
+                        (pixi.lock line 40; pyproject.toml line 52).
+                        Before the switch the lock resolved
+                        pyyaml-6.0.3.tar.gz (commit afac39c, pixi.lock
+                        diff); PyYAML 6.0.3 has wheels for cp38 to
+                        cp314 only
+                        (https://pypi.org/pypi/pyyaml/6.0.3/json,
+                        fetched 2026-10-15).
+                        ruamel_yaml-0.19.1-py3-none-any.whl,
+                        dependencies only behind optional extras
+                        (pixi.lock lines 743-751). The ruamel.yaml
+                        README says the C extensions bring no
+                        advantage with typ='rt'. ASSUMPTION: MIT is
+                        compatible with an Apache-2.0 project; no
+                        legal source cited.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_yaml_library
+    guid_target:        iss_5528230e2f614c9ea8a4d3bb439f5c88
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_ruamel_round_trip
+    guid_target:        dec_676d5f93662540968c5ebedfeace1f17
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

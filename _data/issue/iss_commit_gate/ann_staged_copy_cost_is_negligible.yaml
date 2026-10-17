@@ -1,0 +1,59 @@
+id_self:                ann_staged_copy_cost_is_negligible
+guid_self:              ann_d3931883e3044e848eb32ea6609baf2d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Negligible cost of the staged copy
+brief:                  |
+                        Copying the staged content takes well under a
+                        second and about 1 MB, against a gate of
+                        minutes, so the staged copy loses almost
+                        nothing in speed to a gate on the working
+                        tree.
+description:            |
+                        Measured 2026-10-15 in the cloud container,
+                        under heavy load from parallel runs: git
+                        checkout-index --all into a new folder took
+                        0.03 to 0.07s over three runs and wrote 1.1 MB
+                        on disk (0.66 MB of file content). The gate
+                        runs ruff with --no-cache and pytest with the
+                        cache provider off (src/cc_public/gate/gate.py
+                        lines 65-66); ruff check src took 0.31s
+                        without a cache and 0.03 to 0.09s with one, so
+                        the lost caches cost under a second. The gate
+                        took 130.8s with two workers there; memory
+                        MEMORY.md line 54 gives about 75s after the
+                        clingo switch, without naming the machine
+                        (ASSUMPTION: Will's VM). This measurement can
+                        replace the ASSUMPTION in
+                        ann_throwaway_copy_keeps_working_tree_clean
+                        that the copy stays small next to test time.
+                        ASSUMPTION: the copy grows with the tree size
+                        only, to tens of MB at most.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_commit_gate
+    guid_target:        iss_a16285400e794e03bc0b9566a852621c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_pre_commit_gate_on_staged_copy
+    guid_target:        dec_0ff38acc0ff54688b23427c0f4606fea
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_gate_on_working_tree
+    guid_target:        dec_734945a4500244fba380b418f8ad6309
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

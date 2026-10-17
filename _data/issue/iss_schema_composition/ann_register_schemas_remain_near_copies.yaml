@@ -1,0 +1,54 @@
+id_self:                ann_register_schemas_remain_near_copies
+guid_self:              ann_55adcbcb22a7453d96354212e51f3215
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register schemas still copied per register
+brief:                  |
+                        Each register still needs its own schema file
+                        that differs from the others mainly in names,
+                        so composition alone does not remove the "one
+                        template" duplication the September review
+                        named.
+description:            |
+                        Six sch_reg_* schemas of 38 to 43 lines each;
+                        sch_reg_concern.yaml and sch_reg_relation.yaml
+                        differ only in id, guid, title, prose and one
+                        $ref (diff at 89c74d8). The August review
+                        decided "every register has the same shape, so
+                        there is one register schema"
+                        (notes/cc-public-session-context.md, "Base
+                        schema review (Aug 24-25)"). JSON Schema
+                        2020-12 offers $dynamicRef for a generic
+                        schema, which the repository does not use.
+                        Keeping the per-register files was itself
+                        decided on 2026-10-13, because JSON Schema
+                        cannot pick the entry schema from the data and
+                        for portability to federated partners
+                        (memory/MEMORY.md line 11). Part of each copy
+                        is deliberate prose (memory/prose-restating-
+                        structure.md, 2026-10-13). A change to the
+                        shared shape still touches only
+                        sch_register.yaml.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_schema_composition
+    guid_target:        iss_e3eb3349b94540e8a63cdaad3e2871ea
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_traits_composed_with_allof
+    guid_target:        dec_79ae9c72e24c40878cec31a86cc79635
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

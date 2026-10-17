@@ -1,0 +1,45 @@
+id_self:                ann_status_field_holds_one_value_per_decision
+guid_self:              ann_fcd7e29e24214abc8575bf8258123e4e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One status value per decision
+brief:                  |
+                        A status gives one value per decision, so it
+                        cannot settle a set of alternatives in one act
+                        or keep the earlier outcome when the outcome
+                        changes.
+description:            |
+                        One determination can uphold one decision and
+                        reject its alternatives
+                        (reg_data_item_type.yaml lines 781-785). A
+                        later determination supersedes the earlier,
+                        which stays on record;
+                        competing_determinations refuses two current
+                        ones (commit 89c74d8; check.lp lines 388-413).
+                        A status edit overwrites the value, so the
+                        earlier outcome survives only in git history.
+                        ASSUMPTION: no status design with history was
+                        ever written down.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_outcome_stored_or_computed
+    guid_target:        iss_1ce5734a06b14ec09c853840c516c126
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_status_on_decision
+    guid_target:        dec_14da13931a8541bcaef128bb23cff431
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

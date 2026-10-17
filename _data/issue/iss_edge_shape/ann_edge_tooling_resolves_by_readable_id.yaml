@@ -1,0 +1,51 @@
+id_self:                ann_edge_tooling_resolves_by_readable_id
+guid_self:              ann_f73dd4409bd444078d0d38430e35cfed
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tooling that resolves edges by readable id
+brief:                  |
+                        As built, the readable id resolves and the
+                        guid is a checked copy. A stale readable id is
+                        fatal, and an edge to an item in another
+                        repository fails as a dangling reference.
+description:            |
+                        Edge facts are extracted from id_relation and
+                        id_target only (src/cc_public/graph/extract.py
+                        lines 459-462). dangling_reference fails a
+                        reference whose readable id names no item or
+                        alias, whatever its guid
+                        (src/cc_public/check/check.lp lines 227-239).
+                        stale_guid reports a guid that differs from
+                        the guid of the item its readable id names
+                        (same file lines 243-256). outdated_reference
+                        fails a reference that uses an alias (same
+                        file lines 488-501). Each row of a shown check
+                        is one failure (src/cc_public/check/check.py
+                        lines 19-25), and a test confirms an absent id
+                        is reported
+                        (src/cc_public/check/_test/test_check.py lines
+                        427-434). The edit tool fills each guid by
+                        looking up the readable id
+                        (src/cc_public/edit/edit.py lines 207-215 and
+                        1011-1020). Commit 89c74d8. This contradicts
+                        the claim that the guid resolves today, not
+                        the federation case for carrying a guid.
+                        Raised by all five advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_edge_shape
+    guid_target:        iss_2ea2e61b0cf14faca39491a4e6da24fe
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_edge_relation_guid_resolves_across_federation
+    guid_target:        ann_b48f3940f2e14ffca216d8f71308c534

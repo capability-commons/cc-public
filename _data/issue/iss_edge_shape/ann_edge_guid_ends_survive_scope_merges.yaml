@@ -1,0 +1,72 @@
+id_self:                ann_edge_guid_ends_survive_scope_merges
+guid_self:              ann_2079170566d44218bccd88b9be374e05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Guid ends that survive a merge of scopes
+brief:                  |
+                        An edge whose ends resolve by guid keeps
+                        leading to the same items when graphs are
+                        split across repositories or merged. Edges by
+                        readable id alone turn each such move into
+                        collisions and renames.
+description:            |
+                        Readable ids carry no guarantee of uniqueness,
+                        and global uniqueness is impossible across a
+                        federation; bringing two items into one scope
+                        turns a difference into a collision
+                        (_data/schema/sch_trait_identity.yaml lines
+                        59-64 and 83-99). guid_self tells apart two
+                        items whose ids collide (same file lines
+                        28-31). Readable ids have no central numbering
+                        (memory/cc-public-design-principles.md line
+                        14). A linter cannot refresh readable id
+                        copies held in foreign repositories
+                        (_data/schema/sch_trait_relation.yaml lines
+                        116-124). Will plans to bring in much larger
+                        graphs, such as logs, test coverage, ASTs and
+                        taint graphs (owner's statement,
+                        2026-10-13T20:05:25Z, will-messages.md line
+                        313). ASSUMPTION: a graph that large may be
+                        split across repositories or hosts, or have
+                        parts merged in. Strength grows with the
+                        number of ids and of partner repositories.
+                        Merged from the compatibility, flexibility and
+                        traceability advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_edge_shape
+    guid_target:        iss_2ea2e61b0cf14faca39491a4e6da24fe
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_four_field_edge_guid_resolves
+    guid_target:        dec_e38d795a110f426b9107a111f0f28ded
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_edge_by_readable_id_only
+    guid_target:        dec_64601138af4248b08d917f1c03156afc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

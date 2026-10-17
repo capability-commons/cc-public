@@ -1,0 +1,53 @@
+id_self:                ann_one_body_atom_per_line_isolates_change
+guid_self:              ann_9511d9e660d5490b88fd9ccdf29037bf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One body atom per line isolates a rule change
+brief:                  |
+                        With one body atom and one declared column per
+                        line, a change to one condition of a rule
+                        shows in the diff as one line. In the compact
+                        form several atoms share a line, and a change
+                        to one rewrites the whole line.
+description:            |
+                        Sources: commit 1ba2895 adds "not issue_of(Id,
+                        _)" to the misplaced_document rule as one
+                        added line (git show 1ba2895 --
+                        src/cc_public/check/check.lp); in the compact
+                        form a rule body holds several atoms on one
+                        line, 75 columns in misplaced_document (git
+                        show 150d0f7^:src/cc_public/check/check.dl
+                        lines 50-56) and up to 77 in the file; git
+                        diff reports changes by whole line
+                        (https://git-scm.com/docs/git-diff).
+                        ASSUMPTION: reviewers read the diff without
+                        word-diff options. The isolation is per rule,
+                        so it holds as the rules grow.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_source_code_house_style
+    guid_target:        iss_cb4b9e37d07d4d0bb5358a4bb9f3bccc
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_owner_house_style
+    guid_target:        dec_a17f3323adf44e13b730489dadb3de8d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_compact_rule_style
+    guid_target:        dec_2fd2c4c1e4034085b4abc2114887df36
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,36 @@
+id_self:                ann_clingo_in_project_dependencies_is_fixed
+guid_self:              ann_0c49236293b944fb837a8f5e1be38415
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rule engine now in the package metadata
+brief:                  |
+                        Commit 24e6ca9 "Fix the declared dependencies
+                        so that a pip install of cctool runs" lists
+                        clingo in [project].dependencies. At 360ec14
+                        an install outside pixi brings the rule engine
+                        with it.
+description:            |
+                        [project].dependencies lists click>=8.2,<9,
+                        clingo>=5.8,<6, jsonschema, referencing and
+                        ruamel.yaml (pyproject.toml lines 39-43 at
+                        360ec14). clingo stays in
+                        [tool.pixi.dependencies] as well (line 60), so
+                        it is still declared in two places.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_project_dependencies_omit_clingo
+    guid_target:        ann_ce3c31b7e9604cb8a810be888ca3be0f

@@ -1,0 +1,41 @@
+id_self:                ann_pixi_environment_needs_half_a_gigabyte
+guid_self:              ann_860e6f9a2add498c81a2e37ad1c78775
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Half a gigabyte per machine
+brief:                  |
+                        The locked environment takes about 267 MB in
+                        the clone plus about 278 MB of package cache,
+                        a fixed storage cost per machine that tools on
+                        the PATH would mostly avoid.
+description:            |
+                        Measured by the advocate on 2026-10-15: pixi
+                        install --frozen took 6.3 s; .pixi was 267 MB
+                        and the rattler cache 278 MB. pixi.lock is 861
+                        lines, 34 KB. ASSUMPTION: with tools on the
+                        PATH a machine reuses a system Python and
+                        installed tools. A weak point: the cost does
+                        not grow with the graph.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_environment_manager
+    guid_target:        iss_d5a241545fb0409b8211a4f4c2b51621
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_pixi_from_conda_forge
+    guid_target:        dec_1a0c8eb682674cc4a1c3e1f0d5f77f82
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

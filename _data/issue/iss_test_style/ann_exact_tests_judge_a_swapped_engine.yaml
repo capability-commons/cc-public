@@ -1,0 +1,49 @@
+id_self:                ann_exact_tests_judge_a_swapped_engine
+guid_self:              ann_c24cc59201cb41fba3af806f96dc8a5b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Exact failures as a guard on a swapped engine
+brief:                  |
+                        Exact tests catch a third-party engine or
+                        library that starts to report more, fewer or
+                        different failures. Tests that ask only for
+                        some failure catch only an engine that goes
+                        silent.
+description:            |
+                        The cross-item checks run in clingo through
+                        its Python API (src/cc_public/graph/datalog.py
+                        line 55; pyproject.toml line 58, pinned
+                        >=5.8.2,<6). The engine was replaced once:
+                        commit 6230e98 moves the rules from Souffle to
+                        clingo. Its changes to test_check.py rename
+                        files, drop the souffle fixture and add one
+                        test; no expected failure set changes in
+                        substance (git show 6230e98 -- test_check.py).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_test_style
+    guid_target:        iss_e946d0cfc1924e3b8aa829f75f18dec8
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_pytest_exact_failures
+    guid_target:        dec_16eadad232284399a7bc7e5d5db518ad
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_assert_failure_present
+    guid_target:        dec_ff387342ab3d45349e623d8c1f612e4d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

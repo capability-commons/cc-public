@@ -1,0 +1,51 @@
+id_self:                ann_whole_skills_dir_link_is_undocumented
+guid_self:              ann_0890f08afe994b998bae74d788017b40
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Undocumented link on the whole skills directory
+brief:                  |
+                        Claude Code documents a link for each skill
+                        folder inside .claude/skills, not for
+                        .claude/skills itself, so the layout rests on
+                        behaviour no vendor promises, and nothing in
+                        the repository checks that Claude Code still
+                        sees the skills.
+description:            |
+                        .claude/skills is committed as a symbolic
+                        link, git mode 120000, to ../.agents/skills
+                        (7f3412f, pre-squash). The skills page lists
+                        project skills at
+                        .claude/skills/<skill-name>/SKILL.md and says
+                        a <skill-name> entry may be a link
+                        (https://code.claude.com/docs/en/skills,
+                        "Symlinked folders", fetched 2026-10-15). It
+                        does not mention .agents/skills. No code under
+                        src/ refers to symlink or islink. ASSUMPTION:
+                        the directory link works in Claude Code today;
+                        no advocate tested it. A per-skill link, or a
+                        check that both paths give the same SKILL.md
+                        files, would rest on documented behaviour or
+                        detect a failure.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_agent_skills
+    guid_target:        iss_75e14c2d4108437ba6f44253fc800f5e
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_skills_in_agents_dir_with_link
+    guid_target:        dec_b8149a1163c9491c93d915c12aaaf54b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

@@ -1,0 +1,50 @@
+id_self:                ann_term_ratings_map_onto_tbx_status
+guid_self:              ann_aaa2cf445ad54f94933a847a1f4ff7ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Term ratings that map onto TBX status values
+brief:                  |
+                        The preferred, admitted and deprecated ratings
+                        each map onto one of the seven TBX
+                        administrative status values, so a partner
+                        term base can read them with a field rename.
+description:            |
+                        Sources:
+                        _data/schema/sch_regentry_concept.yaml lines
+                        34-45 and 48-80 (ratings, ISO 1087:2019
+                        cited). TBX status list:
+                        https://lists.w3.org/Archives/Public/public-esw-thes/2010Jun/att-0015/termAdminStatus.html
+                        (preferredTermAdmnSts, admittedTermAdmnSts,
+                        deprecatedTermAdmnSts). SKOS maps less well:
+                        hiddenLabel is not a deprecated rating
+                        (https://en.wikipedia.org/wiki/Simple_Knowledge_Organization_System).
+                        The legacy names term, also and avoid
+                        (232f001^:_data/register/reg_concept.yaml
+                        lines 69-72, 110) appear in neither source.
+                        Neither TBX nor ISO 1087 calls the rated unit
+                        a "word". AGENTS.md line 85 asks to follow a
+                        recognised standard. The mapping cost is per
+                        field, so it does not grow with the register.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_term_vs_concept
+    guid_target:        iss_cff2e6424f9040d1874f111cf60bcb00
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_iso_1087_terms_name_concepts
+    guid_target:        dec_172f689deba948eebd2d0a5a1580902b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

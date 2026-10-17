@@ -1,0 +1,53 @@
+id_self:                ann_clingo_no_longer_ties_tools_to_unix
+guid_self:              ann_c58850eb1b7340ea90ee91a51019c558
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog engine no longer tied to Unix
+brief:                  |
+                        When the decision was taken the checker called
+                        Souffle, which has weak Windows support. The
+                        checker now uses clingo from pixi, which has
+                        Windows builds, so that constraint is gone.
+description:            |
+                        At commit a60b8d9 (2026-10-14T10:12:03Z)
+                        README.md said Datalog is evaluated by Souffle
+                        from the PATH or the SOUFFLE variable. A
+                        Souffle-based project ships a Windows Souffle
+                        binary but says users may have better luck on
+                        Mac, Linux, a VM or WSL
+                        (https://ctadl.readthedocs.io/en/stable/windows.html).
+                        clingo joined the pixi environment at commit
+                        5665ace (2026-10-14T22:49:57Z); the checks
+                        moved to it at 6230e98. pyproject.toml lines
+                        50-58 take clingo from conda-forge. The
+                        potassco channel publishes clingo for win-64
+                        (https://anaconda.org/potassco/clingo).
+                        ASSUMPTION: conda-forge also publishes clingo
+                        5.8 for win-64; prefix.dev lists win-64 among
+                        its conda-forge clingo subdirs, but no win-64
+                        build of 5.8.2 was seen. The owner never gave
+                        Souffle as a reason, and the /bin/sh hooks
+                        keep a shell assumption, so the point is weak.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_supported_dev_platforms
+    guid_target:        iss_796f53d958044c7eb2e628eababd96fd
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_support_windows
+    guid_target:        dec_458c948e89794b36858270278d812a86
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

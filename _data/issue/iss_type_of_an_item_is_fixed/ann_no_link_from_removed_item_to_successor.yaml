@@ -1,0 +1,60 @@
+id_self:                ann_no_link_from_removed_item_to_successor
+guid_self:              ann_4c46a2ede804495daa1d036873fe41d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No graph link from a removed item to its successor
+brief:                  |
+                        When an item is removed and re-added under a
+                        new prefix, nothing in the graph links the old
+                        guid to the new one. Its lineage and any
+                        outside reference to it are cut off.
+description:            |
+                        In 6230e98 dls_cc_public.check.check,
+                        dls_cc_public.commit.change and
+                        dls_cc_public.graph.derive were replaced by
+                        lpf_ items with new hex digits (for example
+                        lpf_81439365f84948c691db275c1f6e20fd for
+                        dls_356edabde21c4f628386fc0fc1c31860,
+                        src/cc_public/graph/derive.lp line 4). The
+                        link is stated only in the commit message. No
+                        file at HEAD 89c74d8 mentions dls_cc_public.
+                        The alias field is defined on register entries
+                        only (_data/schema/sch_register_entry.yaml
+                        lines 68-85), and r_supersedes applies to
+                        decisions and determinations only
+                        (_data/register/reg_relation.yaml lines
+                        241-266). History was squashed once, under tag
+                        pre_squash_20261014.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_type_of_an_item_is_fixed
+    guid_target:        iss_a68c1868157640d7a34616801c3a5586
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_coarse_types_never_change
+    guid_target:        dec_e0093f4b42044796a7f6ebcc85feb766
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_retype_keeps_guid
+    guid_target:        dec_1945b5635f374ddf9c782bf4b2bf92dc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

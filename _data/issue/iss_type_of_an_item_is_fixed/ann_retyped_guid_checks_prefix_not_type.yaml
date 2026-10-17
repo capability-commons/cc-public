@@ -1,0 +1,40 @@
+id_self:                ann_retyped_guid_checks_prefix_not_type
+guid_self:              ann_6b8b06dd436647c0ad4b4b87f9a0ece6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check on the prefix, not the type
+brief:                  |
+                        retyped_guid forbids any new prefix on old hex
+                        digits, which is stricter than "coarse types
+                        never change": it also forbids a new prefix
+                        for a type that stays the same.
+description:            |
+                        src/cc_public/commit/change.lp lines 103-118:
+                        "The 32 hex digits of a guid that existed
+                        before the commit are not given another prefix
+                        after it". notes/cc-public-session-context.md
+                        line 24: "Similar types may share one prefix",
+                        but the repository now gives each type its own
+                        prefix (duplicate_prefix,
+                        src/cc_public/check/check.lp lines 76-87;
+                        con_type in _data/register/reg_concept.yaml).
+                        The step from types to prefixes is not sourced
+                        to an owner's statement.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_type_of_an_item_is_fixed
+    guid_target:        iss_a68c1868157640d7a34616801c3a5586
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_coarse_types_never_change_principle
+    guid_target:        ann_6b8d7bb63b264adbb69d3608bdf5d176

@@ -1,0 +1,51 @@
+id_self:                ann_graph_queries_do_not_reach_author_or_date
+guid_self:              ann_9dcb6a51a93b44deae4ac240a60e9ee1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Author and date outside the graph queries
+brief:                  |
+                        No part of the tooling reads a commit author
+                        or date, so to ask who made an item and when,
+                        a reader leaves the graph queries for git log
+                        or git blame.
+description:            |
+                        git log is asked only for hashes, subjects and
+                        bodies (src/cc_public/commit/history.py lines
+                        53, 105, 139 and 163); a grep of src for
+                        author and committer finds no use. Queries run
+                        through cctool query datalog over graph facts
+                        (src/cc_public/cli/querying.py lines 145-159).
+                        The owner deferred "graph-changes-over-time
+                        history" for a history-aware browser as
+                        "something for later" (owner's statement,
+                        2026-10-14T12:39:46Z; pd/memory/MEMORY.md line
+                        43). This would fade if such history reading
+                        brought author and time into the graph.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_author_and_time_of_items
+    guid_target:        iss_aa4497ea19b44bbeb03a1ed8b2bffa94
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_author_and_time_from_git
+    guid_target:        dec_87e7b59f193343f8976853b390b1c492
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

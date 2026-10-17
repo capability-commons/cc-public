@@ -1,0 +1,45 @@
+id_self:                ann_silent_loss_stopped_before_recording
+guid_self:              ann_00625a7a388e42a8b9eb19287388a2e0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silent loss stopped before it is recorded
+brief:                  |
+                        The commit-msg hook stops a commit that drops
+                        or renames an item unannounced before anything
+                        is recorded, so recovery is a reword or an
+                        unstage, not a history rewrite.
+description:            |
+                        The commit-msg hook runs the check and a
+                        failure stops the commit
+                        (.githooks/commit-msg, last line; README.md
+                        lines 45-49). The pre-push hook runs the same
+                        check on every commit a push would send
+                        (src/cc_public/commit/history.py lines 19-31;
+                        .githooks/pre-push). A renamed register entry
+                        keeps its old id in alias "so that references
+                        by the old id can be found and resolved"
+                        (src/cc_public/commit/change.lp lines 149-150,
+                        written in 7520f91).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_check_commit_against_graph
+    guid_target:        iss_c4001a6dd2a949008dc8a0c5e2b410eb
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_before_after_commit_check
+    guid_target:        dec_dc9b12ea18d64252bf9ae14671958b55
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,47 @@
+id_self:                ann_click_is_small_permissive_dependency
+guid_self:              ann_a80c6f73b4094228ab5e26863485cd7b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Click as a small, permissive dependency
+brief:                  |
+                        Click is BSD-3-Clause, has no dependencies of
+                        its own, is actively released, and is used
+                        only through its basic API, so the risk it
+                        adds is low and could be undone.
+description:            |
+                        pyproject.toml lists click>=8.1,<9; the
+                        project is Apache-2.0. Click 8.5.0 is
+                        BSD-3-Clause with no required dependencies
+                        (https://pypi.org/pypi/click/8.5.0/json) and
+                        dropped colorama (CHANGES.md, 8.5.0). Pallets
+                        made six releases from 2026-04-03 to
+                        2026-08-26. pixi.lock pins the 8.5.0 wheel by
+                        sha256 (lines 186-190). The command modules
+                        use only click.group, argument, option, echo,
+                        Path, File and IntRange (grep of
+                        src/cc_public/cli/*.py). ASSUMPTION: a port to
+                        argparse would be straightforward; none has
+                        been tried.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

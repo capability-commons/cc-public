@@ -1,0 +1,46 @@
+id_self:                ann_click_wrapper_start_up_cost_negligible
+guid_self:              ann_b3fd7895fad94cbfaa7c398f051ad7a0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Negligible start-up cost of the click wrapper
+brief:                  |
+                        The cctool wrapper adds about 30 ms to a check
+                        that takes about 2.9 s, so it costs nothing
+                        that matters against running check.py
+                        directly.
+description:            |
+                        Measured 2026-10-15 at 89c74d8 with system
+                        Python 3.13, click 8.5.0, median of 3 to 15
+                        fresh runs; indicative only. Importing click
+                        takes 51 ms, cc_public.check.check 160 ms,
+                        cc_public.cli.command 191 ms; a full cctool
+                        check about 2.9 s. command.py imports every
+                        command module eagerly (lines 31-37), so check
+                        also loads the commit, gate and edit code it
+                        does not use (jsonschema it loads anyway,
+                        through cc_public.check.schema); a lazy import
+                        per command would keep this flat as the
+                        tooling grows.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

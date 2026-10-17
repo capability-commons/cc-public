@@ -1,0 +1,57 @@
+id_self:                ann_copied_guid_keeps_its_type_for_life
+guid_self:              ann_d4264459dab64386b52e51432cd404f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Copied guid true to its type for life
+brief:                  |
+                        A guid copied into another repository keeps
+                        naming one item of one type. A holder can read
+                        the type from its prefix with no lookup and no
+                        CC tools, and the copy never goes stale
+                        through a change of type.
+description:            |
+                        Every reference carries the whole guid of the
+                        item it names, and a mismatch is reported as
+                        stale_guid (src/cc_public/check/check.lp lines
+                        243-256). The prefix lets a simple script tell
+                        CC guids from foreign UUIDs
+                        (notes/cc-public-session-context.md line 23).
+                        guid_self tells apart items whose ids collide
+                        across a federation
+                        (_data/schema/sch_trait_identity.yaml lines
+                        28-31). Inside this repository retyped_guid
+                        refuses a retype at commit, and domain and
+                        range checks catch an edge whose new type its
+                        relation does not allow (check.lp lines
+                        259-286), but copies held outside get no
+                        check. ASSUMPTION: no federated partner exists
+                        yet, and no cross-repository check exists in
+                        src/.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_type_of_an_item_is_fixed
+    guid_target:        iss_a68c1868157640d7a34616801c3a5586
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_coarse_types_never_change
+    guid_target:        dec_e0093f4b42044796a7f6ebcc85feb766
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,61 @@
+id_self:                ann_check_of_record_still_a_local_hook
+guid_self:              ann_daa6da5f54ac47128a43e7d0c8dec7dd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check of record still a local hook
+brief:                  |
+                        Until CI runs it, the check of record is a
+                        local pre-push hook that can be skipped and
+                        stores no verdict. A faulty commit can sit
+                        unchecked, and no one can tell from history
+                        whether a commit passed.
+description:            |
+                        .githooks/pre-push lines 20-28 and 33: the
+                        check of record "until CI runs it too"; it
+                        stores no result. "git push --no-verify"
+                        bypasses the pre-push hook completely
+                        (https://git-scm.com/docs/git-push). Hooks run
+                        only after "pixi run hooks" (pyproject.toml
+                        line 68; README.md lines 56-58). The repo at
+                        89c74d8 has no CI configuration, and the
+                        memory note says CI will run the check "once
+                        there is a remote". Agents push only when
+                        asked (AGENTS.md line 12). The memory note
+                        says "Only this check has to be waterproof",
+                        which today it is not. Falls away once CI runs
+                        the check on a shared remote; it argues for
+                        finishing the chosen approach rather than for
+                        an alternative.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_enforcement_approach
+    guid_target:        iss_42c9406aa061458d9797b2ab81ac9991
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_one_check_of_record
+    guid_target:        dec_3a50b6f1c9644c53b7a0e6c9a7453355
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

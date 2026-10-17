@@ -1,0 +1,59 @@
+id_self:                ann_printer_refuses_unsupported_input
+guid_self:              ann_efba5c5106d846d18c0f392b7457a901
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal of input the printer cannot lay out
+brief:                  |
+                        The printer refuses some documents outside its
+                        subset rather than guessing: nested sequences,
+                        folded and multi-line plain scalars, and
+                        documents that are not YAML mappings. Such
+                        input stops an edit with a message instead of
+                        being rewritten wrongly.
+description:            |
+                        Unsupported is raised for documents that are
+                        not YAML or not mappings, nested sequences,
+                        folded scalars and plain scalars that need
+                        more than one line
+                        (src/cc_public/edit/layout.py lines 213, 217,
+                        480, 499, 543). The class docstring (lines
+                        96-103) also names anchors and tags, but they
+                        are not refused: a run of format on 2026-10-15
+                        kept tags as written, wrote an alias of a
+                        scalar as a second copy of its anchor and
+                        expanded an alias of a mapping, with the data
+                        kept. No document in the repository uses them.
+                        An edit that would leave a refused file is
+                        refused (edit.py _format, lines 1052-1062).
+                        cctool check reports a refused file as one
+                        unformatted_file row (layout.py lines
+                        106-129). Only block scalars are refilled
+                        (layout.py lines 469-478). Layout is tested as
+                        a fixpoint over the repository (test_edit.py
+                        lines 468-476). violations catches only
+                        Unsupported (layout.py lines 120-124).
+                        ASSUMPTION: whether other exceptions can arise
+                        on valid YAML is not shown.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_layout_of_documents
+    guid_target:        iss_a5613b3c89574276bdae905735fce2b0
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_legacy_printer_as_is
+    guid_target:        dec_51c8ed3d767d474faea29ba22566267b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

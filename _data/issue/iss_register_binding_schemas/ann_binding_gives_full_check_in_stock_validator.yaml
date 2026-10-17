@@ -1,0 +1,60 @@
+id_self:                ann_binding_gives_full_check_in_stock_validator
+guid_self:              ann_6ae4064e82424712b81f269590b85eab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full register check with any standard validator
+brief:                  |
+                        With a binding file, a register and its
+                        entries are checked completely in one pass by
+                        any JSON Schema 2020-12 validator. Without it,
+                        the register-specific entry fields are checked
+                        only if cc-public's own checker gains a rule
+                        to apply each entry schema.
+description:            |
+                        sch_reg_concern composes sch_register and
+                        sch_regentry_concern with standard keywords
+                        only (allOf, $ref, properties,
+                        additionalProperties, unevaluatedProperties)
+                        (_data/schema/sch_reg_concern.yaml lines
+                        24-38). sch_register types each table value
+                        only as sch_register_entry
+                        (_data/schema/sch_register.yaml lines 77-78).
+                        The checker pairs schemas with documents in
+                        clingo (src/cc_public/graph/derive.lp lines
+                        69-85) and applies them with the stock
+                        jsonschema Draft202012Validator
+                        (src/cc_public/check/schema.py line 107). The
+                        toolchain is declared for osx-arm64 and
+                        linux-64 only (pyproject.toml line 52).
+                        ASSUMPTION: a partner also needs the schema
+                        files locally, since the $id URLs could not be
+                        fetched here. Merged from the compatibility
+                        and flexibility advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_binding_schemas
+    guid_target:        iss_742286e415d347efb484307e551a1c14
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_keep_per_register_binding
+    guid_target:        dec_bbb05a184e4a4cd88eae30188d08e0ae
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

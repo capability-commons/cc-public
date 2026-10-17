@@ -1,0 +1,38 @@
+id_self:                ann_read_cache_hides_parse_cost
+guid_self:              ann_8ffe141c697f4395be7249f86469014e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Read cache that hides most parse cost
+brief:                  |
+                        The extractor keeps each parsed document keyed
+                        by path and content digest, so an unchanged
+                        file is parsed once per process. The parse
+                        cost matters mostly on the first read in each
+                        process.
+description:            |
+                        MAP_READ, up to 4096 entries keyed by relative
+                        path and blake2b digest (src/cc_public/graph/
+                        extract.py lines 107-108, 278-285). Commit
+                        93a1428: "the tests take about a third of the
+                        time they did". The cache lives for one
+                        process; the pre-commit hook starts a new one
+                        (.githooks/pre-commit), so each commit gate
+                        starts cold.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_yaml_library
+    guid_target:        iss_5528230e2f614c9ea8a4d3bb439f5c88
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_round_trip_parsing_is_slow
+    guid_target:        ann_e72d3ab524e54eb6b791fe7e3925a8e5

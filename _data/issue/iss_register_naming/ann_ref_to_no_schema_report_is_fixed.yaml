@@ -1,0 +1,44 @@
+id_self:                ann_ref_to_no_schema_report_is_fixed
+guid_self:              ann_69de8da217bf431f968c74e50e758a6a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema reference to no schema now reported
+brief:                  |
+                        Commit ddcc3e1 "Fix the schema check so that a
+                        $ref to no schema is reported" reports a $ref
+                        that names no schema. At 360ec14 a rename of
+                        the entry schema that missed a reference is
+                        caught by the checker, not only by a reader;
+                        the naming point itself is unchanged.
+description:            |
+                        On referencing.exceptions.Unresolvable the
+                        schema check adds a schema_violation row
+                        against the schema that holds the $ref, once,
+                        instead of skipping it
+                        (src/cc_public/check/schema.py lines 192-201,
+                        248-260 at 360ec14);
+                        test_a_schema_ref_to_no_schema_is_reported
+                        covers it
+                        (src/cc_public/check/_test/test_check.py line
+                        244). sch_regentry_type.yaml is still the
+                        entry schema of reg_data_item_type
+                        (_data/schema/ at 360ec14), so the pair still
+                        does not rhyme. No code pairs the prefixes.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_register_naming
+    guid_target:        iss_67a8e9160b5347ec8565a8e02ef39db2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_sch_regentry_type_keeps_bare_type
+    guid_target:        ann_49aae9b727e3484e809d8815ba8a7728

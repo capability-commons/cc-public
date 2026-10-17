@@ -1,0 +1,55 @@
+id_self:                ann_hooks_need_installed_cctool_entry_point
+guid_self:              ann_3c192e8b9810478180d650f486d00342
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hooks depend on an installed entry point
+brief:                  |
+                        Each git hook runs cctool, which exists only
+                        after pixi installs cc_public in editable
+                        mode, so one more part can be missing or
+                        stale. Recovery is one pixi install and loses
+                        no data.
+description:            |
+                        cctool is cc_public.cli.command:main
+                        (pyproject.toml, [project.scripts]); pixi
+                        installs cc_public in editable mode
+                        ([tool.pixi.pypi- dependencies]).
+                        .githooks/commit-msg line 29,
+                        prepare-commit-msg line 31 and pre-push line
+                        33 run "pixi run --frozen cctool ...". Before
+                        6c8d3d5 the task was "python
+                        src/check/check.py .", which needed no package
+                        install but still needed pixi. The gate runs
+                        the staged copy's own source
+                        (src/cc_public/gate/gate.py lines 20-26, 64).
+                        ASSUMPTION: a stale editable install, for
+                        example after a move, stops cctool starting;
+                        not tested.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          iss_command_line_shape
+    guid_target:        iss_f12ad8d9feb94994a485c3bfae569891
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          dec_small_click_cli_for_agents
+    guid_target:        dec_1685663e729b4e29807832cccb181669
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          dec_scripts_run_directly
+    guid_target:        dec_3ce6c903dae94d7cb2a245e5f54ee4fa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
