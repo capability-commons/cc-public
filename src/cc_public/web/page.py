@@ -50,6 +50,7 @@ import cc_public.web.sankey
 TITLE_SITE        = 'Capability Commons'
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
+PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 
 MARK_FOR          = '+'
@@ -118,7 +119,8 @@ def issue(graph:      Graph,
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
-                  _argument(graph, outline, key_show)],
+                  _argument(graph, outline, key_show),
+                  _issue_references(graph, issue)],
                  [htpy.nav[htpy.a(href = '/')['Issues']],
                   htpy.h1[item.title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
@@ -126,9 +128,41 @@ def issue(graph:      Graph,
 
 
 # -----------------------------------------------------------------------------
+def item(graph: Graph, id_item: str) -> str:
+    """
+    Return the page of any item of the tree: its title, brief and
+    description, with its edges in and out, and the items its prose
+    names, among the cross-references at its foot.
+
+    """
+
+    item  = graph.map_item[id_item]
+    title = item.title or item.id
+
+    list_row = [(_relation(id_relation), list_target)
+                for (id_relation, list_target) in sorted(item.map_edge.items())]
+    list_row += [('{relation}, from'.format(relation = _relation(id_relation)),
+                  graph.sources(id_relation, id_item))
+                 for id_relation in sorted({id_relation
+                                            for (id_relation, id_target) in graph.map_source
+                                            if id_target == id_item})]
+    list_row += [('Mentions',     graph.mentions(id_item)),
+                 ('Mentioned by', graph.mentioned_by(id_item))]
+
+    return _page(title,
+                 [_block(_paragraphs(item.description), []),
+                  _references(graph, list_row)],
+                 [htpy.nav[htpy.a(href = '/')['Issues']],
+                  htpy.h1[title],
+                  htpy.p(class_ = 'subtitle')[_prose(item.brief)] if item.brief else None],
+                 [htpy.table(class_ = 'facts')[htpy.tbody[
+                     htpy.tr[htpy.th(scope = 'row')['Id'], htpy.td[htpy.code[item.id]]]]]])
+
+
+# -----------------------------------------------------------------------------
 def missing(id_item: str) -> str:
     """
-    Return the page for an issue that the tree does not hold.
+    Return the page for an issue or item that the tree does not hold.
 
     """
 
@@ -402,7 +436,7 @@ def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
         return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
 
     set_unspoken = set(issue.unspoken())
-    list_driver  = [htpy.span(class_ = 'driver')[
+    list_driver  = [htpy.span(class_ = 'line')[
                         htpy.s(title = 'Not argued')[graph.title(id_concern)]
                         if id_concern in set_unspoken else graph.title(id_concern)]
                     for id_concern in issue.list_driver]
@@ -414,6 +448,100 @@ def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
         row('Argument', '{decisions} decisions, {annotations} annotations'.format(
                             decisions   = len(issue.list_decision),
                             annotations = len(issue.list_annotation)))]]
+
+
+# -----------------------------------------------------------------------------
+def _issue_references(graph: Graph, issue: Issue) -> typing.Any:
+    """
+    Return the cross-references at the foot of the page of issue: its
+    subject and the other issues about it, the concerns argued, and the
+    items that point at or are named by what the page shows, beyond
+    the page itself.
+
+    """
+
+    is_about     = cc_public.web.argument.R_IS_ABOUT
+    list_shown   = ([issue.item] + issue.list_decision + issue.list_annotation
+                   + issue.list_determination)
+    set_shown    = {shown.id for shown in list_shown}
+    list_subject = issue.item.targets(is_about)
+
+    list_same    = sorted({id_other
+                           for id_subject in list_subject
+                           for id_other in graph.sources(is_about, id_subject)
+                           if id_other.startswith(cc_public.web.argument.PREFIX_ISSUE)
+                           and id_other != issue.item.id})
+    list_concern = sorted(issue.set_spoken, key = graph.title)
+    list_mention = sorted({id_named for shown in list_shown
+                           for id_named in graph.mentions(shown.id)} - set_shown)
+    list_named   = sorted({id_source for shown in list_shown
+                           for id_source in graph.mentioned_by(shown.id)} - set_shown)
+    list_cited   = sorted({id_source
+                           for ((_, id_target), list_source) in graph.map_source.items()
+                           if id_target in set_shown
+                           for id_source in list_source} - set_shown)
+
+    return _references(graph, [('Subject',         list_subject),
+                               ('Same subject',    list_same),
+                               ('Concerns argued', list_concern),
+                               ('Mentions',        list_mention),
+                               ('Mentioned by',    list_named),
+                               ('Cited by',        list_cited)])
+
+
+# -----------------------------------------------------------------------------
+def _references(graph: Graph, list_row: list[tuple[str, list[str]]]) -> typing.Any:
+    """
+    Return the cross-references at the foot of a page, folded: a row
+    for each label in list_row that has items, each item a link.
+
+    """
+
+    list_row = [(label, list_id) for (label, list_id) in list_row if list_id]
+    count    = len({id_item for (_, list_id) in list_row for id_item in list_id})
+
+    return htpy.footer(class_ = 'bookend')[htpy.details[
+        htpy.summary['Cross-references ', htpy.span(class_ = 'note')[str(count)]],
+        htpy.table(class_ = 'facts references')[htpy.tbody[
+            [htpy.tr[htpy.th(scope = 'row')[label],
+                     htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_item)]
+                              for id_item in list_id]]]
+             for (label, list_id) in list_row]]]]]
+
+
+# -----------------------------------------------------------------------------
+def _relation(id_relation: str) -> str:
+    """
+    Return the name of the relation id_relation as a label reads it:
+    its id as words, without the prefix.
+
+    """
+
+    words = id_relation.removeprefix('r_').replace('_', ' ')
+    return words[:1].upper() + words[1:]
+
+
+# -----------------------------------------------------------------------------
+def _link(graph: Graph, id_item: str) -> typing.Any:
+    """
+    Return a link to the page of id_item, named by its title.
+
+    """
+
+    return htpy.a(href = _href(id_item))[graph.title(id_item)]
+
+
+# -----------------------------------------------------------------------------
+def _href(id_item: str) -> str:
+    """
+    Return the address of the page of id_item: the issue page for an
+    issue, the item page otherwise.
+
+    """
+
+    if id_item.startswith(cc_public.web.argument.PREFIX_ISSUE):
+        return PATH_ISSUE + id_item
+    return PATH_ITEM + id_item
 
 
 # -----------------------------------------------------------------------------
@@ -469,7 +597,7 @@ def _id(id_item: str) -> typing.Any:
 
     """
 
-    return htpy.p(class_ = 'id')[htpy.code[id_item]]
+    return htpy.p(class_ = 'id')[htpy.a(href = _href(id_item))[htpy.code[id_item]]]
 
 
 # -----------------------------------------------------------------------------

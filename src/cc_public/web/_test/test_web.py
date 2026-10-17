@@ -207,3 +207,22 @@ def test_an_annotation_title_in_the_map_opens_it_in_the_list(tree):
     (_, _, shown) = cc_public.web.server.respond(
         tree, path + '?show=' + urllib.parse.quote(key, safe = ''))
     assert 'id="{k}" open'.format(k = key).encode() in shown
+
+
+def test_issue_page_ends_with_cross_references(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    footer = body.split(b'<footer class="bookend">')[1]
+    assert b'Cross-references' in footer
+    assert b'/item/lc_tooling' in footer
+
+
+def test_item_page_shows_edges_in_and_out(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
+    assert status == http.HTTPStatus.OK
+    assert ('/issue/' + ID_ISSUE).encode() in body
+    assert ('/item/' + ID_DETERMINATION).encode() in body
+
+
+def test_unknown_item_is_not_found(tree):
+    (status, _, _) = cc_public.web.server.respond(tree, '/item/dec_no_such_decision')
+    assert status == http.HTTPStatus.NOT_FOUND

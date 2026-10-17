@@ -16,12 +16,12 @@ brief:                  |
                         Serve the review pages over HTTP on this
                         computer.
 description:            |
-                        respond maps the path of a request to a page,
-                        or to a file of the _static directory, and
-                        reads the tree afresh for each page. serve
-                        answers GET requests with respond, until
-                        interrupted. It uses the HTTP server of the
-                        standard library.
+                        respond maps the path of a request to a page
+                        (the issue list, an issue, or any item), or to
+                        a file of the _static directory, and reads the
+                        tree afresh for each page. serve answers GET
+                        requests with respond, until interrupted. It
+                        uses the HTTP server of the standard library.
 relation:               []
 
 ...
@@ -67,19 +67,40 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
     if path == '/':
         return (http.HTTPStatus.OK, TYPE_HTML, cc_public.web.page.index(graph).encode())
 
-    if path.startswith(cc_public.web.page.PATH_ISSUE):
-        id_issue = urllib.parse.unquote(path.removeprefix(cc_public.web.page.PATH_ISSUE))
-        issue    = graph.issue(id_issue)
-        if issue is not None:
-            return (http.HTTPStatus.OK, TYPE_HTML,
-                    cc_public.web.page.issue(
-                        graph, issue,
-                        cc_public.web.sankey.parse_toggle(query),
-                        cc_public.web.sankey.parse_show(query)).encode())
-        return (http.HTTPStatus.NOT_FOUND, TYPE_HTML,
-                cc_public.web.page.missing(id_issue).encode())
+    for prefix in (cc_public.web.page.PATH_ISSUE, cc_public.web.page.PATH_ITEM):
+        if path.startswith(prefix):
+            id_item = urllib.parse.unquote(path.removeprefix(prefix))
+            body    = _item_page(graph, prefix, id_item, query)
+            if body is None:
+                return (http.HTTPStatus.NOT_FOUND, TYPE_HTML,
+                        cc_public.web.page.missing(id_item).encode())
+            return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
     return (http.HTTPStatus.NOT_FOUND, TYPE_HTML, cc_public.web.page.missing(path).encode())
+
+
+# -----------------------------------------------------------------------------
+def _item_page(graph:   cc_public.web.argument.Graph,
+               prefix:  str,
+               id_item: str,
+               query:   str) -> str | None:
+    """
+    Return the page of id_item at the path prefix, with the query of
+    its address, or None if the tree holds no such issue or item.
+
+    """
+
+    if prefix == cc_public.web.page.PATH_ISSUE:
+        issue = graph.issue(id_item)
+        if issue is None:
+            return None
+        return cc_public.web.page.issue(graph, issue,
+                                        cc_public.web.sankey.parse_toggle(query),
+                                        cc_public.web.sankey.parse_show(query))
+
+    if id_item not in graph.map_item:
+        return None
+    return cc_public.web.page.item(graph, id_item)
 
 
 # -----------------------------------------------------------------------------

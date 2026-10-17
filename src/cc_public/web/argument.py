@@ -35,6 +35,7 @@ relation:               []
 import collections
 import dataclasses
 import pathlib
+import re
 import typing
 
 import cc_public.graph.extract
@@ -172,6 +173,14 @@ class Graph:
                 for id_target in list_target:
                     self.map_source[(id_relation, id_target)].append(item.id)
 
+        set_prefix     = {id_item.split('_')[0] for id_item in self.map_item if '_' in id_item}
+        self.re_id     = re.compile(r'\b(?:{prefix})_[A-Za-z0-9_.]*[A-Za-z0-9]'.format(
+                                        prefix = '|'.join(sorted(set_prefix))))
+        self.map_mention = collections.defaultdict(list)
+        for item in self.map_item.values():
+            for id_target in self.mentions(item.id):
+                self.map_mention[id_target].append(item.id)
+
     # -------------------------------------------------------------------------
     def title(self, id_item: str) -> str:
         """
@@ -192,6 +201,31 @@ class Graph:
         """
 
         return sorted(self.map_source.get((id_relation, id_target), []))
+
+    # -------------------------------------------------------------------------
+    def mentions(self, id_item: str) -> list[str]:
+        """
+        Return the ids of the items that the prose of id_item names, in
+        the order first named, leaving out itself and ids not in the
+        tree.
+
+        """
+
+        item = self.map_item.get(id_item)
+        if item is None:
+            return []
+        text = '\n'.join((item.title, item.brief, item.description))
+        return [id_named for id_named in dict.fromkeys(self.re_id.findall(text))
+                if id_named in self.map_item and id_named != id_item]
+
+    # -------------------------------------------------------------------------
+    def mentioned_by(self, id_item: str) -> list[str]:
+        """
+        Return the ids of the items whose prose names id_item, sorted.
+
+        """
+
+        return sorted(self.map_mention.get(id_item, []))
 
     # -------------------------------------------------------------------------
     def list_issue(self) -> list[Issue]:
