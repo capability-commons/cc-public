@@ -58,12 +58,14 @@ import tempfile
 # Each stage: its name, and the command that runs it in the root of the
 # copy. {python} is the interpreter that runs the gate. A stage with
 # {shard} in its command runs once for each shard of the test files,
-# with the files of the shard in place of {shard}.
+# with the files of the shard in place of {shard}. The tests marked
+# slow are left out: they grow with the data, or repeat the check stage.
 #
 ARG_SHARD     = '{shard}'
 TUPLE_STAGE   = (('check', ('{python}', '-m', 'cc_public.cli.command', 'check')),
                  ('lint',  ('ruff', 'check', '--no-cache', 'src')),
-                 ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider', ARG_SHARD)))
+                 ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider',
+                            '-m', 'not slow', ARG_SHARD)))
 GLOB_TEST     = 'test_*.py'
 DIR_SOURCE    = 'src'
 PREFIX_GIT    = 'GIT_'

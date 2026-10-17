@@ -33,6 +33,7 @@ import re
 import uuid
 
 import click.testing
+import pytest
 import ruamel.yaml
 
 import cc_public.check.check
@@ -241,6 +242,7 @@ def _replace(root, relative, old, new):
     path.write_text(text.replace(old, new, 1))
 
 
+@pytest.mark.slow
 def test_the_repository_passes_every_check():
     assert cc_public.check.check.check(DIR_REPO) == {}
 

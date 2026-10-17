@@ -44,6 +44,8 @@ the checker and of Datalog queries.
     pixi run slow         # the tests on Python 3.12, 3.13 and 3.14
 
 The slow run is too slow for every commit, so the gate leaves it out.
+The gate also leaves out the tests marked slow, which grow with the
+data or repeat its check stage; `pixi run test` runs them.
 Run it on its own, such as overnight or before a release.
 
 Once `pixi run hooks` has run, git runs `cctool gate` before each

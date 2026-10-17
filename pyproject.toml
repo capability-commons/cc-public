@@ -95,7 +95,9 @@ py314                   = ["py314"]
 
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and
-# xfail_strict an expected failure that passed.
+# xfail_strict an expected failure that passed. A test marked slow
+# grows with the data or repeats a stage of the gate, so the gate leaves
+# it out; pixi run test and pixi run slow run it.
 #
 [tool.pytest.ini_options]
 minversion              = "9.1"
@@ -105,6 +107,7 @@ addopts                 = "-q"
 strict_config           = true
 strict_markers          = true
 xfail_strict            = true
+markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage"]
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it

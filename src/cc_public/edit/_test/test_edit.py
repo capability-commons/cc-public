@@ -520,9 +520,32 @@ def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     assert str(info.value) == message
 
 
-@pytest.mark.parametrize('relative', sorted(
-    relative for (relative, (document, _))
-    in cc_public.graph.extract.documents(DIR_REPO).items() if document is not None))
+# -----------------------------------------------------------------------------
+def _params_document() -> list:
+    """
+    Return a parameter for each file of the repository that holds a
+    document. All but the first file of each folder are marked slow, so
+    that the gate lays out one file of each kind and the slow run all.
+
+    """
+
+    list_param  = []
+    set_folder  = set()
+
+    for relative in sorted(relative for (relative, (document, _))
+                           in cc_public.graph.extract.documents(DIR_REPO).items()
+                           if document is not None):
+        folder = str(pathlib.Path(relative).parent)
+        if folder in set_folder:
+            list_param.append(pytest.param(relative, marks = pytest.mark.slow))
+        else:
+            set_folder.add(folder)
+            list_param.append(relative)
+
+    return list_param
+
+
+@pytest.mark.parametrize('relative', _params_document())
 def test_layout_keeps_the_data_and_is_a_fixpoint(relative):
     text     = (DIR_REPO / relative).read_text()
     laid_out = cc_public.edit.layout.format_file(text, pathlib.Path(relative))
