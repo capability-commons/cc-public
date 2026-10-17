@@ -28,6 +28,7 @@ relation:               []
 
 import concurrent.futures
 import http
+import re
 import urllib.parse
 
 import htpy
@@ -145,6 +146,35 @@ def test_evidence_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
     assert 'slow (a guess).' in prose
     assert '<span class="label">assumption</span> it stays so</span>' in prose
     assert '>{title}</a>'.format(title = graph.title(ID_UPHELD)) in prose
+
+
+def test_issue_page_steps_to_the_issues_before_and_after(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text = body.decode()
+    assert 'rel="prev"' in text and 'rel="next"' in text
+    assert ' 1 of 2 ' in text
+
+
+def test_matrix_cell_opens_every_annotation_it_counts(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    for href in re.findall(r'<a class="cell" href="([^"]+)"', body.decode().replace('&amp;', '&')):
+        list_key   = urllib.parse.parse_qs(urllib.parse.urlsplit(href).query)['show']
+        id_concern = list_key[0].split(cc_public.web.sankey.DELIM_KEY)[0]
+        list_unit  = [unit for unit in outline.units(concern = id_concern)
+                      if unit.annotation in {key.split(cc_public.web.sankey.DELIM_KEY)[1]
+                                             for key in list_key}]
+        assert len({unit.decision for unit in list_unit}) >= 1
+        assert href.endswith('#' + list_key[0])
+        (_, _, opened) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE + href.split('#')[0])
+        for key in list_key:
+            assert 'id="{key}" open'.format(key = key).encode() in opened
+
+
+def test_item_page_names_the_issue_of_a_decision(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
+    assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
 
 
 def test_unknown_issue_is_not_found(tree):

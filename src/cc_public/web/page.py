@@ -93,15 +93,10 @@ def index(graph: Graph) -> str:
     list_issue = graph.list_issue()
     count_open = sum(1 for issue in list_issue if issue.is_open())
 
-    map_group = collections.defaultdict(list)
-    for issue in list_issue:
-        for id_subject in issue.item.targets(cc_public.web.argument.R_IS_ABOUT) or ['']:
-            map_group[id_subject].append(issue)
-
     list_section = [htpy.section[
                         htpy.h2[graph.title(id_subject) if id_subject else 'No subject'],
-                        _issue_table(graph, map_group[id_subject])]
-                    for id_subject in sorted(map_group, key = graph.title)]
+                        _issue_table(graph, list_group)]
+                    for (id_subject, list_group) in _groups(graph)]
 
     return _page('Issues',
                  [htpy.h1['Issues'],
@@ -115,12 +110,12 @@ def index(graph: Graph) -> str:
 def issue(graph:      Graph,
           issue:      Issue,
           set_toggle: set[str],
-          key_show:   str | None = None,
+          set_show:   set[str] | None = None,
           matrix:     str = MATRIX_COUNT) -> str:
     """
     Return the page that shows an issue and the argument on it, with the
     parts of its diagram in set_toggle opened or closed, the annotation
-    at key_show opened in the list, and the cells of the decision matrix
+    in set_show opened in the list, and the cells of the decision matrix
     drawn as matrix says.
 
     """
@@ -137,12 +132,13 @@ def issue(graph:      Graph,
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
-                  cc_public.web.sankey.figure(graph, outline, set_toggle, key_show),
-                  _argument(graph, outline, key_show),
+                  cc_public.web.sankey.figure(graph, outline, set_toggle, set_show or set()),
+                  _argument(graph, outline, set_show or set()),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
-                 [_facts(graph, issue, list_subject)])
+                 [_facts(graph, issue, list_subject)],
+                 _sequence(graph, issue))
 
 
 # -----------------------------------------------------------------------------
@@ -177,7 +173,7 @@ def _matrix(graph:   Graph,
     def head(id_concern: str) -> typing.Any:
         css = 'concern' if id_concern in issue.list_driver else 'concern other'
         return htpy.th(class_ = css, scope = 'col')[
-            htpy.a(href = _href(id_concern))[graph.title(id_concern)],
+            htpy.a(href = '#' + id_concern)[graph.title(id_concern)],
             htpy.span(class_ = 'unargued')['not argued'] if id_concern in set_unspoken else None]
 
     return htpy.section(class_ = 'matrix')[
@@ -187,7 +183,7 @@ def _matrix(graph:   Graph,
             [[htpy.a(href = '?{key}={value}'.format(key = KEY_MATRIX, value = value),
                      class_ = 'current' if value == matrix else None)[value],
               ' '] for value in TUPLE_MATRIX]],
-        htpy.table(class_ = 'matrix matrix-' + matrix)[
+        htpy.div(class_ = 'scroll')[htpy.table(class_ = 'matrix matrix-' + matrix)[
             htpy.thead[htpy.tr[
                 htpy.th(scope = 'col')['Decision'],
                 [head(id_concern) for id_concern in outline.list_concern],
@@ -199,14 +195,42 @@ def _matrix(graph:   Graph,
                         htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
                         htpy.span(class_ = 'standing')[_stance(issue.map_stance.get(
                             id_decision, cc_public.web.argument.STANCE_OPEN))]],
-                    [htpy.td(class_ = 'cell')[_cell(outline.units(decision = id_decision,
-                                                                  concern  = id_concern),
-                                                    matrix)]
+                    [htpy.td(class_ = 'cell')[_cell_link(outline, id_decision, id_concern,
+                                                         matrix)]
                      for id_concern in outline.list_concern],
                     htpy.td(class_ = 'cell total')[_cell(outline.units(decision = id_decision),
                                                          MATRIX_COUNT)],
                     htpy.td(class_ = 'controls')[_controls(id_decision)]]
-                for id_decision in outline.list_decision]]]]
+                for id_decision in outline.list_decision]]]]]
+
+
+# -----------------------------------------------------------------------------
+def _cell_link(outline:     cc_public.web.sankey.Outline,
+               id_decision: str,
+               id_concern:  str,
+               matrix:      str) -> typing.Any:
+    """
+    Return a cell of the decision matrix, linked to the annotations in
+    the list that argue for id_concern on id_decision, all opened there
+    and the first in view.
+
+    """
+
+    list_unit = outline.units(decision = id_decision, concern = id_concern)
+    if not list_unit:
+        return _cell(list_unit, matrix)
+
+    set_on   = {unit.annotation for unit in list_unit}
+    list_key = [cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation))
+                for id_annotation in outline.map_annotation[id_concern]
+                if id_annotation in set_on]
+    href     = '?{query}#{key}'.format(
+                   query = urllib.parse.urlencode(
+                               [(KEY_MATRIX, matrix)]
+                               + [(cc_public.web.sankey.KEY_SHOW, key) for key in list_key]),
+                   key   = list_key[0])
+
+    return htpy.a(class_ = 'cell', href = href)[_cell(list_unit, matrix)]
 
 
 # -----------------------------------------------------------------------------
@@ -281,13 +305,40 @@ def item(graph: Graph, id_item: str) -> str:
     list_row += [('Mentions',     graph.mentions(id_item)),
                  ('Mentioned by', graph.mentioned_by(id_item))]
 
+    list_issue = _issues_of(graph, item)
+
     return _page(title,
                  [_block(_paragraphs(item.description), []),
-                  _references(graph, list_row)],
+                  _references(graph, list_row, is_open = not item.description)],
                  [htpy.h1[title],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)] if item.brief else None],
                  [htpy.table(class_ = 'facts')[htpy.tbody[
+                     htpy.tr[htpy.th(scope = 'row')['Issue'],
+                             htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_issue)]
+                                      for id_issue in list_issue]]] if list_issue else None,
                      htpy.tr[htpy.th(scope = 'row')['Id'], htpy.td[htpy.code[item.id]]]]]])
+
+
+# -----------------------------------------------------------------------------
+def _issues_of(graph: Graph, item: Item) -> list[str]:
+    """
+    Return the issues the argument item belongs to: those a decision
+    answers, an annotation is about, or a determination settles through
+    its decisions.
+
+    """
+
+    list_decision = (item.targets(cc_public.web.argument.R_UPHOLDS)
+                     + item.targets(cc_public.web.argument.R_REJECTS))
+    list_target   = (item.targets(cc_public.web.argument.R_ANSWERS)
+                     + item.targets(cc_public.web.argument.R_IS_ABOUT)
+                     + [id_issue for id_decision in list_decision
+                        if id_decision in graph.map_item
+                        for id_issue in graph.map_item[id_decision].targets(
+                                            cc_public.web.argument.R_ANSWERS)])
+
+    return [id_target for id_target in dict.fromkeys(list_target)
+            if id_target.startswith(cc_public.web.argument.PREFIX_ISSUE)]
 
 
 # -----------------------------------------------------------------------------
@@ -306,12 +357,13 @@ def missing(id_item: str) -> str:
 def _page(title:       str,
           body:        typing.Any,
           head:        typing.Any = None,
-          head_margin: typing.Any = None) -> str:
+          head_margin: typing.Any = None,
+          nav:         typing.Any = None) -> str:
     """
     Return the HTML of a page with title and body. head follows the
     name of the site and the links to the indexes in the text column,
     with head_margin beside them in the margin, so the margin starts at
-    the top of the page.
+    the top of the page; nav follows the links to the indexes.
 
     """
 
@@ -326,7 +378,8 @@ def _page(title:       str,
                 _block([htpy.header[TITLE_SITE,
                                     [[htpy.span(class_ = 'bar')['|'],
                                       htpy.a(href = href)[name]]
-                                     for (name, href) in LIST_INDEX]],
+                                     for (name, href) in LIST_INDEX],
+                                    nav],
                         head],
                        [head_margin],
                        class_ = 'masthead ruled' if head_margin else 'masthead'),
@@ -419,13 +472,55 @@ def _determinations(graph: Graph, issue: Issue) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
+def _groups(graph: Graph) -> list[tuple[str, list[Issue]]]:
+    """
+    Return the issues grouped by subject, as the index lists them: each
+    subject, by title, with its issues by title. An issue about no
+    subject is grouped under ''.
+
+    """
+
+    map_group = collections.defaultdict(list)
+    for issue in graph.list_issue():
+        for id_subject in issue.item.targets(cc_public.web.argument.R_IS_ABOUT) or ['']:
+            map_group[id_subject].append(issue)
+
+    return [(id_subject, map_group[id_subject])
+            for id_subject in sorted(map_group, key = graph.title)]
+
+
+# -----------------------------------------------------------------------------
+def _sequence(graph: Graph, issue: Issue) -> typing.Any:
+    """
+    Return the links to the issues before and after issue in the order
+    of the index, with its place among them.
+
+    """
+
+    list_id = list(dict.fromkeys(each.item.id for (_, list_group) in _groups(graph)
+                                 for each in list_group))
+    index   = list_id.index(issue.item.id)
+
+    def step(offset: int, mark: str, label: str) -> typing.Any:
+        id_other = list_id[(index + offset) % len(list_id)]
+        return htpy.a(class_ = 'step', href = PATH_ISSUE + id_other, rel = label,
+                      title  = '{label} issue: {title}'.format(
+                                   label = label.capitalize(), title = graph.title(id_other)))[mark]
+
+    return htpy.span(class_ = 'sequence')[
+        step(-1, 'previous', 'prev'),
+        ' {place} of {count} '.format(place = index + 1, count = len(list_id)),
+        step(1, 'next', 'next')]
+
+
+# -----------------------------------------------------------------------------
 def _argument(graph:    Graph,
               outline:  cc_public.web.sankey.Outline,
-              key_show: str | None) -> typing.Any:
+              set_show: set[str]) -> typing.Any:
     """
     Return the annotations of the outline, grouped by concern in the
     order of the diagram, then those no concern reaches. The annotation
-    at key_show is opened, with those it sits within.
+    in set_show are opened, with those they sit within.
 
     """
 
@@ -436,7 +531,7 @@ def _argument(graph:    Graph,
             continue
         list_unit = outline.units(concern = id_concern)
         count_for = sum(1 for unit in list_unit if unit.is_for())
-        list_group.append(htpy.section(class_ = 'concern-group')[
+        list_group.append(htpy.section(class_ = 'concern-group', id = id_concern)[
             _block([htpy.h3[graph.title(id_concern)]],
                    [htpy.p(class_ = 'tally')[
                         htpy.span(class_ = ROLE_FOR)['+{count}'.format(count = count_for)],
@@ -447,13 +542,13 @@ def _argument(graph:    Graph,
                         else None]]),
             [_annotation(graph, outline, id_annotation,
                          cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
-                         id_concern, set(), key_show)
+                         id_concern, set(), set_show)
              for id_annotation in list_annotation]])
 
     if outline.list_other:
         list_group.append(htpy.section(class_ = 'concern-group')[
             _block([htpy.h3['Other annotations']], []),
-            [_annotation(graph, outline, id_annotation, id_annotation, None, set(), key_show)
+            [_annotation(graph, outline, id_annotation, id_annotation, None, set(), set_show)
              for id_annotation in outline.list_other]])
 
     return htpy.section[htpy.h2['Argument'], list_group]
@@ -466,14 +561,14 @@ def _annotation(graph:         Graph,
                 key:           str,
                 id_concern:    str | None,
                 set_path:      set[str],
-                key_show:      str | None) -> typing.Any:
+                set_show:      set[str]) -> typing.Any:
     """
     Return an annotation folded to one line: its number, title and what
     it bears on. Open, it shows its claim and evidence, then the
     annotations that answer it, folded the same way. key places it in
     the outline, under id_concern if it is not an answer; set_path
-    holds the annotations above it. It is opened if key_show is key
-    or lies within it.
+    holds the annotations above it. It is opened if a key in set_show
+    is key or lies within it.
 
     """
 
@@ -496,7 +591,7 @@ def _annotation(graph:         Graph,
     return htpy.details(class_ = 'annotation depth-{depth}'.format(depth = min(len(set_path),
                                                                                 DEPTH_MAX)),
                         id     = key,
-                        open   = _is_within(key_show, key))[
+                        open   = _is_within(set_show, key))[
         htpy.summary[_block(
             [htpy.p[htpy.span(class_ = 'number')[
                         '#{number}'.format(number = map_number[id_annotation])],
@@ -512,19 +607,19 @@ def _annotation(graph:         Graph,
             _evidence(graph, annotation, key)],
         [_annotation(graph, outline, id_answer,
                      cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
-                     None, set_path | {id_annotation}, key_show)
+                     None, set_path | {id_annotation}, set_show)
          for id_answer in list_answer]]
 
 
 # -----------------------------------------------------------------------------
-def _is_within(key_show: str | None, key: str) -> bool:
+def _is_within(set_show: set[str], key: str) -> bool:
     """
-    Return True if key_show is key or lies within it.
+    Return True if a key in set_show is key or lies within it.
 
     """
 
-    return key_show is not None and (key_show == key
-                                     or key_show.startswith(key + cc_public.web.sankey.DELIM_KEY))
+    return any(key_show == key or key_show.startswith(key + cc_public.web.sankey.DELIM_KEY)
+               for key_show in set_show)
 
 
 # -----------------------------------------------------------------------------
@@ -633,17 +728,20 @@ def _issue_references(graph: Graph, issue: Issue) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _references(graph: Graph, list_row: list[tuple[str, list[str]]]) -> typing.Any:
+def _references(graph:   Graph,
+                list_row: list[tuple[str, list[str]]],
+                is_open:  bool = False) -> typing.Any:
     """
-    Return the cross-references at the foot of a page, folded: a row
-    for each label in list_row that has items, each item a link.
+    Return the cross-references at the foot of a page, folded unless
+    is_open: a row for each label in list_row that has items, each item
+    a link.
 
     """
 
     list_row = [(label, list_id) for (label, list_id) in list_row if list_id]
     count    = len({id_item for (_, list_id) in list_row for id_item in list_id})
 
-    return htpy.footer(class_ = 'bookend')[htpy.details[
+    return htpy.footer(class_ = 'bookend')[htpy.details(open = is_open)[
         htpy.summary['Cross-references ', htpy.span(class_ = 'note')[str(count)]],
         htpy.table(class_ = 'facts references')[htpy.tbody[
             [htpy.tr[htpy.th(scope = 'row')[label],

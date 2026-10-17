@@ -102,18 +102,18 @@ class Unit:
 def figure(graph:      Graph,
            outline:    'Outline',
            set_toggle: set[str],
-           key_show:   str | None) -> typing.Any:
+           set_show:   set[str]) -> typing.Any:
     """
     Return the Sankey diagram of the argument in outline: its decisions
     on the left, each joined to the concerns that are argued on it,
     with support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
     it. The title of an annotation links to it, opened, in the list
-    below; key_show is the one the page shows opened, if any.
+    below; set_show holds those the page shows opened.
 
     """
 
-    drawing = _Drawing(graph, outline, set_toggle, key_show)
+    drawing = _Drawing(graph, outline, set_toggle, set_show)
     height  = drawing.draw()
     width   = LIST_X[drawing.index_column_last] + ROOM_TITLE
 
@@ -295,14 +295,14 @@ def parse_toggle(query: str) -> set[str]:
 
 
 # -----------------------------------------------------------------------------
-def parse_show(query: str) -> str | None:
+def parse_show(query: str) -> set[str]:
     """
-    Return the key of the annotation the list shows opened, read from
-    the query of a page address, or None.
+    Return the keys of the annotations the list shows opened, read from
+    the query of a page address.
 
     """
 
-    return (urllib.parse.parse_qs(query).get(KEY_SHOW) or [None])[0]
+    return set(urllib.parse.parse_qs(query).get(KEY_SHOW, []))
 
 
 # -----------------------------------------------------------------------------
@@ -317,7 +317,7 @@ class _Drawing:
                  graph:      Graph,
                  outline:    Outline,
                  set_toggle: set[str],
-                 key_show:   str | None) -> None:
+                 set_show:   set[str]) -> None:
         """
         Start an empty drawing of the argument in outline.
 
@@ -331,7 +331,7 @@ class _Drawing:
         self.list_decision = outline.list_decision
         self.list_concern  = outline.list_concern
         self.set_toggle    = set_toggle
-        self.key_show      = key_show
+        self.set_show      = set_show
         self.list_band     = []
         self.list_bar      = []
         self.list_label    = []
@@ -555,7 +555,7 @@ class _Drawing:
         x       = LIST_X[index_column]
         self.index_column_last = max(self.index_column_last, index_column)
         count   = len(self.outline.answers(id_annotation))
-        css     = 'annotation shown' if key == self.key_show else 'annotation'
+        css     = 'annotation shown' if key in self.set_show else 'annotation'
         title   = htpy.a(href = self._href_show(key))[
                       htpy.tspan(class_ = 'number')[
                           str(self.map_number.get(id_annotation, ''))],
@@ -603,8 +603,7 @@ class _Drawing:
                         if not key_toggle.startswith(key + DELIM_KEY)}
 
         list_param = [(KEY_TOGGLE, key_toggle) for key_toggle in sorted(set_next)]
-        if self.key_show:
-            list_param.append((KEY_SHOW, self.key_show))
+        list_param += [(KEY_SHOW, key_show) for key_show in sorted(self.set_show)]
         return '?' + urllib.parse.urlencode(list_param)
 
     # -------------------------------------------------------------------------
