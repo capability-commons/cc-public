@@ -46,7 +46,7 @@ import urllib.parse
 import htpy
 
 import cc_public.web.argument
-import cc_public.web.evidence
+import cc_public.web.description
 import cc_public.web.sankey
 
 
@@ -669,7 +669,9 @@ def _description(graph: Graph, annotation: Item, key: str) -> typing.Any:
 
     """
 
-    (list_prose, list_note) = cc_public.web.evidence.evidence(graph, annotation.description, key)
+    (list_prose, list_note) = cc_public.web.description.description(graph,
+                                                                    annotation.description,
+                                                                    key)
     return _block([htpy.p(class_ = 'description')[list_prose]],
                   [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
                   class_ = 'description')

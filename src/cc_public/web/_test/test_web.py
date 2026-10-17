@@ -34,7 +34,7 @@ import urllib.parse
 import htpy
 
 import cc_public.web.argument
-import cc_public.web.evidence
+import cc_public.web.description
 import cc_public.web.page
 import cc_public.web.sankey
 import cc_public.web.server
@@ -134,11 +134,11 @@ def test_matrix_cells_are_drawn_as_the_address_says(tree):
         assert mark.encode() in body
 
 
-def test_evidence_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
+def test_description_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
     graph = cc_public.web.argument.Graph(tree)
     text  = ('It is so (check.py lines 3-4) and slow (a guess). ASSUMPTION: it stays so. '
              'See dec_cross_item_checks_in_clingo (https://example.org/a).')
-    (list_prose, list_note) = cc_public.web.evidence.evidence(graph, text, 'k')
+    (list_prose, list_note) = cc_public.web.description.description(graph, text, 'k')
     prose = str(htpy.p[list_prose])
     assert [str(note) for note in list_note] == [
         '<li id="k-note-1" value="1">check.py lines 3-4</li>',

@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.web.evidence
+id_self:                pym_cc_public.web.description
 guid_self:              pym_57836da700d44f0c923eb652e5f4fb28
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -11,12 +11,12 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Evidence of an annotation
+title:                  Description of an annotation
 brief:                  |
-                        Lay out the evidence of an annotation as prose
-                        with its sources in the margin.
+                        Lay out the description of an annotation as
+                        prose with its sources in the margin.
 description:            |
-                        The evidence of an annotation is one run of
+                        The description of an annotation is one run of
                         prose that cites its sources in brackets: a
                         file and its lines, a commit, a date, a web
                         address, or a statement by the owner. Each
@@ -56,9 +56,9 @@ Graph             = cc_public.web.argument.Graph
 
 
 # -----------------------------------------------------------------------------
-def evidence(graph: Graph, text: str, prefix: str) -> tuple[list, list]:
+def description(graph: Graph, text: str, prefix: str) -> tuple[list, list]:
     """
-    Return the evidence text as prose and its sources as margin notes.
+    Return the description text as prose and its sources as margin notes.
     The prose cites each note by its number; prefix makes the ids of
     the notes unique on the page.
 
