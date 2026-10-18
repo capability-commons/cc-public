@@ -757,6 +757,15 @@ section.matrix .drill .answers {
   background: var(--shade-deep);
 }
 
+/* Open answers end the body of what they answer, so its shade meets
+   the rule below with no gap. */
+
+section.matrix .drill details.annotation > .body:has(
+    > details.brief[open] > .answers,
+    > details.brief[open] > details.description[open] > .answers) {
+  margin-bottom: 0;
+}
+
 section.matrix .drill details.annotation.answer > summary .main > p {
   margin-left: 0;
 }
