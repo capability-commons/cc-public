@@ -262,6 +262,22 @@ def test_graph_port_lights_its_chain_by_net_effect(tree):
     assert key not in css('ann_types_catch_errors_early')
 
 
+def test_graph_node_lights_both_its_chains(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
+    body    = str(cc_public.web.network.figure(graph, outline))
+    key     = 'pick-ann_python_is_fast_enough'
+    assert 'href="#{key}" id="{key}"'.format(key = key) in body
+
+    def css(id_item):
+        pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
+        return re.search(pattern, body).group(1).split()
+
+    assert key + '-for' in css('ann_gate_takes_a_minute')
+    assert key + '-against' in css('ann_graphs_will_grow')
+    assert key + '-for' in css('ann_cross_item_checks_run_in_clingo')
+
+
 def test_item_page_names_the_issue_of_a_decision(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body

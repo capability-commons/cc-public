@@ -602,10 +602,12 @@ figure.map svg {
 /* While a port is lit, everything outside its chain is dimmed. */
 
 .network { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; }
-.network .nodes > g,
+.network .nodes .node,
 .network .edges path { transition: opacity 0.12s; }
-.network svg:has(.port:hover, .port:target) .nodes > g,
-.network svg:has(.port:hover, .port:target) .edges path { opacity: 0.18; }
+.network svg:has(.port:hover, .port:target, .pick:target) .nodes .node,
+.network svg:has(.port:hover, .port:target, .pick:target) .edges path { opacity: 0.18; }
+.network .pick { outline: none; cursor: pointer; }
+.network .pick:target rect { stroke: var(--ink); stroke-width: 1.6; }
 
 /* The decision matrix: a column for each decision and a row for each
    concern, as the foot of the masthead. The decisions share the width

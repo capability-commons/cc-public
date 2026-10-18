@@ -55,6 +55,7 @@ CHARS_TITLE       = 32
 MARGIN            = 8
 RADIUS_PORT       = 4.5
 KEY_UNPIN         = 'unpin'
+KEY_PICK          = 'pick-'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
 
@@ -68,7 +69,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     what challenges it. Hovering over a port, or following its link,
     lights the chain of annotations that reaches it and dims the rest;
     each annotation in the chain is shaded by its net effect on the
-    node, the product of the roles along its paths. Clicking anywhere
+    node, the product of the roles along its paths. Clicking a node
+    lights both its chains at once, each by its net effect on the
+    node. Clicking anywhere
     else in the graph unpins it: the link names no element, so the page
     does not move.
 
@@ -91,28 +94,41 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     map_key   = {port: 'port-{id}-{role}'.format(id = port[0], role = port[1])
                  for port in list_port}
 
+    map_pick  = {}
+    for port in list_port:
+        map_pick.setdefault(port[0], []).append(port)
+
     map_css_node = {id_item: [] for id_item in map_place}
     map_css_edge = {edge: [] for edge in list_edge}
-    for (port, key) in map_key.items():
-        (map_sign, set_edge) = _chain(list_edge, port)
-        map_css_node[port[0]].append(key)
+    list_light   = ([(key, [port]) for (port, key) in map_key.items()]
+                    + [(KEY_PICK + id_item, list_port_own)
+                       for (id_item, list_port_own) in map_pick.items()])
+    for (key, list_port_lit) in list_light:
+        map_sign = {}
+        for port in list_port_lit:
+            (map_sign_port, set_edge) = _chain(list_edge, port)
+            for (id_item, set_sign) in map_sign_port.items():
+                map_sign.setdefault(id_item, set()).update(set_sign)
+            for edge in set_edge:
+                if key not in map_css_edge[edge]:
+                    map_css_edge[edge].append(key)
+        map_css_node[list_port_lit[0][0]].append(key)
         for (id_item, set_sign) in map_sign.items():
             sign = set_sign.pop() if len(set_sign) == 1 else 'mixed'
             map_css_node[id_item].extend([key, key + '-' + sign])
-        for edge in set_edge:
-            map_css_edge[edge].append(key)
 
     list_path = [_edge(map_place[id_from], map_place[id_to], role, map_css_edge[edge])
                  for edge in list_edge
                  for (id_from, id_to, role) in [edge]]
-    list_node = [_node(graph, outline, id_item, map_place[id_item], map_css_node[id_item])
+    list_node = [_node(graph, outline, id_item, map_place[id_item], map_css_node[id_item],
+                       id_item in map_pick)
                  for id_item in map_place]
     list_dot  = [_port(map_place[port[0]], port[1], key) for (port, key) in map_key.items()]
 
     width  = max(x for (x, _) in map_place.values()) + WIDTH_NODE + 2 * MARGIN
     height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE + 2 * MARGIN
     return htpy.figure(class_ = 'map network')[
-        htpy.style[_style(list(map_key.values()))],
+        htpy.style[_style([key for (key, _) in list_light])],
         htpy.svg(viewBox = '{left} {left} {width} {height}'.format(left   = -MARGIN,
                                                                    width  = width,
                                                                    height = height),
@@ -159,16 +175,18 @@ def _chain(list_edge: list[tuple[str, str, str]],
 # -----------------------------------------------------------------------------
 def _style(list_key: list[str]) -> str:
     """
-    Return the rules that light the chain of each port while the port
-    is hovered over or is the target of the address. A hovered port
-    wins over the target.
+    Return the rules that light the chain at each key while it is the
+    target of the address, or, for a port, while it is hovered over. A
+    hovered port wins over the target.
 
     """
 
     list_rule = []
     for key in list_key:
-        for (state, guard) in ((':hover', ''),
-                               (':target', ':not(:has(.port:hover))')):
+        list_state = [(':target', ':not(:has(.port:hover))')]
+        if not key.startswith(KEY_PICK):
+            list_state.append((':hover', ''))
+        for (state, guard) in list_state:
             scope = '.network svg:has(#{key}{state}){guard}'.format(key   = key,
                                                                     state = state,
                                                                     guard = guard)
@@ -303,9 +321,12 @@ def _node(graph:    Graph,
           outline:  Outline,
           id_item:  str,
           place:    tuple[float, float],
-          list_css: list[str]) -> typing.Any:
+          list_css: list[str],
+          is_pick:  bool) -> typing.Any:
     """
     Return the node of id_item at place: a decision or an annotation.
+    If is_pick, the node links to the page with both chains into it
+    lit, as if both its ports were pinned.
 
     """
 
@@ -322,7 +343,7 @@ def _node(graph:    Graph,
         css     = 'node decision'
         label   = title
         under   = ''
-    return htpy.g(class_ = ' '.join([css] + list_css), id = 'node-' + id_item)[
+    node = htpy.g(class_ = ' '.join([css] + list_css), id = 'node-' + id_item)[
         htpy.title[label],
         htpy.rect(x = _num(x), y = _num(y), width = str(WIDTH_NODE), height = str(HEIGHT_NODE),
                   rx = '3'),
@@ -330,6 +351,10 @@ def _node(graph:    Graph,
             _cut(label)],
         htpy.text(x = _num(x + 8), y = _num(y + 28), class_ = 'note')[_cut(under)]
         if under else None]
+    if not is_pick:
+        return node
+    key = KEY_PICK + id_item
+    return htpy.a(href = '#' + key, id = key, class_ = 'pick')[node]
 
 
 # -----------------------------------------------------------------------------
