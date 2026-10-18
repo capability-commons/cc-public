@@ -63,8 +63,8 @@ KEY_ACYCLIC       = 'acyclic'
 KEY_REF           = '$ref'
 
 # Fields whose text names no item: identity, aliases, which name what
-# no longer exists, and patterns. A field named id_<role> or
-# guid_<role> is a reference, and is read as one.
+# no longer exists, and patterns. A field named id_<field> or
+# guid_<field> is a reference, and is read as one.
 #
 SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pattern',
                      '$id', '$schema', '$ref'}
@@ -114,7 +114,7 @@ COUNT_READ        = 4096
 # Each base relation: its columns, and what one row of it states. A
 # column is a symbol unless its name is followed by :number. A line
 # is the line of the file, counted from 1, that the key of the field
-# is on: id_self for an item, and id_<role> for a reference.
+# is on: id_self for an item, and id_<field> for a reference.
 #
 TYPE_SYMBOL       = 'symbol'
 DELIM_TYPE        = ':'
@@ -124,9 +124,9 @@ RELATION          = {
                            'The item id, with guid, is written in file at line. holder '
                            'is the id of the item that contains it, or empty if none '
                            'does.'),
-    'reference':          (('holder', 'role', 'id', 'guid', 'file', 'line:number'),
+    'reference':          (('holder', 'field', 'id', 'guid', 'file', 'line:number'),
                            'The item holder names the item id, with guid, in a pair '
-                           'of fields id_<role> and guid_<role>, written in file at '
+                           'of fields id_<field> and guid_<field>, written in file at '
                            'line.'),
     'edge':               (('source', 'relation', 'target'),
                            'The item source records an edge of relation to target, '
@@ -540,9 +540,9 @@ def _reference(node:     dict[str, typing.Any],
 
     for (key, value) in node.items():
         if key.startswith(PREFIX_ID) and key != KEY_ID_SELF and isinstance(value, str):
-            role = key[len(PREFIX_ID):]
-            guid = str(node.get(PREFIX_GUID + role, ''))
-            facts['reference'].add((holder, role, value, guid, location[0],
+            field = key[len(PREFIX_ID):]
+            guid  = str(node.get(PREFIX_GUID + field, ''))
+            facts['reference'].add((holder, field, value, guid, location[0],
                                     _line(node, key, location)))
 
     if isinstance(node.get(KEY_ID_RELATION), str):

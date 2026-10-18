@@ -108,7 +108,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   change what names it first, in the same `batch`, and name the removed
   id in the commit item, or the commit-msg hook refuses the commit.
 - **A guid is never written by hand.** `new` mints it, and fills in
-  `guid_<role>` for any `id_<role>` field you give it.
+  `guid_<field>` for any `id_<field>` field you give it.
 
 ## By hand
 

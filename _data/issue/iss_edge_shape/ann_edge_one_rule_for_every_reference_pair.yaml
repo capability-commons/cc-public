@@ -11,28 +11,28 @@ protective_mark:
 title:                  One rule for every reference pair
 brief:                  |
                         Naming the relation by guid lets every
-                        id_<role> and guid_<role> pair follow one
+                        id_<field> and guid_<field> pair follow one
                         rule. Naming it by id alone makes the relation
                         the one exception that readers, extractors,
                         editors and checks must each know.
 description:            |
                         Every identifier field other than id_self and
-                        guid_self names a role and refers to an
-                        identity declared elsewhere
+                        guid_self refers to an identity declared
+                        elsewhere
                         (_data/schema/sch_trait_identity.yaml lines
                         21-26). The same pair is used outside edges,
                         for example id_mark and guid_mark in 75 files
                         under _data. The extractor reads every
-                        id_<role> with its guid_<role> in one loop
+                        id_<field> with its guid_<field> in one loop
                         (src/cc_public/graph/extract.py lines
-                        451-457). The editor derives guid_<role> from
-                        any id_<role> by the same naming rule
+                        451-457). The editor derives guid_<field> from
+                        any id_<field> by the same naming rule
                         (src/cc_public/edit/edit.py lines 681-687 and
                         990-1007), though it builds edges in a
                         function of its own (same file lines
                         1011-1020). One check, stale_guid, covers
-                        every role (src/cc_public/check/check.lp lines
-                        243-256). Every r_ entry now has a guid
+                        every field (src/cc_public/check/check.lp
+                        lines 243-256). Every r_ entry now has a guid
                         (memory/cc-public-design-principles.md line
                         17). The gain is in the number of rules, so it
                         holds at any graph size. Merged from the

@@ -248,33 +248,33 @@ key_mismatch(Register, Key, Id) :-
 % advise.lp reports it.
 %
 % decl dangling_reference(holder: symbol,
-%                         role:   symbol,
+%                         field:  symbol,
 %                         id:     symbol,
 %                         file:   symbol,
 %                         line:   number)
 #show dangling_reference/5.
 
-dangling_reference(Holder, Role, Id, File, Line) :-
-    reference(Holder, Role, Id, Guid, File, Line),
+dangling_reference(Holder, Field, Id, File, Line) :-
+    reference(Holder, Field, Id, Guid, File, Line),
     not item(Id, _, _, _, _),
     not item(_, Guid, _, _, _),
     not alias(_, Id),
-    Role != "mark".
+    Field != "mark".
 
 
 % -----------------------------------------------------------------------------
 % Every reference carries the guid of the item it names.
 %
 % decl stale_guid(holder: symbol,
-%                 role:   symbol,
+%                 field:  symbol,
 %                 id:     symbol,
 %                 guid:   symbol,
 %                 file:   symbol,
 %                 line:   number)
 #show stale_guid/6.
 
-stale_guid(Holder, Role, Id, Guid, File, Line) :-
-    reference(Holder, Role, Id, Guid, File, Line),
+stale_guid(Holder, Field, Id, Guid, File, Line) :-
+    reference(Holder, Field, Id, Guid, File, Line),
     item(Id, Other, _, _, _),
     Guid != Other.
 
@@ -572,20 +572,20 @@ alias_in_use(Alias, Id) :-
 % the guid, which decides.
 %
 % decl outdated_reference(holder: symbol,
-%                         role:   symbol,
+%                         field:  symbol,
 %                         alias:  symbol,
 %                         id:     symbol,
 %                         file:   symbol,
 %                         line:   number)
 #show outdated_reference/6.
 
-outdated_reference(Holder, Role, Alias, Id, File, Line) :-
-    reference(Holder, Role, Alias, _, File, Line),
+outdated_reference(Holder, Field, Alias, Id, File, Line) :-
+    reference(Holder, Field, Alias, _, File, Line),
     alias(Id, Alias),
     not item(Alias, _, _, _, _).
 
-outdated_reference(Holder, Role, Old, Id, File, Line) :-
-    reference(Holder, Role, Old, Guid, File, Line),
+outdated_reference(Holder, Field, Old, Id, File, Line) :-
+    reference(Holder, Field, Old, Guid, File, Line),
     item(Id, Guid, _, _, _),
     not item(Old, _, _, _, _),
     not alias(Id, Old).

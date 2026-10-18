@@ -448,8 +448,8 @@ def set_field(tree: Tree, id_self: str, path: str, value: typing.Any) -> Edit:
     is ordered with if not.
 
     A path is a field name, or a dotted path into the value of one, in
-    which a number picks an element of a list. A field id_<role> that
-    names an item is given guid_<role> beside it.
+    which a number picks an element of a list. A field id_<field> that
+    names an item is given guid_<field> beside it.
 
     """
 
@@ -471,7 +471,7 @@ def set_field(tree: Tree, id_self: str, path: str, value: typing.Any) -> Edit:
 def unset_field(tree: Tree, id_self: str, path: str) -> Edit:
     """
     Return the edit that takes the field at path out of the item
-    id_self, with guid_<role> if the field is id_<role>.
+    id_self, with guid_<field> if the field is id_<field>.
 
     """
 
@@ -540,8 +540,8 @@ def _put_field(item: '_Item', key: str, value: typing.Any) -> Edit:
 def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) -> typing.Any:
     """
     Return node with value put at the path list_part into it. A missing
-    mapping on the way is made, and a field id_<role> that names an
-    item is given guid_<role> after it.
+    mapping on the way is made, and a field id_<field> that names an
+    item is given guid_<field> after it.
 
     """
 
@@ -597,8 +597,8 @@ def _styled(key: str, value: typing.Any, old: typing.Any) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _drop(node: typing.Any, list_part: list[str], path: str, id_self: str) -> None:
     """
-    Take the value at the path list_part out of node, with guid_<role>
-    if it is id_<role>.
+    Take the value at the path list_part out of node, with guid_<field>
+    if it is id_<field>.
 
     """
 
@@ -650,7 +650,7 @@ def _is_reference(key: str, value: typing.Any) -> bool:
 # -----------------------------------------------------------------------------
 def _key_guid(key: str) -> str:
     """
-    Return guid_<role> for the field id_<role>.
+    Return guid_<field> for the field id_<field>.
 
     """
 
@@ -1066,7 +1066,7 @@ def _ordered(list_field: list[tuple[str, typing.Any]]) -> dict:
 def _referenced(tree: Tree, map_field: dict) -> dict:
     """
     Return the fields of map_field, with the guid of each item that a
-    field id_<role> names put after it as guid_<role>, unless given.
+    field id_<field> names put after it as guid_<field>, unless given.
 
     """
 
@@ -1101,8 +1101,8 @@ def _after(list_key: list[str], key: str) -> str:
     """
     Return the field of list_key that a new field key goes after: the
     last descriptive field before it in order, or for any other field
-    the last field before the aliases and edges. A field guid_<role>
-    goes after id_<role>.
+    the last field before the aliases and edges. A field guid_<field>
+    goes after id_<field>.
 
     """
 
