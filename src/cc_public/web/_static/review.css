@@ -500,6 +500,43 @@ table.references th {
   }
 }
 
+/* Each diagram folds under a caption, as the rows of the matrix do. */
+
+details.diagram {
+  font-size: inherit;
+  margin: 2rem 0 0;
+}
+
+details.diagram > summary {
+  list-style: none;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+
+details.diagram > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.diagram > summary .label {
+  color: var(--ink-muted);
+}
+
+details.diagram > summary .label::before {
+  content: "\25B8\00A0";
+}
+
+details.diagram[open] > summary .label::before {
+  content: "\25BE\00A0";
+}
+
+details.diagram > summary:hover .label {
+  color: var(--link);
+}
+
+details.diagram > figure.map {
+  margin-top: 1rem;
+}
+
 /* The diagram of an argument breaks out of the text column. */
 
 figure.map {

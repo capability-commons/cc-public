@@ -199,6 +199,15 @@ def test_for_and_against_are_marked_with_a_tick_and_a_cross(tree):
     assert '<li class="for">+' not in text
 
 
+def test_the_sankey_diagram_is_shown_and_the_graph_folded(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text  = body.decode()
+    assert re.search(r'<details class="diagram sankey" open><summary><span class="label">'
+                     r'Sankey of the argument</span></summary><figure class="map sankey">', text)
+    assert re.search(r'<details class="diagram network"><summary><span class="label">'
+                     r'Graph of the argument</span></summary><figure class="map network">', text)
+
+
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))

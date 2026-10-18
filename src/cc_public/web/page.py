@@ -111,7 +111,8 @@ def issue(graph:      Graph,
     """
     Return the page that shows an issue and the argument on it, with the
     parts of its diagram in set_toggle opened or closed, the annotation
-    in set_show opened in the decision matrix.
+    in set_show opened in the decision matrix. The Sankey diagram is
+    shown and the graph folded away under its caption.
 
     """
 
@@ -123,13 +124,30 @@ def issue(graph:      Graph,
     return _page(item.title,
                  [_matrix(graph, issue, outline, set_show or set()),
                   _determinations(graph, issue),
-                  cc_public.web.sankey.figure(graph, outline, set_toggle, set_show or set()),
-                  cc_public.web.network.figure(graph, outline),
+                  _diagram('Sankey of the argument', 'sankey', True,
+                           cc_public.web.sankey.figure(graph, outline, set_toggle,
+                                                       set_show or set())),
+                  _diagram('Graph of the argument', 'network', False,
+                           cc_public.web.network.figure(graph, outline)),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
                   _sequence(graph, issue),
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
                  [_facts(graph, issue, list_subject)])
+
+
+# -----------------------------------------------------------------------------
+def _diagram(caption: str, name: str, is_open: bool, figure: typing.Any) -> typing.Any:
+    """
+    Return figure folded under a caption that shows or hides it, open
+    if is_open. A folded diagram is still lit and pinned, so it opens
+    as it would have shown.
+
+    """
+
+    return htpy.details(class_ = 'diagram ' + name, open = is_open)[
+        htpy.summary[htpy.span(class_ = 'label')[caption]],
+        figure]
 
 
 # -----------------------------------------------------------------------------

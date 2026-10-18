@@ -4,8 +4,8 @@
 // of the address, so the page keeps its place instead of jumping to the
 // pinned element. A click off the decision matrix while a decision is
 // shown points the address at a fragment no element has, which hides the
-// decision. Without script the page jumps, and a decision stays shown
-// until another is chosen.
+// decision; folding or opening a diagram does not. Without script the
+// page jumps, and a decision stays shown until another is chosen.
 
 var keep = null;
 
@@ -19,7 +19,7 @@ document.addEventListener('click', function (event) {
     return;
   }
   var shown = document.querySelector('section.matrix :is(.decision, .decision-role):target');
-  if (shown && !event.target.closest('section.matrix')) {
+  if (shown && !event.target.closest('section.matrix, details.diagram > summary')) {
     keep = window.scrollY;
     location.hash = 'unpin';
   }
