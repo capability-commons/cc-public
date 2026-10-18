@@ -48,6 +48,7 @@
   --width-text: 40rem;
   --width-margin: 17rem;
   --gap: 2.5rem;
+  --shade: rgba(94, 86, 72, 0.06);
 }
 
 html {
@@ -238,21 +239,10 @@ details p {
   margin: 0.4rem 0 0.6rem;
 }
 
-/* The argument: annotations grouped by concern, each folded to one
-   line, its title, that opens to its brief and its answers. The brief
-   has a mark of its own and opens in turn to the description. */
-
-.concern-group h3 {
-  font-weight: normal;
-  font-style: italic;
-  font-size: 1.5rem;
-  margin: 1.75rem 0 0.25rem;
-}
-
-.concern-group .tally {
-  margin: 2rem 0 0;
-  font-variant: small-caps;
-}
+/* The argument under a row of the matrix: annotations, each folded to
+   one line, its title, that opens to its brief. The brief and the
+   description each have a mark of their own and open in turn to the
+   description and to the answers. */
 
 details.annotation {
   font-size: inherit;
@@ -312,10 +302,6 @@ details.annotation > .body {
 
 details.annotation > .body .main > p {
   margin-left: 1.3rem;
-}
-
-details.annotation > .body details {
-  margin: -0.25rem 0 0.5rem 1.3rem;
 }
 
 .depth-1 > summary .main,
@@ -588,27 +574,177 @@ figure.map svg {
   text-decoration: underline;
 }
 
-/* The decision matrix: a row for each decision and a column for each
-   concern, across both columns of the page. Drivers are in ink and the
-   other concerns muted, as in the diagram. */
+/* The decision matrix: a column for each decision and a row for each
+   concern, across both columns of the page, as the foot of the
+   masthead. The concerns stand in the text column and the decisions in
+   the margin, so what a row opens to keeps the columns of the page.
+   Decision names lean back to fit. The rows of the matrix are lightly
+   shaded, setting them apart from the argument they open to. */
 
-section.matrix > table.matrix {
-  table-layout: auto;
-}
-
-section.matrix > table.matrix th:first-child {
-  width: auto;
-  min-width: 9rem;
-}
-
-table.matrix {
+section.matrix {
+  margin: -0.75rem 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--ink);
   font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+section.matrix .row {
+  display: grid;
+  grid-template-columns: minmax(0, var(--width-text)) var(--gap)
+                         repeat(var(--decisions), minmax(0, 1fr));
+  max-width: calc(var(--width-text) + var(--gap) + var(--width-margin));
+  align-items: baseline;
+  background: var(--shade);
+}
+
+section.matrix .row > .cell:nth-child(2) {
+  grid-column-start: 3;
+}
+
+section.matrix .row > .label {
+  padding: 0.3rem 0 0.3rem 1.3rem;
+}
+
+section.matrix .row > .cell {
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  padding: 0.3rem 0.2rem;
+}
+
+section.matrix .row.head {
+  height: 8rem;
+  align-items: end;
+}
+
+section.matrix .row.head > .cell {
+  position: relative;
+  height: 100%;
+  padding: 0;
+}
+
+section.matrix .row.head > .cell > a {
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  width: 10rem;
+  transform-origin: 0 100%;
+  transform: rotate(-45deg);
+  white-space: normal;
+  text-align: left;
+  line-height: 1.15;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+section.matrix .row.head > .cell > a:hover {
+  color: var(--link);
+}
+
+section.matrix .row.head,
+section.matrix .row.foot.total {
+  border-bottom: 1px solid var(--rule);
+}
+
+section.matrix details.concern,
+section.matrix .row.concern {
+  border-bottom: 1px solid var(--paper);
+}
+
+section.matrix details.concern {
+  font-size: inherit;
+  margin: 0;
+}
+
+section.matrix details.concern > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+section.matrix details.concern > summary::-webkit-details-marker {
+  display: none;
+}
+
+section.matrix details.concern > summary .label {
+  position: relative;
+}
+
+section.matrix details.concern > summary .label::before {
+  content: "\25B8";
+  position: absolute;
+  left: 0.15rem;
+  color: var(--ink-muted);
+}
+
+section.matrix details.concern[open] > summary .label::before {
+  content: "\25BE";
+}
+
+section.matrix details.concern > summary:hover .name {
+  color: var(--link);
+}
+
+section.matrix .name.other {
+  color: var(--ink-muted);
+}
+
+section.matrix .unargued {
+  margin-left: 0.6em;
+  font-style: italic;
+  color: var(--ink-open);
+}
+
+section.matrix .row.foot > .label {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+
+section.matrix .row.foot.controls > .cell {
+  padding: 0.4rem 0.3rem;
+}
+
+section.matrix .for { color: var(--ink-for); }
+section.matrix .against { color: var(--ink-against); }
+section.matrix .both { color: var(--ink); }
+section.matrix .none { color: var(--rule); }
+
+section.matrix-unit details.concern .cell {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+section.matrix-pugh details.concern .cell,
+section.matrix-pugh .row.concern .cell {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+section.matrix a.cell {
+  text-decoration: none;
+  display: inline-block;
+  padding: 0 0.2rem;
+}
+
+section.matrix a.cell:hover {
+  background: var(--rule);
+}
+
+/* What a row opens to stands on the paper, below the shaded row. */
+
+section.matrix .drill {
+  padding: 0.4rem 0 0.8rem;
+  font-size: 1.4rem;
+  line-height: 1.5;
 }
 
 nav.matrix-style {
-  font-size: 1.05rem;
+  margin-top: 0.4rem;
   color: var(--ink-muted);
-  margin: -0.5rem 0 0.6rem;
 }
 
 nav.matrix-style a.current {
@@ -617,65 +753,18 @@ nav.matrix-style a.current {
   font-style: italic;
 }
 
-table.matrix thead th.concern {
-  text-align: center;
-  padding: 0.4rem 0.2rem 0.3rem;
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
+/* On a narrow screen the decisions share what the concerns leave. */
 
-table.matrix thead th.concern a {
-  color: var(--ink);
-  text-decoration: none;
-}
+@media (max-width: 760px) {
+  section.matrix .row {
+    grid-template-columns: minmax(0, 1fr) 0.5rem repeat(var(--decisions), 4.5rem);
+  }
 
-table.matrix thead th.other a {
-  color: var(--ink-muted);
-}
-
-table.matrix .unargued {
-  display: block;
-  font-variant: normal;
-  font-style: italic;
-  color: var(--ink-open);
-}
-
-table.matrix .standing {
-  display: block;
-  font-size: 0.9rem;
-}
-
-table.matrix tbody th a {
-  color: var(--ink);
-  text-decoration: none;
-}
-
-table.matrix td.cell {
-  text-align: center;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  padding: 0.3rem 0.2rem;
-}
-
-table.matrix td.total,
-table.matrix th.total {
-  border-left: 1px solid var(--rule);
-  text-align: center;
-}
-
-table.matrix .for { color: var(--ink-for); }
-table.matrix .against { color: var(--ink-against); }
-table.matrix .both { color: var(--ink); }
-table.matrix .none { color: var(--rule); }
-
-table.matrix-unit td.cell:not(.total) {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  vertical-align: middle;
-}
-
-table.matrix-pugh td.cell:not(.total) {
-  font-size: 1.3rem;
+  section.matrix .row.head > .cell > a {
+    left: 30%;
+    width: 7.5rem;
+    transform: rotate(-90deg);
+  }
 }
 
 form.determine {
@@ -770,72 +859,67 @@ details.annotation .block.description .main > p.description {
   margin-top: 0;
 }
 
-/* The brief of an annotation that has a description folds over it, with
-   its mark in the gutter under the mark of the title. */
-
-details.annotation > .body > details.brief {
+details.annotation details.brief,
+details.annotation details.description {
   font-size: inherit;
   margin: 0;
 }
 
-details.brief > summary {
+/* A brief or description with more under it folds over it, with its
+   mark in the gutter under the mark of the title. */
+
+details.brief > summary,
+details.description > summary {
   list-style: none;
   font-style: normal;
   color: var(--ink);
 }
 
-details.brief > summary::-webkit-details-marker {
+details.brief > summary::-webkit-details-marker,
+details.description > summary::-webkit-details-marker {
   display: none;
 }
 
-details.brief > summary .main > p {
+details.brief > summary > .block > .main > p,
+details.description > summary > .block > .main > p {
   position: relative;
 }
 
-details.brief > summary .main > p::before {
+details.brief > summary > .block > .main > p::before,
+details.description > summary > .block > .main > p::before {
   content: "\25B8";
   position: absolute;
   left: -1.1rem;
   color: var(--ink-muted);
 }
 
-details.brief[open] > summary .main > p::before {
+details.brief[open] > summary > .block > .main > p::before,
+details.description[open] > summary > .block > .main > p::before {
   content: "\25BE";
 }
 
-details.brief > summary:hover .main > p::before {
+details.brief > summary:hover > .block > .main > p::before,
+details.description > summary:hover > .block > .main > p::before {
   color: var(--link);
 }
 
-/* The matrix scrolls in its own box when the page is too narrow for
-   it, and each cell that holds weight links to its annotations. */
+/* The place of an issue among all issues, under its title, with steps
+   to the issues before and after it. */
 
-section.matrix > .scroll {
-  overflow-x: auto;
-  margin: 0 0 1.5rem;
+.masthead nav.sequence {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  margin: -0.6rem 0 0.8rem;
 }
 
-section.matrix > .scroll > table.matrix {
-  margin: 0;
-}
-
-table.matrix a.cell {
+.masthead nav.sequence a.step {
+  color: var(--ink-muted);
   text-decoration: none;
-  display: inline-block;
-  padding: 0 0.2rem;
+  font-family: Georgia, serif;
 }
 
-table.matrix a.cell:hover {
-  background: var(--rule);
+.masthead nav.sequence a.step:hover {
+  color: var(--link);
 }
 
-/* The place of an issue among all issues, with steps to the issues
-   before and after it. */
 
-.masthead header .sequence {
-  margin-left: 1.2em;
-}
-
-.masthead header .sequence a.step {
-  padding: 0 0.3em;
-}

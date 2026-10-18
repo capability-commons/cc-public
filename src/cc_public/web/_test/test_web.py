@@ -113,16 +113,65 @@ def test_issue_page_escapes_prose(tree):
     assert b'&lt;b&gt;one&lt;/b&gt; item?' in body
 
 
-def test_matrix_has_a_row_for_each_decision_and_a_column_for_each_concern(tree):
+def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
-    matrix  = text[text.index('<table class="matrix'):text.index('</table>',
-                                                               text.index('<table class="matrix'))]
-    assert matrix.count('<th scope="row">') == len(outline.list_decision)
-    assert matrix.count('scope="col"') == len(outline.list_concern) + 3
-    assert text.index('class="matrix"') < text.index('<h2>Decisions</h2>') < text.index('<figure')
+    matrix  = text[text.index('<section class="matrix'):text.index('<h2>Decisions</h2>')]
+    head    = matrix[matrix.index('<div class="row head">'):matrix.index('class="concern')]
+    assert head.count('<div class="cell">') == len(outline.list_decision)
+    for id_decision in outline.list_decision:
+        assert 'href="#{id}"'.format(id = id_decision) in head
+    assert len(re.findall(r'class="(?:row )?concern"', matrix)) == len(outline.list_concern)
+    assert '--decisions: {count}'.format(count = len(outline.list_decision)) in matrix
+    assert matrix.index('class="row foot controls"') < matrix.index('class="matrix-style"')
+    assert '<h2>Decision matrix</h2>' not in text
+    assert text.index('<h2>Decisions</h2>') < text.index('<figure')
+
+
+def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text    = body.decode()
+    for id_concern in outline.list_concern:
+        if not outline.map_annotation[id_concern]:
+            continue
+        start = text.index('<details class="concern" id="{id}">'.format(id = id_concern))
+        row   = text[start:text.index('<div class="drill">', start)]
+        assert '<summary><div class="row">' in row
+        for id_annotation in outline.map_annotation[id_concern]:
+            assert 'id="{c}/{a}"'.format(c = id_concern, a = id_annotation) in text[start:]
+
+
+def test_answers_sit_under_the_description_of_what_they_answer(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text    = body.decode()
+    count   = 0
+    for id_concern in outline.list_concern:
+        for id_annotation in outline.map_annotation[id_concern]:
+            list_answer = outline.answers(id_annotation)
+            if not list_answer or not graph.map_item[id_annotation].description:
+                continue
+            key   = id_concern + '/' + id_annotation
+            start = text.index('id="{key}"'.format(key = key))
+            inner = text[start:text.index('id="{key}/{a}"'.format(key = key,
+                                                                  a   = list_answer[0][0]))]
+            assert inner.index('<details class="brief">') \
+                < inner.index('<details class="description">') \
+                < inner.rindex('<div class="answers">')
+            count += 1
+            key_found = key
+    assert count > 0
+    key = key_found
+    (_, _, shown) = cc_public.web.server.respond(
+        tree, '/issue/{id}?show={k}/x'.format(id = ID_ISSUE, k = urllib.parse.quote(key, safe = '')))
+    assert 'id="{k}" open'.format(k = key).encode() in shown
+    assert b'<details class="brief" open>' in shown
+    assert b'<details class="description" open>' in shown
 
 
 def test_matrix_cells_are_drawn_as_the_address_says(tree):
@@ -237,8 +286,8 @@ def test_map_opens_concerns_and_closes_annotations_by_default(tree):
     query = '&'.join('toggle=' + other.concern for other in cc_public.web.sankey.units(issue)
                      if other.annotation == unit.annotation)
     (_, _, closed) = cc_public.web.server.respond(tree, path + '?' + query)
-    assert title.encode() in opened.split(b'</svg>')[0]
-    assert title.encode() not in closed.split(b'</svg>')[0]
+    assert title.encode() in _figure(opened)
+    assert title.encode() not in _figure(closed)
     assert '?toggle={key}'.format(key = unit.concern).encode() in opened
 
 
@@ -326,3 +375,7 @@ def test_requirement_page_shows_its_statement(tree):
     assert (b'As soon as the Tooling renames an item, the Tooling shall keep the guid of '
             b'the item.') in body
     assert b'Renaming an item leaves its guid as it was.' in body
+
+
+def _figure(body: bytes) -> bytes:
+    return body[body.index(b'<figure'):body.index(b'</svg>')]

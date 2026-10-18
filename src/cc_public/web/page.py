@@ -19,20 +19,21 @@ description:            |
                         The issue list groups the issues by subject,
                         with the size of each argument and whether it
                         is settled. The page of an issue opens with
-                        the Sankey diagram of
-                        pym_cc_public.web.sankey, then sets each
-                        decision and each annotation in the text
-                        column, with its standing, what it bears on
-                        and the concerns it argues for in the margin.
-                        Decisions are read from most supported to most
-                        opposed. The annotations follow the outline of
-                        the diagram: grouped by concern in its order,
-                        an annotation that argues for several concerns
-                        under each, and numbered as the diagram
-                        numbers them. Each annotation folds to one
-                        line, its title, which opens to its brief and
-                        the annotations that answer it. The brief
-                        opens in turn to the description.
+                        its decision matrix: a column for each
+                        decision and a row for each concern, in the
+                        order of the Sankey diagram of
+                        pym_cc_public.web.sankey. Decisions are read
+                        from most supported to most opposed. Each
+                        concern row opens to the annotations that
+                        argue for it, numbered as the diagram numbers
+                        them, an annotation that argues for several
+                        concerns under each. An annotation folds to
+                        its title, which opens to its brief, which
+                        opens to its description, which opens to the
+                        annotations that answer it. Opened parts set
+                        their text in the text column and their notes
+                        in the margin. The decisions, the diagram and
+                        the cross-references follow.
 relation:               []
 
 ...
@@ -63,6 +64,8 @@ MARK_AGAINST      = '−'
 MARK_BOTH         = '±'
 MARK_NONE         = '·'
 MARK_UNIT         = '■'
+MARK_PREVIOUS     = '←'
+MARK_NEXT         = '→'
 
 # The ways the decision matrix can summarise a cell, chosen by the
 # query of the page address: counts for and against, one Pugh mark, or
@@ -128,19 +131,18 @@ def issue(graph:      Graph,
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
-                 [_matrix(graph, issue, outline, matrix),
+                 [_matrix(graph, issue, outline, matrix, set_show or set()),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
                   cc_public.web.sankey.figure(graph, outline, set_toggle, set_show or set()),
-                  _argument(graph, outline, set_show or set()),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
+                  _sequence(graph, issue),
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
-                 [_facts(graph, issue, list_subject)],
-                 _sequence(graph, issue))
+                 [_facts(graph, issue, list_subject)])
 
 
 # -----------------------------------------------------------------------------
@@ -156,54 +158,94 @@ def parse_matrix(query: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _matrix(graph:   Graph,
-            issue:   Issue,
-            outline: cc_public.web.sankey.Outline,
-            matrix:  str) -> typing.Any:
+def _matrix(graph:    Graph,
+            issue:    Issue,
+            outline:  cc_public.web.sankey.Outline,
+            matrix:   str,
+            set_show: set[str]) -> typing.Any:
     """
-    Return the decision matrix of the issue: a row for each decision
-    and a column for each concern, in the order of the diagram, each
-    cell summing what the annotations say for and against the decision
-    for the concern, with the standing of each decision and the
-    controls that settle it. A driver no annotation argues for is
+    Return the decision matrix of the issue: a column for each decision
+    and a row for each concern, in the order of the diagram, each cell
+    summing what the annotations say for and against the decision for
+    the concern. Each row opens to the annotations that argue for its
+    concern; those in set_show are opened. The foot holds the total and
+    the standing of each decision, the controls that settle it, and the
+    choice of how cells are drawn. A driver no annotation argues for is
     marked, as a determination waits on it.
 
     """
 
-    set_unspoken = set(issue.unspoken())
+    list_decision = outline.list_decision
 
-    def head(id_concern: str) -> typing.Any:
-        css = 'concern' if id_concern in issue.list_driver else 'concern other'
-        return htpy.th(class_ = css, scope = 'col')[
-            htpy.a(href = '#' + id_concern)[graph.title(id_concern)],
-            htpy.span(class_ = 'unargued')['not argued'] if id_concern in set_unspoken else None]
+    def row(list_label: list, list_cell: list, **map_attribute: str) -> typing.Any:
+        css = 'row ' + map_attribute.pop('class_', '')
+        return htpy.div(class_ = css.strip(), **map_attribute)[
+            htpy.div(class_ = 'label')[list_label],
+            [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
 
-    return htpy.section(class_ = 'matrix')[
-        htpy.h2['Decision matrix'],
+    list_row = [row([], [htpy.a(href = '#' + id_decision)[graph.title(id_decision)]
+                         for id_decision in list_decision],
+                    class_ = 'head')]
+
+    for id_concern in outline.list_concern:
+        list_annotation = outline.map_annotation[id_concern]
+        list_cell       = [_cell_link(outline, id_decision, id_concern, matrix)
+                           for id_decision in list_decision]
+        label           = _concern_label(graph, issue, id_concern)
+        if not list_annotation:
+            list_row.append(row(label, list_cell, class_ = 'concern'))
+            continue
+        list_row.append(htpy.details(class_ = 'concern', id = id_concern,
+                                     open   = _is_within(set_show, id_concern))[
+            htpy.summary[row(label, list_cell)],
+            htpy.div(class_ = 'drill')[
+                [_annotation(graph, outline, id_annotation,
+                             cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
+                             id_concern, set(), set_show)
+                 for id_annotation in list_annotation]]])
+
+    if outline.list_other:
+        list_row.append(htpy.details(class_ = 'concern other', id = 'other',
+                                     open   = any(_is_within(set_show, id_annotation)
+                                                  for id_annotation in outline.list_other))[
+            htpy.summary[row([htpy.span(class_ = 'name')['Other annotations']],
+                             [None for _ in list_decision])],
+            htpy.div(class_ = 'drill')[
+                [_annotation(graph, outline, id_annotation, id_annotation, None, set(), set_show)
+                 for id_annotation in outline.list_other]]])
+
+    list_row += [
+        row(['All'], [_cell(outline.units(decision = id_decision), MATRIX_COUNT)
+                      for id_decision in list_decision], class_ = 'foot total'),
+        row(['Standing'], [_stance(issue.map_stance.get(id_decision,
+                                                        cc_public.web.argument.STANCE_OPEN))
+                           for id_decision in list_decision], class_ = 'foot standing'),
+        row([], [_controls(id_decision) for id_decision in list_decision],
+            class_ = 'foot controls')]
+
+    return htpy.section(class_ = 'matrix matrix-' + matrix,
+                        style  = '--decisions: {count}'.format(count = len(list_decision)))[
+        list_row,
         htpy.nav(class_ = 'matrix-style')[
             'Cells: ',
             [[htpy.a(href = '?{key}={value}'.format(key = KEY_MATRIX, value = value),
                      class_ = 'current' if value == matrix else None)[value],
-              ' '] for value in TUPLE_MATRIX]],
-        htpy.div(class_ = 'scroll')[htpy.table(class_ = 'matrix matrix-' + matrix)[
-            htpy.thead[htpy.tr[
-                htpy.th(scope = 'col')['Decision'],
-                [head(id_concern) for id_concern in outline.list_concern],
-                htpy.th(class_ = 'total', scope = 'col')['All'],
-                htpy.th(scope = 'col')['']]],
-            htpy.tbody[[
-                htpy.tr[
-                    htpy.th(scope = 'row')[
-                        htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
-                        htpy.span(class_ = 'standing')[_stance(issue.map_stance.get(
-                            id_decision, cc_public.web.argument.STANCE_OPEN))]],
-                    [htpy.td(class_ = 'cell')[_cell_link(outline, id_decision, id_concern,
-                                                         matrix)]
-                     for id_concern in outline.list_concern],
-                    htpy.td(class_ = 'cell total')[_cell(outline.units(decision = id_decision),
-                                                         MATRIX_COUNT)],
-                    htpy.td(class_ = 'controls')[_controls(id_decision)]]
-                for id_decision in outline.list_decision]]]]]
+              ' '] for value in TUPLE_MATRIX]]]
+
+
+# -----------------------------------------------------------------------------
+def _concern_label(graph: Graph, issue: Issue, id_concern: str) -> list:
+    """
+    Return the label of the row of id_concern in the decision matrix:
+    its name, in ink if it drives the subject of the issue and muted if
+    not, marked if it is a driver no annotation argues for.
+
+    """
+
+    css = 'name' if id_concern in issue.list_driver else 'name other'
+    return [htpy.span(class_ = css)[graph.title(id_concern)],
+            htpy.span(class_ = 'unargued')['not argued']
+            if id_concern in set(issue.unspoken()) else None]
 
 
 # -----------------------------------------------------------------------------
@@ -212,9 +254,9 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
                id_concern:  str,
                matrix:      str) -> typing.Any:
     """
-    Return a cell of the decision matrix, linked to the annotations in
-    the list that argue for id_concern on id_decision, all opened there
-    and the first in view.
+    Return a cell of the decision matrix, linked to the annotations
+    that argue for id_concern on id_decision, all opened in its row and
+    the first in view.
 
     """
 
@@ -380,13 +422,12 @@ def missing(id_item: str) -> str:
 def _page(title:       str,
           body:        typing.Any,
           head:        typing.Any = None,
-          head_margin: typing.Any = None,
-          nav:         typing.Any = None) -> str:
+          head_margin: typing.Any = None) -> str:
     """
     Return the HTML of a page with title and body. head follows the
     name of the site and the links to the indexes in the text column,
     with head_margin beside them in the margin, so the margin starts at
-    the top of the page; nav follows the links to the indexes.
+    the top of the page.
 
     """
 
@@ -401,8 +442,7 @@ def _page(title:       str,
                 _block([htpy.header[TITLE_SITE,
                                     [[htpy.span(class_ = 'bar')['|'],
                                       htpy.a(href = href)[name]]
-                                     for (name, href) in LIST_INDEX],
-                                    nav],
+                                     for (name, href) in LIST_INDEX]],
                         head],
                        [head_margin],
                        class_ = 'masthead ruled' if head_margin else 'masthead'),
@@ -530,51 +570,10 @@ def _sequence(graph: Graph, issue: Issue) -> typing.Any:
                       title  = '{label} issue: {title}'.format(
                                    label = label.capitalize(), title = graph.title(id_other)))[mark]
 
-    return htpy.span(class_ = 'sequence')[
-        step(-1, 'previous', 'prev'),
+    return htpy.nav(class_ = 'sequence')[
+        step(-1, MARK_PREVIOUS, 'prev'),
         ' {place} of {count} '.format(place = index + 1, count = len(list_id)),
-        step(1, 'next', 'next')]
-
-
-# -----------------------------------------------------------------------------
-def _argument(graph:    Graph,
-              outline:  cc_public.web.sankey.Outline,
-              set_show: set[str]) -> typing.Any:
-    """
-    Return the annotations of the outline, grouped by concern in the
-    order of the diagram, then those no concern reaches. The annotation
-    in set_show are opened, with those they sit within.
-
-    """
-
-    list_group = []
-    for id_concern in outline.list_concern:
-        list_annotation = outline.map_annotation[id_concern]
-        if not list_annotation:
-            continue
-        list_unit = outline.units(concern = id_concern)
-        count_for = sum(1 for unit in list_unit if unit.is_for())
-        list_group.append(htpy.section(class_ = 'concern-group', id = id_concern)[
-            _block([htpy.h3[graph.title(id_concern)]],
-                   [htpy.p(class_ = 'tally')[
-                        htpy.span(class_ = ROLE_FOR)['+{count}'.format(count = count_for)],
-                        ' ',
-                        htpy.span(class_ = ROLE_AGAINST)['−{count}'.format(
-                                                             count = len(list_unit) - count_for)],
-                        ' driving concern' if id_concern in outline.issue.list_driver
-                        else None]]),
-            [_annotation(graph, outline, id_annotation,
-                         cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
-                         id_concern, set(), set_show)
-             for id_annotation in list_annotation]])
-
-    if outline.list_other:
-        list_group.append(htpy.section(class_ = 'concern-group')[
-            _block([htpy.h3['Other annotations']], []),
-            [_annotation(graph, outline, id_annotation, id_annotation, None, set(), set_show)
-             for id_annotation in outline.list_other]])
-
-    return htpy.section[htpy.h2['Argument'], list_group]
+        step(1, MARK_NEXT, 'next')]
 
 
 # -----------------------------------------------------------------------------
@@ -587,12 +586,12 @@ def _annotation(graph:         Graph,
                 set_show:      set[str]) -> typing.Any:
     """
     Return an annotation folded to one line: its number, title and what
-    it bears on. Open, it shows its brief, which opens in turn to its
-    description, then the annotations that answer it, folded the same
-    way. key places it in
-    the outline, under id_concern if it is not an answer; set_path
-    holds the annotations above it. It is opened if a key in set_show
-    is key or lies within it.
+    it bears on. Open, it shows its brief, which opens to its
+    description, which opens to the annotations that answer it, folded
+    the same way. key places it in the outline, under id_concern if it
+    is not an answer; set_path holds the annotations above it. It is
+    opened if a key in set_show is key or lies within it, and opened
+    down to its answers if one lies within it.
 
     """
 
@@ -627,11 +626,12 @@ def _annotation(graph:         Graph,
             _brief(graph, annotation, key,
                    [None if id_concern
                     else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
-                    _id(annotation.id)])],
-        [_annotation(graph, outline, id_answer,
-                     cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
-                     None, set_path | {id_annotation}, set_show)
-         for id_answer in list_answer]]
+                    _id(annotation.id)],
+                   [_annotation(graph, outline, id_answer,
+                                cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
+                                None, set_path | {id_annotation}, set_show)
+                    for id_answer in list_answer],
+                   _is_inside(set_show, key))]]
 
 
 # -----------------------------------------------------------------------------
@@ -641,7 +641,17 @@ def _is_within(set_show: set[str], key: str) -> bool:
 
     """
 
-    return any(key_show == key or key_show.startswith(key + cc_public.web.sankey.DELIM_KEY)
+    return key in set_show or _is_inside(set_show, key)
+
+
+# -----------------------------------------------------------------------------
+def _is_inside(set_show: set[str], key: str) -> bool:
+    """
+    Return True if a key in set_show lies within key, and is not key.
+
+    """
+
+    return any(key_show.startswith(key + cc_public.web.sankey.DELIM_KEY)
                for key_show in set_show)
 
 
@@ -667,19 +677,31 @@ def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typi
 
 
 # -----------------------------------------------------------------------------
-def _brief(graph: Graph, annotation: Item, key: str, list_margin: list) -> typing.Any:
+def _brief(graph:       Graph,
+           annotation:  Item,
+           key:         str,
+           list_margin: list,
+           list_answer: list,
+           is_open:     bool) -> typing.Any:
     """
-    Return the brief of the annotation with list_margin beside it. If
-    the annotation has a description, the brief folds over it and opens
-    to it.
+    Return the brief of the annotation with list_margin beside it,
+    folded over its description, which is folded in turn over
+    list_answer, the annotations that answer it. A level with nothing
+    under it does not fold. is_open opens every level.
 
     """
 
     block = _block([htpy.p[_prose(annotation.brief)]], list_margin)
-    if not annotation.description:
+    if annotation.description:
+        under = _description(graph, annotation, key)
+        if list_answer:
+            under = htpy.details(class_ = 'description', open = is_open)[
+                htpy.summary[under], htpy.div(class_ = 'answers')[list_answer]]
+    elif list_answer:
+        under = htpy.div(class_ = 'answers')[list_answer]
+    else:
         return block
-    return htpy.details(class_ = 'brief')[htpy.summary[block],
-                                          _description(graph, annotation, key)]
+    return htpy.details(class_ = 'brief', open = is_open)[htpy.summary[block], under]
 
 
 # -----------------------------------------------------------------------------
