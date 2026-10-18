@@ -35,6 +35,7 @@ import htpy
 
 import cc_public.web.argument
 import cc_public.web.description
+import cc_public.web.network
 import cc_public.web.page
 import cc_public.web.sankey
 import cc_public.web.server
@@ -242,6 +243,23 @@ def test_an_annotation_brief_folds_over_its_description(tree):
     assert len(re.findall(r'<details class="brief">\s*<summary>\s*<div class="block">', text)) \
         == text.count('<details class="brief">')
     assert 'Evidence' not in text
+
+
+def test_graph_port_lights_its_chain_by_net_effect(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
+    body    = str(cc_public.web.network.figure(graph, outline))
+    key     = 'port-dec_tooling_in_python-for'
+    assert 'id="{key}"'.format(key = key) in body
+
+    def css(id_item):
+        pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
+        return re.search(pattern, body).group(1).split()
+
+    assert key + '-for' in css('ann_python_is_fast_enough')
+    assert key + '-against' in css('ann_graphs_will_grow')
+    assert key + '-for' in css('ann_cross_item_checks_run_in_clingo')
+    assert key not in css('ann_types_catch_errors_early')
 
 
 def test_item_page_names_the_issue_of_a_decision(tree):

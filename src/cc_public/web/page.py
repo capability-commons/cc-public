@@ -49,6 +49,7 @@ import htpy
 import cc_public.requirement.compose
 import cc_public.web.argument
 import cc_public.web.description
+import cc_public.web.network
 import cc_public.web.sankey
 
 
@@ -123,6 +124,7 @@ def issue(graph:      Graph,
                        for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
                   cc_public.web.sankey.figure(graph, outline, set_toggle, set_show or set()),
+                  cc_public.web.network.figure(graph, outline),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
                   _sequence(graph, issue),

@@ -571,6 +571,40 @@ figure.map svg {
   text-decoration: underline;
 }
 
+/* The graph of an argument: each decision and annotation once, with
+   an edge for each support and challenge. */
+
+.network .node rect {
+  fill: var(--paper);
+  stroke: var(--rule);
+}
+
+.network .node.decision rect { stroke: var(--ink); }
+.network .node.decision text.name { font-style: italic; font-size: 14px; }
+
+.network .edges path { fill: none; stroke-width: 1.4; }
+.network .edge-for { stroke: var(--ink-for); }
+.network .edge-against { stroke: var(--ink-against); stroke-dasharray: 5 3; }
+
+.network .port { outline: none; }
+.network .port circle { stroke-width: 1.4; fill: var(--paper); cursor: pointer; }
+.network .port-for circle { stroke: var(--ink-for); }
+.network .port-against circle { stroke: var(--ink-against); }
+.network .port:hover circle,
+.network .port:target circle { stroke-width: 2.5; }
+.network .port-for:hover circle,
+.network .port-for:target circle { fill: var(--ink-for); }
+.network .port-against:hover circle,
+.network .port-against:target circle { fill: var(--ink-against); }
+
+/* While a port is lit, everything outside its chain is dimmed. */
+
+.network { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; }
+.network .nodes > g,
+.network .edges path { transition: opacity 0.12s; }
+.network svg:has(.port:hover, .port:target) .nodes > g,
+.network svg:has(.port:hover, .port:target) .edges path { opacity: 0.18; }
+
 /* The decision matrix: a column for each decision and a row for each
    concern, as the foot of the masthead. The decisions share the width
    the concern names leave, their names set level and wrapped. Each
