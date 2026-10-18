@@ -574,17 +574,20 @@ figure.map svg {
 /* The graph of an argument: each decision and annotation once, with
    an edge for each support and challenge. */
 
-.network .node rect {
+.network .node .shape {
   fill: var(--paper);
   stroke: var(--rule);
 }
 
-.network .node.decision rect { stroke: var(--ink); }
+.network .node.decision .shape { stroke: var(--ink); }
 .network .node.decision text.name { font-style: italic; font-size: 14px; }
+.network .node.hub .shape { stroke: var(--ink-muted); stroke-width: 1.2; }
+.network .node.hub text.concern { text-anchor: end; font-size: 12px; fill: var(--ink-muted); }
 
 .network .edges path { fill: none; stroke-width: 1.4; }
 .network .edge-for { stroke: var(--ink-for); }
 .network .edge-against { stroke: var(--ink-against); stroke-dasharray: 5 3; }
+.network .edge-link { stroke: var(--ink-muted); stroke-width: 1.1; }
 
 .network .port { outline: none; }
 .network .unpin { outline: none; cursor: default; }
@@ -599,15 +602,18 @@ figure.map svg {
 .network .port-against:hover circle,
 .network .port-against:target circle { fill: var(--ink-against); }
 
-/* While a port is lit, everything outside its chain is dimmed. */
+/* While a port or node is lit, everything outside its chain is dimmed. */
 
 .network { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; }
 .network .nodes .node,
 .network .edges path { transition: opacity 0.12s; }
-.network svg:has(.port:hover, .port:target, .pick:target) .nodes .node,
-.network svg:has(.port:hover, .port:target, .pick:target) .edges path { opacity: 0.18; }
+.network svg:has(.port:hover, .port:target, .pick:hover, .pick:target) .nodes .node,
+.network svg:has(.port:hover, .port:target, .pick:hover, .pick:target) .edges path { opacity: 0.18; }
 .network .pick { outline: none; cursor: pointer; }
-.network .pick:target rect { stroke: var(--ink); stroke-width: 1.6; }
+.network a:hover text { fill: var(--ink); text-decoration: none; }
+.network a:hover text.concern { fill: var(--ink-muted); }
+.network .pick:hover .shape,
+.network .pick:target .shape { stroke: var(--ink); stroke-width: 1.6; }
 
 /* The decision matrix: a column for each decision and a row for each
    concern, as the foot of the masthead. The decisions share the width
