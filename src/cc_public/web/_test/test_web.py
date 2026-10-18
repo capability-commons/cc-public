@@ -264,6 +264,7 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
     assert not any(css_concern.startswith(key + '-')
                    for css_concern in css('concern_performance_efficiency'))
     assert 'pick-concern_' not in body and 'port-concern_' not in body
+    assert 'id="port-dec_tooling_in_python-against"' in body
 
 
 def test_graph_node_lights_both_its_chains(tree):

@@ -74,14 +74,16 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     """
     Return the graph of the argument in outline.
 
-    An annotation has a port on its right for what supports it and one
-    for what challenges it. Hovering over a port, or following its
+    A decision or an annotation has a port on its right for what
+    supports it and one for what challenges it. Hovering over a port, or following its
     link, lights the chain of annotations that reaches it and dims the
     rest; each annotation in the chain is shaded by its net effect, the
     product of the roles along its paths. Hovering over or clicking a
     decision or an annotation does the same for every chain into it.
-    Concerns stay passive: they light with the chains through them,
-    but are never shaded and do not respond themselves. Clicking
+    Concerns are bundles rather than nodes: each edge into a concern
+    leaves it again, in the same role, for its decision. They light
+    with the chains through them, but are never shaded and do not
+    respond themselves. Clicking
     anywhere else in the graph unpins: the link names no element, so
     the page does not move.
 
@@ -109,7 +111,7 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
         map_kind[id_decision]  = KIND_DECISION
         map_place[id_decision] = (0, y)
 
-    list_port = [(id_item, role) for id_item in list_row for role in (ROLE_FOR, ROLE_AGAINST)
+    list_port = [(id_item, role) for id_item in map_place for role in (ROLE_FOR, ROLE_AGAINST)
                  if (id_item, role) in {edge[1:] for edge in list_edge}]
     map_key   = {port: 'port-{id}-{role}'.format(id = port[0], role = port[1])
                  for port in list_port}
@@ -150,8 +152,9 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
     """
     Return the edges of the argument, each from its source to its target
     with its role: from an annotation to what it answers, from an
-    annotation to the hub of each concern it argues for on a decision,
-    and from each hub to its decision.
+    annotation to the hub of each concern it argues for on a decision
+    in each role, and from each hub to its decision in that role. The
+    edge into a hub passes the effect on unchanged.
 
     """
 
@@ -160,11 +163,11 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
         for (id_target, role) in _answered(outline, id_annotation):
             list_edge.append((id_annotation, id_target, role))
         for unit in outline.units(annotation = id_annotation):
-            edge = (id_annotation, _hub(unit.decision, unit.concern), unit.role)
+            edge = (id_annotation, _hub(unit.decision, unit.concern, unit.role), ROLE_LINK)
             if edge not in list_edge:
                 list_edge.append(edge)
     for unit in outline.list_unit:
-        edge = (_hub(unit.decision, unit.concern), unit.decision, ROLE_LINK)
+        edge = (_hub(unit.decision, unit.concern, unit.role), unit.decision, unit.role)
         if edge not in list_edge:
             list_edge.append(edge)
     return list_edge
@@ -209,13 +212,15 @@ def _lighting(list_edge: list[tuple[str, str, str]],
 
 
 # -----------------------------------------------------------------------------
-def _hub(id_decision: str, id_concern: str) -> str:
+def _hub(id_decision: str, id_concern: str, role: str) -> str:
     """
-    Return the id of the circle of id_concern argued on id_decision.
+    Return the id of the hub of id_concern argued in role on
+    id_decision: the bundle of edges it carries through the box of the
+    concern.
 
     """
 
-    return id_decision + DELIM_HUB + id_concern
+    return DELIM_HUB.join((id_decision, id_concern, role))
 
 
 # -----------------------------------------------------------------------------
@@ -226,18 +231,22 @@ def _unhub(id_item: str) -> str:
 
     """
 
-    return id_item.rpartition(DELIM_HUB)[2]
+    if DELIM_HUB not in id_item:
+        return id_item
+    return id_item.split(DELIM_HUB)[1]
 
 
 # -----------------------------------------------------------------------------
 def _drawn(edge: tuple[str, str, str]) -> tuple[str, str, str]:
     """
     Return edge as it is drawn: through the concern of a hub rather
-    than the hub.
+    than the hub, and in the role of the hub.
 
     """
 
     (id_from, id_to, role) = edge
+    if DELIM_HUB in id_to:
+        role = id_to.split(DELIM_HUB)[2]
     return (_unhub(id_from), _unhub(id_to), role)
 
 
@@ -399,6 +408,8 @@ def _edge(map_kind:  dict[str, str],
 
     (id_from, id_to, role) = edge
     (x1, y1) = map_place[id_from]
+    if map_kind[id_from] == KIND_CONCERN:
+        y1 += (-1 if role == ROLE_FOR else 1) * HEIGHT_NODE * 0.2
     (x2, y2) = _inlet(map_kind[id_to], map_place[id_to], role)
     x_mid    = (x1 + x2) / 2
     path     = 'M{x1},{y1} C{xm},{y1} {xm},{y2} {x2},{y2}'.format(x1 = _num(x1),
@@ -413,14 +424,12 @@ def _edge(map_kind:  dict[str, str],
 def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, float]:
     """
     Return where an edge of role enters a node of kind at place: its
-    port for role, or the middle of the right of a decision. A concern
-    has no ports, but takes edges where its ports would be.
+    port for role. A concern has no ports, but takes edges where its
+    ports would be, and they leave its left at the same heights.
 
     """
 
     (x, y) = place
-    if kind == KIND_DECISION:
-        return (x + WIDTH_NODE, y)
     offset = -1 if role == ROLE_FOR else 1
     width  = WIDTH_CONCERN if kind == KIND_CONCERN else WIDTH_NODE
     return (x + width, y + offset * HEIGHT_NODE * 0.2)
