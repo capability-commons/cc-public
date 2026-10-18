@@ -768,8 +768,19 @@ section.matrix details.concern > summary:hover .name {
   color: var(--link);
 }
 
-section.matrix .name.other {
-  color: var(--ink-muted);
+/* While a chain is pinned, from the matrix or the Sankey diagram, the
+   text of the matrix outside it is muted (the rules that keep the text
+   in it in ink are written into the page). */
+
+:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target)
+  section.matrix .mutes {
+  color: #a99f8c;
+  transition: color 0.12s;
+}
+
+:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target)
+  section.matrix .mutes .number {
+  color: inherit;
 }
 
 section.matrix .unargued {

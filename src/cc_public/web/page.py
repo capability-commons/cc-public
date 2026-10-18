@@ -61,6 +61,7 @@ PATH_ISSUE        = '/issue/'
 PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
+CSS_MUTES         = 'mutes'
 
 MARK_FOR          = '+'
 MARK_AGAINST      = '−'
@@ -156,12 +157,14 @@ def _matrix(graph:    Graph,
             [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
 
     map_decision = {decision.id: decision for decision in issue.list_decision}
+    drawing      = cc_public.web.sankey.lighting(graph, outline)
     list_row     = [row([], [[htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
                               htpy.div(class_ = 'total')[
                                   _total(id_decision, outline.units(decision = id_decision))]]
                              for id_decision in list_decision],
                         class_ = 'head'),
                     _decision_style(list_decision),
+                    _lit_style(drawing),
                     [htpy.span(class_ = 'decision-role',
                                id     = cc_public.web.light.alias(id_decision, role))
                      for id_decision in list_decision
@@ -173,7 +176,8 @@ def _matrix(graph:    Graph,
         list_annotation = outline.map_annotation[id_concern]
         list_cell       = [_cell_link(outline, id_decision, id_concern)
                            for id_decision in list_decision]
-        label           = _concern_label(graph, issue, id_concern)
+        label           = _concern_label(graph, issue, id_concern,
+                                             drawing.css_concern(id_concern))
         if not list_annotation:
             list_row.append(row(label, list_cell, class_ = 'concern'))
             continue
@@ -181,7 +185,7 @@ def _matrix(graph:    Graph,
                                      open   = _is_within(set_show, id_concern))[
             htpy.summary[row(label, list_cell)],
             htpy.div(class_ = 'drill')[
-                [_annotation(graph, outline, id_annotation,
+                [_annotation(graph, outline, drawing, id_annotation,
                              cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation)),
                              id_concern, set(), set_show)
                  for id_annotation in list_annotation]]])
@@ -193,7 +197,8 @@ def _matrix(graph:    Graph,
             htpy.summary[row([htpy.span(class_ = 'name')['Other annotations']],
                              [None for _ in list_decision])],
             htpy.div(class_ = 'drill')[
-                [_annotation(graph, outline, id_annotation, id_annotation, None, set(), set_show)
+                [_annotation(graph, outline, drawing, id_annotation, id_annotation, None, set(),
+                             set_show)
                  for id_annotation in outline.list_other]]])
 
     list_row += [
@@ -209,16 +214,18 @@ def _matrix(graph:    Graph,
 
 
 # -----------------------------------------------------------------------------
-def _concern_label(graph: Graph, issue: Issue, id_concern: str) -> list:
+def _concern_label(graph:      Graph,
+                   issue:      Issue,
+                   id_concern: str,
+                   list_css:   list[str]) -> list:
     """
     Return the label of the row of id_concern in the decision matrix:
-    its name, in ink if it drives the subject of the issue and muted if
-    not, marked if it is a driver no annotation argues for.
+    its name, in the chains of list_css, marked if it is a driver no
+    annotation argues for.
 
     """
 
-    css = 'name' if id_concern in issue.list_driver else 'name other'
-    return [htpy.span(class_ = css)[graph.title(id_concern)],
+    return [htpy.span(class_ = ' '.join(['name', CSS_MUTES, *list_css]))[graph.title(id_concern)],
             htpy.span(class_ = 'unargued')['not argued']
             if id_concern in set(issue.unspoken()) else None]
 
@@ -525,6 +532,29 @@ def _decision_style(list_decision: list[str]) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
+def _lit_style(drawing: typing.Any) -> typing.Any:
+    """
+    Return the rules that keep in ink the text of the matrix in a chain
+    of drawing while the chain is pinned, from the matrix or from the
+    Sankey diagram; the rest of the text that can be muted is muted.
+
+    """
+
+    map_alias = drawing.aliases()
+    list_key  = drawing.keys()
+    rule      = '{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}'
+    list_rule = []
+    for key in list_key:
+        list_when = [':root:has(.sankey #{key}:target)'.format(key = key)]
+        if key in map_alias:
+            list_when.append(':root:has(#{alias}:target)'.format(alias = map_alias[key]))
+        list_rule.append(rule.format(when  = ':is({list})'.format(list = ', '.join(list_when)),
+                                     mutes = CSS_MUTES,
+                                     key   = key))
+    return htpy.style['\n'.join(list_rule)]
+
+
+# -----------------------------------------------------------------------------
 def _determinations(graph: Graph, issue: Issue) -> typing.Any:
     """
     Return the determinations on the issue, or None if it has none.
@@ -595,6 +625,7 @@ def _sequence(graph: Graph, issue: Issue) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _annotation(graph:         Graph,
                 outline:       cc_public.web.sankey.Outline,
+                drawing:       typing.Any,
                 id_annotation: str,
                 key:           str,
                 id_concern:    str | None,
@@ -607,7 +638,8 @@ def _annotation(graph:         Graph,
     the same way. key places it in the outline, under id_concern if it
     is not an answer; set_path holds the annotations above it. It is
     opened if a key in set_show is key or lies within it, and opened
-    down to its answers if one lies within it.
+    down to its answers if one lies within it. Its own text is in the
+    chains of drawing that reach key.
 
     """
 
@@ -626,6 +658,8 @@ def _annotation(graph:         Graph,
     list_also    = [id_other for id_other in list_concern if id_other != id_concern]
     list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
                     if id_answer not in set_path]
+    in_concern   = key.partition(cc_public.web.sankey.DELIM_KEY)[0] in outline.list_concern
+    css          = ' '.join([CSS_MUTES, *(drawing.css_path(key) if in_concern else [])])
 
     return htpy.details(class_ = 'annotation answer' if set_path else 'annotation',
                         id     = key,
@@ -636,17 +670,19 @@ def _annotation(graph:         Graph,
                     ' ',
                     htpy.span(class_ = 'run-in')[annotation.title]]],
             [htpy.ul(class_ = 'bearing')[list_bearing],
-             _summary_note(graph, list_also, len(list_answer))])],
+             _summary_note(graph, list_also, len(list_answer))],
+            css_main = css)],
         htpy.div(class_ = 'body')[
             _brief(graph, annotation, key,
                    [None if id_concern
                     else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
                     _id(annotation.id)],
-                   [_annotation(graph, outline, id_answer,
+                   [_annotation(graph, outline, drawing, id_answer,
                                 cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
                                 None, set_path | {id_annotation}, set_show)
                     for id_answer in list_answer],
-                   _is_inside(set_show, key))]]
+                   _is_inside(set_show, key),
+                   css)]]
 
 
 # -----------------------------------------------------------------------------
@@ -697,18 +733,20 @@ def _brief(graph:       Graph,
            key:         str,
            list_margin: list,
            list_answer: list,
-           is_open:     bool) -> typing.Any:
+           is_open:     bool,
+           css_main:    str = '') -> typing.Any:
     """
     Return the brief of the annotation with list_margin beside it,
     folded over its description, which is folded in turn over
     list_answer, the annotations that answer it. A level with nothing
-    under it does not fold. is_open opens every level.
+    under it does not fold. is_open opens every level. css_main
+    classes the text of the brief and the description.
 
     """
 
-    block = _block([htpy.p[_prose(annotation.brief)]], list_margin)
+    block = _block([htpy.p[_prose(annotation.brief)]], list_margin, css_main = css_main)
     if annotation.description:
-        under = _description(graph, annotation, key)
+        under = _description(graph, annotation, key, css_main)
         if list_answer:
             under = htpy.details(class_ = 'description', open = is_open)[
                 htpy.summary[under], htpy.div(class_ = 'answers')[list_answer]]
@@ -720,11 +758,11 @@ def _brief(graph:       Graph,
 
 
 # -----------------------------------------------------------------------------
-def _description(graph: Graph, annotation: Item, key: str) -> typing.Any:
+def _description(graph: Graph, annotation: Item, key: str, css_main: str = '') -> typing.Any:
     """
     Return the description of the annotation as prose with its sources
     numbered in the margin beside it. key makes the ids of the notes
-    unique on the page.
+    unique on the page; css_main classes the prose.
 
     """
 
@@ -733,7 +771,8 @@ def _description(graph: Graph, annotation: Item, key: str) -> typing.Any:
                                                                     key)
     return _block([htpy.p(class_ = 'description')[list_prose]],
                   [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
-                  class_ = 'description')
+                  class_   = 'description',
+                  css_main = css_main)
 
 
 # -----------------------------------------------------------------------------
@@ -861,16 +900,19 @@ def _href(id_item: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _block(list_main: list, list_margin: list, **map_attribute: str) -> typing.Any:
+def _block(list_main:   list,
+           list_margin: list,
+           css_main:    str = '',
+           **map_attribute: str) -> typing.Any:
     """
-    Return a block of the page: list_main in the text column, and
-    list_margin beside it in the margin.
+    Return a block of the page: list_main in the text column, with the
+    classes css_main as well, and list_margin beside it in the margin.
 
     """
 
     css = 'block ' + map_attribute.pop('class_', '')
     return htpy.div(class_ = css.strip(), **map_attribute)[
-        htpy.div(class_ = 'main')[list_main],
+        htpy.div(class_ = ' '.join(['main', css_main]).strip())[list_main],
         htpy.aside(class_ = 'margin')[list_margin]]
 
 

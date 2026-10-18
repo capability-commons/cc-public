@@ -442,7 +442,7 @@ class _Drawing:
             map_top[id_concern] = y
 
             css      = 'concern' if id_concern in self.issue.list_driver else 'concern other'
-            list_css = self._css_concern(id_concern)
+            list_css = self.css_concern(id_concern)
             css      = ' '.join([css, cc_public.web.light.CSS_DIMS] + list_css)
             title    = self.graph.title(id_concern)
             self._bar(LIST_X[1], y, height, 'driver' if id_concern in self.issue.list_driver
@@ -556,7 +556,7 @@ class _Drawing:
         for (index, (id_answer, role)) in enumerate(list_answer):
             key_answer = DELIM_KEY.join((key, id_answer))
             y         += ROOM_LABEL if self._is_open(key_answer, id_answer) else 0
-            list_css   = self._css_path(key_answer)
+            list_css   = self.css_path(key_answer)
             self._band(LIST_X[index_column - 1] + WIDTH_BAR, top + index * width,
                        LIST_X[index_column], y, width, role, list_css)
             self._bar(LIST_X[index_column], y, width, role, list_css,
@@ -588,7 +588,7 @@ class _Drawing:
         css     = ' '.join(['annotation shown' if key in self.set_show else 'annotation',
                             cc_public.web.light.CSS_DIMS,
                             cc_public.web.light.trigger(_key_annotation(id_annotation))]
-                           + self._css_path(key))
+                           + self.css_path(key))
         title   = htpy.a(href = self._href_show(key))[
                       htpy.tspan(class_ = 'number')[
                           str(self.map_number.get(id_annotation, ''))],
@@ -673,7 +673,7 @@ class _Drawing:
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
-    def _css_path(self, key: str) -> list[str]:
+    def css_path(self, key: str) -> list[str]:
         """
         Return the classes of a mark of the annotation at key: in the
         chains of each decision it bears on through the first
@@ -724,7 +724,7 @@ class _Drawing:
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
-    def _css_concern(self, id_concern: str) -> list[str]:
+    def css_concern(self, id_concern: str) -> list[str]:
         """
         Return the classes of a mark of id_concern: in the chains of
         the decisions and parts of bars it carries, and of every
@@ -874,6 +874,19 @@ class _Drawing:
                                                             y4 = _num(y_from + width))
         self.list_band.append(htpy.path(d = path, class_ = ' '.join(
             ['band-' + role, cc_public.web.light.CSS_DIMS, *list_css])))
+
+
+# -----------------------------------------------------------------------------
+def lighting(graph: Graph, outline: Outline) -> _Drawing:
+    """
+    Return an undrawn diagram of the argument in outline, whose
+    css_concern and css_path give the classes that light a mark outside
+    the diagram, such as a row of the decision matrix, with the chains
+    of the diagram.
+
+    """
+
+    return _Drawing(graph, outline, set(), set())
 
 
 # -----------------------------------------------------------------------------

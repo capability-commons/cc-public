@@ -159,6 +159,29 @@ def test_a_decision_shown_in_the_matrix_is_lit_in_both_diagrams(tree):
             assert text.count('href="#{alias}"'.format(alias = alias)) == 3
 
 
+def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text    = body.decode()
+    matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
+    assert 'name other' not in matrix
+    for id_decision in outline.list_decision:
+        key = 'lit-dec-' + id_decision
+        assert ':root:has(#{id}:target)) section.matrix .mutes.{key}'.format(
+                   id = id_decision, key = key) in matrix
+    for id_concern in outline.list_concern:
+        if not outline.units(concern = id_concern):
+            continue
+        id_decision = outline.units(concern = id_concern)[0].decision
+        assert re.search(r'<span class="name mutes [^"]*\blit-dec-{id}\b[^"]*">'.format(
+                             id = id_decision), matrix)
+        for id_annotation in outline.map_annotation[id_concern]:
+            start = matrix.index('id="{c}/{a}"'.format(c = id_concern, a = id_annotation))
+            assert re.match(r'[^>]*>\s*<summary><div class="block"><div class="main mutes [^"]*'
+                            r'lit-ann-{a}\b'.format(a = id_annotation), matrix[start:])
+
+
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
