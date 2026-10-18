@@ -52,6 +52,8 @@
   --shade-deep: #e3dacc;
   --band-for: rgba(74, 107, 82, 0.36);
   --band-against: rgba(139, 74, 68, 0.36);
+  --net-for: #c9cfbd;
+  --net-against: #dcc0b5;
   --mark-for: #263a2c;
   --mark-against: #4f2320;
 }
@@ -620,7 +622,7 @@ figure.map svg {
 /* While a chain is lit, every mark outside it is dimmed (see
    cc_public.web.light). */
 
-.map { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; --ink-mixed: var(--ink-open); }
+.map { --net-mixed: #e2d3a8; --ink-mixed: var(--ink-open); }
 .map .dims { transition: opacity 0.12s; }
 .map svg:has(.lit-trigger:hover, .lit-anchor:target) .dims { opacity: var(--dim); }
 .network .pick { outline: none; cursor: pointer; }
@@ -906,15 +908,18 @@ form.determine button {
   letter-spacing: 0.03em;
   color: var(--ink);
   background: none;
-  border: 1px solid var(--rule);
+  border: none;
   border-radius: 0;
-  padding: 0 0.4rem;
+  padding: 0.1rem 0.5rem;
   cursor: pointer;
 }
 
-form.determine button.uphold { border-color: var(--ink-upheld); color: var(--ink-upheld); }
-form.determine button.reject { border-color: var(--ink-rejected); color: var(--ink-rejected); }
-form.determine button:disabled { cursor: default; opacity: 0.8; }
+/* Solid in the light green and red of the annotation nodes and the
+   bands of the diagrams, with the text in ink. */
+
+form.determine button.uphold { background: var(--net-for); }
+form.determine button.reject { background: var(--net-against); }
+form.determine button:disabled { cursor: default; }
 
 /* The description of an annotation: prose with its sources numbered in
    the margin beside it. An assumption is set apart from what was checked,
