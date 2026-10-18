@@ -557,14 +557,20 @@ figure.map svg {
 .map .stance-open { fill: var(--ink-open); }
 .map .stance-rejected { fill: var(--ink-rejected); }
 
-.bar-for { fill: var(--ink-for); }
-.bar-against { fill: var(--ink-against); }
+.bar-for { fill: var(--lit-ink, var(--ink-for)); }
+.bar-against { fill: var(--lit-ink, var(--ink-against)); }
 .bar-driver { fill: var(--ink); }
 .bar-other,
 .bar-none { fill: var(--ink-muted); }
 
 .band-for { fill: var(--band-for); }
 .band-against { fill: var(--band-against); }
+
+.map text.annotation { fill: var(--lit-ink, var(--ink)); }
+.map .pin { cursor: pointer; outline: none; }
+.map a.pin:hover text { fill: var(--ink); text-decoration: none; }
+.map .unpin { outline: none; cursor: default; }
+.map .unpin rect { fill: transparent; }
 
 .map text.shown {
   fill: var(--link);
@@ -575,7 +581,7 @@ figure.map svg {
    an edge for each support and challenge. */
 
 .network .node .shape {
-  fill: var(--paper);
+  fill: var(--lit, var(--paper));
   stroke: var(--rule);
 }
 
@@ -600,8 +606,6 @@ figure.map svg {
 .network .edge-against { stroke: var(--band-against); }
 
 .network .port { outline: none; }
-.network .unpin { outline: none; cursor: default; }
-.network .unpin rect { fill: transparent; }
 .network .port circle { stroke-width: 1.4; fill: var(--paper); cursor: pointer; }
 .network .port-for circle { stroke: var(--ink-for); }
 .network .port-against circle { stroke: var(--ink-against); }
@@ -612,13 +616,12 @@ figure.map svg {
 .network .port-against:hover circle,
 .network .port-against:target circle { fill: var(--ink-against); }
 
-/* While a port or node is lit, everything outside its chain is dimmed. */
+/* While a chain is lit, every mark outside it is dimmed (see
+   cc_public.web.light). */
 
-.network { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; }
-.network .nodes .node,
-.network .edges path { transition: opacity 0.12s; }
-.network svg:has(.port:hover, .port:target, .pick:hover, .pick:target) .nodes .node,
-.network svg:has(.port:hover, .port:target, .pick:hover, .pick:target) .edges path { opacity: 0.18; }
+.map { --net-for: #c9cfbd; --net-against: #dcc0b5; --net-mixed: #e2d3a8; --ink-mixed: var(--ink-open); }
+.map .dims { transition: opacity 0.12s; }
+.map svg:has(.lit-trigger:hover, .lit-anchor:target) .dims { opacity: 0.18; }
 .network .pick { outline: none; cursor: pointer; }
 .network a:hover text { fill: var(--ink); text-decoration: none; }
 .network .pick:hover .shape,

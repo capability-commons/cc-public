@@ -40,6 +40,7 @@ import typing
 import htpy
 
 import cc_public.web.argument
+import cc_public.web.light
 import cc_public.web.sankey
 
 
@@ -59,7 +60,6 @@ CHARS_LINE        = 34
 INDENT_TITLE      = 28
 MARGIN            = 8
 RADIUS_PORT       = 4.5
-KEY_UNPIN         = 'unpin'
 KEY_PICK          = 'pick-'
 DELIM_HUB         = '--'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
@@ -132,7 +132,7 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE / 2 + 2 * MARGIN
     top    = min(y for (_, y) in map_place.values()) - HEIGHT_NODE / 2 - MARGIN
     return htpy.figure(class_ = 'map network')[
-        htpy.style[_style([key for (key, _, _) in list_light])],
+        htpy.style[cc_public.web.light.style('.network', [key for (key, _, _) in list_light])],
         htpy.svg(viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
                                                                   top    = _num(top),
                                                                   width  = width,
@@ -140,7 +140,7 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
                  width   = str(width),
                  height  = _num(height - top),
                  role    = 'img')[
-            htpy.a(href = '#' + KEY_UNPIN, class_ = 'unpin')[
+            htpy.a(href = '#' + cc_public.web.light.KEY_UNPIN, class_ = 'unpin')[
                 htpy.rect(x = str(-MARGIN), y = _num(top), width = str(width),
                           height = _num(height - top))],
             htpy.g(class_ = 'edges')[list_path],
@@ -190,25 +190,27 @@ def _lighting(list_edge: list[tuple[str, str, str]],
     for edge in list_edge:
         if _drawn(edge) not in list_drawn:
             list_drawn.append(_drawn(edge))
-    map_css_node = {id_item: [] for id_item in map_place}
-    map_css_edge = {edge: [] for edge in list_drawn}
-    list_light   = ([(key, port[0], {port[1]}) for (port, key) in map_key.items()]
-                    + [(KEY_PICK + id_item, id_item, None) for id_item in map_place
-                       if id_item in set_pick])
+    map_sign_node = {id_item: {} for id_item in map_place}
+    map_sign_edge = {edge: {} for edge in list_drawn}
+    list_light    = ([(key, port[0], {port[1]}) for (port, key) in map_key.items()]
+                     + [(KEY_PICK + id_item, id_item, None) for id_item in map_place
+                        if id_item in set_pick])
     for (key, id_item_lit, set_role) in list_light:
         (map_sign, set_edge) = _chain(list_edge, id_item_lit, set_role)
-        map_css_node[id_item_lit].append(key)
+        cc_public.web.light.add(map_sign_node[id_item_lit], key, None)
         for (id_item, set_sign) in map_sign.items():
             id_drawn = _unhub(id_item)
             if id_drawn != id_item:
-                if key not in map_css_node[id_drawn]:
-                    map_css_node[id_drawn].append(key)
+                cc_public.web.light.add(map_sign_node[id_drawn], key, None)
                 continue
-            sign = set_sign.pop() if len(set_sign) == 1 else 'mixed'
-            map_css_node[id_item].extend([key, key + '-' + sign])
+            for sign in set_sign:
+                cc_public.web.light.add(map_sign_node[id_item], key, sign)
         for edge in set_edge:
-            if key not in map_css_edge[_drawn(edge)]:
-                map_css_edge[_drawn(edge)].append(key)
+            cc_public.web.light.add(map_sign_edge[_drawn(edge)], key, None)
+    map_css_node = {id_item: cc_public.web.light.css(map_sign)
+                    for (id_item, map_sign) in map_sign_node.items()}
+    map_css_edge = {edge: cc_public.web.light.css(map_sign)
+                    for (edge, map_sign) in map_sign_edge.items()}
     return (list_drawn, map_css_node, map_css_edge, list_light)
 
 
@@ -279,29 +281,6 @@ def _chain(list_edge: list[tuple[str, str, str]],
                          for (id_from, id_to, role) in list_edge
                          if id_to == id_item)
     return (map_sign, set_edge)
-
-
-# -----------------------------------------------------------------------------
-def _style(list_key: list[str]) -> str:
-    """
-    Return the rules that light the chain at each key while it is
-    hovered over or is the target of the address. Hovering wins over
-    the target.
-
-    """
-
-    list_rule = []
-    for key in list_key:
-        for (state, guard) in ((':hover', ''),
-                               (':target', ':not(:has(.port:hover, .pick:hover))')):
-            scope = '.network svg:has(#{key}{state}){guard}'.format(key   = key,
-                                                                    state = state,
-                                                                    guard = guard)
-            list_rule.append('{scope} .{key} {{ opacity: 1; }}'.format(scope = scope, key = key))
-            for sign in (ROLE_FOR, ROLE_AGAINST, 'mixed'):
-                rule = '{scope} .{key}-{sign} .shape {{ fill: var(--net-{sign}); }}'
-                list_rule.append(rule.format(scope = scope, key = key, sign = sign))
-    return '\n'.join(list_rule)
 
 
 # -----------------------------------------------------------------------------
@@ -418,7 +397,8 @@ def _edge(map_kind:  dict[str, str],
                                                                 xm = _num(x_mid),
                                                                 x2 = _num(x2),
                                                                 y2 = _num(y2))
-    return htpy.path(d = path, class_ = ' '.join(['edge-' + role] + list_css))
+    return htpy.path(d = path, class_ = ' '.join(['edge-' + role, cc_public.web.light.CSS_DIMS]
+                                                 + list_css))
 
 
 # -----------------------------------------------------------------------------
@@ -445,7 +425,10 @@ def _port(kind: str, place: tuple[float, float], role: str, key: str) -> typing.
     """
 
     (cx, cy) = _inlet(kind, place, role)
-    return htpy.a(href = '#' + key, id = key, class_ = 'port port-' + role)[
+    css = 'port port-{role} {anchor} {trigger}'.format(role    = role,
+                                                       anchor  = cc_public.web.light.CSS_ANCHOR,
+                                                       trigger = cc_public.web.light.trigger(key))
+    return htpy.a(href = '#' + key, id = key, class_ = css)[
         htpy.title['what {verb} this'.format(verb = 'supports' if role == ROLE_FOR
                                              else 'challenges')],
         htpy.circle(cx = _num(cx), cy = _num(cy), r = str(RADIUS_PORT))]
@@ -467,7 +450,7 @@ def _node(graph:    Graph,
     """
 
     (x, y) = place
-    css    = ' '.join(['node', kind] + list_css)
+    css    = ' '.join(['node', kind, cc_public.web.light.CSS_DIMS] + list_css)
     if kind == KIND_CONCERN:
         node = htpy.g(class_ = css, id = 'node-' + id_item)[
             htpy.rect(x = _num(x), y = _num(y - HEIGHT_NODE / 2), width = str(WIDTH_CONCERN),
@@ -496,7 +479,9 @@ def _node(graph:    Graph,
     if not is_pick:
         return node
     key = KEY_PICK + id_item
-    return htpy.a(href = '#' + key, id = key, class_ = 'pick')[node]
+    css = 'pick {anchor} {trigger}'.format(anchor  = cc_public.web.light.CSS_ANCHOR,
+                                           trigger = cc_public.web.light.trigger(key))
+    return htpy.a(href = '#' + key, id = key, class_ = css)[node]
 
 
 # -----------------------------------------------------------------------------

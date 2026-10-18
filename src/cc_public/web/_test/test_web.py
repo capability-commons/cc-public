@@ -256,9 +256,9 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
         pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
         return re.search(pattern, body).group(1).split()
 
-    assert key + '-for' in css('ann_python_is_fast_enough')
-    assert key + '-against' in css('ann_graphs_will_grow')
-    assert key + '-for' in css('ann_cross_item_checks_run_in_clingo')
+    assert key + "--for" in css('ann_python_is_fast_enough')
+    assert key + "--against" in css('ann_graphs_will_grow')
+    assert key + "--for" in css('ann_cross_item_checks_run_in_clingo')
     assert key not in css('ann_types_catch_errors_early')
     assert key in css('concern_performance_efficiency')
     assert not any(css_concern.startswith(key + '-')
@@ -278,9 +278,29 @@ def test_graph_node_lights_both_its_chains(tree):
         pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
         return re.search(pattern, body).group(1).split()
 
-    assert key + '-for' in css('ann_gate_takes_a_minute')
-    assert key + '-against' in css('ann_graphs_will_grow')
-    assert key + '-for' in css('ann_cross_item_checks_run_in_clingo')
+    assert key + "--for" in css('ann_gate_takes_a_minute')
+    assert key + "--against" in css('ann_graphs_will_grow')
+    assert key + "--for" in css('ann_cross_item_checks_run_in_clingo')
+
+
+def test_sankey_inks_an_answer_by_its_net_effect_on_a_decision(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
+    key     = 'concern_performance_efficiency/ann_python_is_fast_enough'
+    body    = str(cc_public.web.sankey.figure(
+                  graph, outline, {key, key + '/ann_graphs_will_grow'}, set()))
+    assert 'id="lit-dec-dec_tooling_in_python"' in body
+    assert 'lit-trigger hover-lit-port-dec_tooling_in_python-for' in body
+
+    def css(title):
+        pattern = r'<text [^>]*class="([^"]*)"[^>]*>(?:(?!</text>).)*?</tspan> {title}<'
+        return re.search(pattern.format(title = title), body).group(1).split()
+
+    lit = 'lit-dec-dec_tooling_in_python'
+    assert lit + '--for' in css('Python is fast enough')
+    assert lit + '--against' in css('Graphs will grow large')
+    assert lit + '--for' in css('Cross-item checks run in clingo')
+    assert 'lit-ann-ann_python_is_fast_enough--against' in css('Graphs will grow large')
 
 
 def test_item_page_names_the_issue_of_a_decision(tree):
