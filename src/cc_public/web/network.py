@@ -54,6 +54,7 @@ X_FIRST           = WIDTH_NODE + 2 * GAP_COLUMN
 CHARS_TITLE       = 32
 MARGIN            = 8
 RADIUS_PORT       = 4.5
+KEY_UNPIN         = 'unpin'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
 
@@ -67,7 +68,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     what challenges it. Hovering over a port, or following its link,
     lights the chain of annotations that reaches it and dims the rest;
     each annotation in the chain is shaded by its net effect on the
-    node, the product of the roles along its paths.
+    node, the product of the roles along its paths. Clicking anywhere
+    else in the graph unpins it: the link names no element, so the page
+    does not move.
 
     """
 
@@ -116,6 +119,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
                  width   = str(width),
                  height  = str(height),
                  role    = 'img')[
+            htpy.a(href = '#' + KEY_UNPIN, class_ = 'unpin')[
+                htpy.rect(x = str(-MARGIN), y = str(-MARGIN), width = str(width),
+                          height = str(height))],
             htpy.g(class_ = 'edges')[list_path],
             htpy.g(class_ = 'nodes')[list_node],
             htpy.g(class_ = 'ports')[list_dot]]]
