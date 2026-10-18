@@ -125,7 +125,7 @@ def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
         assert 'href="#{id}"'.format(id = id_decision) in head
     assert len(re.findall(r'class="(?:row )?concern"', matrix)) == len(outline.list_concern)
     assert '--decisions: {count}'.format(count = len(outline.list_decision)) in matrix
-    assert matrix.index('class="row foot controls"') < matrix.index('class="matrix-style"')
+    assert 'matrix-style' not in matrix
     assert '<h2>Decision matrix</h2>' not in text
     assert text.index('<h2>Decisions</h2>') < text.index('<figure')
 
@@ -174,13 +174,19 @@ def test_answers_sit_under_the_description_of_what_they_answer(tree):
     assert b'<details class="description" open>' in shown
 
 
-def test_matrix_cells_are_drawn_as_the_address_says(tree):
-    for (matrix, mark) in (('count', '+1'), ('pugh', '±'), ('unit', '■'), ('nonsense', '+1')):
-        (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix={matrix}'.format(
-                                                              id = ID_ISSUE, matrix = matrix))
-        style = matrix if matrix in cc_public.web.page.TUPLE_MATRIX else 'count'
-        assert 'class="matrix matrix-{style}"'.format(style = style).encode() in body
-        assert mark.encode() in body
+def test_matrix_cells_show_a_marked_square_for_each_unit(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix=pugh'.format(
+                                                          id = ID_ISSUE))
+    text    = body.decode()
+    matrix  = text[text.index('<section class="matrix'):text.index('<h2>Decisions</h2>')]
+    list_unit = outline.list_unit
+    count_for = sum(1 for unit in list_unit if unit.is_for())
+    # Each unit shows once in its concern row and once in the total.
+    assert matrix.count('<span class="unit for">+</span>') == 2 * count_for
+    assert matrix.count('<span class="unit against">−</span>') == 2 * (len(list_unit) - count_for)
+    assert 'matrix=' not in matrix
 
 
 def test_description_moves_sources_to_the_margin_and_keeps_other_brackets(tree):

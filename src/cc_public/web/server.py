@@ -110,8 +110,7 @@ def _item_page(graph:   cc_public.web.argument.Graph,
             return None
         return cc_public.web.page.issue(graph, issue,
                                         cc_public.web.sankey.parse_toggle(query),
-                                        cc_public.web.sankey.parse_show(query),
-                                        cc_public.web.page.parse_matrix(query))
+                                        cc_public.web.sankey.parse_show(query))
 
     if id_item not in graph.map_item:
         return None

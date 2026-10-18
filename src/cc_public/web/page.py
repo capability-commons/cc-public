@@ -61,21 +61,9 @@ FILE_STYLE        = 'review.css'
 
 MARK_FOR          = '+'
 MARK_AGAINST      = '−'
-MARK_BOTH         = '±'
 MARK_NONE         = '·'
-MARK_UNIT         = '■'
 MARK_PREVIOUS     = '←'
 MARK_NEXT         = '→'
-
-# The ways the decision matrix can summarise a cell, chosen by the
-# query of the page address: counts for and against, one Pugh mark, or
-# one square for each unit of weight.
-#
-KEY_MATRIX        = 'matrix'
-MATRIX_COUNT      = 'count'
-MATRIX_PUGH       = 'pugh'
-MATRIX_UNIT       = 'unit'
-TUPLE_MATRIX      = (MATRIX_COUNT, MATRIX_PUGH, MATRIX_UNIT)
 
 ROLE_FOR          = 'for'
 DEPTH_MAX         = 4
@@ -115,13 +103,11 @@ def index(graph: Graph) -> str:
 def issue(graph:      Graph,
           issue:      Issue,
           set_toggle: set[str],
-          set_show:   set[str] | None = None,
-          matrix:     str = MATRIX_COUNT) -> str:
+          set_show:   set[str] | None = None) -> str:
     """
     Return the page that shows an issue and the argument on it, with the
     parts of its diagram in set_toggle opened or closed, the annotation
-    in set_show opened in the list, and the cells of the decision matrix
-    drawn as matrix says.
+    in set_show opened in the decision matrix.
 
     """
 
@@ -131,7 +117,7 @@ def issue(graph:      Graph,
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
-                 [_matrix(graph, issue, outline, matrix, set_show or set()),
+                 [_matrix(graph, issue, outline, set_show or set()),
                   htpy.section[
                       htpy.h2['Decisions'],
                       [_decision(issue, decision)
@@ -146,32 +132,19 @@ def issue(graph:      Graph,
 
 
 # -----------------------------------------------------------------------------
-def parse_matrix(query: str) -> str:
-    """
-    Return how the decision matrix draws its cells, read from the query
-    of a page address: MATRIX_COUNT unless the query names another.
-
-    """
-
-    matrix = (urllib.parse.parse_qs(query).get(KEY_MATRIX) or [MATRIX_COUNT])[0]
-    return matrix if matrix in TUPLE_MATRIX else MATRIX_COUNT
-
-
-# -----------------------------------------------------------------------------
 def _matrix(graph:    Graph,
             issue:    Issue,
             outline:  cc_public.web.sankey.Outline,
-            matrix:   str,
             set_show: set[str]) -> typing.Any:
     """
     Return the decision matrix of the issue: a column for each decision
     and a row for each concern, in the order of the diagram, each cell
-    summing what the annotations say for and against the decision for
-    the concern. Each row opens to the annotations that argue for its
-    concern; those in set_show are opened. The foot holds the total and
-    the standing of each decision, the controls that settle it, and the
-    choice of how cells are drawn. A driver no annotation argues for is
-    marked, as a determination waits on it.
+    showing a square for each unit of weight for or against the decision
+    for the concern. Each row opens to the annotations that argue for
+    its concern; those in set_show are opened. The foot holds the total
+    and the standing of each decision and the controls that settle it.
+    A driver no annotation argues for is marked, as a determination
+    waits on it.
 
     """
 
@@ -189,7 +162,7 @@ def _matrix(graph:    Graph,
 
     for id_concern in outline.list_concern:
         list_annotation = outline.map_annotation[id_concern]
-        list_cell       = [_cell_link(outline, id_decision, id_concern, matrix)
+        list_cell       = [_cell_link(outline, id_decision, id_concern)
                            for id_decision in list_decision]
         label           = _concern_label(graph, issue, id_concern)
         if not list_annotation:
@@ -215,7 +188,7 @@ def _matrix(graph:    Graph,
                  for id_annotation in outline.list_other]]])
 
     list_row += [
-        row(['All'], [_cell(outline.units(decision = id_decision), MATRIX_COUNT)
+        row(['All'], [_cell(outline.units(decision = id_decision))
                       for id_decision in list_decision], class_ = 'foot total'),
         row(['Standing'], [_stance(issue.map_stance.get(id_decision,
                                                         cc_public.web.argument.STANCE_OPEN))
@@ -223,14 +196,9 @@ def _matrix(graph:    Graph,
         row([], [_controls(id_decision) for id_decision in list_decision],
             class_ = 'foot controls')]
 
-    return htpy.section(class_ = 'matrix matrix-' + matrix,
+    return htpy.section(class_ = 'matrix',
                         style  = '--decisions: {count}'.format(count = len(list_decision)))[
-        list_row,
-        htpy.nav(class_ = 'matrix-style')[
-            'Cells: ',
-            [[htpy.a(href = '?{key}={value}'.format(key = KEY_MATRIX, value = value),
-                     class_ = 'current' if value == matrix else None)[value],
-              ' '] for value in TUPLE_MATRIX]]]
+        list_row]
 
 
 # -----------------------------------------------------------------------------
@@ -251,8 +219,7 @@ def _concern_label(graph: Graph, issue: Issue, id_concern: str) -> list:
 # -----------------------------------------------------------------------------
 def _cell_link(outline:     cc_public.web.sankey.Outline,
                id_decision: str,
-               id_concern:  str,
-               matrix:      str) -> typing.Any:
+               id_concern:  str) -> typing.Any:
     """
     Return a cell of the decision matrix, linked to the annotations
     that argue for id_concern on id_decision, all opened in its row and
@@ -262,7 +229,7 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
 
     list_unit = outline.units(decision = id_decision, concern = id_concern)
     if not list_unit:
-        return _cell(list_unit, matrix)
+        return _cell(list_unit)
 
     set_on   = {unit.annotation for unit in list_unit}
     list_key = [cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation))
@@ -270,44 +237,30 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
                 if id_annotation in set_on]
     href     = '?{query}#{key}'.format(
                    query = urllib.parse.urlencode(
-                               [(KEY_MATRIX, matrix)]
-                               + [(cc_public.web.sankey.KEY_SHOW, key) for key in list_key]),
+                               [(cc_public.web.sankey.KEY_SHOW, key) for key in list_key]),
                    key   = list_key[0])
 
-    return htpy.a(class_ = 'cell', href = href)[_cell(list_unit, matrix)]
+    return htpy.a(class_ = 'cell', href = href)[_cell(list_unit)]
 
 
 # -----------------------------------------------------------------------------
-def _cell(list_unit: list, matrix: str) -> typing.Any:
+def _cell(list_unit: list) -> typing.Any:
     """
     Return what a cell of the decision matrix shows of list_unit, the
-    units of weight on one decision for one concern, drawn as matrix
-    says.
+    units of weight on one decision for one concern: a square marked +
+    for each unit for, then a square marked − for each unit against.
 
     """
-
-    count_for     = sum(1 for unit in list_unit if unit.is_for())
-    count_against = len(list_unit) - count_for
 
     if not list_unit:
         return htpy.span(class_ = 'none')[MARK_NONE]
 
-    if matrix == MATRIX_PUGH:
-        if count_for and count_against:
-            return htpy.span(class_ = 'both')[MARK_BOTH]
-        if count_for:
-            return htpy.span(class_ = 'for')[MARK_FOR]
-        return htpy.span(class_ = 'against')[MARK_AGAINST]
-
-    if matrix == MATRIX_UNIT:
-        return [htpy.span(class_ = 'for')[MARK_UNIT * count_for] if count_for else None,
-                htpy.span(class_ = 'against')[MARK_UNIT * count_against]
-                if count_against else None]
-
-    return [htpy.span(class_ = 'for')[MARK_FOR + str(count_for)] if count_for else None,
-            ' ' if count_for and count_against else None,
-            htpy.span(class_ = 'against')[MARK_AGAINST + str(count_against)]
-            if count_against else None]
+    count_for     = sum(1 for unit in list_unit if unit.is_for())
+    count_against = len(list_unit) - count_for
+    return htpy.span(class_ = 'units',
+                     title  = '{f} for, {a} against'.format(f = count_for, a = count_against))[
+        [htpy.span(class_ = 'unit for')[MARK_FOR] for _ in range(count_for)],
+        [htpy.span(class_ = 'unit against')[MARK_AGAINST] for _ in range(count_against)]]
 
 
 # -----------------------------------------------------------------------------
