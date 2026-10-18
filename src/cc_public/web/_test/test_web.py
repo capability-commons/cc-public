@@ -174,7 +174,7 @@ def test_answers_sit_under_the_description_of_what_they_answer(tree):
     assert b'<details class="description" open>' in shown
 
 
-def test_matrix_cells_show_a_marked_square_for_each_unit(tree):
+def test_matrix_cells_show_a_marked_disc_for_each_unit_and_totals_in_words(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix=pugh'.format(
@@ -183,9 +183,13 @@ def test_matrix_cells_show_a_marked_square_for_each_unit(tree):
     matrix  = text[text.index('<section class="matrix'):text.index('<h2>Decisions</h2>')]
     list_unit = outline.list_unit
     count_for = sum(1 for unit in list_unit if unit.is_for())
-    # Each unit shows once in its concern row and once in the total.
-    assert matrix.count('<span class="unit for">+</span>') == 2 * count_for
-    assert matrix.count('<span class="unit against">−</span>') == 2 * (len(list_unit) - count_for)
+    assert matrix.count('<span class="unit for">+</span>') == count_for
+    assert matrix.count('<span class="unit against">−</span>') == len(list_unit) - count_for
+    for id_decision in outline.list_decision:
+        list_own = outline.units(decision = id_decision)
+        count    = sum(1 for unit in list_own if unit.is_for())
+        assert ('<span class="for">{f} for</span>, <span class="against">{a} against</span>'
+                .format(f = count, a = len(list_own) - count)) in matrix
     assert 'matrix=' not in matrix
 
 

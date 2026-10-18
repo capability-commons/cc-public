@@ -595,13 +595,21 @@ section.matrix {
 
 section.matrix .row {
   display: grid;
-  grid-template-columns: 15rem repeat(var(--decisions), minmax(0, 1fr));
+  grid-template-columns: 17rem repeat(var(--decisions), minmax(0, 1fr));
   column-gap: 1rem;
   align-items: center;
 }
 
 section.matrix .row > .label {
   padding: 0.35rem 0 0.35rem 1.3rem;
+}
+
+/* The type steps down as the matrix opens: the concern, then the title
+   of an annotation, then its brief and description at one size. */
+
+section.matrix details.concern > summary .label,
+section.matrix .row.concern > .label {
+  font-size: 1.25rem;
 }
 
 section.matrix .row > .cell {
@@ -696,6 +704,8 @@ section.matrix .row.foot.controls form.determine {
 }
 
 section.matrix .none { color: var(--rule); }
+section.matrix .row.foot.total .for { color: var(--ink-for); }
+section.matrix .row.foot.total .against { color: var(--ink-against); }
 
 section.matrix .units {
   display: inline-flex;
@@ -704,57 +714,27 @@ section.matrix .units {
   vertical-align: middle;
 }
 
-/* A unit is a disc with its mark drawn as bars, so the mark sits at its
-   exact centre whatever the font; the + or − stays in the text for
-   reading aloud and copying. */
+/* A unit is a disc drawn as a small vector image, so its mark is at its
+   exact centre and evenly weighted at any size; the disc takes the
+   colour of the bands of the diagram on the paper. The + or − stays in
+   the text, hidden, for reading aloud and copying. */
 
 section.matrix .unit {
-  position: relative;
   display: inline-block;
   width: 1.4rem;
   height: 1.4rem;
-  border-radius: 50%;
   color: transparent;
   font-size: 0.1rem;
   overflow: hidden;
-}
-
-section.matrix .unit::before,
-section.matrix .unit.for::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  background: currentColor;
-}
-
-section.matrix .unit::before {
-  width: 0.7rem;
-  height: 2px;
-  transform: translate(-50%, -50%);
-}
-
-section.matrix .unit.for::after {
-  width: 2px;
-  height: 0.7rem;
-  transform: translate(-50%, -50%);
+  background-size: 100% 100%;
 }
 
 section.matrix .unit.for {
-  background: var(--band-for);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23b6bcaa'/%3E%3Cg stroke='%23263a2c' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.5 10h9'/%3E%3Cpath d='M10 5.5v9'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 section.matrix .unit.against {
-  background: var(--band-against);
-}
-
-section.matrix .unit.for::before,
-section.matrix .unit.for::after {
-  background: var(--mark-for);
-}
-
-section.matrix .unit.against::before {
-  background: var(--mark-against);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23ceb0a5'/%3E%3Cg stroke='%234f2320' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.5 10h9'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 section.matrix a.cell {
@@ -774,8 +754,16 @@ section.matrix a.cell:hover {
 section.matrix .drill {
   padding: 0 0 0.8rem;
   background: var(--shade);
-  font-size: 1.4rem;
+  font-size: 1.12rem;
   line-height: 1.5;
+}
+
+section.matrix .drill details.annotation > summary .run-in {
+  font-size: 1.05em;
+}
+
+section.matrix .drill details.annotation .block.description .main > p.description {
+  font-size: 1em;
 }
 
 /* On a narrow screen the concern names take less room. */

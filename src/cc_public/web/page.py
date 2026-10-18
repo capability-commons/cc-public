@@ -188,7 +188,7 @@ def _matrix(graph:    Graph,
                  for id_annotation in outline.list_other]]])
 
     list_row += [
-        row(['All'], [_cell(outline.units(decision = id_decision))
+        row(['All'], [_total(outline.units(decision = id_decision))
                       for id_decision in list_decision], class_ = 'foot total'),
         row(['Standing'], [_stance(issue.map_stance.get(id_decision,
                                                         cc_public.web.argument.STANCE_OPEN))
@@ -261,6 +261,21 @@ def _cell(list_unit: list) -> typing.Any:
                      title  = '{f} for, {a} against'.format(f = count_for, a = count_against))[
         [htpy.span(class_ = 'unit for')[MARK_FOR] for _ in range(count_for)],
         [htpy.span(class_ = 'unit against')[MARK_AGAINST] for _ in range(count_against)]]
+
+
+# -----------------------------------------------------------------------------
+def _total(list_unit: list) -> typing.Any:
+    """
+    Return the total of list_unit, the units of weight on one decision,
+    in words: how many are for it and how many against.
+
+    """
+
+    count_for = sum(1 for unit in list_unit if unit.is_for())
+    return [htpy.span(class_ = 'for')['{count} for'.format(count = count_for)],
+            ', ',
+            htpy.span(class_ = 'against')['{count} against'.format(
+                                              count = len(list_unit) - count_for)]]
 
 
 # -----------------------------------------------------------------------------
