@@ -208,6 +208,22 @@ def test_the_sankey_diagram_is_shown_and_the_graph_folded(tree):
                      r'Graph of the argument</span></summary><figure class="map network">', text)
 
 
+def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
+    graph = cc_public.web.argument.Graph(tree)
+    for issue in graph.list_issue():
+        outline = cc_public.web.sankey.Outline(graph, issue)
+        if not outline.map_number:
+            continue
+        text    = str(cc_public.web.network.figure(graph, outline))
+        for list_id in (outline.list_decision,
+                        [id_concern for id_concern in outline.list_concern
+                         if outline.units(concern = id_concern)]):
+            list_y = [float(re.search(r'id="node-{id}">(?:<title>[^<]*</title>)?<rect x="[^"]*" '
+                                      r'y="([^"]*)"'.format(id = id_item), text).group(1))
+                      for id_item in list_id]
+            assert list_y == sorted(list_y)
+
+
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))

@@ -341,7 +341,8 @@ def _concern_rows(outline:   Outline,
                   map_place: dict[str, tuple[float, float]]) -> dict[str, float]:
     """
     Return the row of each concern argued on: the middle of the
-    annotations that argue for it, pushed apart so no two overlap.
+    annotations that argue for it, kept in the order of the Sankey
+    diagram and pushed down so no two overlap.
 
     """
 
@@ -352,8 +353,8 @@ def _concern_rows(outline:   Outline,
             map_mean[id_concern] = sum(list_y) / len(list_y)
     map_y  = {}
     y_last = None
-    for id_concern in sorted(map_mean, key = map_mean.get):
-        y = map_mean[id_concern]
+    for (id_concern, y_mean) in map_mean.items():
+        y = y_mean
         if y_last is not None and y < y_last + ROW:
             y = y_last + ROW
         map_y[id_concern] = y
@@ -366,8 +367,8 @@ def _decision_rows(outline:   Outline,
                    map_place: dict[str, tuple[float, float]]) -> dict[str, float]:
     """
     Return the row of each decision: the middle of the concerns argued
-    on it, each counted once for each unit, pushed apart so no two
-    overlap.
+    on it, each counted once for each unit, kept in the order of the
+    Sankey diagram and pushed down so no two overlap.
 
     """
 
@@ -376,7 +377,7 @@ def _decision_rows(outline:   Outline,
         list_y = [map_place[unit.concern][1] for unit in outline.units(decision = id_decision)]
         map_y[id_decision] = sum(list_y) / len(list_y) if list_y else 0
     y_last = None
-    for id_decision in sorted(map_y, key = map_y.get):
+    for id_decision in outline.list_decision:
         if y_last is not None and map_y[id_decision] < y_last + ROW:
             map_y[id_decision] = y_last + ROW
         y_last = map_y[id_decision]
