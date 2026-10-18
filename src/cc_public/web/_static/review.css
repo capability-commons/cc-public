@@ -605,7 +605,7 @@ section.matrix .row > .label {
 }
 
 section.matrix .row > .cell {
-  text-align: center;
+  text-align: left;
   padding: 0.35rem 0;
 }
 
@@ -692,7 +692,7 @@ section.matrix .row.foot.controls > .cell {
 
 section.matrix .row.foot.controls form.determine {
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 section.matrix .none { color: var(--rule); }
@@ -700,44 +700,79 @@ section.matrix .none { color: var(--rule); }
 section.matrix .units {
   display: inline-flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.2rem;
+  gap: 0.25rem;
   vertical-align: middle;
 }
 
+/* A unit is a disc with its mark drawn as bars, so the mark sits at its
+   exact centre whatever the font; the + or − stays in the text for
+   reading aloud and copying. */
+
 section.matrix .unit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: inline-block;
   width: 1.4rem;
   height: 1.4rem;
-  font-size: 1.15rem;
-  line-height: 1;
-  font-variant-numeric: lining-nums;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 0.1rem;
+  overflow: hidden;
+}
+
+section.matrix .unit::before,
+section.matrix .unit.for::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: currentColor;
+}
+
+section.matrix .unit::before {
+  width: 0.7rem;
+  height: 2px;
+  transform: translate(-50%, -50%);
+}
+
+section.matrix .unit.for::after {
+  width: 2px;
+  height: 0.7rem;
+  transform: translate(-50%, -50%);
 }
 
 section.matrix .unit.for {
   background: var(--band-for);
-  color: var(--mark-for);
 }
 
 section.matrix .unit.against {
   background: var(--band-against);
-  color: var(--mark-against);
+}
+
+section.matrix .unit.for::before,
+section.matrix .unit.for::after {
+  background: var(--mark-for);
+}
+
+section.matrix .unit.against::before {
+  background: var(--mark-against);
 }
 
 section.matrix a.cell {
   text-decoration: none;
   display: inline-block;
-  padding: 0.15rem;
+  border-radius: 0.8rem;
 }
 
 section.matrix a.cell:hover {
   outline: 1px solid var(--ink-muted);
+  outline-offset: 2px;
 }
 
+/* The shading of what a row opens to starts at the rule under the row:
+   the first annotation's rule is that rule. */
+
 section.matrix .drill {
-  padding: 0.4rem 0 0.8rem;
+  padding: 0 0 0.8rem;
   background: var(--shade);
   font-size: 1.4rem;
   line-height: 1.5;
