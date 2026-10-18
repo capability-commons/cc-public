@@ -592,10 +592,12 @@ figure.map svg {
   letter-spacing: 0.03em;
 }
 
-.network .edges path { fill: none; stroke-width: 1.4; }
-.network .edge-for { stroke: var(--ink-for); }
-.network .edge-against { stroke: var(--ink-against); stroke-dasharray: 5 3; }
-.network .edge-link { stroke: var(--ink-muted); stroke-width: 1.1; }
+/* Edges are thin Sankey bands: the same translucent colours, so where
+   they cross or bundle the overlap shows. */
+
+.network .edges path { fill: none; stroke-width: 5; }
+.network .edge-for { stroke: var(--band-for); }
+.network .edge-against { stroke: var(--band-against); }
 
 .network .port { outline: none; }
 .network .unpin { outline: none; cursor: default; }
