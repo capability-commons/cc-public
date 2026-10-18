@@ -49,6 +49,7 @@ import htpy
 import cc_public.requirement.compose
 import cc_public.web.argument
 import cc_public.web.description
+import cc_public.web.light
 import cc_public.web.network
 import cc_public.web.sankey
 
@@ -155,10 +156,16 @@ def _matrix(graph:    Graph,
             [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
 
     map_decision = {decision.id: decision for decision in issue.list_decision}
-    list_row     = [row([], [htpy.a(href = '#' + id_decision)[graph.title(id_decision)]
+    list_row     = [row([], [[htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
+                              htpy.div(class_ = 'total')[
+                                  _total(id_decision, outline.units(decision = id_decision))]]
                              for id_decision in list_decision],
                         class_ = 'head'),
                     _decision_style(list_decision),
+                    [htpy.span(class_ = 'decision-role',
+                               id     = cc_public.web.light.alias(id_decision, role))
+                     for id_decision in list_decision
+                     for role in (cc_public.web.light.ROLE_FOR, cc_public.web.light.ROLE_AGAINST)],
                     [_decision(graph, issue, map_decision[id_decision])
                      for id_decision in list_decision]]
 
@@ -190,8 +197,6 @@ def _matrix(graph:    Graph,
                  for id_annotation in outline.list_other]]])
 
     list_row += [
-        row(['All'], [_total(outline.units(decision = id_decision))
-                      for id_decision in list_decision], class_ = 'foot total'),
         row(['Standing'], [_stance(issue.map_stance.get(id_decision,
                                                         cc_public.web.argument.STANCE_OPEN))
                            for id_decision in list_decision], class_ = 'foot standing'),
@@ -266,18 +271,25 @@ def _cell(list_unit: list) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _total(list_unit: list) -> typing.Any:
+def _total(id_decision: str, list_unit: list) -> typing.Any:
     """
-    Return the total of list_unit, the units of weight on one decision,
-    in words: how many are for it and how many against.
+    Return the total of list_unit, the units of weight on id_decision,
+    in words: how many are for it and how many against. Each count
+    shows the decision and pins the chains that reach it with that
+    role.
 
     """
 
-    count_for = sum(1 for unit in list_unit if unit.is_for())
-    return [htpy.span(class_ = 'for')['{count} for'.format(count = count_for)],
+    count_for    = sum(1 for unit in list_unit if unit.is_for())
+    role_for     = cc_public.web.light.ROLE_FOR
+    role_against = cc_public.web.light.ROLE_AGAINST
+    return [htpy.a(class_ = role_for,
+                   href   = '#' + cc_public.web.light.alias(id_decision, role_for))[
+                '{count} for'.format(count = count_for)],
             ', ',
-            htpy.span(class_ = 'against')['{count} against'.format(
-                                              count = len(list_unit) - count_for)]]
+            htpy.a(class_ = role_against,
+                   href   = '#' + cc_public.web.light.alias(id_decision, role_against))[
+                '{count} against'.format(count = len(list_unit) - count_for)]]
 
 
 # -----------------------------------------------------------------------------
@@ -486,13 +498,30 @@ def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _decision_style(list_decision: list[str]) -> typing.Any:
     """
-    Return the rules that keep the title of the decision whose panel is
-    shown in ink while the titles of the others are greyed.
+    Return the rules that show the panel of a decision while it, or
+    one of its counts, is chosen, and keep its title and the chosen
+    count in ink while the titles and counts of the others are greyed.
 
     """
 
-    rule = 'section.matrix:has(#{id}:target) .row.head a[href=\\#{id}] {{ color: var(--ink); }}'
-    return htpy.style['\n'.join(rule.format(id = id_decision) for id_decision in list_decision)]
+    list_rule = []
+    for id_decision in list_decision:
+        map_id = {'id':      id_decision,
+                  'for':     cc_public.web.light.alias(id_decision, cc_public.web.light.ROLE_FOR),
+                  'against': cc_public.web.light.alias(id_decision,
+                                                       cc_public.web.light.ROLE_AGAINST)}
+        list_rule += [
+            ('section.matrix:has(#{for}:target, #{against}:target) #{id} '
+             '{{ display: block; }}').format(**map_id),
+            ('section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
+             '.row.head a[href=\\#{id}] {{ color: var(--ink); }}').format(**map_id),
+            ('section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
+             '.row.head :is(a[href=\\#{for}], a[href=\\#{against}]) '
+             '{{ opacity: 1; }}').format(**map_id),
+            ('section.matrix:has(#{for}:target) .row.head a[href=\\#{for}], '
+             'section.matrix:has(#{against}:target) .row.head a[href=\\#{against}] '
+             '{{ text-decoration: underline; }}').format(**map_id)]
+    return htpy.style['\n'.join(list_rule)]
 
 
 # -----------------------------------------------------------------------------

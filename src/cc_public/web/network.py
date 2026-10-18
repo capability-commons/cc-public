@@ -121,14 +121,17 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     (list_drawn, map_css_node, map_css_edge, list_light) = _lighting(
         list_edge, map_place, map_key, set_pick)
 
-    map_alias = {KEY_PICK + id_item: id_item for id_item in set_pick
+    map_alias = {KEY_PICK + id_item: cc_public.web.light.alias(id_item) for id_item in set_pick
                  if map_kind[id_item] == KIND_DECISION}
+    map_alias.update({key: cc_public.web.light.alias(*port) for (port, key) in map_key.items()
+                      if map_kind[port[0]] == KIND_DECISION})
 
     list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_drawn]
     list_node = [_node(graph, outline, map_kind[id_item], id_item, map_place[id_item],
                        map_css_node[id_item], id_item in set_pick)
                  for id_item in map_place]
-    list_dot  = [_port(map_kind[port[0]], map_place[port[0]], port[1], key)
+    list_dot  = [_port(map_kind[port[0]], map_place[port[0]], port[1], key,
+                       map_alias.get(key, key))
                  for (port, key) in map_key.items()]
 
     width  = max(x for (x, _) in map_place.values()) + WIDTH_NODE + 2 * MARGIN
@@ -137,7 +140,7 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     return htpy.figure(class_ = 'map network')[
         htpy.style[cc_public.web.light.style('.network', [key for (key, _, _) in list_light],
                                              map_alias),
-                   _style_shown(map_alias)],
+                   _style_shown(map_alias, map_key)],
         htpy.svg(viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
                                                                   top    = _num(top),
                                                                   width  = width,
@@ -422,10 +425,11 @@ def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, flo
 
 
 # -----------------------------------------------------------------------------
-def _port(kind: str, place: tuple[float, float], role: str, key: str) -> typing.Any:
+def _port(kind: str, place: tuple[float, float], role: str, key: str, href: str) -> typing.Any:
     """
     Return the port of role on the node of kind at place: a dot that
-    links to the page with the chain into it lit.
+    lights the chain at key while hovered over and links to href, which
+    pins it.
 
     """
 
@@ -433,7 +437,7 @@ def _port(kind: str, place: tuple[float, float], role: str, key: str) -> typing.
     css = 'port port-{role} {anchor} {trigger}'.format(role    = role,
                                                        anchor  = cc_public.web.light.CSS_ANCHOR,
                                                        trigger = cc_public.web.light.trigger(key))
-    return htpy.a(href = '#' + key, id = key, class_ = css)[
+    return htpy.a(href = '#' + href, id = key, class_ = css)[
         htpy.title['what {verb} this'.format(verb = 'supports' if role == ROLE_FOR
                                              else 'challenges')],
         htpy.circle(cx = _num(cx), cy = _num(cy), r = str(RADIUS_PORT))]
@@ -491,17 +495,25 @@ def _node(graph:    Graph,
 
 
 # -----------------------------------------------------------------------------
-def _style_shown(map_alias: dict[str, str]) -> str:
+def _style_shown(map_alias: dict[str, str], map_key: dict[tuple[str, str], str]) -> str:
     """
-    Return the rules that outline the node of a decision while it is
-    shown in the matrix, as if it were pinned here.
+    Return the rules that mark the node or port of a decision while it
+    is shown in the matrix, as if it were pinned here.
 
     """
 
-    rule = (':root:has(#{alias}:target) .network #{key} .shape '
-            '{{ stroke: var(--ink); stroke-width: 1.6; }}')
-    return ''.join('\n' + rule.format(alias = alias, key = key)
-                   for (key, alias) in sorted(map_alias.items()))
+    map_role  = {key: port[1] for (port, key) in map_key.items()}
+    rule_node = (':root:has(#{alias}:target) .network #{key} .shape '
+                 '{{ stroke: var(--ink); stroke-width: 1.6; }}')
+    rule_port = (':root:has(#{alias}:target) .network #{key} circle '
+                 '{{ stroke-width: 2.5; fill: var(--ink-{role}); }}')
+    list_rule = []
+    for (key, alias) in sorted(map_alias.items()):
+        if key in map_role:
+            list_rule.append(rule_port.format(alias = alias, key = key, role = map_role[key]))
+        else:
+            list_rule.append(rule_node.format(alias = alias, key = key))
+    return ''.join('\n' + rule for rule in list_rule)
 
 
 # -----------------------------------------------------------------------------

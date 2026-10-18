@@ -390,9 +390,11 @@ class _Drawing:
 
             list_css = self._css_decision(decision.id)
             self._bar(LIST_X[0], y, count_for * UNIT, ROLE_FOR, list_css,
-                      _key_port(decision.id, ROLE_FOR))
+                      _key_port(decision.id, ROLE_FOR),
+                      cc_public.web.light.alias(decision.id, ROLE_FOR))
             self._bar(LIST_X[0], y + count_for * UNIT, (count_total - count_for) * UNIT,
-                      ROLE_AGAINST, list_css, _key_port(decision.id, ROLE_AGAINST))
+                      ROLE_AGAINST, list_css, _key_port(decision.id, ROLE_AGAINST),
+                      cc_public.web.light.alias(decision.id, ROLE_AGAINST))
             if not count_total:
                 self._bar(LIST_X[0], y, 2, 'none', list_css)
 
@@ -401,7 +403,8 @@ class _Drawing:
             key     = _key_decision(decision.id)
             css     = ' '.join(['decision', cc_public.web.light.CSS_DIMS,
                                 cc_public.web.light.trigger(key)] + list_css)
-            self.list_label.append(htpy.a(href = '#' + decision.id, class_ = 'pin')[
+            self.list_label.append(htpy.a(href   = '#' + cc_public.web.light.alias(decision.id),
+                                          class_ = 'pin')[
                 htpy.text(x = str(LIST_X[0] - 10), y = _num(middle - 2),
                           class_ = css, text_anchor = 'end')[decision.title]])
             self.list_label.append(
@@ -623,13 +626,19 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def aliases(self) -> dict[str, str]:
         """
-        Return the key of the chains of each decision with the id of
-        the decision, which pins them while the decision is shown in
-        the matrix.
+        Return the key of the chains of each decision, and of each part
+        of its bar, with the id that pins them while the decision is
+        shown in the matrix.
 
         """
 
-        return {_key_decision(id_decision): id_decision for id_decision in self.list_decision}
+        map_alias = {}
+        for id_decision in self.list_decision:
+            map_alias[_key_decision(id_decision)] = cc_public.web.light.alias(id_decision)
+            for role in (ROLE_FOR, ROLE_AGAINST):
+                map_alias[_key_port(id_decision, role)] = cc_public.web.light.alias(id_decision,
+                                                                                    role)
+        return map_alias
 
     # -------------------------------------------------------------------------
     def _closure(self, id_annotation: str, set_path: set[str]) -> set[str]:
@@ -818,11 +827,13 @@ class _Drawing:
              height:   float,
              css:      str,
              list_css: list[str] = (),
-             key_pin:  str | None = None) -> None:
+             key_pin:  str | None = None,
+             href:     str | None = None) -> None:
         """
         Add a bar at x and y of height, in the chains of list_css. If
         key_pin is given, the bar lights the chain at key_pin while it
-        is hovered over, and pins it when clicked.
+        is hovered over, and pins it when clicked, by linking to href
+        if given and to key_pin if not.
 
         """
 
@@ -834,7 +845,7 @@ class _Drawing:
         bar = htpy.rect(x = _num(x), y = _num(y), width = str(WIDTH_BAR),
                         height = _num(height), class_ = ' '.join(list_class))
         if key_pin:
-            bar = htpy.a(href = '#' + key_pin, class_ = 'pin')[bar]
+            bar = htpy.a(href = '#' + (href or key_pin), class_ = 'pin')[bar]
         self.list_bar.append(bar)
 
     # -------------------------------------------------------------------------

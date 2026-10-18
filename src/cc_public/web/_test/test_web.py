@@ -152,6 +152,11 @@ def test_a_decision_shown_in_the_matrix_is_lit_in_both_diagrams(tree):
         assert '{shown} .sankey svg .dims'.format(shown = shown) in text
         assert '{shown} .network svg .dims'.format(shown = shown) in text
         assert text.count('href="#{id}"'.format(id = decision.id)) >= 3
+        for role in ('for', 'against'):
+            alias = '{id}--{role}'.format(id = decision.id, role = role)
+            assert ':root:has(#{alias}:target) .sankey svg .dims'.format(alias = alias) in text
+            assert ':root:has(#{alias}:target) .network svg .dims'.format(alias = alias) in text
+            assert text.count('href="#{alias}"'.format(alias = alias)) == 3
 
 
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
@@ -198,7 +203,7 @@ def test_answers_sit_under_the_description_of_what_they_answer(tree):
     assert b'<details class="description" open>' in shown
 
 
-def test_matrix_cells_show_a_marked_disc_for_each_unit_and_totals_in_words(tree):
+def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix=pugh'.format(
@@ -212,9 +217,13 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_totals_in_words(tree)
     for id_decision in outline.list_decision:
         list_own = outline.units(decision = id_decision)
         count    = sum(1 for unit in list_own if unit.is_for())
-        assert ('<span class="for">{f} for</span>, <span class="against">{a} against</span>'
-                .format(f = count, a = len(list_own) - count)) in matrix
+        head     = matrix[:matrix.index('<style>')]
+        assert ('<a class="for" href="#{id}--for">{f} for</a>, '
+                '<a class="against" href="#{id}--against">{a} against</a>'
+                .format(id = id_decision, f = count, a = len(list_own) - count)) in head
+        assert 'id="{id}--for"'.format(id = id_decision) in matrix
     assert 'matrix=' not in matrix
+    assert '>All<' not in matrix
 
 
 def test_description_moves_sources_to_the_margin_and_keeps_other_brackets(tree):

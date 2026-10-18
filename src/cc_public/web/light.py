@@ -103,6 +103,18 @@ def trigger(key: str) -> str:
 
 
 # -----------------------------------------------------------------------------
+def alias(id_decision: str, role: str | None = None) -> str:
+    """
+    Return the id that shows id_decision in the matrix and pins its
+    chains in the diagrams: all of them, or with role only those that
+    reach it with that role.
+
+    """
+
+    return id_decision if role is None else id_decision + DELIM_SIGN + role
+
+
+# -----------------------------------------------------------------------------
 def style(scope: str, list_key: list[str], map_alias: dict[str, str] | None = None) -> str:
     """
     Return the rules that light the chain at each key in the diagram

@@ -13,12 +13,12 @@ document.addEventListener('click', function (event) {
   var link = event.target.closest('a[href^="#"]');
   if (link) {
     var target = document.getElementById(link.getAttribute('href').slice(1));
-    if (!target || target.matches('.decision, .lit-anchor')) {
+    if (!target || target.matches('.decision, .decision-role, .lit-anchor')) {
       keep = window.scrollY;
     }
     return;
   }
-  var shown = document.querySelector('section.matrix .decision:target');
+  var shown = document.querySelector('section.matrix :is(.decision, .decision-role):target');
   if (shown && !event.target.closest('section.matrix')) {
     keep = window.scrollY;
     location.hash = 'unpin';

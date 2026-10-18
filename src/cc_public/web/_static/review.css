@@ -698,17 +698,37 @@ section.matrix .drill.decision:target {
   display: block;
 }
 
-section.matrix:has(.drill.decision:target) .row.head > .cell > a {
+section.matrix:has(.drill.decision:target, .decision-role:target) .row.head > .cell > a {
   color: #a99f8c;
 }
+
+section.matrix:has(.drill.decision:target, .decision-role:target) .row.head .total a {
+  opacity: 0.45;
+}
+
+/* The counts under a decision's title show the decision and pin the
+   chains that reach it with that role. */
+
+section.matrix .row.head .total {
+  font-size: 0.95rem;
+  margin-top: 0.15rem;
+}
+
+section.matrix .row.head .total a {
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+}
+
+section.matrix .row.head .total a:hover { text-decoration: underline; }
+section.matrix .row.head .total .for { color: var(--ink-for); }
+section.matrix .row.head .total .against { color: var(--ink-against); }
 
 section.matrix .row.head > .cell > a:hover {
   color: var(--link);
 }
 
 section.matrix details.concern,
-section.matrix .row.concern,
-section.matrix .row.foot.total {
+section.matrix .row.concern {
   border-bottom: 1px solid var(--rule);
 }
 
@@ -772,8 +792,6 @@ section.matrix .row.foot.controls form.determine {
 }
 
 section.matrix .none { color: var(--rule); }
-section.matrix .row.foot.total .for { color: var(--ink-for); }
-section.matrix .row.foot.total .against { color: var(--ink-against); }
 
 section.matrix .units {
   display: inline-flex;
