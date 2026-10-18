@@ -158,7 +158,9 @@ def _matrix(graph:    Graph,
 
     map_decision = {decision.id: decision for decision in issue.list_decision}
     drawing      = cc_public.web.sankey.lighting(graph, outline)
-    list_row     = [row([], [[htpy.a(href = '#' + id_decision)[graph.title(id_decision)],
+    list_row     = [row([], [[htpy.a(href   = '#' + id_decision,
+                                     class_ = cc_public.web.light.show(id_decision))[
+                                  graph.title(id_decision)],
                               htpy.div(class_ = 'total')[
                                   _total(id_decision, outline.units(decision = id_decision))]]
                              for id_decision in list_decision],
@@ -282,20 +284,23 @@ def _total(id_decision: str, list_unit: list) -> typing.Any:
     """
     Return the total of list_unit, the units of weight on id_decision,
     in words: how many are for it and how many against. Each count
-    shows the decision and pins the chains that reach it with that
-    role.
+    lights the chains that reach the decision with that role while it
+    is hovered over, and shows the decision and pins them when it is
+    clicked.
 
     """
 
     count_for    = sum(1 for unit in list_unit if unit.is_for())
     role_for     = cc_public.web.light.ROLE_FOR
     role_against = cc_public.web.light.ROLE_AGAINST
-    return [htpy.a(class_ = role_for,
-                   href   = '#' + cc_public.web.light.alias(id_decision, role_for))[
+    alias_for     = cc_public.web.light.alias(id_decision, role_for)
+    alias_against = cc_public.web.light.alias(id_decision, role_against)
+    return [htpy.a(class_ = role_for + ' ' + cc_public.web.light.show(alias_for),
+                   href   = '#' + alias_for)[
                 '{count} for'.format(count = count_for)],
             ', ',
-            htpy.a(class_ = role_against,
-                   href   = '#' + cc_public.web.light.alias(id_decision, role_against))[
+            htpy.a(class_ = role_against + ' ' + cc_public.web.light.show(alias_against),
+                   href   = '#' + alias_against)[
                 '{count} against'.format(count = len(list_unit) - count_for)]]
 
 
@@ -536,7 +541,9 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
     """
     Return the rules that keep in ink the text of the matrix in a chain
     of drawing while the chain is pinned, from the matrix or from the
-    Sankey diagram; the rest of the text that can be muted is muted.
+    Sankey diagram, or while a mark in the head of the matrix that
+    shows it is hovered over, which wins over a pin; the rest of the
+    text that can be muted is muted.
 
     """
 
@@ -545,9 +552,15 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
     rule      = '{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}'
     list_rule = []
     for key in list_key:
-        list_when = [':root:has(.sankey #{key}:target)'.format(key = key)]
+        unhovered = ':not(:has(.{show}:hover))'.format(show = cc_public.web.light.CSS_SHOW)
+        list_when = [':root:has(.sankey #{key}:target){unhovered}'.format(key       = key,
+                                                                           unhovered = unhovered)]
         if key in map_alias:
-            list_when.append(':root:has(#{alias}:target)'.format(alias = map_alias[key]))
+            list_when += [':root:has(#{alias}:target){unhovered}'.format(alias     = map_alias[key],
+                                                                          unhovered = unhovered),
+                          ':root:has(.{prefix}{alias}:hover)'.format(
+                              prefix = cc_public.web.light.PREFIX_SHOW,
+                              alias  = map_alias[key])]
         list_rule.append(rule.format(when  = ':is({list})'.format(list = ', '.join(list_when)),
                                      mutes = CSS_MUTES,
                                      key   = key))

@@ -28,9 +28,10 @@ description:            |
                         an alias: the id of an element elsewhere on
                         the page, such as a decision shown in the
                         matrix, which pins the chain while it is the
-                        target. Hovering wins over a pin. While any
-                        chain is lit, every mark that can be dimmed
-                        and is outside it is dimmed.
+                        target, and marks elsewhere light it while
+                        they are hovered over. Hovering wins over a
+                        pin. While any chain is lit, every mark that
+                        can be dimmed and is outside it is dimmed.
 relation:               []
 
 ...
@@ -43,7 +44,9 @@ SIGN_MIXED        = 'mixed'
 CSS_TRIGGER       = 'lit-trigger'
 CSS_ANCHOR        = 'lit-anchor'
 CSS_DIMS          = 'dims'
+CSS_SHOW          = 'lit-show'
 PREFIX_HOVER      = 'hover-'
+PREFIX_SHOW       = 'show-'
 DELIM_SIGN        = '--'
 KEY_UNPIN         = 'unpin'
 
@@ -115,13 +118,25 @@ def alias(id_decision: str, role: str | None = None) -> str:
 
 
 # -----------------------------------------------------------------------------
+def show(alias: str) -> str:
+    """
+    Return the classes of a mark outside the diagrams that lights the
+    chains of alias in them while it is hovered over.
+
+    """
+
+    return '{show} {prefix}{alias}'.format(show = CSS_SHOW, prefix = PREFIX_SHOW, alias = alias)
+
+
+# -----------------------------------------------------------------------------
 def style(scope: str, list_key: list[str], map_alias: dict[str, str] | None = None) -> str:
     """
     Return the rules that light the chain at each key in the diagram
-    scope while a trigger of it is hovered over, or its anchor or its
-    alias in map_alias is the target of the address. A lit mark shows
-    in full; one shaded for a net effect takes the custom properties
-    --lit (a fill) and --lit-ink (an ink) of that effect.
+    scope while a trigger of it, or a mark that shows its alias in
+    map_alias, is hovered over, or while its anchor or its alias is the
+    target of the address and no such mark is hovered over. A lit mark
+    shows in full; one shaded for a net effect takes the custom
+    properties --lit (a fill) and --lit-ink (an ink) of that effect.
 
     """
 
@@ -129,16 +144,25 @@ def style(scope: str, list_key: list[str], map_alias: dict[str, str] | None = No
     list_rule = []
     for key in list_key:
         list_when = ['{scope} svg:has(.{hover}{key}:hover)',
-                     '{scope} svg:has(#{key}:target):not(:has(.{trigger}:hover))']
+                     (':root:not(:has(.{show}:hover)) '
+                      '{scope} svg:has(#{key}:target):not(:has(.{trigger}:hover))')]
         if key in map_alias:
-            list_when.append(':root:has(#{alias}:target) {scope} svg:not(:has(.{trigger}:hover))')
-            rule = ':root:has(#{alias}:target) {scope} svg .{dims} {{ opacity: var(--dim); }}'
-            list_rule.append(rule.format(alias = map_alias[key], scope = scope, dims = CSS_DIMS))
+            list_when += [':root:has(.{prefix}{alias}:hover) {scope} svg',
+                          (':root:has(#{alias}:target):not(:has(.{show}:hover)) '
+                           '{scope} svg:not(:has(.{trigger}:hover))')]
+            rule = (':is(:root:has(#{alias}:target), :root:has(.{prefix}{alias}:hover)) '
+                    '{scope} svg .{dims} {{ opacity: var(--dim); }}')
+            list_rule.append(rule.format(alias  = map_alias[key],
+                                         prefix = PREFIX_SHOW,
+                                         scope  = scope,
+                                         dims   = CSS_DIMS))
         when = ':is({list_when})'.format(list_when = ', '.join(list_when)).format(
             scope   = scope,
             hover   = PREFIX_HOVER,
             key     = key,
             trigger = CSS_TRIGGER,
+            show    = CSS_SHOW,
+            prefix  = PREFIX_SHOW,
             alias   = map_alias.get(key))
         list_rule.append('{when} .{key} {{ opacity: 1; }}'.format(when = when, key = key))
         for sign in (ROLE_FOR, ROLE_AGAINST, SIGN_MIXED):

@@ -498,14 +498,17 @@ def _node(graph:    Graph,
 def _style_shown(map_alias: dict[str, str], map_key: dict[tuple[str, str], str]) -> str:
     """
     Return the rules that mark the node or port of a decision while it
-    is shown in the matrix, as if it were pinned here.
+    is shown in the matrix, or hovered over in its head, as if it were
+    pinned here.
 
     """
 
     map_role  = {key: port[1] for (port, key) in map_key.items()}
-    rule_node = (':root:has(#{alias}:target) .network #{key} .shape '
+    when      = (':is(:root:has(#{alias}:target), '
+                 ':root:has(.' + cc_public.web.light.PREFIX_SHOW + '{alias}:hover))')
+    rule_node = (when + ' .network #{key} .shape '
                  '{{ stroke: var(--ink); stroke-width: 1.6; }}')
-    rule_port = (':root:has(#{alias}:target) .network #{key} circle '
+    rule_port = (when + ' .network #{key} circle '
                  '{{ stroke-width: 2.5; fill: var(--ink-{role}); }}')
     list_rule = []
     for (key, alias) in sorted(map_alias.items()):

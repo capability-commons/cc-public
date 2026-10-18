@@ -149,13 +149,17 @@ def test_a_decision_shown_in_the_matrix_is_lit_in_both_diagrams(tree):
     text  = body.decode()
     for decision in issue.list_decision:
         shown = ':root:has(#{id}:target)'.format(id = decision.id)
-        assert '{shown} .sankey svg .dims'.format(shown = shown) in text
-        assert '{shown} .network svg .dims'.format(shown = shown) in text
+        hover = ':root:has(.show-{id}:hover)'.format(id = decision.id)
+        for scope in ('.sankey', '.network'):
+            assert ':is({shown}, {hover}) {scope} svg .dims'.format(
+                       shown = shown, hover = hover, scope = scope) in text
+        assert 'class="lit-show show-{id}"'.format(id = decision.id) in text
         assert text.count('href="#{id}"'.format(id = decision.id)) >= 3
         for role in ('for', 'against'):
             alias = '{id}--{role}'.format(id = decision.id, role = role)
-            assert ':root:has(#{alias}:target) .sankey svg .dims'.format(alias = alias) in text
-            assert ':root:has(#{alias}:target) .network svg .dims'.format(alias = alias) in text
+            for scope in ('.sankey', '.network'):
+                assert ':is(:root:has(#{a}:target), :root:has(.show-{a}:hover)) {s} svg'.format(
+                           a = alias, s = scope) in text
             assert text.count('href="#{alias}"'.format(alias = alias)) == 3
 
 
@@ -168,7 +172,8 @@ def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
     assert 'name other' not in matrix
     for id_decision in outline.list_decision:
         key = 'lit-dec-' + id_decision
-        assert ':root:has(#{id}:target)) section.matrix .mutes.{key}'.format(
+        assert ':root:has(#{id}:target):not(:has(.lit-show:hover))'.format(id = id_decision) in matrix
+        assert ':root:has(.show-{id}:hover)) section.matrix .mutes.{key}'.format(
                    id = id_decision, key = key) in matrix
     for id_concern in outline.list_concern:
         if not outline.units(concern = id_concern):
@@ -241,8 +246,9 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(
         list_own = outline.units(decision = id_decision)
         count    = sum(1 for unit in list_own if unit.is_for())
         head     = matrix[:matrix.index('<style>')]
-        assert ('<a class="for" href="#{id}--for">{f} for</a>, '
-                '<a class="against" href="#{id}--against">{a} against</a>'
+        assert ('<a class="for lit-show show-{id}--for" href="#{id}--for">{f} for</a>, '
+                '<a class="against lit-show show-{id}--against" href="#{id}--against">'
+                '{a} against</a>'
                 .format(id = id_decision, f = count, a = len(list_own) - count)) in head
         assert 'id="{id}--for"'.format(id = id_decision) in matrix
     assert 'matrix=' not in matrix
