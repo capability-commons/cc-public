@@ -496,7 +496,7 @@ class _Drawing:
             for (index, unit) in enumerate(list_unit):
                 self._band(LIST_X[0] + WIDTH_BAR, map_y_decision[unit],
                            LIST_X[1], map_top_concern[id_concern] + index * UNIT,
-                           UNIT, unit.role, self._css_unit(unit))
+                           UNIT, unit.role, self.css_unit(unit))
 
     # -------------------------------------------------------------------------
     def _annotations(self, id_concern: str, top: float) -> float:
@@ -517,7 +517,7 @@ class _Drawing:
                               key = lambda unit: (not unit.is_for(),
                                                   self.list_decision.index(unit.decision)))
             for (index, unit) in enumerate(list_own):
-                list_css = self._css_unit(unit)
+                list_css = self.css_unit(unit)
                 self._band(LIST_X[1] + WIDTH_BAR, y_from, LIST_X[2], y + index * UNIT,
                            UNIT, unit.role, list_css)
                 self._bar(LIST_X[2], y + index * UNIT, UNIT, unit.role, list_css,
@@ -656,7 +656,7 @@ class _Drawing:
         return set_out
 
     # -------------------------------------------------------------------------
-    def _css_unit(self, unit: Unit) -> list[str]:
+    def css_unit(self, unit: Unit) -> list[str]:
         """
         Return the classes of a mark of unit: in the chains of its
         decision and of the part of its bar for its role, inked by its

@@ -185,6 +185,9 @@ def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
             start = matrix.index('id="{c}/{a}"'.format(c = id_concern, a = id_annotation))
             assert re.match(r'[^>]*>\s*<summary><div class="block"><div class="main mutes [^"]*'
                             r'lit-ann-{a}\b'.format(a = id_annotation), matrix[start:])
+            summary = matrix[start:matrix.index('</summary>', start)]
+            assert re.search(r'<aside class="margin fades [^"]*lit-ann-{a}\b'.format(
+                                 a = id_annotation), summary)
 
 
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
@@ -240,8 +243,9 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(
     matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
     list_unit = outline.list_unit
     count_for = sum(1 for unit in list_unit if unit.is_for())
-    assert matrix.count('<span class="unit for">+</span>') == count_for
-    assert matrix.count('<span class="unit against">−</span>') == len(list_unit) - count_for
+    assert len(re.findall(r'<span class="unit for fades lit-[^"]*">✓</span>', matrix)) == count_for
+    assert (len(re.findall(r'<span class="unit against fades lit-[^"]*">✗</span>', matrix))
+            == len(list_unit) - count_for)
     for id_decision in outline.list_decision:
         list_own = outline.units(decision = id_decision)
         count    = sum(1 for unit in list_own if unit.is_for())

@@ -786,6 +786,14 @@ section.matrix details.concern > summary:hover .name {
   color: inherit;
 }
 
+section.matrix .fades { transition: opacity 0.12s; }
+
+:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target,
+          .lit-show:hover)
+  section.matrix .fades {
+  opacity: 0.3;
+}
+
 section.matrix .unargued {
   margin-left: 0.6em;
   font-style: italic;
@@ -818,8 +826,9 @@ section.matrix .units {
 
 /* A unit is a disc drawn as a small vector image, so its mark is at its
    exact centre and evenly weighted at any size; the disc takes the
-   colour of the bands of the diagram on the paper. The + or − stays in
-   the text, hidden, for reading aloud and copying. */
+   colour of the bands of the diagram on the paper, marked with a tick
+   for and a cross against. The mark stays in the text, hidden, for
+   reading aloud and copying. */
 
 section.matrix .unit {
   display: inline-block;
@@ -832,11 +841,11 @@ section.matrix .unit {
 }
 
 section.matrix .unit.for {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23b6bcaa'/%3E%3Cg stroke='%23263a2c' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.5 10h9'/%3E%3Cpath d='M10 5.5v9'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23b6bcaa'/%3E%3Cg stroke='%23263a2c' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.8 10.3l2.9 2.9 5.5-6.2' fill='none' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 section.matrix .unit.against {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23ceb0a5'/%3E%3Cg stroke='%234f2320' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.5 10h9'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23ceb0a5'/%3E%3Cg stroke='%234f2320' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M6.6 6.6l6.8 6.8'/%3E%3Cpath d='M13.4 6.6l-6.8 6.8'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 section.matrix a.cell {

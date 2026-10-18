@@ -62,9 +62,12 @@ PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
 CSS_MUTES         = 'mutes'
+CSS_FADES         = 'fades'
 
 MARK_FOR          = '+'
 MARK_AGAINST      = '−'
+MARK_TICK         = '✓'
+MARK_CROSS        = '✗'
 MARK_NONE         = '·'
 MARK_PREVIOUS     = '←'
 MARK_NEXT         = '→'
@@ -176,7 +179,7 @@ def _matrix(graph:    Graph,
 
     for id_concern in outline.list_concern:
         list_annotation = outline.map_annotation[id_concern]
-        list_cell       = [_cell_link(outline, id_decision, id_concern)
+        list_cell       = [_cell_link(outline, drawing, id_decision, id_concern)
                            for id_decision in list_decision]
         label           = _concern_label(graph, issue, id_concern,
                                              drawing.css_concern(id_concern))
@@ -234,6 +237,7 @@ def _concern_label(graph:      Graph,
 
 # -----------------------------------------------------------------------------
 def _cell_link(outline:     cc_public.web.sankey.Outline,
+               drawing:     typing.Any,
                id_decision: str,
                id_concern:  str) -> typing.Any:
     """
@@ -245,7 +249,7 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
 
     list_unit = outline.units(decision = id_decision, concern = id_concern)
     if not list_unit:
-        return _cell(list_unit)
+        return _cell(list_unit, drawing)
 
     set_on   = {unit.annotation for unit in list_unit}
     list_key = [cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation))
@@ -256,27 +260,31 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
                                [(cc_public.web.sankey.KEY_SHOW, key) for key in list_key]),
                    key   = list_key[0])
 
-    return htpy.a(class_ = 'cell', href = href)[_cell(list_unit)]
+    return htpy.a(class_ = 'cell', href = href)[_cell(list_unit, drawing)]
 
 
 # -----------------------------------------------------------------------------
-def _cell(list_unit: list) -> typing.Any:
+def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
     """
     Return what a cell of the decision matrix shows of list_unit, the
-    units of weight on one decision for one concern: a square marked +
-    for each unit for, then a square marked − for each unit against.
+    units of weight on one decision for one concern: a disc marked with
+    a tick for each unit for, then one marked with a cross for each
+    unit against, each in the chains of drawing that the unit is in.
 
     """
 
     if not list_unit:
         return htpy.span(class_ = 'none')[MARK_NONE]
 
-    count_for     = sum(1 for unit in list_unit if unit.is_for())
-    count_against = len(list_unit) - count_for
+    list_for      = [unit for unit in list_unit if unit.is_for()]
+    list_against  = [unit for unit in list_unit if not unit.is_for()]
     return htpy.span(class_ = 'units',
-                     title  = '{f} for, {a} against'.format(f = count_for, a = count_against))[
-        [htpy.span(class_ = 'unit for')[MARK_FOR] for _ in range(count_for)],
-        [htpy.span(class_ = 'unit against')[MARK_AGAINST] for _ in range(count_against)]]
+                     title  = '{f} for, {a} against'.format(f = len(list_for),
+                                                            a = len(list_against)))[
+        [htpy.span(class_ = ' '.join(['unit', role, CSS_FADES, *drawing.css_unit(unit)]))[mark]
+         for (list_role, role, mark) in ((list_for, ROLE_FOR, MARK_TICK),
+                                         (list_against, ROLE_AGAINST, MARK_CROSS))
+         for unit in list_role]]
 
 
 # -----------------------------------------------------------------------------
@@ -542,14 +550,16 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
     Return the rules that keep in ink the text of the matrix in a chain
     of drawing while the chain is pinned, from the matrix or from the
     Sankey diagram, or while a mark in the head of the matrix that
-    shows it is hovered over, which wins over a pin; the rest of the
-    text that can be muted is muted.
+    shows it is hovered over, which wins over a pin, and keep the marks
+    in it in full; the rest of the text that can be muted is muted, and
+    the rest of the marks that can be faded are faded.
 
     """
 
     map_alias = drawing.aliases()
     list_key  = drawing.keys()
-    rule      = '{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}'
+    rule      = ('{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}\n'
+                 '{when} section.matrix .{fades}.{key} {{ opacity: 1; }}')
     list_rule = []
     for key in list_key:
         unhovered = ':not(:has(.{show}:hover))'.format(show = cc_public.web.light.CSS_SHOW)
@@ -563,6 +573,7 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
                               alias  = map_alias[key])]
         list_rule.append(rule.format(when  = ':is({list})'.format(list = ', '.join(list_when)),
                                      mutes = CSS_MUTES,
+                                     fades = CSS_FADES,
                                      key   = key))
     return htpy.style['\n'.join(list_rule)]
 
@@ -672,7 +683,9 @@ def _annotation(graph:         Graph,
     list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
                     if id_answer not in set_path]
     in_concern   = key.partition(cc_public.web.sankey.DELIM_KEY)[0] in outline.list_concern
-    css          = ' '.join([CSS_MUTES, *(drawing.css_path(key) if in_concern else [])])
+    list_lit     = drawing.css_path(key) if in_concern else []
+    css          = ' '.join([CSS_MUTES, *list_lit])
+    css_margin   = ' '.join([CSS_FADES, *list_lit])
 
     return htpy.details(class_ = 'annotation answer' if set_path else 'annotation',
                         id     = key,
@@ -684,7 +697,8 @@ def _annotation(graph:         Graph,
                     htpy.span(class_ = 'run-in')[annotation.title]]],
             [htpy.ul(class_ = 'bearing')[list_bearing],
              _summary_note(graph, list_also, len(list_answer))],
-            css_main = css)],
+            css_main   = css,
+            css_margin = css_margin)],
         htpy.div(class_ = 'body')[
             _brief(graph, annotation, key,
                    [None if id_concern
@@ -695,7 +709,8 @@ def _annotation(graph:         Graph,
                                 None, set_path | {id_annotation}, set_show)
                     for id_answer in list_answer],
                    _is_inside(set_show, key),
-                   css)]]
+                   css,
+                   css_margin)]]
 
 
 # -----------------------------------------------------------------------------
@@ -747,19 +762,23 @@ def _brief(graph:       Graph,
            list_margin: list,
            list_answer: list,
            is_open:     bool,
-           css_main:    str = '') -> typing.Any:
+           css_main:    str = '',
+           css_margin:  str = '') -> typing.Any:
     """
     Return the brief of the annotation with list_margin beside it,
     folded over its description, which is folded in turn over
     list_answer, the annotations that answer it. A level with nothing
     under it does not fold. is_open opens every level. css_main
-    classes the text of the brief and the description.
+    classes the text of the brief and the description, and css_margin
+    their margins.
 
     """
 
-    block = _block([htpy.p[_prose(annotation.brief)]], list_margin, css_main = css_main)
+    block = _block([htpy.p[_prose(annotation.brief)]], list_margin,
+                   css_main   = css_main,
+                   css_margin = css_margin)
     if annotation.description:
-        under = _description(graph, annotation, key, css_main)
+        under = _description(graph, annotation, key, css_main, css_margin)
         if list_answer:
             under = htpy.details(class_ = 'description', open = is_open)[
                 htpy.summary[under], htpy.div(class_ = 'answers')[list_answer]]
@@ -771,11 +790,16 @@ def _brief(graph:       Graph,
 
 
 # -----------------------------------------------------------------------------
-def _description(graph: Graph, annotation: Item, key: str, css_main: str = '') -> typing.Any:
+def _description(graph:      Graph,
+                 annotation: Item,
+                 key:        str,
+                 css_main:   str = '',
+                 css_margin: str = '') -> typing.Any:
     """
     Return the description of the annotation as prose with its sources
     numbered in the margin beside it. key makes the ids of the notes
-    unique on the page; css_main classes the prose.
+    unique on the page; css_main classes the prose and css_margin the
+    sources.
 
     """
 
@@ -784,8 +808,9 @@ def _description(graph: Graph, annotation: Item, key: str, css_main: str = '') -
                                                                     key)
     return _block([htpy.p(class_ = 'description')[list_prose]],
                   [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
-                  class_   = 'description',
-                  css_main = css_main)
+                  class_     = 'description',
+                  css_main   = css_main,
+                  css_margin = css_margin)
 
 
 # -----------------------------------------------------------------------------
@@ -916,17 +941,19 @@ def _href(id_item: str) -> str:
 def _block(list_main:   list,
            list_margin: list,
            css_main:    str = '',
+           css_margin:  str = '',
            **map_attribute: str) -> typing.Any:
     """
     Return a block of the page: list_main in the text column, with the
-    classes css_main as well, and list_margin beside it in the margin.
+    classes css_main as well, and list_margin beside it in the margin,
+    with the classes css_margin.
 
     """
 
     css = 'block ' + map_attribute.pop('class_', '')
     return htpy.div(class_ = css.strip(), **map_attribute)[
         htpy.div(class_ = ' '.join(['main', css_main]).strip())[list_main],
-        htpy.aside(class_ = 'margin')[list_margin]]
+        htpy.aside(class_ = ' '.join(['margin', css_margin]).strip())[list_margin]]
 
 
 # -----------------------------------------------------------------------------
