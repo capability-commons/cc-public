@@ -190,6 +190,15 @@ def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
                                  a = id_annotation), summary)
 
 
+def test_for_and_against_are_marked_with_a_tick_and_a_cross(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text  = body.decode()
+    assert re.search(r'<tspan class="for">✓\d+</tspan> <tspan class="against">✗\d+</tspan>', text)
+    assert re.search(r'<li class="for">✓ ', text)
+    assert re.search(r'<li class="against">✗ ', text)
+    assert '<li class="for">+' not in text
+
+
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))

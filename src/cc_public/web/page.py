@@ -64,10 +64,8 @@ FILE_SCRIPT       = 'review.js'
 CSS_MUTES         = 'mutes'
 CSS_FADES         = 'fades'
 
-MARK_FOR          = '+'
-MARK_AGAINST      = '−'
-MARK_TICK         = '✓'
-MARK_CROSS        = '✗'
+MARK_FOR          = cc_public.web.light.MARK_FOR
+MARK_AGAINST      = cc_public.web.light.MARK_AGAINST
 MARK_NONE         = '·'
 MARK_PREVIOUS     = '←'
 MARK_NEXT         = '→'
@@ -282,8 +280,8 @@ def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
                      title  = '{f} for, {a} against'.format(f = len(list_for),
                                                             a = len(list_against)))[
         [htpy.span(class_ = ' '.join(['unit', role, CSS_FADES, *drawing.css_unit(unit)]))[mark]
-         for (list_role, role, mark) in ((list_for, ROLE_FOR, MARK_TICK),
-                                         (list_against, ROLE_AGAINST, MARK_CROSS))
+         for (list_role, role, mark) in ((list_for, ROLE_FOR, MARK_FOR),
+                                         (list_against, ROLE_AGAINST, MARK_AGAINST))
          for unit in list_role]]
 
 

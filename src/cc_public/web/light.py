@@ -41,6 +41,8 @@ relation:               []
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
 SIGN_MIXED        = 'mixed'
+MARK_FOR          = '✓'
+MARK_AGAINST      = '✗'
 CSS_TRIGGER       = 'lit-trigger'
 CSS_ANCHOR        = 'lit-anchor'
 CSS_DIMS          = 'dims'

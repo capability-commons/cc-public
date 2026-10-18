@@ -413,10 +413,13 @@ class _Drawing:
                           text_anchor = 'end')[
                     htpy.tspan(class_ = 'stance-' + stance)['● ' + stance],
                     ' ',
-                    htpy.tspan(class_ = 'for')['+{count}'.format(count = count_for)],
+                    htpy.tspan(class_ = 'for')[
+                        '{mark}{count}'.format(mark  = cc_public.web.light.MARK_FOR,
+                                               count = count_for)],
                     ' ',
-                    htpy.tspan(class_ = 'against')['−{count}'.format(
-                                                       count = count_total - count_for)]])
+                    htpy.tspan(class_ = 'against')[
+                        '{mark}{count}'.format(mark  = cc_public.web.light.MARK_AGAINST,
+                                               count = count_total - count_for)]])
             y += height + GAP_DECISION
 
         return map_top
