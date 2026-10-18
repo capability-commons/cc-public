@@ -260,7 +260,10 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
     assert key + '-against' in css('ann_graphs_will_grow')
     assert key + '-for' in css('ann_cross_item_checks_run_in_clingo')
     assert key not in css('ann_types_catch_errors_early')
-    assert 'port-dec_tooling_in_python--concern_performance_efficiency-for' in body
+    assert key in css('concern_performance_efficiency')
+    assert not any(css_concern.startswith(key + '-')
+                   for css_concern in css('concern_performance_efficiency'))
+    assert 'pick-concern_' not in body and 'port-concern_' not in body
 
 
 def test_graph_node_lights_both_its_chains(tree):

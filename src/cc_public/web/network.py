@@ -51,11 +51,10 @@ Outline = cc_public.web.sankey.Outline
 WIDTH_NODE        = 230
 HEIGHT_NODE       = 34
 ROW               = 44
-ROW_HUB           = 40
 GAP_COLUMN        = 70
-RADIUS_HUB        = 9
-X_HUB             = WIDTH_NODE + 120
-X_FIRST           = X_HUB + RADIUS_HUB + 150
+WIDTH_CONCERN     = 170
+X_CONCERN         = WIDTH_NODE + 90
+X_FIRST           = X_CONCERN + WIDTH_CONCERN + 110
 CHARS_LINE        = 34
 MARGIN            = 8
 RADIUS_PORT       = 4.5
@@ -66,7 +65,7 @@ ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
 ROLE_LINK         = 'link'
 KIND_DECISION     = 'decision'
-KIND_HUB          = 'hub'
+KIND_CONCERN      = 'concern'
 KIND_ANNOTATION   = 'annotation'
 
 
@@ -75,14 +74,20 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     """
     Return the graph of the argument in outline.
 
-    An annotation or a concern circle has a port on its right for what
-    supports it and one for what challenges it. Hovering over a port,
-    or following its link, lights the chain of annotations that reaches
-    it and dims the rest; each annotation in the chain is shaded by its
-    net effect, the product of the roles along its paths. Hovering over
-    or clicking a node does the same for every chain into it. Clicking
+    An annotation has a port on its right for what supports it and one
+    for what challenges it. Hovering over a port, or following its
+    link, lights the chain of annotations that reaches it and dims the
+    rest; each annotation in the chain is shaded by its net effect, the
+    product of the roles along its paths. Hovering over or clicking a
+    decision or an annotation does the same for every chain into it.
+    Concerns stay passive: they light with the chains through them,
+    but are never shaded and do not respond themselves. Clicking
     anywhere else in the graph unpins: the link names no element, so
     the page does not move.
+
+    The chains are traced through a hub for each concern on each
+    decision, so an annotation lights for the decisions it argues on
+    and no others, but each concern is drawn once.
 
     """
 
@@ -95,44 +100,25 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
         map_place[id_annotation] = (X_FIRST + map_depth[id_annotation] * (WIDTH_NODE + GAP_COLUMN),
                                     index * ROW + HEIGHT_NODE / 2)
 
-    list_edge = []
-    for id_annotation in list_row:
-        for (id_target, role) in _answered(outline, id_annotation):
-            list_edge.append((id_annotation, id_target, role))
-        for unit in outline.units(annotation = id_annotation):
-            edge = (id_annotation, _hub(unit.decision, unit.concern), unit.role)
-            if edge not in list_edge:
-                list_edge.append(edge)
+    list_edge = _edges(outline, list_row)
 
-    for (id_hub, y) in _hub_rows(outline, map_place).items():
-        map_kind[id_hub]  = KIND_HUB
-        map_place[id_hub] = (X_HUB, y)
-        list_edge.append((id_hub, id_hub.split(DELIM_HUB)[0], ROLE_LINK))
+    for (id_concern, y) in _concern_rows(outline, map_place).items():
+        map_kind[id_concern]  = KIND_CONCERN
+        map_place[id_concern] = (X_CONCERN, y)
     for (id_decision, y) in _decision_rows(outline, map_place).items():
         map_kind[id_decision]  = KIND_DECISION
         map_place[id_decision] = (0, y)
 
-    list_port = [(id_item, role) for id_item in map_place for role in (ROLE_FOR, ROLE_AGAINST)
-                 if any(edge[1:] == (id_item, role) for edge in list_edge)]
+    list_port = [(id_item, role) for id_item in list_row for role in (ROLE_FOR, ROLE_AGAINST)
+                 if (id_item, role) in {edge[1:] for edge in list_edge}]
     map_key   = {port: 'port-{id}-{role}'.format(id = port[0], role = port[1])
                  for port in list_port}
-    set_pick  = {id_to for (_, id_to, _) in list_edge}
+    set_pick  = {id_to for (_, id_to, _) in list_edge if id_to in map_place}
 
-    map_css_node = {id_item: [] for id_item in map_place}
-    map_css_edge = {edge: [] for edge in list_edge}
-    list_light   = ([(key, port[0], {port[1]}) for (port, key) in map_key.items()]
-                    + [(KEY_PICK + id_item, id_item, None) for id_item in map_place
-                       if id_item in set_pick])
-    for (key, id_item_lit, set_role) in list_light:
-        (map_sign, set_edge) = _chain(list_edge, id_item_lit, set_role)
-        map_css_node[id_item_lit].append(key)
-        for (id_item, set_sign) in map_sign.items():
-            sign = set_sign.pop() if len(set_sign) == 1 else 'mixed'
-            map_css_node[id_item].extend([key, key + '-' + sign])
-        for edge in set_edge:
-            map_css_edge[edge].append(key)
+    (list_drawn, map_css_node, map_css_edge, list_light) = _lighting(
+        list_edge, map_place, map_key, set_pick)
 
-    list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_edge]
+    list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_drawn]
     list_node = [_node(graph, outline, map_kind[id_item], id_item, map_place[id_item],
                        map_css_node[id_item], id_item in set_pick)
                  for id_item in map_place]
@@ -160,6 +146,69 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
+def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
+    """
+    Return the edges of the argument, each from its source to its target
+    with its role: from an annotation to what it answers, from an
+    annotation to the hub of each concern it argues for on a decision,
+    and from each hub to its decision.
+
+    """
+
+    list_edge = []
+    for id_annotation in list_row:
+        for (id_target, role) in _answered(outline, id_annotation):
+            list_edge.append((id_annotation, id_target, role))
+        for unit in outline.units(annotation = id_annotation):
+            edge = (id_annotation, _hub(unit.decision, unit.concern), unit.role)
+            if edge not in list_edge:
+                list_edge.append(edge)
+    for unit in outline.list_unit:
+        edge = (_hub(unit.decision, unit.concern), unit.decision, ROLE_LINK)
+        if edge not in list_edge:
+            list_edge.append(edge)
+    return list_edge
+
+
+# -----------------------------------------------------------------------------
+def _lighting(list_edge: list[tuple[str, str, str]],
+              map_place: dict[str, tuple[float, float]],
+              map_key:   dict[tuple[str, str], str],
+              set_pick:  set[str]) -> tuple:
+    """
+    Return the edges as drawn, the classes of each node and drawn edge
+    that say which chains light it and with what net effect, and the
+    keys of the chains with the node and roles each is traced from.
+
+    """
+
+    list_drawn = []
+    for edge in list_edge:
+        if _drawn(edge) not in list_drawn:
+            list_drawn.append(_drawn(edge))
+    map_css_node = {id_item: [] for id_item in map_place}
+    map_css_edge = {edge: [] for edge in list_drawn}
+    list_light   = ([(key, port[0], {port[1]}) for (port, key) in map_key.items()]
+                    + [(KEY_PICK + id_item, id_item, None) for id_item in map_place
+                       if id_item in set_pick])
+    for (key, id_item_lit, set_role) in list_light:
+        (map_sign, set_edge) = _chain(list_edge, id_item_lit, set_role)
+        map_css_node[id_item_lit].append(key)
+        for (id_item, set_sign) in map_sign.items():
+            id_drawn = _unhub(id_item)
+            if id_drawn != id_item:
+                if key not in map_css_node[id_drawn]:
+                    map_css_node[id_drawn].append(key)
+                continue
+            sign = set_sign.pop() if len(set_sign) == 1 else 'mixed'
+            map_css_node[id_item].extend([key, key + '-' + sign])
+        for edge in set_edge:
+            if key not in map_css_edge[_drawn(edge)]:
+                map_css_edge[_drawn(edge)].append(key)
+    return (list_drawn, map_css_node, map_css_edge, list_light)
+
+
+# -----------------------------------------------------------------------------
 def _hub(id_decision: str, id_concern: str) -> str:
     """
     Return the id of the circle of id_concern argued on id_decision.
@@ -167,6 +216,29 @@ def _hub(id_decision: str, id_concern: str) -> str:
     """
 
     return id_decision + DELIM_HUB + id_concern
+
+
+# -----------------------------------------------------------------------------
+def _unhub(id_item: str) -> str:
+    """
+    Return the concern of id_item if it is a hub, and otherwise
+    id_item.
+
+    """
+
+    return id_item.rpartition(DELIM_HUB)[2]
+
+
+# -----------------------------------------------------------------------------
+def _drawn(edge: tuple[str, str, str]) -> tuple[str, str, str]:
+    """
+    Return edge as it is drawn: through the concern of a hub rather
+    than the hub.
+
+    """
+
+    (id_from, id_to, role) = edge
+    return (_unhub(id_from), _unhub(id_to), role)
 
 
 # -----------------------------------------------------------------------------
@@ -217,7 +289,7 @@ def _style(list_key: list[str]) -> str:
                                                                     guard = guard)
             list_rule.append('{scope} .{key} {{ opacity: 1; }}'.format(scope = scope, key = key))
             for sign in (ROLE_FOR, ROLE_AGAINST, 'mixed'):
-                rule = '{scope} .{key}-{sign}:not(.hub) .shape {{ fill: var(--net-{sign}); }}'
+                rule = '{scope} .{key}-{sign} .shape {{ fill: var(--net-{sign}); }}'
                 list_rule.append(rule.format(scope = scope, key = key, sign = sign))
     return '\n'.join(list_rule)
 
@@ -268,30 +340,27 @@ def _depths(outline: Outline) -> dict[str, int]:
 
 
 # -----------------------------------------------------------------------------
-def _hub_rows(outline:   Outline,
-              map_place: dict[str, tuple[float, float]]) -> dict[str, float]:
+def _concern_rows(outline:   Outline,
+                  map_place: dict[str, tuple[float, float]]) -> dict[str, float]:
     """
-    Return the row of the circle of each concern on each decision: the
-    middle of the annotations that join it, pushed apart so no two
-    overlap.
+    Return the row of each concern argued on: the middle of the
+    annotations that argue for it, pushed apart so no two overlap.
 
     """
 
     map_mean = {}
-    for id_decision in outline.list_decision:
-        for id_concern in outline.list_concern:
-            list_y = [map_place[unit.annotation][1]
-                      for unit in outline.units(decision = id_decision, concern = id_concern)]
-            if list_y:
-                map_mean[_hub(id_decision, id_concern)] = sum(list_y) / len(list_y)
+    for id_concern in outline.list_concern:
+        list_y = [map_place[unit.annotation][1] for unit in outline.units(concern = id_concern)]
+        if list_y:
+            map_mean[id_concern] = sum(list_y) / len(list_y)
     map_y  = {}
     y_last = None
-    for id_hub in sorted(map_mean, key = map_mean.get):
-        y = map_mean[id_hub]
-        if y_last is not None and y < y_last + ROW_HUB:
-            y = y_last + ROW_HUB
-        map_y[id_hub] = y
-        y_last        = y
+    for id_concern in sorted(map_mean, key = map_mean.get):
+        y = map_mean[id_concern]
+        if y_last is not None and y < y_last + ROW:
+            y = y_last + ROW
+        map_y[id_concern] = y
+        y_last            = y
     return map_y
 
 
@@ -299,15 +368,15 @@ def _hub_rows(outline:   Outline,
 def _decision_rows(outline:   Outline,
                    map_place: dict[str, tuple[float, float]]) -> dict[str, float]:
     """
-    Return the row of each decision: the middle of its concern circles,
-    pushed apart so no two overlap.
+    Return the row of each decision: the middle of the concerns argued
+    on it, each counted once for each unit, pushed apart so no two
+    overlap.
 
     """
 
     map_y = {}
     for id_decision in outline.list_decision:
-        list_y = [y for (id_item, (_, y)) in map_place.items()
-                  if id_item.startswith(id_decision + DELIM_HUB)]
+        list_y = [map_place[unit.concern][1] for unit in outline.units(decision = id_decision)]
         map_y[id_decision] = sum(list_y) / len(list_y) if list_y else 0
     y_last = None
     for id_decision in sorted(map_y, key = map_y.get):
@@ -330,8 +399,6 @@ def _edge(map_kind:  dict[str, str],
 
     (id_from, id_to, role) = edge
     (x1, y1) = map_place[id_from]
-    if map_kind[id_from] == KIND_HUB:
-        x1 -= RADIUS_HUB
     (x2, y2) = _inlet(map_kind[id_to], map_place[id_to], role)
     x_mid    = (x1 + x2) / 2
     path     = 'M{x1},{y1} C{xm},{y1} {xm},{y2} {x2},{y2}'.format(x1 = _num(x1),
@@ -346,7 +413,8 @@ def _edge(map_kind:  dict[str, str],
 def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, float]:
     """
     Return where an edge of role enters a node of kind at place: its
-    port for role, or the middle of the right of a decision.
+    port for role, or the middle of the right of a decision. A concern
+    has no ports, but takes edges where its ports would be.
 
     """
 
@@ -354,9 +422,8 @@ def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, flo
     if kind == KIND_DECISION:
         return (x + WIDTH_NODE, y)
     offset = -1 if role == ROLE_FOR else 1
-    if kind == KIND_HUB:
-        return (x + RADIUS_HUB * 0.77, y + offset * RADIUS_HUB * 0.64)
-    return (x + WIDTH_NODE, y + offset * HEIGHT_NODE * 0.2)
+    width  = WIDTH_CONCERN if kind == KIND_CONCERN else WIDTH_NODE
+    return (x + width, y + offset * HEIGHT_NODE * 0.2)
 
 
 # -----------------------------------------------------------------------------
@@ -384,26 +451,19 @@ def _node(graph:    Graph,
           is_pick:  bool) -> typing.Any:
     """
     Return the node of kind for id_item at place. If is_pick, the node
-    links to the page with every chain into it lit.
+    links to the page with every chain into it lit. A concern never
+    does.
 
     """
 
     (x, y) = place
     css    = ' '.join(['node', kind] + list_css)
-    if kind == KIND_HUB:
-        (id_decision, id_concern) = id_item.split(DELIM_HUB)
-        list_unit = outline.units(decision = id_decision, concern = id_concern)
-        count_for = sum(1 for unit in list_unit if unit.is_for())
-        label     = '{concern} on {decision}: {n_for} for, {n_against} against'.format(
-                        concern   = graph.title(id_concern),
-                        decision  = graph.title(id_decision),
-                        n_for     = count_for,
-                        n_against = len(list_unit) - count_for)
-        node      = htpy.g(class_ = css, id = 'node-' + id_item)[
-            htpy.title[label],
-            htpy.circle(cx = _num(x), cy = _num(y), r = str(RADIUS_HUB), class_ = 'shape'),
-            htpy.text(x = _num(x + RADIUS_HUB), y = _num(y - RADIUS_HUB - 4), class_ = 'concern')[
-                graph.title(id_concern)]]
+    if kind == KIND_CONCERN:
+        node = htpy.g(class_ = css, id = 'node-' + id_item)[
+            htpy.rect(x = _num(x), y = _num(y - HEIGHT_NODE / 2), width = str(WIDTH_CONCERN),
+                      height = str(HEIGHT_NODE), class_ = 'shape'),
+            htpy.text(x = _num(x + WIDTH_CONCERN / 2), y = _num(y + 4.5), class_ = 'name')[
+                graph.title(id_item)]]
     else:
         if kind == KIND_ANNOTATION:
             label = '#{number} {title}'.format(number = outline.map_number[id_item],
