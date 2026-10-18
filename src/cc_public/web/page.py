@@ -66,7 +66,6 @@ MARK_PREVIOUS     = '←'
 MARK_NEXT         = '→'
 
 ROLE_FOR          = 'for'
-DEPTH_MAX         = 4
 ROLE_AGAINST      = 'against'
 MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
                      cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
@@ -579,8 +578,7 @@ def _annotation(graph:         Graph,
     list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
                     if id_answer not in set_path]
 
-    return htpy.details(class_ = 'annotation depth-{depth}'.format(depth = min(len(set_path),
-                                                                                DEPTH_MAX)),
+    return htpy.details(class_ = 'annotation answer' if set_path else 'annotation',
                         id     = key,
                         open   = _is_within(set_show, key))[
         htpy.summary[_block(

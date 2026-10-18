@@ -308,14 +308,6 @@ details.annotation > .body .main > p {
   margin-left: 1.3rem;
 }
 
-.depth-1 > summary .main,
-.depth-1 > .body .main { padding-left: 1.3rem; border-left: 1px solid var(--rule); }
-.depth-2 > summary .main,
-.depth-2 > .body .main { padding-left: 2.6rem; border-left: 1px solid var(--rule); }
-.depth-3 > summary .main,
-.depth-3 > .body .main { padding-left: 3.9rem; border-left: 1px solid var(--rule); }
-.depth-4 > summary .main,
-.depth-4 > .body .main { padding-left: 5.2rem; border-left: 1px solid var(--rule); }
 
 .for {
   color: var(--ink-for);
@@ -751,8 +743,16 @@ section.matrix a.cell:hover {
 /* The shading of what a row opens to starts at the rule under the row:
    the first annotation's rule is that rule. */
 
+/* Everything a row opens to sits at one indent, however deep the
+   answers go: depth is read from what each annotation bears on, in its
+   margin, not from how far it is pushed in. */
+
+section.matrix .drill details.annotation.answer > summary .main > p {
+  margin-left: 0;
+}
+
 section.matrix .drill {
-  padding: 0 0 0.8rem;
+  padding: 0 0 0.8rem 1.3rem;
   background: var(--shade);
   font-size: 1.12rem;
   line-height: 1.5;
