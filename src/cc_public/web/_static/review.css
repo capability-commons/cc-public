@@ -683,6 +683,24 @@ section.matrix .row.head > .cell > a {
   text-decoration: none;
 }
 
+/* A decision chosen in the head shows its brief under it, and the
+   titles of the others grey (the rule that keeps the chosen title in
+   ink is written into the page). */
+
+section.matrix .drill.decision {
+  display: none;
+  border-bottom: 1px solid var(--rule);
+  padding-top: 0.8rem;
+}
+
+section.matrix .drill.decision:target {
+  display: block;
+}
+
+section.matrix:has(.drill.decision:target) .row.head > .cell > a {
+  color: #a99f8c;
+}
+
 section.matrix .row.head > .cell > a:hover {
   color: var(--link);
 }

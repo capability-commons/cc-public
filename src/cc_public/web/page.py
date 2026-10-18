@@ -59,6 +59,7 @@ PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
 PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
+FILE_SCRIPT       = 'review.js'
 
 MARK_FOR          = '+'
 MARK_AGAINST      = '−'
@@ -118,10 +119,6 @@ def issue(graph:      Graph,
 
     return _page(item.title,
                  [_matrix(graph, issue, outline, set_show or set()),
-                  htpy.section[
-                      htpy.h2['Decisions'],
-                      [_decision(issue, decision)
-                       for decision in cc_public.web.sankey.ordered_decisions(issue)]],
                   _determinations(graph, issue),
                   cc_public.web.sankey.figure(graph, outline, set_toggle, set_show or set()),
                   cc_public.web.network.figure(graph, outline),
@@ -157,9 +154,13 @@ def _matrix(graph:    Graph,
             htpy.div(class_ = 'label')[list_label],
             [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
 
-    list_row = [row([], [htpy.a(href = '#' + id_decision)[graph.title(id_decision)]
-                         for id_decision in list_decision],
-                    class_ = 'head')]
+    map_decision = {decision.id: decision for decision in issue.list_decision}
+    list_row     = [row([], [htpy.a(href = '#' + id_decision)[graph.title(id_decision)]
+                             for id_decision in list_decision],
+                        class_ = 'head'),
+                    _decision_style(list_decision),
+                    [_decision(graph, issue, map_decision[id_decision])
+                     for id_decision in list_decision]]
 
     for id_concern in outline.list_concern:
         list_annotation = outline.map_annotation[id_concern]
@@ -405,7 +406,8 @@ def _page(title:       str,
             htpy.meta(charset = 'utf-8'),
             htpy.meta(name = 'viewport', content = 'width=device-width, initial-scale=1'),
             htpy.title['{title} - {site}'.format(title = title, site = TITLE_SITE)],
-            htpy.link(rel = 'stylesheet', href = PATH_STATIC + FILE_STYLE)],
+            htpy.link(rel = 'stylesheet', href = PATH_STATIC + FILE_STYLE),
+            htpy.script(src = PATH_STATIC + FILE_SCRIPT, defer = True)],
         htpy.body[
             htpy.article[
                 _block([htpy.header[TITLE_SITE,
@@ -462,19 +464,35 @@ def _settlement(graph: Graph, issue: Issue) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _decision(issue: Issue, decision: Item) -> typing.Any:
+def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
     """
-    Return a decision: its title and statement, with its standing in
-    the margin.
+    Return the panel of a decision under the head of the matrix: its
+    brief, folded over its description if it has one, with its standing
+    in the margin. The panel shows only while it is the target of the
+    address, which a click on the title of the decision makes it.
 
     """
 
-    return _block([htpy.p[htpy.span(class_ = 'run-in')[decision.title], ' ',
-                          _prose(decision.brief)]],
-                  [_stance(issue.map_stance.get(decision.id,
-                                                cc_public.web.argument.STANCE_OPEN)),
-                   _id(decision.id)],
-                  id = decision.id)
+    block = _block([htpy.p[_prose(decision.brief)]],
+                   [_stance(issue.map_stance.get(decision.id,
+                                                 cc_public.web.argument.STANCE_OPEN)),
+                    _id(decision.id)])
+    if decision.description:
+        block = htpy.details(class_ = 'brief')[htpy.summary[block],
+                                               _description(graph, decision, decision.id)]
+    return htpy.div(class_ = 'drill decision', id = decision.id)[block]
+
+
+# -----------------------------------------------------------------------------
+def _decision_style(list_decision: list[str]) -> typing.Any:
+    """
+    Return the rules that keep the title of the decision whose panel is
+    shown in ink while the titles of the others are greyed.
+
+    """
+
+    rule = 'section.matrix:has(#{id}:target) .row.head a[href=\\#{id}] {{ color: var(--ink); }}'
+    return htpy.style['\n'.join(rule.format(id = id_decision) for id_decision in list_decision)]
 
 
 # -----------------------------------------------------------------------------

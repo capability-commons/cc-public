@@ -119,8 +119,8 @@ def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
-    matrix  = text[text.index('<section class="matrix'):text.index('<h2>Decisions</h2>')]
-    head    = matrix[matrix.index('<div class="row head">'):matrix.index('class="concern')]
+    matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
+    head    = matrix[matrix.index('<div class="row head">'):matrix.index('<style>')]
     assert head.count('<div class="cell">') == len(outline.list_decision)
     for id_decision in outline.list_decision:
         assert 'href="#{id}"'.format(id = id_decision) in head
@@ -128,7 +128,19 @@ def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
     assert '--decisions: {count}'.format(count = len(outline.list_decision)) in matrix
     assert 'matrix-style' not in matrix
     assert '<h2>Decision matrix</h2>' not in text
-    assert text.index('<h2>Decisions</h2>') < text.index('<figure')
+    assert '<h2>Decisions</h2>' not in text
+
+
+def test_a_decision_title_opens_its_brief_under_the_head(tree):
+    issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text  = body.decode()
+    for decision in issue.list_decision:
+        panel = text[text.index('<div class="drill decision" id="{id}">'.format(id = decision.id)):]
+        assert panel.index('<div class="row') > panel.index('<code>{id}</code>'.format(
+                                                                id = decision.id))
+        assert 'a[href=\\#{id}]'.format(id = decision.id) in text
+    assert 'src="/static/review.js"' in text
 
 
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
@@ -181,7 +193,7 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_totals_in_words(tree)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/{id}?matrix=pugh'.format(
                                                           id = ID_ISSUE))
     text    = body.decode()
-    matrix  = text[text.index('<section class="matrix'):text.index('<h2>Decisions</h2>')]
+    matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
     list_unit = outline.list_unit
     count_for = sum(1 for unit in list_unit if unit.is_for())
     assert matrix.count('<span class="unit for">+</span>') == count_for
