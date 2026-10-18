@@ -143,6 +143,17 @@ def test_a_decision_title_opens_its_brief_under_the_head(tree):
     assert 'src="/static/review.js"' in text
 
 
+def test_a_decision_shown_in_the_matrix_is_lit_in_both_diagrams(tree):
+    issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
+    (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
+    text  = body.decode()
+    for decision in issue.list_decision:
+        shown = ':root:has(#{id}:target)'.format(id = decision.id)
+        assert '{shown} .sankey svg .dims'.format(shown = shown) in text
+        assert '{shown} .network svg .dims'.format(shown = shown) in text
+        assert text.count('href="#{id}"'.format(id = decision.id)) >= 3
+
+
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))

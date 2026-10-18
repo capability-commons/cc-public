@@ -126,7 +126,7 @@ def figure(graph:      Graph,
 
     list_key = drawing.keys()
     return htpy.figure(class_ = 'map sankey')[
-        htpy.style[cc_public.web.light.style('.sankey', list_key)],
+        htpy.style[cc_public.web.light.style('.sankey', list_key, drawing.aliases())],
         htpy.svg(viewBox = '0 {top} {width} {height}'.format(top    = -ROOM_LABEL,
                                                              width  = width,
                                                              height = height + ROOM_LABEL),
@@ -401,7 +401,7 @@ class _Drawing:
             key     = _key_decision(decision.id)
             css     = ' '.join(['decision', cc_public.web.light.CSS_DIMS,
                                 cc_public.web.light.trigger(key)] + list_css)
-            self.list_label.append(htpy.a(href = '#' + key, class_ = 'pin')[
+            self.list_label.append(htpy.a(href = '#' + decision.id, class_ = 'pin')[
                 htpy.text(x = str(LIST_X[0] - 10), y = _num(middle - 2),
                           class_ = css, text_anchor = 'end')[decision.title]])
             self.list_label.append(
@@ -619,6 +619,17 @@ class _Drawing:
                 + [_key_port(id_decision, role) for id_decision in self.list_decision
                    for role in (ROLE_FOR, ROLE_AGAINST)]
                 + [_key_annotation(id_annotation) for id_annotation in self.map_number])
+
+    # -------------------------------------------------------------------------
+    def aliases(self) -> dict[str, str]:
+        """
+        Return the key of the chains of each decision with the id of
+        the decision, which pins them while the decision is shown in
+        the matrix.
+
+        """
+
+        return {_key_decision(id_decision): id_decision for id_decision in self.list_decision}
 
     # -------------------------------------------------------------------------
     def _closure(self, id_annotation: str, set_path: set[str]) -> set[str]:

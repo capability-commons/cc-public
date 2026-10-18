@@ -121,6 +121,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     (list_drawn, map_css_node, map_css_edge, list_light) = _lighting(
         list_edge, map_place, map_key, set_pick)
 
+    map_alias = {KEY_PICK + id_item: id_item for id_item in set_pick
+                 if map_kind[id_item] == KIND_DECISION}
+
     list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_drawn]
     list_node = [_node(graph, outline, map_kind[id_item], id_item, map_place[id_item],
                        map_css_node[id_item], id_item in set_pick)
@@ -132,7 +135,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE / 2 + 2 * MARGIN
     top    = min(y for (_, y) in map_place.values()) - HEIGHT_NODE / 2 - MARGIN
     return htpy.figure(class_ = 'map network')[
-        htpy.style[cc_public.web.light.style('.network', [key for (key, _, _) in list_light])],
+        htpy.style[cc_public.web.light.style('.network', [key for (key, _, _) in list_light],
+                                             map_alias),
+                   _style_shown(map_alias)],
         htpy.svg(viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
                                                                   top    = _num(top),
                                                                   width  = width,
@@ -478,10 +483,25 @@ def _node(graph:    Graph,
              for (index, line) in enumerate(list_line)]]
     if not is_pick:
         return node
-    key = KEY_PICK + id_item
-    css = 'pick {anchor} {trigger}'.format(anchor  = cc_public.web.light.CSS_ANCHOR,
-                                           trigger = cc_public.web.light.trigger(key))
-    return htpy.a(href = '#' + key, id = key, class_ = css)[node]
+    key  = KEY_PICK + id_item
+    css  = 'pick {anchor} {trigger}'.format(anchor  = cc_public.web.light.CSS_ANCHOR,
+                                            trigger = cc_public.web.light.trigger(key))
+    href = '#' + (id_item if kind == KIND_DECISION else key)
+    return htpy.a(href = href, id = key, class_ = css)[node]
+
+
+# -----------------------------------------------------------------------------
+def _style_shown(map_alias: dict[str, str]) -> str:
+    """
+    Return the rules that outline the node of a decision while it is
+    shown in the matrix, as if it were pinned here.
+
+    """
+
+    rule = (':root:has(#{alias}:target) .network #{key} .shape '
+            '{{ stroke: var(--ink); stroke-width: 1.6; }}')
+    return ''.join('\n' + rule.format(alias = alias, key = key)
+                   for (key, alias) in sorted(map_alias.items()))
 
 
 # -----------------------------------------------------------------------------
