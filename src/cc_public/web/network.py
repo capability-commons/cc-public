@@ -56,6 +56,7 @@ WIDTH_CONCERN     = 170
 X_CONCERN         = WIDTH_NODE + 90
 X_FIRST           = X_CONCERN + WIDTH_CONCERN + 110
 CHARS_LINE        = 34
+INDENT_TITLE      = 28
 MARGIN            = 8
 RADIUS_PORT       = 4.5
 KEY_UNPIN         = 'unpin'
@@ -474,18 +475,23 @@ def _node(graph:    Graph,
             htpy.text(x = _num(x + WIDTH_CONCERN / 2), y = _num(y + 4.5), class_ = 'name')[
                 graph.title(id_item)]]
     else:
+        label     = graph.title(id_item)
+        number    = None
+        x_title   = x + 8
         if kind == KIND_ANNOTATION:
-            label = '#{number} {title}'.format(number = outline.map_number[id_item],
-                                               title  = graph.title(id_item))
-        else:
-            label = graph.title(id_item)
-        list_line = _lines(label)
+            number  = str(outline.map_number[id_item])
+            label   = '{number} {title}'.format(number = number, title = label)
+            x_title = x + INDENT_TITLE
+        list_line = _lines(graph.title(id_item),
+                           CHARS_LINE - (INDENT_TITLE - 8) // 6 if number else CHARS_LINE)
         y_first   = y + 4.5 - 7 * (len(list_line) - 1)
         node      = htpy.g(class_ = css, id = 'node-' + id_item)[
             htpy.title[label],
             htpy.rect(x = _num(x), y = _num(y - HEIGHT_NODE / 2), width = str(WIDTH_NODE),
                       height = str(HEIGHT_NODE), rx = '3', class_ = 'shape'),
-            [htpy.text(x = _num(x + 8), y = _num(y_first + 14 * index), class_ = 'name')[line]
+            htpy.text(x = _num(x + INDENT_TITLE - 6), y = _num(y_first), class_ = 'number')[
+                number] if number else None,
+            [htpy.text(x = _num(x_title), y = _num(y_first + 14 * index), class_ = 'name')[line]
              for (index, line) in enumerate(list_line)]]
     if not is_pick:
         return node
@@ -494,18 +500,18 @@ def _node(graph:    Graph,
 
 
 # -----------------------------------------------------------------------------
-def _lines(text: str) -> list[str]:
+def _lines(text: str, chars: int) -> list[str]:
     """
-    Return text broken into at most two lines that fit a node, the
-    second cut short if need be.
+    Return text broken into at most two lines of chars, the second cut
+    short if need be.
 
     """
 
     list_line = ['']
     for word in text.split():
-        if list_line[-1] and len(list_line[-1]) + 1 + len(word) > CHARS_LINE:
+        if list_line[-1] and len(list_line[-1]) + 1 + len(word) > chars:
             if len(list_line) == 2:
-                list_line[-1] = list_line[-1][:CHARS_LINE - 1].rstrip() + '…'
+                list_line[-1] = list_line[-1][:chars - 1].rstrip() + '…'
                 return list_line
             list_line.append('')
         list_line[-1] = (list_line[-1] + ' ' + word).strip()
