@@ -48,7 +48,8 @@
   --width-text: 40rem;
   --width-margin: 17rem;
   --gap: 2.5rem;
-  --shade: rgba(94, 86, 72, 0.06);
+  --shade: #eae1d3;
+  --shade-deep: #e3dacc;
   --band-for: rgba(74, 107, 82, 0.36);
   --band-against: rgba(139, 74, 68, 0.36);
   --mark-for: #263a2c;
@@ -746,6 +747,15 @@ section.matrix a.cell:hover {
 /* Everything a row opens to sits at one indent, however deep the
    answers go: depth is read from what each annotation bears on, in its
    margin, not from how far it is pushed in. */
+
+/* Answers, and answers to answers, stand on one darker shade, out to
+   the edges of the shading above them. */
+
+section.matrix .drill .answers {
+  margin-left: -1.3rem;
+  padding-left: 1.3rem;
+  background: var(--shade-deep);
+}
 
 section.matrix .drill details.annotation.answer > summary .main > p {
   margin-left: 0;
