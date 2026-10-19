@@ -755,8 +755,8 @@ unreadable_file(File, Line, Message) :-
 
 dangling_mention(Holder, Id, File, Line) :-
     mention(Holder, Id, File, Line),
+    Prefix = @prefix(Id),
     type_prefix(_, Prefix, _),
-    @match(@cat(Prefix, "_.*"), Id) = 1,
     not item(Id, _, _, _, _),
     not item(_, Id, _, _, _),
     not alias(_, Id).
