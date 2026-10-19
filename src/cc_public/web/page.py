@@ -57,7 +57,11 @@ description:            |
                         signature, marking whether the code agrees
                         with what the member states. Each row opens to
                         the member, its parameters, and what it
-                        returns.
+                        returns. A dataflow step follows as a drawing
+                        of pym_cc_public.web.step and a table of its
+                        ports, and artifacts as a block each; then
+                        each part of the semantics of the surface,
+                        those it leaves unstated drawn hollow.
 relation:               []
 
 ...
@@ -79,6 +83,7 @@ import cc_public.web.light
 import cc_public.web.network
 import cc_public.web.restriction
 import cc_public.web.sankey
+import cc_public.web.step
 
 
 TITLE_SITE        = 'Capability Commons'
@@ -144,6 +149,7 @@ Item              = cc_public.web.argument.Item
 Contract          = cc_public.web.contract.Contract
 Member            = cc_public.web.contract.Member
 Parameter         = cc_public.web.contract.Parameter
+Surface           = cc_public.web.contract.Surface
 Facts             = cc_public.web.contract.Facts
 
 
@@ -930,11 +936,14 @@ def _surface(item: Item) -> str:
     """
 
     list_form = []
-    for (form, value) in (item.node.get('surface') or {}).items():
-        native = value.get('native') if isinstance(value, dict) else None
-        label  = native.get('language') if isinstance(native, dict) else None
-        list_form.append((label or form.replace('_', ' ')).capitalize())
-    return ', '.join(list_form)
+    for value in (item.node.get('surface') or {}).values():
+        if not isinstance(value, dict) or not value:
+            continue
+        form = next(iter(value))
+        body = value[form] if isinstance(value[form], dict) else {}
+        name = cc_public.web.contract.MAP_FORM.get(form, (form.replace('_', ' '),))[0]
+        list_form.append(str(body.get('language') or name).capitalize())
+    return ', '.join(dict.fromkeys(list_form))
 
 
 # -----------------------------------------------------------------------------
@@ -958,7 +967,9 @@ def interface(graph: Graph, facts: Facts, id_interface: str) -> str | None:
 
     item = contract.item
     return _page(item.title,
-                 [_contract(graph, contract),
+                 [_contract(graph, contract) if contract.members() else None,
+                  [_surface_section(graph, contract, surface)
+                   for surface in contract.list_surface],
                   htpy.section(class_ = 'use')[
                       _block(_paragraphs(item.description),
                              [htpy.p[htpy.span(class_ = 'label')['In use']]])],
@@ -982,14 +993,20 @@ def _interface_facts(contract: Contract) -> typing.Any:
     def row(label: str, value: typing.Any) -> typing.Any:
         return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
 
-    list_member = contract.members()
-    count_real  = contract.count(COLUMN_REALIZED, cc_public.web.contract.AGREES)
+    list_member = contract.every_member()
+    count_real  = sum(1 for member in list_member
+                      if member.map_verdict.get(COLUMN_REALIZED) == AGREES)
     count_diff  = sum(1 for member in list_member
                       if cc_public.web.contract.DIFFERS in member.map_verdict.values())
+    is_compared = any(member.is_function() for member in contract.members())
     native      = next((value.get('native') for value in
                         (contract.item.node.get('surface') or {}).values()
                         if isinstance(value, dict) and isinstance(value.get('native'), dict)),
                        {})
+    list_stated = [htpy.span(class_ = 'line')['{key}: {stated} of {count} stated'.format(
+                       key = surface.key, stated = surface.stated(),
+                       count = len(surface.list_semantics))]
+                   for surface in contract.list_surface]
 
     return htpy.table(class_ = 'facts')[htpy.tbody[
         row('Version',   str(contract.item.node.get('version_interface', ''))),
@@ -998,6 +1015,8 @@ def _interface_facts(contract: Contract) -> typing.Any:
         row('Members',   str(len(list_member))),
         row('Realized',  '{count} of {total}'.format(count = count_real,
                                                      total = len(list_member))),
+        row('Semantics', list_stated) if list_stated else None,
+        None if not is_compared else
         row('Agreement', htpy.span(class_ = 'gap')[
                              'The code differs for {count} of {total} members'.format(
                                  count = count_diff, total = len(list_member))]
@@ -1015,6 +1034,8 @@ def _contract(graph: Graph, contract: Contract) -> typing.Any:
     """
 
     list_column = cc_public.web.contract.LIST_COLUMN
+    if not any(member.is_function() for member in contract.members()):
+        list_column = list_column[:1]
 
     def row(list_label: list, list_cell: list, **map_attribute: str) -> typing.Any:
         css = 'row ' + map_attribute.pop('class_', '')
@@ -1234,6 +1255,124 @@ def _interface_references(graph: Graph, contract: Contract) -> typing.Any:
                                ('Mentions',      graph.mentions(item.id)),
                                ('Mentioned by',  graph.mentioned_by(item.id)),
                                ('Cited by',      list_cited)])
+
+
+# -----------------------------------------------------------------------------
+def _surface_section(graph: Graph, contract: Contract, surface: Surface) -> typing.Any:
+    """
+    Return the section of a surface that is not native: a dataflow step
+    drawn and its ports, or its artifacts; then each part of its
+    semantics.
+
+    """
+
+    if surface.form == cc_public.web.contract.FORM_DATAFLOW:
+        list_body = [cc_public.web.step.figure(contract.item.title, surface),
+                     _ports(graph, surface)]
+    else:
+        list_body = [_artifact(graph, member) for (_, list_member) in surface.list_group
+                     for member in list_member]
+
+    return htpy.section(class_ = 'surface ' + surface.form.replace('_', '-'),
+                        id     = 'surface-' + surface.key)[
+        htpy.h2[surface.label, ' ', htpy.span(class_ = 'key')[surface.key]],
+        list_body,
+        _semantics(surface)]
+
+
+# -----------------------------------------------------------------------------
+def _ports(graph: Graph, surface: Surface) -> typing.Any:
+    """
+    Return the table of the ports of a dataflow step, by direction:
+    each with its brief under its name, the type it carries, whether a
+    step may run with no value there, and the code that realizes it.
+
+    """
+
+    list_row = []
+    for (group, list_member) in surface.list_group:
+        list_row.append(htpy.tr(class_ = 'group')[
+            htpy.th(colspan = '4')[cc_public.web.contract.group_name(group)]])
+        list_row += [
+            htpy.tr(id = 'port-' + member.id)[
+                htpy.td[htpy.code[member.name],
+                        htpy.span(class_ = 'statement')[_prose(_text(member.node.get('brief')))]],
+                htpy.td[htpy.code[_type(member.node)]],
+                htpy.td['optional' if member.node.get('optional') else ''],
+                htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_item)]
+                         for id_item in member.list_realizer]
+                        or htpy.span(class_ = 'gap')['Not realized']]]
+            for member in list_member]
+
+    return htpy.table(class_ = 'parameters ports')[
+        htpy.thead[htpy.tr[htpy.th['Port'], htpy.th['Type'], htpy.th['Value'],
+                           htpy.th['Realized by']]],
+        htpy.tbody[list_row]]
+
+
+# -----------------------------------------------------------------------------
+def _artifact(graph: Graph, member: Member) -> typing.Any:
+    """
+    Return the block of an artifact: what one instance carries, the
+    schema of its payload, how it is written down, what a reader needs
+    to read it rightly, and how an instance is named; the code that
+    realizes it in the margin.
+
+    """
+
+    node    = member.node
+    payload = node.get('payload') or {}
+    schema  = ' '.join(filter(None, [str(payload.get('spelling') or payload.get('declaration')
+                                         or ''),
+                                     'version ' + str(payload['version'])
+                                     if payload.get('version') else '']))
+
+    def part(label: str, text: str) -> typing.Any:
+        return htpy.p[htpy.span(class_ = 'run-in')[label], ' ', _prose(text)] if text else None
+
+    return _block([htpy.p[htpy.span(class_ = 'run-in artifact-name')[member.name], ' ',
+                          _prose(_text(node.get('content')))],
+                   part('Payload',    schema),
+                   part('Encoding',   _text(node.get('encoding'))),
+                   part('Convention', _text(node.get('convention'))),
+                   part('Identity',   _text(node.get('identity')))],
+                  [_note_line('Realized by', [htpy.span(class_ = 'line')[_link(graph, id_item)]
+                                              for id_item in member.list_realizer])
+                   or htpy.p(class_ = 'gap')['Not realized'],
+                   _id(member.id)],
+                  class_ = 'artifact')
+
+
+# -----------------------------------------------------------------------------
+def _semantics(surface: Surface) -> typing.Any:
+    """
+    Return the semantics of a surface: each part the schema names, with
+    its question in the margin and what the surface states of it, or a
+    hollow mark where it states nothing, since compatibility depends on
+    every part.
+
+    """
+
+    return htpy.div(class_ = 'semantics')[
+        htpy.h3['Semantics ', htpy.span(class_ = 'note')[
+            '{stated} of {count} stated'.format(stated = surface.stated(),
+                                                count  = len(surface.list_semantics))]],
+        [_block(_paragraphs(text) or [htpy.p(class_ = 'gap')['Not stated.']],
+                [htpy.p[htpy.span(class_ = 'label')[field.replace('_', ' ')]],
+                 htpy.p(class_ = 'gloss')[gloss]],
+                class_ = 'part' if text else 'part unstated')
+         for (field, gloss, text) in surface.list_semantics]]
+
+
+# -----------------------------------------------------------------------------
+def _type(node: dict) -> str:
+    """
+    Return the spelling of the type a member carries, or empty.
+
+    """
+
+    value = node.get('type')
+    return str(value.get('spelling', '')) if isinstance(value, dict) else ''
 
 
 # -----------------------------------------------------------------------------

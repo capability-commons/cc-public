@@ -670,6 +670,26 @@ def test_interface_page_marks_where_the_code_differs(tree):
     assert 'The code differs for 1 of 7 members' in text
 
 
+def test_dataflow_interface_page_draws_the_step_and_its_semantics(tree):
+    path = tree / '_data/interface_control_document/icd_frame_detector.yaml'
+    path.write_text(TEXT_DATAFLOW)
+    (status, _, body) = cc_public.web.server.respond(tree, '/interface/icd_frame_detector')
+    assert status == http.HTTPStatus.OK
+    text = body.decode()
+    assert '<th scope="row">Surface</th><td>Dataflow step, Artifact</td>' in text
+    figure = text[text.index('<figure class="step">'):text.index('</figure>')]
+    assert re.findall(r'<g class="(port[^"]*)">', figure) == ['port', 'port optional', 'port',
+                                                             'port']
+    assert figure.count('marker-start=') == 1
+    assert re.findall(r'<tr id="port-icm_frame_detector.(\w+)">', text) == [
+        'frame', 'threshold', 'detections', 'background']
+    assert re.findall(r'Semantics <span class="note">(\d+ of \d+) stated', text) == [
+        '6 of 12', '3 of 10']
+    assert text.count('class="block part unstated"') == 13
+    assert re.findall(r'<span class="column">(\w+)</span>', text) == ['Realized']
+    assert '<span class="run-in artifact-name">detection file</span>' in text
+
+
 @pytest.mark.parametrize('path', ['/interface/icd_missing',
                                   '/interface/lc_tooling'])
 def test_interface_page_of_anything_else_is_not_found(tree, path):
@@ -679,3 +699,163 @@ def test_interface_page_of_anything_else_is_not_found(tree, path):
 
 def _figure(body: bytes) -> bytes:
     return body[body.index(b'<figure'):body.index(b'</svg>')]
+
+
+# An interface control document with a dataflow step surface and an
+# artifact surface, which the tree does not hold.
+#
+TEXT_DATAFLOW = """\
+id_self:                icd_frame_detector
+guid_self:              icd_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a60
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Frame detector
+brief:                  |
+                        A step that finds objects in camera frames,
+                        and the detection files it leaves for the
+                        logger.
+description:            |
+                        The step runs once for each frame the camera
+                        delivers, against a background model it keeps
+                        between frames. Each run writes the detections
+                        it finds, and every minute the step closes a
+                        file of them for the logger to collect.
+version_interface:      '0.1'
+
+declaration:
+
+  detection:
+    id_self:            icm_frame_detector.detection
+    guid_self:          icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a61
+    name:               Detection
+    brief:              |
+                        One object found in a frame.
+    shape:              |
+                        A box in pixel coordinates of the frame, a
+                        class name and a confidence between 0 and 1.
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        frame:
+          id_self:      icm_frame_detector.frame
+          guid_self:    icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a62
+          name:         frame
+          brief:        |
+                        The image to search, with its capture time.
+
+          type:
+            spelling:   Frame
+
+        threshold:
+          id_self:      icm_frame_detector.threshold
+          guid_self:    icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a63
+          name:         threshold
+          brief:        |
+                        The least confidence a detection is kept at.
+
+          type:
+            spelling:   float
+
+          optional:     true
+
+      output:
+
+        detections:
+          id_self:      icm_frame_detector.detections
+          guid_self:    icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a64
+          name:         detections
+          brief:        |
+                        The objects found in the frame, most confident
+                        first.
+
+          type:
+            declaration:  detection
+            spelling:   list[Detection]
+
+      state:
+
+        background:
+          id_self:      icm_frame_detector.background
+          guid_self:    icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a65
+          name:         background
+          brief:        |
+                        A running model of the empty scene.
+
+          type:
+            spelling:   BackgroundModel
+
+      invocation:       |
+                        Once for each frame, as it arrives. The
+                        threshold last given is used; with none given,
+                        0.5.
+      initialization:   |
+                        The background model starts empty and is
+                        learnt over the first 50 frames, during which
+                        no detections are written.
+      persistence:      |
+                        The background model is kept between
+                        invocations and lost on a restart.
+      ordering:         |
+                        Detections are written in the order of the
+                        frames they come from.
+      back_pressure:    |
+                        A frame that arrives while the last is still
+                        being searched is dropped, and the drop is
+                        counted.
+      failure:          |
+                        A frame that cannot be decoded writes no
+                        detections; the next frame is searched as
+                        usual.
+
+  log:
+
+    artifact:
+
+      artifact:
+
+        detection_file:
+          id_self:      icm_frame_detector.detection_file
+          guid_self:    icm_5d0a8a3c6e2b4f0e9c7a1b2d3e4f5a66
+          name:         detection file
+          brief:        |
+                        The detections of one minute.
+          content:      |
+                        Every detection written in one minute, with
+                        the capture time of its frame.
+
+          payload:
+            declaration:  detection
+            version:    '1'
+
+          encoding:     |
+                        JSON Lines in UTF-8, one detection to a line,
+                        compressed with gzip.
+          convention:   |
+                        Boxes in pixels, origin at the top left of the
+                        frame, x to the right and y down. Times in
+                        UTC.
+
+      production:       |
+                        At the end of each minute, whether or not
+                        anything was detected.
+      atomicity:        |
+                        The file is written under a temporary name and
+                        renamed when complete.
+      retention:        |
+                        Kept for seven days, then removed by the
+                        logger.
+
+relation:               []
+"""

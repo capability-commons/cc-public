@@ -33,6 +33,13 @@ description:            |
                         signature_mismatch do not compare it; those
                         checks are the authority, and this module only
                         reads the same facts for the review pages.
+
+                        A surface that is not native, a dataflow step
+                        or artifacts, is read apart: its members by
+                        group, and each part of its semantics that the
+                        schema sch_interface_control_document names,
+                        with the question the schema asks of it and
+                        what the surface states, if anything.
 relation:               []
 
 ...
@@ -54,6 +61,25 @@ KEY_ID_SELF       = cc_public.web.argument.KEY_ID_SELF
 KEY_RELATION      = cc_public.web.argument.KEY_RELATION
 KEY_PARAMETER     = 'parameter'
 KEY_RETURNS       = 'returns'
+KEY_SURFACE       = 'surface'
+KEY_DECLARATION   = 'declaration'
+KEY_PROPERTIES    = 'properties'
+KEY_REF           = '$ref'
+KEY_DEFS          = '$defs'
+KEY_DESCRIPTION   = 'description'
+ID_SCHEMA         = 'sch_interface_control_document'
+REF_SEMANTICS     = '#/$defs/semantics'
+
+FORM_NATIVE       = 'native'
+FORM_DATAFLOW     = 'dataflow_step'
+FORM_ARTIFACT     = 'artifact'
+
+# The name of each form of surface, and the definition in the schema
+# that lists the parts of its semantics. A native surface is named by
+# its language instead.
+#
+MAP_FORM          = {FORM_DATAFLOW: ('Dataflow step', 'surface_dataflow_step'),
+                     FORM_ARTIFACT: ('Artifact',      'surface_artifact')}
 
 AGREES            = 'agrees'
 DIFFERS           = 'differs'
@@ -86,7 +112,11 @@ MAP_GROUP         = {'declaration': 'Declarations',
                      'constant':    'Constants',
                      'type':        'Types',
                      'class':       'Classes',
-                     'function':    'Functions'}
+                     'function':    'Functions',
+                     'input':       'Inputs',
+                     'output':      'Outputs',
+                     'state':       'State',
+                     'artifact':    'Artifacts'}
 
 Graph             = cc_public.web.argument.Graph
 Item              = cc_public.web.argument.Item
@@ -155,15 +185,57 @@ class Member:
 
 # -----------------------------------------------------------------------------
 @dataclasses.dataclass
+class Surface:
+    """
+    A surface of an interface control document that is not native: a
+    dataflow step or artifacts. Its members by group (the ports of a
+    step, by direction, or the artifacts), and each part of its
+    semantics that the schema names, with what the surface states of
+    it, or empty if it states nothing.
+
+    """
+
+    key:            str
+    form:           str
+    label:          str
+    node:           dict
+    list_group:     list[tuple[str, list[Member]]]
+    list_semantics: list[tuple[str, str, str]]
+
+    # -------------------------------------------------------------------------
+    def stated(self) -> int:
+        """
+        Return how many parts of the semantics the surface states.
+
+        """
+
+        return sum(1 for (_, _, text) in self.list_semantics if text)
+
+
+# -----------------------------------------------------------------------------
+@dataclasses.dataclass
 class Contract:
     """
-    An interface control document read as a contract: its members by
-    group, in the order they are written.
+    An interface control document read as a contract: the members of
+    its declarations and native surfaces by group, in the order they
+    are written, and its other surfaces.
 
     """
 
-    item:       Item
-    list_group: list[tuple[str, list[Member]]]
+    item:         Item
+    list_group:   list[tuple[str, list[Member]]]
+    list_surface: list[Surface] = dataclasses.field(default_factory = list)
+
+    # -------------------------------------------------------------------------
+    def every_member(self) -> list[Member]:
+        """
+        Return every member, of every surface.
+
+        """
+
+        return self.members() + [member for surface in self.list_surface
+                                 for (_, list_member) in surface.list_group
+                                 for member in list_member]
 
     # -------------------------------------------------------------------------
     def members(self) -> list[Member]:
@@ -223,12 +295,62 @@ def contract(graph: Graph, facts: Facts, id_interface: str) -> Contract | None:
     if item is None or not id_interface.startswith(PREFIX_INTERFACE):
         return None
 
-    code      = _Code(facts)
-    map_group = collections.defaultdict(list)
-    for (group, name, node) in _walk(item.node, ()):
-        map_group[group].append(_member(graph, code, group, name, node))
+    code         = _Code(facts)
+    map_surface  = item.node.get(KEY_SURFACE) or {}
+    list_native  = []
+    list_surface = []
+    for (key, value) in map_surface.items():
+        form = next(iter(value), '') if isinstance(value, dict) else ''
+        if form == FORM_NATIVE:
+            list_native.append(value)
+        elif form in MAP_FORM:
+            list_surface.append(_surface(graph, code, key, form, value[form]))
 
-    return Contract(item = item, list_group = list(map_group.items()))
+    map_group = _groups(graph, code, {KEY_DECLARATION: item.node.get(KEY_DECLARATION),
+                                      KEY_SURFACE:     list_native})
+
+    return Contract(item = item, list_group = map_group, list_surface = list_surface)
+
+
+# -----------------------------------------------------------------------------
+def _groups(graph: Graph, code: '_Code', node: object) -> list[tuple[str, list[Member]]]:
+    """
+    Return the members held in node, by group, in the order they are
+    written.
+
+    """
+
+    map_group = collections.defaultdict(list)
+    for (group, name, node_member) in _walk(node, ()):
+        map_group[group].append(_member(graph, code, group, name, node_member))
+    return list(map_group.items())
+
+
+# -----------------------------------------------------------------------------
+def _surface(graph: Graph, code: '_Code', key: str, form: str, node: dict) -> Surface:
+    """
+    Return the surface filed under key, of form, whose body is node:
+    its members, and each part of its semantics the schema names, with
+    its gloss from the schema and what node states of it.
+
+    """
+
+    (label, name_def) = MAP_FORM[form]
+    schema            = graph.node(ID_SCHEMA) or {}
+    map_property      = (schema.get(KEY_DEFS, {}).get(name_def, {}).get(KEY_PROPERTIES) or {})
+    list_semantics    = [(field,
+                          ' '.join(str(value.get(KEY_DESCRIPTION, '')).split())
+                             .removeprefix('Optional. '),
+                          str(node.get(field) or ''))
+                         for (field, value) in map_property.items()
+                         if isinstance(value, dict) and value.get(KEY_REF) == REF_SEMANTICS]
+
+    return Surface(key            = key,
+                   form           = form,
+                   label          = label,
+                   node           = node,
+                   list_group     = _groups(graph, code, node),
+                   list_semantics = list_semantics)
 
 
 # -----------------------------------------------------------------------------
