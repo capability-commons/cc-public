@@ -26,11 +26,13 @@ description:            |
                         anything written on several lines, and
                         precedes any comment, and scalars pack.
 
-                        format_file lays out the document a file
-                        holds: a YAML file under _data, the module
-                        docstring of a python module, or the comment
-                        header of any other file. The rest of the file
-                        is left alone.
+                        format_file lays out the documents a file
+                        holds: a YAML file under _data, the docstrings
+                        of a python module and of its classes and
+                        functions, or the comment header of any other
+                        file. The rest of the file is left alone. The
+                        document of a class or function keeps the
+                        indentation of its docstring.
 usage:                  |
                         The layout check, cctool format and every edit
                         use format_file, so that a file is laid out
@@ -128,9 +130,7 @@ def violations(root: pathlib.Path, map_document: cc_public.graph.extract.Documen
 
     list_row = []
 
-    for (relative, (document, _)) in sorted(map_document.items()):
-        if not cc_public.graph.extract.is_document(document):
-            continue
+    for relative in cc_public.graph.extract.files(map_document):
         text = (root / relative).read_text(encoding = 'utf-8')
         key  = (relative, hashlib.blake2b(text.encode('utf-8'), digest_size = 16).digest())
         if key not in MAP_VIOLATION:
@@ -180,8 +180,8 @@ def _first_difference(text: str, other: str) -> int:
 # -----------------------------------------------------------------------------
 def format_file(text: str, relative: pathlib.Path) -> str:
     """
-    Return text, the content of the file at relative, with the document
-    it holds laid out and the rest of it unchanged.
+    Return text, the content of the file at relative, with the
+    documents it holds laid out and the rest of it unchanged.
 
     """
 
@@ -192,31 +192,26 @@ def format_file(text: str, relative: pathlib.Path) -> str:
 
     list_line = text.split('\n')
 
-    if relative.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
-        (first, last) = _span_docstring(text, list_line)
-        mark          = ''
-    else:
-        mark          = cc_public.graph.extract.mark_comment(relative)
-        (first, last) = _span_header(list_line, mark)
-
-    if first is None:
-        return text
-
-    list_doc  = [_unmark(line, mark) for line in list_line[first:last + 1]]
-    list_body = format('\n'.join(list_doc)).rstrip('\n').split('\n')
-    list_new  = [LINE_OPEN, ''] + list_body + ['', LINE_CLOSE]
-
-    list_line[first:last + 1] = [_mark(line, mark) for line in list_new]
+    # The documents are laid out from the last up, so that a document
+    # laid out on more or fewer lines leaves the spans above it where
+    # they were.
+    #
+    for (first, last, mark, indent) in reversed(_spans(text, relative)):
+        list_doc  = [_unmark(line, mark).removeprefix(indent)
+                     for line in list_line[first:last + 1]]
+        list_body = format('\n'.join(list_doc)).rstrip('\n').split('\n')
+        list_new  = [LINE_OPEN, ''] + list_body + ['', LINE_CLOSE]
+        list_line[first:last + 1] = [_mark(indent + line if line else '', mark)
+                                     for line in list_new]
 
     return '\n'.join(list_line)
 
 
 # -----------------------------------------------------------------------------
-def span(text: str, relative: pathlib.Path) -> tuple[int | None, int | None]:
+def spans(text: str, relative: pathlib.Path) -> list[tuple[int, int]]:
     """
-    Return the indices of the first and the last line of text, the
-    content of the file at relative, that hold its document, or None if
-    it holds none.
+    Return the indices of the first and the last line of each document
+    in text, the content of the file at relative, in order.
 
     """
 
@@ -224,13 +219,70 @@ def span(text: str, relative: pathlib.Path) -> tuple[int | None, int | None]:
 
     if relative.suffix == cc_public.graph.extract.SUFFIX_YAML:
         if cc_public.graph.extract.DIR_DATA not in relative.parts:
-            return (None, None)
-        return (0, len(list_line) - 1)
+            return []
+        return [(0, len(list_line) - 1)]
 
-    if relative.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
-        return _span_docstring(text, list_line)
+    return [(first, last) for (first, last, _, _) in _spans(text, relative)]
 
-    return _span_header(list_line, cc_public.graph.extract.mark_comment(relative))
+
+# -----------------------------------------------------------------------------
+def _spans(text: str, relative: pathlib.Path) -> list[tuple[int, int, str, str]]:
+    """
+    Return the indices of the lines that open and close each document
+    in text, the content of the file at relative, other than a YAML
+    file, with what begins each of its lines: the comment marker of a
+    header, and the indentation of the docstring of a class or function.
+
+    """
+
+    list_line = text.split('\n')
+
+    if relative.suffix != cc_public.graph.extract.SUFFIX_PYTHON:
+        mark          = cc_public.graph.extract.mark_comment(relative)
+        (first, last) = _span_header(list_line, mark)
+        return [] if first is None else [(first, last, mark, '')]
+
+    try:
+        module = ast.parse(text)
+    except SyntaxError:
+        return []
+
+    list_span = []
+
+    for node in _documented(module):
+        (first, last) = _span(list_line, node.body[0].lineno - 1, node.body[0].end_lineno, '')
+        if first is None:
+            continue
+        line = list_line[first]
+        list_span.append((first, last, '', line[:len(line) - len(line.lstrip())]))
+
+    return list_span
+
+
+# -----------------------------------------------------------------------------
+def _documented(module: ast.Module) -> list[ast.AST]:
+    """
+    Return the module and each class or function in it whose docstring
+    holds a document, in the order they are written: those that
+    cc_public.graph.extract reads documents from.
+
+    """
+
+    list_node = []
+
+    def visit(node):
+        docstring = ast.get_docstring(node)
+        if docstring and docstring.startswith(LINE_OPEN):
+            list_node.append(node)
+        if not isinstance(node, (ast.Module, ast.ClassDef)):
+            return
+        for child in node.body:
+            if type(child) in cc_public.graph.extract.MAP_PREFIX_KIND:
+                visit(child)
+
+    visit(module)
+
+    return list_node
 
 
 # -----------------------------------------------------------------------------
@@ -329,29 +381,6 @@ def _prose(key: str, value: typing.Any) -> typing.Any:
     if key in SET_KEY_PROSE and isinstance(value, str):
         return ruamel.yaml.scalarstring.LiteralScalarString(value.rstrip('\n') + '\n')
     return value
-
-
-# -----------------------------------------------------------------------------
-def _span_docstring(text: str, list_line: list[str]) -> tuple[int | None, int | None]:
-    """
-    Return the indices of the lines that open and close the document in
-    the module docstring, or None if it holds none.
-
-    """
-
-    try:
-        module = ast.parse(text)
-    except SyntaxError:
-        return (None, None)
-
-    if not (module.body
-            and isinstance(module.body[0], ast.Expr)
-            and isinstance(module.body[0].value, ast.Constant)
-            and isinstance(module.body[0].value.value, str)):
-        return (None, None)
-
-    node = module.body[0]
-    return _span(list_line, node.lineno - 1, node.end_lineno, '')
 
 
 # -----------------------------------------------------------------------------

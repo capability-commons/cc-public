@@ -104,7 +104,7 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # name of the file gives the id, so new does not make them.
 #
 ID_HELD           = 'r_has_items_held_in_register'
-SET_PREFIX_SOURCE = {'pym', 'pyp', 'lpf', 'file'}
+SET_PREFIX_SOURCE = {'pym', 'pyp', 'pyc', 'pyf', 'lpf', 'file'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
@@ -177,13 +177,15 @@ class Tree:
         """
 
         for (relative, text) in edit.items():
+            for key in [key for key in self.map_document
+                        if cc_public.graph.extract.file_of(key) == relative]:
+                del self.map_document[key]
             if text is None:
-                self.map_document.pop(relative, None)
                 self.edit[relative] = None
                 continue
             try:
-                self.map_document[relative] = cc_public.graph.extract.parse(
-                                                            text, pathlib.Path(relative))
+                self.map_document.update(cc_public.graph.extract.parse_all(
+                                                            text, pathlib.Path(relative)))
             except cc_public.graph.extract.ErrorRead as error:
                 raise ErrorEdit('The edit leaves {file} unreadable: {error}'.format(
                                                     file = relative, error = error)) from error
@@ -333,6 +335,93 @@ def header(tree:       Tree,
     list_new = [*list_head, *list_new, *([*list_blank, *list_line] if list_line else [''])]
 
     return {relative: _format('\n'.join(list_new), relative)}
+
+
+# -----------------------------------------------------------------------------
+def header_definition(tree:       Tree,
+                      key:        str,
+                      id_self:    str | None,
+                      list_field: list[tuple[str, typing.Any]],
+                      list_link:  list[tuple[str, str]]) -> Edit:
+    """
+    Return the edit that gives the class or function key, such as
+    src/cc_public/graph/jq.py::query, a new item in its docstring. Its
+    id follows from key. The text the docstring held becomes the brief,
+    unless a brief is given, so that what the code says of itself is
+    said once.
+
+    """
+
+    relative  = cc_public.graph.extract.file_of(key)
+    list_name = key.split(cc_public.graph.extract.DELIM_DEFINITION)[1:]
+
+    if pathlib.Path(relative).suffix != cc_public.graph.extract.SUFFIX_PYTHON:
+        raise ErrorEdit('{file} is not a python module.'.format(file = relative))
+    if relative not in tree.map_document:
+        raise ErrorEdit('There is no file {file}.'.format(file = relative))
+    if key in tree.map_document:
+        raise ErrorEdit('{key} already holds an item.'.format(key = key))
+
+    text     = tree.text(relative)
+    node     = _definition(text, relative, list_name)
+    expected = cc_public.graph.extract.definition_id(pathlib.Path(relative), list_name, node)
+
+    if id_self not in (None, expected):
+        raise ErrorEdit('The item of {key} has the id {expected}, not {id}.'.format(
+                                                    key = key, expected = expected, id = id_self))
+
+    docstring = ast.get_docstring(node)
+    if docstring and not any(name == 'brief' for (name, _) in list_field):
+        list_field = [*list_field, ('brief', ruamel.yaml.scalarstring.LiteralScalarString(
+                                                                        docstring + '\n'))]
+
+    map_field = _fields(tree, expected, list_field, list_link, None)
+    first     = node.body[0]
+    indent    = ' ' * first.col_offset
+    list_doc  = [QUOTE_DOCSTRING, cc_public.graph.extract.LINE_OPEN, '',
+                 *cc_public.edit.layout.dump(map_field, 0),
+                 '', cc_public.graph.extract.LINE_CLOSE, QUOTE_DOCSTRING]
+    list_new  = [indent + line if line else '' for line in list_doc]
+    list_line = text.split('\n')
+
+    if docstring is None:
+        list_line[first.lineno - 1:first.lineno - 1] = [*list_new, '']
+    else:
+        list_line[first.lineno - 1:first.end_lineno] = list_new
+
+    return {relative: _format('\n'.join(list_line), relative)}
+
+
+# -----------------------------------------------------------------------------
+def _definition(text: str, relative: str, list_name: list[str]) -> ast.AST:
+    """
+    Return the class or function that list_name names, down from the
+    top of the python module text at relative. Refuse one that is not
+    there, or whose body shares the line of its definition.
+
+    """
+
+    try:
+        node = ast.parse(text)
+    except SyntaxError as error:
+        raise ErrorEdit('{file} is not python: {error}'.format(
+                                                file = relative, error = error)) from error
+
+    for name in list_name:
+        list_child = [child for child in getattr(node, 'body', [])
+                      if type(child) in cc_public.graph.extract.MAP_PREFIX_KIND
+                      and child.name == name
+                      and isinstance(node, (ast.Module, ast.ClassDef))]
+        if not list_child:
+            raise ErrorEdit('{file} has no class or function {name} there.'.format(
+                                                                file = relative, name = name))
+        node = list_child[-1]
+
+    if node.body[0].lineno == node.lineno:
+        raise ErrorEdit('The body of {name} is on the line that defines it.'.format(
+                                                                        name = list_name[-1]))
+
+    return node
 
 
 # -----------------------------------------------------------------------------
@@ -753,14 +842,12 @@ def _renamed_documents(tree: Tree, id_old: str, id_new: str) -> Edit:
     regex = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
     edit  = {}
 
-    for (file, (document, _)) in tree.map_document.items():
-        if not cc_public.graph.extract.is_document(document):
-            continue
-        text = tree.text(file)
-        (first, last) = cc_public.edit.layout.span(text, pathlib.Path(file))
-        list_line     = text.split('\n')
-        list_line[first:last + 1] = [regex.sub(id_new, line)
-                                     for line in list_line[first:last + 1]]
+    for file in cc_public.graph.extract.files(tree.map_document):
+        text      = tree.text(file)
+        list_line = text.split('\n')
+        for (first, last) in cc_public.edit.layout.spans(text, pathlib.Path(file)):
+            list_line[first:last + 1] = [regex.sub(id_new, line)
+                                         for line in list_line[first:last + 1]]
         renamed = '\n'.join(list_line)
         if renamed != text:
             edit[file] = _format(renamed, file)
@@ -780,7 +867,9 @@ def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> 
 
     dir_new = dir_old.with_name(id_new)
 
-    for file in sorted(set(tree.map_document) | set(edit)):
+    set_file = {cc_public.graph.extract.file_of(key) for key in tree.map_document}
+
+    for file in sorted(set_file | set(edit)):
         moved = pathlib.Path(file)
         if dir_old not in moved.parents:
             continue
@@ -816,7 +905,7 @@ def batch(tree: Tree, list_operation: list) -> None:
         field: {NAME: VALUE, ...}
         link:  [[RELATION, TARGET], ...]
 
-        header: PATH
+        header: PATH, or PATH::CLASS::FUNCTION
         id:     ID
         field:  {NAME: VALUE, ...}
         link:   [[RELATION, TARGET], ...]
@@ -856,8 +945,14 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
                     in (operation.get(KEY_FIELD) or {}).items()],
                    [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
 
+    # A header on a class or function, keyed as
+    # cc_public.graph.extract.file_of says, goes in its docstring.
+    #
     if isinstance(operation, dict) and isinstance(operation.get(KEY_HEADER), str):
-        return header(tree,
+        function = (header_definition
+                    if cc_public.graph.extract.DELIM_DEFINITION in operation[KEY_HEADER]
+                    else header)
+        return function(tree,
                       operation[KEY_HEADER],
                       None if operation.get(KEY_ID) is None else str(operation[KEY_ID]),
                       [(str(key), _plain(value)) for (key, value)
@@ -1196,18 +1291,25 @@ class _Item:
         if id_item not in tree.map_item:
             raise ErrorEdit('No item has the id {id}.'.format(id = id_item))
 
-        (_, _, holder, relative, _) = tree.map_item[id_item]
-        path                        = pathlib.Path(relative)
+        (_, _, holder, key, _) = tree.map_item[id_item]
+        relative               = cc_public.graph.extract.file_of(key)
+        path                   = pathlib.Path(relative)
 
         text             = tree.text(relative)
-        (document, base) = cc_public.graph.extract.parse(text, path)
+        (document, base) = cc_public.graph.extract.parse_all(text, path)[key]
 
+        # The document of a class or function is indented as its
+        # docstring is, and the lines of the document are read and
+        # written without that indentation.
+        #
         self.relative  = relative
         self.list_line = text.split('\n')
         self.base      = base - 1
         self.mark      = ('' if path.suffix in (cc_public.graph.extract.SUFFIX_YAML,
                                                 cc_public.graph.extract.SUFFIX_PYTHON)
                           else cc_public.graph.extract.mark_comment(path))
+        line_open      = self.list_line[self.base]
+        self.indent    = line_open[:len(line_open) - len(line_open.lstrip())]
 
         if holder:
             if not (isinstance(document.get(KEY_TABLE), dict) and id_item in document[KEY_TABLE]):
@@ -1228,7 +1330,7 @@ class _Item:
         text = self.list_line[index]
         if self.mark and text.startswith(self.mark):
             text = text[len(self.mark):].removeprefix(' ')
-        return text
+        return text.removeprefix(self.indent)
 
     # -------------------------------------------------------------------------
     def column(self, key: str) -> int:
@@ -1282,6 +1384,8 @@ class _Item:
 
         """
 
+        if self.indent:
+            return self.indent + text if text else ''
         if not self.mark:
             return text
         return self.mark + (' ' + text if text else '')

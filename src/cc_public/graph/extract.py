@@ -17,8 +17,9 @@ brief:                  |
                         held in a tree.
 description:            |
                         This module reads every item in the tree: the
-                        YAML files under a _data directory, the module
-                        docstrings of python modules, and the comment
+                        YAML files under a _data directory, the
+                        docstrings of python modules and of the
+                        classes and functions in them, and the comment
                         headers of other files. It returns the facts
                         they hold, one set of rows for each base
                         relation. RELATION names each base relation,
@@ -81,6 +82,7 @@ REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
+DELIM_PREFIX      = '_'
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
@@ -138,9 +140,9 @@ RELATION          = {
     'register_entry_key': (('register', 'key', 'id'),
                            'The register holds, under key, a register entry with id.'),
     'module_name':        (('id', 'expected'),
-                           'A python module or package, or a logic program file, '
-                           'holds the item id, and its place in the tree calls for the '
-                           'id expected.'),
+                           'A python module, package, class or function, or a logic '
+                           'program file, holds the item id, and its place in the tree '
+                           'calls for the id expected.'),
     'tree_file':          (('file',),
                            'The tree holds file, whether or not the file holds an '
                            'item.'),
@@ -170,6 +172,23 @@ MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_PROGRAM: 'lpf_'}
 PREFIX_PACKAGE    = 'pyp_'
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
+
+# A class or function holds an item in its docstring, as a module
+# does. Its document is keyed by the path of its file and the names of
+# the definitions down to it, in the form pytest uses:
+# src/cc_public/graph/jq.py::query. Its id is the name of its module
+# and those names, in lower case, under the prefix of its kind.
+#
+DELIM_DEFINITION  = '::'
+MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
+                     ast.FunctionDef:     'pyf_',
+                     ast.AsyncFunctionDef: 'pyf_'}
+
+# The id that the place of each class or function document calls for,
+# by its key. The key does not say whether the definition is a class
+# or a function, so this is noted when the file is read.
+#
+MAP_DEFINITION    = {}
 
 Facts             = dict[str, set[tuple[str, ...]]]
 Documents         = dict[str, tuple[typing.Any, int]]
@@ -241,10 +260,11 @@ def documents(root: pathlib.Path) -> Documents:
     to root.
 
     Documents are read from YAML files under a _data directory, from
-    the module docstring of a python module, and from the comment
-    header of any other file. A file that holds no document is kept,
-    with None in its place, so that the tree's files are known. A file
-    that cannot be read has an Unreadable in place of its document.
+    the docstrings of a python module and of its classes and functions,
+    and from the comment header of any other file. A file that holds no
+    document is kept, with None in its place, so that the tree's files
+    are known. A file that cannot be read has an Unreadable in place of
+    its document. A class or function is keyed as file_of says.
 
     """
 
@@ -255,11 +275,35 @@ def documents(root: pathlib.Path) -> Documents:
         if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
             continue
         try:
-            map_document[str(relative)] = read(path, relative)
+            map_document.update(read(path, relative))
         except ErrorRead as error:
             map_document[str(relative)] = (Unreadable(error), error.line)
 
     return map_document
+
+
+# -----------------------------------------------------------------------------
+def file_of(key: str) -> str:
+    """
+    Return the path of the file that holds the document keyed by key:
+    the key itself for the document of a file, and the part before the
+    first :: for that of a class or function.
+
+    """
+
+    return key.partition(DELIM_DEFINITION)[0]
+
+
+# -----------------------------------------------------------------------------
+def files(map_document: Documents) -> list[str]:
+    """
+    Return the path of each file that holds a document that could be
+    read, in order, once each.
+
+    """
+
+    return sorted({file_of(key) for (key, (document, _)) in map_document.items()
+                   if is_document(document)})
 
 
 # -----------------------------------------------------------------------------
@@ -272,14 +316,19 @@ def facts_of(map_document: Documents) -> Facts:
     facts = {name: set() for name in RELATION}
 
     for (file, (document, base)) in map_document.items():
-        facts['tree_file'].add((file,))
+        if file == file_of(file):
+            facts['tree_file'].add((file,))
         if isinstance(document, Unreadable):
             facts['unreadable'].add((file, base, str(document.error)))
             continue
         if document is None:
             continue
         _walk(document, '', (file, base), facts)
-        if pathlib.Path(file).suffix in MAP_PREFIX_MODULE and isinstance(document, dict):
+        if not isinstance(document, dict):
+            continue
+        if file in MAP_DEFINITION:
+            facts['module_name'].add((str(document.get(KEY_ID_SELF)), MAP_DEFINITION[file]))
+        elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       module_name(pathlib.Path(file))))
 
@@ -320,15 +369,15 @@ def module_name(relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
-def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
+def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
     """
-    Return the document that the file at path holds, or None if it
-    holds none, and the line of the file that its first line is on.
-    relative is the path of the file relative to the root of the tree.
+    Return the documents that the file at path holds, as parse_all
+    does. relative is the path of the file relative to the root of the
+    tree.
 
     A YAML file or python module that holds what it held when it was
-    last read gives the same document as then, the same object, so
-    that what was found by checking it can be reused. A document is
+    last read gives the same documents as then, the same objects, so
+    that what was found by checking them can be reused. A document is
     never changed once read.
 
     """
@@ -344,13 +393,81 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> tuple[typing.Any, int]:
             except UnicodeDecodeError as error:
                 raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
                                 data.count(b'\n', 0, error.start) + 1) from error
-            MAP_READ[key] = parse(text, relative)
+            MAP_READ[key] = parse_all(text, relative)
         return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
     # read, and only as far as a comment header could go.
     #
-    return _header(_line_of_file(path), mark_comment(relative))
+    return {str(relative): _header(_line_of_file(path), mark_comment(relative))}
+
+
+# -----------------------------------------------------------------------------
+def parse_all(text: str, relative: pathlib.Path) -> Documents:
+    """
+    Return every document that text holds, as the content of the file
+    at relative: the document of the file, keyed by relative, as parse
+    returns it, and that of each class or function of a python module
+    that holds one, keyed as file_of says. Raise ErrorRead if one
+    cannot be read.
+
+    """
+
+    map_document = {str(relative): parse(text, relative)}
+
+    if relative.suffix == SUFFIX_PYTHON:
+        for (key, expected, document) in definitions(text, relative):
+            MAP_DEFINITION[key] = expected
+            map_document[key]   = document
+
+    return map_document
+
+
+# -----------------------------------------------------------------------------
+def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple]]:
+    """
+    Return, for each class or function of the python module text, at
+    relative, whose docstring holds a document: its key, the id its
+    place calls for, and the document with the line of the file that
+    its first line is on. A class or function is one at the top of the
+    module or in a class, not one inside a function. Raise ErrorRead if
+    a document cannot be read.
+
+    """
+
+    list_found = []
+
+    def visit(list_node, list_name):
+        for node in list_node:
+            if type(node) not in MAP_PREFIX_KIND:
+                continue
+            list_path = [*list_name, node.name]
+            found     = _document_of(node)
+            if found is not None:
+                list_found.append((DELIM_DEFINITION.join([str(relative), *list_path]),
+                                   definition_id(relative, list_path, node),
+                                   found))
+            if isinstance(node, ast.ClassDef):
+                visit(node.body, list_path)
+
+    visit(_module(text).body, [])
+
+    return list_found
+
+
+# -----------------------------------------------------------------------------
+def definition_id(relative: pathlib.Path, list_name: list[str], node: ast.AST) -> str:
+    """
+    Return the id of the item of the class or function node, named by
+    list_name down from the top of the python module at relative: the
+    prefix of its kind, the name of its module, and list_name, in lower
+    case and separated by full stops.
+
+    """
+
+    (_, _, name) = module_name(relative).partition(DELIM_PREFIX)
+
+    return MAP_PREFIX_KIND[type(node)] + DELIM_MODULE.join([name, *list_name]).lower()
 
 
 # -----------------------------------------------------------------------------
@@ -382,23 +499,45 @@ def _docstring(text: str) -> tuple[typing.Any, int]:
 
     """
 
+    return _document_of(_module(text)) or (None, 1)
+
+
+# -----------------------------------------------------------------------------
+def _module(text: str) -> ast.Module:
+    """
+    Return the syntax tree of the python module text. Raise ErrorRead
+    if it is not python.
+
+    """
+
     try:
-        module = ast.parse(text)
+        return ast.parse(text)
     except (SyntaxError, ValueError) as error:
         raise ErrorRead('The module is not python: {error}'.format(error = error),
                         getattr(error, 'lineno', None) or 1) from error
 
-    docstring = ast.get_docstring(module)
+
+# -----------------------------------------------------------------------------
+def _document_of(node: ast.AST) -> tuple[typing.Any, int] | None:
+    """
+    Return the document in the docstring of node, a module, class or
+    function, with the line of the file that its first line is on, or
+    None if its docstring holds none.
+
+    """
+
+    docstring = ast.get_docstring(node)
 
     if not (docstring and docstring.startswith(LINE_OPEN)):
-        return (None, 1)
+        return None
 
-    # The docstring is cleaned of the blank lines that open it, so its
-    # first line is that many lines below the opening quotes.
+    # The docstring is cleaned of the blank lines that open it, and of
+    # the indentation of a definition, so its first line is that many
+    # lines below the opening quotes.
     #
-    raw     = module.body[0].value.value
+    raw     = node.body[0].value.value
     leading = raw[:len(raw) - len(raw.lstrip())].count('\n')
-    base    = module.body[0].lineno + leading
+    base    = node.body[0].lineno + leading
 
     return (_load(docstring, base), base)
 

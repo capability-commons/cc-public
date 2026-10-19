@@ -360,6 +360,9 @@ def test_new_follows_an_edge_to_an_issue_made_later_in_the_batch(tree):
     ({'rename': ['pym_cc_public.edit.edit', 'pym_x']},
      'An item of t_python_module lives in the file it names, so move or remove the file '
      'by hand.'),
+    ({'remove': 'pyf_cc_public.check.check.check'},
+     'An item of t_python_function lives in the file it names, so move or remove the file '
+     'by hand.'),
     ({'remove': 'con_none'}, 'No item has the id con_none.'),
 ])
 def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
@@ -422,6 +425,103 @@ def test_a_header_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
         cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
     assert str(info.value) == message
+
+
+def test_header_turns_the_docstring_of_a_method_into_its_item(tree, zero):
+    path = tree / 'src/cc_public/edit/extra.py'
+    path.write_text('class Extra:\n'
+                    '\n'
+                    '    def run(self):\n'
+                    '        """\n'
+                    '        Run it.\n'
+                    '\n'
+                    '        """\n'
+                    '\n'
+                    '        return 1\n')
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.py', 'field': FIELD_HEADER},
+                       {'header': 'src/cc_public/edit/extra.py::Extra::run',
+                        'field':  {'title': 'Run'}}) == {}
+    text = path.read_text()
+    assert text[text.index('class Extra'):] == (
+        'class Extra:\n'
+        '\n'
+        '    def run(self):\n'
+        '        """\n'
+        '        ---\n'
+        '\n'
+        '        id_self:                pyf_cc_public.edit.extra.extra.run\n'
+        '        guid_self:              pyf_' + HEX_ZERO + '\n'
+        + ''.join('        ' + line if line.strip() else line
+                  for line in TEXT_RIGHTS.splitlines(True)) +
+        '\n'
+        '        title:                  Run\n'
+        '        brief:                  |\n'
+        '                                Run it.\n'
+        '        relation:               []\n'
+        '\n'
+        '        ...\n'
+        '        """\n'
+        '\n'
+        '        return 1\n')
+
+
+def test_header_writes_a_docstring_for_a_function_without_one(tree, zero):
+    path = tree / 'src/cc_public/edit/extra.py'
+    path.write_text('def run():\n    return 1\n')
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.py', 'field': FIELD_HEADER},
+                       {'header': 'src/cc_public/edit/extra.py::run',
+                        'field':  {'title': 'Run', 'brief': 'Run it.'}}) == {}
+    text = path.read_text()
+    assert text[text.index('def run'):].startswith('def run():\n    """\n    ---\n\n')
+    assert text.endswith('    ...\n    """\n\n    return 1\n')
+
+
+def test_a_link_from_the_item_of_a_function_keeps_its_indentation(tree):
+    path = tree / 'src/cc_public/check/check.py'
+    assert _edit(tree, {'link': ['pyf_cc_public.check.check.check', 'r_realizes',
+                                 'lc_tooling']}) == {}
+    assert ('    relation:\n'
+            '\n'
+            '      - id_relation:        r_realizes\n') in path.read_text()
+
+
+@pytest.mark.parametrize(('operation', 'message'), [
+    ({'header': 'src/cc_public/check/check.py::nothing'},
+     'src/cc_public/check/check.py has no class or function nothing there.'),
+    ({'header': 'src/cc_public/check/check.py::review', 'id': 'pyf_x'},
+     'The item of src/cc_public/check/check.py::review has the id '
+     'pyf_cc_public.check.check.review, not pyf_x.'),
+    ({'header': 'src/cc_public/check/check.py::check'},
+     'src/cc_public/check/check.py::check already holds an item.'),
+    ({'header': 'src/cc_public/check/check.lp::check'},
+     'src/cc_public/check/check.lp is not a python module.'),
+])
+def test_a_header_on_a_definition_that_cannot_be_made_says_why(tree, operation, message):
+    with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
+        cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
+    assert str(info.value) == message
+
+
+def test_the_document_of_a_function_is_laid_out_at_its_indentation():
+    text = ('def run():\n'
+            '    """\n'
+            '    ---\n'
+            '    id_self: pyf_x.run\n'
+            '    brief: |\n'
+            '      Run it.\n'
+            '    ...\n'
+            '    """\n')
+    assert cc_public.edit.layout.format_file(text, pathlib.Path('src/x.py')) == (
+        'def run():\n'
+        '    """\n'
+        '    ---\n'
+        '\n'
+        '    id_self:                pyf_x.run\n'
+        '    brief:                  |\n'
+        '                            Run it.\n'
+        '\n'
+        '    ...\n'
+        '    """\n')
 
 
 def test_header_refuses_a_module_with_a_docstring_already(tree):
@@ -563,9 +663,7 @@ def _params_document() -> list:
     list_param  = []
     set_folder  = set()
 
-    for relative in sorted(relative for (relative, (document, _))
-                           in cc_public.graph.extract.documents(DIR_REPO).items()
-                           if document is not None):
+    for relative in cc_public.graph.extract.files(cc_public.graph.extract.documents(DIR_REPO)):
         folder = str(pathlib.Path(relative).parent)
         if folder in set_folder:
             list_param.append(pytest.param(relative, marks = pytest.mark.slow))
@@ -581,8 +679,7 @@ def test_layout_keeps_the_data_and_is_a_fixpoint(relative):
     text     = (DIR_REPO / relative).read_text()
     laid_out = cc_public.edit.layout.format_file(text, pathlib.Path(relative))
     assert cc_public.edit.layout.format_file(laid_out, pathlib.Path(relative)) == laid_out
-    assert _shape(cc_public.graph.extract.parse(laid_out, pathlib.Path(relative))[0]) == (
-           _shape(cc_public.graph.extract.parse(text, pathlib.Path(relative))[0]))
+    assert _shapes(laid_out, relative) == _shapes(text, relative)
 
 
 def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
@@ -682,6 +779,18 @@ def test_an_empty_mapping_in_a_list_is_kept():
 def test_a_document_outside_the_subset_is_refused():
     with pytest.raises(cc_public.edit.layout.Unsupported):
         cc_public.edit.layout.format('- a\n- b\n')
+
+
+# -----------------------------------------------------------------------------
+def _shapes(text, relative):
+    """
+    Return the shape of each document text holds, as the content of the
+    file at relative, by its key.
+
+    """
+
+    return {key: _shape(document) for (key, (document, _))
+            in cc_public.graph.extract.parse_all(text, pathlib.Path(relative)).items()}
 
 
 # -----------------------------------------------------------------------------

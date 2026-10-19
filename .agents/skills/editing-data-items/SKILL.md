@@ -35,6 +35,7 @@ procedure, and the traps.
 |-----------------------------------------|-------------------------------------|
 | add one item                            | `cctool new ID --field ... --link ...` |
 | give a source file its item             | `cctool header PATH [ID] --field ...` |
+| give a python class or function its item | `cctool header PATH::NAME --field title ...` |
 | add an edge                             | `cctool link SOURCE RELATION TARGET` |
 | take an edge away                       | `cctool unlink SOURCE RELATION TARGET` |
 | change a field                          | `cctool set ID PATH VALUE [--yaml]` |
@@ -97,11 +98,15 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.
-- **`new`, `remove` and `rename` refuse pym, pyp, lpf and file ids.**
-  Those items live in the file they name. Give a file its item with
-  `cctool header PATH` (a module's id follows from its path; any other
-  file needs ID, such as `file_githooks_pre_commit`). Move or remove
-  the file by hand, then `cctool format`.
+- **`new`, `remove` and `rename` refuse pym, pyp, pyc, pyf, lpf and
+  file ids.** Those items live in the file they name. Give a file its
+  item with `cctool header PATH` (a module's id follows from its path;
+  any other file needs ID, such as `file_githooks_pre_commit`). Move or
+  remove the file by hand, then `cctool format`.
+- **A class or function gets an item only when something must point
+  at it.** `cctool header src/x.py::Thing::run --field title Run`
+  writes it in the docstring, and the prose the docstring held becomes
+  its brief. Its id follows from where it is defined.
 - **`header` refuses a module that has a docstring already.** Take
   the docstring out, and give its text to the item as `description`.
 - **Renaming an id:** use `cctool rename`, never a search and replace.

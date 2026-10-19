@@ -40,7 +40,9 @@ work in it.
   guids, fill in rights, keep the layout, and refuse an edit that adds
   a failure. Use `--dry-run` to see an edit first.
 - Give a new python module, Datalog file or script its item with
-  `cctool header PATH`. The id of a module follows from its path.
+  `cctool header PATH`. The id of a module follows from its path. A
+  class or function gets an item only when something must point at
+  it, with `cctool header PATH::NAME`.
 - Never write a guid by hand. A guid is the prefix of the type and 32
   hex digits, minted once and never changed.
 - A new concept must be named by some other item, so make the concept

@@ -72,9 +72,26 @@ CACHE_SCHEMA      = {}
 # -----------------------------------------------------------------------------
 def check(root: pathlib.Path) -> Failures:
     """
-    Return the failures of the tree under root, keyed by check, with
-    the checks that pass left out.
+    ---
 
+    id_self:                pyf_cc_public.check.check.check
+    guid_self:              pyf_c63c877eea1a48bfb953c1c7f5f94a39
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Check a tree
+    brief:                  |
+                            Return the failures of the tree under root,
+                            keyed by check, with the checks that pass left
+                            out.
+    relation:               []
+
+    ...
     """
 
     return review(root)[0]

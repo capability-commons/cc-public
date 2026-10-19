@@ -1091,3 +1091,94 @@ table:
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
         id_target:      rol_relation_restriction
         guid_target:    rol_0775dd9f7f1e40dd81f350bd1690298a
+
+  # ---------------------------------------------------------------------------
+  # t_python_class -- Python class type
+  #
+  t_python_class:
+    id_self:            t_python_class
+    guid_self:          t_c5e1e68d20d741149314dff7497c156d
+    title:              Python class type
+    brief:              |
+                        Type of python class data items.
+    description:        |
+                        Each python class data item holds the metadata
+                        of one python class, in the docstring of the
+                        class.
+    usage:              |
+                        Python class data items let one class be
+                        traced, annotated and argued over, rather than
+                        the whole module that holds it. A class is
+                        given an item only when something needs to
+                        point at it.
+    note:               |
+                        The id is the prefix, the name of the module,
+                        and the names of the classes down to it, in
+                        lower case and separated by full stops.
+
+                        The shape of python class data items is
+                        defined by the sch_python_class schema.
+    prefix:             pyc
+    regex_id:           ^pyc_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_python_class
+    guid_concept:       con_e74c5240999a4e9c95cfd22a38ab5910
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_python_class
+        guid_target:    sch_610fd8f75ecf406cb63c2c62096c5168
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_implementation
+        guid_target:    rol_991702df92e147e9915b344c4297f972
+
+  # ---------------------------------------------------------------------------
+  # t_python_function -- Python function type
+  #
+  t_python_function:
+    id_self:            t_python_function
+    guid_self:          t_b2603ebd90854998b9aaa271770a071b
+    title:              Python function type
+    brief:              |
+                        Type of python function data items.
+    description:        |
+                        Each python function data item holds the
+                        metadata of one python function or method, in
+                        the docstring of the function.
+    usage:              |
+                        Python function data items let one function be
+                        traced, annotated and argued over, rather than
+                        the whole module that holds it. A function is
+                        given an item only when something needs to
+                        point at it.
+    note:               |
+                        The id is the prefix, the name of the module,
+                        the names of any classes it sits in, and its
+                        own name, in lower case and separated by full
+                        stops. pyf_cc_public.check.check.check names
+                        the function check in
+                        src/cc_public/check/check.py.
+
+                        The shape of python function data items is
+                        defined by the sch_python_function schema.
+    prefix:             pyf
+    regex_id:           ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         con_python_function
+    guid_concept:       con_879798b806c44c3baa25c1e372b90e20
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_python_function
+        guid_target:    sch_d9e817f521cc4c30aa447e4ff8968916
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_implementation
+        guid_target:    rol_991702df92e147e9915b344c4297f972

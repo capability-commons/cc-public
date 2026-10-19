@@ -20,8 +20,9 @@ committed.
 Every item has an id and a guid, each beginning with the prefix of its
 type (`con_concept`, `con_820f...`). A YAML file under `_data` holds a
 standalone item or a register of entries. A python module holds its
-item in its module docstring, and any other file in a comment at its
-head.
+item in its module docstring, a class or function that something
+points at holds one in its own docstring, and any other file holds
+one in a comment at its head.
 
 ## Getting started
 

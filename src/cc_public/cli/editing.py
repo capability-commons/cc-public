@@ -124,8 +124,7 @@ def new(id_self, list_field, list_link, root, is_dry_run):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.argument('path', metavar = 'PATH', type = click.Path(dir_okay = False,
-                                                            path_type = pathlib.Path))
+@click.argument('path', metavar = 'PATH', type = click.Path(dir_okay = False))
 @click.argument('id_self', metavar = 'ID', required = False)
 @click.option('--field',
               'list_field',
@@ -149,10 +148,18 @@ def header(path, id_self, list_field, list_link, root, is_dry_run):
     made if there is none. A relative PATH is taken from the root of
     the tree.
 
-    The id of a python module or Datalog source file follows from its
-    path, so ID is left out for one. Any other file needs ID.
+    PATH may name a class or function of a python module in the form
+    pytest uses, such as src/cc_public/graph/jq.py::query. The item is
+    then written in its docstring, and the text the docstring held
+    becomes its brief unless --field brief is given.
+
+    The id of a python module, class or function, or of a logic program
+    file, follows from its path, so ID is left out for one. Any other
+    file needs ID.
 
     """
+
+    (path, delim, names) = path.partition(cc_public.graph.extract.DELIM_DEFINITION)
 
     try:
         relative = (root / path).resolve().relative_to(root.resolve())
@@ -160,7 +167,7 @@ def header(path, id_self, list_field, list_link, root, is_dry_run):
         click.echo('{path} is not in the tree.'.format(path = path), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
-    _run(root, is_dry_run, [{'header': str(relative),
+    _run(root, is_dry_run, [{'header': str(relative) + delim + names,
                              'id':     id_self,
                              'field':  _fields(list_field),
                              'link':   [list(pair) for pair in list_link]}])
@@ -298,7 +305,8 @@ def rename(id_old, id_new, root, is_dry_run):
         return
 
     regex = re.compile(cc_public.edit.edit.PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
-    for relative in sorted(cc_public.graph.extract.documents(root.resolve())):
+    for relative in cc_public.graph.extract.files(
+                            cc_public.graph.extract.documents(root.resolve())):
         try:
             text = (root / relative).read_text(encoding = 'utf-8')
         except UnicodeDecodeError:
@@ -368,9 +376,8 @@ def format_(root, is_check):
         if isinstance(document, cc_public.graph.extract.Unreadable):
             click.echo('{file}: {error}'.format(file = relative, error = document.error),
                        err = True)
-            continue
-        if document is None:
-            continue
+
+    for relative in cc_public.graph.extract.files(map_document):
         path = root / relative
         text = path.read_text(encoding = 'utf-8')
         try:

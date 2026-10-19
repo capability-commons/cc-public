@@ -645,6 +645,37 @@ def test_a_module_named_for_another_place_is_reported(tree):
     assert _check(tree) == {'misplaced_module': [('pym_x.z', 'pym_x.y')]}
 
 
+def _definitions(root, relative, id_class, id_method):
+    """
+    Write a python module with a class whose docstring holds an item
+    with id_class, and a method of it whose docstring holds one with
+    id_method.
+
+    """
+
+    def docstring(id_self, indent):
+        item = _dump(_fields(root, id_self))
+        return ''.join(indent + line if line.strip() else line for line in
+                       ('"""\n---\n' + item + '...\n"""\n').splitlines(True))
+
+    _module(root, relative, 'pym_x.y')
+    with (root / relative).open('a') as file:
+        file.write('\n\nclass Thing:\n' + docstring(id_class, '    ')
+                   + '\n    def run(self):\n' + docstring(id_method, '        ')
+                   + '        return 1\n')
+
+
+def test_a_class_and_a_method_named_for_their_place_pass(tree):
+    _definitions(tree, 'src/x/y.py', 'pyc_x.y.thing', 'pyf_x.y.thing.run')
+    assert _check(tree) == {}
+
+
+def test_a_class_or_method_named_for_another_place_is_reported(tree):
+    _definitions(tree, 'src/x/y.py', 'pyf_x.y.thing', 'pyf_x.y.run')
+    assert _check(tree) == {'misplaced_module': [('pyf_x.y.run', 'pyf_x.y.thing.run'),
+                                                 ('pyf_x.y.thing', 'pyc_x.y.thing')]}
+
+
 def test_a_package_named_for_its_place_passes(tree):
     _module(tree, 'src/x/y/__init__.py', 'pyp_x.y')
     assert _check(tree) == {}
