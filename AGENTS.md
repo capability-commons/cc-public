@@ -4,6 +4,57 @@ This file is for any coding agent working in cc-public. `README.md`
 says what the repository is and how to run it. This file says how to
 work in it.
 
+## Working beside other agents
+
+Several agents work in this repository at once. Each works in a git
+worktree of its own, on a branch of its own, so no agent sees the
+unfinished edits of another.
+
+- `dev` is the integration branch. The main checkout, `cc-public`,
+  stays on `dev`. Nobody edits files there; it is only where finished
+  branches land.
+- Read the claims before you start. In the main checkout,
+  `cat .git/worktrees/*/locked` lists each worktree with its owner and
+  the area it changes. If another worktree claims files you need,
+  agree it with the owner, or ask Will, first.
+- Start a topic from the main checkout. TOPIC is a short name for the
+  work, in lower case with hyphens:
+
+  ```bash
+  git worktree add -b TOPIC ../cc-public-TOPIC dev
+  echo "gitdir: ../cc-public/.git/worktrees/cc-public-TOPIC" > ../cc-public-TOPIC/.git
+  echo "OWNER: AREA" > .git/worktrees/cc-public-TOPIC/locked
+  ```
+
+  The second line makes the link from the worktree relative. Git
+  writes an absolute path, and the folder has a different path on
+  each machine and in each remote session, so an absolute link
+  breaks. The third line locks the worktree, so git never prunes it,
+  and records who owns it and what it changes. Do not run
+  `git worktree repair` or `git worktree move`: both write absolute
+  paths again.
+- Work, check and commit in your worktree. The first `pixi run` there
+  installs its environment. Where pixi cannot run, use the environment
+  of the main checkout with `src` first on the path:
+  `PYTHONPATH=src ../cc-public/.pixi/envs/default/bin/python -B -m cc_public.cli.command check`.
+- Land the branch only when its work is agreed. In the worktree, run
+  `git rebase dev`, then `cctool history check dev..TOPIC` and
+  `pixi run gate`. Then, in the main checkout, run
+  `git merge --ff-only TOPIC`. `dev` only moves forward, so its
+  history stays linear. If the merge refuses because `dev` has moved,
+  rebase again.
+- Once the branch is on `dev` and `git status` in the worktree is
+  clean, remove the worktree from the main checkout:
+
+  ```bash
+  git worktree unlock cc-public-TOPIC
+  git worktree remove cc-public-TOPIC
+  git branch -d TOPIC
+  ```
+
+  If the folder is still there afterwards, because the worktree was
+  made in another session, delete it.
+
 ## Before you finish
 
 - `pixi run check`, `pixi run test` and `pixi run lint` all pass.
