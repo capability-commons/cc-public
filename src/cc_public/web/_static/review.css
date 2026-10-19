@@ -618,9 +618,8 @@ figure.map svg {
   text-decoration: underline;
 }
 
-/* The graph of an argument, after Mark Lombardi: each decision and
-   annotation once, as a circle of hairline with its title beneath,
-   and a thin arc for each support and challenge. */
+/* The graph of an argument, after Mark Lombardi: a tree for each
+   decision, of hairline circles joined by thin lines. */
 
 .network .node .shape {
   --rule-node: var(--ink-muted);
@@ -632,41 +631,48 @@ figure.map svg {
 /* Titles wear a halo of paper, so lines that pass behind them break
    rather than strike through them. */
 
-.network .node text {
-  text-anchor: middle;
+.network text {
   paint-order: stroke;
   stroke: var(--paper);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
+
 .network .node text.name { font-size: 12.5px; }
-.network .node text.number { font-size: 14px; }
-.network .node.decision text.name { font-style: italic; font-size: 14px; }
+.network .node text.above,
+.network .node text.number { text-anchor: middle; }
+.network .node text.number { font-size: 10.5px; stroke-width: 0; }
+.network .node.decision text.name {
+  text-anchor: end;
+  font-style: italic;
+  font-size: 14px;
+}
 
-/* A concern is a pipe: two parallel rules that bundle the lines for
-   it, supports in the upper lane and challenges in the lower. */
+/* A decision holds its tally: how much supports it and how much
+   challenges it. */
 
-.network .node.concern .shape { --rule-node: var(--ink-faint); }
+.network .tally { outline: none; cursor: pointer; }
+.network .tally text { text-anchor: middle; font-size: 12px; stroke-width: 0; }
+.network .tally-for text { fill: var(--ink-for); }
+.network .tally-against text { fill: var(--ink-against); }
+.network a.tally:hover text { text-decoration: underline; }
+
+/* A concern is a small port beside its decision, named only while it
+   is lit. */
+
 .network .node.concern .area { fill: transparent; }
-.network .node.concern text.name {
-  font-size: 13px;
+.network .labels text.concern {
+  pointer-events: none;
+  font-size: 12.5px;
   font-variant: small-caps;
   letter-spacing: 0.04em;
+  opacity: var(--lit-at);
 }
 
-.network .edges path { fill: none; stroke-width: 1.3; }
+.network .spoke { stroke: var(--ink-muted); stroke-width: 1; }
+.network .edges path { fill: none; stroke-width: 1.2; }
 .network .edge-for { stroke: var(--ink-for); }
 .network .edge-against { stroke: var(--ink-against); }
-
-.network .port { outline: none; }
-.network .port-for { --ink-port: var(--ink-for); }
-.network .port-against { --ink-port: var(--ink-against); }
-.network .port circle {
-  stroke: var(--ink-port);
-  stroke-width: calc(1 + 1 * var(--lit-at));
-  fill: color-mix(in srgb, var(--ink-port) calc(var(--lit-at) * 100%), var(--paper));
-  cursor: pointer;
-}
 
 .map { --net-mixed: #d5d0c6; --ink-mixed: var(--ink-muted); }
 .network .pick { outline: none; cursor: pointer; }

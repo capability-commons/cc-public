@@ -149,8 +149,10 @@ def test_a_decision_title_lights_its_chains_everywhere(page):
                'list => list.some(e => parseFloat(getComputedStyle(e).opacity) < 0.6)')
 
 
-def test_a_count_lights_the_chains_of_its_role(page):
-    _hover(page, 'section.matrix .row.head .total a.against')
+@pytest.mark.parametrize('selector', ['section.matrix .row.head .total a.against',
+                                      'figure.network a.tally-against'])
+def test_a_count_lights_the_chains_of_its_role(page, selector):
+    _hover(page, selector)
     assert _astray(page, 'dec_tooling_in_python--against') == []
 
 
@@ -165,8 +167,8 @@ def test_a_concern_lights_its_chains_from_wherever_it_is_hovered(page, selector)
 def test_an_annotation_in_the_sankey_diagram_lights_the_graph_and_matrix(page):
     _hover(page, 'figure.sankey text.annotation', 'Graphs will grow large')
     assert _astray(page, 'ann_graphs_will_grow') == []
-    outline = page.locator('figure.network a.pick', has_text = 'Graphs will grow large').locator(
-                  '.shape').evaluate('e => getComputedStyle(e).strokeWidth')
+    outline = page.locator('figure.network a.pick', has_text = 'Graphs will grow large').first \
+              .locator('.shape').evaluate('e => getComputedStyle(e).strokeWidth')
     assert float(outline.removeprefix('calc(').removesuffix('px)').removesuffix('px')) > 1.2
 
 
@@ -185,10 +187,10 @@ def test_a_pin_holds_until_a_hover_and_a_click_off_clears_it(page):
 
 
 def test_clicking_an_annotation_in_the_graph_pins_it_in_place(page):
-    node = page.locator('figure.network a.pick', has_text = 'Graphs will grow large')
+    node = page.locator('figure.network a.pick', has_text = 'Graphs will grow large').last
     node.scroll_into_view_if_needed()
     scroll = page.evaluate('window.scrollY')
-    node.click()
+    node.locator('.shape').click()
     page.mouse.move(1, 1)
     page.wait_for_timeout(300)
     assert page.evaluate('location.hash') == '#ann_graphs_will_grow'

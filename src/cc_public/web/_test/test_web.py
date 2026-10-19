@@ -211,14 +211,10 @@ def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
         if not outline.map_number:
             continue
         text    = str(cc_public.web.network.figure(graph, outline))
-        for list_id in (outline.list_decision,
-                        [id_concern for id_concern in outline.list_concern
-                         if outline.units(concern = id_concern)]):
-            list_y = [float(re.search(r'id="node-{id}">(?:<title>[^<]*</title>)?<(?:rect|circle) '
-                                      r'c?x="[^"]*" c?y="([^"]*)"'.format(id = id_item),
-                                      text).group(1))
-                      for id_item in list_id]
-            assert list_y == sorted(list_y)
+        list_y  = [float(re.search(r'id="node-{id}"><title>[^<]*</title><circle cx="[^"]*" '
+                                   r'cy="([^"]*)"'.format(id = id_decision), text).group(1))
+                   for id_decision in outline.list_decision]
+        assert list_y == sorted(list_y)
 
 
 def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
@@ -360,8 +356,9 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
     assert not any(css_concern.endswith('-' + name) and css_concern != 'lit-' + name
                    for css_concern in css('concern_performance_efficiency'))
     assert 'href="#concern_' not in body and 'concern_reliability--' not in body
-    assert 'href="#{n}--against"'.format(n = name) in body
+    assert 'href="#{n}--against" class="tally tally-against'.format(n = name) in body
     assert ' id="{n}' .format(n = name) not in body
+    assert body.count('href="#ann_graphs_will_grow" class="pick') == 2
 
 
 def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
