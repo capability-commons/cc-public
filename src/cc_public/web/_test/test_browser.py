@@ -199,3 +199,5 @@ def test_clicking_an_annotation_in_the_graph_pins_it_in_place(page):
     assert page.evaluate("[...document.querySelectorAll('.chosen')].map(e => e.id)") \
         == ['concern_performance_efficiency/ann_graphs_will_grow']
     assert page.locator('details.annotation.chosen').evaluate('e => e.open')
+    assert page.locator('details.annotation.chosen').evaluate(
+               "e => e.style.getPropertyValue('--brace-left').startsWith('url(')")
