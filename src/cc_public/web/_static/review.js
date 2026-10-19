@@ -17,6 +17,12 @@
 // remembers this in the browser; without script, or where the browser
 // keeps nothing, each diagram opens as the page sets it.
 
+// The buttons that change the data send nothing yet. A press must not
+// fold or unfold the summary it sits in, or follow a link around it.
+document.addEventListener('click', function (event) {
+  if (event.target.closest('button.pill')) { event.preventDefault(); }
+});
+
 var KEY_DIAGRAM = 'cc-review-diagram-';
 
 document.querySelectorAll('details.diagram').forEach(function (diagram) {

@@ -768,7 +768,7 @@ section.matrix {
 
 section.matrix .row {
   display: grid;
-  grid-template-columns: 17rem repeat(var(--decisions), minmax(0, 1fr));
+  grid-template-columns: 17rem repeat(var(--decisions), minmax(0, 1fr)) 6.5rem;
   column-gap: 1rem;
   align-items: center;
 }
@@ -999,7 +999,7 @@ section.matrix .drill details.annotation .block.description .main > p.descriptio
 
 @media (max-width: 760px) {
   section.matrix .row {
-    grid-template-columns: 9rem repeat(var(--decisions), minmax(0, 1fr));
+    grid-template-columns: 9rem repeat(var(--decisions), minmax(0, 1fr)) 6.5rem;
     column-gap: 0.5rem;
   }
 
@@ -1016,25 +1016,67 @@ form.determine {
   align-items: stretch;
 }
 
-form.determine button {
+/* A button that changes the data is a flat pill, in the light green or
+   red of the annotation nodes for and against, or in the deep shade
+   when it is neither. A hairline outline appears under the pointer to
+   show that it can be pressed, and pressing darkens both. */
+
+button.pill {
   font: inherit;
   font-size: 0.95rem;
   font-variant: small-caps;
   letter-spacing: 0.03em;
+  white-space: nowrap;
   color: var(--ink);
-  background: none;
-  border: none;
-  border-radius: 0;
-  padding: 0.1rem 0.5rem;
+  background: var(--shade-deep);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.05rem 0.75rem;
   cursor: pointer;
 }
 
-/* Solid in the light green and red of the annotation nodes and the
-   bands of the diagrams, with the text in ink. */
+button.pill.for { background: var(--net-for); }
+button.pill.against { background: var(--net-against); }
 
-form.determine button.uphold { background: var(--net-for); }
-form.determine button.reject { background: var(--net-against); }
-form.determine button:disabled { cursor: default; }
+button.pill:hover,
+button.pill:focus-visible { border-color: var(--ink-muted); outline: none; }
+button.pill.for:hover,
+button.pill.for:focus-visible { border-color: var(--ink-for); }
+button.pill.against:hover,
+button.pill.against:focus-visible { border-color: var(--ink-against); }
+
+button.pill:active { background: #d6ccbb; border-color: var(--ink); }
+button.pill.for:active { background: #b6bcaa; border-color: var(--mark-for); }
+button.pill.against:active { background: #ceb0a5; border-color: var(--mark-against); }
+
+/* The controls that add to the argument sit in the margin, after the
+   last level of what they add to, so they show only once it is open. */
+
+.add {
+  margin: 0.2rem 0 0.4rem;
+}
+
+.add button.pill + button.pill {
+  margin-left: 0.3rem;
+}
+
+.block.add {
+  margin-bottom: 0.4rem;
+}
+
+.block.add > .margin {
+  padding-top: 0;
+}
+
+/* The control that adds a decision stands in a narrow column of its
+   own at the end of the head of the matrix, where the new decision
+   would go. */
+
+section.matrix .row.head > .cell > .add {
+  display: block;
+  margin: 0;
+  text-align: right;
+}
 
 /* The description of an annotation: prose with its sources numbered in
    the margin beside it. An assumption is set apart from what was checked,
@@ -1329,9 +1371,8 @@ section.signoff form.determine {
   max-width: var(--width-text);
 }
 
-section.signoff form.determine button {
+section.signoff form.determine button.pill {
   font-size: 1.1rem;
-  padding: 0.2rem 1rem;
+  padding: 0.15rem 1rem;
 }
 
-form.determine button.challenge { background: var(--shade-deep); }

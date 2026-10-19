@@ -243,7 +243,10 @@ def _matrix(graph:    Graph,
                               htpy.div(class_ = 'total')[
                                   _total(id_decision, outline.units(decision = id_decision),
                                          drawing.css_decision(id_decision))]]
-                             for id_decision in list_decision],
+                             for id_decision in list_decision]
+                            + [htpy.span(class_ = 'add')[
+                                   _pill('+ Decision', '',
+                                         'Add a decision that answers this issue')]],
                         class_ = 'head'),
                     _decision_style(list_decision),
                     [htpy.span(class_ = 'decision-role',
@@ -400,10 +403,37 @@ def _controls(id_decision: str) -> typing.Any:
 
     return htpy.form(class_ = 'determine', method = 'post', action = '#')[
         htpy.input(type = 'hidden', name = 'decision', value = id_decision),
-        htpy.button(type = 'button', class_ = 'uphold', disabled = True,
-                    title = 'Uphold this decision and reject the others')['Uphold'],
-        htpy.button(type = 'button', class_ = 'reject', disabled = True,
-                    title = 'Reject this decision')['Reject']]
+        _pill('Uphold', ROLE_FOR, 'Uphold this decision and reject the others'),
+        _pill('Reject', ROLE_AGAINST, 'Reject this decision')]
+
+
+# -----------------------------------------------------------------------------
+def _pill(label: str, role: str, title: str) -> typing.Any:
+    """
+    Return a button that changes the data, as a pill: for or against
+    in the colours of role, or plain if role is ''. This is a mock: the
+    button sends nothing yet.
+
+    """
+
+    return htpy.button(type = 'button', class_ = ' '.join(['pill', role]).strip(),
+                       title = title + ' (not yet wired)')[label]
+
+
+# -----------------------------------------------------------------------------
+def _add_answer(id_annotation: str) -> typing.Any:
+    """
+    Return the controls that add an annotation answering id_annotation,
+    in support or in challenge, set in the margin.
+
+    """
+
+    return _block([], [htpy.p(class_ = 'add')[
+                           _pill('+ Support', ROLE_FOR, 'Add an annotation that supports this'),
+                           ' ',
+                           _pill('+ Challenge', ROLE_AGAINST,
+                                 'Add an annotation that challenges this')]],
+                  class_ = 'add', data_for = id_annotation)
 
 
 # -----------------------------------------------------------------------------
@@ -780,12 +810,9 @@ def _signoff(id_requirement: str, list_said: list) -> typing.Any:
                 for (code, name, question, said) in list_said]]],
         htpy.form(class_ = 'determine', method = 'post', action = '#')[
             htpy.input(type = 'hidden', name = 'requirement', value = id_requirement),
-            htpy.button(type = 'button', class_ = 'uphold', disabled = True,
-                        title = 'Sign off this requirement')['Sign off'],
-            htpy.button(type = 'button', class_ = 'challenge', disabled = True,
-                        title = 'Raise an issue on this requirement')['Challenge'],
-            htpy.button(type = 'button', class_ = 'reject', disabled = True,
-                        title = 'Reject this requirement')['Reject']]]
+            _pill('Sign off', ROLE_FOR, 'Sign off this requirement'),
+            _pill('Challenge', '', 'Raise an issue on this requirement'),
+            _pill('Reject', ROLE_AGAINST, 'Reject this requirement')]]
 
 
 # -----------------------------------------------------------------------------
@@ -921,7 +948,12 @@ def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
     block = _block([htpy.p[_prose(decision.brief)]],
                    [_stance(issue.map_stance.get(decision.id,
                                                  cc_public.web.argument.STANCE_OPEN)),
-                    _id(decision.id)])
+                    _id(decision.id),
+                    htpy.p(class_ = 'add')[
+                        _pill('+ For', ROLE_FOR, 'Add an annotation for this decision'),
+                        ' ',
+                        _pill('+ Against', ROLE_AGAINST,
+                              'Add an annotation against this decision')]])
     if decision.description:
         block = htpy.details(class_ = 'brief')[htpy.summary[block],
                                                _description(graph, decision, decision.id)]
@@ -1153,7 +1185,9 @@ def _brief(graph:       Graph,
     Return the brief of the annotation with list_margin beside it,
     folded over its description, which is folded in turn over
     list_answer, the annotations that answer it. A level with nothing
-    under it does not fold. is_open opens every level. css_main
+    under it does not fold. The controls that answer the annotation
+    come after its last level of prose, before its answers, so they
+    show only when it is fully open. is_open opens every level. css_main
     classes the text of the brief and the description, and css_margin
     their margins.
 
@@ -1162,15 +1196,16 @@ def _brief(graph:       Graph,
     block = _block([htpy.p[_prose(annotation.brief)]], list_margin,
                    css_main   = css_main,
                    css_margin = css_margin)
+    add   = _add_answer(annotation.id)
     if annotation.description:
-        under = _description(graph, annotation, key, css_main, css_margin)
+        under = [_description(graph, annotation, key, css_main, css_margin), add]
         if list_answer:
             under = htpy.details(class_ = 'description', open = is_open)[
-                htpy.summary[under], htpy.div(class_ = 'answers')[list_answer]]
+                htpy.summary[under[0]], add, htpy.div(class_ = 'answers')[list_answer]]
     elif list_answer:
-        under = htpy.div(class_ = 'answers')[list_answer]
+        under = [add, htpy.div(class_ = 'answers')[list_answer]]
     else:
-        return block
+        return [block, add]
     return htpy.details(class_ = 'brief', open = is_open)[htpy.summary[block], under]
 
 
