@@ -665,6 +665,69 @@ def _definitions(root, relative, id_class, id_method):
                    + '        return 1\n')
 
 
+def _interface(root, id_function, surface = None):
+    """
+    Write the interface control document icd_x, with a python surface
+    that holds one function member, id_function, with one parameter,
+    and return the path of its file. surface, if given, takes the
+    place of the python surface.
+
+    """
+
+    function = {'id_self':   id_function,
+                'guid_self': _guid('icm'),
+                'name':      'run',
+                'brief':     'Run it.',
+                'parameter': [{'id_self':   id_function + '.root',
+                               'guid_self': _guid('icm'),
+                               'name':      'root',
+                               'brief':     'Where to run it.'}]}
+    document = _fields(root, 'icd_x')
+    document.update({'version_interface': '1.0',
+                     'surface':           surface or {'python': {'native': {
+                                                'language': 'python',
+                                                'function': {'run': function}}}}})
+    return _item_document(root, '_data/interface_control_document/icd_x.yaml', document)
+
+
+# -----------------------------------------------------------------------------
+def _item_document(root, relative, document):
+    """
+    Write document to the file at relative, and return its location.
+
+    """
+
+    path = root / relative
+    path.parent.mkdir(parents = True, exist_ok = True)
+    path.write_text(_dump(document))
+    return relative
+
+
+def test_an_interface_control_document_with_its_members_named_for_their_place_passes(tree):
+    _interface(tree, 'icm_x.run')
+    assert _check(tree) == {}
+
+
+def test_a_member_named_for_another_place_is_reported(tree):
+    _interface(tree, 'icm_y.run')
+    assert _check(tree) == {'misnamed_member': [('icm_y.run', 'icd_x')]}
+
+
+def test_a_member_named_more_than_one_step_below_its_holder_is_reported(tree):
+    _interface(tree, 'icm_x.a.run')
+    assert _check(tree) == {'misnamed_member': [('icm_x.a.run', 'icd_x')]}
+
+
+def test_a_surface_of_two_forms_is_reported(tree):
+    location = _interface(tree, 'icm_x.run', {'python': {'native':   {'language': 'python'},
+                                                         'artifact': {'artifact':   {},
+                                                                      'production': 'Daily.'}}})
+    failures = _check(tree)
+    assert list(failures) == ['schema_violation']
+    assert {row[:3] + row[4:5] for row in failures['schema_violation']} == {
+        ('icd_x', 'sch_interface_control_document', location, 'surface/python')}
+
+
 def test_a_class_and_a_method_named_for_their_place_pass(tree):
     _definitions(tree, 'src/x/y.py', 'pyc_x.y.thing', 'pyf_x.y.thing.run')
     assert _check(tree) == {}

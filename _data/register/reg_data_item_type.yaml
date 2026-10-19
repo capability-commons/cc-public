@@ -1182,3 +1182,99 @@ table:
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
+
+  # ---------------------------------------------------------------------------
+  # t_interface_control_document -- Interface control document type
+  #
+  t_interface_control_document:
+    id_self:            t_interface_control_document
+    guid_self:          t_35702951f426401b90a8cce8573fecfa
+    title:              Interface control document type
+    brief:              |
+                        Type of interface control document data items.
+    description:        |
+                        Each interface control document data item
+                        states one version of one interface: its
+                        surfaces, and the members that cross the
+                        boundary on each.
+    usage:              |
+                        An interface control document lets a provider
+                        and a caller built by different developers
+                        agree on a boundary, and lets a requirement,
+                        an implementation or a test point at one
+                        member of it.
+    note:               |
+                        A new version of an interface is a new item,
+                        which names the one it replaces with
+                        r_supersedes.
+
+                        The shape of interface control document data
+                        items is defined by the
+                        sch_interface_control_document schema.
+    prefix:             icd
+    regex_id:           ^icd_[a-z][a-z0-9_]*$
+    id_concept:         con_interface_control_document
+    guid_concept:       con_d5f7300ab30c44d9ab1523be6a4ca765
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_interface_control_document
+        guid_target:    sch_fec3632e3c3942bd903984cc03ddae25
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_design_element
+        guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_supersedable
+        guid_target:    rol_3d3ddc21cfb244168bfbf8080a466196
+
+  # ---------------------------------------------------------------------------
+  # t_interface_member -- Interface member type
+  #
+  t_interface_member:
+    id_self:            t_interface_member
+    guid_self:          t_2b1f3c3df45342e6866dd03cab139b3f
+    title:              Interface member type
+    brief:              |
+                        Type of interface member data items.
+    description:        |
+                        Each interface member data item is one
+                        declaration within an interface control
+                        document, embedded in it.
+    usage:              |
+                        An interface member can be named on its own:
+                        code names the member it implements with
+                        r_realizes, and a requirement may have one as
+                        its subject.
+    note:               |
+                        The id is the id of what the member sits in,
+                        then a full stop and a name of its own, with
+                        the prefix icm in place of the prefix of the
+                        document. The name is the member's own name in
+                        lower case, or its local key.
+
+                        The shape of interface member data items is
+                        defined by the sch_interface_member schema.
+    prefix:             icm
+    regex_id:           ^icm_[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$
+    id_concept:         con_interface_member
+    guid_concept:       con_0f574750f53d446daa3eb49ce88513c8
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_interface_member
+        guid_target:    sch_78d55e71f65b45579d01dee5fc7ce19a
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_design_element
+        guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b

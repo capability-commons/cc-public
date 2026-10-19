@@ -64,11 +64,12 @@ KEY_ACYCLIC       = 'acyclic'
 KEY_REF           = '$ref'
 
 # Fields whose text names no item: identity, aliases, which name what
-# no longer exists, and patterns. A field named id_<field> or
-# guid_<field> is a reference, and is read as one.
+# no longer exists, patterns, and what code spells a name, a type, a
+# default or a value as. A field named id_<field> or guid_<field> is a
+# reference, and is read as one.
 #
 SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pattern',
-                     '$id', '$schema', '$ref'}
+                     '$id', '$schema', '$ref', 'name', 'spelling', 'default', 'value'}
 
 # A word shaped like an id, not part of a path or of a longer word. A
 # file name is read as the id it is named for, and a word that a * ends

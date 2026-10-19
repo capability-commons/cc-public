@@ -229,6 +229,45 @@ unrecorded_module(File) :-
 
 
 % -----------------------------------------------------------------------------
+% An interface member sits in an interface control document, and its
+% id is the id of what it sits in, then a full stop and a name of its
+% own. The member prefix takes the place of the prefix of the document.
+%
+% decl member_stem(holder: symbol,
+%                  stem:   symbol)
+
+member_stem(Holder, Stem) :-
+    type_of(Holder, "t_interface_control_document"),
+    Stem = @cat("icm_", @substr(Holder, 4, @strlen(Holder) - 4)).
+
+member_stem(Holder, Holder) :-
+    type_of(Holder, "t_interface_member").
+
+% decl misnamed_member(id:     symbol,
+%                      holder: symbol)
+#show misnamed_member/2.
+
+misnamed_member(Id, Holder) :-
+    type_of(Id, "t_interface_member"),
+    item(Id, _, Holder, _, _),
+    not member_stem(Holder, _).
+
+misnamed_member(Id, Holder) :-
+    type_of(Id, "t_interface_member"),
+    item(Id, _, Holder, _, _),
+    member_stem(Holder, Stem),
+    Length = @strlen(Stem) + 1,
+    @substr(Id, 0, Length) != @cat(Stem, ".").
+
+misnamed_member(Id, Holder) :-
+    type_of(Id, "t_interface_member"),
+    item(Id, _, Holder, _, _),
+    member_stem(Holder, Stem),
+    Length = @strlen(Stem) + 1,
+    @match("[a-z0-9_]+", @substr(Id, Length, @strlen(Id) - Length)) = 0.
+
+
+% -----------------------------------------------------------------------------
 % The key of a register entry is its id.
 %
 % decl key_mismatch(register: symbol,
