@@ -116,7 +116,7 @@ def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
     matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
     head    = matrix[matrix.index('<div class="row head">'):matrix.index('<style>')]
     assert head.count('<div class="cell">') == len(outline.list_decision) + 1
-    assert '>+ Decision</button></span></div></div>' in head
+    assert '>+ Decision</a></span></div></div>' in head
     for id_decision in outline.list_decision:
         assert 'href="#{id}"'.format(id = id_decision) in head
     assert len(re.findall(r'class="(?:row )?concern"', matrix)) == len(outline.list_concern)
@@ -584,11 +584,11 @@ def test_requirement_page_shows_its_statement(tree):
 def test_issue_page_offers_to_add_to_the_argument(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text = body.decode()
-    assert text.count('>+ Decision</button>') == 1
-    assert text.count('>+ For</button>') == len(re.findall(r'class="drill decision"', text))
+    assert text.count('>+ Decision</a>') == 1
+    assert text.count('>+ For</a>') == len(re.findall(r'class="drill decision"', text))
     for id_annotation in re.findall(r'class="block add" data-for="(\w+)"', text):
         assert id_annotation.startswith('ann_')
-    assert re.findall(r'<button type="button" class="pill (for|against)"[^>]*>(\w+)<', text)[-2:] \
+    assert re.findall(r'<a class="pill (for|against)"[^>]*>(\w+)<', text)[-2:] \
         == [('for', 'Uphold'), ('against', 'Reject')]
 
 

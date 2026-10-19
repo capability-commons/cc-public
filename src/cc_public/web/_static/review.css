@@ -886,7 +886,7 @@ section.matrix .row.foot.controls > .cell {
   padding: 0.5rem 0;
 }
 
-section.matrix .row.foot.controls form.determine {
+section.matrix .row.foot.controls div.determine {
   flex-direction: row;
   justify-content: flex-start;
 }
@@ -999,12 +999,12 @@ section.matrix .drill details.annotation .block.description .main > p.descriptio
     column-gap: 0.5rem;
   }
 
-  section.matrix .row.foot.controls form.determine {
+  section.matrix .row.foot.controls div.determine {
     flex-direction: column;
   }
 }
 
-form.determine {
+div.determine {
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -1012,17 +1012,22 @@ form.determine {
   align-items: stretch;
 }
 
-/* A button that changes the data is a flat pill, in the light green or
-   red of the annotation nodes for and against, or in the deep shade
+/* A control that changes the data is a flat pill, in the light green
+   or red of the annotation nodes for and against, or in the deep shade
    when it is neither. A hairline outline appears under the pointer to
-   show that it can be pressed, and pressing darkens both. */
+   show that it can be pressed, and pressing darkens both. A control
+   that waits on something is greyed, and cannot be pressed. */
 
-button.pill {
+.pill {
+  display: inline-block;
   font: inherit;
   font-size: 0.95rem;
   font-variant: small-caps;
   letter-spacing: 0.03em;
+  line-height: 1.4;
   white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
   color: var(--ink);
   background: var(--shade-deep);
   border: 1px solid transparent;
@@ -1031,19 +1036,28 @@ button.pill {
   cursor: pointer;
 }
 
-button.pill.for { background: var(--net-for); }
-button.pill.against { background: var(--net-against); }
+.pill.for { background: var(--net-for); }
+.pill.against { background: var(--net-against); }
 
-button.pill:hover,
-button.pill:focus-visible { border-color: var(--ink-muted); outline: none; }
-button.pill.for:hover,
-button.pill.for:focus-visible { border-color: var(--ink-for); }
-button.pill.against:hover,
-button.pill.against:focus-visible { border-color: var(--ink-against); }
+.pill:hover,
+.pill:focus-visible { border-color: var(--ink-muted); outline: none; }
+.pill.for:hover,
+.pill.for:focus-visible { border-color: var(--ink-for); }
+.pill.against:hover,
+.pill.against:focus-visible { border-color: var(--ink-against); }
 
-button.pill:active { background: #d6ccbb; border-color: var(--ink); }
-button.pill.for:active { background: #b6bcaa; border-color: var(--mark-for); }
-button.pill.against:active { background: #ceb0a5; border-color: var(--mark-against); }
+.pill:active { background: #d6ccbb; border-color: var(--ink); }
+.pill.for:active { background: #b6bcaa; border-color: var(--mark-for); }
+.pill.against:active { background: #ceb0a5; border-color: var(--mark-against); }
+
+.pill.waiting,
+.pill.waiting:hover,
+.pill.waiting:active {
+  color: var(--ink-muted);
+  background: var(--shade);
+  border-color: transparent;
+  cursor: not-allowed;
+}
 
 /* The controls that add to the argument sit in the margin, after the
    last level of what they add to, so they show only once it is open. */
@@ -1052,7 +1066,7 @@ button.pill.against:active { background: #ceb0a5; border-color: var(--mark-again
   margin: 0.2rem 0 0.4rem;
 }
 
-.add button.pill + button.pill {
+.add .pill + .pill {
   margin-left: 0.3rem;
 }
 
@@ -1593,4 +1607,81 @@ section.surface .semantics .block.unstated .label {
 section.surface .block.artifact {
   border-top: 1px solid var(--rule);
   padding-top: 0.3rem;
+}
+
+/* The form that adds to the argument or settles it: each field in the
+   text column, under its label, with a note on it in the margin. */
+
+form.edit .block.field {
+  margin-bottom: 0.9rem;
+}
+
+form.edit label,
+form.edit .label {
+  display: block;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+
+form.edit input[type=text],
+form.edit textarea {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.25rem 0.4rem;
+}
+
+form.edit textarea {
+  line-height: 1.45;
+  resize: vertical;
+}
+
+form.edit input[type=text]:focus,
+form.edit textarea:focus {
+  outline: none;
+  border-color: var(--ink-muted);
+}
+
+form.edit .choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.1rem;
+  margin-top: 0.2rem;
+}
+
+form.edit .choice.other {
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--rule);
+}
+
+form.edit label.concern {
+  display: inline;
+  font-variant: normal;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+form.edit p.press {
+  margin-top: 1.2rem;
+}
+
+form.edit p.press .pill {
+  margin-right: 0.8rem;
+}
+
+p.refused {
+  color: var(--ink-against);
+  margin-bottom: 0.2rem;
+}
+
+ul.refused {
+  margin-top: 0;
+  font-size: 0.95rem;
 }

@@ -62,6 +62,15 @@ description:            |
                         ports, and artifacts as a block each; then
                         each part of the semantics of the surface,
                         those it leaves unstated drawn hollow.
+
+                        The pills of the page of an issue lead to the
+                        forms that add to its argument or settle it,
+                        which edit renders: a decision, an annotation
+                        for or against a decision, an answer to an
+                        annotation, and the upholding or rejecting of
+                        a decision with a reason. Uphold waits,
+                        greyed, while a driver of the issue is
+                        unargued.
 relation:               []
 
 ...
@@ -81,6 +90,7 @@ import cc_public.web.contract
 import cc_public.web.description
 import cc_public.web.light
 import cc_public.web.network
+import cc_public.web.request
 import cc_public.web.restriction
 import cc_public.web.sankey
 import cc_public.web.step
@@ -97,6 +107,7 @@ PATH_ISSUE        = '/issue/'
 PATH_REQUIREMENT  = '/requirement/'
 PATH_INTERFACE    = '/interface/'
 PATH_ITEM         = '/item/'
+PATH_EDIT         = '/edit'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
 CSS_MUTES         = cc_public.web.light.CSS_MUTES
@@ -143,6 +154,33 @@ MAP_CONDITION     = {'logic': 'a logical condition',
                      'event': 'an event condition',
                      'time':  'a time condition'}
 
+KIND_DECISION     = cc_public.web.request.KIND_DECISION
+KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
+KIND_ANSWER       = cc_public.web.request.KIND_ANSWER
+KIND_DETERMINE    = cc_public.web.request.KIND_DETERMINE
+ROLE_UPHOLD       = cc_public.web.request.ROLE_UPHOLD
+ROLE_REJECT       = cc_public.web.request.ROLE_REJECT
+KEY_KIND          = cc_public.web.request.KEY_KIND
+KEY_TARGET        = cc_public.web.request.KEY_TARGET
+KEY_ROLE          = cc_public.web.request.KEY_ROLE
+KEY_AT            = cc_public.web.request.KEY_AT
+KEY_ID            = cc_public.web.request.KEY_ID
+KEY_TITLE         = cc_public.web.request.KEY_TITLE
+KEY_BRIEF         = cc_public.web.request.KEY_BRIEF
+KEY_DESCRIPTION   = cc_public.web.request.KEY_DESCRIPTION
+KEY_REASON        = cc_public.web.request.KEY_REASON
+KEY_CONCERN       = cc_public.web.request.KEY_CONCERN
+
+# The heading of the form of each kind and role.
+#
+MAP_HEADING       = {(KIND_DECISION,  ''):           'Add a decision',
+                     (KIND_ARGUMENT,  ROLE_FOR):     'Add an annotation for',
+                     (KIND_ARGUMENT,  ROLE_AGAINST): 'Add an annotation against',
+                     (KIND_ANSWER,    ROLE_FOR):     'Support',
+                     (KIND_ANSWER,    ROLE_AGAINST): 'Challenge',
+                     (KIND_DETERMINE, ROLE_UPHOLD):  'Uphold',
+                     (KIND_DETERMINE, ROLE_REJECT):  'Reject'}
+
 Graph             = cc_public.web.argument.Graph
 Issue             = cc_public.web.argument.Issue
 Item              = cc_public.web.argument.Item
@@ -151,6 +189,7 @@ Member            = cc_public.web.contract.Member
 Parameter         = cc_public.web.contract.Parameter
 Surface           = cc_public.web.contract.Surface
 Facts             = cc_public.web.contract.Facts
+Request           = cc_public.web.request.Request
 
 
 # -----------------------------------------------------------------------------
@@ -284,7 +323,9 @@ def _matrix(graph:    Graph,
                              for id_decision in list_decision]
                             + [htpy.span(class_ = 'add')[
                                    _pill('+ Decision', '',
-                                         'Add a decision that answers this issue')]],
+                                         'Add a decision that answers this issue',
+                                         _edit_href(KIND_DECISION,
+                                                    issue.item.id))]],
                         class_ = 'head'),
                     _decision_style(list_decision),
                     [htpy.span(class_ = 'decision-role',
@@ -327,7 +368,7 @@ def _matrix(graph:    Graph,
         row(['Standing'], [_stance(issue.map_stance.get(id_decision,
                                                         cc_public.web.argument.STANCE_OPEN))
                            for id_decision in list_decision], class_ = 'foot standing'),
-        row([], [_controls(id_decision) for id_decision in list_decision],
+        row([], [_controls(graph, issue, id_decision) for id_decision in list_decision],
             class_ = 'foot controls')]
 
     return htpy.section(class_ = 'matrix ' + cc_public.web.light.CSS_REGION,
@@ -431,46 +472,71 @@ def _total(id_decision: str, list_unit: list, list_css: list[str]) -> typing.Any
 
 
 # -----------------------------------------------------------------------------
-def _controls(id_decision: str) -> typing.Any:
+def _controls(graph: Graph, issue: Issue, id_decision: str) -> typing.Any:
     """
-    Return the controls that settle the issue on id_decision: uphold
-    it, which rejects the other decisions, or reject it alone. This is
-    a mock: the controls send nothing yet.
+    Return the controls that settle the issue on id_decision: uphold it
+    or reject it, each in the one determination of the issue, leaving
+    the other decisions as they stand. Uphold waits, greyed, while a
+    driver of the issue is unargued, as the check of a determination
+    would refuse it; reject never waits.
 
     """
 
-    return htpy.form(class_ = 'determine', method = 'post', action = '#')[
-        htpy.input(type = 'hidden', name = 'decision', value = id_decision),
-        _pill('Uphold', ROLE_FOR, 'Uphold this decision and reject the others'),
-        _pill('Reject', ROLE_AGAINST, 'Reject this decision')]
+    kind          = KIND_DETERMINE
+    list_unspoken = issue.unspoken()
+    if list_unspoken:
+        uphold = htpy.span(class_ = 'pill for waiting',
+                           title  = 'Uphold waits until an annotation argues for {list}'.format(
+                                        list = _titles(graph, list_unspoken)))['Uphold']
+    else:
+        uphold = _pill('Uphold', ROLE_FOR, 'Uphold this decision',
+                       _edit_href(kind, id_decision, ROLE_UPHOLD))
+    return htpy.div(class_ = 'determine')[
+        uphold,
+        _pill('Reject', ROLE_AGAINST, 'Reject this decision',
+              _edit_href(kind, id_decision, ROLE_REJECT))]
 
 
 # -----------------------------------------------------------------------------
-def _pill(label: str, role: str, title: str) -> typing.Any:
+def _pill(label: str, role: str, title: str, href: str) -> typing.Any:
     """
-    Return a button that changes the data, as a pill: for or against
-    in the colours of role, or plain if role is ''. This is a mock: the
-    button sends nothing yet.
+    Return a control that changes the data, as a pill that leads to its
+    form at href: for or against in the colours of role, or plain if
+    role is ''.
 
     """
 
-    return htpy.button(type = 'button', class_ = ' '.join(['pill', role]).strip(),
-                       title = title + ' (not yet wired)')[label]
+    return htpy.a(class_ = ' '.join(['pill', role]).strip(), title = title, href = href)[label]
 
 
 # -----------------------------------------------------------------------------
-def _add_answer(id_annotation: str) -> typing.Any:
+def _edit_href(kind: str, target: str, role: str = '', at: str = '') -> str:
+    """
+    Return the address of the form of kind that acts on target in role,
+    from the key at on the issue page.
+
+    """
+
+    return '{path}?{query}'.format(path  = PATH_EDIT,
+                                   query = cc_public.web.request.query(kind, target, role, at))
+
+
+# -----------------------------------------------------------------------------
+def _add_answer(id_annotation: str, key: str) -> typing.Any:
     """
     Return the controls that add an annotation answering id_annotation,
-    in support or in challenge, set in the margin.
+    at key on the page, in support or in challenge, set in the margin.
 
     """
 
+    kind = KIND_ANSWER
     return _block([], [htpy.p(class_ = 'add')[
-                           _pill('+ Support', ROLE_FOR, 'Add an annotation that supports this'),
+                           _pill('+ Support', ROLE_FOR, 'Add an annotation that supports this',
+                                 _edit_href(kind, id_annotation, ROLE_FOR, key)),
                            ' ',
                            _pill('+ Challenge', ROLE_AGAINST,
-                                 'Add an annotation that challenges this')]],
+                                 'Add an annotation that challenges this',
+                                 _edit_href(kind, id_annotation, ROLE_AGAINST, key))]],
                   class_ = 'add', data_for = id_annotation)
 
 
@@ -1386,6 +1452,137 @@ def _text(value: typing.Any) -> str:
 
 
 # -----------------------------------------------------------------------------
+def edit(graph:      Graph,
+         request:    Request,
+         list_added: list[str] | None = None) -> str:
+    """
+    Return the form that makes request: the fields its kind needs, filled
+    in with what it holds, and the press that sends it. list_added names
+    the failures the request would have added when it was last sent,
+    and nothing was written.
+
+    """
+
+    id_issue = cc_public.web.request.issue_of(graph, request)
+    heading  = MAP_HEADING[(request.kind, request.role)]
+    if request.kind != KIND_DECISION:
+        heading = '{heading} \u2018{target}\u2019'.format(heading = heading,
+                                                        target  = graph.title(request.target))
+
+    list_field = [htpy.input(type = 'hidden', name = key, value = value)
+                  for (key, value) in ((KEY_KIND,   request.kind),
+                                       (KEY_TARGET, request.target),
+                                       (KEY_ROLE,   request.role),
+                                       (KEY_AT,     request.at))
+                  if value]
+
+    if request.kind == KIND_DETERMINE:
+        existing = cc_public.web.request.determination(graph, id_issue)
+        reason   = (existing.brief or '').strip() if existing is not None else ''
+        list_field.append(_field('Reason', KEY_REASON, request.map_text.get(KEY_REASON, reason),
+                                 is_long = True,
+                                 note    = 'The brief of the determination of the issue, '
+                                           'which says why it is settled as it is.'))
+        press = 'Uphold' if request.role == ROLE_UPHOLD else 'Reject'
+    else:
+        list_field += [_field('Title', KEY_TITLE, request.text(KEY_TITLE),
+                              note = 'A noun phrase.'),
+                       _field('Brief', KEY_BRIEF, request.text(KEY_BRIEF), is_long = True),
+                       _field('Description', KEY_DESCRIPTION, request.text(KEY_DESCRIPTION),
+                              is_long = True, note = 'Optional.')]
+        if request.kind == KIND_ARGUMENT:
+            list_field.append(_concern_choice(graph, request, id_issue))
+        list_field.append(_field('Id', KEY_ID, request.text(KEY_ID),
+                                 note = 'Optional: made from the title if left empty.'))
+        press = 'Add'
+
+    role_press = (ROLE_AGAINST if request.role in (ROLE_AGAINST, ROLE_REJECT)
+                  else ROLE_FOR if request.role else '')
+
+    return _page(heading,
+                 [_refusal(list_added),
+                  htpy.form(class_ = 'edit', method = 'post', action = PATH_EDIT)[
+                      list_field,
+                      htpy.p(class_ = 'press')[
+                          htpy.button(type   = 'submit',
+                                      class_ = ' '.join(['pill', role_press]).strip())[press],
+                          ' ',
+                          htpy.a(href = PATH_ISSUE + id_issue)['Cancel']]]],
+                 [htpy.h1[heading],
+                  htpy.p(class_ = 'subtitle')[
+                      htpy.a(href = PATH_ISSUE + id_issue)[graph.title(id_issue)]]])
+
+
+# -----------------------------------------------------------------------------
+def _field(label:   str,
+           name:    str,
+           value:   str,
+           is_long: bool = False,
+           note:    str = '') -> typing.Any:
+    """
+    Return a field of an edit form, named name and holding value, under
+    label: a box of several lines if is_long, else one line, with note
+    in the margin.
+
+    """
+
+    if is_long:
+        control = htpy.textarea(name = name, id = 'field-' + name, rows = '4')[value]
+    else:
+        control = htpy.input(type = 'text', name = name, id = 'field-' + name, value = value)
+    return _block([htpy.label(for_ = 'field-' + name)[label], control],
+                  [htpy.p[note] if note else None],
+                  class_ = 'field')
+
+
+# -----------------------------------------------------------------------------
+def _concern_choice(graph:    Graph,
+                    request:  Request,
+                    id_issue: str) -> typing.Any:
+    """
+    Return the boxes that choose the concerns an annotation argues for:
+    the drivers of the subject of the issue id_issue first, then every
+    other, with those of request ticked.
+
+    """
+
+    (list_drive, list_other) = cc_public.web.request.concerns(graph, id_issue)
+
+    def box(id_concern: str) -> typing.Any:
+        return htpy.label(class_ = 'concern')[
+            htpy.input(type    = 'checkbox',
+                       name    = KEY_CONCERN,
+                       value   = id_concern,
+                       checked = id_concern in request.list_concern),
+            ' ', graph.title(id_concern)]
+
+    return _block([htpy.span(class_ = 'label')['Concerns'],
+                   htpy.div(class_ = 'choice')[[box(id_concern) for id_concern in list_drive]],
+                   htpy.div(class_ = 'choice other')[
+                       [box(id_concern) for id_concern in list_other]]],
+                  [htpy.p['The drivers of the subject come first. Choose at least one.']],
+                  class_ = 'field')
+
+
+# -----------------------------------------------------------------------------
+def _refusal(list_added: list[str] | None) -> typing.Any:
+    """
+    Return what list_added says the last press would have broken, or
+    None if it was not refused.
+
+    """
+
+    if not list_added:
+        return None
+    return _block([htpy.p(class_ = 'refused')[
+                       'Nothing was written. The edit would have added ',
+                       'this failure:' if len(list_added) == 1 else 'these failures:'],
+                   htpy.ul(class_ = 'refused')[[htpy.li[htpy.code[line]]
+                                                for line in list_added]]],
+                  [])
+
+
+# -----------------------------------------------------------------------------
 def missing(id_item: str) -> str:
     """
     Return the page for an issue or item that the tree does not hold.
@@ -1395,6 +1592,19 @@ def missing(id_item: str) -> str:
     return _page('Not found',
                  [htpy.h1['Not found'],
                   htpy.p['The tree holds no issue ', htpy.code[id_item], '.']])
+
+
+# -----------------------------------------------------------------------------
+def refused(message: str) -> str:
+    """
+    Return the page for a request that no page of the review could have
+    sent, saying why in message.
+
+    """
+
+    return _page('Refused',
+                 [htpy.h1['Refused'],
+                  htpy.p[message]])
 
 
 # -----------------------------------------------------------------------------
@@ -1487,10 +1697,14 @@ def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
                                                  cc_public.web.argument.STANCE_OPEN)),
                     _id(decision.id),
                     htpy.p(class_ = 'add')[
-                        _pill('+ For', ROLE_FOR, 'Add an annotation for this decision'),
+                        _pill('+ For', ROLE_FOR, 'Add an annotation for this decision',
+                              _edit_href(KIND_ARGUMENT, decision.id,
+                                         ROLE_FOR)),
                         ' ',
                         _pill('+ Against', ROLE_AGAINST,
-                              'Add an annotation against this decision')]])
+                              'Add an annotation against this decision',
+                              _edit_href(KIND_ARGUMENT, decision.id,
+                                         ROLE_AGAINST))]])
     if decision.description:
         block = htpy.details(class_ = 'brief')[htpy.summary[block],
                                                _description(graph, decision, decision.id)]
@@ -1729,7 +1943,7 @@ def _brief(graph:       Graph,
     block = _block([htpy.p[_prose(annotation.brief)]], list_margin,
                    css_main   = css_main,
                    css_margin = css_margin)
-    add   = _add_answer(annotation.id)
+    add   = _add_answer(annotation.id, key)
     if annotation.description:
         under = [_description(graph, annotation, key, css_main, css_margin), add]
         if list_answer:

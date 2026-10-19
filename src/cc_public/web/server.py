@@ -25,6 +25,18 @@ description:            |
                         answers GET requests with respond, until
                         interrupted. It uses the HTTP server of the
                         standard library.
+
+                        submit answers the forms of the pages that
+                        change the data. It turns a form into a batch
+                        with pym_cc_public.web.request and makes it
+                        with pym_cc_public.edit.edit, as cctool batch
+                        does: the tree is checked with the edit in
+                        place, and written only if the edit adds no
+                        failure. A form sent from a page of any other
+                        site, or to a server by any other name than
+                        this computer's, is refused, so that another
+                        page open in the browser cannot change the
+                        tree.
 relation:               []
 
 ...
@@ -38,9 +50,11 @@ import pathlib
 import threading
 import urllib.parse
 
+import cc_public.edit.edit
 import cc_public.web.argument
 import cc_public.web.contract
 import cc_public.web.page
+import cc_public.web.request
 import cc_public.web.sankey
 
 
@@ -49,6 +63,7 @@ PORT_DEFAULT      = 8100
 DIR_STATIC        = pathlib.Path(__file__).resolve().parent / '_static'
 TYPE_HTML         = 'text/html; charset=utf-8'
 TYPE_DEFAULT      = 'application/octet-stream'
+SET_HOST_LOCAL    = {'127.0.0.1', 'localhost', '[::1]'}
 LOCK_READ         = threading.Lock()
 MAP_INDEX         = {'/':                                 cc_public.web.page.index,
                      cc_public.web.page.PATH_REQUIREMENTS: cc_public.web.page.requirements,
@@ -71,6 +86,9 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
     if path.startswith(cc_public.web.page.PATH_STATIC):
         return _static(path.removeprefix(cc_public.web.page.PATH_STATIC))
 
+    if path == cc_public.web.page.PATH_EDIT:
+        return _form(root, query)
+
     if path in MAP_INDEX:
         return (http.HTTPStatus.OK, TYPE_HTML, MAP_INDEX[path](_graph(root)).encode())
 
@@ -87,6 +105,83 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
             return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
     return (http.HTTPStatus.NOT_FOUND, TYPE_HTML, cc_public.web.page.missing(path).encode())
+
+
+# -----------------------------------------------------------------------------
+def _form(root: pathlib.Path, query: str) -> tuple[int, str, bytes]:
+    """
+    Return the response to a request for the form that query asks for.
+
+    """
+
+    try:
+        graph   = _graph(root)
+        request = cc_public.web.request.parse(query)
+        body    = cc_public.web.page.edit(graph, request)
+    except cc_public.web.request.ErrorRequest as error:
+        return (http.HTTPStatus.BAD_REQUEST, TYPE_HTML,
+                cc_public.web.page.refused(str(error)).encode())
+    return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
+
+
+# -----------------------------------------------------------------------------
+def submit(root:   pathlib.Path,
+           host:   str,
+           origin: str | None,
+           body:   bytes) -> tuple[int, str, bytes, str | None]:
+    """
+    Return the status, content type, body and the address to go to of
+    the response to a form sent with body, to the server named host
+    from a page at origin.
+
+    The form is made as one batch over the tree under root. If it adds
+    no failure it is written, and the response leads to the issue page
+    at what it made; if it adds any, nothing is written and the form is
+    shown again with the failures it would add.
+
+    """
+
+    if not _is_local(host, origin):
+        return (http.HTTPStatus.FORBIDDEN, TYPE_HTML,
+                cc_public.web.page.refused('Forms are taken only from the pages of this '
+                                           'server, on this computer.').encode(), None)
+
+    try:
+        request = cc_public.web.request.parse(body.decode('utf-8'))
+        with LOCK_READ:
+            graph          = cc_public.web.argument.Graph(root)
+            id_item        = cc_public.web.request.id_new(graph, request)
+            list_operation = cc_public.web.request.operations(graph, request)
+            tree           = cc_public.edit.edit.Tree(root)
+            cc_public.edit.edit.batch(tree, list_operation)
+            added          = cc_public.edit.edit.apply(tree)
+    except (cc_public.web.request.ErrorRequest, cc_public.edit.edit.ErrorEdit,
+            UnicodeDecodeError) as error:
+        return (http.HTTPStatus.BAD_REQUEST, TYPE_HTML,
+                cc_public.web.page.refused(str(error)).encode(), None)
+
+    if added:
+        list_added = ['{name}: {row}'.format(name = name, row = '  '.join(map(str, row)))
+                      for (name, list_row) in added.items() for row in list_row]
+        page       = cc_public.web.page.edit(graph, request, list_added)
+        return (http.HTTPStatus.UNPROCESSABLE_ENTITY, TYPE_HTML, page.encode(), None)
+
+    return (http.HTTPStatus.SEE_OTHER, TYPE_HTML, b'',
+            cc_public.web.request.address(graph, request, id_item))
+
+
+# -----------------------------------------------------------------------------
+def _is_local(host: str, origin: str | None) -> bool:
+    """
+    Return True if host names this computer, and origin, if a browser
+    sent one, is a page of the server named host.
+
+    """
+
+    name = urllib.parse.urlsplit('//' + host).hostname or ''
+    if name not in SET_HOST_LOCAL and '[{name}]'.format(name = name) not in SET_HOST_LOCAL:
+        return False
+    return origin is None or origin == 'http://' + host
 
 
 # -----------------------------------------------------------------------------
@@ -166,7 +261,8 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
     # -------------------------------------------------------------------------
     class Handler(http.server.BaseHTTPRequestHandler):
         """
-        Answer each GET request with respond.
+        Answer each GET request with respond, and each POST request
+        with submit.
 
         """
 
@@ -179,6 +275,30 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
 
             (status, type_content, body) = respond(root, self.path)
             self.send_response(status)
+            self.send_header('Content-Type', type_content)
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        # ---------------------------------------------------------------------
+        def do_POST(self) -> None:
+            """
+            Send the response to the form sent.
+
+            """
+
+            if urllib.parse.urlsplit(self.path).path != cc_public.web.page.PATH_EDIT:
+                self.send_error(http.HTTPStatus.NOT_FOUND)
+                return
+
+            length = int(self.headers.get('Content-Length') or 0)
+            (status, type_content, body, location) = submit(root,
+                                                            self.headers.get('Host') or '',
+                                                            self.headers.get('Origin'),
+                                                            self.rfile.read(length))
+            self.send_response(status)
+            if location:
+                self.send_header('Location', location)
             self.send_header('Content-Type', type_content)
             self.send_header('Content-Length', str(len(body)))
             self.end_headers()
