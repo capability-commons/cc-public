@@ -153,7 +153,7 @@ reads them through `.claude/skills`, a link to the same directory.
 - Python follows the house style of the existing modules: a data item
   in the module docstring, a 79-column `# ---` line above each
   function, aligned `=`, `.format()` rather than f-strings, whole-module
-  imports, and names prefixed by type (`list_x`, `map_x`, `path_x`).
+  imports, and names prefixed by type (`list_NAME`, `map_NAME`, `path_NAME`).
 - Logic programs follow the house style of `check.lp`: a separator and
   a comment above each relation, a `% decl` line that names its
   columns, variables named for the columns they fill (capitalised, as

@@ -61,11 +61,11 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
 - **An argument lives in the folder of its issue.** Start one with an
-  issue (`new iss_x --link r_is_about lc_y`), then give each decision
-  `--link r_answers iss_x` (`answer_count` refuses a decision that
+  issue (`new iss_NAME --link r_is_about lc_NAME`), then give each decision
+  `--link r_answers iss_NAME` (`answer_count` refuses a decision that
   answers no issue, or two) and each annotation `--link r_is_about
-  iss_x`. `new` writes all of them, and determinations, in
-  `_data/issue/iss_x/`; anything moved there by hand is checked by
+  iss_NAME`. `new` writes all of them, and determinations, in
+  `_data/issue/iss_NAME/`; anything moved there by hand is checked by
   `misplaced_document`.
 - **An annotation or issue is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
