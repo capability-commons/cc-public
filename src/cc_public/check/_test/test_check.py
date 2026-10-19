@@ -438,6 +438,12 @@ def test_a_determination_with_a_driver_unargued_is_reported(tree):
     assert _check(tree) == {'unargued_driver': [('det_x', 'dec_x', 'concern_cost')]}
 
 
+def test_a_rejection_with_a_driver_unargued_passes(tree):
+    _driven_decisions(tree)
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_rejects', 'dec_x')])
+    assert _check(tree) == {}
+
+
 def test_a_driver_argued_only_in_another_issue_is_unargued(tree):
     _driven_decisions(tree)
     _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', 'lc_x')])

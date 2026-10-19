@@ -477,8 +477,8 @@ def _controls(graph: Graph, issue: Issue, id_decision: str) -> typing.Any:
     Return the controls that settle the issue on id_decision: uphold it
     or reject it, each in the one determination of the issue, leaving
     the other decisions as they stand. Uphold waits, greyed, while a
-    driver of the issue is unargued, as the check of a determination
-    would refuse it; reject never waits.
+    driver of the issue is unargued, as unargued_driver would refuse it;
+    reject never waits, as a rejection needs no driver argued.
 
     """
 

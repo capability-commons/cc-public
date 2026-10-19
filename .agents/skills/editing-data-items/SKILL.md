@@ -73,11 +73,11 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   (`determination_without_decision`). Give `--link r_upholds DEC` or
   `--link r_rejects DEC`. Only record a determination that a person
   has made; the commit that adds it says who and when.
-- **A determination is refused while a driver is unargued**
-  (`unargued_driver`). Every concern that the logical component the
-  issue is about `r_is_driven_by` needs an annotation for it that
-  supports or challenges the decision or another answer to the same
-  issue.
+- **A determination that upholds a decision is refused while a driver
+  is unargued** (`unargued_driver`). Every concern that the logical
+  component the issue is about `r_is_driven_by` needs an annotation
+  for it that supports or challenges the decision or another answer to
+  the same issue. Rejecting a decision needs no such annotation.
   Argue it; do not drop the driver to pass.
 - **A second determination of an issue is refused**
   (`competing_determinations`). An issue has at most one. When the

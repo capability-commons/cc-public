@@ -699,22 +699,24 @@ argued(Decision, Concern) :-
 
 
 % -----------------------------------------------------------------------------
-% A determination settles a decision only once every concern that
+% A determination upholds a decision only once every concern that
 % drives the subject of its issue has been argued, for it or for an
-% alternative to it.
+% alternative to it. It may reject a decision at any time, since a
+% rejection commits the subject to nothing.
 %
 % decl unargued_driver(determination: symbol,
 %                      decision:      symbol,
 %                      concern:       symbol)
-% did  {determination} settles {decision}, and no annotation argues
+% did  {determination} upholds {decision}, and no annotation argues
 %      {concern}, a driver, for it or an alternative to it.
 % fix  Add an annotation for that concern to the decision or an
-%      alternative, or leave the issue open. Do not settle an issue
-%      whose drivers are unargued.
+%      alternative, or leave the decision open. Do not uphold a
+%      decision while a driver of its issue is unargued.
 #show unargued_driver/3.
 
 unargued_driver(Determination, Decision, Concern) :-
-    settles(Determination, Decision),
+    type_of(Determination, "t_determination"),
+    primary_edge(Determination, "r_upholds", Decision),
     primary_edge(Decision, "r_answers", Issue),
     primary_edge(Issue, "r_is_about", Subject),
     primary_edge(Subject, "r_is_driven_by", Concern),
