@@ -362,8 +362,35 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
     assert key in css('concern_performance_efficiency')
     assert not any(css_concern.startswith(key + '-')
                    for css_concern in css('concern_performance_efficiency'))
-    assert 'pick-concern_' not in body and 'port-concern_' not in body
+    assert 'id="pick-concern_' not in body and 'port-concern_' not in body
     assert 'id="port-dec_tooling_in_python-against"' in body
+
+
+def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
+    (_, _, page) = cc_public.web.server.respond(tree, '/issue/iss_tooling_language')
+    text    = page.decode()
+    network = str(cc_public.web.network.figure(graph, outline))
+    sankey  = str(cc_public.web.sankey.figure(graph, outline, set(), set()))
+    concern = 'concern_dependency_risk'
+    show    = ':root:has(.show-{c}:hover)'.format(c = concern)
+
+    def classes(body, pattern):
+        return re.search(pattern, body).group(1).split()
+
+    node = classes(network, 'class="([^"]*)" id="node-{c}"'.format(c = concern))
+    assert 'hover-pick-' + concern in node and 'show-' + concern in node
+    assert 'pick-' + concern in classes(network, 'class="([^"]*)" id="node-ann_dependencies_are_few_and_permissive"')
+    assert 'pick-' + concern not in classes(network,
+                                            'class="([^"]*)" id="node-ann_types_catch_errors_early"')
+    assert 'pick-{c}'.format(c = concern) in classes(network,
+                                                      'class="([^"]*)" id="node-dec_tooling_in_rust"')
+    assert '{show} .sankey svg) .lit-con-{c} '.format(show = show, c = concern) in sankey
+    assert '{show} .network svg) .pick-{c} '.format(show = show, c = concern) in network
+    assert '{show}) section.matrix .mutes.lit-con-{c} '.format(show = show, c = concern) in text
+    assert re.search(r'<span class="name mutes [^"]*lit-con-{c} [^"]*lit-show show-{c}"'.format(
+                         c = concern), text)
 
 
 def test_graph_node_lights_both_its_chains(tree):

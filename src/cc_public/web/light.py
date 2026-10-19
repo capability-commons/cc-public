@@ -120,52 +120,60 @@ def alias(id_decision: str, role: str | None = None) -> str:
 
 
 # -----------------------------------------------------------------------------
-def show(alias: str) -> str:
+def show(name: str) -> str:
     """
-    Return the classes of a mark outside the diagrams that lights the
-    chains of alias in them while it is hovered over.
+    Return the classes of a mark that lights the chains named name, in
+    every diagram and in the matrix, while it is hovered over.
 
     """
 
-    return '{show} {prefix}{alias}'.format(show = CSS_SHOW, prefix = PREFIX_SHOW, alias = alias)
+    return '{show} {prefix}{name}'.format(show = CSS_SHOW, prefix = PREFIX_SHOW, name = name)
 
 
 # -----------------------------------------------------------------------------
-def style(scope: str, list_key: list[str], map_alias: dict[str, str] | None = None) -> str:
+def style(scope:     str,
+          list_key:  list[str],
+          map_alias: dict[str, str] | None = None,
+          map_show:  dict[str, str] | None = None) -> str:
     """
     Return the rules that light the chain at each key in the diagram
-    scope while a trigger of it, or a mark that shows its alias in
-    map_alias, is hovered over, or while its anchor or its alias is the
-    target of the address and no such mark is hovered over. A lit mark
+    scope while a trigger of it, or a mark anywhere on the page that
+    shows its name in map_show, is hovered over, or while its anchor or
+    its alias in map_alias is the target of the address and no such mark
+    is hovered over. A lit mark
     shows in full; one shaded for a net effect takes the custom
     properties --lit (a fill) and --lit-ink (an ink) of that effect.
 
     """
 
     map_alias = map_alias or {}
+    map_show  = map_show or {}
     list_rule = []
     for key in list_key:
         list_when = ['{scope} svg:has(.{hover}{key}:hover)',
                      (':root:not(:has(.{show}:hover)) '
                       '{scope} svg:has(#{key}:target):not(:has(.{trigger}:hover))')]
+        list_away = []
         if key in map_alias:
-            list_when += [':root:has(.{prefix}{alias}:hover) {scope} svg',
-                          (':root:has(#{alias}:target):not(:has(.{show}:hover)) '
-                           '{scope} svg:not(:has(.{trigger}:hover))')]
-            rule = (':is(:root:has(#{alias}:target), :root:has(.{prefix}{alias}:hover)) '
-                    '{scope} svg .{dims} {{ opacity: var(--dim); }}')
-            list_rule.append(rule.format(alias  = map_alias[key],
-                                         prefix = PREFIX_SHOW,
-                                         scope  = scope,
-                                         dims   = CSS_DIMS))
-        when = ':is({list_when})'.format(list_when = ', '.join(list_when)).format(
-            scope   = scope,
-            hover   = PREFIX_HOVER,
-            key     = key,
-            trigger = CSS_TRIGGER,
-            show    = CSS_SHOW,
-            prefix  = PREFIX_SHOW,
-            alias   = map_alias.get(key))
+            list_when.append(':root:has(#{alias}:target):not(:has(.{show}:hover)) '
+                             '{scope} svg:not(:has(.{trigger}:hover))')
+            list_away.append(':root:has(#{alias}:target)')
+        if key in map_show:
+            list_when.append(':root:has(.{prefix}{name}:hover) {scope} svg')
+            list_away.append(':root:has(.{prefix}{name}:hover)')
+        map_format = {'scope':   scope,
+                      'hover':   PREFIX_HOVER,
+                      'key':     key,
+                      'trigger': CSS_TRIGGER,
+                      'show':    CSS_SHOW,
+                      'prefix':  PREFIX_SHOW,
+                      'alias':   map_alias.get(key),
+                      'name':    map_show.get(key),
+                      'dims':    CSS_DIMS}
+        if list_away:
+            rule = ':is({list_away}) {{scope}} svg .{{dims}} {{{{ opacity: var(--dim); }}}}'
+            list_rule.append(rule.format(list_away = ', '.join(list_away)).format(**map_format))
+        when = ':is({list_when})'.format(list_when = ', '.join(list_when)).format(**map_format)
         list_rule.append('{when} .{key} {{ opacity: 1; }}'.format(when = when, key = key))
         for sign in (ROLE_FOR, ROLE_AGAINST, SIGN_MIXED):
             rule = ('{when} .{key}{delim}{sign} '

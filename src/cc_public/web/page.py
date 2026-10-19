@@ -241,12 +241,15 @@ def _concern_label(graph:      Graph,
                    list_css:   list[str]) -> list:
     """
     Return the label of the row of id_concern in the decision matrix:
-    its name, in the chains of list_css, marked if it is a driver no
+    its name, in the chains of list_css, which lights the chains of the
+    concern while it is hovered over, marked if it is a driver no
     annotation argues for.
 
     """
 
-    return [htpy.span(class_ = ' '.join(['name', CSS_MUTES, *list_css]))[graph.title(id_concern)],
+    list_show = [cc_public.web.light.show(id_concern)] if list_css else []
+    return [htpy.span(class_ = ' '.join(['name', CSS_MUTES, *list_css, *list_show]))[
+                graph.title(id_concern)],
             htpy.span(class_ = 'unargued')['not argued']
             if id_concern in set(issue.unspoken()) else None]
 
@@ -565,14 +568,15 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
     """
     Return the rules that keep in ink the text of the matrix in a chain
     of drawing while the chain is pinned, from the matrix or from the
-    Sankey diagram, or while a mark in the head of the matrix that
-    shows it is hovered over, which wins over a pin, and keep the marks
+    Sankey diagram, or while a mark anywhere on the page that shows it
+    is hovered over, which wins over a pin, and keep the marks
     in it in full; the rest of the text that can be muted is muted, and
     the rest of the marks that can be faded are faded.
 
     """
 
     map_alias = drawing.aliases()
+    map_show  = drawing.shows()
     list_key  = drawing.keys()
     rule      = ('{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}\n'
                  '{when} section.matrix .{fades}.{key} {{ opacity: 1; }}')
@@ -582,11 +586,13 @@ def _lit_style(drawing: typing.Any) -> typing.Any:
         list_when = [':root:has(.sankey #{key}:target){unhovered}'.format(key       = key,
                                                                            unhovered = unhovered)]
         if key in map_alias:
-            list_when += [':root:has(#{alias}:target){unhovered}'.format(alias     = map_alias[key],
-                                                                          unhovered = unhovered),
-                          ':root:has(.{prefix}{alias}:hover)'.format(
-                              prefix = cc_public.web.light.PREFIX_SHOW,
-                              alias  = map_alias[key])]
+            list_when.append(':root:has(#{alias}:target){unhovered}'.format(
+                                 alias     = map_alias[key],
+                                 unhovered = unhovered))
+        if key in map_show:
+            list_when.append(':root:has(.{prefix}{name}:hover)'.format(
+                                 prefix = cc_public.web.light.PREFIX_SHOW,
+                                 name   = map_show[key]))
         list_rule.append(rule.format(when  = ':is({list})'.format(list = ', '.join(list_when)),
                                      mutes = CSS_MUTES,
                                      fades = CSS_FADES,
