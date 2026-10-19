@@ -18,9 +18,10 @@ brief:                  |
 description:            |
                         respond maps the path of a request to a page
                         (the issue list, an issue, the requirement
-                        list, a requirement, or any item), or to a
-                        file of the _static directory, and reads the
-                        tree afresh for each page. serve answers GET
+                        list, a requirement, the list of interface
+                        control documents, or any item), or to a file
+                        of the _static directory, and reads the tree
+                        afresh for each page. serve answers GET
                         requests with respond, until interrupted. It
                         uses the HTTP server of the standard library.
 relation:               []
@@ -47,6 +48,9 @@ DIR_STATIC        = pathlib.Path(__file__).resolve().parent / '_static'
 TYPE_HTML         = 'text/html; charset=utf-8'
 TYPE_DEFAULT      = 'application/octet-stream'
 LOCK_READ         = threading.Lock()
+MAP_INDEX         = {'/':                                 cc_public.web.page.index,
+                     cc_public.web.page.PATH_REQUIREMENTS: cc_public.web.page.requirements,
+                     cc_public.web.page.PATH_INTERFACES:   cc_public.web.page.interfaces}
 
 
 # -----------------------------------------------------------------------------
@@ -65,13 +69,8 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
     if path.startswith(cc_public.web.page.PATH_STATIC):
         return _static(path.removeprefix(cc_public.web.page.PATH_STATIC))
 
-    if path == '/':
-        return (http.HTTPStatus.OK, TYPE_HTML,
-                cc_public.web.page.index(_graph(root)).encode())
-
-    if path == cc_public.web.page.PATH_REQUIREMENTS:
-        return (http.HTTPStatus.OK, TYPE_HTML,
-                cc_public.web.page.requirements(_graph(root)).encode())
+    if path in MAP_INDEX:
+        return (http.HTTPStatus.OK, TYPE_HTML, MAP_INDEX[path](_graph(root)).encode())
 
     for prefix in (cc_public.web.page.PATH_ISSUE,
                    cc_public.web.page.PATH_REQUIREMENT,

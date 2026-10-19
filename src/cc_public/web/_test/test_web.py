@@ -592,10 +592,20 @@ def test_issue_page_offers_to_add_to_the_argument(tree):
         == [('for', 'Uphold'), ('against', 'Reject')]
 
 
-def test_every_page_links_to_both_indexes(tree):
+def test_every_page_links_to_the_indexes(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/')
     assert b'<a href="/">Issues</a>' in body
     assert b'<a href="/requirements">Requirements</a>' in body
+    assert b'<a href="/interfaces">Interfaces</a>' in body
+
+
+def test_interface_index_lists_interface_control_documents(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/interfaces')
+    assert status == http.HTTPStatus.OK
+    text = body.decode()
+    assert text.count('href="/item/icd_') == 1
+    assert '<a href="/item/icd_cc_public_check">Checker interface</a>' in text
+    assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 7<', text)
 
 
 def test_requirement_index_groups_requirements_by_subject(tree):

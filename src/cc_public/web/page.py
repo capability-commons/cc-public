@@ -14,8 +14,9 @@ protective_mark:
 title:                  Review page rendering
 brief:                  |
                         Render the issue list, the page of an issue,
-                        the requirement list and the page of a
-                        requirement as HTML.
+                        the requirement list, the page of a
+                        requirement and the list of interface control
+                        documents as HTML.
 description:            |
                         The issue list groups the issues by subject,
                         with the size of each argument and whether it
@@ -45,6 +46,11 @@ description:            |
                         verified. The questions of
                         pym_cc_public.requirement.review and the
                         characteristics it is reviewed against follow.
+
+                        The list of interface control documents gives
+                        each with its version, the forms of its
+                        surface, and how many of its members code
+                        realizes.
 relation:               []
 
 ...
@@ -69,7 +75,10 @@ import cc_public.web.sankey
 
 TITLE_SITE        = 'Capability Commons'
 PATH_REQUIREMENTS = '/requirements'
-LIST_INDEX        = (('Issues', '/'), ('Requirements', PATH_REQUIREMENTS))
+PATH_INTERFACES   = '/interfaces'
+LIST_INDEX        = (('Issues',       '/'),
+                     ('Requirements', PATH_REQUIREMENTS),
+                     ('Interfaces',   PATH_INTERFACES))
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
 PATH_REQUIREMENT  = '/requirement/'
@@ -94,6 +103,9 @@ R_HAS_SUBJECT     = cc_public.requirement.compose.R_HAS_SUBJECT
 R_HAS_PROCESS     = cc_public.requirement.compose.R_HAS_PROCESS
 R_TO_PARENT       = cc_public.requirement.review.R_TRACES_TO_PARENT
 R_TO_SOURCE       = cc_public.requirement.review.R_TRACES_TO_SOURCE
+R_REALIZES        = 'r_realizes'
+PREFIX_INTERFACE  = 'icd_'
+PREFIX_MEMBER     = 'icm_'
 
 # What each obligation binds the subject to, after ISO/IEC/IEEE 29148.
 #
@@ -834,6 +846,87 @@ def _requirement_references(graph: Graph, item: Item) -> typing.Any:
                                ('Mentions',         graph.mentions(item.id)),
                                ('Mentioned by',     graph.mentioned_by(item.id)),
                                ('Cited by',         list_cited)])
+
+
+# -----------------------------------------------------------------------------
+def interfaces(graph: Graph) -> str:
+    """
+    Return the page that lists every interface control document, by
+    title.
+
+    """
+
+    list_item = sorted((item for item in graph.map_item.values()
+                        if item.id.startswith(PREFIX_INTERFACE)),
+                       key = lambda item: item.title or item.id)
+    count     = sum(len(_members(item.node)) for item in list_item)
+
+    return _page('Interface control documents',
+                 [htpy.h1['Interface control documents'],
+                  htpy.p(class_ = 'subtitle')[
+                      '{count} documents, {member} members'.format(count  = len(list_item),
+                                                                  member = count)],
+                  htpy.section[_interface_table(graph, list_item)]])
+
+
+# -----------------------------------------------------------------------------
+def _interface_table(graph: Graph, list_item: list[Item]) -> typing.Any:
+    """
+    Return a table of the interface control documents in list_item:
+    each with its brief under its title, its version, the forms of its
+    surface, and how many of its members code realizes.
+
+    """
+
+    def surface(item: Item) -> str:
+        list_form = []
+        for (form, value) in (item.node.get('surface') or {}).items():
+            native = value.get('native') if isinstance(value, dict) else None
+            label  = native.get('language') if isinstance(native, dict) else None
+            list_form.append((label or form.replace('_', ' ')).capitalize())
+        return ', '.join(list_form)
+
+    def realized(item: Item) -> typing.Any:
+        list_member = _members(item.node)
+        count       = sum(1 for id_member in list_member
+                          if graph.sources(R_REALIZES, id_member))
+        text        = '{count} of {total}'.format(count = count, total = len(list_member))
+        return text if count == len(list_member) else htpy.span(class_ = 'gap')[text]
+
+    return htpy.table(class_ = 'requirements')[
+        htpy.thead[htpy.tr[htpy.th['Interface'],
+                           htpy.th['Version'],
+                           htpy.th['Surface'],
+                           htpy.th(class_ = 'number')['Realized']]],
+        htpy.tbody[[
+            htpy.tr[
+                htpy.td[htpy.a(href = _href(item.id))[item.title or item.id],
+                        htpy.span(class_ = 'statement')[item.brief]],
+                htpy.td[str(item.node.get('version_interface', ''))],
+                htpy.td[surface(item)],
+                htpy.td(class_ = 'number')[realized(item)]]
+            for item in list_item]]]
+
+
+# -----------------------------------------------------------------------------
+def _members(node: typing.Any) -> list[str]:
+    """
+    Return the ids of the interface members held in node, in the order
+    they are written, leaving out the members held in a member (the
+    parameters of a function, say).
+
+    """
+
+    if isinstance(node, list):
+        return [id_member for value in node for id_member in _members(value)]
+    if not isinstance(node, dict):
+        return []
+    id_self = node.get(cc_public.web.argument.KEY_ID_SELF)
+    if isinstance(id_self, str) and id_self.startswith(PREFIX_MEMBER):
+        return [id_self]
+    return [id_member for (key, value) in node.items()
+            if key != cc_public.web.argument.KEY_RELATION
+            for id_member in _members(value)]
 
 
 # -----------------------------------------------------------------------------
