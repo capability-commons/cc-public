@@ -498,9 +498,9 @@ def test_a_link_from_the_item_of_a_function_keeps_its_indentation(tree):
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'header': 'src/cc_public/check/check.py::nothing'},
      'src/cc_public/check/check.py has no class or function nothing there.'),
-    ({'header': 'src/cc_public/check/check.py::review', 'id': 'pyf_x'},
-     'The item of src/cc_public/check/check.py::review has the id '
-     'pyf_cc_public.check.check.review, not pyf_x.'),
+    ({'header': 'src/cc_public/graph/jq.py::query', 'id': 'pyf_x'},
+     'The item of src/cc_public/graph/jq.py::query has the id '
+     'pyf_cc_public.graph.jq.query, not pyf_x.'),
     ({'header': 'src/cc_public/check/check.py::check'},
      'src/cc_public/check/check.py::check already holds an item.'),
     ({'header': 'src/cc_public/check/check.lp::check'},

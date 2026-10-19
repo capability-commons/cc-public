@@ -31,7 +31,13 @@ description:            |
                         the check nor refuses an edit.
 usage:                  |
                         cctool check [--root DIR]
-relation:               []
+
+relation:
+
+  - id_relation:        r_realizes
+    guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+    id_target:          icm_cc_public_check.module
+    guid_target:        icm_22b81d93a0e54bc5aff823ef45a696fa
 
 ...
 """
@@ -89,7 +95,13 @@ def check(root: pathlib.Path) -> Failures:
                             Return the failures of the tree under root,
                             keyed by check, with the checks that pass left
                             out.
-    relation:               []
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.check
+        guid_target:        icm_987ceb8fcb464178a5206e8cfddf4ad2
 
     ...
     """
@@ -100,9 +112,32 @@ def check(root: pathlib.Path) -> Failures:
 # -----------------------------------------------------------------------------
 def review(root: pathlib.Path) -> tuple[Failures, Failures]:
     """
-    Return the failures and the advice of the tree under root, each
-    keyed by check, with the checks that find nothing left out.
+    ---
 
+    id_self:                pyf_cc_public.check.check.review
+    guid_self:              pyf_1b0b7142ed6d4538b16ff1bb6efdfd79
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Review a tree
+    brief:                  |
+                            Return the failures and the advice of the tree
+                            under root, each keyed by check, with the
+                            checks that find nothing left out.
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.review
+        guid_target:        icm_c89919b74bcc45469035be90dc9682ec
+
+    ...
     """
 
     map_document       = cc_public.graph.extract.documents(root)
@@ -119,12 +154,36 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
 def check_documents(map_document: cc_public.graph.extract.Documents,
                     cache:        dict | None = None) -> Failures:
     """
-    Return the failures of the documents, keyed by check, with the
-    checks that pass left out. An edit is checked this way before it
-    is written, with its documents in place of those it changes, and
-    with one cache for both checks, so that a document the edit leaves
-    as it was is not validated against its schema again.
+    ---
 
+    id_self:                pyf_cc_public.check.check.check_documents
+    guid_self:              pyf_eaf505a870ba42269c57466a0a70e459
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Check documents
+    brief:                  |
+                            Return the failures of the documents, keyed by
+                            check, with the checks that pass left out. An
+                            edit is checked this way before it is written,
+                            with its documents in place of those it
+                            changes, and with one cache for both checks,
+                            so that a document the edit leaves as it was
+                            is not validated against its schema again.
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.check_documents
+        guid_target:        icm_9774a75d938f498eb8cb82fb00b00039
+
+    ...
     """
 
     return review_documents(map_document, cache)[0]
@@ -134,10 +193,33 @@ def check_documents(map_document: cc_public.graph.extract.Documents,
 def review_documents(map_document: cc_public.graph.extract.Documents,
                      cache:        dict | None = None) -> tuple[Failures, Failures]:
     """
-    Return the failures and the advice of the documents, each keyed by
-    check, with the checks that find nothing left out. check.lp and
-    advise.lp are evaluated as one program.
+    ---
 
+    id_self:                pyf_cc_public.check.check.review_documents
+    guid_self:              pyf_eb7ba3af22ab416491c04825db3f855a
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Review documents
+    brief:                  |
+                            Return the failures and the advice of the
+                            documents, each keyed by check, with the
+                            checks that find nothing left out. check.lp
+                            and advise.lp are evaluated as one program.
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.review_documents
+        guid_target:        icm_b2c517792fd94ff598ebf76c7079f81c
+
+    ...
     """
 
     text_advice = ADVICE.read_text(encoding = 'utf-8')
@@ -165,8 +247,31 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
 # -----------------------------------------------------------------------------
 def columns() -> dict[str, tuple[str, ...]]:
     """
-    Return the names of the columns of each check, keyed by check.
+    ---
 
+    id_self:                pyf_cc_public.check.check.columns
+    guid_self:              pyf_3844de097e36427c9a993343bd9325e2
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Columns of the checks
+    brief:                  |
+                            Return the names of the columns of each check,
+                            keyed by check.
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.columns
+        guid_target:        icm_29a8333e7f0847f5a04103b33d61dac2
+
+    ...
     """
 
     text       = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
