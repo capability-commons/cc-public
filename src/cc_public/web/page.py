@@ -13,8 +13,9 @@ protective_mark:
 
 title:                  Review page rendering
 brief:                  |
-                        Render the issue list and the page of an issue
-                        as HTML.
+                        Render the issue list, the page of an issue,
+                        the requirement list and the page of a
+                        requirement as HTML.
 description:            |
                         The issue list groups the issues by subject,
                         with the size of each argument and whether it
@@ -34,6 +35,17 @@ description:            |
                         their text in the text column and their notes
                         in the margin. The decisions, the diagram and
                         the cross-references follow.
+
+                        The requirement list groups the requirements
+                        by subject. The page of a requirement reads
+                        down its trace: what it comes from, why it is
+                        needed, its statement parsed into its slots,
+                        the subject it is allocated to with the
+                        concerns that drive it, and how it is to be
+                        verified. The questions of
+                        pym_cc_public.requirement.review and the
+                        characteristics it is signed off against
+                        follow.
 relation:               []
 
 ...
@@ -47,6 +59,7 @@ import urllib.parse
 import htpy
 
 import cc_public.requirement.compose
+import cc_public.requirement.review
 import cc_public.web.argument
 import cc_public.web.description
 import cc_public.web.light
@@ -56,9 +69,11 @@ import cc_public.web.sankey
 
 
 TITLE_SITE        = 'Capability Commons'
-LIST_INDEX        = (('Issues', '/'),)
+PATH_REQUIREMENTS = '/requirements'
+LIST_INDEX        = (('Issues', '/'), ('Requirements', PATH_REQUIREMENTS))
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
+PATH_REQUIREMENT  = '/requirement/'
 PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
@@ -75,6 +90,25 @@ ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
 MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
                      cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
+
+R_HAS_SUBJECT     = cc_public.requirement.compose.R_HAS_SUBJECT
+R_HAS_PROCESS     = cc_public.requirement.compose.R_HAS_PROCESS
+R_TO_PARENT       = cc_public.requirement.review.R_TRACES_TO_PARENT
+R_TO_SOURCE       = cc_public.requirement.review.R_TRACES_TO_SOURCE
+
+# What each obligation binds the subject to, after ISO/IEC/IEEE 29148.
+#
+MAP_OBLIGATION    = {'shall':  'binding',
+                     'should': 'a preference',
+                     'will':   'a statement of fact or purpose',
+                     'may':    'an allowance'}
+
+# How each kind of condition reads, as the margin of a statement names
+# it.
+#
+MAP_CONDITION     = {'logic': 'a logical condition',
+                     'event': 'an event condition',
+                     'time':  'a time condition'}
 
 Graph             = cc_public.web.argument.Graph
 Issue             = cc_public.web.argument.Issue
@@ -126,10 +160,10 @@ def issue(graph:      Graph,
                  [_lighting(graph, outline),
                   _matrix(graph, issue, outline, set_show or set()),
                   _determinations(graph, issue),
-                  _diagram('Sankey of the argument', 'sankey', True,
+                  _diagram('Argument flow', 'sankey', True,
                            cc_public.web.sankey.figure(graph, outline, set_toggle,
                                                        set_show or set())),
-                  _diagram('Graph of the argument', 'network', False,
+                  _diagram('Argument tree', 'network', False,
                            cc_public.web.network.figure(graph, outline)),
                   _issue_references(graph, issue)],
                  [htpy.h1[item.title],
@@ -468,6 +502,326 @@ def _issues_of(graph: Graph, item: Item) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
+def requirements(graph: Graph) -> str:
+    """
+    Return the page that lists every requirement, grouped by its subject.
+
+    """
+
+    list_group = _requirement_groups(graph)
+    count      = sum(len(list_item) for (_, list_item) in list_group)
+    count_bind = sum(1 for (_, list_item) in list_group for each in list_item
+                     if each.node.get('obligation') == 'shall')
+
+    list_section = [htpy.section[
+                        htpy.h2[graph.title(id_subject) if id_subject else 'No subject'],
+                        _requirement_table(graph, list_item)]
+                    for (id_subject, list_item) in list_group]
+
+    return _page('Requirements',
+                 [htpy.h1['Requirements'],
+                  htpy.p(class_ = 'subtitle')[
+                      '{count} requirements, {binding} binding'.format(count   = count,
+                                                                      binding = count_bind)],
+                  list_section])
+
+
+# -----------------------------------------------------------------------------
+def _requirement_groups(graph: Graph) -> list[tuple[str, list[Item]]]:
+    """
+    Return the requirements grouped by subject, as the index lists
+    them: each subject, by title, with its requirements by title. A
+    requirement with no subject is grouped under ''.
+
+    """
+
+    map_group = collections.defaultdict(list)
+    for item in sorted(graph.map_item.values(), key = lambda item: item.title or item.id):
+        if item.id.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT):
+            for id_subject in item.targets(R_HAS_SUBJECT) or ['']:
+                map_group[id_subject].append(item)
+
+    return [(id_subject, map_group[id_subject])
+            for id_subject in sorted(map_group, key = graph.title)]
+
+
+# -----------------------------------------------------------------------------
+def _requirement_table(graph: Graph, list_item: list[Item]) -> typing.Any:
+    """
+    Return a table of the requirements in list_item: each with its
+    statement under its title, its obligation, how it is verified, and
+    what it traces to.
+
+    """
+
+    def traced(item: Item) -> typing.Any:
+        list_trace = [name for (name, id_relation) in (('Parent', R_TO_PARENT),
+                                                       ('Source', R_TO_SOURCE))
+                      if item.targets(id_relation)]
+        return ', '.join(list_trace) or htpy.span(class_ = 'gap')['None']
+
+    return htpy.table(class_ = 'requirements')[
+        htpy.thead[htpy.tr[htpy.th['Requirement'],
+                           htpy.th['Obligation'],
+                           htpy.th['Verification'],
+                           htpy.th['Traced to']]],
+        htpy.tbody[[
+            htpy.tr[
+                htpy.td[htpy.a(href = _href(item.id))[item.title or item.id],
+                        htpy.span(class_ = 'statement')[_statement(graph, item)]],
+                htpy.td[item.node.get('obligation', '')],
+                htpy.td[str(item.node.get('verification_method', '')).capitalize()],
+                htpy.td[traced(item)]]
+            for item in list_item]]]
+
+
+# -----------------------------------------------------------------------------
+def requirement(graph: Graph, id_requirement: str) -> str | None:
+    """
+    Return the page of a requirement, or None if id_requirement names no
+    requirement whose slots compose.
+
+    The page reads down the trace of the requirement: what it comes
+    from and why it is needed, its statement, the subject it is
+    allocated to with the concerns that drive that subject, and how it
+    is to be shown to be met. The questions a reviewer asks of it and
+    the characteristics it is signed off against follow.
+
+    """
+
+    item = graph.map_item.get(id_requirement)
+    if (item is None
+            or not id_requirement.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT)):
+        return None
+    try:
+        list_part = cc_public.requirement.compose.parts(item.node, graph.node)
+    except cc_public.requirement.compose.ErrorCompose:
+        return None
+
+    node          = item.node
+    process       = next(part.text for part in list_part
+                         if part.slot == cc_public.requirement.compose.SLOT_PROCESS)
+    list_question = cc_public.requirement.review.questions(node, process)
+    list_said     = cc_public.requirement.review.characteristics(
+                        node, list_question, item.targets(R_TO_PARENT))
+
+    return _page(item.title,
+                 [_block(_paragraphs(item.brief) + _paragraphs(item.description),
+                         [htpy.p[htpy.span(class_ = 'label')['In plain words']]]),
+                  _trace(graph, item, list_part),
+                  _questions(list_question),
+                  _signoff(item.id, list_said),
+                  _requirement_references(graph, item)],
+                 [htpy.h1[item.title],
+                  _steps(graph, [each.id for (_, list_item) in _requirement_groups(graph)
+                                 for each in list_item],
+                         item.id, 'requirement'),
+                  htpy.p(class_ = 'subtitle')[_statement(graph, item)]],
+                 [_requirement_facts(graph, item, process)])
+
+
+# -----------------------------------------------------------------------------
+def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
+    """
+    Return the table of facts that stands beside the statement of a
+    requirement: its obligation, subject, process, verification and
+    what it traces to.
+
+    """
+
+    def row(label: str, value: typing.Any) -> typing.Any:
+        return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
+
+    node       = item.node
+    obligation = node.get('obligation', '')
+    list_trace = item.targets(R_TO_PARENT) + item.targets(R_TO_SOURCE)
+
+    return htpy.table(class_ = 'facts')[htpy.tbody[
+        row('Obligation',   '{word}, {meaning}'.format(
+                                word = obligation, meaning = MAP_OBLIGATION.get(obligation, ''))),
+        row('Subject',      [_link(graph, id_subject)
+                             for id_subject in item.targets(R_HAS_SUBJECT)]),
+        row('Process',      [htpy.a(href = _href(id_process))[process]
+                             for id_process in item.targets(R_HAS_PROCESS)]),
+        row('Verification', str(node.get('verification_method', '')).capitalize()),
+        row('Traced to',    [htpy.span(class_ = 'line')[_link(graph, id_trace)]
+                             for id_trace in list_trace]
+                            or htpy.span(class_ = 'gap')['Neither parent nor source']),
+        row('Id',           htpy.code[item.id])]]
+
+
+# -----------------------------------------------------------------------------
+def _trace(graph: Graph, item: Item, list_part: list) -> typing.Any:
+    """
+    Return the trace of a requirement as stations down a spine: what it
+    comes from, why it is needed, its statement, where it is allocated,
+    and how it is to be verified. A station the tree records nothing
+    for is drawn hollow and says so.
+
+    """
+
+    node       = item.node
+    kind       = node.get('condition_kind')
+    obligation = node.get('obligation', '')
+
+    def station(label: str, list_main: list, list_note: list, css: str = '') -> typing.Any:
+        css_station = ' '.join(['station', css if list_main else 'gap']).strip()
+        return _block(list_main or [htpy.p(class_ = 'gap')['Not recorded.']],
+                      [htpy.p[htpy.span(class_ = 'label')[label]], list_note],
+                      class_ = css_station)
+
+    def traced(id_relation: str) -> list:
+        return [htpy.p[_link(graph, id_target), ' ',
+                       htpy.span(class_ = 'gloss')[_prose(graph.map_item[id_target].brief)]
+                       if id_target in graph.map_item else None]
+                for id_target in item.targets(id_relation)]
+
+    list_subject = item.targets(R_HAS_SUBJECT)
+    list_driver  = [id_concern for id_subject in list_subject
+                    if id_subject in graph.map_item
+                    for id_concern in graph.map_item[id_subject].targets(
+                                          cc_public.web.argument.R_IS_DRIVEN_BY)]
+    list_note    = [_note_line('Driven by', [
+                        [', ' if index else '', _link(graph, id_concern)]
+                        for (index, id_concern) in enumerate(list_driver)])]
+
+    return htpy.section(class_ = 'trace')[
+        htpy.h2['Trace'],
+        station('Source', traced(R_TO_SOURCE),
+                [htpy.p['Where it was found: a stakeholder, a document or a standard.']]),
+        station('Parent', traced(R_TO_PARENT),
+                [htpy.p['The need or requirement it helps to meet.']]),
+        station('Rationale', _paragraphs(str(node.get('rationale', ''))),
+                [htpy.p['Why it is needed.']]),
+        station('Statement', [_anatomy(list_part)],
+                [htpy.p['In the SOPHIST MASTER form{condition}.'.format(
+                     condition = ', with ' + MAP_CONDITION[kind] if kind in MAP_CONDITION
+                                 else '')],
+                 htpy.p['‘{word}’ is {meaning}.'.format(
+                     word = obligation, meaning = MAP_OBLIGATION.get(obligation, ''))]],
+                css = 'statement'),
+        station('Subject', [htpy.p[_link(graph, id_subject), ' ',
+                                   htpy.span(class_ = 'gloss')[
+                                       _prose(graph.map_item[id_subject].brief)]
+                                   if id_subject in graph.map_item else None]
+                            for id_subject in list_subject],
+                list_note),
+        station('Verification',
+                [htpy.p[htpy.span(class_ = 'run-in')[
+                            str(node.get('verification_method', '')).capitalize()], ' ',
+                        _prose(str(node.get('verification_approach', '')))]]
+                if node.get('verification_method') else [],
+                [htpy.p['How it is to be shown to be met.']])]
+
+
+# -----------------------------------------------------------------------------
+def _anatomy(list_part: list) -> typing.Any:
+    """
+    Return the statement of a requirement with each part over the name
+    of the slot it fills, a part that names an item linked to its page.
+
+    """
+
+    list_span = []
+    for (index, part) in enumerate(list_part):
+        text = part.text[0].upper() + part.text[1:] if index == 0 else part.text
+        if index == len(list_part) - 1:
+            text += '.'
+        words = htpy.a(href = _href(part.id_item))[text] if part.id_item else text
+        list_span.append(htpy.span(class_ = 'part part-' + part.slot)[
+                             htpy.span(class_ = 'words')[words],
+                             htpy.span(class_ = 'slot')[part.slot]])
+        list_span.append(' ')
+
+    return htpy.p(class_ = 'anatomy')[list_span[:-1]]
+
+
+# -----------------------------------------------------------------------------
+def _questions(list_question: list) -> typing.Any:
+    """
+    Return the questions raised of a requirement, under the three
+    transformations SOPHIST reads for.
+
+    """
+
+    return htpy.section(class_ = 'questions')[
+        htpy.h2['Questions for review'],
+        [_block([htpy.ul[[htpy.li[question.text] for question in list_question
+                          if question.category == category]]
+                 if any(question.category == category for question in list_question)
+                 else htpy.p(class_ = 'gap')['None raised.']],
+                [htpy.p[htpy.span(class_ = 'label')[name]], htpy.p[gloss]])
+         for (category, name, gloss) in cc_public.requirement.review.LIST_CATEGORY]]
+
+
+# -----------------------------------------------------------------------------
+def _signoff(id_requirement: str, list_said: list) -> typing.Any:
+    """
+    Return the characteristics a requirement is signed off against, each
+    with its question and what the tree says towards it, and the
+    controls that sign it off, challenge it or reject it. This is a
+    mock: the controls send nothing yet.
+
+    """
+
+    return htpy.section(class_ = 'signoff')[
+        htpy.h2['Sign-off'],
+        htpy.table(class_ = 'characteristics')[
+            htpy.thead[htpy.tr[htpy.th(class_ = 'check')[''],
+                               htpy.th['Characteristic'],
+                               htpy.th['From the tree']]],
+            htpy.tbody[[
+                htpy.tr[htpy.td(class_ = 'check')[
+                            htpy.input(type = 'checkbox', disabled = True,
+                                       title = '{code} {name}'.format(code = code, name = name))],
+                        htpy.td[htpy.span(class_ = 'run-in')[name], ' ',
+                                htpy.span(class_ = 'code')[code], htpy.br, question],
+                        htpy.td(class_ = 'said')[said]]
+                for (code, name, question, said) in list_said]]],
+        htpy.form(class_ = 'determine', method = 'post', action = '#')[
+            htpy.input(type = 'hidden', name = 'requirement', value = id_requirement),
+            htpy.button(type = 'button', class_ = 'uphold', disabled = True,
+                        title = 'Sign off this requirement')['Sign off'],
+            htpy.button(type = 'button', class_ = 'challenge', disabled = True,
+                        title = 'Raise an issue on this requirement')['Challenge'],
+            htpy.button(type = 'button', class_ = 'reject', disabled = True,
+                        title = 'Reject this requirement')['Reject']]]
+
+
+# -----------------------------------------------------------------------------
+def _requirement_references(graph: Graph, item: Item) -> typing.Any:
+    """
+    Return the cross-references at the foot of the page of a
+    requirement: its subject and process, the other requirements and
+    the issues on its subject, and the items that point at it or that
+    its prose names.
+
+    """
+
+    list_subject = item.targets(R_HAS_SUBJECT)
+    list_same    = sorted({id_other for id_subject in list_subject
+                           for id_other in graph.sources(R_HAS_SUBJECT, id_subject)
+                           if id_other != item.id})
+    list_issue   = sorted({id_other for id_subject in list_subject
+                           for id_other in graph.sources(cc_public.web.argument.R_IS_ABOUT,
+                                                         id_subject)
+                           if id_other.startswith(cc_public.web.argument.PREFIX_ISSUE)},
+                          key = graph.title)
+    list_cited   = sorted({id_source
+                           for ((_, id_target), list_source) in graph.map_source.items()
+                           if id_target == item.id
+                           for id_source in list_source})
+
+    return _references(graph, [('Subject',          list_subject),
+                               ('Process',          item.targets(R_HAS_PROCESS)),
+                               ('Same subject',     list_same),
+                               ('Issues on subject', list_issue),
+                               ('Mentions',         graph.mentions(item.id)),
+                               ('Mentioned by',     graph.mentioned_by(item.id)),
+                               ('Cited by',         list_cited)])
+
+
+# -----------------------------------------------------------------------------
 def missing(id_item: str) -> str:
     """
     Return the page for an issue or item that the tree does not hold.
@@ -651,13 +1005,25 @@ def _sequence(graph: Graph, issue: Issue) -> typing.Any:
 
     list_id = list(dict.fromkeys(each.item.id for (_, list_group) in _groups(graph)
                                  for each in list_group))
-    index   = list_id.index(issue.item.id)
+    return _steps(graph, list_id, issue.item.id, 'issue')
+
+
+# -----------------------------------------------------------------------------
+def _steps(graph: Graph, list_id: list[str], id_item: str, noun: str) -> typing.Any:
+    """
+    Return the links to the items before and after id_item in list_id,
+    each a noun, with its place among them.
+
+    """
+
+    index = list_id.index(id_item)
 
     def step(offset: int, mark: str, label: str) -> typing.Any:
         id_other = list_id[(index + offset) % len(list_id)]
-        return htpy.a(class_ = 'step', href = PATH_ISSUE + id_other, rel = label,
-                      title  = '{label} issue: {title}'.format(
-                                   label = label.capitalize(), title = graph.title(id_other)))[mark]
+        return htpy.a(class_ = 'step', href = _href(id_other), rel = label,
+                      title  = '{label} {noun}: {title}'.format(
+                                   label = label.capitalize(), noun = noun,
+                                   title = graph.title(id_other)))[mark]
 
     return htpy.nav(class_ = 'sequence')[
         step(-1, MARK_PREVIOUS, 'prev'),
@@ -947,12 +1313,15 @@ def _link(graph: Graph, id_item: str) -> typing.Any:
 def _href(id_item: str) -> str:
     """
     Return the address of the page of id_item: the issue page for an
-    issue, the item page otherwise.
+    issue, the requirement page for a requirement, the item page
+    otherwise.
 
     """
 
     if id_item.startswith(cc_public.web.argument.PREFIX_ISSUE):
         return PATH_ISSUE + id_item
+    if id_item.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT):
+        return PATH_REQUIREMENT + id_item
     return PATH_ITEM + id_item
 
 

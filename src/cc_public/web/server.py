@@ -17,8 +17,9 @@ brief:                  |
                         computer.
 description:            |
                         respond maps the path of a request to a page
-                        (the issue list, an issue, or any item), or to
-                        a file of the _static directory, and reads the
+                        (the issue list, an issue, the requirement
+                        list, a requirement, or any item), or to a
+                        file of the _static directory, and reads the
                         tree afresh for each page. serve answers GET
                         requests with respond, until interrupted. It
                         uses the HTTP server of the standard library.
@@ -68,7 +69,13 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
         return (http.HTTPStatus.OK, TYPE_HTML,
                 cc_public.web.page.index(_graph(root)).encode())
 
-    for prefix in (cc_public.web.page.PATH_ISSUE, cc_public.web.page.PATH_ITEM):
+    if path == cc_public.web.page.PATH_REQUIREMENTS:
+        return (http.HTTPStatus.OK, TYPE_HTML,
+                cc_public.web.page.requirements(_graph(root)).encode())
+
+    for prefix in (cc_public.web.page.PATH_ISSUE,
+                   cc_public.web.page.PATH_REQUIREMENT,
+                   cc_public.web.page.PATH_ITEM):
         if path.startswith(prefix):
             id_item = urllib.parse.unquote(path.removeprefix(prefix))
             body    = _item_page(_graph(root), prefix, id_item, query)
@@ -111,6 +118,9 @@ def _item_page(graph:   cc_public.web.argument.Graph,
         return cc_public.web.page.issue(graph, issue,
                                         cc_public.web.sankey.parse_toggle(query),
                                         cc_public.web.sankey.parse_show(query))
+
+    if prefix == cc_public.web.page.PATH_REQUIREMENT:
+        return cc_public.web.page.requirement(graph, id_item)
 
     if id_item not in graph.map_item:
         return None

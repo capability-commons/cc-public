@@ -14,11 +14,13 @@ protective_mark:
 title:                  Requirements
 brief:                  |
                         Compose the statement of a requirement from
-                        its slots.
+                        its slots, and raise the questions a review
+                        asks of it.
 description:            |
                         This package holds the module that writes the
                         statement of a requirement, which is never
-                        stored.
+                        stored, and the module that raises the
+                        questions and characteristics of its review.
 relation:               []
 
 ...

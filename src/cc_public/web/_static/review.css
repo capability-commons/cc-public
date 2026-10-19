@@ -1147,8 +1147,8 @@ details.description > summary:hover > .block > .main > p::before {
   color: var(--link);
 }
 
-/* The place of an issue among all issues, under its title, with steps
-   to the issues before and after it. */
+/* The place of an issue or a requirement among all of them, under its
+   title, with steps to those before and after it. */
 
 .masthead nav.sequence {
   font-size: 1.05rem;
@@ -1166,4 +1166,172 @@ details.description > summary:hover > .block > .main > p::before {
   color: var(--link);
 }
 
+/* The requirement index sets the statement of each requirement under
+   its title, quieter than the title. */
 
+table.requirements .statement {
+  display: block;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 1.05rem;
+}
+
+/* What the tree does not record reads faint, so a gap shows as a gap. */
+
+.gap {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.gloss {
+  color: var(--ink-muted);
+}
+
+section.trace .gloss {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.masthead table.facts code {
+  overflow-wrap: anywhere;
+}
+
+/* The trace of a requirement: stations down a spine in the text
+   column, each a circle on the spine as in the diagrams of an
+   argument. A station the tree records nothing for is hollow, and the
+   statement is the large circle at the centre of the trace. */
+
+section.trace .station > .main {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 1rem;
+}
+
+section.trace .station {
+  margin-bottom: 0;
+}
+
+section.trace .station > .main::before {
+  content: "";
+  position: absolute;
+  left: 0.55rem;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--rule);
+}
+
+section.trace .station:first-of-type > .main::before { top: 0.9rem; }
+section.trace .station:last-child > .main::before { bottom: auto; height: 0.9rem; }
+
+section.trace .station > .main::after {
+  content: "";
+  position: absolute;
+  left: calc(0.55rem - 0.35rem);
+  top: calc(0.9rem - 0.35rem);
+  width: 0.7rem;
+  height: 0.7rem;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+
+section.trace .station.gap > .main::after {
+  background: var(--paper);
+  border: 1px dashed var(--ink-faint);
+}
+
+section.trace .station.statement > .main::after {
+  left: calc(0.55rem - 0.55rem);
+  top: calc(1.2rem - 0.55rem);
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--ink);
+}
+
+section.trace .station.gap .margin .label {
+  color: var(--ink-faint);
+}
+
+/* The anatomy of a statement: each part over the name of the slot it
+   fills, on a hairline, as a sentence is parsed on paper. */
+
+p.anatomy {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+p.anatomy .part {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: top;
+  max-width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+p.anatomy .slot {
+  border-top: 1px solid var(--rule);
+  margin-top: 0.15rem;
+  padding-top: 0.05rem;
+  font-size: 0.95rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+p.anatomy .part-subject .slot,
+p.anatomy .part-process .slot,
+p.anatomy .part-obligation .slot {
+  border-top-color: var(--ink-muted);
+}
+
+/* The questions for review, a list in the text column under each
+   transformation, with what it looks for in the margin. */
+
+section.questions ul {
+  margin: 0 0 0.5rem;
+  padding-left: 1.2rem;
+  font-size: 1.25rem;
+}
+
+section.questions li {
+  margin-bottom: 0.3rem;
+}
+
+/* The characteristics a requirement is signed off against, with the
+   controls under them. */
+
+table.characteristics {
+  max-width: var(--width-text);
+}
+
+section > table.characteristics th:first-child,
+table.characteristics .check {
+  width: 2rem;
+}
+
+table.characteristics th:nth-child(3) {
+  width: 35%;
+}
+
+table.characteristics .code {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+table.characteristics .said {
+  color: var(--ink-muted);
+}
+
+section.signoff form.determine {
+  flex-direction: row;
+  gap: 0.5rem;
+  max-width: var(--width-text);
+}
+
+section.signoff form.determine button {
+  font-size: 1.1rem;
+  padding: 0.2rem 1rem;
+}
+
+form.determine button.challenge { background: var(--shade-deep); }

@@ -32,6 +32,7 @@ import re
 import urllib.parse
 
 import htpy
+import pytest
 
 import cc_public.web.argument
 import cc_public.web.description
@@ -199,9 +200,9 @@ def test_the_sankey_diagram_is_shown_and_the_graph_folded(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text  = body.decode()
     assert re.search(r'<details class="diagram sankey" open><summary><span class="label">'
-                     r'Sankey of the argument</span></summary><figure class="map sankey">', text)
+                     r'Argument flow</span></summary><figure class="map sankey">', text)
     assert re.search(r'<details class="diagram network"><summary><span class="label">'
-                     r'Graph of the argument</span></summary><figure class="map network">', text)
+                     r'Argument tree</span></summary><figure class="map network">', text)
 
 
 def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
@@ -584,6 +585,45 @@ def test_requirement_page_shows_its_statement(tree):
     assert (b'As soon as the Tooling renames an item, the Tooling shall keep the guid of '
             b'the item.') in body
     assert b'Renaming an item leaves its guid as it was.' in body
+
+
+def test_every_page_links_to_both_indexes(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/')
+    assert b'<a href="/">Issues</a>' in body
+    assert b'<a href="/requirements">Requirements</a>' in body
+
+
+def test_requirement_index_groups_requirements_by_subject(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/requirements')
+    assert status == http.HTTPStatus.OK
+    assert b'<h2>Tooling</h2>' in body
+    assert body.count(b'href="/requirement/req_') == 3
+    assert (b'If an edit would add a failure to the tree, the Tooling shall refuse the '
+            b'edit.') in body
+
+
+def test_requirement_page_reads_down_its_trace(tree):
+    (status, _, body) = cc_public.web.server.respond(
+                            tree, '/requirement/req_edit_refuses_new_failure')
+    assert status == http.HTTPStatus.OK
+    text = body.decode()
+    list_slot = re.findall(r'<span class="slot">(\w+)</span>', text)
+    assert list_slot == ['condition', 'subject', 'obligation', 'process', 'object']
+    list_station = re.findall(r'<div class="block (station[^"]*)">.*?<span class="label">(\w+)',
+                              text)
+    assert list_station == [('station gap', 'Source'), ('station gap', 'Parent'),
+                            ('station', 'Rationale'), ('station statement', 'Statement'),
+                            ('station', 'Subject'), ('station', 'Verification')]
+    assert 'Does ‘failure’ name a process' in text
+    assert text.count('type="checkbox"') == 9
+    assert '/requirement/req_format_keeps_formatted_file' in text
+
+
+@pytest.mark.parametrize('path', ['/requirement/req_missing',
+                                  '/requirement/lc_tooling'])
+def test_requirement_page_of_anything_else_is_not_found(tree, path):
+    (status, _, _) = cc_public.web.server.respond(tree, path)
+    assert status == http.HTTPStatus.NOT_FOUND
 
 
 def _figure(body: bytes) -> bytes:

@@ -47,6 +47,8 @@ KEY_ID_RELATION      = 'id_relation'
 KEY_ID_TARGET        = 'id_target'
 
 PREFIX_REQUIREMENT   = 'req_'
+SLOT_SUBJECT         = 'subject'
+SLOT_PROCESS         = 'process'
 
 R_HAS_SUBJECT        = 'r_has_subject'
 R_HAS_ACTOR          = 'r_has_actor'
@@ -73,6 +75,19 @@ class ErrorCompose(Exception):
 
 
 # -----------------------------------------------------------------------------
+class Part(typing.NamedTuple):
+    """
+    A part of a statement: the slot it fills, its words, and the item
+    the slot names, or None if the slot is text.
+
+    """
+
+    slot:    str
+    text:    str
+    id_item: str | None = None
+
+
+# -----------------------------------------------------------------------------
 def statement(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> str:
     """
     Return the statement composed from the slots of requirement, in the
@@ -84,32 +99,52 @@ def statement(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> 
 
     """
 
-    subject  = _name(node_of, _target(requirement, R_HAS_SUBJECT), KEY_TITLE)
-    process  = _name(node_of, _target(requirement, R_HAS_PROCESS), KEY_TERM_PREFERRED)
-    activity = requirement.get(KEY_ACTIVITY)
+    text = ' '.join(part.text for part in parts(requirement, node_of)) + '.'
+    return text[0].upper() + text[1:]
 
-    list_word = []
+
+# -----------------------------------------------------------------------------
+def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list[Part]:
+    """
+    Return the parts of the statement of requirement in their order, as
+    statement joins them, before the first is capitalized.
+
+    """
+
+    id_subject = _target(requirement, R_HAS_SUBJECT)
+    id_process = _target(requirement, R_HAS_PROCESS)
+    subject    = _name(node_of, id_subject, KEY_TITLE)
+    process    = _name(node_of, id_process, KEY_TERM_PREFERRED)
+    activity   = requirement.get(KEY_ACTIVITY)
+
+    list_part = []
     if KEY_CONDITION in requirement:
         kind = requirement.get(KEY_CONDITION_KIND)
         if kind not in MAP_KEYWORD:
             raise ErrorCompose('The condition has no kind: {kind!r}.'.format(kind = kind))
-        list_word.append('{keyword} {condition},'.format(keyword   = MAP_KEYWORD[kind],
-                                                         condition = requirement[KEY_CONDITION]))
+        list_part.append(Part(KEY_CONDITION,
+                              '{keyword} {condition},'.format(
+                                  keyword   = MAP_KEYWORD[kind],
+                                  condition = requirement[KEY_CONDITION])))
 
-    list_word += ['the', subject, _slot(requirement, KEY_OBLIGATION)]
+    list_part += [Part(SLOT_SUBJECT, 'the ' + subject, id_subject),
+                  Part(KEY_OBLIGATION, _slot(requirement, KEY_OBLIGATION))]
 
     if activity == ACTIVITY_INTERACTION:
-        actor = _name(node_of, _target(requirement, R_HAS_ACTOR), KEY_TITLE)
-        list_word.append('provide the {actor} with the ability to'.format(actor = actor))
+        id_actor = _target(requirement, R_HAS_ACTOR)
+        actor    = _name(node_of, id_actor, KEY_TITLE)
+        list_part.append(Part(KEY_ACTIVITY,
+                              'provide the {actor} with the ability to'.format(actor = actor),
+                              id_actor))
     elif activity == ACTIVITY_INTERFACE:
-        list_word.append('be able to')
+        list_part.append(Part(KEY_ACTIVITY, 'be able to'))
 
-    list_word += [process, _slot(requirement, KEY_OBJECT)]
+    list_part += [Part(SLOT_PROCESS, process, id_process),
+                  Part(KEY_OBJECT, _slot(requirement, KEY_OBJECT))]
     if KEY_QUALIFIER in requirement:
-        list_word.append(_slot(requirement, KEY_QUALIFIER))
+        list_part.append(Part(KEY_QUALIFIER, _slot(requirement, KEY_QUALIFIER)))
 
-    text = ' '.join(list_word) + '.'
-    return text[0].upper() + text[1:]
+    return list_part
 
 
 # -----------------------------------------------------------------------------
