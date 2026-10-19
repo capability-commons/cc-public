@@ -51,6 +51,7 @@ import cc_public.web.argument
 import cc_public.web.description
 import cc_public.web.light
 import cc_public.web.network
+import cc_public.web.restriction
 import cc_public.web.sankey
 
 
@@ -396,6 +397,8 @@ def item(graph: Graph, id_item: str) -> str:
     list_issue = _issues_of(graph, item)
     statement  = _statement(graph, item)
     list_prose = (_paragraphs(item.brief) if statement else []) + _paragraphs(item.description)
+    list_prose += [htpy.p[[_part(part) for part in sentence]]
+                   for sentence in cc_public.web.restriction.sentences(graph, id_item)]
     subtitle   = statement or _prose(item.brief)
 
     return _page(title,
@@ -408,6 +411,20 @@ def item(graph: Graph, id_item: str) -> str:
                              htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_issue)]
                                       for id_issue in list_issue]]] if list_issue else None,
                      htpy.tr[htpy.th(scope = 'row')['Id'], htpy.td[htpy.code[item.id]]]]]])
+
+
+# -----------------------------------------------------------------------------
+def _part(part: cc_public.web.restriction.Part) -> typing.Any:
+    """
+    Return a part of a sentence: its text, or a link with its text to
+    the page of the item it names.
+
+    """
+
+    if isinstance(part, tuple):
+        (id_item, text) = part
+        return htpy.a(href = _href(id_item))[text]
+    return part
 
 
 # -----------------------------------------------------------------------------
