@@ -477,7 +477,9 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
     Return, for each decision, annotation and hub, and for each edge,
     the names of the chains that light it, each with the net effects
     that shade it there. The chains of a concern are those through its
-    hubs, each net effect taken on to the decision of the hub. A hub
+    hubs, each net effect taken on to the decision of the hub. The
+    chain of a picked item also holds, unshaded, the path onward from
+    it to each decision it bears on, as in the Sankey diagram. A hub
     is never shaded.
 
     """
@@ -492,6 +494,10 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
         cc_public.web.light.add(map_sign_node[id_item_lit], key, None)
         _light(map_sign_node, map_sign_edge, key, *_chain(list_edge, id_item_lit, set_role),
                ROLE_FOR)
+        if set_role is None:
+            for edge in _onward(list_edge, id_item_lit):
+                cc_public.web.light.add(map_sign_edge[edge], key, None)
+                cc_public.web.light.add(map_sign_node[edge[1]], key, None)
     for id_concern in list_concern:
         key = cc_public.web.light.chain(id_concern)
         for edge in list_edge:
@@ -527,6 +533,28 @@ def _light(map_sign_node: dict[str, dict[str, set[str]]],
                                     cc_public.web.light.times(role, sign))
     for edge in set_edge:
         cc_public.web.light.add(map_sign_edge[edge], key, None)
+
+
+# -----------------------------------------------------------------------------
+def _onward(list_edge: list[tuple[str, str, str]], id_node: str) -> set[tuple]:
+    """
+    Return the edges of the paths from id_node onward: to what it
+    answers, through the hubs it argues through, to the decisions.
+
+    """
+
+    set_edge  = set()
+    list_todo = [id_node]
+    set_seen  = {id_node}
+    while list_todo:
+        id_from = list_todo.pop()
+        for edge in list_edge:
+            if edge[0] == id_from:
+                set_edge.add(edge)
+                if edge[1] not in set_seen:
+                    set_seen.add(edge[1])
+                    list_todo.append(edge[1])
+    return set_edge
 
 
 # -----------------------------------------------------------------------------

@@ -415,6 +415,12 @@ def test_graph_node_lights_both_its_chains(tree):
     assert 'lit-for-' + name in css('ann_gate_takes_a_minute')
     assert 'lit-against-' + name in css('ann_graphs_will_grow')
     assert 'lit-for-' + name in css('ann_cross_item_checks_run_in_clingo')
+    assert 'lit-' + name in css('dec_tooling_in_python')
+    assert 'lit-' + name not in css('dec_tooling_in_rust')
+    answer = 'ann_cross_item_checks_run_in_clingo'
+    assert 'lit-' + answer in css('ann_graphs_will_grow')
+    assert 'lit-' + answer in css('dec_tooling_in_rust')
+    assert 'lit-' + answer not in css('ann_types_catch_errors_early')
 
 
 def test_sankey_inks_an_answer_by_its_net_effect_on_a_decision(tree):
