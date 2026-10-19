@@ -131,7 +131,8 @@ class _Tree:
                 for unit in self.outline.units(decision   = id_decision,
                                                concern    = id_concern,
                                                annotation = id_annotation):
-                    list_place.append((self._annotation(id_annotation, 0, {id_annotation}),
+                    key = cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation))
+                    list_place.append((self._annotation(id_annotation, 0, {id_annotation}, key),
                                        id_annotation, unit.role))
             list_branch.append((id_concern, list_place))
         bottom = max(self.y - ROW, top)
@@ -165,11 +166,12 @@ class _Tree:
             self._node_concern(id_concern, x, y_port, list_css)
 
     # -------------------------------------------------------------------------
-    def _annotation(self, id_annotation: str, depth: int, set_path: set[str]) -> float:
+    def _annotation(self, id_annotation: str, depth: int, set_path: set[str], key: str) -> float:
         """
         Place a copy of id_annotation at depth, with the branches of
         the annotations that answer it, and return its height. It
-        stands level with its first answer, if it has any.
+        stands level with its first answer, if it has any. key names
+        the same place in the argument under the decision matrix.
 
         """
 
@@ -180,17 +182,18 @@ class _Tree:
         if not list_answer:
             y      = self.y
             self.y = y + ROW
-            self._node_annotation(id_annotation, x, y, False)
+            self._node_annotation(id_annotation, x, y, False, key)
             return y
         self.y   += GAP_PARENT
-        list_y    = [(self._annotation(id_answer, depth + 1, set_path | {id_answer}),
+        list_y    = [(self._annotation(id_answer, depth + 1, set_path | {id_answer},
+                                       cc_public.web.sankey.DELIM_KEY.join((key, id_answer))),
                       id_answer, role)
                      for (id_answer, role) in list_answer]
         y         = list_y[0][0]
         for (y_to, id_answer, role) in list_y:
             self._path(x + RADIUS_ANNOTATION, y, x + COLUMN - RADIUS_ANNOTATION, y_to, role,
                        self.map_sign_edge[(id_answer, id_annotation, role)])
-        self._node_annotation(id_annotation, x, y, True)
+        self._node_annotation(id_annotation, x, y, True, key)
         return y
 
     # -------------------------------------------------------------------------
@@ -240,17 +243,20 @@ class _Tree:
         return ' '.join(['node', kind, cc_public.web.light.CSS_DIMS] + list_css)
 
     # -------------------------------------------------------------------------
-    def _pick(self, id_item: str, node: typing.Any) -> typing.Any:
+    def _pick(self, id_item: str, node: typing.Any, key: str | None = None) -> typing.Any:
         """
         Return node, linked to the page with every chain into id_item
-        lit if id_item is picked.
+        lit if id_item is picked. A key, if given, names the entry of
+        the argument under the decision matrix that a click chooses
+        (see review.js).
 
         """
 
         if id_item not in self.set_pick:
             return node
         name = cc_public.web.light.chain(id_item)
-        return htpy.a(href = '#' + name, class_ = 'pick ' + cc_public.web.light.show(name))[node]
+        return htpy.a({'data-key': key} if key else {},
+                      href = '#' + name, class_ = 'pick ' + cc_public.web.light.show(name))[node]
 
     # -------------------------------------------------------------------------
     def _node_decision(self, id_decision: str, y: float) -> None:
@@ -317,11 +323,16 @@ class _Tree:
             self.graph.title(id_concern)])
 
     # -------------------------------------------------------------------------
-    def _node_annotation(self, id_annotation: str, x: float, y: float, is_parent: bool) -> None:
+    def _node_annotation(self,
+                         id_annotation: str,
+                         x:             float,
+                         y:             float,
+                         is_parent:     bool,
+                         key:           str) -> None:
         """
         Add a copy of the circle of id_annotation at x, y, with its
         number inside and its title above it if is_parent, and
-        otherwise to its right.
+        otherwise to its right. key names its entry under the matrix.
 
         """
 
@@ -343,7 +354,7 @@ class _Tree:
             htpy.circle(cx = _num(x), cy = _num(y), r = str(RADIUS_ANNOTATION), class_ = 'shape'),
             htpy.text(x = _num(x), y = _num(y + 3.5), class_ = 'number')[number],
             text]
-        self.list_node.append(self._pick(id_annotation, node))
+        self.list_node.append(self._pick(id_annotation, node, key))
 
 
 # -----------------------------------------------------------------------------

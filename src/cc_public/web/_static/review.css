@@ -290,20 +290,21 @@ details.annotation > summary:hover .run-in {
   color: var(--link);
 }
 
-/* The annotation a diagram points to is held between a pair of
-   braces in the gutters, as far down as it is open. Shading means
+/* The annotation a diagram points to (by link, or by a script when
+   a node of the graph is clicked) is held between a pair of braces
+   in the gutters, as far down as it is open. Shading means
    depth, so the braces carry the choice instead. Each brace is drawn
    in five filled parts, in the manner of an engraved brace: a curled
    terminal at each end and the beak in the middle keep their size,
    and the two arms between them stretch to the height of the entry,
    thickest midway and tapering to hairlines where they join. */
 
-details.annotation:target {
+details.annotation:is(:target, .chosen) {
   position: relative;
 }
 
-details.annotation:target::before,
-details.annotation:target::after {
+details.annotation:is(:target, .chosen)::before,
+details.annotation:is(:target, .chosen)::after {
   content: "";
   position: absolute;
   top: 0.15rem;
@@ -312,7 +313,7 @@ details.annotation:target::after {
   pointer-events: none;
 }
 
-details.annotation:target::before {
+details.annotation:is(:target, .chosen)::before {
   left: -1.15rem;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 13'%3E%3Cpath d='M6.55 13 C6.55 6 7.6 1.6 11.4 0.8 C8.9 2.1 7.45 6 7.45 13 Z' fill='%235e5648'/%3E%3C/svg%3E") left top / 12px 13px no-repeat,
@@ -322,7 +323,7 @@ details.annotation:target::before {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 13'%3E%3Cpath d='M6.55 0 C6.55 7 7.6 11.4 11.4 12.2 C8.9 10.9 7.45 7 7.45 0 Z' fill='%235e5648'/%3E%3C/svg%3E") left bottom / 12px 13px no-repeat;
 }
 
-details.annotation:target::after {
+details.annotation:is(:target, .chosen)::after {
   right: -1.15rem;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 13'%3E%3Cpath d='M5.45 13 C5.45 6 4.4 1.6 0.6 0.8 C3.1 2.1 4.55 6 4.55 13 Z' fill='%235e5648'/%3E%3C/svg%3E") left top / 12px 13px no-repeat,
