@@ -50,7 +50,7 @@ are written as YAML.
 `set` takes VALUE as text, or as YAML with `--yaml`. PATH is a field
 name, or a dotted path into its value in which a number picks an
 element of a list: `protective_mark.0.id_mark`. Setting or unsetting
-`id_ROLE` sets or takes out `guid_ROLE` with it, so never write a guid
+`id_FIELD` sets or takes out `guid_FIELD` with it, so never write a guid
 by hand. Edges and aliases are not fields for `set`: use `link`,
 `unlink` and `rename`.
 

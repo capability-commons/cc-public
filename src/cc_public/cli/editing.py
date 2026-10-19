@@ -227,7 +227,7 @@ def set_field(id_self, path, value, is_yaml, root, is_dry_run):
 
     PATH is a field name, or a dotted path into its value, in which a
     number picks an element of a list, as in protective_mark.0.id_mark.
-    A field id_ROLE that names an item gets guid_ROLE beside it.
+    A field id_FIELD that names an item gets guid_FIELD beside it.
 
     VALUE is text unless --yaml is given. A prose field is wrapped to
     the width of prose, and a blank line in VALUE starts a new
@@ -255,8 +255,8 @@ def set_field(id_self, path, value, is_yaml, root, is_dry_run):
 @_option
 def unset(id_self, path, root, is_dry_run):
     """
-    Take the field at PATH out of the item ID, with guid_ROLE if it is
-    id_ROLE. PATH is as for set.
+    Take the field at PATH out of the item ID, with guid_FIELD if it is
+    id_FIELD. PATH is as for set.
 
     """
 
