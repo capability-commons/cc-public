@@ -140,7 +140,7 @@ def test_a_decision_sent_is_written_in_its_issue(tree):
                                        target = ID_OPEN, title = 'Tooling in Go',
                                        brief = 'Write the tooling in Go.')
     assert status == http.HTTPStatus.SEE_OTHER
-    assert location == '/issue/{id}#dec_tooling_in_go'.format(id = ID_OPEN)
+    assert location == '/issue/{id}?to=dec_tooling_in_go#dec_tooling_in_go'.format(id = ID_OPEN)
     issue = cc_public.web.argument.Graph(tree).issue(ID_OPEN)
     assert 'dec_tooling_in_go' in [decision.id for decision in issue.list_decision]
 
@@ -163,3 +163,17 @@ def test_an_uphold_sent_changes_the_determination_in_place(tree):
     assert issue.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
     assert issue.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
     assert issue.list_determination[0].brief.strip() == 'Both, for now.'
+
+
+def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
+    for (kind, target, role) in (('decision', ID_OPEN, ''), ('argument', ID_UPHELD, 'for'),
+                                 ('answer', ID_ANNOTATION, 'against'),
+                                 ('determine', ID_UPHELD, 'uphold')):
+        query = cc_public.web.request.query(kind, target, role)
+        text  = cc_public.web.server.respond(tree, '/edit?' + query)[2].decode()
+        for line in cc_public.web.request.MAP_LEAD[kind]:
+            assert line in text
+        assert '<section class="edit-form">' in text
+    assert cc_public.web.request.hint('argument', 'title') != cc_public.web.request.hint(
+                                                                'decision', 'title')
+    assert cc_public.web.request.hint('answer', 'brief') == 'One or two sentences.'

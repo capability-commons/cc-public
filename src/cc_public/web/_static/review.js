@@ -4,7 +4,8 @@
 // of the address, so the page keeps its place instead of jumping to the
 // pinned element. A click off the decision matrix while a decision is
 // shown points the address at a fragment no element has, which hides the
-// decision; folding or opening a diagram does not. Without script the
+// decision; folding or opening a diagram does not, nor does a click in a
+// form opened over the page. Without script the
 // page jumps, and a decision stays shown until another is chosen.
 //
 // A click on an annotation in the graph also chooses its entry in the
@@ -170,7 +171,7 @@ document.addEventListener('click', function (event) {
     return;
   }
   var shown = document.querySelector('section.matrix :is(.decision, .decision-role):target');
-  if (shown && !event.target.closest('section.matrix, details.diagram > summary')) {
+  if (shown && !event.target.closest('section.matrix, details.diagram > summary, dialog')) {
     keep = window.scrollY;
     location.hash = 'unpin';
   }
@@ -184,4 +185,109 @@ window.addEventListener('hashchange', function () {
     window.scrollTo(0, keep);
     keep = null;
   }
+});
+
+// The forms that change the data open over the page they are opened
+// from, in a dialog that shades the page behind it. The pill is a link
+// to the page of its form, which is fetched, and its form shown in the
+// dialog. A form sent from the dialog is sent by script: a refusal
+// comes back into the dialog with its failures, and an edit that is
+// written reloads the page at what it made. Escape or Cancel closes
+// the dialog and changes nothing. Without script the pill opens the
+// page of the form, and the form is sent from there.
+
+var dialog = null;
+
+function formDialog() {
+  if (dialog) {
+    return dialog;
+  }
+  dialog = document.createElement('dialog');
+  dialog.className = 'edit';
+  dialog.addEventListener('click', function (event) {
+    if (event.target.closest('a.cancel')) {
+      event.preventDefault();
+      dialog.close();
+    }
+  });
+  dialog.addEventListener('submit', function (event) {
+    event.preventDefault();
+    send(event.target);
+  });
+  document.body.appendChild(dialog);
+  return dialog;
+}
+
+function showForm(html) {
+  var page = new DOMParser().parseFromString(html, 'text/html');
+  var box = formDialog();
+  var head = document.createElement('header');
+  ['h1', '.subtitle'].forEach(function (selector) {
+    var part = page.querySelector('.masthead ' + selector);
+    if (part) {
+      head.appendChild(document.importNode(part, true));
+    }
+  });
+  box.replaceChildren(head);
+  var section = page.querySelector('section.edit-form');
+  if (section) {
+    box.appendChild(document.importNode(section, true));
+  }
+  if (!box.open) {
+    box.showModal();
+  }
+  var first = box.querySelector('textarea, input[type=text]');
+  if (box.querySelector('.refused')) {
+    box.scrollTop = 0;
+  } else if (first) {
+    first.focus();
+  }
+}
+
+function send(form) {
+  var press = form.querySelector('button[type=submit]');
+  if (press) {
+    press.disabled = true;
+    press.textContent = 'Checking';
+  }
+  fetch(form.action, { method: 'POST', body: new URLSearchParams(new FormData(form)) })
+    .then(function (response) {
+      if (response.redirected) {
+        arrive(response.url);
+        return null;
+      }
+      return response.text().then(showForm);
+    })
+    .catch(function () {
+      form.submit();
+    });
+}
+
+// The address of a written edit names what it made in its query as
+// well as its fragment, since a fetch is not told the fragment. Going
+// to an address that differs only in its fragment would not read the
+// page again, so the page is reloaded there instead.
+
+function arrive(url) {
+  var address = new URL(url);
+  var to = address.searchParams.get('to');
+  var target = address.pathname + address.search + (to ? '#' + encodeURIComponent(to) : '');
+  if (address.pathname + address.search === location.pathname + location.search) {
+    history.replaceState(null, '', target);
+    location.reload();
+  } else {
+    location.href = target;
+  }
+}
+
+document.addEventListener('click', function (event) {
+  var pill = event.target.closest('a.pill');
+  if (!pill || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) {
+    return;
+  }
+  event.preventDefault();
+  fetch(pill.href)
+    .then(function (response) { return response.text(); })
+    .then(showForm)
+    .catch(function () { location.href = pill.href; });
 });

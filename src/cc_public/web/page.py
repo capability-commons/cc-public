@@ -1456,10 +1456,12 @@ def edit(graph:      Graph,
          request:    Request,
          list_added: list[str] | None = None) -> str:
     """
-    Return the form that makes request: the fields its kind needs, filled
-    in with what it holds, and the press that sends it. list_added names
-    the failures the request would have added when it was last sent,
-    and nothing was written.
+    Return the form that makes request: what to write, the fields its
+    kind needs, each with what it is for in the margin and filled in
+    with what request holds, and the press that sends it. list_added
+    names the failures the request would have added when it was last
+    sent, and nothing was written. The page script shows the section
+    of the form over the issue page it was opened from.
 
     """
 
@@ -1476,38 +1478,45 @@ def edit(graph:      Graph,
                                        (KEY_AT,     request.at))
                   if value]
 
+    def field(label: str, key: str, value: str, is_long: bool = False) -> typing.Any:
+        return _field(label, key, value, is_long, cc_public.web.request.hint(request.kind, key))
+
     if request.kind == KIND_DETERMINE:
         existing = cc_public.web.request.determination(graph, id_issue)
         reason   = (existing.brief or '').strip() if existing is not None else ''
-        list_field.append(_field('Reason', KEY_REASON, request.map_text.get(KEY_REASON, reason),
-                                 is_long = True,
-                                 note    = 'The brief of the determination of the issue, '
-                                           'which says why it is settled as it is.'))
+        list_field.append(field('Reason', KEY_REASON, request.map_text.get(KEY_REASON, reason),
+                                is_long = True))
         press = 'Uphold' if request.role == ROLE_UPHOLD else 'Reject'
     else:
-        list_field += [_field('Title', KEY_TITLE, request.text(KEY_TITLE),
-                              note = 'A noun phrase.'),
-                       _field('Brief', KEY_BRIEF, request.text(KEY_BRIEF), is_long = True),
-                       _field('Description', KEY_DESCRIPTION, request.text(KEY_DESCRIPTION),
-                              is_long = True, note = 'Optional.')]
+        list_field += [field('Title', KEY_TITLE, request.text(KEY_TITLE)),
+                       field('Brief', KEY_BRIEF, request.text(KEY_BRIEF), is_long = True),
+                       field('Description', KEY_DESCRIPTION, request.text(KEY_DESCRIPTION),
+                             is_long = True)]
         if request.kind == KIND_ARGUMENT:
             list_field.append(_concern_choice(graph, request, id_issue))
-        list_field.append(_field('Id', KEY_ID, request.text(KEY_ID),
-                                 note = 'Optional: made from the title if left empty.'))
+        list_field.append(field('Id', KEY_ID, request.text(KEY_ID)))
         press = 'Add'
 
     role_press = (ROLE_AGAINST if request.role in (ROLE_AGAINST, ROLE_REJECT)
                   else ROLE_FOR if request.role else '')
 
     return _page(heading,
-                 [_refusal(list_added),
-                  htpy.form(class_ = 'edit', method = 'post', action = PATH_EDIT)[
-                      list_field,
-                      htpy.p(class_ = 'press')[
-                          htpy.button(type   = 'submit',
-                                      class_ = ' '.join(['pill', role_press]).strip())[press],
-                          ' ',
-                          htpy.a(href = PATH_ISSUE + id_issue)['Cancel']]]],
+                 [htpy.section(class_ = 'edit-form')[
+                      _refusal(list_added),
+                      _block([htpy.ul(class_ = 'prompt')[
+                                  [htpy.li[line]
+                                   for line in cc_public.web.request.MAP_LEAD[request.kind]]]],
+                             [htpy.p['What to write']],
+                             class_ = 'prompt'),
+                      htpy.form(class_ = 'edit', method = 'post', action = PATH_EDIT)[
+                          list_field,
+                          htpy.p(class_ = 'press')[
+                              htpy.button(type   = 'submit',
+                                          class_ = ' '.join(['pill', role_press]).strip())[
+                                  press],
+                              ' ',
+                              htpy.a(class_ = 'cancel', href = PATH_ISSUE + id_issue)[
+                                  'Cancel']]]]],
                  [htpy.h1[heading],
                   htpy.p(class_ = 'subtitle')[
                       htpy.a(href = PATH_ISSUE + id_issue)[graph.title(id_issue)]]])
@@ -1560,7 +1569,7 @@ def _concern_choice(graph:    Graph,
                    htpy.div(class_ = 'choice')[[box(id_concern) for id_concern in list_drive]],
                    htpy.div(class_ = 'choice other')[
                        [box(id_concern) for id_concern in list_other]]],
-                  [htpy.p['The drivers of the subject come first. Choose at least one.']],
+                  [htpy.p[cc_public.web.request.hint(request.kind, KEY_CONCERN)]],
                   class_ = 'field')
 
 
@@ -1603,8 +1612,8 @@ def refused(message: str) -> str:
     """
 
     return _page('Refused',
-                 [htpy.h1['Refused'],
-                  htpy.p[message]])
+                 [htpy.section(class_ = 'edit-form')[htpy.p(class_ = 'refused')[message]]],
+                 [htpy.h1['Refused']])
 
 
 # -----------------------------------------------------------------------------

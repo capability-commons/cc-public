@@ -36,6 +36,15 @@ description:            |
                         before. Other decisions keep their standing. A
                         new item takes its id from its title unless
                         one is given.
+
+                        Each form tells the reviewer what it wants, as
+                        a brief tells an agent: MAP_LEAD holds what to
+                        write for each kind, and MAP_HINT what each
+                        field is for. address returns the issue page
+                        to show once a request is made, naming the
+                        item to show in its query as well as its
+                        fragment, since a page that sends a form by
+                        script is not told the fragment.
 relation:               []
 
 ...
@@ -100,6 +109,47 @@ MAP_RELATION      = {ROLE_FOR:     R_SUPPORTS,
 LENGTH_SLUG       = 48
 
 DELIM_KEY         = '/'
+KEY_SHOW          = 'show'
+KEY_TO            = 'to'
+
+# What to write in the form of each kind, as a short list above its
+# fields, so that the reviewer writes what the argument needs.
+#
+MAP_LEAD          = {
+    KIND_DECISION:  ('State the choice, so that it can be upheld or rejected without reading '
+                     'anything else.',
+                     'Say how it differs from the decisions already here.'),
+    KIND_ARGUMENT:  ('Make one assertion that one person could check.',
+                     'Tick the concern it argues for: the one it would weigh for in a ruling.',
+                     'Say where it comes from in the description: a file and line, a commit, '
+                     'a document, or your own judgement.'),
+    KIND_ANSWER:    ('Say what in the annotation is wrong, missing or out of date, and how '
+                     'you know.',
+                     'An answer settles a fact, so it argues for no concern.',
+                     'If what you write is a rule or a commitment, it may belong in a decision '
+                     'instead.'),
+    KIND_DETERMINE: ('Say why this decision is better than its rivals, not only why it is '
+                     'good.',
+                     'Name the challenge you found strongest, and say why it does not change '
+                     'the ruling.',
+                     'Name the concerns that weighed most for this subject.',
+                     'Write two or three sentences.')}
+
+# What each field of a form is for, by kind and field, or by field
+# alone where every kind uses it alike.
+#
+MAP_HINT          = {
+    (KIND_DECISION, KEY_TITLE):  'A short name for the choice.',
+    (KIND_DECISION, KEY_BRIEF):  'The choice itself, in one or two sentences.',
+    (KIND_ARGUMENT, KEY_TITLE):  'A short phrase that states the claim.',
+    (KIND_ANSWER,   KEY_TITLE):  'A short phrase that states what you found.',
+    KEY_BRIEF:                   'One or two sentences.',
+    KEY_DESCRIPTION:             'Optional. Where it comes from, and what a reader needs to '
+                                 'check it.',
+    KEY_ID:                      'Optional. Made from the title if left empty.',
+    KEY_CONCERN:                 'The drivers of the subject come first. Tick at least one.',
+    KEY_REASON:                  'This becomes the brief of the determination of the issue, '
+                                 'in place of what it said before.'}
 
 Graph             = cc_public.web.argument.Graph
 
@@ -334,21 +384,32 @@ def address(graph: Graph, request: Request, id_item: str) -> str:
     path = '/issue/' + issue_of(graph, request)
 
     if request.kind == KIND_DECISION:
-        return '{path}#{id}'.format(path = path, id = id_item)
-
-    if request.kind == KIND_DETERMINE:
-        return '{path}#{id}'.format(path = path, id = request.target)
-
-    if request.kind == KIND_ARGUMENT and request.list_concern:
-        key = DELIM_KEY.join((request.list_concern[0], id_item))
+        list_pair = [(KEY_TO, id_item)]
+    elif request.kind == KIND_DETERMINE:
+        list_pair = [(KEY_TO, request.target)]
+    elif request.kind == KIND_ARGUMENT and request.list_concern:
+        key       = DELIM_KEY.join((request.list_concern[0], id_item))
+        list_pair = [(KEY_SHOW, key), (KEY_TO, key)]
     elif request.kind == KIND_ANSWER and request.at:
-        key = DELIM_KEY.join((request.at, id_item))
+        key       = DELIM_KEY.join((request.at, id_item))
+        list_pair = [(KEY_SHOW, key), (KEY_TO, key)]
     else:
         return path
 
-    return '{path}?{query}#{key}'.format(path  = path,
-                                         query = urllib.parse.urlencode({'show': key}),
-                                         key   = key)
+    return '{path}?{query}#{to}'.format(path  = path,
+                                        query = urllib.parse.urlencode(list_pair),
+                                        to    = list_pair[-1][1])
+
+
+# -----------------------------------------------------------------------------
+def hint(kind: str, key: str) -> str:
+    """
+    Return what the field key of the form of kind is for, or '' if
+    nothing need be said.
+
+    """
+
+    return MAP_HINT.get((kind, key), MAP_HINT.get(key, ''))
 
 
 # -----------------------------------------------------------------------------

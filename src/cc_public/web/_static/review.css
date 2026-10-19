@@ -1685,3 +1685,63 @@ ul.refused {
   margin-top: 0;
   font-size: 0.95rem;
 }
+
+/* A form opened from a page stands over it in a dialog, and the page
+   falls back behind a wash of paper. The dialog keeps the text column
+   and the margin of the page, so the form reads as it does on its own
+   page. */
+
+dialog.edit {
+  box-sizing: border-box;
+  width: min(calc(var(--width-text) + var(--gap) + var(--width-margin) + 4rem), 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 1.2rem 2rem 1.5rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: 0 0.3rem 2rem rgba(31, 27, 22, 0.12);
+}
+
+dialog.edit::backdrop {
+  background: rgba(243, 234, 220, 0.78);
+}
+
+dialog.edit header h1 {
+  margin: 0 0 0.2rem;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+dialog.edit header .subtitle {
+  margin: 0 0 1rem;
+}
+
+dialog.edit button.pill:disabled {
+  color: var(--ink-muted);
+  cursor: progress;
+}
+
+/* What to write: the brief of the form, for the reviewer. */
+
+ul.prompt {
+  margin: 0 0 0.6rem;
+  padding-left: 1.2rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+ul.prompt li + li {
+  margin-top: 0.15rem;
+}
+
+.block.prompt > .margin {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 760px) {
+  dialog.edit {
+    padding: 1rem;
+  }
+}
