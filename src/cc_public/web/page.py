@@ -981,15 +981,11 @@ def _determinations(graph: Graph, issue: Issue) -> typing.Any:
     if not issue.list_determination:
         return None
 
-    set_current = {determination.id for determination in issue.current()}
-
     return htpy.section[
         htpy.h2['Determination'],
         [_block([htpy.p[htpy.span(class_ = 'run-in')[determination.title], ' ',
                         _prose(determination.brief)]],
-                [None if determination.id in set_current
-                 else htpy.p(class_ = 'superseded')['Superseded'],
-                 _note_line('Upholds', _titles(graph, determination.targets(
+                [_note_line('Upholds', _titles(graph, determination.targets(
                                                    cc_public.web.argument.R_UPHOLDS))),
                  _note_line('Rejects', _titles(graph, determination.targets(
                                                    cc_public.web.argument.R_REJECTS))),

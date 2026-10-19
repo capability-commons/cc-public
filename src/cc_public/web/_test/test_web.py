@@ -70,20 +70,13 @@ def test_issue_lists_the_drivers_of_its_subject(tree):
     assert issue.unspoken() == []
 
 
-def test_a_new_determination_supersedes_the_old(tree):
-    graph = cc_public.web.argument.Graph(tree)
-    old   = graph.map_item[ID_DETERMINATION]
-    graph.map_item['det_again'] = cc_public.web.argument.Item(
-                                      id          = 'det_again',
-                                      title       = 'Again',
-                                      brief       = '',
-                                      description = '',
-                                      map_edge    = {'r_upholds':    [ID_REJECTED],
-                                                     'r_rejects':    [ID_UPHELD],
-                                                     'r_supersedes': [old.id]})
-    graph.map_source[('r_upholds', ID_REJECTED)].append('det_again')
-    issue = graph.issue(ID_ISSUE)
-    assert [determination.id for determination in issue.current()] == ['det_again']
+def test_a_determination_changed_in_place_changes_the_standing(tree):
+    path = tree / '_data' / 'issue' / ID_ISSUE / (ID_DETERMINATION + '.yaml')
+    path.write_text(path.read_text().replace('r_upholds', 'r_placeholder')
+                                    .replace('r_rejects', 'r_upholds', 1)
+                                    .replace('r_placeholder', 'r_rejects'))
+    issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
+    assert issue.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_REJECTED
     assert issue.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
 
 

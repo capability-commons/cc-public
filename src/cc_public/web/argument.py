@@ -25,7 +25,8 @@ description:            |
                         decisions, and the driver concerns of its
                         subject. The standing of each decision,
                         upheld, rejected or open, follows from the
-                        determinations that no other supersedes.
+                        determination of the issue, of which there is
+                        at most one.
 relation:               []
 
 ...
@@ -59,7 +60,6 @@ R_SUPPORTS        = 'r_supports'
 R_CHALLENGES      = 'r_challenges'
 R_UPHOLDS         = 'r_upholds'
 R_REJECTS         = 'r_rejects'
-R_SUPERSEDES      = 'r_supersedes'
 R_ARGUES_FOR      = 'r_argues_for_concern'
 R_IS_DRIVEN_BY    = 'r_is_driven_by'
 
@@ -116,25 +116,11 @@ class Issue:
     # -------------------------------------------------------------------------
     def is_open(self) -> bool:
         """
-        Return True if no determination in force settles the issue.
+        Return True if no determination settles the issue.
 
         """
 
-        return not self.current()
-
-    # -------------------------------------------------------------------------
-    def current(self) -> list[Item]:
-        """
-        Return the determinations in force: those that no other
-        determination on the issue supersedes.
-
-        """
-
-        set_superseded = {id_target
-                          for determination in self.list_determination
-                          for id_target in determination.targets(R_SUPERSEDES)}
-        return [determination for determination in self.list_determination
-                if determination.id not in set_superseded]
+        return not self.list_determination
 
     # -------------------------------------------------------------------------
     def unspoken(self) -> list[str]:
@@ -288,7 +274,7 @@ class Graph:
                       set_spoken         = set_spoken)
 
         issue.map_stance = {decision.id: STANCE_OPEN for decision in list_decision}
-        for determination in issue.current():
+        for determination in issue.list_determination:
             for id_decision in determination.targets(R_UPHOLDS):
                 issue.map_stance[id_decision] = STANCE_UPHELD
             for id_decision in determination.targets(R_REJECTS):

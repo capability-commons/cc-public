@@ -380,29 +380,11 @@ def test_a_determination_across_two_issues_is_reported(tree):
     assert failures['determination_across_issues'] == [('det_x', 'iss_x', 'iss_y')]
 
 
-def _two_determinations(tree, is_superseding):
-    """
-    Write two decisions that answer iss_x, det_x upholding dec_x, and
-    det_y upholding dec_y, and superseding det_x if is_superseding.
-
-    """
-
+def test_two_determinations_of_an_issue_are_reported(tree):
     _decision(tree, 'dec_x')
     _decision(tree, 'dec_y')
     _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
-    list_edge = [_edge(tree, 'r_upholds', 'dec_y')]
-    if is_superseding:
-        list_edge.append(_edge(tree, 'r_supersedes', 'det_x'))
-    _item(tree, DIR_ISSUE + 'det_y.yaml', 'det_y', list_edge)
-
-
-def test_a_determination_that_supersedes_the_one_before_passes(tree):
-    _two_determinations(tree, is_superseding = True)
-    assert _check(tree) == {}
-
-
-def test_two_current_determinations_of_an_issue_are_reported(tree):
-    _two_determinations(tree, is_superseding = False)
+    _item(tree, DIR_ISSUE + 'det_y.yaml', 'det_y', [_edge(tree, 'r_upholds', 'dec_y')])
     assert _check(tree) == {'competing_determinations': [('iss_x', 'det_x', 'det_y')]}
 
 
@@ -410,16 +392,17 @@ def test_a_decision_that_supersedes_a_determination_is_reported(tree):
     _decision(tree, 'dec_x')
     _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
     _decision(tree, 'dec_y', [_edge(tree, 'r_supersedes', 'det_x')])
-    assert _check(tree) == {'supersession_across_types': [('dec_y', 'det_x')]}
+    assert _check(tree)['supersession_across_types'] == [('dec_y', 'det_x')]
 
 
-def test_a_determination_that_supersedes_one_of_another_issue_is_reported(tree):
+def test_a_determination_that_supersedes_is_reported(tree):
     _decision(tree, 'dec_x')
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x',
-          [_edge(tree, 'r_upholds', 'dec_x'),
-           _edge(tree, 'r_supersedes', 'det_cross_item_checks_engine')])
-    assert _check(tree) == {'supersession_across_issues': [('det_x',
-                                                            'det_cross_item_checks_engine')]}
+    _decision(tree, 'dec_y')
+    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'dec_x')])
+    _item(tree, DIR_ISSUE + 'det_y.yaml', 'det_y',
+          [_edge(tree, 'r_upholds', 'dec_y'), _edge(tree, 'r_supersedes', 'det_x')])
+    assert ('det_y', 'r_supersedes', 'det_x', 'source', 'rrs_is_supersedable') \
+        in _check(tree)['restriction_violation']
 
 
 def test_a_copy_of_an_item_is_reported(tree):

@@ -529,7 +529,7 @@ argues("r_challenges").
 
 % -----------------------------------------------------------------------------
 % An item supersedes only an item of its own type: a decision another
-% decision, and a determination another determination.
+% decision, and an interface control document another.
 %
 % decl supersession_across_types(source: symbol,
 %                                target: symbol)
@@ -542,35 +542,8 @@ supersession_across_types(Source, Target) :-
 
 
 % -----------------------------------------------------------------------------
-% A determination supersedes only a determination of its own issue.
-%
-% decl supersession_across_issues(determination: symbol,
-%                                 other:         symbol)
-#show supersession_across_issues/2.
-
-supersession_across_issues(Determination, Other) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_supersedes", Other),
-    issue_of(Determination, Issue),
-    not issue_of(Other, Issue).
-
-
-% -----------------------------------------------------------------------------
-% The determination is the current one of its issue: nothing
-% supersedes it.
-%
-% decl current_determination(determination: symbol,
-%                            issue:         symbol)
-
-current_determination(Determination, Issue) :-
-    type_of(Determination, "t_determination"),
-    issue_of(Determination, Issue),
-    not primary_edge(_, "r_supersedes", Determination).
-
-
-% -----------------------------------------------------------------------------
-% An issue has at most one current determination. A later
-% determination names the one it replaces.
+% An issue has at most one determination. A change of ruling edits it in
+% place, and the history of the ruling is the history of its file.
 %
 % decl competing_determinations(issue:         symbol,
 %                               determination: symbol,
@@ -578,8 +551,10 @@ current_determination(Determination, Issue) :-
 #show competing_determinations/3.
 
 competing_determinations(Issue, Determination, Other) :-
-    current_determination(Determination, Issue),
-    current_determination(Other, Issue),
+    type_of(Determination, "t_determination"),
+    type_of(Other, "t_determination"),
+    issue_of(Determination, Issue),
+    issue_of(Other, Issue),
     Determination < Other.
 
 
