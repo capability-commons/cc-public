@@ -16,9 +16,13 @@ brief:                  |
                         the general register entry.
 description:            |
                         A relation entry holds the semantics of one
-                        relation: the types of thing it may join,
-                        whether its edges may form a cycle, and
-                        optionally an embedded inverse reading.
+                        relation: whether its edges may form a cycle,
+                        and optionally an embedded inverse reading.
+                        What may stand at each end is not a field: the
+                        entry names relation restrictions with
+                        r_restricts_source and r_restricts_target
+                        edges, which admit or exclude roles, never
+                        types.
 
                         The brief of a relation entry is its surface
                         form. It reads as a sentence with SUBJ
@@ -45,19 +49,6 @@ properties:
 
   brief:
     $ref:               '#/$defs/surface_form'
-
-  domain:
-    $ref:               '#/$defs/type_list'
-    description:        |
-                        Optional. The types of item that may record an
-                        edge of this relation. Absent means any type.
-
-  range:
-    $ref:               '#/$defs/type_list'
-    description:        |
-                        Optional. The types of item that an edge of
-                        this relation may target. Absent means any
-                        type.
 
   acyclic:
     type:               boolean
@@ -102,15 +93,6 @@ $defs:
                         for the item that records the edge and OBJ for
                         the target. It is one line, which may end in
                         the newline that a literal block ends with.
-
-  type_list:
-    type:               array
-    minItems:           1
-    uniqueItems:        true
-
-    items:
-      $ref:             https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
-      pattern:          ^t_
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml
