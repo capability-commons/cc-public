@@ -24,7 +24,10 @@
 #                         pixi run lint runs the linter. pixi run hooks
 #                         points git at the hooks in .githooks, so that
 #                         pixi run gate and the commit message check run
-#                         before each commit.
+#                         before each commit. pixi run browsers fetches
+#                         the Chromium that the browser tests of the
+#                         review pages drive; they are slow, so only
+#                         pixi run test and pixi run slow run them.
 # relation:               []
 #
 # ...
@@ -60,6 +63,7 @@ cc_public               = { path = ".", editable = true }
 [tool.pixi.dependencies]
 clingo                  = ">=5.8.2,<6"
 jq                      = ">=1.7.1,<2"
+playwright              = ">=1.48,<2"
 python                  = ">=3.12"
 pytest                  = ">=9.1.1,<10"
 pytest-xdist            = ">=3.8,<4"
@@ -71,6 +75,7 @@ test                    = "pytest -n auto --dist worksteal"
 lint                    = "ruff check src"
 gate                    = "cctool gate"
 hooks                   = "git config core.hooksPath .githooks"
+browsers                = "playwright install chromium"
 
 # The slow run: the tests on every Python that requires-python admits,
 # each in an environment of its own. It is too slow for the gate, so it
