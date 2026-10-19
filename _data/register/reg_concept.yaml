@@ -650,3 +650,81 @@ table:
     term_preferred:     refuse
     alias:              []
     relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_role -- Role
+  #
+  con_role:
+    id_self:            con_role
+    guid_self:          con_d9e491abe3374642b8759068895b2056
+    title:              Role
+    brief:              |
+                        Something an item can be cast as in a
+                        relation, shared by every relation that needs
+                        it.
+    description:        |
+                        A role names what an item is to the relations
+                        it takes part in, such as an argument,
+                        something that can be argued for or against,
+                        or a design element. A type says which roles
+                        its items play, and a relation restriction
+                        says which roles an end of a relation needs.
+                        One role serves many relations, and many types
+                        may play it, including the types of a partner
+                        in the federation.
+    note:               |
+                        Role here is the role class of ISO 15926-2,
+                        Industrial automation systems and integration
+                        -- Integration of life-cycle data for process
+                        plants -- Part 2: Data model, whose
+                        role_and_domain is a role shared by many
+                        relationships and played by the members of a
+                        domain. Object-role modelling (Halpin) uses
+                        roles played by object types in the same way.
+
+                        It is not the relation role of ISO/IEC
+                        11179-3:2013, Information technology --
+                        Metadata registries -- Part 3: Registry
+                        metamodel and basic attributes, clause
+                        3.2.120, which is a named end of one relation.
+                        Here the two ends of a relation are its source
+                        and its target, and they are not named items.
+
+                        A role is declared on a type, never on an
+                        item, so that it cannot drift between items of
+                        one type.
+    term_preferred:     role
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_relation_restriction -- Relation restriction
+  #
+  con_relation_restriction:
+    id_self:            con_relation_restriction
+    guid_self:          con_b46ee593c29d4cec9e9ac4238bd98f08
+    title:              Relation restriction
+    brief:              |
+                        A condition on the items that may stand at one
+                        end of a relation, stated in terms of roles.
+    description:        |
+                        A relation restriction is satisfied by an item
+                        whose type plays any role it admits, or does
+                        not play any role it excludes. A relation
+                        names restrictions for its source and for its
+                        target. An end must satisfy every restriction
+                        it names, and an end that names none is open
+                        to any item. The conditions on an end are
+                        therefore in conjunctive normal form, with
+                        negation.
+    note:               |
+                        The name follows the property restrictions of
+                        OWL 2, W3C OWL 2 Web Ontology Language
+                        Structural Specification, section 8, which
+                        state conditions on the values of a property.
+                        A restriction here names roles, never types,
+                        so that a partner in the federation can meet
+                        it by giving its own types a role.
+    term_preferred:     relation restriction
+    alias:              []
+    relation:           []

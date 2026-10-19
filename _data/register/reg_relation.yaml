@@ -540,3 +540,138 @@ table:
 
     alias:              []
     relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_that_play -- Has items that play relation
+  #
+  r_has_items_that_play:
+    id_self:            r_has_items_that_play
+    guid_self:          r_7eb3dc69d8ab45e79b18bec97de5ffa9
+    title:              Has items that play relation
+    brief:              |
+                        SUBJ has items that play OBJ
+    description:        |
+                        Each item of the type identified by SUBJ can
+                        play the role identified by OBJ, so it meets
+                        any relation restriction that admits that
+                        role.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself.
+    note:               |
+                        A partner gives its own types roles with this
+                        edge, in its own register.
+
+    domain:
+      - t_type
+
+    range:
+      - t_role
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_admits -- Admits relation
+  #
+  r_admits:
+    id_self:            r_admits
+    guid_self:          r_df3f1550b33d496295249f45049e0c9c
+    title:              Admits relation
+    brief:              |
+                        SUBJ admits OBJ
+    description:        |
+                        The relation restriction identified by SUBJ is
+                        satisfied by an item whose type plays the role
+                        identified by OBJ. A restriction is satisfied
+                        if any one of its literals is.
+
+    domain:
+      - t_relation_restriction
+
+    range:
+      - t_role
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_excludes -- Excludes relation
+  #
+  r_excludes:
+    id_self:            r_excludes
+    guid_self:          r_57233cb7d0d44ba2b66771f544767cc3
+    title:              Excludes relation
+    brief:              |
+                        SUBJ excludes OBJ
+    description:        |
+                        The relation restriction identified by SUBJ is
+                        satisfied by an item whose type does not play
+                        the role identified by OBJ. A restriction is
+                        satisfied if any one of its literals is.
+    note:               |
+                        Two excludes in one restriction pass anything
+                        that does not play both roles. Neither of two
+                        roles is two restrictions with one exclude
+                        each.
+
+    domain:
+      - t_relation_restriction
+
+    range:
+      - t_role
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_restricts_source -- Restricts source relation
+  #
+  r_restricts_source:
+    id_self:            r_restricts_source
+    guid_self:          r_adcac8092b664b269c2a774e5320d32d
+    title:              Restricts source relation
+    brief:              |
+                        SUBJ restricts its source by OBJ
+    description:        |
+                        Every edge of the relation identified by SUBJ
+                        is recorded by an item that satisfies the
+                        relation restriction identified by OBJ. A
+                        source must satisfy every restriction its
+                        relation names for it, and a relation that
+                        names none has an open source.
+
+    domain:
+      - t_relation
+
+    range:
+      - t_relation_restriction
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # r_restricts_target -- Restricts target relation
+  #
+  r_restricts_target:
+    id_self:            r_restricts_target
+    guid_self:          r_589d8b04783d49c698c6471080254c8a
+    title:              Restricts target relation
+    brief:              |
+                        SUBJ restricts its target by OBJ
+    description:        |
+                        Every edge of the relation identified by SUBJ
+                        points at an item that satisfies the relation
+                        restriction identified by OBJ. A target must
+                        satisfy every restriction its relation names
+                        for it, and a relation that names none has an
+                        open target.
+
+    domain:
+      - t_relation
+
+    range:
+      - t_relation_restriction
+
+    alias:              []
+    relation:           []
