@@ -540,27 +540,58 @@ def _decision_style(list_decision: list[str]) -> typing.Any:
     Return the rules that show the panel of a decision while it, or
     one of its counts, is chosen, and keep its title and the chosen
     count in ink while the titles and counts of the others are greyed.
+    Hovering over a mark anywhere on the page that shows a decision
+    greys the titles and counts of the others in the same way, and
+    wins over a choice.
 
     """
 
-    list_rule = []
-    for id_decision in list_decision:
-        map_id = {'id':      id_decision,
+    list_map  = [{'id':      id_decision,
                   'for':     cc_public.web.light.alias(id_decision, cc_public.web.light.ROLE_FOR),
                   'against': cc_public.web.light.alias(id_decision,
                                                        cc_public.web.light.ROLE_AGAINST)}
+                 for id_decision in list_decision]
+    any_hover = _hovered([map_id[key] for map_id in list_map for key in ('id', 'for', 'against')])
+    list_rule = [
+        (':root:has({any}) section.matrix .row.head .cell a:not(.for, .against) '
+         '{{ color: #a99f8c; }}').format(any = any_hover),
+        (':root:has({any}) section.matrix .row.head .total a '
+         '{{ opacity: 0.45; }}').format(any = any_hover)]
+    for map_decision in list_map:
+        map_id = dict(map_decision,
+                      unhovered = ':root:not(:has({any}))'.format(any = any_hover),
+                      hover     = ':root:has({own})'.format(own = _hovered(
+                                      [map_decision['id'], map_decision['for'],
+                                       map_decision['against']])))
         list_rule += [
             ('section.matrix:has(#{for}:target, #{against}:target) #{id} '
              '{{ display: block; }}').format(**map_id),
-            ('section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
+            ('{unhovered} section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
              '.row.head a[href=\\#{id}] {{ color: var(--ink); }}').format(**map_id),
-            ('section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
+            ('{unhovered} section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
              '.row.head :is(a[href=\\#{for}], a[href=\\#{against}]) '
              '{{ opacity: 1; }}').format(**map_id),
+            ('{hover} section.matrix .row.head .cell a[href=\\#{id}] '
+             '{{ color: var(--ink); }}').format(**map_id),
+            ('{hover} section.matrix .row.head .total '
+             ':is(a[href=\\#{for}], a[href=\\#{against}]) {{ opacity: 1; }}').format(**map_id),
             ('section.matrix:has(#{for}:target) .row.head a[href=\\#{for}], '
              'section.matrix:has(#{against}:target) .row.head a[href=\\#{against}] '
              '{{ text-decoration: underline; }}').format(**map_id)]
     return htpy.style['\n'.join(list_rule)]
+
+
+# -----------------------------------------------------------------------------
+def _hovered(list_name: list[str]) -> str:
+    """
+    Return a selector list that matches while a mark showing any of
+    the names in list_name is hovered over.
+
+    """
+
+    return ', '.join('.{prefix}{name}:hover'.format(prefix = cc_public.web.light.PREFIX_SHOW,
+                                                     name   = name)
+                     for name in list_name)
 
 
 # -----------------------------------------------------------------------------

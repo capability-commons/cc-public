@@ -393,6 +393,18 @@ def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
                          c = concern), text)
 
 
+def test_hovering_a_decision_greys_the_other_titles_in_the_matrix(tree):
+    (_, _, page) = cc_public.web.server.respond(tree, '/issue/iss_tooling_language')
+    text  = page.decode()
+    own   = (':root:has(.show-dec_tooling_in_rust:hover, .show-dec_tooling_in_rust--for:hover, '
+             '.show-dec_tooling_in_rust--against:hover)')
+    assert '.show-dec_tooling_in_rust--against:hover) section.matrix .row.head .cell ' \
+           'a:not(.for, .against) { color: #a99f8c; }' in text
+    assert own + ' section.matrix .row.head .cell a[href=\\#dec_tooling_in_rust] ' \
+                 '{ color: var(--ink); }' in text
+    assert ':root:not(:has(.show-dec_tooling_in_python:hover' in text
+
+
 def test_graph_node_lights_both_its_chains(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
