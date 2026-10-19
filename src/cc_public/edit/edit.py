@@ -90,9 +90,14 @@ TUPLE_KEY_PROSE   = ('title', 'brief', 'description', 'usage', 'note')
 TUPLE_KEY_LEAD    = ('$schema', '$id')
 
 # Fields that set_field does not change: identity is fixed, and edges
-# and aliases are lists that other commands keep.
+# and aliases are lists that other commands keep. Each says what does
+# change it, so that a refusal says what to do instead.
 #
-SET_KEY_FIXED     = {KEY_ID_SELF, KEY_GUID_SELF, KEY_RELATION, KEY_ALIAS}
+MAP_KEY_FIXED     = {KEY_ID_SELF:   'cctool rename changes an id',
+                     KEY_GUID_SELF: 'a guid never changes',
+                     KEY_RELATION:  'cctool link and cctool unlink change edges',
+                     KEY_ALIAS:     'cctool rename keeps the old id as an alias'}
+SET_KEY_FIXED     = set(MAP_KEY_FIXED)
 
 # A standalone item takes its rights from the item of the project.
 #
@@ -246,7 +251,8 @@ def new(tree:       Tree,
     map_type       = {row[1]: row[0] for row in tree.facts['type_prefix']}
 
     if prefix not in map_type:
-        raise ErrorEdit('No type has the prefix {prefix}.'.format(prefix = prefix))
+        raise ErrorEdit('No type has the prefix {prefix}. reg_data_item_type.yaml lists '
+                        'the types.'.format(prefix = prefix))
     if prefix in SET_PREFIX_SOURCE:
         raise ErrorEdit('An item of {type} is written in the file it names: give the file '
                         'its item with header.'.format(type = map_type[prefix]))
@@ -289,7 +295,8 @@ def header(tree:       Tree,
     path = pathlib.Path(relative)
 
     if path.suffix in SET_SUFFIX_BARE:
-        raise ErrorEdit('{file} cannot hold a header.'.format(file = relative))
+        raise ErrorEdit('{file} cannot hold a header. A YAML, JSON or Markdown file is '
+                        'a document: make its items with cctool new.'.format(file = relative))
 
     if path.suffix in cc_public.graph.extract.MAP_PREFIX_MODULE:
         expected = cc_public.graph.extract.module_name(path)
@@ -305,7 +312,8 @@ def header(tree:       Tree,
 
     (prefix, _, _) = id_self.partition(DELIM_PREFIX)
     if prefix not in {row[1] for row in tree.facts['type_prefix']}:
-        raise ErrorEdit('No type has the prefix {prefix}.'.format(prefix = prefix))
+        raise ErrorEdit('No type has the prefix {prefix}. reg_data_item_type.yaml lists '
+                        'the types.'.format(prefix = prefix))
 
     map_field = _fields(tree, id_self, list_field, list_link, None)
     list_doc  = [cc_public.graph.extract.LINE_OPEN, '',
@@ -418,7 +426,8 @@ def _definition(text: str, relative: str, list_name: list[str]) -> ast.AST:
         node = list_child[-1]
 
     if node.body[0].lineno == node.lineno:
-        raise ErrorEdit('The body of {name} is on the line that defines it.'.format(
+        raise ErrorEdit('The body of {name} is on the line that defines it. Put the body '
+                        'on a line of its own, then add the header.'.format(
                                                                         name = list_name[-1]))
 
     return node
@@ -598,7 +607,8 @@ def _path(path: str) -> tuple[str, list[str]]:
     (key, *list_part) = path.split(DELIM_PATH)
 
     if key in SET_KEY_FIXED:
-        raise ErrorEdit('The field {key} is not set this way.'.format(key = key))
+        raise ErrorEdit('The field {key} is not set this way: {how}.'.format(
+                                key = key, how = MAP_KEY_FIXED[key]))
     if not all([key, *list_part]):
         raise ErrorEdit('The path {path} has an empty part.'.format(path = path))
 
@@ -1150,7 +1160,8 @@ def _ordered(list_field: list[tuple[str, typing.Any]]) -> dict:
     map_field = dict(list_field)
     for key in SET_KEY_FIXED:
         if key in map_field:
-            raise ErrorEdit('The field {key} is not set this way.'.format(key = key))
+            raise ErrorEdit('The field {key} is not set this way: {how}.'.format(
+                                key = key, how = MAP_KEY_FIXED[key]))
 
     return ({key: map_field[key] for key in TUPLE_KEY_PROSE if key in map_field}
             | {key: value for (key, value) in map_field.items() if key not in TUPLE_KEY_PROSE})

@@ -424,12 +424,13 @@ def test_header_makes_a_logic_program_file_that_is_not_there(tree, zero):
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
-    ({'header': 'README.md', 'id': 'file_readme'}, 'README.md cannot hold a header.'),
+    ({'header': 'README.md', 'id': 'file_readme'}, ('README.md cannot hold a header. A YAML, JSON or Markdown file is a '
+                                                     'document: make its items with cctool new.')),
     ({'header': 'src/cc_public/edit/extra.py', 'id': 'pym_extra'},
      'The item of src/cc_public/edit/extra.py has the id pym_cc_public.edit.extra, not pym_extra.'),
     ({'header': 'tool/run'}, 'Give the id of the item of tool/run.'),
     ({'header': 'src/cc_public/edit/edit.py'}, 'src/cc_public/edit/edit.py already holds an item.'),
-    ({'header': 'tool/run', 'id': 'zzz_run'}, 'No type has the prefix zzz.'),
+    ({'header': 'tool/run', 'id': 'zzz_run'}, 'No type has the prefix zzz. reg_data_item_type.yaml lists the types.'),
 ])
 def test_a_header_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
@@ -632,13 +633,13 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
-    ({'new': 'zzz_x'}, 'No type has the prefix zzz.'),
+    ({'new': 'zzz_x'}, 'No type has the prefix zzz. reg_data_item_type.yaml lists the types.'),
     ({'new': 'con_concept'}, 'An item with the id con_concept exists.'),
     ({'new': 'pym_x'}, 'An item of t_python_module is written in the file it names: give the '
                        'file its item with header.'),
     ({'new': 'ann_x', 'link': [['r_is_about', 'con_none']]}, 'No item has the id con_none.'),
     ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),
-    ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way.'),
+    ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way: cctool rename changes an id.'),
     ({'set': ['con_none', 'note', 'x']}, 'No item has the id con_none.'),
     ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, header, link, "
                                   "unlink, set, unset, remove or rename: "
@@ -646,7 +647,8 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
     ({'unlink': ['con_concept', 'r_is_about', 'con_type']},
      'con_concept has no edge of r_is_about to con_type.'),
     ({'unset': ['con_concept', 'note']}, 'con_concept has no field note.'),
-    ({'unset': ['con_concept', 'alias']}, 'The field alias is not set this way.'),
+    ({'unset': ['con_concept', 'alias']}, ('The field alias is not set this way: cctool rename keeps the old id '
+                                                  'as an alias.')),
     ({'set': ['con_register_entry', 'term_admitted.9', 'x']},
      '9 is not the index of an element of a list of 1.'),
     ({'set': ['con_concept', 'title.x', 'x']},
