@@ -573,18 +573,39 @@ def test_a_reference_with_a_stale_guid_is_reported(tree):
                                                  edge['guid_target'], location, LINE_TARGET)]}
 
 
-def test_an_edge_from_outside_the_domain_is_reported(tree):
-    # Support runs from an annotation. A decision gives no reasons.
+def test_an_edge_from_a_source_its_relation_restricts_is_reported(tree):
+    # Support runs from an argument. A decision gives no reasons.
     _decision(tree, 'dec_x')
     _decision(tree, 'dec_y', [_edge(tree, 'r_supports', 'dec_x')])
-    assert _check(tree) == {'domain_violation': [('dec_y', 'r_supports', 't_decision')]}
+    assert _check(tree) == {'restriction_violation': [
+        ('dec_y', 'r_supports', 'dec_x', 'source', 'rrs_is_argument')]}
 
 
-def test_an_edge_to_outside_the_range_is_reported(tree):
-    # Support runs to an assertion or a choice, not to a concern.
+def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
+    # Support runs to something arguable, not to a concern.
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', ID_ABOUT)])
-    assert _check(tree) == {'range_violation': [(ID_ABOUT, 'r_supports', 't_concern')]}
+    assert _check(tree) == {'restriction_violation': [
+        ('ann_x', 'r_supports', ID_ABOUT, 'target', 'rrs_is_arguable')]}
+
+
+def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
+    # With its literal turned to an exclude, the restriction on the source
+    # of r_has_subject passes an annotation and fails every requirement.
+    literal = ('id_relation:    {relation}\n'
+               '        guid_relation:  {guid}\n'
+               '        id_target:      rol_requirement\n')
+    _replace(tree, '_data/register/reg_relation_restriction.yaml',
+             literal.format(relation = 'r_admits', guid = _guid_of(tree, 'r_admits')),
+             literal.format(relation = 'r_excludes', guid = _guid_of(tree, 'r_excludes')))
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
+                                                         _edge(tree, 'r_has_subject', ID_ABOUT)])
+    failures = _check(tree)
+    assert list(failures) == ['restriction_violation']
+    assert {row[0] for row in failures['restriction_violation']} == {
+        'req_edit_refuses_new_failure', 'req_format_keeps_formatted_file', 'req_rename_keeps_guid'}
+    assert {row[3:] for row in failures['restriction_violation']} == {
+        ('source', 'rrs_is_requirement')}
 
 
 def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
@@ -815,8 +836,9 @@ def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
              'r_is_specified_by_schema\n        guid_relation:  '
              'r_d70024bd40444f93b4fc1903379ded81\n        id_target:      sch_file\n')
     assert _check(tree) == {
-        'domain_violation': [('t_file', 'r_is_specified_by_schema', 't_type')],
-        'schema_count':     [('t_file', '0')]}
+        'restriction_violation': [
+            ('t_file', 'r_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
+        'schema_count':          [('t_file', '0')]}
 
 
 def test_a_schema_nothing_uses_is_reported(tree):

@@ -31,11 +31,12 @@ note:                   |
                         an edge uses it.
 
                         An entry holds the semantics of its relation:
-                        the domain, the range, the cardinality at each
-                        end, and whatever else a checker reads. Where
-                        the opposite reading is useful, the entry
-                        embeds an inverse, which holds an identity and
-                        a surface form and nothing else. An inverse is
+                        the relation restrictions on its source and
+                        target, the cardinality at each end, and
+                        whatever else a checker reads. Where the
+                        opposite reading is useful, the entry embeds
+                        an inverse, which holds an identity and a
+                        surface form and nothing else. An inverse is
                         minted when an item wants to record an edge
                         that way, and not as a matter of course.
 
@@ -74,15 +75,19 @@ table:
                         The edge is about SUBJ, not about the items of
                         a type. A type names the schema of its items
                         with r_has_items_specified_by_schema.
-
-    domain:
-      - t_register
-
-    range:
-      - t_schema
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_register
+        guid_target:    rrs_5ecccc51a43a49cb9434bec48c32ddc3
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_schema
+        guid_target:    rrs_de14daf3e78e467985b37be34b3e8127
 
   # ---------------------------------------------------------------------------
   # r_has_items_specified_by_schema -- Has items specified by schema relation
@@ -100,15 +105,19 @@ table:
                         The edge is about the items of SUBJ, not about
                         SUBJ itself. The shape of a type entry is
                         named by the edge on t_type.
-
-    domain:
-      - t_type
-
-    range:
-      - t_schema
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_schema
+        guid_target:    rrs_de14daf3e78e467985b37be34b3e8127
 
   # ---------------------------------------------------------------------------
   # r_has_items_held_in_register -- Has items held in register relation
@@ -128,16 +137,20 @@ table:
                         item type register by containment, and needs
                         no edge to say so.
 
-    domain:
-      - t_type
-
-    range:
-      - t_register
-
     alias:
       - r_is_held_in_register
 
-    relation:           []
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_register
+        guid_target:    rrs_5ecccc51a43a49cb9434bec48c32ddc3
 
   # ---------------------------------------------------------------------------
   # r_is_about -- Is about relation
@@ -163,13 +176,14 @@ table:
                         hold several, where it concerns how two items
                         meet. An annotation about an issue belongs to
                         that issue, and is kept in its folder.
-
-    domain:
-      - t_annotation
-      - t_issue
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_discussion
+        guid_target:    rrs_065e1f2ffda14288bc1ae33b75b7160b
 
   # ---------------------------------------------------------------------------
   # r_supports -- Supports relation
@@ -194,17 +208,20 @@ table:
                         A chain of support may not lead back to where
                         it began, since an argument cannot be its own
                         reason.
-
-    domain:
-      - t_annotation
-
-    range:
-      - t_annotation
-      - t_decision
-
     acyclic:            true
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_arguable
+        guid_target:    rrs_2759285afc9b496dbd990556c25ceba1
 
   # ---------------------------------------------------------------------------
   # r_challenges -- Challenges relation
@@ -224,16 +241,19 @@ table:
                         challenges. Nothing here computes which
                         assertion or choice prevails, and one that
                         nothing answers is not thereby established.
-
-    domain:
-      - t_annotation
-
-    range:
-      - t_annotation
-      - t_decision
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_arguable
+        guid_target:    rrs_2759285afc9b496dbd990556c25ceba1
 
   # ---------------------------------------------------------------------------
   # r_supersedes -- Supersedes relation
@@ -258,18 +278,20 @@ table:
                         so that each issue has at most one current
                         determination. A chain of supersession may not
                         lead back to where it began.
-
-    domain:
-      - t_decision
-      - t_determination
-
-    range:
-      - t_decision
-      - t_determination
-
     acyclic:            true
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_supersedable
+        guid_target:    rrs_2042666b9e044eea8d54334d94d6b2d8
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_supersedable
+        guid_target:    rrs_2042666b9e044eea8d54334d94d6b2d8
 
   # ---------------------------------------------------------------------------
   # r_argues_for_concern -- Argues for concern relation
@@ -309,15 +331,19 @@ table:
                         48, 2008. How the concerns of one annotation
                         are weighed together is left to the
                         evaluation.
-
-    domain:
-      - t_annotation
-
-    range:
-      - t_concern
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_concern
+        guid_target:    rrs_9e0c9b6a125a4ebcadbd4568ca952b78
 
   # ---------------------------------------------------------------------------
   # r_realizes -- Realizes relation
@@ -339,18 +365,19 @@ table:
                         one realizes the same logical component, and
                         what was decided about the logical component
                         stays with it.
-
-    domain:
-      - t_python_package
-      - t_python_module
-      - t_logic_program_file
-      - t_file
-
-    range:
-      - t_logical_component
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_implementation
+        guid_target:    rrs_04f6c05bf3d641b1a276d22fe1bea5f8
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_design_element
+        guid_target:    rrs_8094112c3eac4da688eaa0103995dfbf
 
   # ---------------------------------------------------------------------------
   # r_upholds -- Upholds relation
@@ -366,15 +393,19 @@ table:
                         that the decision identified by OBJ holds,
                         given the arguments presented when it was
                         made.
-
-    domain:
-      - t_determination
-
-    range:
-      - t_decision
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_determination
+        guid_target:    rrs_ca8e9fa5e342480ab3e051b55d2e979c
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_decision
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
 
   # ---------------------------------------------------------------------------
   # r_rejects -- Rejects relation
@@ -393,15 +424,19 @@ table:
 
                         The decision keeps its argument, so that the
                         reasons it was rejected stay on record.
-
-    domain:
-      - t_determination
-
-    range:
-      - t_decision
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_determination
+        guid_target:    rrs_ca8e9fa5e342480ab3e051b55d2e979c
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_decision
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
 
   # ---------------------------------------------------------------------------
   # r_is_driven_by -- Is driven by relation
@@ -429,15 +464,19 @@ table:
                         4.3.1, which are the stakes and properties an
                         architecture should favour, and against which
                         each design decision is checked.
-
-    domain:
-      - t_logical_component
-
-    range:
-      - t_concern
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_design_element
+        guid_target:    rrs_8094112c3eac4da688eaa0103995dfbf
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_concern
+        guid_target:    rrs_9e0c9b6a125a4ebcadbd4568ca952b78
 
   # ---------------------------------------------------------------------------
   # r_answers -- Answers relation
@@ -453,15 +492,19 @@ table:
                         to the issue identified by OBJ. The decisions
                         that answer one issue are alternatives to one
                         another.
-
-    domain:
-      - t_decision
-
-    range:
-      - t_issue
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_decision
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_issue
+        guid_target:    rrs_75d4f18b3e7941dd88a2694320c7a98f
 
   # ---------------------------------------------------------------------------
   # r_has_subject -- Has subject relation
@@ -479,15 +522,18 @@ table:
                         of the syntax in ISO/IEC/IEEE 29148 clause
                         5.2.4. The statement names it by its title.
     note:               |
-                        The range is open for now, because most
-                        subjects belong to a project or a partner, not
-                        to cc-public. It is to be revisited.
-
-    domain:
-      - t_requirement
-
+                        The target is open for now, with no relation
+                        restriction, because most subjects belong to a
+                        project or a partner, not to cc-public. It is
+                        to be revisited.
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
 
   # ---------------------------------------------------------------------------
   # r_has_actor -- Has actor relation
@@ -505,14 +551,16 @@ table:
                         statement names the actor by its title.
     note:               |
                         Held only by a requirement whose activity is
-                        interaction. The range is open for now, as for
-                        r_has_subject.
-
-    domain:
-      - t_requirement
-
+                        interaction. The target is open for now, as
+                        for r_has_subject.
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
 
   # ---------------------------------------------------------------------------
   # r_has_process -- Has process relation
@@ -532,14 +580,16 @@ table:
                         cannot be written.
     note:               |
                         The process word of the SOPHIST MASTER
-                        template. The range is open for now, as for
+                        template. The target is open for now, as for
                         r_has_subject.
-
-    domain:
-      - t_requirement
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
 
   # ---------------------------------------------------------------------------
   # r_has_items_that_play -- Has items that play relation
@@ -561,15 +611,19 @@ table:
     note:               |
                         A partner gives its own types roles with this
                         edge, in its own register.
-
-    domain:
-      - t_type
-
-    range:
-      - t_role
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
 
   # ---------------------------------------------------------------------------
   # r_admits -- Admits relation
@@ -585,15 +639,19 @@ table:
                         satisfied by an item whose type plays the role
                         identified by OBJ. A restriction is satisfied
                         if any one of its literals is.
-
-    domain:
-      - t_relation_restriction
-
-    range:
-      - t_role
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
 
   # ---------------------------------------------------------------------------
   # r_excludes -- Excludes relation
@@ -614,15 +672,19 @@ table:
                         that does not play both roles. Neither of two
                         roles is two restrictions with one exclude
                         each.
-
-    domain:
-      - t_relation_restriction
-
-    range:
-      - t_role
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
 
   # ---------------------------------------------------------------------------
   # r_restricts_source -- Restricts source relation
@@ -640,15 +702,19 @@ table:
                         source must satisfy every restriction its
                         relation names for it, and a relation that
                         names none has an open source.
-
-    domain:
-      - t_relation
-
-    range:
-      - t_relation_restriction
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation
+        guid_target:    rrs_c011b9bbb7f843abbbfdfa3d9546ceaa
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
 
   # ---------------------------------------------------------------------------
   # r_restricts_target -- Restricts target relation
@@ -666,12 +732,16 @@ table:
                         satisfy every restriction its relation names
                         for it, and a relation that names none has an
                         open target.
-
-    domain:
-      - t_relation
-
-    range:
-      - t_relation_restriction
-
     alias:              []
-    relation:           []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation
+        guid_target:    rrs_c011b9bbb7f843abbbfdfa3d9546ceaa
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b

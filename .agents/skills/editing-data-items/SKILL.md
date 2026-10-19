@@ -82,9 +82,13 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   (`competing_determinations`) unless it replaces the current one:
   give it `--link r_supersedes DET`. Never edit or remove the earlier
   determination; it stays as the record of what was determined before.
-- **`domain_violation` or `range_violation`** means the relation does
-  not run between those types. Read the relation's `domain` and `range`
-  in `reg_relation.yaml`; do not pick another relation just to pass.
+- **`restriction_violation`** means an end of the edge does not meet a
+  relation restriction its relation names (`r_restricts_source` or
+  `r_restricts_target` in `reg_relation.yaml`). A restriction admits or
+  excludes roles, and a type's items play the roles its entry in
+  `reg_data_item_type.yaml` names with `r_has_items_that_play`. Do not
+  pick another relation just to pass. A new type takes part in a
+  relation by playing the role it needs, not by changing the relation.
 - **An annotation that supports or challenges a decision needs at least
   one concern** (`argument_without_concern`), and one that bears on no
   decision needs none (`concern_without_decision`). A premise several

@@ -133,10 +133,6 @@ RELATION          = {
                            'as written. primary_edge reads edges through inverses.'),
     'type_prefix':        (('type', 'prefix', 'regex'),
                            'The type has the id prefix, and its ids match regex.'),
-    'relation_domain':    (('relation', 'type'),
-                           'The source of an edge of relation may be of type.'),
-    'relation_range':     (('relation', 'type'),
-                           'The target of an edge of relation may be of type.'),
     'relation_inverse':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
     'register_entry_key': (('register', 'key', 'id'),
@@ -641,10 +637,6 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
 
     if isinstance(prefix, str) and isinstance(regex_id, str):
         facts['type_prefix'].add((id_self, prefix, regex_id))
-
-    for name in ('domain', 'range'):
-        for id_type in _list_str(node.get(name)):
-            facts['relation_' + name].add((id_self, id_type))
 
     if node.get(KEY_ACYCLIC) is True:
         facts['relation_acyclic'].add((id_self,))

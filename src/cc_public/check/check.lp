@@ -280,33 +280,45 @@ stale_guid(Holder, Field, Id, Guid, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% The source of an edge is of a type its relation's domain allows.
+% A type satisfies a relation restriction if any one of its literals
+% holds: its items play a role the restriction admits, or do not play
+% a role it excludes.
 %
-% decl domain_violation(source:   symbol,
-%                       relation: symbol,
-%                       type:     symbol)
-#show domain_violation/3.
+% decl satisfies(type:        symbol,
+%                restriction: symbol)
 
-domain_violation(Source, Relation, Type) :-
-    primary_edge(Source, Relation, _),
-    relation_domain(Relation, _),
-    type_of(Source, Type),
-    not relation_domain(Relation, Type).
+satisfies(Type, Restriction) :-
+    primary_edge(Restriction, "r_admits", Role),
+    primary_edge(Type, "r_has_items_that_play", Role).
+
+satisfies(Type, Restriction) :-
+    primary_edge(Restriction, "r_excludes", Role),
+    type_prefix(Type, _, _),
+    not primary_edge(Type, "r_has_items_that_play", Role).
 
 
 % -----------------------------------------------------------------------------
-% The target of an edge is of a type its relation's range allows.
+% Each end of an edge satisfies every restriction its relation names
+% for that end. An end that names none is open to any item.
 %
-% decl range_violation(target:   symbol,
-%                      relation: symbol,
-%                      type:     symbol)
-#show range_violation/3.
+% decl restriction_violation(source:      symbol,
+%                            relation:    symbol,
+%                            target:      symbol,
+%                            end:         symbol,
+%                            restriction: symbol)
+#show restriction_violation/5.
 
-range_violation(Target, Relation, Type) :-
-    primary_edge(_, Relation, Target),
-    relation_range(Relation, _),
+restriction_violation(Source, Relation, Target, "source", Restriction) :-
+    primary_edge(Source, Relation, Target),
+    primary_edge(Relation, "r_restricts_source", Restriction),
+    type_of(Source, Type),
+    not satisfies(Type, Restriction).
+
+restriction_violation(Source, Relation, Target, "target", Restriction) :-
+    primary_edge(Source, Relation, Target),
+    primary_edge(Relation, "r_restricts_target", Restriction),
     type_of(Target, Type),
-    not relation_range(Relation, Type).
+    not satisfies(Type, Restriction).
 
 
 % -----------------------------------------------------------------------------
