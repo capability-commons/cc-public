@@ -649,12 +649,14 @@ def _definitions(root, relative, id_class, id_method):
                    + '        return 1\n')
 
 
-def _interface(root, id_function, surface = None):
+def _interface(root, id_function, surface = None, stated = None, returns = None):
     """
     Write the interface control document icd_x, with a python surface
     that holds one function member, id_function, with one parameter,
     and return the path of its file. surface, if given, takes the
-    place of the python surface.
+    place of the python surface. stated, if given, adds its fields to
+    the parameter, and returns, if given, is the spelling of the type
+    the function returns.
 
     """
 
@@ -665,7 +667,10 @@ def _interface(root, id_function, surface = None):
                 'parameter': [{'id_self':   id_function + '.root',
                                'guid_self': _guid('icm'),
                                'name':      'root',
-                               'brief':     'Where to run it.'}]}
+                               'brief':     'Where to run it.',
+                               **(stated or {})}]}
+    if returns is not None:
+        function['returns'] = {'type': {'spelling': returns}, 'brief': 'What it found.'}
     document = _fields(root, 'icd_x')
     document.update({'version_interface': '1.0',
                      'surface':           surface or {'python': {'native': {
@@ -712,17 +717,20 @@ def test_a_surface_of_two_forms_is_reported(tree):
         ('icd_x', 'sch_interface_control_document', location, 'surface/python')}
 
 
-def _realizing(root, list_parameter):
+def _realizing(root, list_parameter, returns = None):
     """
     Write a python module with a function whose item realizes the
-    member icm_x.run of icd_x, and which takes list_parameter.
+    member icm_x.run of icd_x, and which takes list_parameter and,
+    if returns is given, says it returns that type.
 
     """
 
     item = _dump(_fields(root, 'pyf_x.y.run', [_edge(root, 'r_realizes', 'icm_x.run')]))
     _module(root, 'src/x/y.py', 'pym_x.y')
     with (root / 'src/x/y.py').open('a') as file:
-        file.write('\n\ndef run({parameter}):\n'.format(parameter = ', '.join(list_parameter))
+        file.write('\n\ndef run({parameter}){returns}:\n'.format(
+                       parameter = ', '.join(list_parameter),
+                       returns   = '' if returns is None else ' -> ' + returns)
                    + ''.join('    ' + line if line.strip() else line for line in
                              ('"""\n---\n' + item + '...\n"""\n').splitlines(True))
                    + '    return 1\n')
@@ -752,9 +760,54 @@ def test_the_receiver_of_a_method_is_not_a_parameter():
     text = ('class Thing:\n'
             '    def run(self, a, *b, c, **d):\n'
             '        """\n        ---\n        id_self: pyf_x.thing.run\n        ...\n        """\n')
-    assert [found[2] for found in
+    assert [tuple(name for (name, _) in found[2]) for found in
             cc_public.graph.extract.definitions(text, pathlib.Path('src/x.py'))] == [
            ('a', 'b', 'c', 'd')]
+
+
+def test_the_parts_of_each_parameter_and_the_return_type_are_read():
+    text = ('def run(a: int, b=1, *c: str, d: x.Y | None = None, **e) -> list[int]:\n'
+            '    """\n    ---\n    id_self: pyf_x.run\n    ...\n    """\n')
+    ((_, _, tuple_parameter, returns, _),) = cc_public.graph.extract.definitions(
+                                                text, pathlib.Path('src/x.py'))
+    assert returns == 'list[int]'
+    assert [(name, map_part['type'], map_part['default'], map_part['optional'],
+             map_part['variadic']) for (name, map_part) in tuple_parameter] == [
+        ('a', 'int',         '',     'false', 'false'),
+        ('b', '',            '1',    'true',  'false'),
+        ('c', 'str',         '',     'true',  'true'),
+        ('d', 'x.Y | None',  'None', 'true',  'false'),
+        ('e', '',            '',     'true',  'true')]
+
+
+def test_a_signature_the_function_matches_passes(tree):
+    _interface(tree, 'icm_x.run',
+               stated  = {'type': {'spelling': 'int'}, 'default': '1', 'optional': True},
+               returns = 'int')
+    _realizing(tree, ['root: int = 1'], returns = 'int')
+    assert _check(tree) == {}
+
+
+def test_a_signature_the_function_does_not_match_is_reported(tree):
+    _interface(tree, 'icm_x.run',
+               stated  = {'type':     {'spelling': 'int'},
+                          'default':  '1',
+                          'optional': True,
+                          'variadic': True},
+               returns = 'int')
+    _realizing(tree, ['root: str'], returns = 'list[int]')
+    assert _check(tree) == {'signature_mismatch': [
+        ('icm_x.run',      'pyf_x.y.run', 'returns',  'int',  'list[int]'),
+        ('icm_x.run.root', 'pyf_x.y.run', 'default',  '1',    ''),
+        ('icm_x.run.root', 'pyf_x.y.run', 'optional', 'true', 'false'),
+        ('icm_x.run.root', 'pyf_x.y.run', 'type',     'int',  'str'),
+        ('icm_x.run.root', 'pyf_x.y.run', 'variadic', 'true', 'false')]}
+
+
+def test_a_part_the_member_does_not_state_is_not_compared(tree):
+    _interface(tree, 'icm_x.run')
+    _realizing(tree, ['root: int = 1'], returns = 'int')
+    assert _check(tree) == {}
 
 
 def test_a_class_and_a_method_named_for_their_place_pass(tree):

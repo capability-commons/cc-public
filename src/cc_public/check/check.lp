@@ -274,15 +274,22 @@ misnamed_member(Id, Holder) :-
 % stated or actual is empty where the member or the function has no
 % parameter at that position.
 %
+% decl parameter_member(member:    symbol,
+%                       position:  number,
+%                       parameter: symbol)
+
+parameter_member(Member, Position, Parameter) :-
+    type_of(Parameter, "t_interface_member"),
+    item(Parameter, _, Member, _, _),
+    type_of(Member, "t_interface_member"),
+    position(Parameter, Position).
+
 % decl stated_parameter(member:   symbol,
 %                       position: number,
 %                       name:     symbol)
 
 stated_parameter(Member, Position, Name) :-
-    type_of(Id, "t_interface_member"),
-    item(Id, _, Member, _, _),
-    type_of(Member, "t_interface_member"),
-    position(Id, Position),
+    parameter_member(Member, Position, Id),
     Length = @strlen(Member) + 1,
     Name = @substr(Id, Length, @strlen(Id) - Length).
 
@@ -316,6 +323,36 @@ parameter_mismatch(Member, Function, Position, "", Actual) :-
     realized_function(Function, Member),
     python_parameter(Function, Position, Actual),
     not stated_parameter(Member, Position, _).
+
+
+% -----------------------------------------------------------------------------
+% What a member states of the signature it restates is what the python
+% function that realizes it says: the type and default of each
+% parameter as the code writes them, whether it is optional or
+% variadic, and the type the function returns. member is the parameter
+% member, or the function member for returns. A part the member does
+% not state is not compared, and actual is empty where the code does
+% not say.
+%
+% decl signature_mismatch(member:   symbol,
+%                         function: symbol,
+%                         part:     symbol,
+%                         stated:   symbol,
+%                         actual:   symbol)
+#show signature_mismatch/5.
+
+signature_mismatch(Parameter, Function, Part, Stated, Actual) :-
+    realized_function(Function, Member),
+    parameter_member(Member, Position, Parameter),
+    stated(Parameter, Part, Stated),
+    python_signature(Function, Position, Part, Actual),
+    Stated != Actual.
+
+signature_mismatch(Member, Function, "returns", Stated, Actual) :-
+    realized_function(Function, Member),
+    stated(Member, "returns", Stated),
+    python_returns(Function, Actual),
+    Stated != Actual.
 
 
 % -----------------------------------------------------------------------------

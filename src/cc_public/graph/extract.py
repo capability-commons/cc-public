@@ -63,6 +63,16 @@ KEY_ALIAS         = 'alias'
 KEY_ACYCLIC       = 'acyclic'
 KEY_REF           = '$ref'
 
+# The parts of a signature that an item may state, as an interface
+# member does.
+#
+KEY_TYPE          = 'type'
+KEY_DEFAULT       = 'default'
+KEY_OPTIONAL      = 'optional'
+KEY_VARIADIC      = 'variadic'
+KEY_RETURNS       = 'returns'
+KEY_SPELLING      = 'spelling'
+
 # Fields whose text names no item: identity, aliases, which name what
 # no longer exists, patterns, and what code spells a name, a type, a
 # default or a value as. A field named id_<field> or guid_<field> is a
@@ -148,6 +158,20 @@ RELATION          = {
                            'The python function that holds the item id takes the '
                            'parameter name at position, counted from 0, in the order a '
                            'caller gives them. The receiver of a method is not one.'),
+    'python_signature':   (('id', 'position:number', 'part', 'value'),
+                           'The parameter at position of the python function that '
+                           'holds the item id has value for part: its type and '
+                           'default as the code writes them, or empty if it has '
+                           'none, and whether it is optional and variadic, as true '
+                           'or false.'),
+    'python_returns':     (('id', 'type'),
+                           'The python function that holds the item id returns type, '
+                           'as the code writes it, or empty if it does not say.'),
+    'stated':             (('id', 'part', 'value'),
+                           'The item id states value for part of a signature: the '
+                           'spelling of its type, its default, whether it is optional '
+                           'or variadic, as true or false, or the spelling of the type '
+                           'it returns.'),
     'position':           (('id', 'position:number'),
                            'The item id is written as the element at position, counted '
                            'from 0, of a list.'),
@@ -193,10 +217,10 @@ MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
                      ast.AsyncFunctionDef: 'pyf_'}
 
 # What the code says of each class or function that holds a document,
-# by its key: the id its place calls for, and the names of the
-# parameters of a function. Neither is in the document, so both are
-# noted when the file is read. The receiver of a method is not a
-# parameter.
+# by its key: the id its place calls for, the parameters of a function,
+# each as its name and a mapping of the parts of python_signature, and
+# the type it returns. None of it is in the document, so it is noted
+# when the file is read. The receiver of a method is not a parameter.
 #
 MAP_DEFINITION    = {}
 SET_RECEIVER      = {'self', 'cls'}
@@ -338,11 +362,15 @@ def facts_of(map_document: Documents) -> Facts:
         if not isinstance(document, dict):
             continue
         if file in MAP_DEFINITION:
-            (expected, tuple_parameter) = MAP_DEFINITION[file]
-            facts['module_name'].add((str(document.get(KEY_ID_SELF)), expected))
-            for (position, name) in enumerate(tuple_parameter):
-                facts['python_parameter'].add((str(document.get(KEY_ID_SELF)),
-                                               str(position), name))
+            id_self                              = str(document.get(KEY_ID_SELF))
+            (expected, tuple_parameter, returns) = MAP_DEFINITION[file]
+            facts['module_name'].add((id_self, expected))
+            for (position, (name, map_part)) in enumerate(tuple_parameter):
+                facts['python_parameter'].add((id_self, str(position), name))
+                for (part, value) in map_part.items():
+                    facts['python_signature'].add((id_self, str(position), part, value))
+            if returns is not None:
+                facts['python_returns'].add((id_self, returns))
         elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       module_name(pathlib.Path(file))))
@@ -431,20 +459,22 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
     map_document = {str(relative): parse(text, relative)}
 
     if relative.suffix == SUFFIX_PYTHON:
-        for (key, expected, tuple_parameter, document) in definitions(text, relative):
-            MAP_DEFINITION[key] = (expected, tuple_parameter)
+        for (key, expected, tuple_parameter, returns, document) in definitions(text,
+                                                                                relative):
+            MAP_DEFINITION[key] = (expected, tuple_parameter, returns)
             map_document[key]   = document
 
     return map_document
 
 
 # -----------------------------------------------------------------------------
-def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple, tuple]]:
+def definitions(text: str, relative: pathlib.Path) -> list[tuple]:
     """
     Return, for each class or function of the python module text, at
     relative, whose docstring holds a document: its key, the id its
-    place calls for, the names of its parameters, and the document with
-    the line of the file that its first line is on. A class or function is one at the top of the
+    place calls for, its parameters as _parameters gives them, the type
+    it returns as _returns gives it, and the document with the line of
+    the file that its first line is on. A class or function is one at the top of the
     module or in a class, not one inside a function. Raise ErrorRead if
     a document cannot be read.
 
@@ -462,6 +492,7 @@ def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple
                 list_found.append((DELIM_DEFINITION.join([str(relative), *list_path]),
                                    definition_id(relative, list_path, node),
                                    _parameters(node, is_method = bool(list_name)),
+                                   _returns(node),
                                    found))
             if isinstance(node, ast.ClassDef):
                 visit(node.body, list_path)
@@ -472,28 +503,70 @@ def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple
 
 
 # -----------------------------------------------------------------------------
-def _parameters(node: ast.AST, is_method: bool) -> tuple[str, ...]:
+def _parameters(node: ast.AST, is_method: bool) -> tuple[tuple[str, dict[str, str]], ...]:
     """
-    Return the names of the parameters of the function node, in the
-    order a caller gives them, or none if node is a class. The receiver
-    of a method is left out.
+    Return the parameters of the function node, in the order a caller
+    gives them, or none if node is a class. Each is its name and a
+    mapping of the parts of python_signature. The receiver of a method
+    is left out.
 
     """
 
     if isinstance(node, ast.ClassDef):
         return ()
 
-    args      = node.args
-    list_name = [arg.arg for arg in [*args.posonlyargs, *args.args]]
+    args          = node.args
+    list_position = [*args.posonlyargs, *args.args]
+    list_default  = [None] * (len(list_position) - len(args.defaults)) + list(args.defaults)
+    list_found    = [(arg, default, False)
+                     for (arg, default) in zip(list_position, list_default, strict = True)]
 
-    if is_method and list_name and list_name[0] in SET_RECEIVER:
-        list_name = list_name[1:]
+    if is_method and list_found and list_found[0][0].arg in SET_RECEIVER:
+        list_found = list_found[1:]
 
-    list_name += [args.vararg.arg] if args.vararg else []
-    list_name += [arg.arg for arg in args.kwonlyargs]
-    list_name += [args.kwarg.arg] if args.kwarg else []
+    list_found += [(args.vararg, None, True)] if args.vararg else []
+    list_found += list(zip(args.kwonlyargs, args.kw_defaults,
+                           [False] * len(args.kwonlyargs), strict = True))
+    list_found += [(args.kwarg, None, True)] if args.kwarg else []
 
-    return tuple(list_name)
+    return tuple((arg.arg, {'type':     _spelling(arg.annotation),
+                            'default':  _spelling(default),
+                            'optional': _truth(default is not None or is_variadic),
+                            'variadic': _truth(is_variadic)})
+                 for (arg, default, is_variadic) in list_found)
+
+
+# -----------------------------------------------------------------------------
+def _returns(node: ast.AST) -> str | None:
+    """
+    Return the type that the function node returns, as the code writes
+    it, or empty if it does not say. Return None if node is a class.
+
+    """
+
+    if isinstance(node, ast.ClassDef):
+        return None
+    return _spelling(node.returns)
+
+
+# -----------------------------------------------------------------------------
+def _spelling(node: ast.AST | None) -> str:
+    """
+    Return node as the code writes it, or empty if there is none.
+
+    """
+
+    return '' if node is None else ast.unparse(node)
+
+
+# -----------------------------------------------------------------------------
+def _truth(value: bool) -> str:
+    """
+    Return value as true or false.
+
+    """
+
+    return 'true' if value else 'false'
 
 
 # -----------------------------------------------------------------------------
@@ -685,6 +758,7 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
                            location[0],
                            _line(node, KEY_ID_SELF, location)))
         _signature(id_self, node, facts)
+        _stated(id_self, node, facts)
         for alias in _list_str(node.get(KEY_ALIAS)):
             facts['alias'].add((id_self, alias))
         holder = id_self
@@ -827,6 +901,44 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
 
     if isinstance(inverse, dict) and isinstance(inverse.get(KEY_ID_SELF), str):
         facts['relation_inverse'].add((inverse[KEY_ID_SELF], id_self))
+
+
+# -----------------------------------------------------------------------------
+def _stated(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a stated fact for each part of a signature that the item node
+    states.
+
+    """
+
+    for (part, value) in (('type',     _type_spelling(node.get(KEY_TYPE))),
+                          ('default',  node.get(KEY_DEFAULT)),
+                          ('optional', node.get(KEY_OPTIONAL)),
+                          ('variadic', node.get(KEY_VARIADIC))):
+        if isinstance(value, bool):
+            facts['stated'].add((id_self, part, _truth(value)))
+        elif isinstance(value, str):
+            facts['stated'].add((id_self, part, value))
+
+    returns = node.get(KEY_RETURNS)
+
+    if isinstance(returns, dict):
+        spelling = _type_spelling(returns.get(KEY_TYPE))
+        if spelling is not None:
+            facts['stated'].add((id_self, 'returns', spelling))
+
+
+# -----------------------------------------------------------------------------
+def _type_spelling(value: typing.Any) -> str | None:
+    """
+    Return the spelling of the type reference value, or None if it
+    gives none.
+
+    """
+
+    if isinstance(value, dict) and isinstance(value.get(KEY_SPELLING), str):
+        return value[KEY_SPELLING]
+    return None
 
 
 # -----------------------------------------------------------------------------
