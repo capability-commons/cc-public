@@ -951,9 +951,21 @@ section.matrix a.cell:hover {
    the edges of the shading above them. */
 
 section.matrix .drill .answers {
+  display: flow-root;
   margin-left: -1.3rem;
   padding-left: 1.3rem;
   background: var(--shade-deep);
+}
+
+/* The shade of answers holds the space below the last of them, and
+   when they end the row it reaches the rule below with no gap: the
+   row drops its own padding. */
+
+section.matrix .drill:has(
+    > details.annotation:last-child > .body > details.brief[open] > .answers,
+    > details.annotation:last-child > .body > details.brief[open]
+      > details.description[open] > .answers) {
+  padding-bottom: 0;
 }
 
 /* Open answers end the body of what they answer, so its shade meets
