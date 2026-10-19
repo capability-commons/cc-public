@@ -36,6 +36,7 @@
   --paper: #f3eadc;
   --ink: #1f1b16;
   --ink-muted: #5e5648;
+  --ink-faint: #a99f8c;
   --rule: #cfc4b0;
   --link: #3d4a5c;
 
@@ -621,8 +622,10 @@ figure.map svg {
    an edge for each support and challenge. */
 
 .network .node .shape {
+  --rule-node: var(--rule);
   fill: var(--lit, var(--paper));
-  stroke: var(--rule);
+  stroke: color-mix(in srgb, var(--ink) calc(var(--lit-at) * 100%), var(--rule-node));
+  stroke-width: calc(1 + 0.6 * var(--lit-at));
 }
 
 .network .node text.number { text-anchor: end; }
@@ -630,7 +633,7 @@ figure.map svg {
 /* The rule of a concern is darker so it stands out from the shade as
    much as the rule of an annotation does from the paper (1.45:1). */
 
-.network .node.concern .shape { fill: var(--shade); stroke: #c6bca8; }
+.network .node.concern .shape { --rule-node: #c6bca8; fill: var(--shade); }
 .network .node.concern text.name {
   text-anchor: middle;
   font-size: 13px;
@@ -646,26 +649,48 @@ figure.map svg {
 .network .edge-against { stroke: var(--band-against); }
 
 .network .port { outline: none; }
-.network .port circle { stroke-width: 1.4; fill: var(--paper); cursor: pointer; }
-.network .port-for circle { stroke: var(--ink-for); }
-.network .port-against circle { stroke: var(--ink-against); }
-.network .port:hover circle,
-.network .port:target circle { stroke-width: 2.5; }
-.network .port-for:hover circle,
-.network .port-for:target circle { fill: var(--ink-for); }
-.network .port-against:hover circle,
-.network .port-against:target circle { fill: var(--ink-against); }
-
-/* While a chain is lit, every mark outside it is dimmed (see
-   cc_public.web.light). */
+.network .port-for { --ink-port: var(--ink-for); }
+.network .port-against { --ink-port: var(--ink-against); }
+.network .port circle {
+  stroke: var(--ink-port);
+  stroke-width: calc(1.4 + 1.1 * var(--lit-at));
+  fill: color-mix(in srgb, var(--ink-port) calc(var(--lit-at) * 100%), var(--paper));
+  cursor: pointer;
+}
 
 .map { --net-mixed: #d5d0c6; --ink-mixed: var(--ink-muted); }
-.map .dims { transition: opacity 0.12s; }
-.map svg:has(.lit-trigger:hover, .lit-anchor:target) .dims { opacity: var(--dim); }
 .network .pick { outline: none; cursor: pointer; }
 .network a:hover text { fill: var(--ink); text-decoration: none; }
-.network .pick:hover .shape,
-.network .pick:target .shape { stroke: var(--ink); stroke-width: 1.6; }
+
+/* Lighting (see cc_public.web.light). While a chain is lit, the page
+   sets --lit-on on each mark in it, --lit-away on each region it
+   reaches, a diagram or the matrix, and --lit-at on each mark that
+   shows it. Each kind of mark says here what it makes of them: in a
+   region that is away, a mark outside the chain dims to --dim, fades
+   to --fade, or mutes to the faint ink, by its class. The node or port
+   a chain is shown at is outlined (above). */
+
+@property --lit-on { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --lit-away { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --lit-at { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+.dims,
+.fades,
+.mutes { --lit-off: calc(var(--lit-away) * (1 - var(--lit-on))); }
+
+.dims,
+.fades { transition: opacity 0.12s; }
+.dims { opacity: calc(1 - var(--lit-off) * (1 - var(--dim))); }
+.fades { opacity: calc(1 - var(--lit-off) * (1 - var(--fade, 0.3))); }
+
+.mutes {
+  color: color-mix(in srgb, var(--ink-faint) calc(var(--lit-off) * 100%), currentColor);
+  transition: color 0.12s;
+}
+
+.mutes .number {
+  color: color-mix(in srgb, var(--ink-faint) calc(var(--lit-off) * 100%), var(--ink-muted));
+}
 
 /* The decision matrix: a column for each decision and a row for each
    concern, as the foot of the masthead. The decisions share the width
@@ -719,13 +744,14 @@ section.matrix .row.head > .cell {
 section.matrix .row.head > .cell > a {
   font-variant: small-caps;
   letter-spacing: 0.03em;
-  color: var(--ink);
   text-decoration: none;
 }
 
-/* A decision chosen in the head shows its brief under it, and the
-   titles of the others grey (the rule that keeps the chosen title in
-   ink is written into the page). */
+section.matrix .row.head .total { --fade: 0.45; }
+
+/* A decision chosen in the head shows its brief under it (the rule
+   that shows it for a chosen count is written into the page); its
+   chains light, so the titles of the others mute. */
 
 section.matrix .drill.decision {
   display: none;
@@ -735,14 +761,6 @@ section.matrix .drill.decision {
 
 section.matrix .drill.decision:target {
   display: block;
-}
-
-section.matrix:has(.drill.decision:target, .decision-role:target) .row.head > .cell > a {
-  color: #a99f8c;
-}
-
-section.matrix:has(.drill.decision:target, .decision-role:target) .row.head .total a {
-  opacity: 0.45;
 }
 
 /* The counts under a decision's title show the decision and pin the
@@ -761,10 +779,6 @@ section.matrix .row.head .total a {
 section.matrix .row.head .total a:hover { text-decoration: underline; }
 section.matrix .row.head .total .for { color: var(--ink-for); }
 section.matrix .row.head .total .against { color: var(--ink-against); }
-
-section.matrix .row.head > .cell > a:hover {
-  color: var(--link);
-}
 
 section.matrix details.concern,
 section.matrix .row.concern {
@@ -799,36 +813,6 @@ section.matrix details.concern > summary .label::before {
 
 section.matrix details.concern[open] > summary .label::before {
   content: "\25BE";
-}
-
-section.matrix details.concern > summary:hover .name {
-  color: var(--link);
-}
-
-/* While a chain is pinned, from the matrix or the Sankey diagram, or
-   lit by hovering over the head of the matrix, the text of the matrix
-   outside it is muted (the rules that keep the text
-   in it in ink are written into the page). */
-
-:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target,
-          .lit-show:hover)
-  section.matrix .mutes {
-  color: #a99f8c;
-  transition: color 0.12s;
-}
-
-:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target,
-          .lit-show:hover)
-  section.matrix .mutes .number {
-  color: inherit;
-}
-
-section.matrix .fades { transition: opacity 0.12s; }
-
-:root:has(section.matrix :is(.decision, .decision-role):target, .sankey .lit-anchor:target,
-          .lit-show:hover)
-  section.matrix .fades {
-  opacity: 0.3;
 }
 
 section.matrix .unargued {

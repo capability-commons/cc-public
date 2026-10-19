@@ -115,11 +115,13 @@ def figure(graph:      Graph,
     it. The title of an annotation links to it, opened, in the list
     below; set_show holds those the page shows opened.
 
-    Hovering over a decision, either part of its bar, or an annotation
-    lights the chains that reach it and dims the rest, each annotation
-    in them inked by its net effect on what was hovered over; clicking
-    a bar or the name of a decision pins the chains, and clicking
-    anywhere else unpins them. Concerns stay passive.
+    Hovering over a decision, either part of its bar, a concern argued
+    for, or an annotation lights the chains that reach it and dims the
+    rest, each annotation in them inked by its net effect on what was
+    hovered over; clicking a bar or the name of a decision pins the
+    chains, and clicking anywhere else unpins them. The page holds the
+    rules that light the chains and the elements that pin them (see
+    cc_public.web.light), as the matrix and the graph share them.
 
     """
 
@@ -127,11 +129,9 @@ def figure(graph:      Graph,
     height  = drawing.draw()
     width   = LIST_X[drawing.index_column_last] + ROOM_TITLE
 
-    list_key = drawing.keys()
     return htpy.figure(class_ = 'map sankey')[
-        htpy.style[cc_public.web.light.style('.sankey', list_key, drawing.aliases(),
-                                             drawing.shows())],
-        htpy.svg(viewBox = '0 {top} {width} {height}'.format(top    = -ROOM_LABEL,
+        htpy.svg(class_  = cc_public.web.light.CSS_REGION,
+                 viewBox = '0 {top} {width} {height}'.format(top    = -ROOM_LABEL,
                                                              width  = width,
                                                              height = height + ROOM_LABEL),
                  width   = str(width),
@@ -140,7 +140,6 @@ def figure(graph:      Graph,
             htpy.a(href = '#' + cc_public.web.light.KEY_UNPIN, class_ = 'unpin')[
                 htpy.rect(x = '0', y = str(-ROOM_LABEL), width = str(width),
                           height = str(height + ROOM_LABEL))],
-            [htpy.g(id = key, class_ = cc_public.web.light.CSS_ANCHOR) for key in list_key],
             drawing.list_band,
             drawing.list_bar,
             drawing.list_label]]
@@ -395,26 +394,23 @@ class _Drawing:
             y          += (extent - height) / 2
             map_top[decision.id] = y
 
-            list_css = self._css_decision(decision.id)
+            list_css = self.css_decision(decision.id)
             self._bar(LIST_X[0], y, count_for * UNIT, ROLE_FOR, list_css,
-                      _key_port(decision.id, ROLE_FOR),
-                      cc_public.web.light.alias(decision.id, ROLE_FOR))
+                      cc_public.web.light.chain(decision.id, ROLE_FOR))
             self._bar(LIST_X[0], y + count_for * UNIT, (count_total - count_for) * UNIT,
-                      ROLE_AGAINST, list_css, _key_port(decision.id, ROLE_AGAINST),
-                      cc_public.web.light.alias(decision.id, ROLE_AGAINST))
+                      ROLE_AGAINST, list_css,
+                      cc_public.web.light.chain(decision.id, ROLE_AGAINST))
             if not count_total:
                 self._bar(LIST_X[0], y, 2, 'none', list_css)
 
             stance    = self.issue.map_stance[decision.id]
             list_line = _lines_decision(decision.title)
             top_text  = y + height / 2 - 2 - LINE_DECISION * (len(list_line) - 1) / 2
-            key       = _key_decision(decision.id)
+            name      = cc_public.web.light.chain(decision.id)
             css       = ' '.join(['decision', cc_public.web.light.CSS_DIMS,
-                                  cc_public.web.light.trigger(key),
-                                  cc_public.web.light.show(cc_public.web.light.alias(decision.id))]
+                                  cc_public.web.light.show(name)]
                                  + list_css)
-            self.list_label.append(htpy.a(href   = '#' + cc_public.web.light.alias(decision.id),
-                                          class_ = 'pin')[
+            self.list_label.append(htpy.a(href = '#' + name, class_ = 'pin')[
                 htpy.text(x = str(LIST_X[0] - 10), y = _num(top_text),
                           class_ = css, text_anchor = 'end')[
                     [htpy.tspan(x = str(LIST_X[0] - 10),
@@ -474,8 +470,7 @@ class _Drawing:
             list_css = self.css_concern(id_concern)
             if list_unit:
                 list_css = [*list_css,
-                            cc_public.web.light.trigger(_key_concern(id_concern)),
-                            cc_public.web.light.show(id_concern)]
+                            cc_public.web.light.show(cc_public.web.light.chain(id_concern))]
             css      = ' '.join([css, cc_public.web.light.CSS_DIMS] + list_css)
             title    = self.graph.title(id_concern)
             self._bar(LIST_X[1], y, height, 'driver' if id_concern in self.issue.list_driver
@@ -554,7 +549,7 @@ class _Drawing:
                 self._band(LIST_X[1] + WIDTH_BAR, y_from, LIST_X[2], y + index * UNIT,
                            UNIT, unit.role, list_css)
                 self._bar(LIST_X[2], y + index * UNIT, UNIT, unit.role, list_css,
-                          _key_annotation(id_annotation))
+                          cc_public.web.light.chain(id_annotation))
                 y_from += UNIT
 
             height = len(list_own) * UNIT
@@ -593,7 +588,7 @@ class _Drawing:
             self._band(LIST_X[index_column - 1] + WIDTH_BAR, top + index * width,
                        LIST_X[index_column], y, width, role, list_css)
             self._bar(LIST_X[index_column], y, width, role, list_css,
-                      _key_annotation(id_answer))
+                      cc_public.web.light.chain(id_answer))
             self._label(key_answer, id_answer, index_column, y, width)
             y = self._answers(key_answer, id_answer, index_column + 1, y, width,
                               y + max(width, ROW) + 4)
@@ -620,7 +615,7 @@ class _Drawing:
         count   = len(self.outline.answers(id_annotation))
         css     = ' '.join(['annotation shown' if key in self.set_show else 'annotation',
                             cc_public.web.light.CSS_DIMS,
-                            cc_public.web.light.trigger(_key_annotation(id_annotation))]
+                            cc_public.web.light.show(cc_public.web.light.chain(id_annotation))]
                            + self.css_path(key))
         title   = htpy.a(href = self._href_show(key))[
                       htpy.tspan(class_ = 'number')[
@@ -644,52 +639,21 @@ class _Drawing:
         self.list_label.append(htpy.text(x = _num(x), y = _num(y), class_ = css)[content])
 
     # -------------------------------------------------------------------------
-    def keys(self) -> list[str]:
+    def names(self) -> list[str]:
         """
-        Return the keys of the chains that can be lit: one for each
+        Return the names of the chains that can be lit: one for each
         decision, each part of the bar of a decision, each concern
         argued for, and each annotation.
 
         """
 
-        return ([_key_decision(id_decision) for id_decision in self.list_decision]
-                + [_key_port(id_decision, role) for id_decision in self.list_decision
+        chain = cc_public.web.light.chain
+        return ([chain(id_decision) for id_decision in self.list_decision]
+                + [chain(id_decision, role) for id_decision in self.list_decision
                    for role in (ROLE_FOR, ROLE_AGAINST)]
-                + [_key_concern(id_concern) for id_concern in self.list_concern
+                + [chain(id_concern) for id_concern in self.list_concern
                    if self._units(concern = id_concern)]
-                + [_key_annotation(id_annotation) for id_annotation in self.map_number])
-
-    # -------------------------------------------------------------------------
-    def aliases(self) -> dict[str, str]:
-        """
-        Return the key of the chains of each decision, and of each part
-        of its bar, with the id that pins them while the decision is
-        shown in the matrix.
-
-        """
-
-        map_alias = {}
-        for id_decision in self.list_decision:
-            map_alias[_key_decision(id_decision)] = cc_public.web.light.alias(id_decision)
-            for role in (ROLE_FOR, ROLE_AGAINST):
-                map_alias[_key_port(id_decision, role)] = cc_public.web.light.alias(id_decision,
-                                                                                    role)
-        return map_alias
-
-    # -------------------------------------------------------------------------
-    def shows(self) -> dict[str, str]:
-        """
-        Return the key of the chains of each decision, each part of its
-        bar, and each concern argued for, with the name that lights them
-        while a mark anywhere on the page that shows it is hovered over.
-
-        """
-
-        map_show = dict(self.aliases())
-        for id_concern in self.list_concern:
-            if self._units(concern = id_concern):
-                map_show[_key_concern(id_concern)] = id_concern
-        return map_show
+                + [chain(id_annotation) for id_annotation in self.map_number])
 
     # -------------------------------------------------------------------------
     def _closure(self, id_annotation: str, set_path: set[str]) -> set[str]:
@@ -718,11 +682,13 @@ class _Drawing:
         """
 
         map_sign = {}
-        cc_public.web.light.add(map_sign, _key_decision(unit.decision), unit.role)
-        cc_public.web.light.add(map_sign, _key_port(unit.decision, unit.role), unit.role)
-        cc_public.web.light.add(map_sign, _key_concern(unit.concern), unit.role)
+        add      = cc_public.web.light.add
+        chain    = cc_public.web.light.chain
+        add(map_sign, chain(unit.decision), unit.role)
+        add(map_sign, chain(unit.decision, unit.role), unit.role)
+        add(map_sign, chain(unit.concern), unit.role)
         for id_annotation in self.map_closure[unit.annotation]:
-            cc_public.web.light.add(map_sign, _key_annotation(id_annotation), None)
+            add(map_sign, chain(id_annotation), None)
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
@@ -750,19 +716,21 @@ class _Drawing:
             return role
 
         map_sign = {}
+        add      = cc_public.web.light.add
+        chain    = cc_public.web.light.chain
         for unit in self._units(concern = id_concern, annotation = list_path[0]):
             sign = cc_public.web.light.times(unit.role, net(list_role))
-            cc_public.web.light.add(map_sign, _key_decision(unit.decision), sign)
-            cc_public.web.light.add(map_sign, _key_port(unit.decision, unit.role), sign)
-            cc_public.web.light.add(map_sign, _key_concern(id_concern), sign)
+            add(map_sign, chain(unit.decision), sign)
+            add(map_sign, chain(unit.decision, unit.role), sign)
+            add(map_sign, chain(id_concern), sign)
         for (index, id_above) in enumerate(list_path[:-1]):
-            cc_public.web.light.add(map_sign, _key_annotation(id_above), net(list_role[index:]))
+            add(map_sign, chain(id_above), net(list_role[index:]))
         for id_annotation in self.map_closure.get(list_path[-1], {list_path[-1]}):
-            cc_public.web.light.add(map_sign, _key_annotation(id_annotation), None)
+            add(map_sign, chain(id_annotation), None)
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
-    def _css_decision(self, id_decision: str) -> list[str]:
+    def css_decision(self, id_decision: str) -> list[str]:
         """
         Return the classes of a mark of id_decision: in its own chains,
         and in those of every concern and annotation that bears on it,
@@ -771,13 +739,15 @@ class _Drawing:
         """
 
         map_sign = {}
-        cc_public.web.light.add(map_sign, _key_decision(id_decision), None)
+        add      = cc_public.web.light.add
+        chain    = cc_public.web.light.chain
+        add(map_sign, chain(id_decision), None)
         for role in (ROLE_FOR, ROLE_AGAINST):
-            cc_public.web.light.add(map_sign, _key_port(id_decision, role), None)
+            add(map_sign, chain(id_decision, role), None)
         for unit in self._units(decision = id_decision):
-            cc_public.web.light.add(map_sign, _key_concern(unit.concern), None)
+            add(map_sign, chain(unit.concern), None)
             for id_annotation in self.map_closure[unit.annotation]:
-                cc_public.web.light.add(map_sign, _key_annotation(id_annotation), None)
+                add(map_sign, chain(id_annotation), None)
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
@@ -790,12 +760,14 @@ class _Drawing:
         """
 
         map_sign = {}
-        cc_public.web.light.add(map_sign, _key_concern(id_concern), None)
+        add      = cc_public.web.light.add
+        chain    = cc_public.web.light.chain
+        add(map_sign, chain(id_concern), None)
         for unit in self._units(concern = id_concern):
-            cc_public.web.light.add(map_sign, _key_decision(unit.decision), None)
-            cc_public.web.light.add(map_sign, _key_port(unit.decision, unit.role), None)
+            add(map_sign, chain(unit.decision), None)
+            add(map_sign, chain(unit.decision, unit.role), None)
             for id_annotation in self.map_closure[unit.annotation]:
-                cc_public.web.light.add(map_sign, _key_annotation(id_annotation), None)
+                add(map_sign, chain(id_annotation), None)
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
@@ -885,28 +857,23 @@ class _Drawing:
              height:   float,
              css:      str,
              list_css: list[str] = (),
-             key_pin:  str | None = None,
-             href:     str | None = None) -> None:
+             name:     str | None = None) -> None:
         """
         Add a bar at x and y of height, in the chains of list_css. If
-        key_pin is given, the bar lights the chain at key_pin while it
-        is hovered over, and pins it when clicked, by linking to href
-        if given and to key_pin if not. Hovering over a bar with href
-        lights what shows href everywhere on the page.
+        name is given, the bar shows the chain called name while it is
+        hovered over, and pins it when clicked.
 
         """
 
         if height <= 0:
             return
         list_class = ['bar-' + css, cc_public.web.light.CSS_DIMS, *list_css]
-        if key_pin:
-            list_class.append(cc_public.web.light.trigger(key_pin))
-        if href:
-            list_class.append(cc_public.web.light.show(href))
+        if name:
+            list_class.append(cc_public.web.light.show(name))
         bar = htpy.rect(x = _num(x), y = _num(y), width = str(WIDTH_BAR),
                         height = _num(height), class_ = ' '.join(list_class))
-        if key_pin:
-            bar = htpy.a(href = '#' + (href or key_pin), class_ = 'pin')[bar]
+        if name:
+            bar = htpy.a(href = '#' + name, class_ = 'pin')[bar]
         self.list_bar.append(bar)
 
     # -------------------------------------------------------------------------
@@ -959,47 +926,6 @@ def _lines_decision(title: str) -> list[str]:
     """
 
     return textwrap.wrap(title, CHARS_DECISION) or ['']
-
-
-# -----------------------------------------------------------------------------
-def _key_decision(id_decision: str) -> str:
-    """
-    Return the key of the chains into id_decision.
-
-    """
-
-    return 'lit-dec-' + id_decision
-
-
-# -----------------------------------------------------------------------------
-def _key_port(id_decision: str, role: str) -> str:
-    """
-    Return the key of the chains into the part of the bar of
-    id_decision for role.
-
-    """
-
-    return 'lit-port-{id}-{role}'.format(id = id_decision, role = role)
-
-
-# -----------------------------------------------------------------------------
-def _key_concern(id_concern: str) -> str:
-    """
-    Return the key of the chains through id_concern.
-
-    """
-
-    return 'lit-con-' + id_concern
-
-
-# -----------------------------------------------------------------------------
-def _key_annotation(id_annotation: str) -> str:
-    """
-    Return the key of the chains into id_annotation.
-
-    """
-
-    return 'lit-ann-' + id_annotation
 
 
 # -----------------------------------------------------------------------------

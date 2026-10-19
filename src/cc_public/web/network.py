@@ -60,7 +60,6 @@ CHARS_LINE        = 34
 INDENT_TITLE      = 28
 MARGIN            = 8
 RADIUS_PORT       = 4.5
-KEY_PICK          = 'pick-'
 DELIM_HUB         = '--'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
@@ -76,21 +75,81 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     Return the graph of the argument in outline.
 
     A decision or an annotation has a port on its right for what
-    supports it and one for what challenges it. Hovering over a port, or following its
-    link, lights the chain of annotations that reaches it and dims the
-    rest; each annotation in the chain is shaded by its net effect, the
-    product of the roles along its paths. Hovering over or clicking a
-    decision or an annotation does the same for every chain into it.
-    Concerns are bundles rather than nodes: each edge into a concern
-    leaves it again, in the same role, for its decision. They light
-    with the chains through them, but are never shaded and do not
-    respond themselves. Clicking
-    anywhere else in the graph unpins: the link names no element, so
-    the page does not move.
+    supports it and one for what challenges it. Hovering over a port,
+    or following its link, lights the chain of annotations that reaches
+    it and dims the rest; each annotation in the chain is shaded by its
+    net effect, the product of the roles along its paths. Hovering over
+    or clicking a decision or an annotation does the same for every
+    chain into it. Concerns are bundles rather than nodes: each edge
+    into a concern leaves it again, in the same role, for its decision.
+    They light with the chains through them and are never shaded;
+    hovering over one lights the chains through it. Clicking anywhere
+    else in the graph unpins: the link names no element, so the page
+    does not move. The page holds the rules that light the chains and
+    the elements that pin them (see cc_public.web.light).
 
     The chains are traced through a hub for each concern on each
     decision, so an annotation lights for the decisions it argues on
     and no others, but each concern is drawn once.
+
+    """
+
+    (map_kind, map_place, list_edge)         = _layout(outline)
+    (map_name, set_pick, list_concern)       = _chains(map_kind, map_place, list_edge)
+    (list_drawn, map_css_node, map_css_edge) = _lighting(
+        list_edge, map_place, map_name, set_pick, list_concern)
+    for id_concern in list_concern:
+        map_css_node[id_concern] = [
+            *map_css_node[id_concern],
+            cc_public.web.light.show(cc_public.web.light.chain(id_concern))]
+
+    list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_drawn]
+    list_node = [_node(graph, outline, map_kind[id_item], id_item, map_place[id_item],
+                       map_css_node[id_item], id_item in set_pick)
+                 for id_item in map_place]
+    list_dot  = [_port(map_kind[port[0]], map_place[port[0]], port[1], name)
+                 for (port, name) in map_name.items()]
+
+    width  = max(x for (x, _) in map_place.values()) + WIDTH_NODE + 2 * MARGIN
+    height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE / 2 + 2 * MARGIN
+    top    = min(y for (_, y) in map_place.values()) - HEIGHT_NODE / 2 - MARGIN
+    return htpy.figure(class_ = 'map network')[
+        htpy.svg(class_  = cc_public.web.light.CSS_REGION,
+                 viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
+                                                                  top    = _num(top),
+                                                                  width  = width,
+                                                                  height = _num(height - top)),
+                 width   = str(width),
+                 height  = _num(height - top),
+                 role    = 'img')[
+            htpy.a(href = '#' + cc_public.web.light.KEY_UNPIN, class_ = 'unpin')[
+                htpy.rect(x = str(-MARGIN), y = _num(top), width = str(width),
+                          height = _num(height - top))],
+            htpy.g(class_ = 'edges')[list_path],
+            htpy.g(class_ = 'nodes')[list_node],
+            htpy.g(class_ = 'ports')[list_dot]]]
+
+
+# -----------------------------------------------------------------------------
+def names(outline: Outline) -> list[str]:
+    """
+    Return the names of the chains the graph of the argument in outline
+    can light: one for each port, each decision or annotation that is
+    picked, and each concern.
+
+    """
+
+    (map_name, set_pick, list_concern) = _chains(*_layout(outline))
+    return (list(map_name.values())
+            + [cc_public.web.light.chain(id_item) for id_item in sorted(set_pick)]
+            + [cc_public.web.light.chain(id_concern) for id_concern in list_concern])
+
+
+# -----------------------------------------------------------------------------
+def _layout(outline: Outline) -> tuple:
+    """
+    Return the kind and the place of each node of the graph of the
+    argument in outline, and its edges.
 
     """
 
@@ -111,56 +170,27 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     for (id_decision, y) in _decision_rows(outline, map_place).items():
         map_kind[id_decision]  = KIND_DECISION
         map_place[id_decision] = (0, y)
+    return (map_kind, map_place, list_edge)
 
-    list_port = [(id_item, role) for id_item in map_place for role in (ROLE_FOR, ROLE_AGAINST)
-                 if (id_item, role) in {edge[1:] for edge in list_edge}]
-    map_key   = {port: 'port-{id}-{role}'.format(id = port[0], role = port[1])
-                 for port in list_port}
-    set_pick  = {id_to for (_, id_to, _) in list_edge if id_to in map_place}
 
+# -----------------------------------------------------------------------------
+def _chains(map_kind:  dict[str, str],
+            map_place: dict[str, tuple[float, float]],
+            list_edge: list[tuple[str, str, str]]) -> tuple:
+    """
+    Return the name of the chains into each port, the decisions and
+    annotations a click picks, and the concerns.
+
+    """
+
+    set_into = {edge[1:] for edge in list_edge}
+    map_name = {(id_item, role): cc_public.web.light.chain(id_item, role)
+                for id_item in map_place for role in (ROLE_FOR, ROLE_AGAINST)
+                if (id_item, role) in set_into}
+    set_pick = ({id_to for (_, id_to, _) in list_edge if id_to in map_place}
+                | {id_item for (id_item, kind) in map_kind.items() if kind == KIND_ANNOTATION})
     list_concern = [id_item for (id_item, kind) in map_kind.items() if kind == KIND_CONCERN]
-    (list_drawn, map_css_node, map_css_edge, list_light) = _lighting(
-        list_edge, map_place, map_key, set_pick, list_concern)
-
-    map_alias = {KEY_PICK + id_item: cc_public.web.light.alias(id_item) for id_item in set_pick
-                 if map_kind[id_item] == KIND_DECISION}
-    map_alias.update({key: cc_public.web.light.alias(*port) for (port, key) in map_key.items()
-                      if map_kind[port[0]] == KIND_DECISION})
-    map_show  = dict(map_alias)
-    for id_concern in list_concern:
-        map_show[KEY_PICK + id_concern] = id_concern
-        map_css_node[id_concern] = [*map_css_node[id_concern],
-                                    cc_public.web.light.trigger(KEY_PICK + id_concern),
-                                    cc_public.web.light.show(id_concern)]
-
-    list_path = [_edge(map_kind, map_place, edge, map_css_edge[edge]) for edge in list_drawn]
-    list_node = [_node(graph, outline, map_kind[id_item], id_item, map_place[id_item],
-                       map_css_node[id_item], id_item in set_pick)
-                 for id_item in map_place]
-    list_dot  = [_port(map_kind[port[0]], map_place[port[0]], port[1], key,
-                       map_alias.get(key, key))
-                 for (port, key) in map_key.items()]
-
-    width  = max(x for (x, _) in map_place.values()) + WIDTH_NODE + 2 * MARGIN
-    height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE / 2 + 2 * MARGIN
-    top    = min(y for (_, y) in map_place.values()) - HEIGHT_NODE / 2 - MARGIN
-    return htpy.figure(class_ = 'map network')[
-        htpy.style[cc_public.web.light.style('.network', [key for (key, _, _) in list_light],
-                                             map_alias, map_show),
-                   _style_shown(map_show, map_key)],
-        htpy.svg(viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
-                                                                  top    = _num(top),
-                                                                  width  = width,
-                                                                  height = _num(height - top)),
-                 width   = str(width),
-                 height  = _num(height - top),
-                 role    = 'img')[
-            htpy.a(href = '#' + cc_public.web.light.KEY_UNPIN, class_ = 'unpin')[
-                htpy.rect(x = str(-MARGIN), y = _num(top), width = str(width),
-                          height = _num(height - top))],
-            htpy.g(class_ = 'edges')[list_path],
-            htpy.g(class_ = 'nodes')[list_node],
-            htpy.g(class_ = 'ports')[list_dot]]]
+    return (map_name, set_pick, list_concern)
 
 
 # -----------------------------------------------------------------------------
@@ -192,13 +222,12 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
 # -----------------------------------------------------------------------------
 def _lighting(list_edge:    list[tuple[str, str, str]],
               map_place:    dict[str, tuple[float, float]],
-              map_key:      dict[tuple[str, str], str],
+              map_name:     dict[tuple[str, str], str],
               set_pick:     set[str],
               list_concern: list[str]) -> tuple:
     """
-    Return the edges as drawn, the classes of each node and drawn edge
-    that say which chains light it and with what net effect, and the
-    keys of the chains with the node and roles each is traced from. The
+    Return the edges as drawn, and the classes of each node and drawn
+    edge that say which chains light it and with what net effect. The
     chains of a concern are those through its hubs, each net effect
     taken on to the decision of the hub.
 
@@ -210,15 +239,15 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
             list_drawn.append(_drawn(edge))
     map_sign_node = {id_item: {} for id_item in map_place}
     map_sign_edge = {edge: {} for edge in list_drawn}
-    list_light    = ([(key, port[0], {port[1]}) for (port, key) in map_key.items()]
-                     + [(KEY_PICK + id_item, id_item, None) for id_item in map_place
+    list_light    = ([(name, port[0], {port[1]}) for (port, name) in map_name.items()]
+                     + [(cc_public.web.light.chain(id_item), id_item, None) for id_item in map_place
                         if id_item in set_pick])
     for (key, id_item_lit, set_role) in list_light:
         cc_public.web.light.add(map_sign_node[id_item_lit], key, None)
         _light(map_sign_node, map_sign_edge, key, *_chain(list_edge, id_item_lit, set_role),
                ROLE_FOR)
     for id_concern in list_concern:
-        key = KEY_PICK + id_concern
+        key = cc_public.web.light.chain(id_concern)
         cc_public.web.light.add(map_sign_node[id_concern], key, None)
         for edge in list_edge:
             (id_hub, id_decision, role) = edge
@@ -226,12 +255,11 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
                 cc_public.web.light.add(map_sign_node[id_decision], key, None)
                 cc_public.web.light.add(map_sign_edge[_drawn(edge)], key, None)
                 _light(map_sign_node, map_sign_edge, key, *_chain(list_edge, id_hub, None), role)
-        list_light.append((key, id_concern, None))
     map_css_node = {id_item: cc_public.web.light.css(map_sign)
                     for (id_item, map_sign) in map_sign_node.items()}
     map_css_edge = {edge: cc_public.web.light.css(map_sign)
                     for (edge, map_sign) in map_sign_edge.items()}
-    return (list_drawn, map_css_node, map_css_edge, list_light)
+    return (list_drawn, map_css_node, map_css_edge)
 
 
 # -----------------------------------------------------------------------------
@@ -464,22 +492,17 @@ def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, flo
 
 
 # -----------------------------------------------------------------------------
-def _port(kind: str, place: tuple[float, float], role: str, key: str, href: str) -> typing.Any:
+def _port(kind: str, place: tuple[float, float], role: str, name: str) -> typing.Any:
     """
     Return the port of role on the node of kind at place: a dot that
-    lights the chain at key while hovered over and links to href, which
-    pins it. If href is an alias, hovering lights what shows it
-    everywhere on the page.
+    shows the chain called name while it is hovered over, and pins it
+    when clicked.
 
     """
 
     (cx, cy) = _inlet(kind, place, role)
-    css = 'port port-{role} {anchor} {trigger}'.format(role    = role,
-                                                       anchor  = cc_public.web.light.CSS_ANCHOR,
-                                                       trigger = cc_public.web.light.trigger(key))
-    if href != key:
-        css += ' ' + cc_public.web.light.show(href)
-    return htpy.a(href = '#' + href, id = key, class_ = css)[
+    css = 'port port-{role} {show}'.format(role = role, show = cc_public.web.light.show(name))
+    return htpy.a(href = '#' + name, class_ = css)[
         htpy.title['what {verb} this'.format(verb = 'supports' if role == ROLE_FOR
                                              else 'challenges')],
         htpy.circle(cx = _num(cx), cy = _num(cy), r = str(RADIUS_PORT))]
@@ -529,40 +552,8 @@ def _node(graph:    Graph,
              for (index, line) in enumerate(list_line)]]
     if not is_pick:
         return node
-    key  = KEY_PICK + id_item
-    css  = 'pick {anchor} {trigger}'.format(anchor  = cc_public.web.light.CSS_ANCHOR,
-                                            trigger = cc_public.web.light.trigger(key))
-    if kind == KIND_DECISION:
-        css += ' ' + cc_public.web.light.show(cc_public.web.light.alias(id_item))
-    href = '#' + (cc_public.web.light.alias(id_item) if kind == KIND_DECISION else key)
-    return htpy.a(href = href, id = key, class_ = css)[node]
-
-
-# -----------------------------------------------------------------------------
-def _style_shown(map_show: dict[str, str], map_key: dict[tuple[str, str], str]) -> str:
-    """
-    Return the rules that mark the node or port of a decision or
-    concern while it is shown in the matrix, or hovered over anywhere on
-    the page, as if it were pinned here.
-
-    """
-
-    map_role  = {key: port[1] for (port, key) in map_key.items()}
-    when      = (':is(:root:has(#{name}:target), '
-                 ':root:has(.' + cc_public.web.light.PREFIX_SHOW + '{name}:hover))')
-    rule_node = (when + ' .network #{id} .shape '
-                 '{{ stroke: var(--ink); stroke-width: 1.6; }}')
-    rule_port = (when + ' .network #{id} circle '
-                 '{{ stroke-width: 2.5; fill: var(--ink-{role}); }}')
-    list_rule = []
-    for (key, name) in sorted(map_show.items()):
-        if key in map_role:
-            list_rule.append(rule_port.format(name = name, id = key, role = map_role[key]))
-        elif key.removeprefix(KEY_PICK) == name:
-            list_rule.append(rule_node.format(name = name, id = 'node-' + name))
-        else:
-            list_rule.append(rule_node.format(name = name, id = key))
-    return ''.join('\n' + rule for rule in list_rule)
+    name = cc_public.web.light.chain(id_item)
+    return htpy.a(href = '#' + name, class_ = 'pick ' + cc_public.web.light.show(name))[node]
 
 
 # -----------------------------------------------------------------------------

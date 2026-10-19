@@ -11,31 +11,40 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Lighting of chains in a diagram
+title:                  Lighting of chains across a page
 brief:                  |
                         Light the chain of an argument that reaches a
-                        part of a diagram, while that part is hovered
-                        over or pinned, and dim the rest.
+                        part of a diagram or of the decision matrix,
+                        while a mark of it is hovered over or it is
+                        pinned, and dim the rest.
 description:            |
-                        Each chain has a key. A mark in the chain
-                        carries the key as a class, and, if the chain
-                        shades it, the key and its net effect on the
-                        part the chain reaches. A mark that triggers
-                        the chain carries a class that names the key,
-                        and an element with the key as its id pins the
-                        chain while it is the target of the address,
-                        so no script is needed. A chain may also have
-                        an alias: the id of an element elsewhere on
-                        the page, such as a decision shown in the
-                        matrix, which pins the chain while it is the
-                        target, and marks elsewhere light it while
-                        they are hovered over. Hovering wins over a
-                        pin. While any chain is lit, every mark that
-                        can be dimmed and is outside it is dimmed.
+                        Each chain has a name that is the same
+                        everywhere on the page: the id of a decision,
+                        concern or annotation, or of the part of a
+                        decision or annotation that one role reaches.
+                        A mark in the chain carries the name as a
+                        class, and, if the chain shades it, the name
+                        with its net effect on what the chain reaches.
+                        A mark that shows the chain carries a class
+                        that names it, and lights the chain in every
+                        diagram and in the matrix while it is hovered
+                        over. The element whose id is the name pins
+                        the chain while it is the target of the
+                        address, so no script is needed. Hovering wins
+                        over a pin. While a chain is lit, each region
+                        it reaches, a diagram or the matrix, dims
+                        every mark in it outside the chain; how a mark
+                        dims is up to its class, and is set in
+                        review.css.
 relation:               []
 
 ...
 """
+
+
+import typing
+
+import htpy
 
 
 ROLE_FOR          = 'for'
@@ -43,14 +52,28 @@ ROLE_AGAINST      = 'against'
 SIGN_MIXED        = 'mixed'
 MARK_FOR          = '✓'
 MARK_AGAINST      = '✗'
-CSS_TRIGGER       = 'lit-trigger'
-CSS_ANCHOR        = 'lit-anchor'
 CSS_DIMS          = 'dims'
+CSS_MUTES         = 'mutes'
+CSS_FADES         = 'fades'
+CSS_REGION        = 'lit-region'
 CSS_SHOW          = 'lit-show'
-PREFIX_HOVER      = 'hover-'
+CSS_PIN           = 'lit-pin'
+PREFIX_LIT        = 'lit-'
 PREFIX_SHOW       = 'show-'
-DELIM_SIGN        = '--'
+DELIM_ROLE        = '--'
 KEY_UNPIN         = 'unpin'
+
+
+# -----------------------------------------------------------------------------
+class _Css(str):
+    """
+    Style rules written into a page as they are: htpy escapes text, and
+    a rule may hold characters that escaping would change.
+
+    """
+
+    def __html__(self) -> str:
+        return str(self)
 
 
 # -----------------------------------------------------------------------------
@@ -67,62 +90,50 @@ def times(role_first: str, role_second: str) -> str:
 # -----------------------------------------------------------------------------
 def css(map_sign: dict[str, set[str]]) -> list[str]:
     """
-    Return the classes of a mark from the keys of the chains it is in,
+    Return the classes of a mark from the names of the chains it is in,
     each with the net effects that shade it there: none, one, or both,
     which is mixed.
 
     """
 
     list_css = []
-    for (key, set_sign) in sorted(map_sign.items()):
-        list_css.append(key)
+    for (name, set_sign) in sorted(map_sign.items()):
+        list_css.append(PREFIX_LIT + name)
         if len(set_sign) == 1:
-            list_css.append(key + DELIM_SIGN + next(iter(set_sign)))
+            list_css.append(_shade(next(iter(set_sign)), name))
         elif set_sign:
-            list_css.append(key + DELIM_SIGN + SIGN_MIXED)
+            list_css.append(_shade(SIGN_MIXED, name))
     return list_css
 
 
 # -----------------------------------------------------------------------------
-def add(map_sign: dict[str, set[str]], key: str, sign: str | None) -> None:
+def add(map_sign: dict[str, set[str]], name: str, sign: str | None) -> None:
     """
-    Put the mark of map_sign in the chain at key, shaded by sign unless
-    it is None.
+    Put the mark of map_sign in the chain called name, shaded by sign
+    unless it is None.
 
     """
 
-    set_sign = map_sign.setdefault(key, set())
+    set_sign = map_sign.setdefault(name, set())
     if sign is not None:
         set_sign.add(sign)
 
 
 # -----------------------------------------------------------------------------
-def trigger(key: str) -> str:
+def chain(id_item: str, role: str | None = None) -> str:
     """
-    Return the classes of a mark that lights the chain at key while it
-    is hovered over.
-
-    """
-
-    return '{trigger} {hover}{key}'.format(trigger = CSS_TRIGGER, hover = PREFIX_HOVER, key = key)
-
-
-# -----------------------------------------------------------------------------
-def alias(id_decision: str, role: str | None = None) -> str:
-    """
-    Return the id that shows id_decision in the matrix and pins its
-    chains in the diagrams: all of them, or with role only those that
-    reach it with that role.
+    Return the name of the chains into id_item: all of them, or with
+    role only those that reach it with that role.
 
     """
 
-    return id_decision if role is None else id_decision + DELIM_SIGN + role
+    return id_item if role is None else id_item + DELIM_ROLE + role
 
 
 # -----------------------------------------------------------------------------
 def show(name: str) -> str:
     """
-    Return the classes of a mark that lights the chains named name, in
+    Return the classes of a mark that lights the chain called name, in
     every diagram and in the matrix, while it is hovered over.
 
     """
@@ -131,52 +142,59 @@ def show(name: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def style(scope:     str,
-          list_key:  list[str],
-          map_alias: dict[str, str] | None = None,
-          map_show:  dict[str, str] | None = None) -> str:
+def pins(list_name: list[str]) -> typing.Any:
     """
-    Return the rules that light the chain at each key in the diagram
-    scope while a trigger of it, or a mark anywhere on the page that
-    shows its name in map_show, is hovered over, or while its anchor or
-    its alias in map_alias is the target of the address and no such mark
-    is hovered over. A lit mark
-    shows in full; one shaded for a net effect takes the custom
-    properties --lit (a fill) and --lit-ink (an ink) of that effect.
+    Return an element for each name in list_name, with the name as its
+    id, that pins the chain while it is the target of the address. A
+    name that is already the id of something on the page needs none.
 
     """
 
-    map_alias = map_alias or {}
-    map_show  = map_show or {}
+    return htpy.div(class_ = 'lit-pins', hidden = True)[
+        [htpy.i(id = name, class_ = CSS_PIN) for name in list_name]]
+
+
+# -----------------------------------------------------------------------------
+def style(list_name: list[str]) -> typing.Any:
+    """
+    Return the rules that light the chain called each name in list_name
+    while a mark that shows it is hovered over, or while the element
+    with the name as its id is the target of the address and no mark
+    that shows a chain is hovered over. A lit mark is in full; one
+    shaded for a net effect takes the custom properties --lit (a fill)
+    and --lit-ink (an ink) of that effect. Each region the chain
+    reaches is away from the rest, and a mark that shows the chain is
+    at it.
+
+    """
+
     list_rule = []
-    for key in list_key:
-        list_when = ['{scope} svg:has(.{hover}{key}:hover)',
-                     (':root:not(:has(.{show}:hover)) '
-                      '{scope} svg:has(#{key}:target):not(:has(.{trigger}:hover))')]
-        list_away = []
-        if key in map_alias:
-            list_when.append(':root:has(#{alias}:target):not(:has(.{show}:hover)) '
-                             '{scope} svg:not(:has(.{trigger}:hover))')
-            list_away.append(':root:has(#{alias}:target)')
-        if key in map_show:
-            list_when.append(':root:has(.{prefix}{name}:hover) {scope} svg')
-            list_away.append(':root:has(.{prefix}{name}:hover)')
-        map_format = {'scope':   scope,
-                      'hover':   PREFIX_HOVER,
-                      'key':     key,
-                      'trigger': CSS_TRIGGER,
-                      'show':    CSS_SHOW,
-                      'prefix':  PREFIX_SHOW,
-                      'alias':   map_alias.get(key),
-                      'name':    map_show.get(key),
-                      'dims':    CSS_DIMS}
-        if list_away:
-            rule = ':is({list_away}) {{scope}} svg .{{dims}} {{{{ opacity: var(--dim); }}}}'
-            list_rule.append(rule.format(list_away = ', '.join(list_away)).format(**map_format))
-        when = ':is({list_when})'.format(list_when = ', '.join(list_when)).format(**map_format)
-        list_rule.append('{when} .{key} {{ opacity: 1; }}'.format(when = when, key = key))
-        for sign in (ROLE_FOR, ROLE_AGAINST, SIGN_MIXED):
-            rule = ('{when} .{key}{delim}{sign} '
-                    '{{ --lit: var(--net-{sign}); --lit-ink: var(--ink-{sign}); }}')
-            list_rule.append(rule.format(when = when, key = key, delim = DELIM_SIGN, sign = sign))
-    return '\n'.join(list_rule)
+    for name in list_name:
+        when = (':root:is(:has(.{prefix}{name}:hover), '
+                ':has(#{name}:target):not(:has(.{show}:hover)))').format(prefix = PREFIX_SHOW,
+                                                                         name   = name,
+                                                                         show   = CSS_SHOW)
+        list_nested = ['& .{lit}{name} {{ --lit-on: 1; }}',
+                       '& .{region}:has(.{lit}{name}) {{ --lit-away: 1; }}',
+                       '& .{prefix}{name} {{ --lit-at: 1; }}']
+        list_nested += ['& .{shade} {{{{ --lit: var(--net-{sign}); '
+                        '--lit-ink: var(--ink-{sign}); }}}}'.format(shade = _shade(sign, name),
+                                                                    sign  = sign)
+                        for sign in (ROLE_FOR, ROLE_AGAINST, SIGN_MIXED)]
+        body = ' '.join(nested.format(lit    = PREFIX_LIT,
+                                      region = CSS_REGION,
+                                      prefix = PREFIX_SHOW,
+                                      name   = name) for nested in list_nested)
+        list_rule.append('{when} {{ {body} }}'.format(when = when, body = body))
+    return htpy.style[_Css('\n'.join(list_rule))]
+
+
+# -----------------------------------------------------------------------------
+def _shade(sign: str, name: str) -> str:
+    """
+    Return the class of a mark that the chain called name shades with
+    sign.
+
+    """
+
+    return '{lit}{sign}-{name}'.format(lit = PREFIX_LIT, sign = sign, name = name)

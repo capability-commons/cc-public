@@ -61,8 +61,8 @@ PATH_ISSUE        = '/issue/'
 PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
-CSS_MUTES         = 'mutes'
-CSS_FADES         = 'fades'
+CSS_MUTES         = cc_public.web.light.CSS_MUTES
+CSS_FADES         = cc_public.web.light.CSS_FADES
 
 MARK_FOR          = cc_public.web.light.MARK_FOR
 MARK_AGAINST      = cc_public.web.light.MARK_AGAINST
@@ -122,7 +122,8 @@ def issue(graph:      Graph,
                     for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
-                 [_matrix(graph, issue, outline, set_show or set()),
+                 [_lighting(graph, outline),
+                  _matrix(graph, issue, outline, set_show or set()),
                   _determinations(graph, issue),
                   _diagram('Sankey of the argument', 'sankey', True,
                            cc_public.web.sankey.figure(graph, outline, set_toggle,
@@ -134,6 +135,28 @@ def issue(graph:      Graph,
                   _sequence(graph, issue),
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
                  [_facts(graph, issue, list_subject)])
+
+
+# -----------------------------------------------------------------------------
+def _lighting(graph: Graph, outline: cc_public.web.sankey.Outline) -> list:
+    """
+    Return the rules that light each chain of the argument in outline,
+    in the matrix and in both diagrams alike, and an element that pins
+    each chain whose name the page does not already hold as an id: the
+    matrix holds a decision, each of its roles, and each concern that
+    opens to annotations.
+
+    """
+
+    chain    = cc_public.web.light.chain
+    set_held = {chain(id_decision, role) for id_decision in outline.list_decision
+                for role in (None, ROLE_FOR, ROLE_AGAINST)}
+    set_held |= {chain(id_concern) for id_concern in outline.list_concern
+                 if outline.map_annotation[id_concern]}
+    list_name = list(dict.fromkeys(cc_public.web.sankey.lighting(graph, outline).names()
+                                   + cc_public.web.network.names(outline)))
+    return [cc_public.web.light.style(list_name),
+            cc_public.web.light.pins([name for name in list_name if name not in set_held])]
 
 
 # -----------------------------------------------------------------------------
@@ -178,16 +201,18 @@ def _matrix(graph:    Graph,
     map_decision = {decision.id: decision for decision in issue.list_decision}
     drawing      = cc_public.web.sankey.lighting(graph, outline)
     list_row     = [row([], [[htpy.a(href   = '#' + id_decision,
-                                     class_ = cc_public.web.light.show(id_decision))[
+                                     class_ = ' '.join([CSS_MUTES,
+                                                        *drawing.css_decision(id_decision),
+                                                        cc_public.web.light.show(id_decision)]))[
                                   graph.title(id_decision)],
                               htpy.div(class_ = 'total')[
-                                  _total(id_decision, outline.units(decision = id_decision))]]
+                                  _total(id_decision, outline.units(decision = id_decision),
+                                         drawing.css_decision(id_decision))]]
                              for id_decision in list_decision],
                         class_ = 'head'),
                     _decision_style(list_decision),
-                    _lit_style(drawing),
                     [htpy.span(class_ = 'decision-role',
-                               id     = cc_public.web.light.alias(id_decision, role))
+                               id     = cc_public.web.light.chain(id_decision, role))
                      for id_decision in list_decision
                      for role in (cc_public.web.light.ROLE_FOR, cc_public.web.light.ROLE_AGAINST)],
                     [_decision(graph, issue, map_decision[id_decision])
@@ -229,7 +254,7 @@ def _matrix(graph:    Graph,
         row([], [_controls(id_decision) for id_decision in list_decision],
             class_ = 'foot controls')]
 
-    return htpy.section(class_ = 'matrix',
+    return htpy.section(class_ = 'matrix ' + cc_public.web.light.CSS_REGION,
                         style  = '--decisions: {count}'.format(count = len(list_decision)))[
         list_row]
 
@@ -247,7 +272,8 @@ def _concern_label(graph:      Graph,
 
     """
 
-    list_show = [cc_public.web.light.show(id_concern)] if list_css else []
+    name      = cc_public.web.light.chain(id_concern)
+    list_show = [cc_public.web.light.show(name)] if list_css else []
     return [htpy.span(class_ = ' '.join(['name', CSS_MUTES, *list_css, *list_show]))[
                 graph.title(id_concern)],
             htpy.span(class_ = 'unargued')['not argued']
@@ -307,28 +333,25 @@ def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _total(id_decision: str, list_unit: list) -> typing.Any:
+def _total(id_decision: str, list_unit: list, list_css: list[str]) -> typing.Any:
     """
     Return the total of list_unit, the units of weight on id_decision,
-    in words: how many are for it and how many against. Each count
-    lights the chains that reach the decision with that role while it
-    is hovered over, and shows the decision and pins them when it is
-    clicked.
+    in words: how many are for it and how many against, each in the
+    chains of list_css. Each count lights the chains that reach the
+    decision with that role while it is hovered over, and shows the
+    decision and pins them when it is clicked.
 
     """
 
-    count_for    = sum(1 for unit in list_unit if unit.is_for())
-    role_for     = cc_public.web.light.ROLE_FOR
-    role_against = cc_public.web.light.ROLE_AGAINST
-    alias_for     = cc_public.web.light.alias(id_decision, role_for)
-    alias_against = cc_public.web.light.alias(id_decision, role_against)
-    return [htpy.a(class_ = role_for + ' ' + cc_public.web.light.show(alias_for),
-                   href   = '#' + alias_for)[
-                '{count} for'.format(count = count_for)],
-            ', ',
-            htpy.a(class_ = role_against + ' ' + cc_public.web.light.show(alias_against),
-                   href   = '#' + alias_against)[
-                '{count} against'.format(count = len(list_unit) - count_for)]]
+    count_for = sum(1 for unit in list_unit if unit.is_for())
+    list_link = []
+    for (role, count) in ((ROLE_FOR, count_for), (ROLE_AGAINST, len(list_unit) - count_for)):
+        name = cc_public.web.light.chain(id_decision, role)
+        list_link.append(htpy.a(class_ = ' '.join([role, CSS_FADES, *list_css,
+                                                   cc_public.web.light.show(name)]),
+                                href   = '#' + name)[
+                             '{count} {role}'.format(count = count, role = role)])
+    return [list_link[0], ', ', list_link[1]]
 
 
 # -----------------------------------------------------------------------------
@@ -537,97 +560,23 @@ def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _decision_style(list_decision: list[str]) -> typing.Any:
     """
-    Return the rules that show the panel of a decision while it, or
-    one of its counts, is chosen, and keep its title and the chosen
-    count in ink while the titles and counts of the others are greyed.
-    Hovering over a mark anywhere on the page that shows a decision
-    greys the titles and counts of the others in the same way, and
-    wins over a choice.
+    Return the rules that show the panel of a decision while one of its
+    counts is chosen, as it shows while the decision is, and underline
+    the chosen count.
 
     """
 
-    list_map  = [{'id':      id_decision,
-                  'for':     cc_public.web.light.alias(id_decision, cc_public.web.light.ROLE_FOR),
-                  'against': cc_public.web.light.alias(id_decision,
-                                                       cc_public.web.light.ROLE_AGAINST)}
-                 for id_decision in list_decision]
-    any_hover = _hovered([map_id[key] for map_id in list_map for key in ('id', 'for', 'against')])
-    list_rule = [
-        (':root:has({any}) section.matrix .row.head .cell a:not(.for, .against) '
-         '{{ color: #a99f8c; }}').format(any = any_hover),
-        (':root:has({any}) section.matrix .row.head .total a '
-         '{{ opacity: 0.45; }}').format(any = any_hover)]
-    for map_decision in list_map:
-        map_id = dict(map_decision,
-                      unhovered = ':root:not(:has({any}))'.format(any = any_hover),
-                      hover     = ':root:has({own})'.format(own = _hovered(
-                                      [map_decision['id'], map_decision['for'],
-                                       map_decision['against']])))
+    list_rule = []
+    for id_decision in list_decision:
+        map_id = {'id':      id_decision,
+                  'for':     cc_public.web.light.chain(id_decision, ROLE_FOR),
+                  'against': cc_public.web.light.chain(id_decision, ROLE_AGAINST)}
         list_rule += [
             ('section.matrix:has(#{for}:target, #{against}:target) #{id} '
              '{{ display: block; }}').format(**map_id),
-            ('{unhovered} section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
-             '.row.head a[href=\\#{id}] {{ color: var(--ink); }}').format(**map_id),
-            ('{unhovered} section.matrix:has(#{id}:target, #{for}:target, #{against}:target) '
-             '.row.head :is(a[href=\\#{for}], a[href=\\#{against}]) '
-             '{{ opacity: 1; }}').format(**map_id),
-            ('{hover} section.matrix .row.head .cell a[href=\\#{id}] '
-             '{{ color: var(--ink); }}').format(**map_id),
-            ('{hover} section.matrix .row.head .total '
-             ':is(a[href=\\#{for}], a[href=\\#{against}]) {{ opacity: 1; }}').format(**map_id),
             ('section.matrix:has(#{for}:target) .row.head a[href=\\#{for}], '
              'section.matrix:has(#{against}:target) .row.head a[href=\\#{against}] '
              '{{ text-decoration: underline; }}').format(**map_id)]
-    return htpy.style['\n'.join(list_rule)]
-
-
-# -----------------------------------------------------------------------------
-def _hovered(list_name: list[str]) -> str:
-    """
-    Return a selector list that matches while a mark showing any of
-    the names in list_name is hovered over.
-
-    """
-
-    return ', '.join('.{prefix}{name}:hover'.format(prefix = cc_public.web.light.PREFIX_SHOW,
-                                                     name   = name)
-                     for name in list_name)
-
-
-# -----------------------------------------------------------------------------
-def _lit_style(drawing: typing.Any) -> typing.Any:
-    """
-    Return the rules that keep in ink the text of the matrix in a chain
-    of drawing while the chain is pinned, from the matrix or from the
-    Sankey diagram, or while a mark anywhere on the page that shows it
-    is hovered over, which wins over a pin, and keep the marks
-    in it in full; the rest of the text that can be muted is muted, and
-    the rest of the marks that can be faded are faded.
-
-    """
-
-    map_alias = drawing.aliases()
-    map_show  = drawing.shows()
-    list_key  = drawing.keys()
-    rule      = ('{when} section.matrix .{mutes}.{key} {{ color: var(--ink); }}\n'
-                 '{when} section.matrix .{fades}.{key} {{ opacity: 1; }}')
-    list_rule = []
-    for key in list_key:
-        unhovered = ':not(:has(.{show}:hover))'.format(show = cc_public.web.light.CSS_SHOW)
-        list_when = [':root:has(.sankey #{key}:target){unhovered}'.format(key       = key,
-                                                                           unhovered = unhovered)]
-        if key in map_alias:
-            list_when.append(':root:has(#{alias}:target){unhovered}'.format(
-                                 alias     = map_alias[key],
-                                 unhovered = unhovered))
-        if key in map_show:
-            list_when.append(':root:has(.{prefix}{name}:hover)'.format(
-                                 prefix = cc_public.web.light.PREFIX_SHOW,
-                                 name   = map_show[key]))
-        list_rule.append(rule.format(when  = ':is({list})'.format(list = ', '.join(list_when)),
-                                     mutes = CSS_MUTES,
-                                     fades = CSS_FADES,
-                                     key   = key))
     return htpy.style['\n'.join(list_rule)]
 
 

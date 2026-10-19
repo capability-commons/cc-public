@@ -13,7 +13,7 @@ document.addEventListener('click', function (event) {
   var link = event.target.closest('a[href^="#"]');
   if (link) {
     var target = document.getElementById(link.getAttribute('href').slice(1));
-    if (!target || target.matches('.decision, .decision-role, .lit-anchor')) {
+    if (!target || target.matches('.decision, .decision-role, .lit-pin')) {
       keep = window.scrollY;
     }
     return;

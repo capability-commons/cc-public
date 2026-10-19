@@ -139,28 +139,28 @@ def test_a_decision_title_opens_its_brief_under_the_head(tree):
         panel = text[text.index('<div class="drill decision" id="{id}">'.format(id = decision.id)):]
         assert panel.index('<div class="row') > panel.index('<code>{id}</code>'.format(
                                                                 id = decision.id))
-        assert 'a[href=\\#{id}]'.format(id = decision.id) in text
+        assert re.search(r'<a href="#{id}" class="mutes [^"]*\blit-show show-{id}"'.format(
+                             id = decision.id), text)
     assert 'src="/static/review.js"' in text
 
 
-def test_a_decision_shown_in_the_matrix_is_lit_in_both_diagrams(tree):
+def test_a_decision_is_one_chain_across_the_page(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
-    text  = body.decode()
+    text    = body.decode()
+    matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
+    sankey  = text[text.index('<figure class="map sankey">'):]
+    sankey  = sankey[:sankey.index('</figure>')]
+    network = text[text.index('<figure class="map network">'):]
+    network = network[:network.index('</figure>')]
     for decision in issue.list_decision:
-        shown = ':root:has(#{id}:target)'.format(id = decision.id)
-        hover = ':root:has(.show-{id}:hover)'.format(id = decision.id)
-        for scope in ('.sankey', '.network'):
-            assert ':is({shown}, {hover}) {scope} svg .dims'.format(
-                       shown = shown, hover = hover, scope = scope) in text
-        assert 'class="lit-show show-{id}"'.format(id = decision.id) in text
-        assert text.count('href="#{id}"'.format(id = decision.id)) >= 3
-        for role in ('for', 'against'):
-            alias = '{id}--{role}'.format(id = decision.id, role = role)
-            for scope in ('.sankey', '.network'):
-                assert ':is(:root:has(#{a}:target), :root:has(.show-{a}:hover)) {s} svg'.format(
-                           a = alias, s = scope) in text
-            assert text.count('href="#{alias}"'.format(alias = alias)) == 3
+        for name in (decision.id, decision.id + '--for', decision.id + '--against'):
+            assert ':has(.show-{n}:hover)'.format(n = name) in text
+            assert ':has(#{n}:target)'.format(n = name) in text
+            assert text.count('id="{n}"'.format(n = name)) == 1
+            for part in (matrix, sankey, network):
+                assert re.search(r'class="[^"]*\blit-{n}\b'.format(n = re.escape(name)), part)
+                assert 'href="#{n}"'.format(n = name) in part
 
 
 def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
@@ -169,24 +169,20 @@ def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
     matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
+    assert matrix.startswith('<section class="matrix lit-region"')
     assert 'name other' not in matrix
-    for id_decision in outline.list_decision:
-        key = 'lit-dec-' + id_decision
-        assert ':root:has(#{id}:target):not(:has(.lit-show:hover))'.format(id = id_decision) in matrix
-        assert ':root:has(.show-{id}:hover)) section.matrix .mutes.{key}'.format(
-                   id = id_decision, key = key) in matrix
     for id_concern in outline.list_concern:
         if not outline.units(concern = id_concern):
             continue
         id_decision = outline.units(concern = id_concern)[0].decision
-        assert re.search(r'<span class="name mutes [^"]*\blit-dec-{id}\b[^"]*">'.format(
+        assert re.search(r'<span class="name mutes [^"]*\blit-{id}\b[^"]*">'.format(
                              id = id_decision), matrix)
         for id_annotation in outline.map_annotation[id_concern]:
             start = matrix.index('id="{c}/{a}"'.format(c = id_concern, a = id_annotation))
             assert re.match(r'[^>]*>\s*<summary><div class="block"><div class="main mutes [^"]*'
-                            r'lit-ann-{a}\b'.format(a = id_annotation), matrix[start:])
+                            r'lit-{a}\b'.format(a = id_annotation), matrix[start:])
             summary = matrix[start:matrix.index('</summary>', start)]
-            assert re.search(r'<aside class="margin fades [^"]*lit-ann-{a}\b'.format(
+            assert re.search(r'<aside class="margin fades [^"]*lit-{a}\b'.format(
                                  a = id_annotation), summary)
 
 
@@ -284,10 +280,10 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(
         list_own = outline.units(decision = id_decision)
         count    = sum(1 for unit in list_own if unit.is_for())
         head     = matrix[:matrix.index('<style>')]
-        assert ('<a class="for lit-show show-{id}--for" href="#{id}--for">{f} for</a>, '
-                '<a class="against lit-show show-{id}--against" href="#{id}--against">'
-                '{a} against</a>'
-                .format(id = id_decision, f = count, a = len(list_own) - count)) in head
+        assert re.search((r'<a class="for fades [^"]*\blit-show show-{id}--for" href="#{id}--for">'
+                          r'{f} for</a>, <a class="against fades [^"]*\blit-show show-{id}--against" '
+                          r'href="#{id}--against">{a} against</a>')
+                         .format(id = id_decision, f = count, a = len(list_own) - count), head)
         assert 'id="{id}--for"'.format(id = id_decision) in matrix
     assert 'matrix=' not in matrix
     assert '>All<' not in matrix
@@ -348,22 +344,23 @@ def test_graph_decision_lights_its_chains_through_concerns(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
     body    = str(cc_public.web.network.figure(graph, outline))
-    key     = 'pick-dec_tooling_in_python'
-    assert 'id="{key}"'.format(key = key) in body
+    name    = 'dec_tooling_in_python'
+    assert 'href="#{n}" class="pick lit-show show-{n}"'.format(n = name) in body
 
     def css(id_item):
         pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
         return re.search(pattern, body).group(1).split()
 
-    assert key + "--for" in css('ann_python_is_fast_enough')
-    assert key + "--against" in css('ann_graphs_will_grow')
-    assert key + "--for" in css('ann_cross_item_checks_run_in_clingo')
-    assert key not in css('ann_types_catch_errors_early')
-    assert key in css('concern_performance_efficiency')
-    assert not any(css_concern.startswith(key + '-')
+    assert 'lit-for-' + name in css('ann_python_is_fast_enough')
+    assert 'lit-against-' + name in css('ann_graphs_will_grow')
+    assert 'lit-for-' + name in css('ann_cross_item_checks_run_in_clingo')
+    assert 'lit-' + name not in css('ann_types_catch_errors_early')
+    assert 'lit-' + name in css('concern_performance_efficiency')
+    assert not any(css_concern.endswith('-' + name) and css_concern != 'lit-' + name
                    for css_concern in css('concern_performance_efficiency'))
-    assert 'id="pick-concern_' not in body and 'port-concern_' not in body
-    assert 'id="port-dec_tooling_in_python-against"' in body
+    assert 'href="#concern_' not in body and 'concern_reliability--' not in body
+    assert 'href="#{n}--against"'.format(n = name) in body
+    assert ' id="{n}' .format(n = name) not in body
 
 
 def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
@@ -374,51 +371,52 @@ def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
     network = str(cc_public.web.network.figure(graph, outline))
     sankey  = str(cc_public.web.sankey.figure(graph, outline, set(), set()))
     concern = 'concern_dependency_risk'
-    show    = ':root:has(.show-{c}:hover)'.format(c = concern)
 
     def classes(body, pattern):
         return re.search(pattern, body).group(1).split()
 
     node = classes(network, 'class="([^"]*)" id="node-{c}"'.format(c = concern))
-    assert 'hover-pick-' + concern in node and 'show-' + concern in node
-    assert 'pick-' + concern in classes(network, 'class="([^"]*)" id="node-ann_dependencies_are_few_and_permissive"')
-    assert 'pick-' + concern not in classes(network,
-                                            'class="([^"]*)" id="node-ann_types_catch_errors_early"')
-    assert 'pick-{c}'.format(c = concern) in classes(network,
-                                                      'class="([^"]*)" id="node-dec_tooling_in_rust"')
-    assert '{show} .sankey svg) .lit-con-{c} '.format(show = show, c = concern) in sankey
-    assert '{show} .network svg) .pick-{c} '.format(show = show, c = concern) in network
-    assert '{show}) section.matrix .mutes.lit-con-{c} '.format(show = show, c = concern) in text
-    assert re.search(r'<span class="name mutes [^"]*lit-con-{c} [^"]*lit-show show-{c}"'.format(
+    assert 'show-' + concern in node and 'lit-' + concern in node
+    assert 'lit-' + concern in classes(
+        network, 'class="([^"]*)" id="node-ann_dependencies_are_few_and_permissive"')
+    assert 'lit-' + concern not in classes(network,
+                                           'class="([^"]*)" id="node-ann_types_catch_errors_early"')
+    assert 'lit-' + concern in classes(network, 'class="([^"]*)" id="node-dec_tooling_in_rust"')
+    assert re.search(r'<text [^>]*class="concern [^"]*\bshow-{c}\b'.format(c = concern), sankey)
+    assert ':has(.show-{c}:hover)'.format(c = concern) in text
+    assert re.search(r'<span class="name mutes [^"]*\blit-{c} [^"]*lit-show show-{c}"'.format(
                          c = concern), text)
 
 
-def test_hovering_a_decision_greys_the_other_titles_in_the_matrix(tree):
+def test_the_head_of_the_matrix_is_in_the_chains_of_its_decisions(tree):
     (_, _, page) = cc_public.web.server.respond(tree, '/issue/iss_tooling_language')
     text  = page.decode()
-    own   = (':root:has(.show-dec_tooling_in_rust:hover, .show-dec_tooling_in_rust--for:hover, '
-             '.show-dec_tooling_in_rust--against:hover)')
-    assert '.show-dec_tooling_in_rust--against:hover) section.matrix .row.head .cell ' \
-           'a:not(.for, .against) { color: #a99f8c; }' in text
-    assert own + ' section.matrix .row.head .cell a[href=\\#dec_tooling_in_rust] ' \
-                 '{ color: var(--ink); }' in text
-    assert ':root:not(:has(.show-dec_tooling_in_python:hover' in text
+    head  = text[text.index('<div class="row head">'):]
+    head  = head[:head.index('<style>')]
+    title = re.search(r'<a href="#dec_tooling_in_rust" class="([^"]*)"', head).group(1).split()
+    assert {'mutes', 'lit-dec_tooling_in_rust', 'lit-dec_tooling_in_rust--for',
+            'lit-concern_cost'} <= set(title)
+    assert 'lit-dec_tooling_in_python' not in title
+    count = re.search(r'<a class="([^"]*)" href="#dec_tooling_in_rust--for"', head).group(1)
+    assert {'fades', 'lit-dec_tooling_in_rust'} <= set(count.split())
 
 
 def test_graph_node_lights_both_its_chains(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
     body    = str(cc_public.web.network.figure(graph, outline))
-    key     = 'pick-ann_python_is_fast_enough'
-    assert 'href="#{key}" id="{key}"'.format(key = key) in body
+    name    = 'ann_python_is_fast_enough'
+    assert 'href="#{n}" class="pick lit-show show-{n}"'.format(n = name) in body
+    (_, _, page) = cc_public.web.server.respond(tree, '/issue/iss_tooling_language')
+    assert '<i id="{n}" class="lit-pin">'.format(n = name) in page.decode()
 
     def css(id_item):
         pattern = 'class="([^"]*)" id="node-{id}"'.format(id = id_item)
         return re.search(pattern, body).group(1).split()
 
-    assert key + "--for" in css('ann_gate_takes_a_minute')
-    assert key + "--against" in css('ann_graphs_will_grow')
-    assert key + "--for" in css('ann_cross_item_checks_run_in_clingo')
+    assert 'lit-for-' + name in css('ann_gate_takes_a_minute')
+    assert 'lit-against-' + name in css('ann_graphs_will_grow')
+    assert 'lit-for-' + name in css('ann_cross_item_checks_run_in_clingo')
 
 
 def test_sankey_inks_an_answer_by_its_net_effect_on_a_decision(tree):
@@ -427,18 +425,18 @@ def test_sankey_inks_an_answer_by_its_net_effect_on_a_decision(tree):
     key     = 'concern_performance_efficiency/ann_python_is_fast_enough'
     body    = str(cc_public.web.sankey.figure(
                   graph, outline, {key, key + '/ann_graphs_will_grow'}, set()))
-    assert 'id="lit-dec-dec_tooling_in_python"' in body
-    assert 'lit-trigger hover-lit-port-dec_tooling_in_python-for' in body
+    assert 'href="#dec_tooling_in_python--for"' in body
+    assert 'lit-show show-dec_tooling_in_python--for' in body
 
     def css(title):
         pattern = r'<text [^>]*class="([^"]*)"[^>]*>(?:(?!</text>).)*?</tspan> {title}<'
         return re.search(pattern.format(title = title), body).group(1).split()
 
-    lit = 'lit-dec-dec_tooling_in_python'
-    assert lit + '--for' in css('Python is fast enough')
-    assert lit + '--against' in css('Graphs will grow large')
-    assert lit + '--for' in css('Cross-item checks run in clingo')
-    assert 'lit-ann-ann_python_is_fast_enough--against' in css('Graphs will grow large')
+    name = 'dec_tooling_in_python'
+    assert 'lit-for-' + name in css('Python is fast enough')
+    assert 'lit-against-' + name in css('Graphs will grow large')
+    assert 'lit-for-' + name in css('Cross-item checks run in clingo')
+    assert 'lit-against-ann_python_is_fast_enough' in css('Graphs will grow large')
 
 
 def test_item_page_names_the_issue_of_a_decision(tree):
