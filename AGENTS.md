@@ -107,6 +107,29 @@ unfinished edits of another.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated.
 
+## Failures and errors
+
+Every failure and error that cctool reports says what is wrong, in
+terms of the items and files it names, and what to do about it. An
+agent can act on it without reading the rule behind it.
+
+- A check in a logic program has two comments after its `% decl`.
+  `% did` is a sentence that names the columns of a row in braces,
+  such as `{holder} names {id} in its {field} field, and no item has
+  that id or guid.` `% fix` is the usual remedy, and says what not to
+  do where a wrong remedy is tempting. A test fails any shown relation
+  that lacks either. A check written in python gives the same two in
+  `cc_public.check.check`.
+- cctool prints each failure as its file and line, where it has them,
+  the name of the check, and the did sentence, then the fix once for
+  each check. The name of the check is the stable code that tests and
+  scripts match on; the sentences may change.
+- An error, exit status 2, says what is wrong with what was given and,
+  where that is not plain, what to give instead or which command does
+  the job.
+- Fix the cause a failure names. Do not delete what a failure points
+  at only to quiet the check.
+
 ## Skills
 
 Procedures, and the traps in them, are skills in `.agents/skills/`,

@@ -66,6 +66,15 @@ NAME_SCHEMA       = 'schema_violation'
 #
 NAME_LAYOUT       = 'unformatted_file'
 
+# The wording of the two checks that are not Datalog. The checks of
+# check.lp are worded there, after their declarations.
+#
+WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
+                     'fix': 'Correct the field to what the schema asks. cctool set refuses '
+                            'an edit that adds a failure, so it shows whether a value fits.'}
+WORDING_LAYOUT    = {'did': '{file} is not laid out as cctool format lays it out.',
+                     'fix': 'Run cctool format.'}
+
 Failures          = dict[str, list[tuple[str, ...]]]
 
 # What validation against the schemas has found, kept between checks
@@ -282,3 +291,41 @@ def columns() -> dict[str, tuple[str, ...]]:
     map_column[NAME_SCHEMA] = cc_public.check.schema.COLUMNS
     map_column[NAME_LAYOUT] = cc_public.edit.layout.COLUMNS
     return map_column
+
+
+# -----------------------------------------------------------------------------
+def wording() -> dict[str, dict[str, str]]:
+    """
+    ---
+
+    id_self:                pyf_cc_public.check.check.wording
+    guid_self:              pyf_c9909ed20c204889b5a1402537073e72
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Wording of the checks
+    brief:                  |
+                            Return what a row of each check records, and
+                            what to do about it, keyed by check.
+
+    relation:
+
+      - id_relation:        r_realizes
+        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+        id_target:          icm_cc_public_check.wording
+        guid_target:        icm_6a67c1a8b79d4e739b9662e75b4bd3aa
+
+    ...
+    """
+
+    text        = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
+    map_wording = cc_public.graph.datalog.worded(text)
+
+    map_wording[NAME_SCHEMA] = WORDING_SCHEMA
+    map_wording[NAME_LAYOUT] = WORDING_LAYOUT
+    return map_wording

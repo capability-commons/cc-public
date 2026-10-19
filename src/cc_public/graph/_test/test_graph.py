@@ -43,6 +43,24 @@ def test_declared_reads_the_columns_of_each_relation():
                                                       'b': (('z', 'symbol'),)}
 
 
+def test_worded_reads_the_did_and_fix_after_each_declaration():
+    text = ('% decl a(x: symbol)\n% did  {x} is\n%      wrong.\n% fix  Mend it.\n#show a/1.\n'
+            '% decl b(y: symbol)\n#show b/1.\n% decl c(z: symbol)\n% fix  Only this.')
+    assert cc_public.graph.datalog.worded(text) == {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'},
+                                                    'c': {'fix': 'Only this.'}}
+
+
+def test_described_words_each_row_and_gives_the_fix_once():
+    rows        = {'a': [('p', 'f.yaml', '3'), ('q', 'f.yaml', '')], 'b': [('r',)]}
+    map_column  = {'a': ('x', 'file', 'line'), 'b': ('y',)}
+    map_wording = {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'}}
+    assert cc_public.graph.datalog.described(rows, map_column, map_wording) == [
+               'f.yaml:3: a: p is wrong.',
+               'f.yaml: a: q is wrong.',
+               '  fix: Mend it.',
+               'b: r']
+
+
 def test_output_reads_every_relation_named_in_order():
     text = '#show b/1.\n#show a/2. #show c / 0 . % #show d/1.\n#show b/1.'
     assert cc_public.graph.datalog.output(text) == ['b', 'a', 'c']

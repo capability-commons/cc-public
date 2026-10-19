@@ -120,8 +120,7 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
         (_, item) = cc_public.commit.message.parse(text)
         failures  = cc_public.commit.change.check_trees(dir_before, dir_after, item)
 
-    return ['{name}: {row}'.format(name = name, row = '  '.join(row))
-            for (name, list_row) in failures.items() for row in list_row]
+    return cc_public.commit.change.described(failures)
 
 
 # -----------------------------------------------------------------------------

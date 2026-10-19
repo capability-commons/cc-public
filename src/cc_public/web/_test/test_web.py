@@ -605,7 +605,7 @@ def test_interface_index_lists_interface_control_documents(tree):
     text = body.decode()
     assert text.count('href="/interface/icd_') == 1
     assert '<a href="/interface/icd_cc_public_check">Checker interface</a>' in text
-    assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 7<', text)
+    assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 8<', text)
 
 
 def test_requirement_index_groups_requirements_by_subject(tree):
@@ -648,7 +648,7 @@ def test_interface_page_opens_with_its_contract(tree):
     text = body.decode()
     list_name = re.findall(r'<code class="name">([\w.]+)</code>', text)
     assert list_name == ['Failures', 'cc_public.check.check', 'check', 'review',
-                         'check_documents', 'review_documents', 'columns']
+                         'check_documents', 'review_documents', 'columns', 'wording']
     assert re.findall(r'<div class="label">(\w+)</div>', text) == ['Declarations', 'Modules',
                                                                    'Functions', 'All']
     assert text.count('class="verdict unrealized"') == 1
@@ -667,7 +667,7 @@ def test_interface_page_marks_where_the_code_differs(tree):
     assert ('<span class="stated differs">tuple[Failures, str]</span>'
             '<span class="code-says" title="What the code says">tuple[Failures, Failures]'
             '</span>') in text
-    assert 'The code differs for 1 of 7 members' in text
+    assert 'The code differs for 1 of 8 members' in text
 
 
 def test_dataflow_interface_page_draws_the_step_and_its_semantics(tree):

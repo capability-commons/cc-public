@@ -74,6 +74,14 @@ REGEX_DECL        = re.compile(r'^[ \t]*%[ \t]*decl[ \t]+(\w+)[ \t]*\(((?:[^)\n]
                                re.MULTILINE)
 REGEX_SHOW        = re.compile(r'#show[ \t]+(\w+)[ \t]*/[ \t]*(\d+)[ \t]*\.')
 
+# The wording of a shown relation is two comments after its
+# declaration: "% did", a sentence that says what a row of it records,
+# with each column named in braces, and "% fix", what to do about it.
+# Each may go on over more comment lines, indented.
+#
+REGEX_WORDING     = re.compile(r'^[ \t]*%[ \t]*(did|fix)[ \t]+(.*(?:\n[ \t]*%[ \t]{2,}\S.*)*)',
+                               re.MULTILINE)
+
 # Text in a comment is never read as a directive. A comment runs from
 # % to the end of the line, or from %* to *%.
 #
@@ -176,6 +184,63 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
                                            if spec.strip())
 
     return map_column
+
+
+# -----------------------------------------------------------------------------
+def worded(text: str) -> dict[str, dict[str, str]]:
+    """
+    Return the did and the fix of each relation that text declares
+    with them, keyed by relation. The wording of a declaration runs to
+    the next declaration.
+
+    """
+
+    map_wording = {}
+    list_match  = list(REGEX_DECL.finditer(text))
+
+    for (index, match) in enumerate(list_match):
+        end     = list_match[index + 1].start() if index + 1 < len(list_match) else len(text)
+        map_key = {each.group(1): ' '.join(each.group(2).replace('%', ' ').split())
+                   for each in REGEX_WORDING.finditer(text, match.end(), end)}
+        if map_key:
+            map_wording[match.group(1)] = map_key
+
+    return map_wording
+
+
+# -----------------------------------------------------------------------------
+def described(rows:        Rows,
+              map_column:  dict[str, tuple[str, ...]],
+              map_wording: dict[str, dict[str, str]],
+              prefix:      str = '') -> list[str]:
+    """
+    Return a line for each row of rows, and then the fix of its
+    relation once. A row reads as the did of its relation with the
+    columns filled in, after its file and line where it has them, and
+    after the name of the relation, which callers and tests can match
+    on. A relation with no wording gives its row as it is.
+
+    """
+
+    list_line = []
+
+    for (name, list_row) in rows.items():
+        wording = map_wording.get(name, {})
+        for row in list_row:
+            map_value = (dict(zip(map_column[name], row, strict = True))
+                         if name in map_column else {})
+            list_part = [map_value[key] for key in ('file', 'line') if map_value.get(key)]
+            place     = ':'.join(list_part) + ': ' if list_part else ''
+            text      = (wording['did'].format(**map_value)
+                         if 'did' in wording else '  '.join(row))
+            list_line.append('{prefix}{place}{name}: {text}'.format(prefix = prefix,
+                                                                     place  = place,
+                                                                     name   = name,
+                                                                     text   = text))
+        if list_row and 'fix' in wording:
+            list_line.append('{prefix}  fix: {fix}'.format(prefix = prefix, fix = wording['fix']))
+
+    return list_line
 
 
 # -----------------------------------------------------------------------------

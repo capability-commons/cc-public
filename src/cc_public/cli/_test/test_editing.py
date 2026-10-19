@@ -81,7 +81,8 @@ def test_an_edit_that_adds_a_failure_is_refused(tree):
     result = _run(tree, *LIST_ANN)
     assert result.exit_code == 1
     assert result.stdout == ''
-    assert result.stderr == ('missing_about: ann_x\n'
+    assert result.stderr == ('missing_about: ann_x is about nothing: it has no edge of r_is_about.\n'
+                             '  fix: Link it to its subject with cctool link ID r_is_about TARGET.\n'
                              'Refused: the edit adds 1 failure. Nothing was written.\n')
 
 

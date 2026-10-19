@@ -37,6 +37,9 @@
 % decl unknown_prefix(id:   symbol,
 %                     file: symbol,
 %                     line: number)
+% did  {id} has a prefix that no type in reg_data_item_type has.
+% fix  Give the item the prefix of its type. Add a type only when a real
+%      instance needs it.
 #show unknown_prefix/3.
 
 unknown_prefix(Id, File, Line) :-
@@ -53,6 +56,8 @@ unknown_prefix(Id, File, Line) :-
 %             regex: symbol,
 %             file:  symbol,
 %             line:  number)
+% did  {id} does not match {regex}, the regex_id of its type.
+% fix  Rename the item with cctool rename to an id that matches.
 #show bad_id/4.
 
 bad_id(Id, Regex, File, Line) :-
@@ -70,6 +75,10 @@ bad_id(Id, Regex, File, Line) :-
 %               guid: symbol,
 %               file: symbol,
 %               line: number)
+% did  {guid}, the guid of {id}, is not the prefix of the id and 32 hex
+%      digits.
+% fix  Give the guid the prefix of the id and keep its digits. Never
+%      write a guid by hand: cctool new mints one.
 #show bad_guid/4.
 
 bad_guid(Id, Guid, File, Line) :-
@@ -84,6 +93,8 @@ bad_guid(Id, Guid, File, Line) :-
 % decl duplicate_prefix(prefix: symbol,
 %                       type:   symbol,
 %                       other:  symbol)
+% did  {type} and {other} share the prefix {prefix}.
+% fix  Give one of the two types a prefix of its own.
 #show duplicate_prefix/3.
 
 duplicate_prefix(Prefix, Type, Other) :-
@@ -98,6 +109,9 @@ duplicate_prefix(Prefix, Type, Other) :-
 % decl duplicate_id(id:    symbol,
 %                   guid:  symbol,
 %                   other: symbol)
+% did  The id {id} names two items, with the guids {guid} and {other}.
+% fix  Rename one of the two with cctool rename. If one is a copy of the
+%      other, remove the copy.
 #show duplicate_id/3.
 
 duplicate_id(Id, Guid, Other) :-
@@ -112,6 +126,9 @@ duplicate_id(Id, Guid, Other) :-
 % decl duplicate_guid(guid:  symbol,
 %                     id:    symbol,
 %                     other: symbol)
+% did  The guid {guid} identifies two items, {id} and {other}.
+% fix  A copy keeps the guid of what it copies. Make the new item with
+%      cctool new, which mints a guid, and remove the copy.
 #show duplicate_guid/3.
 
 duplicate_guid(Guid, Id, Other) :-
@@ -127,6 +144,8 @@ duplicate_guid(Guid, Id, Other) :-
 % decl repeated_item(id:   symbol,
 %                    file: symbol,
 %                    line: number)
+% did  {id} is written here and again elsewhere.
+% fix  Keep one copy of the item and remove the others.
 #show repeated_item/3.
 
 repeated_item(Id, File, Line) :-
@@ -141,6 +160,8 @@ repeated_item(Id, File, Line) :-
 %
 % decl misplaced_module(id:       symbol,
 %                       expected: symbol)
+% did  {id} is not named for what holds it. Its id is {expected}.
+% fix  Rename the item with cctool rename to the id the check expects.
 #show misplaced_module/2.
 
 misplaced_module(Id, Expected) :-
@@ -182,6 +203,9 @@ issue_of(Id, Issue) :-
 % decl misplaced_document(id:       symbol,
 %                         file:     symbol,
 %                         expected: symbol)
+% did  {id} is in {file}, not in {expected}.
+% fix  Move the file to where the check expects it. Everything argued
+%      about an issue goes in the folder of the issue.
 #show misplaced_document/3.
 
 misplaced_document(Id, File, Expected) :-
@@ -208,6 +232,9 @@ misplaced_document(Id, File, Expected) :-
 % decl misplaced_register_entry(register: symbol,
 %                               id:       symbol,
 %                               type:     symbol)
+% did  {register} holds {id}, an entry of {type}, which is not a type
+%      whose items it holds.
+% fix  Move the entry to the register of its type, or correct its type.
 #show misplaced_register_entry/3.
 
 misplaced_register_entry(Register, Id, Type) :-
@@ -220,6 +247,8 @@ misplaced_register_entry(Register, Id, Type) :-
 % Every python module and logic program file under src holds an item.
 %
 % decl unrecorded_module(file: symbol)
+% did  {file} holds no item.
+% fix  Give the file its item with cctool header PATH.
 #show unrecorded_module/1.
 
 unrecorded_module(File) :-
@@ -245,6 +274,10 @@ member_stem(Holder, Holder) :-
 
 % decl misnamed_member(id:     symbol,
 %                      holder: symbol)
+% did  The id of {id} is not the stem of {holder}, a full stop and a
+%      name.
+% fix  Rename the member with cctool rename to the stem of what it sits
+%      in, a full stop, and its own name.
 #show misnamed_member/2.
 
 misnamed_member(Id, Holder) :-
@@ -306,6 +339,11 @@ realized_function(Function, Member) :-
 %                         position: number,
 %                         stated:   symbol,
 %                         actual:   symbol)
+% did  At position {position}, {member} states the parameter {stated},
+%      and {function} takes {actual}.
+% fix  Make the member and the code agree: change the member if the
+%      interface has changed, or the code if it has drifted. An empty
+%      value means no parameter is there.
 #show parameter_mismatch/5.
 
 parameter_mismatch(Member, Function, Position, Stated, Actual) :-
@@ -339,6 +377,11 @@ parameter_mismatch(Member, Function, Position, "", Actual) :-
 %                         part:     symbol,
 %                         stated:   symbol,
 %                         actual:   symbol)
+% did  {member} states {stated} for the {part}, and {function} says
+%      {actual}.
+% fix  Make the member and the code agree: change the member if the
+%      interface has changed, or the code if it has drifted. An empty
+%      value means that side does not say.
 #show signature_mismatch/5.
 
 signature_mismatch(Parameter, Function, Part, Stated, Actual) :-
@@ -361,6 +404,8 @@ signature_mismatch(Member, Function, "returns", Stated, Actual) :-
 % decl key_mismatch(register: symbol,
 %                   key:      symbol,
 %                   id:       symbol)
+% did  In {register}, the key {key} holds the entry {id}.
+% fix  Make the key the id of the entry. cctool rename changes both.
 #show key_mismatch/3.
 
 key_mismatch(Register, Key, Id) :-
@@ -379,6 +424,10 @@ key_mismatch(Register, Key, Id) :-
 %                         id:     symbol,
 %                         file:   symbol,
 %                         line:   number)
+% did  {holder} names {id} in its {field} field, and no item has that id
+%      or guid.
+% fix  Correct the id, or add the item it names. Do not remove the
+%      reference only to quiet the check.
 #show dangling_reference/5.
 
 dangling_reference(Holder, Field, Id, File, Line) :-
@@ -398,6 +447,10 @@ dangling_reference(Holder, Field, Id, File, Line) :-
 %                 guid:   symbol,
 %                 file:   symbol,
 %                 line:   number)
+% did  {holder} names {id} in its {field} field with the guid {guid},
+%      which is not the guid of {id}.
+% fix  Copy the guid of the item named, or write the edge with cctool
+%      link, which copies it.
 #show stale_guid/6.
 
 stale_guid(Holder, Field, Id, Guid, File, Line) :-
@@ -433,6 +486,11 @@ satisfies(Type, Restriction) :-
 %                            target:      symbol,
 %                            end:         symbol,
 %                            restriction: symbol)
+% did  The edge {source} {relation} {target} breaks {restriction} at its
+%      {end} end.
+% fix  Point the edge at an item of a type the relation admits, or use
+%      the relation that fits. Its entry in reg_relation.yaml names its
+%      restrictions.
 #show restriction_violation/5.
 
 restriction_violation(Source, Relation, Target, "source", Restriction) :-
@@ -452,6 +510,8 @@ restriction_violation(Source, Relation, Target, "target", Restriction) :-
 % Every annotation and every issue is about something.
 %
 % decl missing_about(id: symbol)
+% did  {id} is about nothing: it has no edge of r_is_about.
+% fix  Link it to its subject with cctool link ID r_is_about TARGET.
 #show missing_about/1.
 
 missing_about(Id) :-
@@ -469,6 +529,8 @@ missing_about(Id) :-
 %
 % decl answer_count(decision: symbol,
 %                   issues:   number)
+% did  The decision {decision} answers {issues} issues, not 1.
+% fix  Give the decision one edge of r_answers, to the issue it answers.
 #show answer_count/2.
 
 answer_count(Decision, Issues) :-
@@ -481,6 +543,8 @@ answer_count(Decision, Issues) :-
 % Every determination upholds or rejects at least one decision.
 %
 % decl determination_without_decision(id: symbol)
+% did  The determination {id} neither upholds nor rejects a decision.
+% fix  Link it with r_upholds or r_rejects to each decision it settles.
 #show determination_without_decision/1.
 
 determination_without_decision(Id) :-
@@ -510,6 +574,9 @@ settles(Determination, Decision) :-
 % decl determination_across_issues(determination: symbol,
 %                                  issue:         symbol,
 %                                  other:         symbol)
+% did  The determination {determination} settles decisions of both
+%      {issue} and {other}.
+% fix  Settle each issue with a determination of its own.
 #show determination_across_issues/3.
 
 determination_across_issues(Determination, Issue, Other) :-
@@ -527,6 +594,10 @@ determination_across_issues(Determination, Issue, Other) :-
 % decl issue_about_non_component(issue:  symbol,
 %                                target: symbol,
 %                                type:   symbol)
+% did  The issue {issue} is about {target}, of {type}, which is not a
+%      logical component.
+% fix  Make the issue about the logical component whose design it
+%      decides.
 #show issue_about_non_component/3.
 
 issue_about_non_component(Issue, Target, Type) :-
@@ -544,6 +615,10 @@ issue_about_non_component(Issue, Target, Type) :-
 %                             issue:      symbol,
 %                             target:     symbol,
 %                             other:      symbol)
+% did  The annotation {annotation} of {issue} argues with {target}, of
+%      {other}.
+% fix  Argue within one issue: point the edge at an item of the same
+%      issue, or move the annotation to the issue it argues.
 #show argument_across_issues/4.
 
 argument_across_issues(Annotation, Issue, Target, Other) :-
@@ -570,6 +645,8 @@ argues("r_challenges").
 %
 % decl supersession_across_types(source: symbol,
 %                                target: symbol)
+% did  {source} supersedes {target}, an item of another type.
+% fix  Supersede only an item of the same type.
 #show supersession_across_types/2.
 
 supersession_across_types(Source, Target) :-
@@ -585,6 +662,10 @@ supersession_across_types(Source, Target) :-
 % decl competing_determinations(issue:         symbol,
 %                               determination: symbol,
 %                               other:         symbol)
+% did  The issue {issue} has two determinations, {determination} and
+%      {other}.
+% fix  Keep one determination and edit it in place when the ruling
+%      changes. Git keeps the history of the ruling.
 #show competing_determinations/3.
 
 competing_determinations(Issue, Determination, Other) :-
@@ -625,6 +706,11 @@ argued(Decision, Concern) :-
 % decl unargued_driver(determination: symbol,
 %                      decision:      symbol,
 %                      concern:       symbol)
+% did  {determination} settles {decision}, and no annotation argues
+%      {concern}, a driver, for it or an alternative to it.
+% fix  Add an annotation for that concern to the decision or an
+%      alternative, or leave the issue open. Do not settle an issue
+%      whose drivers are unargued.
 #show unargued_driver/3.
 
 unargued_driver(Determination, Decision, Concern) :-
@@ -643,6 +729,9 @@ unargued_driver(Determination, Decision, Concern) :-
 % decl unreadable_file(file:    symbol,
 %                      line:    number,
 %                      message: symbol)
+% did  {file} cannot be read at line {line}: {message}
+% fix  Correct the file so it parses. Until it does, no other check sees
+%      its items.
 #show unreadable_file/3.
 
 unreadable_file(File, Line, Message) :-
@@ -657,6 +746,9 @@ unreadable_file(File, Line, Message) :-
 %                       id:     symbol,
 %                       file:   symbol,
 %                       line:   number)
+% did  The text of {holder} mentions {id}, and no item has that id.
+% fix  Correct the id, add the item, or say it in prose without the
+%      prefix.
 #show dangling_mention/4.
 
 dangling_mention(Holder, Id, File, Line) :-
@@ -673,6 +765,9 @@ dangling_mention(Holder, Id, File, Line) :-
 %
 % decl alias_in_use(alias: symbol,
 %                   id:    symbol)
+% did  {alias}, an alias of {id}, is the id of an item.
+% fix  An alias is an old id. Take it out of the alias list, or rename
+%      the item that has it.
 #show alias_in_use/2.
 
 alias_in_use(Alias, Id) :-
@@ -691,6 +786,8 @@ alias_in_use(Alias, Id) :-
 %                         id:     symbol,
 %                         file:   symbol,
 %                         line:   number)
+% did  {holder} names {alias} in its {field} field, an old id of {id}.
+% fix  Name the item by its current id.
 #show outdated_reference/6.
 
 outdated_reference(Holder, Field, Alias, Id, File, Line) :-
@@ -714,6 +811,8 @@ outdated_reference(Holder, Field, Old, Id, File, Line) :-
 %                       id:     symbol,
 %                       file:   symbol,
 %                       line:   number)
+% did  The text of {holder} mentions {alias}, an old id of {id}.
+% fix  Mention the item by its current id.
 #show outdated_mention/5.
 
 outdated_mention(Holder, Alias, Id, File, Line) :-
@@ -745,6 +844,9 @@ reaches(Relation, Source, Target) :-
 %
 % decl cycle(relation: symbol,
 %            id:       symbol)
+% did  A chain of edges of {relation} leads from {id} back to itself.
+% fix  The relation is acyclic. Find the edge of the chain that is
+%      wrong, and remove or correct it.
 #show cycle/2.
 
 cycle(Relation, Id) :-
@@ -773,6 +875,9 @@ practical(Id) :-
 % annotation that speaks for each of them.
 %
 % decl argument_without_concern(id: symbol)
+% did  The annotation {id} supports or challenges a decision and argues
+%      for no concern.
+% fix  Link it with r_argues_for_concern to each concern it speaks for.
 #show argument_without_concern/1.
 
 argument_without_concern(Id) :-
@@ -786,6 +891,11 @@ argument_without_concern(Id) :-
 %
 % decl concern_without_decision(id:      symbol,
 %                               concern: symbol)
+% did  The annotation {id} argues for {concern} and bears on no
+%      decision.
+% fix  A fact is answered with evidence, not weighed by concern. Remove
+%      the edge to the concern, or link the annotation to the decision
+%      it argues.
 #show concern_without_decision/2.
 
 concern_without_decision(Id, Concern) :-
@@ -799,6 +909,8 @@ concern_without_decision(Id, Concern) :-
 %
 % decl schema_count(type:    symbol,
 %                   schemas: number)
+% did  The type {type} names {schemas} schemas for its items, not 1.
+% fix  Give the type one edge of r_has_items_specified_by_schema.
 #show schema_count/2.
 
 schema_count(Type, Schemas) :-
@@ -813,6 +925,8 @@ schema_count(Type, Schemas) :-
 % register for itself, or referred to by another schema.
 %
 % decl unused_schema(id: symbol)
+% did  Nothing uses the schema {id}.
+% fix  Name it from a type, a register or another schema, or remove it.
 #show unused_schema/1.
 
 unused_schema(Id) :-
@@ -840,6 +954,9 @@ named_by_other(Id) :-
 % Every concept is named by some item other than itself.
 %
 % decl unused_concept(id: symbol)
+% did  No item but itself names the concept {id}.
+% fix  Name the concept from the item that needs it, made with it in one
+%      cctool batch, or remove the concept.
 #show unused_concept/1.
 
 unused_concept(Id) :-

@@ -48,10 +48,12 @@ def check(root: pathlib.Path) -> None:
     """
     Check the tree under --root, or the working directory.
 
-    Each failure is printed as the name of the check and the row that
-    fails it. Advice is printed first, as "advice:" and then the same,
-    and is not a failure. The exit status is 1 when any check fails,
-    and 2 when the checks cannot be run.
+    Each failure is printed as its file and line, where it has them,
+    the name of the check, and a sentence that says what is wrong. The
+    rows of a check are followed once by what to do about them. Advice
+    is printed first, as "advice:" and then the same, and is not a
+    failure. The exit status is 1 when any check fails, and 2 when the
+    checks cannot be run.
 
     """
 
@@ -61,17 +63,15 @@ def check(root: pathlib.Path) -> None:
         click.echo('The checks could not be run: {error}'.format(error = error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
-    for (name, list_row) in advice.items():
-        for row in list_row:
-            click.echo('advice: {name}: {row}'.format(name = name, row = '  '.join(row)))
+    map_column  = cc_public.check.check.columns()
+    map_wording = cc_public.check.check.wording()
 
-    count = 0
+    for line in cc_public.graph.datalog.described(advice, map_column, map_wording, 'advice: '):
+        click.echo(line)
+    for line in cc_public.graph.datalog.described(failures, map_column, map_wording):
+        click.echo(line)
 
-    for (name, list_row) in failures.items():
-        for row in list_row:
-            click.echo('{name}: {row}'.format(name = name, row = '  '.join(row)))
-            count += 1
-
+    count = sum(len(list_row) for list_row in failures.values())
     click.echo('{count} failures'.format(count = count))
     sys.exit(cc_public.cli.group.EXIT_NONCONFORMITY if count
              else cc_public.cli.group.EXIT_OK)

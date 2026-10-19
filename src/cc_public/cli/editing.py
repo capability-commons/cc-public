@@ -59,9 +59,11 @@ import sys
 import click
 import ruamel.yaml
 
+import cc_public.check.check
 import cc_public.cli.group
 import cc_public.edit.edit
 import cc_public.edit.layout
+import cc_public.graph.datalog
 import cc_public.graph.extract
 
 
@@ -426,9 +428,10 @@ def _run(root, is_dry_run, list_operation):
                        nl = False)
 
     if added:
-        for (name, list_row) in added.items():
-            for row in list_row:
-                click.echo('{name}: {row}'.format(name = name, row = '  '.join(row)), err = True)
+        for line in cc_public.graph.datalog.described(added,
+                                                      cc_public.check.check.columns(),
+                                                      cc_public.check.check.wording()):
+            click.echo(line, err = True)
         count = sum(len(list_row) for list_row in added.values())
         click.echo('Refused: the edit adds {count} {noun}. Nothing was written.'.format(
                        count = count,

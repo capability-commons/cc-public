@@ -89,6 +89,22 @@ def check_trees(dir_before: pathlib.Path, dir_after: pathlib.Path, item: dict) -
 
 
 # -----------------------------------------------------------------------------
+def described(failures: Failures) -> list[str]:
+    """
+    Return a line for each failure, worded as change.lp words it, and
+    then what to do about the failures of each check.
+
+    """
+
+    text = RULES.read_text(encoding = 'utf-8')
+    return cc_public.graph.datalog.described(
+               failures,
+               {name: tuple(column for (column, _) in tuple_column)
+                for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()},
+               cc_public.graph.datalog.worded(text))
+
+
+# -----------------------------------------------------------------------------
 def is_commit(root: pathlib.Path, rev: str) -> bool:
     """
     Return True if rev names a commit in the repository at root.

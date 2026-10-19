@@ -962,6 +962,22 @@ def test_every_check_names_its_columns():
             cc_public.graph.datalog.declared(text))
 
 
+def test_every_check_says_what_a_failure_is_and_how_to_fix_it():
+    map_column = cc_public.check.check.columns()
+    list_text  = [cc_public.check.check.RULES.read_text(), cc_public.check.check.ADVICE.read_text()]
+    list_name  = [name for text in list_text for name in cc_public.graph.datalog.output(text)]
+    text       = cc_public.commit.change.RULES.read_text()
+    map_column.update({name: tuple(column for (column, _) in tuple_column)
+                       for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()})
+    map_wording = cc_public.check.check.wording()
+    map_wording.update(cc_public.graph.datalog.worded(text))
+    list_name  += cc_public.graph.datalog.output(text) + [cc_public.check.check.NAME_SCHEMA,
+                                                          cc_public.check.check.NAME_LAYOUT]
+    for name in list_name:
+        assert set(map_wording.get(name, {})) == {'did', 'fix'}, name
+        assert set(re.findall(r'{(\w+)}', map_wording[name]['did'])) <= set(map_column[name]), name
+
+
 def test_a_document_in_the_wrong_folder_is_reported(tree):
     location = _item(tree, '_data/decision/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])

@@ -106,6 +106,9 @@ renamed(Guid, Id, Other) :-
 %
 % decl retyped_guid(guid:  symbol,
 %                   other: symbol)
+% did  The guid {guid} becomes {other}: its digits carry another prefix.
+% fix  Keep the type of an item. To change it, remove the item, make a
+%      new one, and say so in the commit.
 #show retyped_guid/2.
 
 retyped_guid(Guid, Other) :-
@@ -124,6 +127,9 @@ retyped_guid(Guid, Other) :-
 %
 % decl unannounced_removal(id:   symbol,
 %                          guid: symbol)
+% did  The commit removes {id} and does not name it.
+% fix  Name the id of each item removed in the title, brief or
+%      description of the commit item.
 #show unannounced_removal/2.
 
 unannounced_removal(Id, Guid) :-
@@ -137,6 +143,9 @@ unannounced_removal(Id, Guid) :-
 %
 % decl unannounced_rename(id:    symbol,
 %                         other: symbol)
+% did  The commit renames {id} to {other} and names neither.
+% fix  Name the old id or the new one in the title, brief or description
+%      of the commit item.
 #show unannounced_rename/2.
 
 unannounced_rename(Id, Other) :-
@@ -154,6 +163,10 @@ unannounced_rename(Id, Other) :-
 %
 % decl rename_without_alias(id:    symbol,
 %                           other: symbol)
+% did  The register entry {other}, renamed from {id}, does not keep {id}
+%      in its alias list.
+% fix  Add the old id to the alias list of the entry. cctool rename does
+%      this.
 #show rename_without_alias/2.
 
 rename_without_alias(Id, Other) :-
@@ -202,6 +215,10 @@ item_change("rename", Other) :-
 % decl verb_contradicted(verb: symbol,
 %                        kind: symbol,
 %                        id:   symbol)
+% did  The title says {verb}, and the commit makes a change of kind
+%      {kind} to {id}.
+% fix  Use the verb that is true of the change, or split the commit so
+%      that each does one thing.
 #show verb_contradicted/3.
 
 verb_contradicted(Verb, Kind, Id) :-
@@ -214,6 +231,8 @@ verb_contradicted(Verb, Kind, Id) :-
 % A commit titled Reformat changes nothing beyond layout.
 %
 % decl reformat_changes_content(file: symbol)
+% did  The commit is titled Reformat and changes the content of {file}.
+% fix  Commit the change of content on its own, with a verb of its own.
 #show reformat_changes_content/1.
 
 reformat_changes_content(File) :-

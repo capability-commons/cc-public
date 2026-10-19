@@ -41,6 +41,10 @@
 %                      guid:   symbol,
 %                      file:   symbol,
 %                      line:   number)
+% did  {holder} has the protective mark {id}, which no register here
+%      holds.
+% fix  Nothing, if a partner holds the mark. Until it resolves, read it
+%      as more restrictive than any mark that does.
 #show unresolved_mark/5.
 
 unresolved_mark(Holder, Id, Guid, File, Line) :-
@@ -55,6 +59,8 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 % is argued. It is reported so that it is not forgotten.
 %
 % decl unanswered_issue(issue: symbol)
+% did  No decision answers the issue {issue}.
+% fix  Add the decisions that answer it as the issue is argued.
 #show unanswered_issue/1.
 
 unanswered_issue(Issue) :-

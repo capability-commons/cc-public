@@ -104,8 +104,7 @@ def check(file, root: pathlib.Path) -> None:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
-    _report(['{name}: {row}'.format(name = name, row = '  '.join(row))
-             for (name, list_row) in failures.items() for row in list_row])
+    _report(cc_public.commit.change.described(failures))
 
 
 # -----------------------------------------------------------------------------
