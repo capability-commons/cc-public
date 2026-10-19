@@ -1142,23 +1142,31 @@ def _format(text: str, relative: str) -> str:
 def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
     """
     Return the edit that adds an entry with map_field at the end of the
-    table of the register id_register, under a banner.
+    table of the register id_register, under a banner. An empty table
+    is written out in full with the entry as its first.
 
     """
 
-    item = _Item(tree, id_register)
+    item  = _Item(tree, id_register)
+    table = item.node.get(KEY_TABLE)
 
-    if not item.node.get(KEY_TABLE):
-        raise ErrorEdit('{id} has no entries to add to.'.format(id = id_register))
+    if not isinstance(table, dict):
+        raise ErrorEdit('{id} has no table to add to.'.format(id = id_register))
 
-    table       = item.node[KEY_TABLE]
-    item.node   = table
-    (_, end)    = item.extent(list(table.keys())[-1])
-    column      = item.column(list(table.keys())[-1])
+    if table:
+        item.node    = table
+        (_, end)     = item.extent(list(table.keys())[-1])
+        column       = item.column(list(table.keys())[-1])
+        start        = end
+        list_line    = ['']
+    else:
+        (start, end) = item.extent(KEY_TABLE)
+        column       = item.column(KEY_TABLE) + 2
+        list_line    = [' ' * (column - 2) + KEY_TABLE + ':']
+
     id_self     = map_field[KEY_ID_SELF]
     head        = ' ' * column + '# '
-    list_line   = ['',
-                   head + '-' * (LENGTH_BANNER - len(head)),
+    list_line  += [head + '-' * (LENGTH_BANNER - len(head)),
                    head + '{id} -- {title}'.format(id    = id_self,
                                                    title = map_field.get('title', '')),
                    head.rstrip(),
@@ -1166,7 +1174,7 @@ def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
 
     list_line += cc_public.edit.layout.dump(map_field, column + 2)
 
-    return item.replace(end, end, list_line)
+    return item.replace(start, end, list_line)
 
 
 # -----------------------------------------------------------------------------

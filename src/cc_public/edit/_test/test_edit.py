@@ -157,6 +157,37 @@ def test_a_new_entry_is_written_at_the_end_of_its_register(tree, zero):
         '    relation:           []\n')
 
 
+def test_a_new_entry_is_written_as_the_first_in_an_empty_register(tree, zero):
+    path = tree / '_data/register/reg_concern.yaml'
+    head = path.read_text().split('table:')[0]
+    path.write_text(head + 'table:                  {}\n')
+    assert _edit(tree, {'new': 'concern_x', 'field': FIELD_CONCERN}) == {}
+    assert path.read_text() == head + (
+        'table:\n'
+        '\n'
+        '  # ---------------------------------------------------------------------------\n'
+        '  # concern_x -- Reviewability\n'
+        '  #\n'
+        '  concern_x:\n'
+        '    id_self:            concern_x\n'
+        '    guid_self:          concern_' + HEX_ZERO + '\n'
+        '    title:              Reviewability\n'
+        '    brief:              |\n'
+        '                        Whether a change can be reviewed.\n'
+        '    description:        |\n'
+        '                        Reviewability covers how easily a change is\n'
+        '                        read.\n'
+        '\n'
+        '    question:\n'
+        '      - Can a change be read in one sitting?\n'
+        '\n'
+        '    measure:\n'
+        '      - Lines changed, per change.\n'
+        '\n'
+        '    alias:              []\n'
+        '    relation:           []\n')
+
+
 def test_an_edit_that_adds_a_failure_is_refused_and_not_written(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN}) == {'missing_about': [('ann_x',)]}
     assert not (tree / '_data/annotation/ann_x.yaml').exists()
