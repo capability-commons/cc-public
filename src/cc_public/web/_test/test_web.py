@@ -627,7 +627,8 @@ def test_requirement_page_reads_down_its_trace(tree):
                             ('station', 'Rationale'), ('station statement', 'Statement'),
                             ('station', 'Subject'), ('station', 'Verification')]
     assert 'Does ‘failure’ name a process' in text
-    assert text.count('type="checkbox"') == 9
+    assert text.count('<td class="said">') == 9
+    assert 'class="pill' not in text
     assert '/requirement/req_format_keeps_formatted_file' in text
 
 

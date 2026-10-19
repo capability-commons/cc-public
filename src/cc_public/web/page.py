@@ -44,8 +44,7 @@ description:            |
                         concerns that drive it, and how it is to be
                         verified. The questions of
                         pym_cc_public.requirement.review and the
-                        characteristics it is signed off against
-                        follow.
+                        characteristics it is reviewed against follow.
 relation:               []
 
 ...
@@ -615,7 +614,7 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
     from and why it is needed, its statement, the subject it is
     allocated to with the concerns that drive that subject, and how it
     is to be shown to be met. The questions a reviewer asks of it and
-    the characteristics it is signed off against follow.
+    the characteristics it is reviewed against follow.
 
     """
 
@@ -640,7 +639,7 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
                          [htpy.p[htpy.span(class_ = 'label')['In plain words']]]),
                   _trace(graph, item, list_part),
                   _questions(list_question),
-                  _signoff(item.id, list_said),
+                  _characteristics(list_said),
                   _requirement_references(graph, item)],
                  [htpy.h1[item.title],
                   _steps(graph, [each.id for (_, list_item) in _requirement_groups(graph)
@@ -785,34 +784,23 @@ def _questions(list_question: list) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _signoff(id_requirement: str, list_said: list) -> typing.Any:
+def _characteristics(list_said: list) -> typing.Any:
     """
-    Return the characteristics a requirement is signed off against, each
-    with its question and what the tree says towards it, and the
-    controls that sign it off, challenge it or reject it. This is a
-    mock: the controls send nothing yet.
+    Return the characteristics a requirement is reviewed against, each
+    with its question and what the tree says towards it.
 
     """
 
-    return htpy.section(class_ = 'signoff')[
-        htpy.h2['Sign-off'],
+    return htpy.section(class_ = 'characteristics')[
+        htpy.h2['Characteristics'],
         htpy.table(class_ = 'characteristics')[
-            htpy.thead[htpy.tr[htpy.th(class_ = 'check')[''],
-                               htpy.th['Characteristic'],
+            htpy.thead[htpy.tr[htpy.th['Characteristic'],
                                htpy.th['From the tree']]],
             htpy.tbody[[
-                htpy.tr[htpy.td(class_ = 'check')[
-                            htpy.input(type = 'checkbox', disabled = True,
-                                       title = '{code} {name}'.format(code = code, name = name))],
-                        htpy.td[htpy.span(class_ = 'run-in')[name], ' ',
+                htpy.tr[htpy.td[htpy.span(class_ = 'run-in')[name], ' ',
                                 htpy.span(class_ = 'code')[code], htpy.br, question],
                         htpy.td(class_ = 'said')[said]]
-                for (code, name, question, said) in list_said]]],
-        htpy.form(class_ = 'determine', method = 'post', action = '#')[
-            htpy.input(type = 'hidden', name = 'requirement', value = id_requirement),
-            _pill('Sign off', ROLE_FOR, 'Sign off this requirement'),
-            _pill('Challenge', '', 'Raise an issue on this requirement'),
-            _pill('Reject', ROLE_AGAINST, 'Reject this requirement')]]
+                for (code, name, question, said) in list_said]]]]
 
 
 # -----------------------------------------------------------------------------

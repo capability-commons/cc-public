@@ -15,8 +15,8 @@ title:                  Review questions for requirements
 brief:                  |
                         Raise the questions a reviewer asks of a
                         requirement, in the manner of SOPHIST, and the
-                        characteristics of the INCOSE guide it is
-                        signed off against.
+                        characteristics of the INCOSE guide it is is
+                        reviewed against.
 description:            |
                         SOPHIST reads a requirement for three
                         transformations of what was meant: deletion,
