@@ -201,3 +201,10 @@ def test_clicking_an_annotation_in_the_graph_pins_it_in_place(page):
     assert page.locator('details.annotation.chosen').evaluate('e => e.open')
     assert page.locator('details.annotation.chosen').evaluate(
                "e => e.style.getPropertyValue('--brace-left').startsWith('url(')")
+
+
+def test_the_folding_of_each_diagram_is_kept_from_issue_to_issue(page):
+    page.locator('details.diagram.sankey > summary').click()
+    page.goto('{base}/issue/{id}'.format(base = URL_BASE, id = 'iss_cross_item_checks_engine'))
+    assert page.locator('details.diagram.network').evaluate('e => e.open')
+    assert not page.locator('details.diagram.sankey').evaluate('e => e.open')

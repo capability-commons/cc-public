@@ -12,6 +12,32 @@
 // open, and braces mark it, without moving the page. Any other pin or
 // unpin lets it go.
 //
+// Each diagram stays open or closed as it was last left, on every
+// page, so moving from issue to issue keeps the same view. The page
+// remembers this in the browser; without script, or where the browser
+// keeps nothing, each diagram opens as the page sets it.
+
+var KEY_DIAGRAM = 'cc-review-diagram-';
+
+document.querySelectorAll('details.diagram').forEach(function (diagram) {
+  var name = KEY_DIAGRAM + diagram.className.replace('diagram', '').trim();
+  try {
+    var state = localStorage.getItem(name);
+    if (state !== null) {
+      diagram.open = state === 'open';
+    }
+  } catch (error) {
+    return;
+  }
+  diagram.addEventListener('toggle', function () {
+    try {
+      localStorage.setItem(name, diagram.open ? 'open' : 'closed');
+    } catch (error) {
+      return;
+    }
+  });
+});
+
 // The braces that mark a chosen entry are drawn as one curve each, at
 // the height of the entry, and drawn again whenever it opens or
 // closes. Without script, the style sheet draws square brackets.
