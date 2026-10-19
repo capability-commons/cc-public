@@ -214,8 +214,9 @@ def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
         for list_id in (outline.list_decision,
                         [id_concern for id_concern in outline.list_concern
                          if outline.units(concern = id_concern)]):
-            list_y = [float(re.search(r'id="node-{id}">(?:<title>[^<]*</title>)?<rect x="[^"]*" '
-                                      r'y="([^"]*)"'.format(id = id_item), text).group(1))
+            list_y = [float(re.search(r'id="node-{id}">(?:<title>[^<]*</title>)?<(?:rect|circle) '
+                                      r'c?x="[^"]*" c?y="([^"]*)"'.format(id = id_item),
+                                      text).group(1))
                       for id_item in list_id]
             assert list_y == sorted(list_y)
 

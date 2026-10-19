@@ -15,26 +15,33 @@ title:                  Graph of an argument
 brief:                  |
                         Draw the argument on an issue as a graph, with
                         each decision and each annotation once, joined
-                        through a small node for each concern argued
-                        on each decision.
+                        through a pipe for each concern argued on the
+                        decisions.
 description:            |
-                        Decisions stand on the left. Beside them stand
-                        the concerns argued on each decision, as small
-                        circles, much as the concerns of the Sankey
-                        diagram gather its bands. An annotation that
-                        argues on a decision stands in the first
-                        column to the right, and joins the circle of
-                        each concern it argues for on that decision.
-                        An annotation that answers another stands one
-                        column to the right of the one it answers, and
-                        rows follow the numbers of the annotations, so
-                        an answer sits just below what it answers.
+                        The drawing follows the diagrams of Mark
+                        Lombardi: every decision and annotation is a
+                        circle of one size with its title beneath, and
+                        thin lines run between them with room to
+                        spare. Decisions stand on the left. Beside
+                        them stand the concerns argued on them, each a
+                        pipe of two parallel rules that carries the
+                        lines for and against it, much as the concerns
+                        of the Sankey diagram gather its bands. An
+                        annotation that argues on a decision stands in
+                        the first column to the right, and joins the
+                        pipe of each concern it argues for on that
+                        decision. An annotation that answers another
+                        stands one column to the right of the one it
+                        answers, and rows follow the numbers of the
+                        annotations, so an answer sits just below what
+                        it answers.
 relation:               []
 
 ...
 """
 
 
+import math
 import typing
 
 import htpy
@@ -49,17 +56,23 @@ Outline = cc_public.web.sankey.Outline
 
 # Sizes, in units of the drawing.
 #
-WIDTH_NODE        = 230
-HEIGHT_NODE       = 34
-ROW               = 44
-GAP_COLUMN        = 70
-WIDTH_CONCERN     = 170
-X_CONCERN         = WIDTH_NODE + 90
-X_FIRST           = X_CONCERN + WIDTH_CONCERN + 110
-CHARS_LINE        = 34
-INDENT_TITLE      = 28
-MARGIN            = 8
-RADIUS_PORT       = 4.5
+RADIUS            = 22
+ROW               = 124
+ROW_STAGGER       = 62
+ROW_CONCERN       = 64
+COLUMN            = 250
+X_DECISION        = 110
+X_CONCERN         = 440
+WIDTH_CONCERN     = 160
+X_FIRST           = X_CONCERN + WIDTH_CONCERN + 200
+GAP_RAIL          = 8
+GAP_LANE          = 3.5
+ANGLE_PORT        = 0.6
+CHARS_LINE        = 24
+LINE_TITLE        = 15
+WIDTH_TITLE       = 180
+MARGIN            = 16
+RADIUS_PORT       = 3
 DELIM_HUB         = '--'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
@@ -74,8 +87,8 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     """
     Return the graph of the argument in outline.
 
-    A decision or an annotation has a port on its right for what
-    supports it and one for what challenges it. Hovering over a port,
+    A decision or an annotation has a port on its upper right for what
+    supports it and one on its lower right for what challenges it. Hovering over a port,
     or following its link, lights the chain of annotations that reaches
     it and dims the rest; each annotation in the chain is shaded by its
     net effect, the product of the roles along its paths. Hovering over
@@ -110,9 +123,9 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
     list_dot  = [_port(map_kind[port[0]], map_place[port[0]], port[1], name)
                  for (port, name) in map_name.items()]
 
-    width  = max(x for (x, _) in map_place.values()) + WIDTH_NODE + 2 * MARGIN
-    height = max(y for (_, y) in map_place.values()) + HEIGHT_NODE / 2 + 2 * MARGIN
-    top    = min(y for (_, y) in map_place.values()) - HEIGHT_NODE / 2 - MARGIN
+    width  = max(x for (x, _) in map_place.values()) + WIDTH_TITLE / 2 + 2 * MARGIN
+    height = max(y for (_, y) in map_place.values()) + RADIUS + 17 + 3 * LINE_TITLE + MARGIN
+    top    = min(y for (_, y) in map_place.values()) - RADIUS - 2 * GAP_RAIL - MARGIN
     return htpy.figure(class_ = 'map network')[
         htpy.svg(class_  = cc_public.web.light.CSS_REGION,
                  viewBox = '{left} {top} {width} {height}'.format(left   = -MARGIN,
@@ -156,11 +169,18 @@ def _layout(outline: Outline) -> tuple:
     map_kind  = {}
     map_place = {}
     map_depth = _depths(outline)
+    map_last  = {}
+    y_last    = None
     list_row  = sorted(outline.map_number, key = outline.map_number.get)
-    for (index, id_annotation) in enumerate(list_row):
+    for id_annotation in list_row:
+        depth = map_depth[id_annotation]
+        y     = max([0.0]
+                    + ([y_last + ROW_STAGGER] if y_last is not None else [])
+                    + ([map_last[depth] + ROW] if depth in map_last else []))
         map_kind[id_annotation]  = KIND_ANNOTATION
-        map_place[id_annotation] = (X_FIRST + map_depth[id_annotation] * (WIDTH_NODE + GAP_COLUMN),
-                                    index * ROW + HEIGHT_NODE / 2)
+        map_place[id_annotation] = (X_FIRST + depth * COLUMN, y)
+        map_last[depth]          = y
+        y_last                   = y
 
     list_edge = _edges(outline, list_row)
 
@@ -169,7 +189,7 @@ def _layout(outline: Outline) -> tuple:
         map_place[id_concern] = (X_CONCERN, y)
     for (id_decision, y) in _decision_rows(outline, map_place).items():
         map_kind[id_decision]  = KIND_DECISION
-        map_place[id_decision] = (0, y)
+        map_place[id_decision] = (X_DECISION, y)
     return (map_kind, map_place, list_edge)
 
 
@@ -421,8 +441,8 @@ def _concern_rows(outline:   Outline,
     y_last = None
     for (id_concern, y_mean) in map_mean.items():
         y = y_mean
-        if y_last is not None and y < y_last + ROW:
-            y = y_last + ROW
+        if y_last is not None and y < y_last + ROW_CONCERN:
+            y = y_last + ROW_CONCERN
         map_y[id_concern] = y
         y_last            = y
     return map_y
@@ -456,39 +476,59 @@ def _edge(map_kind:  dict[str, str],
           edge:      tuple[str, str, str],
           list_css:  list[str]) -> typing.Any:
     """
-    Return the path of edge, from the left of its source to the port of
-    its role on its target.
+    Return the line of edge, from the left of its source to the port of
+    its role on its target. It is an arc that bows up for a support and
+    down for a challenge. A line from a concern first runs the length
+    of its pipe, in the lane of its role.
 
     """
 
     (id_from, id_to, role) = edge
     (x1, y1) = map_place[id_from]
+    path     = ''
     if map_kind[id_from] == KIND_CONCERN:
-        y1 += (-1 if role == ROLE_FOR else 1) * HEIGHT_NODE * 0.2
+        y1   = y1 + _lane(role)
+        path = 'M{x},{y} H{x1} '.format(x  = _num(x1 + WIDTH_CONCERN),
+                                        y  = _num(y1),
+                                        x1 = _num(x1))
+    else:
+        x1   = x1 - RADIUS
+        path = 'M{x1},{y1} '.format(x1 = _num(x1), y1 = _num(y1))
     (x2, y2) = _inlet(map_kind[id_to], map_place[id_to], role)
-    x_mid    = (x1 + x2) / 2
-    path     = 'M{x1},{y1} C{xm},{y1} {xm},{y2} {x2},{y2}'.format(x1 = _num(x1),
-                                                                y1 = _num(y1),
-                                                                xm = _num(x_mid),
-                                                                x2 = _num(x2),
-                                                                y2 = _num(y2))
+    radius   = 1.8 * ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+    path    += 'A{r},{r} 0 0 {sweep} {x2},{y2}'.format(r     = _num(radius),
+                                                      sweep = 0 if role == ROLE_FOR else 1,
+                                                      x2    = _num(x2),
+                                                      y2    = _num(y2))
     return htpy.path(d = path, class_ = ' '.join(['edge-' + role, cc_public.web.light.CSS_DIMS]
                                                  + list_css))
+
+
+# -----------------------------------------------------------------------------
+def _lane(role: str) -> float:
+    """
+    Return the height of the lane of role in a pipe, from its middle.
+
+    """
+
+    return -GAP_LANE if role == ROLE_FOR else GAP_LANE
 
 
 # -----------------------------------------------------------------------------
 def _inlet(kind: str, place: tuple[float, float], role: str) -> tuple[float, float]:
     """
     Return where an edge of role enters a node of kind at place: its
-    port for role. A concern has no ports, but takes edges where its
-    ports would be, and they leave its left at the same heights.
+    port for role, on the upper right of the circle for a support and
+    the lower right for a challenge. A concern has no ports, but takes
+    edges at the right end of the lane of role in its pipe.
 
     """
 
     (x, y) = place
+    if kind == KIND_CONCERN:
+        return (x + WIDTH_CONCERN, y + _lane(role))
     offset = -1 if role == ROLE_FOR else 1
-    width  = WIDTH_CONCERN if kind == KIND_CONCERN else WIDTH_NODE
-    return (x + width, y + offset * HEIGHT_NODE * 0.2)
+    return (x + RADIUS * math.cos(ANGLE_PORT), y + offset * RADIUS * math.sin(ANGLE_PORT))
 
 
 # -----------------------------------------------------------------------------
@@ -517,9 +557,11 @@ def _node(graph:    Graph,
           list_css: list[str],
           is_pick:  bool) -> typing.Any:
     """
-    Return the node of kind for id_item at place. If is_pick, the node
-    links to the page with every chain into it lit. A concern never
-    does.
+    Return the node of kind for id_item at place. A decision or an
+    annotation is a circle with its title beneath, and an annotation
+    has its number inside. A concern is a pipe of two rules with its
+    title above. If is_pick, the node links to the page with every
+    chain into it lit. A concern never does.
 
     """
 
@@ -527,29 +569,27 @@ def _node(graph:    Graph,
     css    = ' '.join(['node', kind, cc_public.web.light.CSS_DIMS] + list_css)
     if kind == KIND_CONCERN:
         node = htpy.g(class_ = css, id = 'node-' + id_item)[
-            htpy.rect(x = _num(x), y = _num(y - HEIGHT_NODE / 2), width = str(WIDTH_CONCERN),
-                      height = str(HEIGHT_NODE), class_ = 'shape'),
-            htpy.text(x = _num(x + WIDTH_CONCERN / 2), y = _num(y + 4.5), class_ = 'name')[
-                graph.title(id_item)]]
+            htpy.rect(x = _num(x), y = _num(y - 2 * GAP_RAIL - 16), width = str(WIDTH_CONCERN),
+                      height = str(3 * GAP_RAIL + 16), class_ = 'area'),
+            [htpy.line(x1 = _num(x), y1 = _num(y + offset), x2 = _num(x + WIDTH_CONCERN),
+                       y2 = _num(y + offset), class_ = 'shape')
+             for offset in (-GAP_RAIL, GAP_RAIL)],
+            htpy.text(x = _num(x + WIDTH_CONCERN / 2), y = _num(y - GAP_RAIL - 7),
+                      class_ = 'name')[graph.title(id_item)]]
     else:
-        label     = graph.title(id_item)
-        number    = None
-        x_title   = x + 8
+        label  = graph.title(id_item)
+        number = None
         if kind == KIND_ANNOTATION:
-            number  = str(outline.map_number[id_item])
-            label   = '{number} {title}'.format(number = number, title = label)
-            x_title = x + INDENT_TITLE
-        list_line = _lines(graph.title(id_item),
-                           CHARS_LINE - (INDENT_TITLE - 8) // 6 if number else CHARS_LINE)
-        y_first   = y + 4.5 - 7 * (len(list_line) - 1)
-        node      = htpy.g(class_ = css, id = 'node-' + id_item)[
+            number = str(outline.map_number[id_item])
+            label  = '{number} {title}'.format(number = number, title = label)
+        node = htpy.g(class_ = css, id = 'node-' + id_item)[
             htpy.title[label],
-            htpy.rect(x = _num(x), y = _num(y - HEIGHT_NODE / 2), width = str(WIDTH_NODE),
-                      height = str(HEIGHT_NODE), rx = '3', class_ = 'shape'),
-            htpy.text(x = _num(x + INDENT_TITLE - 6), y = _num(y_first), class_ = 'number')[
+            htpy.circle(cx = _num(x), cy = _num(y), r = str(RADIUS), class_ = 'shape'),
+            htpy.text(x = _num(x), y = _num(y + 4.5), class_ = 'number')[
                 number] if number else None,
-            [htpy.text(x = _num(x_title), y = _num(y_first + 14 * index), class_ = 'name')[line]
-             for (index, line) in enumerate(list_line)]]
+            [htpy.text(x = _num(x), y = _num(y + RADIUS + 17 + LINE_TITLE * index),
+                       class_ = 'name')[line]
+             for (index, line) in enumerate(_lines(graph.title(id_item), CHARS_LINE))]]
     if not is_pick:
         return node
     name = cc_public.web.light.chain(id_item)
@@ -559,7 +599,7 @@ def _node(graph:    Graph,
 # -----------------------------------------------------------------------------
 def _lines(text: str, chars: int) -> list[str]:
     """
-    Return text broken into at most two lines of chars, the second cut
+    Return text broken into at most three lines of chars, the last cut
     short if need be.
 
     """
@@ -567,7 +607,7 @@ def _lines(text: str, chars: int) -> list[str]:
     list_line = ['']
     for word in text.split():
         if list_line[-1] and len(list_line[-1]) + 1 + len(word) > chars:
-            if len(list_line) == 2:
+            if len(list_line) == 3:
                 list_line[-1] = list_line[-1][:chars - 1].rstrip() + '…'
                 return list_line
             list_line.append('')

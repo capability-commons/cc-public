@@ -618,42 +618,52 @@ figure.map svg {
   text-decoration: underline;
 }
 
-/* The graph of an argument: each decision and annotation once, with
-   an edge for each support and challenge. */
+/* The graph of an argument, after Mark Lombardi: each decision and
+   annotation once, as a circle of hairline with its title beneath,
+   and a thin arc for each support and challenge. */
 
 .network .node .shape {
-  --rule-node: var(--rule);
+  --rule-node: var(--ink-muted);
   fill: var(--lit, var(--paper));
   stroke: color-mix(in srgb, var(--ink) calc(var(--lit-at) * 100%), var(--rule-node));
-  stroke-width: calc(1 + 0.6 * var(--lit-at));
+  stroke-width: calc(1 + 0.8 * var(--lit-at));
 }
 
-.network .node text.number { text-anchor: end; }
-.network .node.decision text.name { font-style: italic; font-size: 14px; }
-/* The rule of a concern is darker so it stands out from the shade as
-   much as the rule of an annotation does from the paper (1.45:1). */
+/* Titles wear a halo of paper, so lines that pass behind them break
+   rather than strike through them. */
 
-.network .node.concern .shape { --rule-node: #c6bca8; fill: var(--shade); }
-.network .node.concern text.name {
+.network .node text {
   text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.network .node text.name { font-size: 12.5px; }
+.network .node text.number { font-size: 14px; }
+.network .node.decision text.name { font-style: italic; font-size: 14px; }
+
+/* A concern is a pipe: two parallel rules that bundle the lines for
+   it, supports in the upper lane and challenges in the lower. */
+
+.network .node.concern .shape { --rule-node: var(--ink-faint); }
+.network .node.concern .area { fill: transparent; }
+.network .node.concern text.name {
   font-size: 13px;
   font-variant: small-caps;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
-/* Edges are thin Sankey bands: the same translucent colours, so where
-   they cross or bundle the overlap shows. */
-
-.network .edges path { fill: none; stroke-width: 5; }
-.network .edge-for { stroke: var(--band-for); }
-.network .edge-against { stroke: var(--band-against); }
+.network .edges path { fill: none; stroke-width: 1.3; }
+.network .edge-for { stroke: var(--ink-for); }
+.network .edge-against { stroke: var(--ink-against); }
 
 .network .port { outline: none; }
 .network .port-for { --ink-port: var(--ink-for); }
 .network .port-against { --ink-port: var(--ink-against); }
 .network .port circle {
   stroke: var(--ink-port);
-  stroke-width: calc(1.4 + 1.1 * var(--lit-at));
+  stroke-width: calc(1 + 1 * var(--lit-at));
   fill: color-mix(in srgb, var(--ink-port) calc(var(--lit-at) * 100%), var(--paper));
   cursor: pointer;
 }
