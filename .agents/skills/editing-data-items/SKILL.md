@@ -80,9 +80,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   issue.
   Argue it; do not drop the driver to pass.
 - **A second determination of an issue is refused**
-  (`competing_determinations`) unless it replaces the current one:
-  give it `--link r_supersedes DET`. Never edit or remove the earlier
-  determination; it stays as the record of what was determined before.
+  (`competing_determinations`). An issue has at most one. When the
+  person who settled it changes their ruling, edit that determination
+  in place with `set`, `link` and `unlink`; the commits that change its
+  file are the history of the ruling.
 - **`restriction_violation`** means an end of the edge does not meet a
   relation restriction its relation names (`r_restricts_source` or
   `r_restricts_target` in `reg_relation.yaml`). A restriction admits or
