@@ -589,6 +589,19 @@ def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
         ('ann_x', 'r_supports', ID_ABOUT, 'target', 'rrs_is_arguable')]}
 
 
+def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
+    # The subject of a requirement must play rol_design_element, which a
+    # concern does not.
+    _replace(tree, '_data/requirement/req_rename_keeps_guid.yaml',
+             'id_target:          lc_tooling\n'
+             '    guid_target:        ' + _guid_of(tree, 'lc_tooling') + '\n',
+             'id_target:          concern_cost\n'
+             '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
+    assert _check(tree) == {'restriction_violation': [
+        ('req_rename_keeps_guid', 'r_has_subject', 'concern_cost', 'target',
+         'rrs_is_design_element')]}
+
+
 def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
     # With its literal turned to an exclude, the restriction on the source
     # of r_has_subject passes an annotation and fails every requirement.
@@ -599,7 +612,7 @@ def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
              literal.format(relation = 'r_admits', guid = _guid_of(tree, 'r_admits')),
              literal.format(relation = 'r_excludes', guid = _guid_of(tree, 'r_excludes')))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                         _edge(tree, 'r_has_subject', ID_ABOUT)])
+                                                         _edge(tree, 'r_has_subject', 'lc_tooling')])
     failures = _check(tree)
     assert list(failures) == ['restriction_violation']
     assert {row[0] for row in failures['restriction_violation']} == {
