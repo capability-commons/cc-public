@@ -461,17 +461,16 @@ def _fields(tree:       Tree,
     if id_self in tree.map_item:
         raise ErrorEdit('An item with the id {id} exists.'.format(id = id_self))
 
-    (prefix, _, _) = id_self.partition(DELIM_PREFIX)
-    map_given      = dict(list_field)
-    map_field      = {key: map_given.pop(key) for key in TUPLE_KEY_LEAD if key in map_given}
+    map_given = dict(list_field)
+    map_field = {key: map_given.pop(key) for key in TUPLE_KEY_LEAD if key in map_given}
 
     map_field[KEY_ID_SELF]   = id_self
-    map_field[KEY_GUID_SELF] = '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)
+    map_field[KEY_GUID_SELF] = _guid(id_self)
 
     if register is None:
         map_field.update(_rights(tree))
 
-    map_field.update(_referenced(tree, _ordered(list(map_given.items()))))
+    map_field.update(_referenced(tree, _minted(_ordered(list(map_given.items())))))
 
     if register is not None:
         map_field[KEY_ALIAS] = []
@@ -546,7 +545,7 @@ def set_field(tree: Tree, id_self: str, path: str, value: typing.Any) -> Edit:
     item             = _Item(tree, id_self)
 
     if not list_part:
-        edit = _put_field(item, key, _styled(key, value, item.node.get(key)))
+        edit = _put_field(item, key, _styled(key, _minted(value), item.node.get(key)))
         if _is_reference(key, value):
             tree.update(edit)
             edit.update(_put_field(_Item(tree, id_self), _key_guid(key), tree.guid(value)))
@@ -648,7 +647,7 @@ def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) 
         node[part] = _put(tree, node.get(part, {}), rest, value)
         return node
 
-    node[part] = _styled(part, value, node.get(part))
+    node[part] = _styled(part, _minted(value), node.get(part))
     if not _is_reference(part, value):
         return node
 
@@ -1155,6 +1154,42 @@ def _ordered(list_field: list[tuple[str, typing.Any]]) -> dict:
 
     return ({key: map_field[key] for key in TUPLE_KEY_PROSE if key in map_field}
             | {key: value for (key, value) in map_field.items() if key not in TUPLE_KEY_PROSE})
+
+
+# -----------------------------------------------------------------------------
+def _minted(value: typing.Any) -> typing.Any:
+    """
+    Return value with a new guid_self after each id_self in it that has
+    none, so that an embedded item given in a field, such as a member
+    of an interface control document, gets its guid as a new item does.
+
+    """
+
+    if isinstance(value, list):
+        return [_minted(each) for each in value]
+    if not isinstance(value, dict):
+        return value
+
+    map_new = {}
+
+    for (key, each) in value.items():
+        map_new[key] = _minted(each)
+        if key == KEY_ID_SELF and isinstance(each, str) and KEY_GUID_SELF not in value:
+            map_new[KEY_GUID_SELF] = _guid(each)
+
+    return map_new
+
+
+# -----------------------------------------------------------------------------
+def _guid(id_self: str) -> str:
+    """
+    Return a new guid for the item id_self: the prefix of its type and
+    32 hex digits.
+
+    """
+
+    (prefix, _, _) = id_self.partition(DELIM_PREFIX)
+    return '{prefix}_{hex}'.format(prefix = prefix, hex = uuid.uuid4().hex)
 
 
 # -----------------------------------------------------------------------------

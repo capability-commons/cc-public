@@ -228,6 +228,16 @@ def test_a_new_schema_opens_with_its_dialect_and_keeps_structured_values(tree, z
     assert 'unevaluatedProperties:  false\n' in text
 
 
+def test_an_embedded_item_given_in_a_field_is_given_a_guid(tree, zero):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'set': ['con_concept', 'example',
+                                                {'id_self': 'con_x', 'name': 'x'}]}])
+    assert ('    example:\n'
+            '      id_self:          con_x\n'
+            '      guid_self:        con_' + HEX_ZERO + '\n'
+            '      name:             x\n') in edited.edit['_data/register/reg_concept.yaml']
+
+
 def test_a_new_field_that_names_an_item_is_given_its_guid(tree, zero):
     edited = cc_public.edit.edit.Tree(tree)
     cc_public.edit.edit.batch(edited, [{'new':   't_x',
