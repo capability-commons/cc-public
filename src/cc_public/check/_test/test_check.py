@@ -29,6 +29,7 @@ relation:               []
 
 
 import io
+import pathlib
 import re
 import uuid
 
@@ -726,6 +727,51 @@ def test_a_surface_of_two_forms_is_reported(tree):
     assert list(failures) == ['schema_violation']
     assert {row[:3] + row[4:5] for row in failures['schema_violation']} == {
         ('icd_x', 'sch_interface_control_document', location, 'surface/python')}
+
+
+def _realizing(root, list_parameter):
+    """
+    Write a python module with a function whose item realizes the
+    member icm_x.run of icd_x, and which takes list_parameter.
+
+    """
+
+    item = _dump(_fields(root, 'pyf_x.y.run', [_edge(root, 'r_realizes', 'icm_x.run')]))
+    _module(root, 'src/x/y.py', 'pym_x.y')
+    with (root / 'src/x/y.py').open('a') as file:
+        file.write('\n\ndef run({parameter}):\n'.format(parameter = ', '.join(list_parameter))
+                   + ''.join('    ' + line if line.strip() else line for line in
+                             ('"""\n---\n' + item + '...\n"""\n').splitlines(True))
+                   + '    return 1\n')
+
+
+def test_a_function_that_takes_the_parameters_its_member_states_passes(tree):
+    _interface(tree, 'icm_x.run')
+    _realizing(tree, ['root'])
+    assert _check(tree) == {}
+
+
+def test_a_function_whose_parameters_differ_from_its_member_is_reported(tree):
+    _interface(tree, 'icm_x.run')
+    _realizing(tree, ['path', 'depth = 1'])
+    assert _check(tree) == {'parameter_mismatch': [
+        ('icm_x.run', 'pyf_x.y.run', '0', 'root', 'path'),
+        ('icm_x.run', 'pyf_x.y.run', '1', '', 'depth')]}
+
+
+def test_a_parameter_the_function_does_not_take_is_reported(tree):
+    _interface(tree, 'icm_x.run')
+    _realizing(tree, [])
+    assert _check(tree) == {'parameter_mismatch': [('icm_x.run', 'pyf_x.y.run', '0', 'root', '')]}
+
+
+def test_the_receiver_of_a_method_is_not_a_parameter():
+    text = ('class Thing:\n'
+            '    def run(self, a, *b, c, **d):\n'
+            '        """\n        ---\n        id_self: pyf_x.thing.run\n        ...\n        """\n')
+    assert [found[2] for found in
+            cc_public.graph.extract.definitions(text, pathlib.Path('src/x.py'))] == [
+           ('a', 'b', 'c', 'd')]
 
 
 def test_a_class_and_a_method_named_for_their_place_pass(tree):

@@ -268,6 +268,57 @@ misnamed_member(Id, Holder) :-
 
 
 % -----------------------------------------------------------------------------
+% A python function that realizes an interface member takes the
+% parameters the member states, by name and in order. A parameter of a
+% member is an interface member in its parameter list, named for it.
+% stated or actual is empty where the member or the function has no
+% parameter at that position.
+%
+% decl stated_parameter(member:   symbol,
+%                       position: number,
+%                       name:     symbol)
+
+stated_parameter(Member, Position, Name) :-
+    type_of(Id, "t_interface_member"),
+    item(Id, _, Member, _, _),
+    type_of(Member, "t_interface_member"),
+    position(Id, Position),
+    Length = @strlen(Member) + 1,
+    Name = @substr(Id, Length, @strlen(Id) - Length).
+
+% decl realized_function(function: symbol,
+%                        member:   symbol)
+
+realized_function(Function, Member) :-
+    primary_edge(Function, "r_realizes", Member),
+    type_of(Function, "t_python_function"),
+    type_of(Member, "t_interface_member").
+
+% decl parameter_mismatch(member:   symbol,
+%                         function: symbol,
+%                         position: number,
+%                         stated:   symbol,
+%                         actual:   symbol)
+#show parameter_mismatch/5.
+
+parameter_mismatch(Member, Function, Position, Stated, Actual) :-
+    realized_function(Function, Member),
+    stated_parameter(Member, Position, Stated),
+    python_parameter(Function, Position, Actual),
+    Stated != Actual.
+
+parameter_mismatch(Member, Function, Position, Stated, "") :-
+    realized_function(Function, Member),
+    stated_parameter(Member, Position, Stated),
+    not python_parameter(Function, Position, _).
+
+parameter_mismatch(Member, Function, Position, "", Actual) :-
+    realized_function(Function, Member),
+    python_parameter(Function, Position, Actual),
+    not stated_parameter(Member, Position, _).
+
+
+% -----------------------------------------------------------------------------
 % The key of a register entry is its id.
 %
 % decl key_mismatch(register: symbol,

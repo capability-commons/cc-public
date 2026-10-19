@@ -144,6 +144,13 @@ RELATION          = {
                            'A python module, package, class or function, or a logic '
                            'program file, holds the item id, and its place in the tree '
                            'calls for the id expected.'),
+    'python_parameter':   (('id', 'position:number', 'name'),
+                           'The python function that holds the item id takes the '
+                           'parameter name at position, counted from 0, in the order a '
+                           'caller gives them. The receiver of a method is not one.'),
+    'position':           (('id', 'position:number'),
+                           'The item id is written as the element at position, counted '
+                           'from 0, of a list.'),
     'tree_file':          (('file',),
                            'The tree holds file, whether or not the file holds an '
                            'item.'),
@@ -185,11 +192,14 @@ MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
                      ast.FunctionDef:     'pyf_',
                      ast.AsyncFunctionDef: 'pyf_'}
 
-# The id that the place of each class or function document calls for,
-# by its key. The key does not say whether the definition is a class
-# or a function, so this is noted when the file is read.
+# What the code says of each class or function that holds a document,
+# by its key: the id its place calls for, and the names of the
+# parameters of a function. Neither is in the document, so both are
+# noted when the file is read. The receiver of a method is not a
+# parameter.
 #
 MAP_DEFINITION    = {}
+SET_RECEIVER      = {'self', 'cls'}
 
 Facts             = dict[str, set[tuple[str, ...]]]
 Documents         = dict[str, tuple[typing.Any, int]]
@@ -328,7 +338,11 @@ def facts_of(map_document: Documents) -> Facts:
         if not isinstance(document, dict):
             continue
         if file in MAP_DEFINITION:
-            facts['module_name'].add((str(document.get(KEY_ID_SELF)), MAP_DEFINITION[file]))
+            (expected, tuple_parameter) = MAP_DEFINITION[file]
+            facts['module_name'].add((str(document.get(KEY_ID_SELF)), expected))
+            for (position, name) in enumerate(tuple_parameter):
+                facts['python_parameter'].add((str(document.get(KEY_ID_SELF)),
+                                               str(position), name))
         elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       module_name(pathlib.Path(file))))
@@ -417,20 +431,20 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
     map_document = {str(relative): parse(text, relative)}
 
     if relative.suffix == SUFFIX_PYTHON:
-        for (key, expected, document) in definitions(text, relative):
-            MAP_DEFINITION[key] = expected
+        for (key, expected, tuple_parameter, document) in definitions(text, relative):
+            MAP_DEFINITION[key] = (expected, tuple_parameter)
             map_document[key]   = document
 
     return map_document
 
 
 # -----------------------------------------------------------------------------
-def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple]]:
+def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple, tuple]]:
     """
     Return, for each class or function of the python module text, at
     relative, whose docstring holds a document: its key, the id its
-    place calls for, and the document with the line of the file that
-    its first line is on. A class or function is one at the top of the
+    place calls for, the names of its parameters, and the document with
+    the line of the file that its first line is on. A class or function is one at the top of the
     module or in a class, not one inside a function. Raise ErrorRead if
     a document cannot be read.
 
@@ -447,6 +461,7 @@ def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple
             if found is not None:
                 list_found.append((DELIM_DEFINITION.join([str(relative), *list_path]),
                                    definition_id(relative, list_path, node),
+                                   _parameters(node, is_method = bool(list_name)),
                                    found))
             if isinstance(node, ast.ClassDef):
                 visit(node.body, list_path)
@@ -454,6 +469,31 @@ def definitions(text: str, relative: pathlib.Path) -> list[tuple[str, str, tuple
     visit(_module(text).body, [])
 
     return list_found
+
+
+# -----------------------------------------------------------------------------
+def _parameters(node: ast.AST, is_method: bool) -> tuple[str, ...]:
+    """
+    Return the names of the parameters of the function node, in the
+    order a caller gives them, or none if node is a class. The receiver
+    of a method is left out.
+
+    """
+
+    if isinstance(node, ast.ClassDef):
+        return ()
+
+    args      = node.args
+    list_name = [arg.arg for arg in [*args.posonlyargs, *args.args]]
+
+    if is_method and list_name and list_name[0] in SET_RECEIVER:
+        list_name = list_name[1:]
+
+    list_name += [args.vararg.arg] if args.vararg else []
+    list_name += [arg.arg for arg in args.kwonlyargs]
+    list_name += [args.kwarg.arg] if args.kwarg else []
+
+    return tuple(list_name)
 
 
 # -----------------------------------------------------------------------------
@@ -626,7 +666,9 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
 
     if isinstance(node, list):
 
-        for value in node:
+        for (position, value) in enumerate(node):
+            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
+                facts['position'].add((value[KEY_ID_SELF], str(position)))
             _walk(value, holder, location, facts)
         return
 
