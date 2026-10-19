@@ -19,11 +19,12 @@ description:            |
                         respond maps the path of a request to a page
                         (the issue list, an issue, the requirement
                         list, a requirement, the list of interface
-                        control documents, or any item), or to a file
-                        of the _static directory, and reads the tree
-                        afresh for each page. serve answers GET
-                        requests with respond, until interrupted. It
-                        uses the HTTP server of the standard library.
+                        control documents, one of them, or any item),
+                        or to a file of the _static directory, and
+                        reads the tree afresh for each page. serve
+                        answers GET requests with respond, until
+                        interrupted. It uses the HTTP server of the
+                        standard library.
 relation:               []
 
 ...
@@ -38,6 +39,7 @@ import threading
 import urllib.parse
 
 import cc_public.web.argument
+import cc_public.web.contract
 import cc_public.web.page
 import cc_public.web.sankey
 
@@ -74,10 +76,11 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
 
     for prefix in (cc_public.web.page.PATH_ISSUE,
                    cc_public.web.page.PATH_REQUIREMENT,
+                   cc_public.web.page.PATH_INTERFACE,
                    cc_public.web.page.PATH_ITEM):
         if path.startswith(prefix):
             id_item = urllib.parse.unquote(path.removeprefix(prefix))
-            body    = _item_page(_graph(root), prefix, id_item, query)
+            body    = _item_page(root, prefix, id_item, query)
             if body is None:
                 return (http.HTTPStatus.NOT_FOUND, TYPE_HTML,
                         cc_public.web.page.missing(id_item).encode())
@@ -100,15 +103,24 @@ def _graph(root: pathlib.Path) -> cc_public.web.argument.Graph:
 
 
 # -----------------------------------------------------------------------------
-def _item_page(graph:   cc_public.web.argument.Graph,
+def _item_page(root:    pathlib.Path,
                prefix:  str,
                id_item: str,
                query:   str) -> str | None:
     """
-    Return the page of id_item at the path prefix, with the query of
-    its address, or None if the tree holds no such issue or item.
+    Return the page of id_item at the path prefix in the tree under
+    root, with the query of its address, or None if the tree holds no
+    such issue or item.
 
     """
+
+    if prefix == cc_public.web.page.PATH_INTERFACE:
+        with LOCK_READ:
+            (graph, facts) = (cc_public.web.argument.Graph(root),
+                              cc_public.web.contract.facts(root))
+        return cc_public.web.page.interface(graph, facts, id_item)
+
+    graph = _graph(root)
 
     if prefix == cc_public.web.page.PATH_ISSUE:
         issue = graph.issue(id_item)

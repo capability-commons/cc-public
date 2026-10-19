@@ -15,8 +15,8 @@ title:                  Review page rendering
 brief:                  |
                         Render the issue list, the page of an issue,
                         the requirement list, the page of a
-                        requirement and the list of interface control
-                        documents as HTML.
+                        requirement, the list of interface control
+                        documents and the page of one as HTML.
 description:            |
                         The issue list groups the issues by subject,
                         with the size of each argument and whether it
@@ -50,7 +50,14 @@ description:            |
                         The list of interface control documents gives
                         each with its version, the forms of its
                         surface, and how many of its members code
-                        realizes.
+                        realizes. The page of an interface control
+                        document opens with its contract, read by
+                        pym_cc_public.web.contract: a row for each
+                        member and a column for each part of a
+                        signature, marking whether the code agrees
+                        with what the member states. Each row opens to
+                        the member, its parameters, and what it
+                        returns.
 relation:               []
 
 ...
@@ -66,6 +73,7 @@ import htpy
 import cc_public.requirement.compose
 import cc_public.requirement.review
 import cc_public.web.argument
+import cc_public.web.contract
 import cc_public.web.description
 import cc_public.web.light
 import cc_public.web.network
@@ -82,6 +90,7 @@ LIST_INDEX        = (('Issues',       '/'),
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
 PATH_REQUIREMENT  = '/requirement/'
+PATH_INTERFACE    = '/interface/'
 PATH_ITEM         = '/item/'
 FILE_STYLE        = 'review.css'
 FILE_SCRIPT       = 'review.js'
@@ -103,9 +112,17 @@ R_HAS_SUBJECT     = cc_public.requirement.compose.R_HAS_SUBJECT
 R_HAS_PROCESS     = cc_public.requirement.compose.R_HAS_PROCESS
 R_TO_PARENT       = cc_public.requirement.review.R_TRACES_TO_PARENT
 R_TO_SOURCE       = cc_public.requirement.review.R_TRACES_TO_SOURCE
-R_REALIZES        = 'r_realizes'
-PREFIX_INTERFACE  = 'icd_'
-PREFIX_MEMBER     = 'icm_'
+R_SUPERSEDES      = 'r_supersedes'
+COLUMN_REALIZED   = cc_public.web.contract.COLUMN_REALIZED
+COLUMN_RETURNS    = cc_public.web.contract.COLUMN_RETURNS
+AGREES            = cc_public.web.contract.AGREES
+
+# How the mark of each verdict of the contract reads.
+#
+MAP_VERDICT       = {cc_public.web.contract.AGREES:     'Agrees with the code',
+                     cc_public.web.contract.DIFFERS:    'Differs from the code',
+                     cc_public.web.contract.UNSTATED:   'Not stated, so not compared',
+                     cc_public.web.contract.UNREALIZED: 'No code realizes it'}
 
 # What each obligation binds the subject to, after ISO/IEC/IEEE 29148.
 #
@@ -124,6 +141,10 @@ MAP_CONDITION     = {'logic': 'a logical condition',
 Graph             = cc_public.web.argument.Graph
 Issue             = cc_public.web.argument.Issue
 Item              = cc_public.web.argument.Item
+Contract          = cc_public.web.contract.Contract
+Member            = cc_public.web.contract.Member
+Parameter         = cc_public.web.contract.Parameter
+Facts             = cc_public.web.contract.Facts
 
 
 # -----------------------------------------------------------------------------
@@ -856,16 +877,16 @@ def interfaces(graph: Graph) -> str:
 
     """
 
-    list_item = sorted((item for item in graph.map_item.values()
-                        if item.id.startswith(PREFIX_INTERFACE)),
-                       key = lambda item: item.title or item.id)
-    count     = sum(len(_members(item.node)) for item in list_item)
+    list_item = cc_public.web.contract.interfaces(graph)
+    count     = sum(len(cc_public.web.contract.members(item.node)) for item in list_item)
 
     return _page('Interface control documents',
                  [htpy.h1['Interface control documents'],
                   htpy.p(class_ = 'subtitle')[
-                      '{count} documents, {member} members'.format(count  = len(list_item),
-                                                                  member = count)],
+                      '{count} {noun}, {member} members'.format(
+                          count  = len(list_item),
+                          noun   = 'document' if len(list_item) == 1 else 'documents',
+                          member = count)],
                   htpy.section[_interface_table(graph, list_item)]])
 
 
@@ -878,18 +899,10 @@ def _interface_table(graph: Graph, list_item: list[Item]) -> typing.Any:
 
     """
 
-    def surface(item: Item) -> str:
-        list_form = []
-        for (form, value) in (item.node.get('surface') or {}).items():
-            native = value.get('native') if isinstance(value, dict) else None
-            label  = native.get('language') if isinstance(native, dict) else None
-            list_form.append((label or form.replace('_', ' ')).capitalize())
-        return ', '.join(list_form)
-
     def realized(item: Item) -> typing.Any:
-        list_member = _members(item.node)
+        list_member = cc_public.web.contract.members(item.node)
         count       = sum(1 for id_member in list_member
-                          if graph.sources(R_REALIZES, id_member))
+                          if graph.sources(cc_public.web.contract.R_REALIZES, id_member))
         text        = '{count} of {total}'.format(count = count, total = len(list_member))
         return text if count == len(list_member) else htpy.span(class_ = 'gap')[text]
 
@@ -903,30 +916,334 @@ def _interface_table(graph: Graph, list_item: list[Item]) -> typing.Any:
                 htpy.td[htpy.a(href = _href(item.id))[item.title or item.id],
                         htpy.span(class_ = 'statement')[item.brief]],
                 htpy.td[str(item.node.get('version_interface', ''))],
-                htpy.td[surface(item)],
+                htpy.td[_surface(item)],
                 htpy.td(class_ = 'number')[realized(item)]]
             for item in list_item]]]
 
 
 # -----------------------------------------------------------------------------
-def _members(node: typing.Any) -> list[str]:
+def _surface(item: Item) -> str:
     """
-    Return the ids of the interface members held in node, in the order
-    they are written, leaving out the members held in a member (the
-    parameters of a function, say).
+    Return the forms of the surface of an interface control document,
+    each named by its language where it has one.
 
     """
 
-    if isinstance(node, list):
-        return [id_member for value in node for id_member in _members(value)]
-    if not isinstance(node, dict):
-        return []
-    id_self = node.get(cc_public.web.argument.KEY_ID_SELF)
-    if isinstance(id_self, str) and id_self.startswith(PREFIX_MEMBER):
-        return [id_self]
-    return [id_member for (key, value) in node.items()
-            if key != cc_public.web.argument.KEY_RELATION
-            for id_member in _members(value)]
+    list_form = []
+    for (form, value) in (item.node.get('surface') or {}).items():
+        native = value.get('native') if isinstance(value, dict) else None
+        label  = native.get('language') if isinstance(native, dict) else None
+        list_form.append((label or form.replace('_', ' ')).capitalize())
+    return ', '.join(list_form)
+
+
+# -----------------------------------------------------------------------------
+def interface(graph: Graph, facts: Facts, id_interface: str) -> str | None:
+    """
+    Return the page of an interface control document, or None if
+    id_interface names none.
+
+    The page opens with the contract: a row for each member, grouped by
+    kind, and a column for each part of a signature, each cell marking
+    whether the code that realizes the member agrees with what it
+    states. Each row opens to the member: its signature, what it
+    promises, and its parameters with what the code says of each. What
+    the interface is for and the cross-references follow.
+
+    """
+
+    contract = cc_public.web.contract.contract(graph, facts, id_interface)
+    if contract is None:
+        return None
+
+    item = contract.item
+    return _page(item.title,
+                 [_contract(graph, contract),
+                  htpy.section(class_ = 'use')[
+                      _block(_paragraphs(item.description),
+                             [htpy.p[htpy.span(class_ = 'label')['In use']]])],
+                  _interface_references(graph, contract)],
+                 [htpy.h1[item.title],
+                  _steps(graph, [each.id for each in cc_public.web.contract.interfaces(graph)],
+                         item.id, 'interface'),
+                  htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
+                 [_interface_facts(contract)])
+
+
+# -----------------------------------------------------------------------------
+def _interface_facts(contract: Contract) -> typing.Any:
+    """
+    Return the table of facts that stands beside the brief of an
+    interface control document: its version, its surface, its members
+    and how far the code realizes and agrees with them.
+
+    """
+
+    def row(label: str, value: typing.Any) -> typing.Any:
+        return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
+
+    list_member = contract.members()
+    count_real  = contract.count(COLUMN_REALIZED, cc_public.web.contract.AGREES)
+    count_diff  = sum(1 for member in list_member
+                      if cc_public.web.contract.DIFFERS in member.map_verdict.values())
+    native      = next((value.get('native') for value in
+                        (contract.item.node.get('surface') or {}).values()
+                        if isinstance(value, dict) and isinstance(value.get('native'), dict)),
+                       {})
+
+    return htpy.table(class_ = 'facts')[htpy.tbody[
+        row('Version',   str(contract.item.node.get('version_interface', ''))),
+        row('Surface',   ', '.join(filter(None, [_surface(contract.item),
+                                                 str(native.get('dialect', ''))]))),
+        row('Members',   str(len(list_member))),
+        row('Realized',  '{count} of {total}'.format(count = count_real,
+                                                     total = len(list_member))),
+        row('Agreement', htpy.span(class_ = 'gap')[
+                             'The code differs for {count} of {total} members'.format(
+                                 count = count_diff, total = len(list_member))]
+                         if count_diff else 'The code agrees with what is stated')]]
+
+
+# -----------------------------------------------------------------------------
+def _contract(graph: Graph, contract: Contract) -> typing.Any:
+    """
+    Return the contract matrix of an interface control document: a
+    column for each part of a signature, and a row for each member under
+    the name of its group. Each row of a member opens to the member. The
+    foot counts what agrees in each column.
+
+    """
+
+    list_column = cc_public.web.contract.LIST_COLUMN
+
+    def row(list_label: list, list_cell: list, **map_attribute: str) -> typing.Any:
+        css = 'row ' + map_attribute.pop('class_', '')
+        return htpy.div(class_ = css.strip(), **map_attribute)[
+            htpy.div(class_ = 'label')[list_label],
+            [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
+
+    list_row = [row([], [htpy.span(class_ = 'column')[label] for (_, label, _) in list_column],
+                    class_ = 'head')]
+
+    for (group, list_member) in contract.list_group:
+        list_row.append(row([cc_public.web.contract.group_name(group)],
+                            [None for _ in list_column], class_ = 'group'))
+        for member in list_member:
+            list_row.append(htpy.details(class_ = 'concern member', id = member.id)[
+                htpy.summary[row([htpy.code(class_ = 'name')[member.name]],
+                                 [_verdict(graph, member, column)
+                                  for (column, _, _) in list_column])],
+                htpy.div(class_ = 'drill')[_member(graph, member)]])
+
+    list_row.append(row(['All'], [_tally(contract, column) for (column, _, _) in list_column],
+                        class_ = 'foot'))
+
+    return htpy.section(class_ = 'matrix contract',
+                        style  = '--decisions: {count}'.format(count = len(list_column)))[
+        list_row]
+
+
+# -----------------------------------------------------------------------------
+def _verdict(graph: Graph, member: Member, column: str) -> typing.Any:
+    """
+    Return the mark of the verdict of column on member, or nothing where
+    the column does not apply to it. The mark of the realized column
+    links to the code that realizes the member.
+
+    """
+
+    verdict = member.map_verdict.get(column)
+    if verdict is None:
+        return htpy.span(class_ = 'none')[MARK_NONE]
+
+    title = MAP_VERDICT[verdict]
+    if column == COLUMN_REALIZED and member.list_realizer:
+        title = 'Realized by {title}, {location}'.format(
+                    title = graph.title(member.list_realizer[0]), location = member.location)
+        return htpy.a(class_ = 'cell', href = _href(member.list_realizer[0]), title = title)[
+            htpy.span(class_ = 'verdict ' + verdict)[title]]
+    if column == COLUMN_REALIZED:
+        title = 'Not realized: nothing records an edge r_realizes to it'
+    return htpy.span(class_ = 'verdict ' + verdict, title = title)[title]
+
+
+# -----------------------------------------------------------------------------
+def _tally(contract: Contract, column: str) -> str:
+    """
+    Return what the members of contract show in column, in words.
+
+    """
+
+    list_verdict = [member.map_verdict.get(column) for member in contract.members()
+                    if member.map_verdict.get(column) is not None]
+    if column == COLUMN_REALIZED:
+        return '{count} of {total}'.format(count = list_verdict.count(AGREES),
+                                           total = len(list_verdict))
+    list_word = ['{count} {word}'.format(count = list_verdict.count(verdict), word = word)
+                 for (verdict, word) in ((cc_public.web.contract.AGREES,     'agree'),
+                                         (cc_public.web.contract.DIFFERS,    'differ'),
+                                         (cc_public.web.contract.UNSTATED,   'unstated'))
+                 if verdict in list_verdict]
+    return ', '.join(list_word)
+
+
+# -----------------------------------------------------------------------------
+def _member(graph: Graph, member: Member) -> list:
+    """
+    Return what the row of a member opens to: its signature as stated,
+    its brief and what it promises, and its parameters and what it
+    returns, each beside what the code says where they differ.
+
+    """
+
+    node      = member.node
+    list_note = [_note_line('Realized by', [htpy.span(class_ = 'line')[_link(graph, id_item)]
+                                            for id_item in member.list_realizer]),
+                 htpy.p(class_ = 'location')[member.location] if member.location else None,
+                 _id(member.id)]
+    if not member.list_realizer:
+        list_note[0] = htpy.p(class_ = 'gap')['Not realized']
+
+    list_main = [htpy.p(class_ = 'signature')[htpy.code[_signature(member)]]
+                 if member.is_function() else None,
+                 _paragraphs(_text(node.get('brief'))),
+                 _paragraphs(_text(node.get('shape')))]
+
+    list_block = [_block(list_main, list_note, class_ = 'member-head')]
+    if _text(node.get('obligation')):
+        list_block.append(_block(_paragraphs(_text(node.get('obligation'))),
+                                 [htpy.p[htpy.span(class_ = 'label')['Obligation']]]))
+    if member.list_parameter or member.list_extra:
+        list_block.append(_block([_parameters(member)],
+                                 [htpy.p[htpy.span(class_ = 'label')['Parameters']]]))
+    if member.returns is not None:
+        returns = node.get('returns') or {}
+        list_block.append(_block(
+            [htpy.p[htpy.code[_stated(member.returns,
+                                      None if member.map_verdict.get(COLUMN_RETURNS)
+                                      != cc_public.web.contract.DIFFERS
+                                      else member.returns_code)], ' ',
+                    _prose(_text(returns.get('brief')))]],
+            [htpy.p[htpy.span(class_ = 'label')['Returns']]]))
+    return list_block
+
+
+# -----------------------------------------------------------------------------
+def _parameters(member: Member) -> typing.Any:
+    """
+    Return the table of the parameters of a member: each with its brief
+    under its name, its type, its default and its mode, a part the code
+    says otherwise of marked with what the code says. A parameter the
+    code takes that the member does not state ends the table.
+
+    """
+
+    def part(parameter: Parameter, name: str) -> typing.Any:
+        stated = parameter.map_part.get(name)
+        if stated is None:
+            return htpy.span(class_ = 'none')[MARK_NONE]
+        code = parameter.map_code.get(name, '') if parameter.differs(name) else None
+        return _stated(stated, code)
+
+    list_row = [htpy.tr[
+                    htpy.td[htpy.code[_stated(parameter.name,
+                                              parameter.map_code.get('name')
+                                              if parameter.map_code is not None
+                                              and parameter.map_code.get('name')
+                                              != parameter.name else None)],
+                            htpy.span(class_ = 'statement')[
+                                _prose(_text(parameter.node.get('brief')))],
+                            [htpy.span(class_ = 'statement obligation')[_prose(text)]
+                             for text in [_text(parameter.node.get('obligation'))] if text]],
+                    htpy.td[htpy.code[part(parameter, 'type')]],
+                    htpy.td[htpy.code[part(parameter, 'default')]],
+                    htpy.td[str(parameter.node.get('mode', '')).replace('_', ' ')]]
+                for parameter in member.list_parameter]
+    list_row += [htpy.tr(class_ = 'extra')[
+                     htpy.td[htpy.code[name],
+                             htpy.span(class_ = 'statement differs')['Taken by the code, '
+                                                                     'not stated']],
+                     htpy.td, htpy.td, htpy.td]
+                 for name in member.list_extra]
+
+    return htpy.table(class_ = 'parameters')[
+        htpy.thead[htpy.tr[htpy.th['Parameter'], htpy.th['Type'], htpy.th['Default'],
+                           htpy.th['Mode']]],
+        htpy.tbody[list_row]]
+
+
+# -----------------------------------------------------------------------------
+def _stated(stated: str, code: str | None) -> typing.Any:
+    """
+    Return what a member states, and beside it what the code says if
+    code is not None, as a difference.
+
+    """
+
+    if code is None:
+        return stated
+    return [htpy.span(class_ = 'stated differs')[stated],
+            htpy.span(class_ = 'code-says',
+                      title  = 'What the code says')[code or 'nothing']]
+
+
+# -----------------------------------------------------------------------------
+def _signature(member: Member) -> str:
+    """
+    Return the signature of a function member as python writes it, from
+    what the member states.
+
+    """
+
+    list_part = []
+    for parameter in member.list_parameter:
+        text = parameter.name
+        if parameter.map_part.get('variadic') == 'true':
+            text = '*' + text
+        if 'type' in parameter.map_part:
+            text += ': ' + parameter.map_part['type']
+        if 'default' in parameter.map_part:
+            text += ' = ' + parameter.map_part['default']
+        list_part.append(text)
+    returns = ' -> ' + member.returns if member.returns is not None else ''
+    return '{name}({parts}){returns}'.format(name = member.name, parts = ', '.join(list_part),
+                                             returns = returns)
+
+
+# -----------------------------------------------------------------------------
+def _interface_references(graph: Graph, contract: Contract) -> typing.Any:
+    """
+    Return the cross-references at the foot of the page of an interface
+    control document: the code that realizes its members, the documents
+    it supersedes or that supersede it, and the items that point at it or
+    that its prose names.
+
+    """
+
+    item         = contract.item
+    list_realize = sorted({id_item for member in contract.members()
+                           for id_item in member.list_realizer})
+    list_cited   = sorted({id_source
+                           for ((_, id_target), list_source) in graph.map_source.items()
+                           if id_target == item.id
+                           for id_source in list_source})
+
+    return _references(graph, [('Realized by',   list_realize),
+                               ('Supersedes',    item.targets(R_SUPERSEDES)),
+                               ('Superseded by', graph.sources(R_SUPERSEDES, item.id)),
+                               ('Mentions',      graph.mentions(item.id)),
+                               ('Mentioned by',  graph.mentioned_by(item.id)),
+                               ('Cited by',      list_cited)])
+
+
+# -----------------------------------------------------------------------------
+def _text(value: typing.Any) -> str:
+    """
+    Return value as text, or empty if it is not text.
+
+    """
+
+    return value if isinstance(value, str) else ''
 
 
 # -----------------------------------------------------------------------------
@@ -1425,8 +1742,8 @@ def _link(graph: Graph, id_item: str) -> typing.Any:
 def _href(id_item: str) -> str:
     """
     Return the address of the page of id_item: the issue page for an
-    issue, the requirement page for a requirement, the item page
-    otherwise.
+    issue, the requirement page for a requirement, the interface page
+    for an interface control document, the item page otherwise.
 
     """
 
@@ -1434,6 +1751,8 @@ def _href(id_item: str) -> str:
         return PATH_ISSUE + id_item
     if id_item.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT):
         return PATH_REQUIREMENT + id_item
+    if id_item.startswith(cc_public.web.contract.PREFIX_INTERFACE):
+        return PATH_INTERFACE + id_item
     return PATH_ITEM + id_item
 
 

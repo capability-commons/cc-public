@@ -603,8 +603,8 @@ def test_interface_index_lists_interface_control_documents(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/interfaces')
     assert status == http.HTTPStatus.OK
     text = body.decode()
-    assert text.count('href="/item/icd_') == 1
-    assert '<a href="/item/icd_cc_public_check">Checker interface</a>' in text
+    assert text.count('href="/interface/icd_') == 1
+    assert '<a href="/interface/icd_cc_public_check">Checker interface</a>' in text
     assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 7<', text)
 
 
@@ -638,6 +638,41 @@ def test_requirement_page_reads_down_its_trace(tree):
 @pytest.mark.parametrize('path', ['/requirement/req_missing',
                                   '/requirement/lc_tooling'])
 def test_requirement_page_of_anything_else_is_not_found(tree, path):
+    (status, _, _) = cc_public.web.server.respond(tree, path)
+    assert status == http.HTTPStatus.NOT_FOUND
+
+
+def test_interface_page_opens_with_its_contract(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/interface/icd_cc_public_check')
+    assert status == http.HTTPStatus.OK
+    text = body.decode()
+    list_name = re.findall(r'<code class="name">([\w.]+)</code>', text)
+    assert list_name == ['Failures', 'cc_public.check.check', 'check', 'review',
+                         'check_documents', 'review_documents', 'columns']
+    assert re.findall(r'<div class="label">(\w+)</div>', text) == ['Declarations', 'Modules',
+                                                                   'Functions', 'All']
+    assert text.count('class="verdict unrealized"') == 1
+    assert 'class="verdict differs"' not in text
+    assert '<code>check(root: pathlib.Path) -&gt; Failures</code>' in text
+    assert 'href="/item/pyf_cc_public.check.check.review"' in text
+
+
+def test_interface_page_marks_where_the_code_differs(tree):
+    path = tree / '_data/interface_control_document/icd_cc_public_check.yaml'
+    path.write_text(path.read_text().replace('spelling:  tuple[Failures, Failures]',
+                                             'spelling:  tuple[Failures, str]', 1))
+    (_, _, body) = cc_public.web.server.respond(tree, '/interface/icd_cc_public_check')
+    text = body.decode()
+    assert text.count('class="verdict differs"') == 1
+    assert ('<span class="stated differs">tuple[Failures, str]</span>'
+            '<span class="code-says" title="What the code says">tuple[Failures, Failures]'
+            '</span>') in text
+    assert 'The code differs for 1 of 7 members' in text
+
+
+@pytest.mark.parametrize('path', ['/interface/icd_missing',
+                                  '/interface/lc_tooling'])
+def test_interface_page_of_anything_else_is_not_found(tree, path):
     (status, _, _) = cc_public.web.server.respond(tree, path)
     assert status == http.HTTPStatus.NOT_FOUND
 
