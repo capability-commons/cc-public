@@ -14,7 +14,7 @@
 //
 // The braces that mark a chosen entry are drawn as one curve each, at
 // the height of the entry, and drawn again whenever it opens or
-// closes. Without script, the style sheet builds them from parts.
+// closes. Without script, the style sheet draws square brackets.
 
 var keep = null;
 var chosen = null;
