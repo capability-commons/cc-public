@@ -38,6 +38,7 @@ relation:               []
 
 import ast
 import hashlib
+import os
 import pathlib
 import re
 import typing
@@ -305,16 +306,34 @@ def documents(root: pathlib.Path) -> Documents:
 
     map_document = {}
 
-    for path in sorted(root.rglob('*')):
+    for path in _files(root):
         relative = path.relative_to(root)
-        if SET_DIR_SKIP.intersection(relative.parts) or not path.is_file():
-            continue
         try:
             map_document.update(read(path, relative))
         except ErrorRead as error:
             map_document[str(relative)] = (Unreadable(error), error.line)
 
     return map_document
+
+
+# -----------------------------------------------------------------------------
+def _files(root: pathlib.Path) -> list[pathlib.Path]:
+    """
+    Return the path of each file under root, in order, leaving out every
+    folder SET_DIR_SKIP names without walking into it. An environment
+    under .pixi holds ten times the files of the tree, so walking it
+    only to skip them was most of the time a read of the tree took.
+
+    """
+
+    list_path = []
+
+    for (dir_walk, list_dir, list_name) in os.walk(root):
+        list_dir[:] = [name for name in list_dir if name not in SET_DIR_SKIP]
+        list_path.extend(pathlib.Path(dir_walk, name) for name in list_name
+                         if name not in SET_DIR_SKIP)
+
+    return sorted(path for path in list_path if path.is_file())
 
 
 # -----------------------------------------------------------------------------
