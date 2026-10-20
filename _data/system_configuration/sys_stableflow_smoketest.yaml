@@ -45,8 +45,8 @@ process:
 node:
 
   ctrl_sys:
-    id_self:            nod_stableflow_smoketest.ctrl_sys
-    guid_self:          nod_9fdeab9501804264be28a1a5fe150a52
+    id_self:            dfn_stableflow_smoketest.ctrl_sys
+    guid_self:          dfn_b8b982793ec74e50882002337e87afe3
     brief:              |
                         Paces the system and halts it after 300 steps.
     process:            main_process
@@ -63,8 +63,8 @@ node:
         guid_target:    icd_c9560f82750f479eaeb8c7e4834a05a1
 
   ctrl_proc:
-    id_self:            nod_stableflow_smoketest.ctrl_proc
-    guid_self:          nod_f32c6c73443c4574b977028a4cb259d7
+    id_self:            dfn_stableflow_smoketest.ctrl_proc
+    guid_self:          dfn_1ddea9503ffe480f8f98787c422c5b98
     brief:              |
                         Passes control to the nodes of the main
                         process.
@@ -78,8 +78,8 @@ node:
         guid_target:    icd_71142c599d1f4fcb990108c0d7b0a26a
 
   printer:
-    id_self:            nod_stableflow_smoketest.printer
-    guid_self:          nod_6ac497ea94214fa38b70a8d025d468f4
+    id_self:            dfn_stableflow_smoketest.printer
+    guid_self:          dfn_7f95d46b29da4130b01f9b86c85de7f3
     brief:              |
                         Prints each control packet.
     process:            main_process
@@ -98,38 +98,38 @@ node:
 edge:
 
   - source:
-      id_node:          nod_stableflow_smoketest.ctrl_sys
-      guid_node:        nod_9fdeab9501804264be28a1a5fe150a52
+      id_node:          dfn_stableflow_smoketest.ctrl_sys
+      guid_node:        dfn_b8b982793ec74e50882002337e87afe3
       id_port:          icm_system_controller.control
       guid_port:        icm_a12935f6526b4b91b956edea9aa26210
 
     target:
-      id_node:          nod_stableflow_smoketest.ctrl_proc
-      guid_node:        nod_f32c6c73443c4574b977028a4cb259d7
+      id_node:          dfn_stableflow_smoketest.ctrl_proc
+      guid_node:        dfn_1ddea9503ffe480f8f98787c422c5b98
       id_port:          icm_process_controller.ctrl
       guid_port:        icm_b0c4123a1cab4e58beea7e0c5fe5abc6
 
   - source:
-      id_node:          nod_stableflow_smoketest.ctrl_proc
-      guid_node:        nod_f32c6c73443c4574b977028a4cb259d7
+      id_node:          dfn_stableflow_smoketest.ctrl_proc
+      guid_node:        dfn_1ddea9503ffe480f8f98787c422c5b98
       id_port:          icm_process_controller.control
       guid_port:        icm_66b32f91387449898b73913f2a7ebf84
 
     target:
-      id_node:          nod_stableflow_smoketest.printer
-      guid_node:        nod_6ac497ea94214fa38b70a8d025d468f4
+      id_node:          dfn_stableflow_smoketest.printer
+      guid_node:        dfn_7f95d46b29da4130b01f9b86c85de7f3
       id_port:          icm_printer.value
       guid_port:        icm_871e40e76c064b6cbb6a8a78bd445ff5
 
   - source:
-      id_node:          nod_stableflow_smoketest.ctrl_proc
-      guid_node:        nod_f32c6c73443c4574b977028a4cb259d7
+      id_node:          dfn_stableflow_smoketest.ctrl_proc
+      guid_node:        dfn_1ddea9503ffe480f8f98787c422c5b98
       id_port:          icm_process_controller.feedback
       guid_port:        icm_027947ec4b174d4ebb50d77f18cc3753
 
     target:
-      id_node:          nod_stableflow_smoketest.ctrl_sys
-      guid_node:        nod_9fdeab9501804264be28a1a5fe150a52
+      id_node:          dfn_stableflow_smoketest.ctrl_sys
+      guid_node:        dfn_b8b982793ec74e50882002337e87afe3
       id_port:          icm_system_controller.feedback
       guid_port:        icm_0f46eddb301545968b2c9cdf63760177
 

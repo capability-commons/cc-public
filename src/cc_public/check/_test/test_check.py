@@ -1123,7 +1123,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
 
     def end(text):
         (key, port) = text.split('.')
-        id_node     = 'nod_{stem}.{key}'.format(stem = stem, key = key)
+        id_node     = 'dfn_{stem}.{key}'.format(stem = stem, key = key)
         id_port     = 'icm_x.' + port
         return {'id_node':   id_node,
                 'guid_node': map_guid.get(id_node) or _guid_of(root, id_node),
@@ -1132,7 +1132,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
 
     if not (root / '_data/interface_control_document/icd_x.yaml').exists():
         _step(root, map_extra = map_port)
-    map_guid = {'nod_{stem}.{key}'.format(stem = stem, key = key): _guid('nod')
+    map_guid = {'dfn_{stem}.{key}'.format(stem = stem, key = key): _guid('dfn')
                 for key in ('a', 'b', 'c')}
     edge     = _edge(root, 'r_realizes', 'icd_x')
     document = _fields(root, 'sys_' + stem)
@@ -1168,7 +1168,7 @@ def _rows(root, relation, arity):
     facts = cc_public.graph.extract.extract(root)
     rules = '#show {relation}/{arity}.'.format(relation = relation, arity = arity)
     return sorted(row for row in cc_public.graph.datalog.run(facts, rules)[relation]
-                  if all(not each.startswith('nod_') or each.startswith('nod_x.') for each in row))
+                  if all(not each.startswith('dfn_') or each.startswith('dfn_x.') for each in row))
 
 
 # A ring of three nodes, closed by a feedback edge, that feeds every
@@ -1184,64 +1184,64 @@ def test_a_system_whose_edges_meet_the_ports_of_its_nodes_passes(tree):
 
 def test_downstream_follows_data_through_every_edge(tree):
     _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
-    assert _rows(tree, 'downstream', 2) == [('nod_x.a', 'nod_x.b'),
-                                            ('nod_x.a', 'nod_x.c'),
-                                            ('nod_x.b', 'nod_x.c')]
+    assert _rows(tree, 'downstream', 2) == [('dfn_x.a', 'dfn_x.b'),
+                                            ('dfn_x.a', 'dfn_x.c'),
+                                            ('dfn_x.b', 'dfn_x.c')]
 
 
 def test_upstream_is_downstream_reversed(tree):
     _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
-    assert _rows(tree, 'upstream', 2) == [('nod_x.b', 'nod_x.a'),
-                                          ('nod_x.c', 'nod_x.a'),
-                                          ('nod_x.c', 'nod_x.b')]
+    assert _rows(tree, 'upstream', 2) == [('dfn_x.b', 'dfn_x.a'),
+                                          ('dfn_x.c', 'dfn_x.a'),
+                                          ('dfn_x.c', 'dfn_x.b')]
 
 
 def test_the_blast_radius_of_a_port_is_every_node_that_presents_it_and_beyond(tree):
     _system(tree, [('a.out', 'b.inp')])
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
-            if item == 'icm_x.inp'} == {'nod_x.a', 'nod_x.b', 'nod_x.c'}
+            if item == 'icm_x.inp'} == {'dfn_x.a', 'dfn_x.b', 'dfn_x.c'}
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
-            if item == 'nod_x.b'} == {'nod_x.b'}
+            if item == 'dfn_x.b'} == {'dfn_x.b'}
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
-            if item == 'nod_x.a'} == {'nod_x.a', 'nod_x.b'}
+            if item == 'dfn_x.a'} == {'dfn_x.a', 'dfn_x.b'}
 
 
 def test_a_node_named_for_another_place_is_reported(tree):
     path = tree / _system(tree, LIST_RING)
-    path.write_text(path.read_text().replace('nod_x.c', 'nod_x.d'))
-    assert _check(tree) == {'misnamed_node': [('nod_x.d', 'nod_x.c')]}
+    path.write_text(path.read_text().replace('dfn_x.c', 'dfn_x.d'))
+    assert _check(tree) == {'misnamed_node': [('dfn_x.d', 'dfn_x.c')]}
 
 
 def test_a_node_that_presents_no_interface_is_reported(tree):
     _system(tree, LIST_RING, map_node = {'a': {'relation': []}})
-    assert _check(tree) == {'interface_count': [('nod_x.a', '0')]}
+    assert _check(tree) == {'interface_count': [('dfn_x.a', '0')]}
 
 
 def test_an_edge_to_a_node_of_another_system_is_reported(tree):
     _system(tree, LIST_RING, stem = 'y')
     location = _system(tree, LIST_RING)
-    _replace(tree, location, 'id_node: nod_x.a\n', 'id_node: nod_y.a\n')
-    _replace(tree, location, 'guid_node: ' + _guid_of(tree, 'nod_x.a'),
-             'guid_node: ' + _guid_of(tree, 'nod_y.a'))
-    assert _check(tree) == {'foreign_node': [('sys_x', 'source', 'nod_y.a', location,
+    _replace(tree, location, 'id_node: dfn_x.a\n', 'id_node: dfn_y.a\n')
+    _replace(tree, location, 'guid_node: ' + _guid_of(tree, 'dfn_x.a'),
+             'guid_node: ' + _guid_of(tree, 'dfn_y.a'))
+    assert _check(tree) == {'foreign_node': [('sys_x', 'source', 'dfn_y.a', location,
                                               _line(tree, location, '- source:'))]}
 
 
 def test_an_edge_from_an_input_is_reported(tree):
     location = _system(tree, [('a.inp', 'b.inp'), ('b.out', 'c.inp'),
                               ('c.out', 'a.inp', 'feedback')])
-    assert _check(tree) == {'unknown_port': [('nod_x.a', 'icm_x.inp', 'output', location,
+    assert _check(tree) == {'unknown_port': [('dfn_x.a', 'icm_x.inp', 'output', location,
                                               _line(tree, location, '- source:'))]}
 
 
 def test_an_input_fed_by_two_edges_is_reported(tree):
     _system(tree, LIST_RING + [('a.out', 'c.inp')])
-    assert _check(tree) == {'input_fed_twice': [('nod_x.c', 'icm_x.inp', '2')]}
+    assert _check(tree) == {'input_fed_twice': [('dfn_x.c', 'icm_x.inp', '2')]}
 
 
 def test_an_input_no_edge_feeds_is_reported_unless_it_is_optional(tree):
     _system(tree, LIST_RING[:2])
-    assert _check(tree) == {'unfed_input': [('nod_x.a', 'icm_x.inp')]}
+    assert _check(tree) == {'unfed_input': [('dfn_x.a', 'icm_x.inp')]}
 
 
 def test_an_edge_between_ports_of_two_types_is_reported(tree):
@@ -1254,27 +1254,27 @@ def test_an_edge_between_ports_of_two_types_is_reported(tree):
 
 def test_a_loop_of_feedforward_edges_is_reported(tree):
     _system(tree, LIST_RING[:2] + [('c.out', 'a.inp')])
-    assert _check(tree) == {'feedforward_loop': [('nod_x.a',), ('nod_x.b',), ('nod_x.c',)]}
+    assert _check(tree) == {'feedforward_loop': [('dfn_x.a',), ('dfn_x.b',), ('dfn_x.c',)]}
 
 
 def test_a_loop_closed_by_a_feedback_edge_reaches_back_to_where_it_began(tree):
     _system(tree, LIST_RING)
-    assert ('nod_x.b', 'nod_x.b') in _rows(tree, 'downstream', 2)
+    assert ('dfn_x.b', 'dfn_x.b') in _rows(tree, 'downstream', 2)
 
 
 def test_a_setting_the_interface_does_not_declare_is_reported(tree):
     _system(tree, LIST_RING, map_node = {'a': {'config': {'rate': 2.0, 'speed': 1}}})
-    assert _check(tree) == {'unknown_setting': [('nod_x.a', 'speed')]}
+    assert _check(tree) == {'unknown_setting': [('dfn_x.a', 'speed')]}
 
 
 def test_a_setting_the_interface_needs_is_reported_when_left_out(tree):
     _system(tree, LIST_RING, map_node = {'a': {'config': {'size': 3}}},
             map_port = {'config': {'size': ('int',)}})
-    assert _check(tree) == {'missing_setting': [('nod_x.b', 'size'), ('nod_x.c', 'size')]}
+    assert _check(tree) == {'missing_setting': [('dfn_x.b', 'size'), ('dfn_x.c', 'size')]}
 
 
 def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
     _system(tree, LIST_RING, map_node  = {'c': {'process': 'other'}},
             map_extra = {'process': {'main': {'host': 'remote'}}})
-    assert _check(tree) == {'unplaced': [('sys_x', 'main', 'remote'),
-                                         ('sys_x', 'nod_x.c', 'other')]}
+    assert _check(tree) == {'unplaced': [('sys_x', 'dfn_x.c', 'other'),
+                                         ('sys_x', 'main', 'remote')]}

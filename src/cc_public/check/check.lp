@@ -928,7 +928,7 @@ unused_concept(Id) :-
 
 % -----------------------------------------------------------------------------
 % A node is named for the system configuration that holds it and the
-% key it is filed under: the stem of the configuration, with nod in
+% key it is filed under: the stem of the configuration, with dfn in
 % place of sys, a full stop and the key.
 %
 % decl misnamed_node(node:     symbol,
@@ -940,7 +940,7 @@ unused_concept(Id) :-
 
 misnamed_node(Node, Expected) :-
     system_node(System, Key, Node, _),
-    Expected = @cat("nod_", @substr(System, 4, @strlen(System) - 4), ".", Key),
+    Expected = @cat("dfn_", @substr(System, 4, @strlen(System) - 4), ".", Key),
     Node != Expected.
 
 
