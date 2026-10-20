@@ -40,7 +40,7 @@ import ruamel.yaml
 import cc_public.check.check
 import cc_public.cli.command
 import cc_public.commit.change
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 from cc_public.conftest import DIR_REPO
 
@@ -964,20 +964,20 @@ def test_every_check_names_its_columns():
                  cc_public.check.check.ADVICE,
                  cc_public.commit.change.RULES):
         text = path.read_text()
-        assert set(cc_public.graph.datalog.output(text)) <= set(
-            cc_public.graph.datalog.declared(text))
+        assert set(cc_public.graph.logic.output(text)) <= set(
+            cc_public.graph.logic.declared(text))
 
 
 def test_every_check_says_what_a_failure_is_and_how_to_fix_it():
     map_column = cc_public.check.check.columns()
     list_text  = [cc_public.check.check.RULES.read_text(), cc_public.check.check.ADVICE.read_text()]
-    list_name  = [name for text in list_text for name in cc_public.graph.datalog.output(text)]
+    list_name  = [name for text in list_text for name in cc_public.graph.logic.output(text)]
     text       = cc_public.commit.change.RULES.read_text()
     map_column.update({name: tuple(column for (column, _) in tuple_column)
-                       for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()})
+                       for (name, tuple_column) in cc_public.graph.logic.declared(text).items()})
     map_wording = cc_public.check.check.wording()
-    map_wording.update(cc_public.graph.datalog.worded(text))
-    list_name  += cc_public.graph.datalog.output(text) + [cc_public.check.check.NAME_SCHEMA,
+    map_wording.update(cc_public.graph.logic.worded(text))
+    list_name  += cc_public.graph.logic.output(text) + [cc_public.check.check.NAME_SCHEMA,
                                                           cc_public.check.check.NAME_LAYOUT]
     for name in list_name:
         assert set(map_wording.get(name, {})) == {'did', 'fix'}, name
@@ -1070,7 +1070,7 @@ def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
     facts['type_prefix'].update({('t_register', 'reg', '.*'), ('t_annotation', 'ann', '.*')})
     facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
-    rows  = cc_public.graph.datalog.run(facts, cc_public.check.check.RULES.read_text())
+    rows  = cc_public.graph.logic.run(facts, cc_public.check.check.RULES.read_text())
     assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 't_annotation')]
 
 
@@ -1167,7 +1167,7 @@ def _rows(root, relation, arity):
 
     facts = cc_public.graph.extract.extract(root)
     rules = '#show {relation}/{arity}.'.format(relation = relation, arity = arity)
-    return sorted(row for row in cc_public.graph.datalog.run(facts, rules)[relation]
+    return sorted(row for row in cc_public.graph.logic.run(facts, rules)[relation]
                   if all(not each.startswith('dfn_') or each.startswith('dfn_x.') for each in row))
 
 

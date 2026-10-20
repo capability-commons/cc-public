@@ -24,12 +24,12 @@ description:            |
                         they hold, one set of rows for each base
                         relation. RELATION names each base relation,
                         its columns and what a row of it means, and is
-                        the one place they are declared, for Datalog
-                        and for SQL alike. A file that ought to hold a
-                        document but cannot be read is not an error
-                        here: it gives a row of unreadable, so that
-                        the checker reports it with every other
-                        failure.
+                        the one place they are declared, for logic
+                        programs and for SQL alike. A file that ought
+                        to hold a document but cannot be read is not
+                        an error here: it gives a row of unreadable,
+                        so that the checker reports it with every
+                        other failure.
 relation:               []
 
 ...

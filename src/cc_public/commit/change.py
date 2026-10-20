@@ -44,7 +44,7 @@ import tempfile
 
 import cc_public.edit.layout
 import cc_public.gate.gate
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -83,7 +83,7 @@ def check_trees(dir_before: pathlib.Path, dir_after: pathlib.Path, item: dict) -
     """
 
     facts = facts_of(dir_before, dir_after, item)
-    rows  = cc_public.graph.datalog.run(facts, RULES.read_text(encoding = 'utf-8'))
+    rows  = cc_public.graph.logic.run(facts, RULES.read_text(encoding = 'utf-8'))
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}
 
@@ -97,11 +97,11 @@ def described(failures: Failures) -> list[str]:
     """
 
     text = RULES.read_text(encoding = 'utf-8')
-    return cc_public.graph.datalog.described(
+    return cc_public.graph.logic.described(
                failures,
                {name: tuple(column for (column, _) in tuple_column)
-                for (name, tuple_column) in cc_public.graph.datalog.declared(text).items()},
-               cc_public.graph.datalog.worded(text))
+                for (name, tuple_column) in cc_public.graph.logic.declared(text).items()},
+               cc_public.graph.logic.worded(text))
 
 
 # -----------------------------------------------------------------------------

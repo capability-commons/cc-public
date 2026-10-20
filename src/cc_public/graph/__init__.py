@@ -18,7 +18,7 @@ brief:                  |
 description:            |
                         This package extracts the facts of a tree,
                         derives relations from them, and evaluates
-                        Datalog rules and SQL queries over both.
+                        logic program rules and SQL queries over both.
 relation:               []
 
 ...

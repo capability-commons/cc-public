@@ -42,7 +42,7 @@ import cc_public.cli.group
 import cc_public.commit.history
 import cc_public.commit.impact
 import cc_public.gate.gate
-import cc_public.graph.datalog
+import cc_public.graph.logic
 
 
 # -----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
         list_found = _found(root, list_commit)
         if is_gate:
             list_found += _gated(root, list_tip)
-    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.logic.ErrorLogic) as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
@@ -210,7 +210,7 @@ def impact(rev:       str,
     root = root.resolve()
     try:
         result = cc_public.commit.impact.impact(root, None if is_staged else rev, depth, direction)
-    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.logic.ErrorLogic) as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 

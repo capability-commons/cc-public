@@ -17,12 +17,13 @@ brief:                  |
                         schemas it must conform to.
 description:            |
                         A document is an item held by no other. Which
-                        schemas it must conform to is derived in
-                        Datalog, as document_schema, and this module
-                        validates it against each of them with JSON
-                        Schema. The items inside a document conform as
-                        part of it. Each violation is reported with
-                        the line of the file it is found at.
+                        schemas it must conform to is derived in a
+                        logic program, as document_schema, and this
+                        module validates it against each of them with
+                        JSON Schema. The items inside a document
+                        conform as part of it. Each violation is
+                        reported with the line of the file it is found
+                        at.
 
                         A schema is itself a document, and sch_schema
                         holds it to the metaschema of JSON Schema. No

@@ -102,7 +102,7 @@ unfinished edits of another.
   `remove`, `rename` and `batch` to editing YAML by hand. They mint
   guids, fill in rights, keep the layout, and refuse an edit that adds
   a failure. Use `--dry-run` to see an edit first.
-- Give a new python module, Datalog file or script its item with
+- Give a new python module, logic program file or script its item with
   `cctool header PATH`. The id of a module follows from its path. A
   class or function gets an item only when something must point at
   it, with `cctool header PATH::NAME`.
@@ -158,10 +158,10 @@ reads them through `.claude/skills`, a link to the same directory.
   decision. Use it before you argue or change something, to find the
   arguments and rulings already made on the point. A query
   that names a concept also matches its other preferred and admitted
-  terms; `--exact` turns that off. `cctool query datalog --text
+  terms; `--exact` turns that off. `cctool query logic --text
   "WORDS"` gives the same hits to rules as `text_hit(id, field, rank)`.
 - `cctool query sql "SELECT ..."` for joins and counts, and
-  `cctool query datalog '...'` for anything recursive, such as reach
+  `cctool query logic '...'` for anything recursive, such as reach
   through edges. `cctool query sparql '...'` sees the items as RDF
   triples, and `cctool query jq '...'` sees the documents as written.
 - Read the schema of a type before writing an item of it: the type

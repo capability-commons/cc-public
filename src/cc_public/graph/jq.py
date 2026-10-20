@@ -20,11 +20,12 @@ description:            |
                         as one JSON array, with an object for each
                         file that holds a document: its file, the line
                         its document starts on, and the document.
-                        Unlike the SQL and Datalog queries, which see
-                        the facts extracted from the documents, a jq
-                        filter sees the documents themselves, nested
-                        as they are written. The jq program is run as
-                        a subprocess, and changes nothing.
+                        Unlike the SQL and logic program queries,
+                        which see the facts extracted from the
+                        documents, a jq filter sees the documents
+                        themselves, nested as they are written. The jq
+                        program is run as a subprocess, and changes
+                        nothing.
 relation:               []
 
 ...

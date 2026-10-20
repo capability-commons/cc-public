@@ -41,7 +41,7 @@ import cc_public.check.check
 import cc_public.cli.command
 import cc_public.commit.change
 import cc_public.conftest
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -246,10 +246,10 @@ def _known() -> set[str]:
     """
 
     return (set(cc_public.check.check.wording())
-            | set(cc_public.graph.datalog.worded(
+            | set(cc_public.graph.logic.worded(
                   cc_public.commit.change.RULES.read_text(encoding = 'utf-8')))
             | set(cc_public.graph.extract.RELATION)
-            | set(cc_public.graph.datalog.derived()))
+            | set(cc_public.graph.logic.derived()))
 
 
 # -----------------------------------------------------------------------------

@@ -19,12 +19,12 @@ description:            |
                         This module loads the base relations and the
                         derived relations into an in-memory SQLite
                         database, one table for each, with the columns
-                        Datalog gives them. The derived relations are
-                        computed by clingo from derive.lp, so they are
-                        defined once, for both languages. The prose of
-                        each item is in item_text, a full-text table.
-                        A query changes nothing outside the database
-                        it runs in.
+                        the logic program gives them. The derived
+                        relations are computed by clingo from
+                        derive.lp, so they are defined once, for both
+                        languages. The prose of each item is in
+                        item_text, a full-text table. A query changes
+                        nothing outside the database it runs in.
 relation:               []
 
 ...
@@ -33,7 +33,7 @@ relation:               []
 
 import sqlite3
 
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -60,12 +60,12 @@ def connect(facts:    cc_public.graph.extract.Facts,
 
     map_column = {name: tuple(cc_public.graph.extract.column(spec) for spec in tuple_spec)
                   for (name, (tuple_spec, _)) in cc_public.graph.extract.RELATION.items()}
-    map_derive = cc_public.graph.datalog.derived()
-    rules      = ''.join(cc_public.graph.datalog.show(name, map_derive) for name in map_derive)
+    map_derive = cc_public.graph.logic.derived()
+    rules      = ''.join(cc_public.graph.logic.show(name, map_derive) for name in map_derive)
     rows       = {name: sorted(set_row) for (name, set_row) in facts.items()}
 
     map_column.update(map_derive)
-    rows.update(cc_public.graph.datalog.run(facts, rules))
+    rows.update(cc_public.graph.logic.run(facts, rules))
 
     connection = sqlite3.connect(':memory:')
 

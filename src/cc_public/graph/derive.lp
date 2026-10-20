@@ -17,7 +17,7 @@
 % description:            |
 %                         The base relations are declared by RELATION in
 %                         pym_cc_public.graph.extract, and their facts
-%                         are added by pym_cc_public.graph.datalog. This
+%                         are added by pym_cc_public.graph.logic. This
 %                         file is placed before the rules in every
 %                         program: the checks, a query, and the program
 %                         that fills the derived tables for SQL.

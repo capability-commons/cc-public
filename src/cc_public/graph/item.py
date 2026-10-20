@@ -36,7 +36,7 @@ relation:               []
 import pathlib
 import typing
 
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -111,10 +111,10 @@ def items(map_document: cc_public.graph.extract.Documents,
 
     """
 
-    map_derive   = cc_public.graph.datalog.derived()
-    rules        = ''.join(cc_public.graph.datalog.show(name, map_derive)
+    map_derive   = cc_public.graph.logic.derived()
+    rules        = ''.join(cc_public.graph.logic.show(name, map_derive)
                            for name in TUPLE_DERIVED)
-    rows         = cc_public.graph.datalog.run(facts, rules)
+    rows         = cc_public.graph.logic.run(facts, rules)
     map_type     = dict(rows['type_of'])
     map_node     = {}
 

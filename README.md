@@ -12,8 +12,8 @@ is committed.
 |-----------------------|------------------------------------------------|
 | `_data/register/`     | registers: types, relations, concepts, concerns, protective marks, writing style rules |
 | `_data/schema/`       | the JSON Schema of every kind of item          |
-| `src/cc_public/graph` | fact extraction, Datalog and SQL over the graph |
-| `src/cc_public/check` | the checks, in Datalog, and schema validation  |
+| `src/cc_public/graph` | fact extraction, logic programs and SQL over the graph |
+| `src/cc_public/check` | the checks, as logic program rules, and schema validation |
 | `src/cc_public/edit`  | edits that refuse to add a failure, and the layout printer |
 | `src/cc_public/cli`   | `cctool`, the command line                     |
 
@@ -35,7 +35,7 @@ a POSIX shell.
 
 The environment is managed by [pixi](https://pixi.sh). It includes
 [clingo](https://potassco.org/clingo/), which evaluates the rules of
-the checker and of Datalog queries.
+the checker and of logic program queries.
 
     pixi install
     pixi run hooks        # once per clone: gate every commit
@@ -78,7 +78,7 @@ pre-push hook runs it with `--gate` on what a push would send.
     cctool message check FILE               check a commit message
     cctool history check [RANGE] [--gate]   check commits already made
     cctool format [--check]                 lay out every document
-    cctool query sql|datalog QUERY          query the graph
+    cctool query sql|logic QUERY            query the graph
     cctool query sparql|jq QUERY            query the graph
     cctool query schema                     list the relations and columns
     cctool export obsidian|okf OUT          write the graph as markdown pages
