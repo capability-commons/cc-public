@@ -39,6 +39,7 @@ import cc_public.graph.logic
 
 
 OPTION_ROOT = click.option('--root',
+                           metavar = 'DIRPATH',
                            default = '.',
                            type    = click.Path(exists    = True,
                                                 file_okay = False,
@@ -80,11 +81,11 @@ def new(title: str, brief: str, description: str | None, root: pathlib.Path) -> 
 
 # -----------------------------------------------------------------------------
 @message.command()
-@click.argument('file', type = click.File('r', encoding = 'utf-8'))
+@click.argument('file', metavar = 'FILEPATH', type = click.File('r', encoding = 'utf-8'))
 @OPTION_ROOT
 def check(file, root: pathlib.Path) -> None:
     """
-    Check the commit message in FILE, or - for stdin, and the commit of
+    Check the commit message in FILEPATH, or - for stdin, and the commit of
     the staged content that it records.
 
     The message is checked against sch_commit. If it passes, the commit
@@ -109,12 +110,12 @@ def check(file, root: pathlib.Path) -> None:
 
 # -----------------------------------------------------------------------------
 @message.command()
-@click.argument('path', metavar = 'FILE', type = click.Path(dir_okay  = False,
+@click.argument('path', metavar = 'FILEPATH', type = click.Path(dir_okay  = False,
                                                             path_type = pathlib.Path))
 @OPTION_ROOT
 def draft(path: pathlib.Path, root: pathlib.Path) -> None:
     """
-    Make the message that git drafted in FILE for a merge or a revert
+    Make the message that git drafted in FILEPATH for a merge or a revert
     into one that conforms, in place, for a commit of what is staged.
     Any other message is left as it is.
 

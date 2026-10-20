@@ -34,15 +34,15 @@ procedure, and the traps.
 | to                                      | use                                 |
 |-----------------------------------------|-------------------------------------|
 | add one item                            | `cctool new ID --field ... --link ...` |
-| give a source file its item             | `cctool header PATH [ID] --field ...` |
-| give a python class or function its item | `cctool header PATH::NAME --field title ...` |
+| give a source file its item             | `cctool header FILEPATH [ID] --field ...` |
+| give a python class or function its item | `cctool header FILEPATH::NAME --field title ...` |
 | add an edge                             | `cctool link SOURCE RELATION TARGET` |
 | take an edge away                       | `cctool unlink SOURCE RELATION TARGET` |
-| change a field                          | `cctool set ID PATH VALUE [--yaml]` |
-| take a field out                        | `cctool unset ID PATH`              |
+| change a field                          | `cctool set ID FIELDPATH VALUE [--yaml]` |
+| take a field out                        | `cctool unset ID FIELDPATH`         |
 | remove an item                          | `cctool remove ID`                  |
 | give an item a new id                   | `cctool rename OLD NEW`             |
-| add items that need each other          | `cctool batch FILE` (or `-` for stdin) |
+| add items that need each other          | `cctool batch FILEPATH` (or `-` for stdin) |
 
 A field named twice with `--field` becomes a list. In a batch, a field
 takes any YAML value, so lists and mappings (a schema's `allOf`, say)
@@ -101,7 +101,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   batch.
 - **`new`, `remove` and `rename` refuse pym, pyp, pycls, pyf, lpf and
   file ids.** Those items live in the file they name. Give a file its
-  item with `cctool header PATH` (a module's id follows from its path;
+  item with `cctool header FILEPATH` (a module's id follows from its path;
   any other file needs ID, such as `file_githooks_pre_commit`). Move or
   remove the file by hand, then `cctool format`.
 - **A class or function gets an item only when something must point

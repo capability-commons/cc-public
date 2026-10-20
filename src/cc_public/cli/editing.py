@@ -27,22 +27,22 @@ usage:                  |
                         cctool new ID [--field NAME VALUE]... [--link
                         RELATION TARGET]...
 
-                        cctool header PATH [ID] [--field NAME
+                        cctool header FILEPATH [ID] [--field NAME
                         VALUE]... [--link RELATION TARGET]...
 
                         cctool link SOURCE RELATION TARGET
 
                         cctool unlink SOURCE RELATION TARGET
 
-                        cctool set ID PATH VALUE [--yaml]
+                        cctool set ID FIELDPATH VALUE [--yaml]
 
-                        cctool unset ID PATH
+                        cctool unset ID FIELDPATH
 
                         cctool remove ID
 
                         cctool rename OLD NEW
 
-                        cctool batch FILE
+                        cctool batch FILEPATH
 
                         cctool format [--check]
 relation:               []
@@ -76,6 +76,7 @@ def _option(function):
 
     list_option = [
         click.option('--root',
+                     metavar = 'DIRPATH',
                      default = '.',
                      type    = click.Path(exists    = True,
                                           file_okay = False,
@@ -126,7 +127,7 @@ def new(id_self, list_field, list_link, root, is_dry_run):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.argument('path', metavar = 'PATH', type = click.Path(dir_okay = False))
+@click.argument('path', metavar = 'FILEPATH', type = click.Path(dir_okay = False))
 @click.argument('id_self', metavar = 'ID', required = False)
 @click.option('--field',
               'list_field',
@@ -144,13 +145,13 @@ def new(id_self, list_field, list_link, root, is_dry_run):
 @_option
 def header(path, id_self, list_field, list_link, root, is_dry_run):
     """
-    Give the file at PATH a new item, made as new makes one, and write
+    Give the file at FILEPATH a new item, made as new makes one, and write
     it at the head of the file: in the module docstring of a python
     module, and in a comment header in any other file. The file is
-    made if there is none. A relative PATH is taken from the root of
+    made if there is none. A relative FILEPATH is taken from the root of
     the tree.
 
-    PATH may name a class or function of a python module in the form
+    FILEPATH may name a class or function of a python module in the form
     pytest uses, such as src/cc_public/graph/jq.py::query. The item is
     then written in its docstring, and the text the docstring held
     becomes its brief unless --field brief is given.
@@ -224,7 +225,7 @@ def unlink(id_source, id_relation, id_target, root, is_dry_run):
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command('set')
 @click.argument('id_self', metavar = 'ID')
-@click.argument('path', metavar = 'PATH')
+@click.argument('path', metavar = 'FIELDPATH')
 @click.argument('value', metavar = 'VALUE')
 @click.option('--yaml', 'is_yaml',
               is_flag = True,
@@ -232,9 +233,9 @@ def unlink(id_source, id_relation, id_target, root, is_dry_run):
 @_option
 def set_field(id_self, path, value, is_yaml, root, is_dry_run):
     """
-    Set the field at PATH in the item ID to VALUE.
+    Set the field at FIELDPATH in the item ID to VALUE.
 
-    PATH is a field name, or a dotted path into its value, in which a
+    FIELDPATH is a field name, or a dotted path into its value, in which a
     number picks an element of a list, as in protective_mark.0.id_mark.
     A field id_FIELD that names an item gets guid_FIELD beside it.
 
@@ -260,12 +261,12 @@ def set_field(id_self, path, value, is_yaml, root, is_dry_run):
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
 @click.argument('id_self', metavar = 'ID')
-@click.argument('path', metavar = 'PATH')
+@click.argument('path', metavar = 'FIELDPATH')
 @_option
 def unset(id_self, path, root, is_dry_run):
     """
-    Take the field at PATH out of the item ID, with guid_FIELD if it is
-    id_FIELD. PATH is as for set.
+    Take the field at FIELDPATH out of the item ID, with guid_FIELD if it is
+    id_FIELD. FIELDPATH is as for set.
 
     """
 
@@ -321,11 +322,11 @@ def rename(id_old, id_new, root, is_dry_run):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.argument('path_file', metavar = 'FILE', type = click.File(encoding = 'utf-8'))
+@click.argument('path_file', metavar = 'FILEPATH', type = click.File(encoding = 'utf-8'))
 @_option
 def batch(path_file, root, is_dry_run):
     """
-    Make the operations listed in the YAML file FILE, or - for stdin,
+    Make the operations listed in the YAML file FILEPATH, or - for stdin,
     as one edit. An operation is one of new, header, link, unlink,
     set, unset, remove and rename. Items that need each other, such as a concept
     and the item that names it, are made this way. For example:
@@ -344,7 +345,7 @@ def batch(path_file, root, is_dry_run):
     try:
         list_operation = cc_public.edit.edit.YAML.load(path_file.read())
     except ruamel.yaml.YAMLError as error:
-        click.echo('FILE is not YAML: {error}'.format(error = error), err = True)
+        click.echo('FILEPATH is not YAML: {error}'.format(error = error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
     _run(root, is_dry_run, list_operation)
@@ -353,6 +354,7 @@ def batch(path_file, root, is_dry_run):
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command('format')
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,
