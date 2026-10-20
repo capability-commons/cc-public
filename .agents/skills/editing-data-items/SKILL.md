@@ -60,14 +60,14 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **A new concept is refused on its own** (`unused_concept`), because
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
-- **An argument lives in the folder of its issue.** Start one with an
-  issue (`new dec_NAME --link r_is_about lc_NAME`), then give each option
+- **An argument lives in the folder of its decision.** Start one with a
+  decision (`new dec_NAME --link r_is_about lc_NAME`), then give each option
   `--link r_is_option_for dec_NAME` (`answer_count` refuses an option that
-  answers no issue, or two) and each annotation `--link r_is_about
+  is linked to no decision, or to two) and each annotation `--link r_is_about
   dec_NAME`. `new` writes all of them, and determinations, in
   `_data/decision/dec_NAME/`; anything moved there by hand is checked by
   `misplaced_document`.
-- **An annotation or issue is refused without `r_is_about`**
+- **An annotation or decision is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
 - **A determination is refused unless it upholds or rejects an option**
   (`determination_without_option`). Give `--link r_upholds DEC` or
@@ -75,12 +75,12 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   has made; the commit that adds it says who and when.
 - **A determination that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
-  component the issue is about `r_is_driven_by` needs an annotation
+  component the decision is about `r_is_driven_by` needs an annotation
   for it that supports or challenges the option or another option for
-  the same issue. Rejecting an option needs no such annotation.
+  the same decision. Rejecting an option needs no such annotation.
   Argue it; do not drop the driver to pass.
-- **A second determination of an issue is refused**
-  (`competing_determinations`). An issue has at most one. When the
+- **A second determination of a decision is refused**
+  (`competing_determinations`). A decision has at most one. When the
   person who settled it changes their ruling, edit that determination
   in place with `set`, `link` and `unlink`; the commits that change its
   file are the history of the ruling.
