@@ -97,8 +97,12 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
 
     if path in MAP_INDEX or path == cc_public.web.page.PATH_SEARCH:
         graph = _graph(root)
-        body  = (MAP_INDEX[path](graph) if path in MAP_INDEX
-                 else cc_public.web.page.search(graph, _text(query)))
+        if path == cc_public.web.page.PATH_ISSUES:
+            body = cc_public.web.page.issues(graph, query)
+        elif path in MAP_INDEX:
+            body = MAP_INDEX[path](graph)
+        else:
+            body = cc_public.web.page.search(graph, _text(query))
         return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
     for prefix in (cc_public.web.page.PATH_TYPE,

@@ -94,6 +94,79 @@ def test_index_links_every_issue(tree):
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
 
 
+def test_issue_list_folds_each_issue_to_its_title_and_standing(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues')
+    text = body.decode()
+    assert '<details class="issue-entry" id="{id}">'.format(id = ID_ISSUE) in text
+    assert re.search(r'id="{id}"><summary>.*?<span class="stance stance-upheld">settled<'.format(
+        id = ID_ISSUE), text, re.DOTALL)
+    assert '<span class="drivers">Driven by ' in text
+
+
+def test_an_issue_opens_to_its_question_and_its_decisions(tree):
+    graph = cc_public.web.argument.Graph(tree)
+    issue = graph.issue(ID_ISSUE)
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues')
+    text = body.decode()
+    assert '<p class="question">{brief}</p>'.format(
+        brief = cc_public.web.page._prose(issue.item.brief)) in text
+    for decision in issue.list_decision:
+        assert 'href="/issue/{issue}#{id}"'.format(issue = ID_ISSUE, id = decision.id) in text
+    assert re.search(r'answer-upheld"><div class="main"><p><span class="mark mark-upheld" '
+                     r'title="upheld">✓</span><a class="run-in" href="/issue/{issue}#{id}"'.format(
+                         issue = ID_ISSUE, id = ID_UPHELD), text)
+    assert '<span class="mark mark-rejected" title="rejected">✗</span>' in text
+    assert '<a href="/issue/{id}">Decision matrix</a>'.format(id = ID_ISSUE) in text
+
+
+def test_a_decision_counts_its_units_for_and_against(tree):
+    graph   = cc_public.web.argument.Graph(tree)
+    summary = cc_public.web.page.Summary(graph, graph.issue(ID_ISSUE))
+    list_unit = [unit for unit in cc_public.web.sankey.units(summary.issue)
+                 if unit.decision == ID_UPHELD]
+    assert summary.map_for[ID_UPHELD] == sum(1 for unit in list_unit if unit.is_for())
+    assert summary.map_against[ID_UPHELD] == sum(1 for unit in list_unit if not unit.is_for())
+    assert summary.standing == cc_public.web.page.STANDING_SETTLED
+
+
+def test_an_issue_with_only_rejections_is_narrowed(tree):
+    path = tree / '_data' / 'issue' / ID_ISSUE / (ID_DETERMINATION + '.yaml')
+    path.write_text(path.read_text().replace('r_upholds', 'r_rejects'))
+    graph   = cc_public.web.argument.Graph(tree)
+    summary = cc_public.web.page.Summary(graph, graph.issue(ID_ISSUE))
+    assert summary.standing == cc_public.web.page.STANDING_NARROWED
+
+
+def test_issue_list_opens_every_issue_on_request(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?show=open')
+    assert '<details class="issue-entry" id="{id}" open>'.format(id = ID_ISSUE).encode() in body
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?show=counts')
+    assert b'<th class="number">Annotations</th>' in body
+
+
+def test_issue_list_filter_keeps_and_opens_what_it_finds(tree):
+    title = cc_public.web.argument.Graph(tree).title(ID_UPHELD)
+    query = urllib.parse.urlencode({'q': title})
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?' + query)
+    assert body.count(b'<details class="issue-entry"') == 1
+    assert '<details class="issue-entry" id="{id}" open>'.format(id = ID_ISSUE).encode() in body
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?q=zzqqxx')
+    assert b'<details class="issue-entry"' not in body
+
+
+def test_issue_list_in_another_order_is_not_grouped(tree):
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?sort=title')
+    text = body.decode()
+    assert '<span class="drivers">' not in text
+    assert '<span class="subject">Tooling</span>' in text
+    list_title = re.findall(r'<span class="title">([^<]+)</span>', text)
+    assert list_title == sorted(list_title)
+    (_, _, body) = cc_public.web.server.respond(tree, '/issues?sort=standing')
+    list_standing = re.findall(r'<span class="stance stance-\w+">(\w+)</span>', body.decode())
+    assert list_standing == sorted(list_standing,
+                                   key = cc_public.web.page.LIST_STANDING.index)
+
+
 def test_issue_page_shows_each_annotation(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (status, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)

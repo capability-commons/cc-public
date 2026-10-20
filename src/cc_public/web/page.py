@@ -31,15 +31,19 @@ description:            |
                         masthead of every page finds items by the
                         words of their id, title or brief.
 
-                        The issue list groups the issues by subject,
-                        with the size of each argument and whether it
-                        is settled. The page of an issue opens with
-                        its decision matrix: a column for each
-                        decision and a row for each concern, in the
-                        order of the Sankey diagram of
-                        pym_cc_public.web.sankey. Decisions are read
-                        from most supported to most opposed. Each
-                        concern row opens to the annotations that
+                        The issue list folds each issue to its title
+                        and standing, grouped by subject under the
+                        concerns that drive it, or in another order.
+                        An issue opens to its question and the
+                        decisions that answer it, each with its mark
+                        and how much argument is for and against it. A
+                        filter keeps and opens the issues it finds.
+                        The page of an issue opens with its decision
+                        matrix: a column for each decision and a row
+                        for each concern, in the order of the Sankey
+                        diagram of pym_cc_public.web.sankey. Decisions
+                        are read from most supported to most opposed.
+                        Each concern row opens to the annotations that
                         argue for it, numbered as the diagram numbers
                         them, an annotation that argues for several
                         concerns under each. An annotation folds to
@@ -181,6 +185,47 @@ MAP_OBLIGATION    = {'shall':  'binding',
 MAP_CONDITION     = {'logic': 'a logical condition',
                      'event': 'an event condition',
                      'time':  'a time condition'}
+
+# How the issue list shows its issues and the orders it can take, the
+# first of each the default.
+#
+KEY_LAYOUT        = 'show'
+KEY_SORT          = 'sort'
+LAYOUT_FOLDED     = 'folded'
+LAYOUT_OPEN       = 'open'
+LAYOUT_COUNTS     = 'counts'
+LIST_LAYOUT       = [LAYOUT_FOLDED, LAYOUT_OPEN, LAYOUT_COUNTS]
+MAP_LAYOUT_NAME   = {LAYOUT_FOLDED: 'Titles',
+                     LAYOUT_OPEN:   'Questions and answers',
+                     LAYOUT_COUNTS: 'Before'}
+SORT_SUBJECT      = 'subject'
+SORT_STANDING     = 'standing'
+SORT_SIZE         = 'size'
+SORT_TITLE        = 'title'
+LIST_SORT         = [SORT_SUBJECT, SORT_STANDING, SORT_SIZE, SORT_TITLE]
+MAP_SORT_NAME     = {SORT_SUBJECT:  'Subject',
+                     SORT_STANDING: 'Standing',
+                     SORT_SIZE:     'Most argued',
+                     SORT_TITLE:    'Title'}
+STANCE_UPHELD     = cc_public.web.argument.STANCE_UPHELD
+STANCE_REJECTED   = cc_public.web.argument.STANCE_REJECTED
+STANCE_OPEN       = cc_public.web.argument.STANCE_OPEN
+MAP_STANCE_MARK   = {STANCE_UPHELD:   '✓',
+                     STANCE_REJECTED: '✗',
+                     STANCE_OPEN:     '○'}
+STANDING_OPEN     = 'open'
+STANDING_NARROWED = 'narrowed'
+STANDING_SETTLED  = 'settled'
+LIST_STANDING     = [STANDING_OPEN, STANDING_NARROWED, STANDING_SETTLED]
+MAP_STANDING_STANCE = {STANDING_OPEN:     STANCE_OPEN,
+                       STANDING_NARROWED: STANCE_OPEN,
+                       STANDING_SETTLED:  STANCE_UPHELD}
+MAP_SORT_KEY      = {
+    SORT_STANDING: lambda summary: (LIST_STANDING.index(summary.standing),
+                                    summary.issue.item.title),
+    SORT_SIZE:     lambda summary: (-summary.size(), summary.issue.item.title),
+    SORT_TITLE:    lambda summary: summary.issue.item.title}
+R_IS_DRIVEN_BY    = 'r_is_driven_by'
 
 KIND_DECISION     = cc_public.web.request.KIND_DECISION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
@@ -480,26 +525,266 @@ def _type_name(graph: Graph, id_type: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def issues(graph: Graph) -> str:
+def issues(graph: Graph, query: str = '') -> str:
     """
-    Return the page that lists every issue, grouped by its subject.
+    Return the page that lists every issue, laid out, sorted and
+    filtered as query asks.
+
+    Each issue folds to a line of its title and standing, which opens
+    to its question and the decisions that answer it; a filter opens
+    the issues it finds. The layouts are
+    prototypes to compare: every issue folded, every issue open, and
+    the table of counts the page had before.
 
     """
 
+    map_query  = urllib.parse.parse_qs(query)
+    layout     = _choice(map_query, KEY_LAYOUT, LIST_LAYOUT)
+    sort       = _choice(map_query, KEY_SORT, LIST_SORT)
+    text       = map_query.get(KEY_QUERY, [''])[0]
     list_issue = graph.list_issue()
     count_open = sum(1 for issue in list_issue if issue.is_open())
+    list_found = [Summary(graph, issue) for issue in list_issue
+                  if _holds(issue, text)]
 
-    list_section = [htpy.section[
-                        htpy.h2[graph.title(id_subject) if id_subject else 'No subject'],
-                        _issue_table(graph, list_group)]
-                    for (id_subject, list_group) in _groups(graph)]
+    def render(list_summary: list[Summary]) -> typing.Any:
+        if layout == LAYOUT_COUNTS:
+            return _issue_table(graph, [summary.issue for summary in list_summary])
+        return _issue_answers(list_summary,
+                              show_subject = sort != SORT_SUBJECT,
+                              is_open      = layout == LAYOUT_OPEN or bool(text))
+
+    if sort == SORT_SUBJECT:
+        map_found = {summary.issue.item.id: summary for summary in list_found}
+        list_body = [htpy.section[
+                         htpy.h2[graph.title(id_subject) if id_subject else 'No subject',
+                                 htpy.span(class_ = 'drivers')[
+                                     _drivers(graph, id_subject)]],
+                         render([map_found[issue.item.id] for issue in list_group
+                                 if issue.item.id in map_found])]
+                     for (id_subject, list_group) in _groups(graph)
+                     if any(issue.item.id in map_found for issue in list_group)]
+    else:
+        list_body = [render(sorted(list_found, key = MAP_SORT_KEY[sort]))]
 
     return _page('Issues',
+                 [_issue_controls(layout, sort, text),
+                  list_body],
                  [htpy.h1['Issues'],
                   htpy.p(class_ = 'subtitle')[
                       '{count} issues, {open} open'.format(count = len(list_issue),
-                                                          open  = count_open)],
-                  list_section])
+                                                          open  = count_open)]])
+
+
+# -----------------------------------------------------------------------------
+class Summary:
+    """
+    What the list of issues says about one issue: its decisions, most
+    supported first, the standing of each, how many units of argument
+    are for and against each, and the standing of the issue.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, graph: Graph, issue: Issue) -> None:
+        """
+        Summarise issue.
+
+        """
+
+        self.issue         = issue
+        self.list_decision = cc_public.web.sankey.ordered_decisions(issue)
+        self.map_for       = {decision.id: 0 for decision in issue.list_decision}
+        self.map_against   = dict(self.map_for)
+        for unit in cc_public.web.sankey.units(issue):
+            if unit.is_for():
+                self.map_for[unit.decision] += 1
+            else:
+                self.map_against[unit.decision] += 1
+        self.subject = ', '.join(graph.title(id_subject) for id_subject
+                                 in issue.item.targets(cc_public.web.argument.R_IS_ABOUT))
+        list_stance  = list(issue.map_stance.values())
+        if STANCE_UPHELD in list_stance:
+            self.standing = STANDING_SETTLED
+        elif STANCE_REJECTED in list_stance:
+            self.standing = STANDING_NARROWED
+        else:
+            self.standing = STANDING_OPEN
+
+    # -------------------------------------------------------------------------
+    def stance(self, id_decision: str) -> str:
+        """
+        Return the standing of the decision id_decision.
+
+        """
+
+        return self.issue.map_stance.get(id_decision, STANCE_OPEN)
+
+    # -------------------------------------------------------------------------
+    def size(self) -> int:
+        """
+        Return how many units of argument the issue holds.
+
+        """
+
+        return sum(self.map_for.values()) + sum(self.map_against.values())
+
+
+# -----------------------------------------------------------------------------
+def _choice(map_query: dict, key: str, list_value: list[str]) -> str:
+    """
+    Return the value of key in map_query if it is one of list_value, or
+    else the first of list_value.
+
+    """
+
+    value = map_query.get(key, [''])[0]
+    return value if value in list_value else list_value[0]
+
+
+# -----------------------------------------------------------------------------
+def _holds(issue: Issue, text: str) -> bool:
+    """
+    Return True if every word of text is in the title or brief of the
+    issue or of one of its decisions.
+
+    """
+
+    words = ' '.join([issue.item.title, issue.item.brief]
+                     + [part for decision in issue.list_decision
+                        for part in (decision.title, decision.brief)]).lower()
+    return all(word in words for word in text.lower().split())
+
+
+# -----------------------------------------------------------------------------
+def _drivers(graph: Graph, id_subject: str) -> str:
+    """
+    Return the concerns that drive the subject id_subject, as the head of
+    its group says them once for all its issues.
+
+    """
+
+    if not id_subject or id_subject not in graph.map_item:
+        return ''
+    list_concern = graph.map_item[id_subject].targets(R_IS_DRIVEN_BY)
+    if not list_concern:
+        return ''
+    return 'Driven by ' + ', '.join(graph.title(id_concern).lower()
+                                    for id_concern in list_concern)
+
+
+# -----------------------------------------------------------------------------
+def _issue_controls(layout: str, sort: str, text: str) -> typing.Any:
+    """
+    Return the controls above the list: the layouts, the orders and the
+    filter, each link keeping the other choices.
+
+    """
+
+    def href(**map_change: str) -> str:
+        map_value = {KEY_LAYOUT: layout, KEY_SORT: sort, KEY_QUERY: text}
+        map_value.update(map_change)
+        return PATH_ISSUES + '?' + urllib.parse.urlencode(
+            {key: value for (key, value) in map_value.items() if value})
+
+    def choices(label: str, key: str, chosen: str, map_name: dict) -> typing.Any:
+        list_link = []
+        for (value, name) in map_name.items():
+            if list_link:
+                list_link.append(htpy.span(class_ = 'bar')['|'])
+            list_link.append(htpy.span(class_ = 'chosen')[name] if value == chosen
+                             else htpy.a(href = href(**{key: value}))[name])
+        return htpy.p[htpy.span(class_ = 'label')[label], ' ', list_link]
+
+    return htpy.div(class_ = 'issue-controls')[
+        choices('Show', KEY_LAYOUT, layout, MAP_LAYOUT_NAME),
+        choices('Order', KEY_SORT, sort, MAP_SORT_NAME),
+        htpy.form(class_ = 'search', method = 'get', action = PATH_ISSUES)[
+            htpy.input(type = 'hidden', name = KEY_LAYOUT, value = layout),
+            htpy.input(type = 'hidden', name = KEY_SORT, value = sort),
+            htpy.input(type        = 'search',
+                       name        = KEY_QUERY,
+                       value       = text,
+                       placeholder = 'Words from an issue or its decisions',
+                       aria_label  = 'Filter'),
+            ' ',
+            htpy.button(type = 'submit', class_ = 'plain')['Filter']]]
+
+
+# -----------------------------------------------------------------------------
+def _mark(stance: str) -> typing.Any:
+    """
+    Return the mark of the standing of a decision: a tick if upheld, a
+    cross if rejected, an open circle if open.
+
+    """
+
+    return htpy.span(class_ = 'mark mark-' + stance,
+                     title  = stance)[MAP_STANCE_MARK[stance]]
+
+
+# -----------------------------------------------------------------------------
+def _standing(summary: Summary) -> typing.Any:
+    """
+    Return the standing of the issue, as a word in the colour of the
+    standing of a decision.
+
+    """
+
+    return htpy.span(class_ = 'stance stance-' + MAP_STANDING_STANCE[summary.standing])[
+        summary.standing]
+
+
+# -----------------------------------------------------------------------------
+def _counts(summary: Summary, id_decision: str) -> typing.Any:
+    """
+    Return how many units of argument are for and against id_decision.
+
+    """
+
+    return htpy.span(class_ = 'counts')[
+        htpy.span(class_ = 'for')[str(summary.map_for[id_decision]), MARK_FOR], ' ',
+        htpy.span(class_ = 'against')[str(summary.map_against[id_decision]), MARK_AGAINST]]
+
+
+# -----------------------------------------------------------------------------
+def _issue_answers(list_summary: list[Summary],
+                   show_subject: bool,
+                   is_open:      bool) -> typing.Any:
+    """
+    Return the issues of list_summary, each folded to a line of its
+    title, with its standing in the margin, unless is_open. Each opens
+    to its question and the decisions that answer it, in full: each
+    decision with its mark hung before it, its title run in and linked
+    to the decision on the page of the issue, and its counts in the
+    margin. A link after the decisions leads to the page of the issue.
+
+    """
+
+    def answer(summary: Summary, decision: Item) -> typing.Any:
+        stance = summary.stance(decision.id)
+        return _block([htpy.p[_mark(stance),
+                              htpy.a(class_ = 'run-in',
+                                     href   = PATH_ISSUE + summary.issue.item.id
+                                              + '#' + decision.id)[decision.title],
+                              ' ', _prose(decision.brief)]],
+                      [_counts(summary, decision.id)],
+                      class_ = 'answer answer-' + stance)
+
+    def entry(summary: Summary) -> typing.Any:
+        item = summary.issue.item
+        return htpy.details(class_ = 'issue-entry', id = item.id, open = is_open)[
+            htpy.summary[_block([htpy.span(class_ = 'title')[item.title]],
+                                [_standing(summary),
+                                 htpy.span(class_ = 'subject')[summary.subject]
+                                 if show_subject else None])],
+            _block([htpy.p(class_ = 'question')[_prose(item.brief)]], []),
+            [answer(summary, decision) for decision in summary.list_decision],
+            _block([htpy.p(class_ = 'onward')[
+                        htpy.a(href = PATH_ISSUE + item.id)['Decision matrix'],
+                        ' ', MARK_NEXT]], [])]
+
+    return htpy.div(class_ = 'issue-answers')[[entry(summary) for summary in list_summary]]
 
 
 # -----------------------------------------------------------------------------
