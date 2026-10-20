@@ -81,8 +81,8 @@ description:            |
                         those it leaves unstated drawn hollow.
 
                         The pills of the page of a decision lead to
-                        the forms that add to its argument or settle
-                        it, which edit renders: an option, an
+                        the forms that add to its deliberation or
+                        settle it, which edit renders: an option, an
                         annotation for or against an option, an answer
                         to an annotation, and the upholding or
                         rejecting of an option with a reason. Uphold
@@ -793,7 +793,7 @@ def decision(graph:      Graph,
           set_toggle: set[str],
           set_show:   set[str] | None = None) -> str:
     """
-    Return the page that shows a decision and the argument on it, with the
+    Return the page that shows a decision and its deliberation, with the
     parts of its diagram in set_toggle opened or closed, the annotation
     in set_show opened in the decision matrix. The Sankey diagram is
     shown and the graph folded away under its caption.
@@ -824,7 +824,7 @@ def decision(graph:      Graph,
 # -----------------------------------------------------------------------------
 def _lighting(graph: Graph, outline: cc_public.web.sankey.Outline) -> list:
     """
-    Return the rules that light each chain of the argument in outline,
+    Return the rules that light each chain of the deliberation in outline,
     in the matrix and in both diagrams alike, and an element that pins
     each chain whose name the page does not already hold as an id: the
     matrix holds an option, each of its roles, and each concern that
@@ -1189,8 +1189,8 @@ def _statement(graph: Graph, item: Item) -> str:
 # -----------------------------------------------------------------------------
 def _decisions_of(graph: Graph, item: Item) -> list[str]:
     """
-    Return the decisions the argument item belongs to: those an option
-    answers, an annotation is about, or a ruling settles through
+    Return the decisions whose deliberation the item belongs to: those an
+    option answers, an annotation is about, or a ruling settles through
     its options.
 
     """
@@ -2583,12 +2583,12 @@ def _facts(graph: Graph, decision: Decision, list_subject: list[str]) -> typing.
                     for id_concern in decision.list_driver]
 
     return htpy.table(class_ = 'facts')[htpy.tbody[
-        row('Standing', _settlement(graph, decision)),
-        row('Subject',  ', '.join(list_subject)) if list_subject else None,
-        row('Concerns', list_driver) if list_driver else None,
-        row('Argument', '{options} options, {annotations} annotations'.format(
-                            options     = len(decision.list_option),
-                            annotations = len(decision.list_annotation)))]]
+        row('Standing',     _settlement(graph, decision)),
+        row('Subject',      ', '.join(list_subject)) if list_subject else None,
+        row('Concerns',     list_driver) if list_driver else None,
+        row('Deliberation', '{options} options, {annotations} annotations'.format(
+                                options     = len(decision.list_option),
+                                annotations = len(decision.list_annotation)))]]
 
 
 # -----------------------------------------------------------------------------

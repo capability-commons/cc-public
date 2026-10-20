@@ -19,10 +19,10 @@ description:            |
                         This module holds the fixtures. Every test
                         runs wherever the environment is installed,
                         since clingo is part of it. A copy keeps only
-                        a fixed slice of the argument, the decisions
-                        the tests name, so the tests neither slow down
-                        nor change meaning as the argument in the
-                        repository grows.
+                        a fixed slice of the deliberations, the
+                        decisions the tests name, so the tests neither
+                        slow down nor change meaning as the
+                        deliberations in the repository grow.
 relation:               []
 
 ...

@@ -11,11 +11,11 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Sankey diagram of an argument
+title:                  Sankey diagram of a deliberation
 brief:                  |
-                        Draw the weight of the argument on a decision
-                        as a Sankey diagram, from its options to the
-                        concerns argued on them.
+                        Draw the weight of the deliberation on a
+                        decision as a Sankey diagram, from its options
+                        to the concerns argued on them.
 description:            |
                         A unit of weight is one annotation speaking
                         for one concern, for or against one option.
@@ -108,7 +108,7 @@ def figure(graph:      Graph,
            set_toggle: set[str],
            set_show:   set[str]) -> typing.Any:
     """
-    Return the Sankey diagram of the argument in outline: its options
+    Return the Sankey diagram of the deliberation in outline: its options
     on the left, each joined to the concerns that are argued on it,
     with support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
@@ -148,7 +148,7 @@ def figure(graph:      Graph,
 # -----------------------------------------------------------------------------
 def units(decision: Decision) -> list[Unit]:
     """
-    Return the units of weight of the argument on decision.
+    Return the units of weight of the deliberation on decision.
 
     """
 
@@ -182,8 +182,8 @@ def ordered_options(decision: Decision) -> list[cc_public.web.argument.Item]:
 # -----------------------------------------------------------------------------
 class Outline:
     """
-    The order in which the diagram shows the argument on a decision, and
-    the numbers of its annotations.
+    The order in which the diagram shows the deliberation on a decision,
+    and the numbers of its annotations.
 
     The concerns run from most supportive to most opposed, then drivers
     no annotation speaks for. Each concern holds its annotations, most
@@ -197,7 +197,7 @@ class Outline:
     # -------------------------------------------------------------------------
     def __init__(self, graph: Graph, decision: Decision) -> None:
         """
-        Order the argument on decision.
+        Order the deliberation on decision.
 
         """
 
@@ -335,7 +335,7 @@ class _Drawing:
                  set_toggle: set[str],
                  set_show:   set[str]) -> None:
         """
-        Start an empty drawing of the argument in outline.
+        Start an empty drawing of the deliberation in outline.
 
         """
 
@@ -907,10 +907,10 @@ class _Drawing:
 # -----------------------------------------------------------------------------
 def lighting(graph: Graph, outline: Outline) -> _Drawing:
     """
-    Return an undrawn diagram of the argument in outline, whose
-    css_concern and css_path give the classes that light a mark outside
-    the diagram, such as a row of the decision matrix, with the chains
-    of the diagram.
+    Return an undrawn diagram of the deliberation in outline, whose
+    css_concern and css_path give the classes that light a mark
+    outside the diagram, such as a row of the decision matrix, with the
+    chains of the diagram.
 
     """
 

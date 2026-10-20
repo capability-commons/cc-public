@@ -60,7 +60,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **A new concept is refused on its own** (`unused_concept`), because
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
-- **An argument lives in the folder of its decision.** Start one with a
+- **A deliberation lives in the folder of its decision.** Start one with a
   decision (`new dec_NAME --link r_is_about lc_NAME`), then give each option
   `--link r_is_option_for dec_NAME` (`option_count` refuses an option that
   is linked to no decision, or to two) and each annotation `--link r_is_about

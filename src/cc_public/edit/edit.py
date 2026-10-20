@@ -869,7 +869,7 @@ def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> 
     """
     Add to edit the move of every file in dir_old, as edit leaves it,
     to a folder named id_new beside it. An item that gathers others, as
-    a decision gathers its argument, is kept in a folder named for it,
+    a decision gathers its deliberation, is kept in a folder named for it,
     and the folder moves with it.
 
     """
