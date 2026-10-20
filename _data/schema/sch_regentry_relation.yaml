@@ -25,9 +25,10 @@ description:            |
                         types.
 
                         The brief of a relation entry is its surface
-                        form. It reads as a sentence with SUBJ
+                        form. It reads as a sentence with SOURCE
                         standing for the item that records the edge
-                        and OBJ standing for the target of the edge.
+                        and TARGET standing for the target of the
+                        edge.
 usage:                  |
                         Composed with sch_register_entry by
                         sch_reg_relation as the shape of every entry
@@ -87,12 +88,13 @@ $defs:
 
   surface_form:
     type:               string
-    pattern:            ^SUBJ .+ OBJ\n?$
+    pattern:            ^SOURCE .+ TARGET\n?$
     description:        |
-                        A sentence that reads the relation, with SUBJ
-                        for the item that records the edge and OBJ for
-                        the target. It is one line, which may end in
-                        the newline that a literal block ends with.
+                        A sentence that reads the relation, with
+                        SOURCE for the item that records the edge and
+                        TARGET for the target. It is one line, which
+                        may end in the newline that a literal block
+                        ends with.
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml

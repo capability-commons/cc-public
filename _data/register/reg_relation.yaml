@@ -66,15 +66,15 @@ table:
     id_self:            r_is_specified_by_schema
     guid_self:          r_d70024bd40444f93b4fc1903379ded81
     title:              Is specified by schema relation
-    brief:              SUBJ is specified by schema OBJ
+    brief:              SOURCE is specified by schema TARGET
     description:        |
-                        The schema data item identified by OBJ
+                        The schema data item identified by TARGET
                         specifies the structure of the data item
-                        identified by SUBJ itself.
+                        identified by SOURCE itself.
 
-                        The edge is about SUBJ, not about the items of
-                        a type. A type names the schema of its items
-                        with r_has_items_specified_by_schema.
+                        The edge is about SOURCE, not about the items
+                        of a type. A type names the schema of its
+                        items with r_has_items_specified_by_schema.
     alias:              []
 
     relation:
@@ -96,15 +96,15 @@ table:
     id_self:            r_has_items_specified_by_schema
     guid_self:          r_c233cc9d78af4ec6bbaec8a4bbc43344
     title:              Has items specified by schema relation
-    brief:              SUBJ has items specified by schema OBJ
+    brief:              SOURCE has items specified by schema TARGET
     description:        |
-                        The schema data item identified by OBJ
+                        The schema data item identified by TARGET
                         specifies the structure of each item of the
-                        type identified by SUBJ.
+                        type identified by SOURCE.
 
-                        The edge is about the items of SUBJ, not about
-                        SUBJ itself. The shape of a type entry is
-                        named by the edge on t_type.
+                        The edge is about the items of SOURCE, not
+                        about SOURCE itself. The shape of a type entry
+                        is named by the edge on t_type.
     alias:              []
 
     relation:
@@ -126,16 +126,16 @@ table:
     id_self:            r_has_items_held_in_register
     guid_self:          r_016e74a0abea4a3990cc3259942baf92
     title:              Has items held in register relation
-    brief:              SUBJ has items held in register OBJ
+    brief:              SOURCE has items held in register TARGET
     description:        |
-                        The register data item identified by OBJ holds
-                        each item of the type identified by SUBJ, as
-                        an entry in its table.
+                        The register data item identified by TARGET
+                        holds each item of the type identified by
+                        SOURCE, as an entry in its table.
 
-                        The edge is about the items of SUBJ, not about
-                        SUBJ itself. A type entry is held in the data
-                        item type register by containment, and needs
-                        no edge to say so.
+                        The edge is about the items of SOURCE, not
+                        about SOURCE itself. A type entry is held in
+                        the data item type register by containment,
+                        and needs no edge to say so.
 
     alias:
       - r_is_held_in_register
@@ -159,11 +159,11 @@ table:
     id_self:            r_is_about
     guid_self:          r_17ca99102b0b431b85235445a4635ae8
     title:              Is about relation
-    brief:              SUBJ makes its assertion about OBJ
+    brief:              SOURCE makes its assertion about TARGET
     description:        |
-                        The annotation or decision identified by SUBJ
-                        makes its assertion or asks its question about
-                        the item identified by OBJ.
+                        The annotation or decision identified by
+                        SOURCE makes its assertion or asks its
+                        question about the item identified by TARGET.
 
                         The edge says what the assertion or question
                         is about and nothing about it. It does not say
@@ -192,12 +192,12 @@ table:
     id_self:            r_supports
     guid_self:          r_5d87b0c1741548108f5b851ad76a8605
     title:              Supports relation
-    brief:              SUBJ gives a reason to accept OBJ
+    brief:              SOURCE gives a reason to accept TARGET
     description:        |
-                        The annotation identified by SUBJ gives a
+                        The annotation identified by SOURCE gives a
                         reason to accept, or to hold with greater
                         confidence, the annotation or option
-                        identified by OBJ.
+                        identified by TARGET.
 
                         Support does not establish what it supports,
                         and an assertion or a choice with many
@@ -230,12 +230,12 @@ table:
     id_self:            r_challenges
     guid_self:          r_08792b8910554df3a181ecb43aae429d
     title:              Challenges relation
-    brief:              SUBJ gives a reason not to accept OBJ
+    brief:              SOURCE gives a reason not to accept TARGET
     description:        |
-                        The annotation identified by SUBJ gives a
+                        The annotation identified by SOURCE gives a
                         reason not to accept, or not to accept without
                         qualification, the annotation or option
-                        identified by OBJ.
+                        identified by TARGET.
 
                         A challenge does not defeat what it
                         challenges. Nothing here computes which
@@ -262,14 +262,14 @@ table:
     id_self:            r_supersedes
     guid_self:          r_d687c4ca485e47b78c0a361b221fdf6a
     title:              Supersedes relation
-    brief:              SUBJ supersedes OBJ
+    brief:              SOURCE supersedes TARGET
     description:        |
-                        The item identified by SUBJ replaces the one
-                        of the same type identified by OBJ, which no
-                        longer governs. An option or an interface
+                        The item identified by SOURCE replaces the one
+                        of the same type identified by TARGET, which
+                        no longer governs. An option or an interface
                         control document may be superseded.
 
-                        OBJ keeps its argument, or its content, so
+                        TARGET keeps its argument, or its content, so
                         that what it said stays on record.
 
                         An option may supersede several, where one
@@ -300,11 +300,11 @@ table:
     id_self:            r_speaks_for_concern
     guid_self:          r_ded2d80983a74f7b8271530a881686bf
     title:              Speaks for concern relation
-    brief:              SUBJ speaks for concern OBJ
+    brief:              SOURCE speaks for concern TARGET
     description:        |
-                        The annotation identified by SUBJ makes its
+                        The annotation identified by SOURCE makes its
                         assertion on behalf of the concern identified
-                        by OBJ.
+                        by TARGET.
 
                         The edge says which concern an argument speaks
                         for, not who made it or whether it is sound.
@@ -355,10 +355,10 @@ table:
     guid_self:          r_2b5f499c599a435c9a5184462525dd9b
     title:              Realizes relation
     brief:              |
-                        SUBJ realizes OBJ
+                        SOURCE realizes TARGET
     description:        |
-                        The item identified by SUBJ implements the
-                        design element identified by OBJ, in one
+                        The item identified by SOURCE implements the
+                        design element identified by TARGET, in one
                         technology: a logical component, or a member
                         of an interface control document.
 
@@ -390,11 +390,11 @@ table:
     guid_self:          r_434abb759a1e4442bef038fbd83d7441
     title:              Upholds relation
     brief:              |
-                        SUBJ upholds OBJ
+                        SOURCE upholds TARGET
     description:        |
-                        The ruling identified by SUBJ settles that the
-                        option identified by OBJ holds, given the
-                        arguments presented when it was made.
+                        The ruling identified by SOURCE settles that
+                        the option identified by TARGET holds, given
+                        the arguments presented when it was made.
     alias:              []
 
     relation:
@@ -417,11 +417,12 @@ table:
     guid_self:          r_1dcb50b2281349bf9e8972dfedde64f3
     title:              Rejects relation
     brief:              |
-                        SUBJ rejects OBJ
+                        SOURCE rejects TARGET
     description:        |
-                        The ruling identified by SUBJ settles that the
-                        option identified by OBJ does not hold, given
-                        the arguments presented when it was made.
+                        The ruling identified by SOURCE settles that
+                        the option identified by TARGET does not hold,
+                        given the arguments presented when it was
+                        made.
 
                         The option keeps its argument, so that the
                         reasons it was rejected stay on record.
@@ -447,11 +448,11 @@ table:
     guid_self:          r_11e221e2e58140ca869e92bedfc15fbc
     title:              Is driven by relation
     brief:              |
-                        SUBJ is driven by OBJ
+                        SOURCE is driven by TARGET
     description:        |
-                        The concern identified by OBJ is one of the
+                        The concern identified by TARGET is one of the
                         few that the logical component identified by
-                        SUBJ should favour, so that every decision
+                        SOURCE should favour, so that every decision
                         about the logical component is argued for it.
 
                         Concerns that drive no logical component are
@@ -487,12 +488,12 @@ table:
     guid_self:          r_336826c81f7043b89ae024d44a35bb41
     title:              Is option for relation
     brief:              |
-                        SUBJ is an option for OBJ
+                        SOURCE is an option for TARGET
     description:        |
-                        The option identified by SUBJ is one possible
-                        answer to the decision identified by OBJ. The
-                        options for one decision are alternatives to
-                        one another.
+                        The option identified by SOURCE is one
+                        possible answer to the decision identified by
+                        TARGET. The options for one decision are
+                        alternatives to one another.
     alias:              []
 
     relation:
@@ -515,13 +516,14 @@ table:
     guid_self:          r_6b34d5364abb4ddd8f2ff2a9b725e3ef
     title:              Has subject relation
     brief:              |
-                        SUBJ has the subject OBJ
+                        SOURCE has the subject TARGET
     description:        |
-                        The requirement identified by SUBJ is an
-                        obligation on the item identified by OBJ, the
-                        system or system element that is the Subject
-                        of the syntax in ISO/IEC/IEEE 29148 clause
-                        5.2.4. The statement names it by its title.
+                        The requirement identified by SOURCE is an
+                        obligation on the item identified by TARGET,
+                        the system or system element that is the
+                        Subject of the syntax in ISO/IEC/IEEE 29148
+                        clause 5.2.4. The statement names it by its
+                        title.
     note:               |
                         The target must be a design element. Most
                         subjects belong to a project or a partner, not
@@ -550,11 +552,11 @@ table:
     guid_self:          r_c4a81b697a3e4b2ebc2108745a7d389d
     title:              Has actor relation
     brief:              |
-                        SUBJ has the actor OBJ
+                        SOURCE has the actor TARGET
     description:        |
-                        The requirement identified by SUBJ obliges its
-                        subject to provide the item identified by OBJ
-                        with the ability to do its process. The
+                        The requirement identified by SOURCE obliges
+                        its subject to provide the item identified by
+                        TARGET with the ability to do its process. The
                         statement names the actor by its title.
     note:               |
                         Held only by a requirement whose activity is
@@ -577,14 +579,14 @@ table:
     guid_self:          r_18d71931f0c8452c807448226ee71137
     title:              Has process relation
     brief:              |
-                        SUBJ has the process OBJ
+                        SOURCE has the process TARGET
     description:        |
-                        The requirement identified by SUBJ obliges its
-                        subject to do the process designated by the
-                        concept identified by OBJ. The statement
-                        writes the preferred term of the concept as
-                        its verb, so a deprecated or undefined verb
-                        cannot be written.
+                        The requirement identified by SOURCE obliges
+                        its subject to do the process designated by
+                        the concept identified by TARGET. The
+                        statement writes the preferred term of the
+                        concept as its verb, so a deprecated or
+                        undefined verb cannot be written.
     note:               |
                         The process word of the SOPHIST MASTER
                         template. The target is open for now, and is
@@ -606,15 +608,15 @@ table:
     guid_self:          r_7eb3dc69d8ab45e79b18bec97de5ffa9
     title:              Has items that play relation
     brief:              |
-                        SUBJ has items that play OBJ
+                        SOURCE has items that play TARGET
     description:        |
-                        Each item of the type identified by SUBJ can
-                        play the role identified by OBJ, so it meets
-                        any relation restriction that admits that
-                        role.
+                        Each item of the type identified by SOURCE can
+                        play the role identified by TARGET, so it
+                        meets any relation restriction that admits
+                        that role.
 
-                        The edge is about the items of SUBJ, not about
-                        SUBJ itself.
+                        The edge is about the items of SOURCE, not
+                        about SOURCE itself.
     note:               |
                         A partner gives its own types roles with this
                         edge, in its own register.
@@ -640,12 +642,12 @@ table:
     guid_self:          r_df3f1550b33d496295249f45049e0c9c
     title:              Admits relation
     brief:              |
-                        SUBJ admits OBJ
+                        SOURCE admits TARGET
     description:        |
-                        The relation restriction identified by SUBJ is
-                        satisfied by an item whose type plays the role
-                        identified by OBJ. A restriction is satisfied
-                        if any one of its literals is.
+                        The relation restriction identified by SOURCE
+                        is satisfied by an item whose type plays the
+                        role identified by TARGET. A restriction is
+                        satisfied if any one of its literals is.
     alias:              []
 
     relation:
@@ -668,12 +670,13 @@ table:
     guid_self:          r_57233cb7d0d44ba2b66771f544767cc3
     title:              Excludes relation
     brief:              |
-                        SUBJ excludes OBJ
+                        SOURCE excludes TARGET
     description:        |
-                        The relation restriction identified by SUBJ is
-                        satisfied by an item whose type does not play
-                        the role identified by OBJ. A restriction is
-                        satisfied if any one of its literals is.
+                        The relation restriction identified by SOURCE
+                        is satisfied by an item whose type does not
+                        play the role identified by TARGET. A
+                        restriction is satisfied if any one of its
+                        literals is.
     note:               |
                         Two excludes in one restriction pass anything
                         that does not play both roles. Neither of two
@@ -701,12 +704,12 @@ table:
     guid_self:          r_adcac8092b664b269c2a774e5320d32d
     title:              Restricts source relation
     brief:              |
-                        SUBJ restricts its source by OBJ
+                        SOURCE restricts its source by TARGET
     description:        |
-                        Every edge of the relation identified by SUBJ
-                        is recorded by an item that satisfies the
-                        relation restriction identified by OBJ. A
-                        source must satisfy every restriction its
+                        Every edge of the relation identified by
+                        SOURCE is recorded by an item that satisfies
+                        the relation restriction identified by TARGET.
+                        A source must satisfy every restriction its
                         relation names for it, and a relation that
                         names none has an open source.
     alias:              []
@@ -731,14 +734,14 @@ table:
     guid_self:          r_589d8b04783d49c698c6471080254c8a
     title:              Restricts target relation
     brief:              |
-                        SUBJ restricts its target by OBJ
+                        SOURCE restricts its target by TARGET
     description:        |
-                        Every edge of the relation identified by SUBJ
-                        points at an item that satisfies the relation
-                        restriction identified by OBJ. A target must
-                        satisfy every restriction its relation names
-                        for it, and a relation that names none has an
-                        open target.
+                        Every edge of the relation identified by
+                        SOURCE points at an item that satisfies the
+                        relation restriction identified by TARGET. A
+                        target must satisfy every restriction its
+                        relation names for it, and a relation that
+                        names none has an open target.
     alias:              []
 
     relation:

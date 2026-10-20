@@ -623,7 +623,7 @@ def test_decision_page_ends_with_cross_references(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/decision/' + ID_DECISION)
     footer = body.split(b'<footer class="bookend">')[1]
     assert b'Cross-references' in footer
-    assert b'/subject/lc_tooling' in footer
+    assert b'/component/lc_tooling' in footer
 
 
 def test_item_page_shows_edges_in_and_out(tree):
@@ -670,7 +670,7 @@ def test_every_page_links_to_the_indexes(tree):
     for path in ('/', '/decision/' + ID_DECISION, '/item/' + ID_UPHELD):
         (_, _, body) = cc_public.web.server.respond(tree, path)
         assert b'<a href="/">Index</a>' in body
-        assert b'<a href="/subjects">Subjects</a>' in body
+        assert b'<a href="/components">Components</a>' in body
         assert b'<form class="search masthead" method="get" action="/search">' in body
 
 
@@ -704,13 +704,13 @@ def test_type_page_lists_its_items_and_filters_them(tree):
 
 
 def test_subject_page_gathers_what_is_about_it(tree):
-    (status, _, body) = cc_public.web.server.respond(tree, '/subjects')
+    (status, _, body) = cc_public.web.server.respond(tree, '/components')
     assert status == http.HTTPStatus.OK
-    assert b'href="/subject/lc_tooling"' in body
-    (status, _, body) = cc_public.web.server.respond(tree, '/subject/lc_tooling')
+    assert b'href="/component/lc_tooling"' in body
+    (status, _, body) = cc_public.web.server.respond(tree, '/component/lc_tooling')
     assert status == http.HTTPStatus.OK
     assert '/decision/{id}'.format(id = ID_DECISION).encode() in body
-    (status, _, _) = cc_public.web.server.respond(tree, '/subject/' + ID_UPHELD)
+    (status, _, _) = cc_public.web.server.respond(tree, '/component/' + ID_UPHELD)
     assert status == http.HTTPStatus.NOT_FOUND
 
 

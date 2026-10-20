@@ -18,15 +18,15 @@ brief:                  |
 description:            |
                         respond maps the path of a request to a page
                         (the index of every type, the list of the
-                        items of a type, the subjects, a subject, a
-                        search, the decision list, a decision, the
-                        requirement list, a requirement, the list of
-                        interface control documents, one of them, or
-                        any item), or to a file of the _static
-                        directory, and reads the tree afresh for each
-                        page. serve answers GET requests with respond,
-                        until interrupted. It uses the HTTP server of
-                        the standard library.
+                        items of a type, the logical components, a
+                        logical component, a search, the decision
+                        list, a decision, the requirement list, a
+                        requirement, the list of interface control
+                        documents, one of them, or any item), or to a
+                        file of the _static directory, and reads the
+                        tree afresh for each page. serve answers GET
+                        requests with respond, until interrupted. It
+                        uses the HTTP server of the standard library.
 
                         submit answers the forms of the pages that
                         change the data. It turns a form into a batch
@@ -71,7 +71,7 @@ SET_HOST_LOCAL    = {'127.0.0.1', 'localhost', '[::1]'}
 LOCK_READ         = threading.Lock()
 MAP_INDEX         = {cc_public.web.page.PATH_HOME:         cc_public.web.page.home,
                      cc_public.web.page.PATH_DECISIONS:       cc_public.web.page.decisions,
-                     cc_public.web.page.PATH_SUBJECTS:     cc_public.web.page.subjects,
+                     cc_public.web.page.PATH_COMPONENTS:     cc_public.web.page.components,
                      cc_public.web.page.PATH_REQUIREMENTS: cc_public.web.page.requirements,
                      cc_public.web.page.PATH_INTERFACES:   cc_public.web.page.interfaces}
 
@@ -106,7 +106,7 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
         return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
     for prefix in (cc_public.web.page.PATH_TYPE,
-                   cc_public.web.page.PATH_SUBJECT,
+                   cc_public.web.page.PATH_COMPONENT,
                    cc_public.web.page.PATH_DECISION,
                    cc_public.web.page.PATH_REQUIREMENT,
                    cc_public.web.page.PATH_INTERFACE,
@@ -232,7 +232,7 @@ def _item_page(root:    pathlib.Path,
 
     graph = _graph(root)
 
-    if prefix in (cc_public.web.page.PATH_TYPE, cc_public.web.page.PATH_SUBJECT):
+    if prefix in (cc_public.web.page.PATH_TYPE, cc_public.web.page.PATH_COMPONENT):
         return _catalogue_page(graph, prefix, id_item, query)
 
     if prefix == cc_public.web.page.PATH_DECISION:
@@ -263,7 +263,7 @@ def _catalogue_page(graph:   cc_public.web.argument.Graph,
 
     if prefix == cc_public.web.page.PATH_TYPE:
         return cc_public.web.page.type_list(graph, id_item, _text(query))
-    return cc_public.web.page.subject(graph, id_item)
+    return cc_public.web.page.component(graph, id_item)
 
 
 # -----------------------------------------------------------------------------
