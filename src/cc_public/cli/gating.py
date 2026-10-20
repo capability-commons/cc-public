@@ -37,6 +37,7 @@ import cc_public.gate.gate
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,

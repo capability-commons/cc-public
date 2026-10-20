@@ -35,6 +35,7 @@ import cc_public.web.server
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,
@@ -50,10 +51,15 @@ import cc_public.web.server
 def serve(root: pathlib.Path, host: str, port: int) -> None:
     """
     Serve pages to review the decisions of the tree under --root, and the
-    deliberation on each, until interrupted.
+    deliberation of each, until interrupted.
 
-    The pages change nothing. Each page shows the tree as it is when
-    the page is loaded.
+    Each page shows the tree as it is when the page is loaded, and
+    reading a page changes nothing. The forms on the decision pages add
+    options, arguments and rulings. Each form is made as one batch edit,
+    as cctool batch makes one: it is written only if it adds no failure,
+    and otherwise the form is shown again with the failures it would
+    add. Forms are taken only from the pages of this server, on this
+    computer.
 
     """
 

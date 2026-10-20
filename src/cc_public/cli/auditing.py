@@ -67,6 +67,7 @@ def history() -> None:
               help    = 'Also check, lint and test the content of the newest commit, or of '
                         'each ref a push updates.')
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,
@@ -177,6 +178,7 @@ def _gated(root: pathlib.Path, list_tip: list[str]) -> list[str]:
               help    = 'Print JSON: the touched items and the neighbours, as lists of '
                         'objects.')
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,

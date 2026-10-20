@@ -39,6 +39,7 @@ import cc_public.graph.logic
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
 @click.option('--root',
+              metavar = 'DIRPATH',
               default = '.',
               type    = click.Path(exists    = True,
                                    file_okay = False,

@@ -75,22 +75,22 @@ pre-push hook runs it with `--gate` on what a push would send.
     cctool check                            check the tree
     cctool gate                             check, lint and test what is staged
     cctool message new TITLE --brief TEXT   write a commit message
-    cctool message check FILE               check a commit message
+    cctool message check FILEPATH           check a commit message
     cctool history check [RANGE] [--gate]   check commits already made
     cctool format [--check]                 lay out every document
     cctool query sql|logic QUERY            query the graph
     cctool query sparql|jq QUERY            query the graph
     cctool query schema                     list the relations and columns
-    cctool export obsidian|okf OUT          write the graph as markdown pages
+    cctool export obsidian|okf DIRPATH      write the graph as markdown pages
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
-    cctool header PATH [ID] [--field NAME VALUE]... [--link ...]
+    cctool header FILEPATH [ID] [--field NAME VALUE]... [--link ...]
     cctool link SOURCE RELATION TARGET
     cctool unlink SOURCE RELATION TARGET
-    cctool set ID PATH VALUE [--yaml]
-    cctool unset ID PATH
+    cctool set ID FIELDPATH VALUE [--yaml]
+    cctool unset ID FIELDPATH
     cctool remove ID
     cctool rename OLD NEW
-    cctool batch FILE                       several edits as one
+    cctool batch FILEPATH                   several edits as one
 
 Each edit is checked with the tree as it would be, and written only if
 it adds no failure. `--dry-run` prints it as a diff instead.

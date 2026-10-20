@@ -64,9 +64,10 @@ def _option(function):
     """
 
     list_option = [
-        click.argument('dir_out', metavar = 'OUT',
+        click.argument('dir_out', metavar = 'DIRPATH',
                        type = click.Path(path_type = pathlib.Path)),
         click.option('--root',
+                     metavar = 'DIRPATH',
                      default = '.',
                      type    = click.Path(exists    = True,
                                           file_okay = False,
@@ -74,7 +75,7 @@ def _option(function):
                      help    = 'The tree to export. Defaults to the working directory.'),
         click.option('--replace', 'is_replace',
                      is_flag = True,
-                     help    = 'Remove the pages already in OUT first, and keep its other '
+                     help    = 'Remove the pages already in DIRPATH first, and keep its other '
                                'files, such as the settings of a viewer.')]
 
     for option in reversed(list_option):
@@ -88,7 +89,7 @@ def _option(function):
 @_option
 def obsidian(dir_out, root, is_replace):
     """
-    Write the graph as an Obsidian vault in the folder OUT.
+    Write the graph as an Obsidian vault in the folder DIRPATH.
 
     Each note is named by the id of its item, and shows its title. Its
     type is a tag, so the graph view can colour the items by type, and
@@ -109,7 +110,7 @@ def obsidian(dir_out, root, is_replace):
 @_option
 def okf(dir_out, root, is_replace):
     """
-    Write the graph as an Open Knowledge Format bundle in the folder OUT.
+    Write the graph as an Open Knowledge Format bundle in the folder DIRPATH.
 
     The bundle follows OKF version 0.2: each concept has the name of
     the type of its item as its type, and its brief as its description,
