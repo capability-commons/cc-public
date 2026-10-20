@@ -21,9 +21,10 @@ description:            |
                         database, one table for each, with the columns
                         Datalog gives them. The derived relations are
                         computed by clingo from derive.lp, so they are
-                        defined once, for both languages. A query
-                        changes nothing outside the database it runs
-                        in.
+                        defined once, for both languages. The prose of
+                        each item is in item_text, a full-text table.
+                        A query changes nothing outside the database
+                        it runs in.
 relation:               []
 
 ...
@@ -40,12 +41,20 @@ import cc_public.graph.extract
 #
 MAP_TYPE          = {'symbol': 'TEXT', 'number': 'INTEGER'}
 
+# The prose of each item, one row for each field, as an FTS5 table.
+# Words are stemmed, so that a query for a field also finds fields.
+#
+SQL_TEXT          = ('CREATE VIRTUAL TABLE item_text USING fts5('
+                     "id UNINDEXED, field UNINDEXED, text, tokenize = 'porter unicode61')")
+
 
 # -----------------------------------------------------------------------------
-def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
+def connect(facts:    cc_public.graph.extract.Facts,
+            list_text: list[tuple[str, str, str]] = ()) -> sqlite3.Connection:
     """
     Return an in-memory database holding the base relations of facts
-    and the relations derived from them.
+    and the relations derived from them, and item_text, a full-text
+    table that holds the rows of list_text.
 
     """
 
@@ -72,19 +81,24 @@ def connect(facts: cc_public.graph.extract.Facts) -> sqlite3.Connection:
                                   mark = ', '.join('?' * len(tuple_column))),
                                rows.get(name, []))
 
+    connection.execute(SQL_TEXT)
+    connection.executemany('INSERT INTO item_text VALUES (?, ?, ?)', list_text)
+
     return connection
 
 
 # -----------------------------------------------------------------------------
-def query(facts: cc_public.graph.extract.Facts,
-          text:  str) -> tuple[tuple[str, ...], list[tuple]]:
+def query(facts:     cc_public.graph.extract.Facts,
+          text:      str,
+          list_text: list[tuple[str, str, str]] = ()) -> tuple[tuple[str, ...], list[tuple]]:
     """
     Return the columns and the rows of the query text, evaluated over
-    facts. Raise sqlite3.Error if it cannot be evaluated.
+    facts and the prose in list_text. Raise sqlite3.Error if it cannot
+    be evaluated.
 
     """
 
-    connection = connect(facts)
+    connection = connect(facts, list_text)
 
     try:
         cursor       = connection.execute(text)

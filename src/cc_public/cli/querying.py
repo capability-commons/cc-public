@@ -14,11 +14,13 @@ protective_mark:
 title:                  Querying commands
 brief:                  |
                         The commands that query the graph of data
-                        items, in SQL, in Datalog, in SPARQL or in jq.
+                        items, in SQL, in Datalog, in SPARQL, in jq or
+                        by text.
 description:            |
                         This module holds the query group and its
-                        commands: sql, datalog, sparql, jq, and
-                        schema, which lists the relations SQL and
+                        commands: sql, datalog, sparql, jq, text,
+                        which finds items by the words of their prose,
+                        and schema, which lists the relations SQL and
                         Datalog see. Output is tab separated text with
                         a header row, or JSON with --json, and is cut
                         at --limit rows, with a note on stderr of how
@@ -45,6 +47,7 @@ import cc_public.graph.item
 import cc_public.graph.jq
 import cc_public.graph.sparql
 import cc_public.graph.sql
+import cc_public.graph.text
 
 
 LIMIT_DEFAULT     = 100
@@ -55,6 +58,7 @@ INDENT_TEXT       = '      '
 HINT              = 'Run cctool query schema to list the relations and their columns.'
 HINT_JQ           = 'Run cctool query jq --help to see the shape of its input.'
 HINT_SPARQL       = 'Run cctool query sparql --help to see how the graph is named.'
+HINT_TEXT         = 'Run cctool query text --help to see how a query is read.'
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
                      'FROM type_of GROUP BY type"')
@@ -62,10 +66,13 @@ EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
 EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
                      "{ ?id a cc:t_concern ; f:title ?title }'")
+EXAMPLE_TEXT      = 'cctool query text --issue "status field on a decision"'
 EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/issue/\")) "
                      "| .document.id_self'")
 
-MAP_HINT          = {EXAMPLE_JQ: HINT_JQ, EXAMPLE_SPARQL: HINT_SPARQL}
+MAP_HINT          = {EXAMPLE_JQ:     HINT_JQ,
+                     EXAMPLE_SPARQL: HINT_SPARQL,
+                     EXAMPLE_TEXT:   HINT_TEXT}
 
 
 # -----------------------------------------------------------------------------
@@ -73,7 +80,7 @@ MAP_HINT          = {EXAMPLE_JQ: HINT_JQ, EXAMPLE_SPARQL: HINT_SPARQL}
 def query():
     """
     Query the graph of data items, in SQL, in Datalog, in SPARQL or in
-    jq.
+    jq, or find items by the words of their prose.
 
     SQL and Datalog see the same relations: the base relations
     extracted from the tree, and the relations derived from them.
@@ -127,7 +134,9 @@ def sql(text, path_file, root, limit, is_json):
     Evaluate one SQL query over the graph.
 
     Each relation is a SQLite table. A line is an integer, and every
-    other value is text. Give the query as QUERY, as - to read it from
+    other value is text. The prose of each item is in item_text(id,
+    field, text), an FTS5 table that MATCH searches; cctool query text
+    does that for you. Give the query as QUERY, as - to read it from
     stdin, or with --file.
 
     \b
@@ -138,11 +147,13 @@ def sql(text, path_file, root, limit, is_json):
 
     """
 
-    text  = _read(text, path_file, EXAMPLE_SQL)
-    facts = cc_public.graph.extract.extract(root.resolve())
+    text         = _read(text, path_file, EXAMPLE_SQL)
+    map_document = cc_public.graph.extract.documents(root.resolve())
+    facts        = cc_public.graph.extract.facts_of(map_document)
 
     try:
-        (tuple_column, list_row) = cc_public.graph.sql.query(facts, text)
+        (tuple_column, list_row) = cc_public.graph.sql.query(
+                                       facts, text, cc_public.graph.text.rows(map_document))
     except (sqlite3.Error, cc_public.graph.datalog.ErrorDatalog) as error:
         _fail('SQL error: {error}'.format(error = error), EXAMPLE_SQL)
 
@@ -321,6 +332,54 @@ def schema():
     click.echo('  ' + EXAMPLE_DATALOG)
     click.echo('\nA SPARQL query sees the items as triples, and a jq query the documents,')
     click.echo('not these relations. See cctool query sparql --help and cctool query jq --help.')
+
+
+# -----------------------------------------------------------------------------
+@query.command()
+@_option
+@click.option('--match', 'is_match',
+              is_flag = True,
+              help    = 'Read QUERY as an FTS5 match expression, such as "status NEAR field".')
+@click.option('--issue', 'is_issue',
+              is_flag = True,
+              help    = 'Print one row for each issue, ranked by its best match.')
+def text(text, path_file, root, limit, is_json, is_match, is_issue):
+    """
+    Find the items whose prose matches the words of QUERY, best first.
+
+    Each word is searched for in the title, brief, description and
+    other prose of every item, stemmed, and an item that matches more
+    of the words, or rarer ones, ranks higher (BM25). Each hit names
+    the issue it belongs to, the determination that settles that issue
+    and the decisions it upholds, the standing of a decision (upheld,
+    rejected or open), and the concerns an annotation argues for. With
+    --issue, each row is an issue, so that a hit on any part of an
+    argument leads to how it was settled. Give the query as QUERY, as
+    - to read it from stdin, or with --file.
+
+    \b
+    Examples:
+      cctool query text "status field on a decision"
+      cctool query text --issue "checks engine"
+      cctool query text --match '"commit" NEAR "title"'
+
+    """
+
+    text         = _read(text, path_file, EXAMPLE_TEXT)
+    map_document = cc_public.graph.extract.documents(root.resolve())
+    facts        = cc_public.graph.extract.facts_of(map_document)
+
+    try:
+        (tuple_column, list_row) = cc_public.graph.text.search(facts, map_document, text,
+                                                               is_match = is_match,
+                                                               is_issue = is_issue)
+    except (cc_public.graph.text.ErrorText, cc_public.graph.datalog.ErrorDatalog) as error:
+        _fail(str(error), EXAMPLE_TEXT, HINT_TEXT)
+
+    if is_json:
+        click.echo(json.dumps(_result(tuple_column, list_row, limit)))
+    else:
+        _print(tuple_column, list_row, limit)
 
 
 # -----------------------------------------------------------------------------

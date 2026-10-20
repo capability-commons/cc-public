@@ -32,6 +32,7 @@ import pytest
 import cc_public.graph.datalog
 import cc_public.graph.extract
 import cc_public.graph.sql
+import cc_public.graph.text
 
 
 ID_CONCERN = 'concern_safety'
@@ -149,3 +150,49 @@ def test_a_line_is_an_integer_in_sql(tree):
     text  = ("SELECT typeof(line) AS t FROM item "
              "UNION SELECT typeof(line) AS t FROM reference")
     assert cc_public.graph.sql.query(facts, text) == (('t',), [('integer',)])
+
+
+def test_text_rows_hold_the_prose_of_each_item_and_no_names(tree):
+    list_row = cc_public.graph.text.rows(cc_public.graph.extract.documents(tree))
+    assert ('iss_cross_item_checks_engine', 'title', 'Engine of the cross-item checks') in list_row
+    assert not [row for row in list_row
+                if row[1].startswith(('id_', 'guid_', '$')) or row[1] == 'copyright']
+
+
+def test_text_names_the_issue_and_standing_of_each_decision_it_finds(tree):
+    map_document          = cc_public.graph.extract.documents(tree)
+    facts                 = cc_public.graph.extract.facts_of(map_document)
+    (tuple_column, rows)  = cc_public.graph.text.search(facts, map_document,
+                                                        'cross-item checks in Souffle or Rust')
+    map_hit               = {row[1]: dict(zip(tuple_column, row, strict = True)) for row in rows}
+    assert map_hit['dec_cross_item_checks_in_souffle']['standing']      == 'rejected'
+    assert map_hit['dec_cross_item_checks_in_souffle']['determination'] == 'det_cross_item_checks_engine'
+    assert map_hit['dec_cross_item_checks_in_souffle']['upheld']        == 'dec_cross_item_checks_in_clingo'
+    assert map_hit['dec_tooling_in_rust']['standing']                   == 'open'
+    assert map_hit['dec_tooling_in_rust']['issue']                      == 'iss_tooling_language'
+
+
+def test_text_by_issue_leads_from_any_hit_to_its_issue(tree):
+    map_document  = cc_public.graph.extract.documents(tree)
+    facts         = cc_public.graph.extract.facts_of(map_document)
+    (_, rows)     = cc_public.graph.text.search(facts, map_document, 'souffle clingo',
+                                                is_issue = True)
+    assert rows[0][1] == 'iss_cross_item_checks_engine'
+
+
+def test_text_refuses_a_query_it_cannot_read(tree):
+    map_document = cc_public.graph.extract.documents(tree)
+    facts        = cc_public.graph.extract.facts_of(map_document)
+    with pytest.raises(cc_public.graph.text.ErrorText):
+        cc_public.graph.text.search(facts, map_document, '-- ?')
+    with pytest.raises(cc_public.graph.text.ErrorText):
+        cc_public.graph.text.search(facts, map_document, 'AND', is_match = True)
+
+
+def test_sql_searches_the_prose_of_items(tree):
+    map_document = cc_public.graph.extract.documents(tree)
+    facts        = cc_public.graph.extract.facts_of(map_document)
+    text         = ("SELECT id FROM item_text WHERE item_text MATCH 'souffle' "
+                    "AND id = 'dec_cross_item_checks_in_souffle' AND field = 'title'")
+    assert cc_public.graph.sql.query(facts, text, cc_public.graph.text.rows(map_document)) == (
+        ('id',), [('dec_cross_item_checks_in_souffle',)])

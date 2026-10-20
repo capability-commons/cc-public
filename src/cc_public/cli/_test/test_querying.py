@@ -135,3 +135,17 @@ def test_sparql_error_is_refused_with_an_example(tree):
     assert result.exit_code == 2
     assert result.stderr.startswith('SPARQL error:')
     assert 'For example: cctool query sparql' in result.stderr
+
+
+def test_text_prints_a_header_and_the_best_hits(tree):
+    result = _run(tree, 'text', 'souffle clingo', '--issue', '--limit', '1')
+    assert result.exit_code == 0
+    assert result.stdout.splitlines()[0] == 'score\tissue\thits\ttitle\tdetermination\tupheld'
+    assert result.stdout.splitlines()[1].split('\t')[1] == 'iss_cross_item_checks_engine'
+
+
+def test_text_with_no_words_is_refused_with_an_example(tree):
+    result = _run(tree, 'text', '?!')
+    assert result.exit_code == 2
+    assert 'no words to search for' in result.stderr
+    assert 'For example: cctool query text' in result.stderr
