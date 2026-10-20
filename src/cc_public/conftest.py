@@ -70,14 +70,20 @@ def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
 @pytest.fixture
 def tree(tmp_path):
     """
-    Return the root of a copy of the repository: its data items, its
+    Yield the root of a copy of the repository: its data items, its
     source and the files at its root, without version control,
     environments or caches, and with only the issues in
     TUPLE_ISSUE_KEPT.
+
+    The copy is removed when the test ends. A run makes one for each of
+    some hundreds of tests, and pytest keeps the temporary folders of
+    its last three runs, so copies left behind would fill a disk with
+    few inodes.
 
     """
 
     shutil.copytree(DIR_REPO, tmp_path,
                     ignore        = _ignore,
                     dirs_exist_ok = True)
-    return tmp_path
+    yield tmp_path
+    shutil.rmtree(tmp_path, ignore_errors = True)
