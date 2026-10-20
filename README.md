@@ -11,7 +11,7 @@ is committed.
 | path                  | holds                                          |
 |-----------------------|------------------------------------------------|
 | `_data/register/`     | registers: types, relations, concepts, concerns, protective marks, writing style rules |
-| `_data/schema/`       | the JSON Schema of every kind of item          |
+| `_data/schema/`       | the JSON Schema of every type of item          |
 | `src/cc_public/graph` | fact extraction, logic programs and SQL over the graph |
 | `src/cc_public/check` | the checks, as logic program rules, and schema validation |
 | `src/cc_public/edit`  | edits that refuse to add a failure, and the layout printer |
