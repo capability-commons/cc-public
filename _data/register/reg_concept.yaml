@@ -283,33 +283,35 @@ table:
     guid_self:          con_26a4625162d2482ab375384b716f164a
     title:              Option
     brief:              |
-                        One choice about one or more items in the
-                        graph, held as an item of its own so that it
-                        can be argued over.
+                        One candidate answer to a decision, held as an
+                        item of its own so that it can be argued over.
     description:        |
                         An option is not an annotation. An annotation
-                        asserts something and an option chooses
+                        asserts something and an option proposes
                         something. Annotations give the reasons for
                         and against an option, and those reasons are
-                        its rationale.
+                        its rationale. A determination upholds or
+                        rejects it, and an option no determination
+                        names is open.
     note:               |
-                        The concept follows architecture decisions and
-                        rationale in ISO/IEC/IEEE 42010:2011, Systems
-                        and software engineering -- Architecture
-                        description, clauses 4.2.7 and 5.8.
+                        The options for a decision are the
+                        alternatives that ISO/IEC/IEEE 42010:2011,
+                        Systems and software engineering --
+                        Architecture description, clause 5.8.2, asks a
+                        record of an architecture decision to
+                        consider. MADR calls them the considered
+                        options, and the decision management process
+                        of ISO/IEC/IEEE 15288 calls them alternatives.
 
-                        Of the points 5.8.2 asks a record to consider,
-                        the id identifies the option, the brief states
-                        it, r_is_option_for links it to the decision
-                        it is an option for and so to the items the
-                        decision is about, annotations carry its
-                        rationale and link it to concerns, the other
-                        options for the decision record the
-                        alternatives, and r_supersedes relates it to
-                        the option it replaces. Its outcome is a
-                        determination. Owner and timestamps are left
-                        to git.
+                        r_is_option_for links an option to its
+                        decision and so to the items the decision is
+                        about. r_supersedes relates it to the option
+                        it replaces.
     term_preferred:     option
+
+    term_admitted:
+      - alternative
+
     alias:              []
     relation:           []
 
@@ -544,37 +546,62 @@ table:
     guid_self:          con_8a86a0e623684e92a43bae922efd3b90
     title:              Decision
     brief:              |
-                        A question about the system that options
-                        answer, and around which the arguments for and
-                        against them are gathered.
+                        A question about the system to be settled, for
+                        which options are offered and around which the
+                        arguments for and against them are gathered.
     description:        |
-                        A decision is stated before it is settled. The
-                        options that answer it are its alternatives,
-                        and every annotation about it, and every
-                        determination that settles one of its options,
+                        A decision is stated before it is settled. Its
+                        options are the alternatives, and every
+                        annotation about it, and every determination
+                        that upholds or rejects one of its options,
                         belongs to it. A decision with no
                         determination is open.
     note:               |
-                        The concept follows the issue of Issue-Based
-                        Information Systems, in which issues are
-                        answered by positions and positions are argued
-                        for and against: Kunz and Rittel, Issues as
-                        elements of information systems, Working Paper
-                        131, Institute of Urban and Regional
-                        Development, University of California,
-                        Berkeley, 1970. Here a position is an option.
-                        A deliberation dialogue likewise opens with a
+                        The concept follows architecture decisions and
+                        rationale in ISO/IEC/IEEE 42010:2011, Systems
+                        and software engineering -- Architecture
+                        description, clauses 4.2.7 and 5.8. Of the
+                        points 5.8.2 asks a record of a decision to
+                        consider, the id identifies the decision, the
+                        brief states the question, r_is_about links it
+                        to the items it is about, its options record
+                        the alternatives, annotations carry the
+                        rationale and link it to concerns, and a
+                        determination records the outcome. Owner and
+                        timestamps are left to git. MADR and the
+                        decision management process of ISO/IEC/IEEE
+                        15288 likewise use "decision" for the question
+                        being settled.
+
+                        The structure follows Issue-Based Information
+                        Systems, in which what IBIS calls an issue is
+                        answered by positions, and positions are
+                        argued for and against: Kunz and Rittel,
+                        Issues as elements of information systems,
+                        Working Paper 131, Institute of Urban and
+                        Regional Development, University of
+                        California, Berkeley, 1970. Here an IBIS issue
+                        is a decision and a position is an option. A
+                        deliberation dialogue likewise opens with a
                         governing question: McBurney, Hitchcock and
                         Parsons, The eightfold way of deliberation
                         dialogue, International Journal of Intelligent
                         Systems 22, 2007.
 
+                        The term "issue" is deprecated because in
+                        everyday use, and in code forges, it means a
+                        problem or a ticket.
+
                         Arcadia has no counterpart.
-    term_preferred:     issue
+    term_preferred:     decision
 
     term_admitted:
       - question
 
+    term_deprecated:
+      - issue
+
+    alias:              []
     relation:           []
 
   # ---------------------------------------------------------------------------

@@ -1,0 +1,72 @@
+id_self:                ann_swap_gives_the_prefix_dec_a_new_meaning
+guid_self:              ann_e39918278f0e4b4184956273e6d937ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prefix "dec" given a new meaning by a swap
+brief:                  |
+                        A swap moves the prefix "dec", and ids such as
+                        t_decision and con_decision, from the
+                        candidate type to the question type. An old
+                        mention of an id the swap reuses still
+                        resolves and passes the checks while it names
+                        the other type, and in the diff of the change
+                        the same ids carry opposite meanings. Renaming
+                        only the candidate type leaves the old names
+                        free, so the checks flag each stale use.
+description:            |
+                        Sources: a renamed register entry keeps its
+                        old id as an alias (commit 18f1136, for the
+                        node type). A reference or mention by alias is
+                        reported as outdated only while the alias
+                        names no live item (outdated_reference and
+                        outdated_mention in
+                        src/cc_public/check/check.lp). Under a swap,
+                        the question now named
+                        dec_preferred_terms_in_names would take the id
+                        that its own candidate, now
+                        opt_preferred_terms_in_names, then held, so
+                        the order of the renames matters. 117 lines in
+                        the tree named both "decision" and "issue"
+                        (git grep at 7a66cb6), where a single
+                        substitution pass goes wrong. The cost grows
+                        with the graph. Squashing history (owner's
+                        statement, 2026-10-20T14:45:25Z) removes the
+                        diff but not the stale mentions.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_names_of_decision_and_option_types
+    guid_target:        dec_0f8ed0af35e2410694fba9e7122f6b0a
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_options_answer_a_decision
+    guid_target:        opt_689702964a544c959a316f7b07d3d8d6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_choices_answer_a_decision
+    guid_target:        opt_b646791eeea64ed48c88cd82665681b0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_outcomes_answer_a_decision
+    guid_target:        opt_e611cedb0d31462c9e518149983b3911
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
