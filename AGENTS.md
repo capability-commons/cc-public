@@ -151,6 +151,10 @@ reads them through `.claude/skills`, a link to the same directory.
   triples, and `cctool query jq '...'` sees the documents as written.
 - Read the schema of a type before writing an item of it: the type
   entry in `reg_data_item_type.yaml` names it.
+- `cctool impact REV` lists the items a commit adds, removes, renames
+  or changes, and the untouched items linked to them. `--staged` does
+  the same for the commit you are about to make. Read it before you
+  review a change, to see what else the change bears on.
 
 ## Style
 

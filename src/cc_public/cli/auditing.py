@@ -32,6 +32,7 @@ relation:               []
 """
 
 
+import json
 import pathlib
 import sys
 
@@ -39,6 +40,7 @@ import click
 
 import cc_public.cli.group
 import cc_public.commit.history
+import cc_public.commit.impact
 import cc_public.gate.gate
 import cc_public.graph.datalog
 
@@ -150,3 +152,114 @@ def _gated(root: pathlib.Path, list_tip: list[str]) -> list[str]:
                                       head = head, output = output.rstrip('\n'), name = name))
 
     return list_found
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.argument('rev', metavar = 'REV', default = 'HEAD')
+@click.option('--staged', 'is_staged',
+              is_flag = True,
+              help    = 'Show what the staged content would touch as the next commit, in '
+                        'place of REV.')
+@click.option('--depth',
+              default      = cc_public.commit.impact.DEPTH_DEFAULT,
+              show_default = True,
+              type         = click.IntRange(min = 1),
+              help         = 'How many links from a touched item to look.')
+@click.option('--direction',
+              default      = 'both',
+              show_default = True,
+              type         = click.Choice(cc_public.commit.impact.TUPLE_DIRECTION),
+              help         = 'in: the items that link to a touched one. out: those it links '
+                             'to. both: either.')
+@click.option('--json', 'is_json',
+              is_flag = True,
+              help    = 'Print JSON: the touched items and the neighbours, as lists of '
+                        'objects.')
+@click.option('--root',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The repository. Defaults to the working directory.')
+def impact(rev:       str,
+           is_staged: bool,
+           depth:     int,
+           direction: str,
+           is_json:   bool,
+           root:      pathlib.Path) -> None:
+    """
+    Show what the commit REV touches, and the untouched items around it.
+
+    Each item the commit adds, removes, renames or changes is listed,
+    against the commit's first parent. An item is changed when its own
+    fields change, or the source text of the code or file that holds
+    it. Then each untouched item within --depth links of a touched one
+    is listed, with the links that reach it. A link is an edge, a
+    reference by id and guid, or one item holding another. A walk keeps
+    the direction it starts in. REV is HEAD if left out.
+
+    \b
+    Examples:
+      cctool impact
+      cctool impact HEAD~2 --depth 2 --direction in
+      cctool impact --staged --json
+
+    """
+
+    root = root.resolve()
+    try:
+        result = cc_public.commit.impact.impact(root, None if is_staged else rev, depth, direction)
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+        click.echo(str(error), err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    if is_json:
+        click.echo(json.dumps(
+            {'touched':   [dict(zip(TUPLE_TOUCHED, row, strict = True))
+                           for row in result['touched']],
+             'neighbour': [dict(zip(TUPLE_NEIGHBOUR, row, strict = True))
+                           for row in result['neighbour']]}))
+    else:
+        for line in _impact_lines(result):
+            click.echo(line)
+
+
+TUPLE_TOUCHED   = ('id', 'delta', 'was', 'file', 'line')
+TUPLE_NEIGHBOUR = ('id', 'depth', 'via', 'relation', 'direction', 'file', 'line')
+
+
+# -----------------------------------------------------------------------------
+def _impact_lines(result: cc_public.commit.impact.Impact) -> list[str]:
+    """
+    Return the lines that show result: each touched item, then each
+    neighbour once, with each link that reaches it written as source,
+    relation and target.
+
+    """
+
+    list_line = ['{delta:<8} {id}{was}  {file}:{line}'.format(
+                     delta = delta,
+                     id    = id_item,
+                     was   = ' (was {was})'.format(was = was) if was else '',
+                     file  = file,
+                     line  = line)
+                 for (id_item, delta, was, file, line) in result['touched']]
+    list_line.append('{count} touched.'.format(count = len(result['touched'])))
+
+    map_link = {}
+    for (id_item, depth, via, relation, direction, file, line) in result['neighbour']:
+        link = (via, relation, id_item) if direction == 'out' else (id_item, relation, via)
+        map_link.setdefault((id_item, depth, file, line), []).append(' '.join(link))
+
+    if map_link:
+        list_line.append('')
+    for ((id_item, depth, file, line), list_link) in map_link.items():
+        list_line.append('{depth}  {id}  {file}:{line}'.format(
+                             depth = depth, id = id_item, file = file, line = line))
+        list_line += ['     {link}'.format(link = link) for link in list_link]
+    list_line.append('{count} {noun} untouched.'.format(
+                         count = len(map_link),
+                         noun  = 'neighbour' if len(map_link) == 1 else 'neighbours'))
+
+    return list_line
