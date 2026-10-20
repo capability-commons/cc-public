@@ -1081,3 +1081,109 @@ table:
     term_preferred:     dataflow engine
     alias:              []
     relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_argument -- Argument
+  #
+  con_argument:
+    id_self:            con_argument
+    guid_self:          con_0ad0908370ee4f9ba68cad3d0c8df8ab
+    title:              Argument
+    brief:              |
+                        One annotation that supports or challenges an
+                        option or another annotation, and so gives a
+                        reason for or against it.
+    description:        |
+                        An argument is an annotation with an edge of
+                        r_supports or r_challenges. When it bears on
+                        an option it speaks for at least one concern.
+                        The arguments of one decision, with its
+                        options and its ruling, make up a deliberation
+                        (con_deliberation); the whole is never called
+                        an argument.
+    note:               |
+                        The concept follows abstract argumentation, in
+                        which an argument is an entity that may
+                        attack, and be attacked by, other arguments:
+                        Dung, On the acceptability of arguments and
+                        its fundamental role in nonmonotonic
+                        reasoning, logic programming and n-person
+                        games, Artificial Intelligence 77, 1995. Here
+                        support is recorded as well as attack.
+    term_preferred:     argument
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_deliberation -- Deliberation
+  #
+  con_deliberation:
+    id_self:            con_deliberation
+    guid_self:          con_ad9ed7e141b64047b2b4241f3ed2448d
+    title:              Deliberation
+    brief:              |
+                        Everything gathered by one decision, its
+                        options, the annotations about it and the
+                        arguments for and against them, and the ruling
+                        that settles it.
+    description:        |
+                        A deliberation is not an item of its own. The
+                        decision names it, and the other items belong
+                        to it by their edges and are kept in the
+                        folder of the decision. A single annotation
+                        within it is an argument (con_argument).
+    note:               |
+                        A deliberation dialogue is one in which the
+                        participants decide together what action to
+                        take: McBurney, Hitchcock and Parsons, The
+                        eightfold way of deliberation dialogue,
+                        International Journal of Intelligent Systems
+                        22, 2007.
+    term_preferred:     deliberation
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_check -- Check
+  #
+  con_check:
+    id_self:            con_check
+    guid_self:          con_13ee3325edef4f94beb0e57fd8ce8a93
+    title:              Check
+    brief:              |
+                        One named test over the graph of items, such
+                        as dangling_reference, which reports a failure
+                        for each place where the graph breaks it.
+    description:        |
+                        Most checks are rules of a logic program that
+                        clingo runs; a few are in Python, and the
+                        shape of every document is checked against its
+                        schema. cctool check runs them all, and the
+                        gate runs cctool check before every commit.
+                        What a check reports is a failure
+                        (con_failure). A rule is the construct of the
+                        logic program a check is written in, and a
+                        writing style rule is a different thing again.
+    term_preferred:     check
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_failure -- Failure
+  #
+  con_failure:
+    id_self:            con_failure
+    guid_self:          con_211f7bc745324eaf95a066d308b97e81
+    title:              Failure
+    brief:              |
+                        One report of a check (con_check), naming the
+                        place where the graph breaks it, what was
+                        found, and how to fix it.
+    description:        |
+                        A failure stops a commit at the gate. It is
+                        not an error. An error is cctool failing to do
+                        what it was asked, such as a query that does
+                        not parse, and is reported with exit status 2.
+    term_preferred:     failure
+    alias:              []
+    relation:           []
