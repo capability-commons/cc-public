@@ -1271,3 +1271,81 @@ table:
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
         id_target:      rol_design_element
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
+
+  # ---------------------------------------------------------------------------
+  # t_system_configuration -- System configuration type
+  #
+  t_system_configuration:
+    id_self:            t_system_configuration
+    guid_self:          t_5a42831510754e46a1c877b0122061d6
+    title:              System configuration type
+    brief:              |
+                        Type of system configuration data items.
+    description:        |
+                        Each system configuration data item describes
+                        one system of interest as a data flow graph
+                        that can be run: its nodes, the edges between
+                        their ports, and where each node runs.
+    usage:              |
+                        A system configuration puts the model of a
+                        system in the graph, so that rules can follow
+                        data from node to node, and a decision or an
+                        argument can be about one configuration of a
+                        model.
+    note:               |
+                        The shape of system configuration data items
+                        is defined by the sch_system_configuration
+                        schema.
+    prefix:             sys
+    regex_id:           ^sys_[a-z][a-z0-9_]*$
+    id_concept:         con_system_configuration
+    guid_concept:       con_89522a6f06b34f15b8b6cef1b2a43c51
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_system_configuration
+        guid_target:    sch_58645b97dbbe453eb3b5093260d3d576
+
+  # ---------------------------------------------------------------------------
+  # t_node -- Node type
+  #
+  t_node:
+    id_self:            t_node
+    guid_self:          t_f07f858ee0104b4b9d62bc38623d40de
+    title:              Node type
+    brief:              |
+                        Type of node data items.
+    description:        |
+                        Each node data item is one node of a system
+                        configuration, embedded in it.
+    usage:              |
+                        A node can be named on its own: an edge of
+                        data flow has one at each end, and a rule can
+                        find every node upstream or downstream of it.
+    note:               |
+                        The id is the id of the system configuration
+                        with the prefix nod in place of sys, then a
+                        full stop and the key the node is filed under.
+
+                        The shape of node data items is defined by the
+                        sch_node schema.
+    prefix:             nod
+    regex_id:           ^nod_[a-z][a-z0-9_]*\.[a-z0-9_]+$
+    id_concept:         con_node
+    guid_concept:       con_93fe20797cb04f98b2a396259f9c15a6
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_node
+        guid_target:    sch_42abc9d2df5544688e9047a09bc6948a
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_implementation
+        guid_target:    rol_991702df92e147e9915b344c4297f972

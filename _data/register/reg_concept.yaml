@@ -846,3 +846,74 @@ table:
     term_preferred:     interface member
     alias:              []
     relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_system_configuration -- System configuration
+  #
+  con_system_configuration:
+    id_self:            con_system_configuration
+    guid_self:          con_89522a6f06b34f15b8b6cef1b2a43c51
+    title:              System configuration
+    brief:              |
+                        A system of interest described as a data flow
+                        graph: its nodes, the edges that carry data
+                        between their ports, and where each node runs.
+    description:        |
+                        A system configuration is complete enough to
+                        be run. Each node names the interface control
+                        document whose dataflow step surface it
+                        presents, so that every edge can be checked
+                        against the ports at its ends. A variant of a
+                        system, for a test, a simulation or a
+                        deployment, is a system configuration of its
+                        own.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.770 defines
+                        configuration as the arrangement of a computer
+                        system or component as defined by the number,
+                        nature and interconnections of its constituent
+                        parts (sense 1), and as a collection of
+                        objects able to interact at interfaces (sense
+                        6, from ISO/IEC 10746-2). The sections of a
+                        system configuration follow the configuration
+                        model of Stableflow, the data flow engine of
+                        Design Factory (software architecture
+                        description 2.0.0, clause 5.5).
+    term_preferred:     system configuration
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_node -- Node
+  #
+  con_node:
+    id_self:            con_node
+    guid_self:          con_93fe20797cb04f98b2a396259f9c15a6
+    title:              Node
+    brief:              |
+                        One process of a data flow graph: a step that
+                        reads its inputs, writes its outputs and keeps
+                        state between invocations.
+    description:        |
+                        A node is one use of a step within a system
+                        configuration. Its interface is a dataflow
+                        step surface of an interface control document,
+                        and its settings are the values it is
+                        configured with. Many nodes may present the
+                        same interface.
+    note:               |
+                        A node is a process of a Kahn process network
+                        (Kahn, The semantics of a simple language for
+                        parallel programming, IFIP 1974), and a node
+                        in the sense of Stableflow (software
+                        architecture description 2.0.0, clause 5.1).
+                        Node is an overloaded word. ISO/IEC/IEEE
+                        24765:2017 3.2598 gives it five senses, among
+                        them a vertex of a graph (sense 1) and a unit
+                        located in space, which is a host (sense 2).
+                        Arcadia uses it for a physical component that
+                        hosts others. Here it is neither: a node runs
+                        on a process, and a process on a host.
+    term_preferred:     node
+    alias:              []
+    relation:           []
