@@ -125,6 +125,11 @@ SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
 MAP_READ          = {}
 COUNT_READ        = 4096
 
+# How much of the head of a file that is not YAML or python is read to
+# tell whether it has changed. A comment header is far shorter.
+#
+SIZE_HEAD         = 65536
+
 # Each base relation: its columns, and what one row of it states. A
 # column is a symbol unless its name is followed by :number. A line
 # is the line of the file, counted from 1, that the key of the field
@@ -439,8 +444,9 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
 
     A YAML file or python module that holds what it held when it was
     last read gives the same documents as then, the same objects, so
-    that what was found by checking them can be reused. A document is
-    never changed once read.
+    that what was found by checking them can be reused. So does any
+    other file whose size and head are as they were. A
+    document is never changed once read.
 
     """
 
@@ -459,9 +465,17 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
         return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
-    # read, and only as far as a comment header could go.
+    # read, and only as far as a comment header could go. It is known
+    # to be unchanged by its size and the digest of its head.
     #
-    return {str(relative): _header(_line_of_file(path), mark_comment(relative))}
+    with open(path, 'rb') as file:
+        head = file.read(SIZE_HEAD)
+    key  = (str(relative), path.stat().st_size, hashlib.blake2b(head, digest_size = 16).digest())
+    if key not in MAP_READ:
+        if len(MAP_READ) >= COUNT_READ:
+            MAP_READ.clear()
+        MAP_READ[key] = {str(relative): _header(_line_of_file(path), mark_comment(relative))}
+    return MAP_READ[key]
 
 
 # -----------------------------------------------------------------------------
