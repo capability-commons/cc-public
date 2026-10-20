@@ -1,0 +1,80 @@
+id_self:                icd_printer
+guid_self:              icd_f9db07ada7cb48289a4911c824424332
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Printer interface
+brief:                  |
+                        The dataflow step that prints each value it is
+                        given to a stream.
+description:            |
+                        The printer writes each value it takes to
+                        standard output, standard error or a file,
+                        plainly or pretty printed. It is a sink for
+                        checking that data reaches the end of a
+                        system.
+note:                   |
+                        Ported from the printer of the Stableflow test
+                        library in Design Factory
+                        (pl.stableflow.lib.test.native.native_printer).
+                        That component prints all of its inputs; this
+                        interface names one.
+version_interface:      '1.0'
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        value:
+          id_self:      icm_printer.value
+          guid_self:    icm_871e40e76c064b6cbb6a8a78bd445ff5
+          name:         value
+          brief:        |
+                        The value to print.
+
+          type:
+            spelling:   dict
+
+      config:
+
+        output:
+          id_self:      icm_printer.output
+          guid_self:    icm_15a35685df1043749bf6f49b175adfc4
+          name:         output
+          brief:        |
+                        Where to print: stdout, stderr or the path of
+                        a file.
+
+          type:
+            spelling:   str
+
+          default:      stdout
+
+        pretty:
+          id_self:      icm_printer.pretty
+          guid_self:    icm_a5affef4e3fb496f8ff8d7c8bf8cf03c
+          name:         pretty
+          brief:        |
+                        Whether to pretty print each value.
+
+          type:
+            spelling:   bool
+
+          default:      'False'
+
+      invocation:       |
+                        Once for each value.
+      finalization:     |
+                        A file opened for output is closed when the
+                        run is reset.
+
+relation:               []

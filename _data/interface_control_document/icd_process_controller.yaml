@@ -1,0 +1,82 @@
+id_self:                icd_process_controller
+guid_self:              icd_71142c599d1f4fcb990108c0d7b0a26a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Process controller interface
+brief:                  |
+                        The dataflow step that passes the control
+                        packet of the system on to the nodes of one
+                        process, and reports the load of the process
+                        back.
+description:            |
+                        There is one process controller in each
+                        process. It copies each control packet it is
+                        given to its control output, and reports the
+                        length of every queue of its process, and any
+                        exception raised in it, on its feedback
+                        output. It stops its process when the packet
+                        says to halt.
+note:                   |
+                        Ported from the process controller of the
+                        Stableflow test library in Design Factory
+                        (pl.stableflow.lib.test.native.controller.process).
+                        That component reads its input as ctrl, though
+                        the Stableflow smoketest configuration wires
+                        it as control.
+version_interface:      '1.0'
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        ctrl:
+          id_self:      icm_process_controller.ctrl
+          guid_self:    icm_b0c4123a1cab4e58beea7e0c5fe5abc6
+          name:         ctrl
+          brief:        |
+                        The control packet from the system controller.
+
+          type:
+            spelling:   dict
+
+      output:
+
+        control:
+          id_self:      icm_process_controller.control
+          guid_self:    icm_66b32f91387449898b73913f2a7ebf84
+          name:         control
+          brief:        |
+                        A copy of the control packet, for the nodes of
+                        the process.
+
+          type:
+            spelling:   dict
+
+        feedback:
+          id_self:      icm_process_controller.feedback
+          guid_self:    icm_027947ec4b174d4ebb50d77f18cc3753
+          name:         feedback
+          brief:        |
+                        The load and exceptions of the process.
+
+          type:
+            spelling:   dict
+
+      invocation:       |
+                        Once for each control packet. A packet whose
+                        ena is false is not passed on.
+      finalization:     |
+                        When the packet sets do_halt, the step returns
+                        exit_ok_controlled, and its process stops.
+
+relation:               []

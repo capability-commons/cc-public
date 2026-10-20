@@ -1160,13 +1160,15 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
 def _rows(root, relation, arity):
     """
     Return the sorted rows of the derived relation in the tree under
-    root.
+    root, less those that name a node of a system configuration other
+    than sys_x.
 
     """
 
     facts = cc_public.graph.extract.extract(root)
     rules = '#show {relation}/{arity}.'.format(relation = relation, arity = arity)
-    return sorted(cc_public.graph.datalog.run(facts, rules)[relation])
+    return sorted(row for row in cc_public.graph.datalog.run(facts, rules)[relation]
+                  if all(not each.startswith('nod_') or each.startswith('nod_x.') for each in row))
 
 
 # A ring of three nodes, closed by a feedback edge, that feeds every

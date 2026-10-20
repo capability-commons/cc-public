@@ -1,0 +1,175 @@
+id_self:                icd_system_controller
+guid_self:              icd_c9560f82750f479eaeb8c7e4834a05a1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  System controller interface
+brief:                  |
+                        The dataflow step that paces a whole system
+                        and tells it when to halt: it sends a control
+                        packet on every step.
+description:            |
+                        The system controller is the first node of a
+                        system. Each step it sends one control packet,
+                        which the process controllers pass on to the
+                        nodes of their processes. It halts the system
+                        after a number of steps or a length of time,
+                        or when a process reports an exception, and it
+                        enters a degraded mode when the queues it
+                        hears of grow too long.
+note:                   |
+                        Ported from the system controller of the
+                        Stableflow test library in Design Factory
+                        (pl.stableflow.lib.test.native.controller.system).
+                        That component sends the packet on every
+                        output it is given; this interface names one.
+version_interface:      '1.0'
+
+declaration:
+
+  control_packet:
+    id_self:            icm_system_controller.control_packet
+    guid_self:          icm_249a303158ad4e3f93d639edff18773e
+    name:               control packet
+    brief:              |
+                        What a controller sends on each step.
+    shape:              |
+                        A mapping with ena, true when the packet
+                        carries data; idx, the number of the step;
+                        ts_rel_us, the time of the step in
+                        microseconds from an arbitrary zero; id_year,
+                        id_day, id_hour, id_min and id_sec, the UTC
+                        time of the step as codes for aggregation;
+                        load_rel, the share of the step period used;
+                        do_degraded and do_halt, the mode flags; and
+                        retval, the exit code once do_halt is set.
+
+  feedback_packet:
+    id_self:            icm_system_controller.feedback_packet
+    guid_self:          icm_33589b68102940618e1b16f806adcb44
+    name:               feedback packet
+    brief:              |
+                        What a process controller reports back.
+    shape:              |
+                        A mapping with ena, true when the packet
+                        carries data; map_load, the approximate length
+                        of each queue of the process, keyed by its
+                        path; and list_ex, the exceptions the process
+                        has raised.
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        feedback:
+          id_self:      icm_system_controller.feedback
+          guid_self:    icm_0f46eddb301545968b2c9cdf63760177
+          name:         feedback
+          brief:        |
+                        The load and exceptions reported by a process.
+
+          type:
+            declaration:  feedback_packet
+            spelling:   dict
+
+          optional:     true
+
+      output:
+
+        control:
+          id_self:      icm_system_controller.control
+          guid_self:    icm_a12935f6526b4b91b956edea9aa26210
+          name:         control
+          brief:        |
+                        The control packet of this step.
+
+          type:
+            declaration:  control_packet
+            spelling:   dict
+
+      config:
+
+        frequency_hz:
+          id_self:      icm_system_controller.frequency_hz
+          guid_self:    icm_7f96286dd6f24564839b0035d7ed3fc5
+          name:         frequency_hz
+          brief:        |
+                        The rate of steps. With none given, steps run
+                        as fast as they can.
+
+          type:
+            spelling:   float
+
+          optional:     true
+
+        idx_max:
+          id_self:      icm_system_controller.idx_max
+          guid_self:    icm_7388fad104ce479887b049d58f821571
+          name:         idx_max
+          brief:        |
+                        The number of steps after which the system
+                        halts.
+
+          type:
+            spelling:   int
+
+          optional:     true
+
+        time_elapsed_max_secs:
+          id_self:      icm_system_controller.time_elapsed_max_secs
+          guid_self:    icm_c104db5293c04852bc69f93a26d5d1e6
+          name:         time_elapsed_max_secs
+          brief:        |
+                        The time after which the system halts.
+
+          type:
+            spelling:   float
+
+          optional:     true
+
+        dmode_enter_maxq:
+          id_self:      icm_system_controller.dmode_enter_maxq
+          guid_self:    icm_effb1260d4ec4b3eac2ff39f169bc202
+          name:         dmode_enter_maxq
+          brief:        |
+                        The queue length above which degraded mode
+                        begins.
+
+          type:
+            spelling:   int
+
+          default:      '20'
+
+        dmode_exit_maxq:
+          id_self:      icm_system_controller.dmode_exit_maxq
+          guid_self:    icm_7f73b478c48e4f8e930fe841316ea37b
+          name:         dmode_exit_maxq
+          brief:        |
+                        The queue length below which degraded mode
+                        ends.
+
+          type:
+            spelling:   int
+
+          default:      '3'
+
+      invocation:       |
+                        Once for each step of the system. With
+                        frequency_hz given, a step waits until its
+                        time comes, so that steps keep to the rate.
+      determinism:      |
+                        Not deterministic. The step reads the wall
+                        clock to pace itself and to time each packet,
+                        so a run is reproduced only in the order and
+                        content of its packets, not their times.
+
+relation:               []

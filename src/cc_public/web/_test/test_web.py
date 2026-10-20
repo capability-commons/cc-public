@@ -728,7 +728,7 @@ def test_interface_index_lists_interface_control_documents(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/interfaces')
     assert status == http.HTTPStatus.OK
     text = body.decode()
-    assert text.count('href="/interface/icd_') == 1
+    assert text.count('href="/interface/icd_') == 4
     assert '<a href="/interface/icd_cc_public_check">Checker interface</a>' in text
     assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 8<', text)
 
