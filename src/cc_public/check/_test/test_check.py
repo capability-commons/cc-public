@@ -576,7 +576,7 @@ def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', ID_ABOUT)])
     assert _check(tree) == {'restriction_violation': [
-        ('ann_x', 'r_supports', ID_ABOUT, 'target', 'rrs_is_arguable')]}
+        ('ann_x', 'r_supports', ID_ABOUT, 'target', 'rrs_can_be_target_of_an_argument')]}
 
 
 def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
