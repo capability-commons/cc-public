@@ -50,7 +50,9 @@ import pathlib
 import threading
 import urllib.parse
 
+import cc_public.check.check
 import cc_public.edit.edit
+import cc_public.graph.extract
 import cc_public.web.argument
 import cc_public.web.contract
 import cc_public.web.page
@@ -304,5 +306,22 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
             self.end_headers()
             self.wfile.write(body)
 
+    threading.Thread(target = _warm, args = (root,), daemon = True).start()
+
     with http.server.ThreadingHTTPServer((host, port), Handler) as server:
         server.serve_forever()
+
+
+# -----------------------------------------------------------------------------
+def _warm(root: pathlib.Path) -> None:
+    """
+    Read and check the tree under root once, so that the first page and
+    the first form do not wait for every document to be parsed and
+    validated. A request that comes meanwhile waits for it.
+
+    """
+
+    with LOCK_READ:
+        cc_public.web.argument.Graph(root)
+        cc_public.check.check.check_documents(cc_public.graph.extract.documents(root),
+                                              cc_public.check.check.CACHE_SCHEMA)
