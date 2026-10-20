@@ -1353,3 +1353,42 @@ table:
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
+
+  # ---------------------------------------------------------------------------
+  # t_shell_script -- Shell script type
+  #
+  t_shell_script:
+    id_self:            t_shell_script
+    guid_self:          t_cfae32fb2a9c45118f900edf832f8bc9
+    title:              Shell script type
+    brief:              |
+                        Type of shell script items.
+    description:        |
+                        Each shell script item holds the metadata of
+                        one shell script, in a comment at the head of
+                        the script.
+    usage:              |
+                        Shell script items let the git hooks and other
+                        scripts be traced and owned like any other
+                        item, and be told apart from configuration
+                        files, which have the type t_file.
+    note:               |
+                        The prefix is the whole word shell, so that it
+                        cannot be read as sch, the prefix of schemas.
+    prefix:             shell
+    regex_id:           ^shell_[a-z][a-z0-9_]*$
+    id_concept:         con_shell_script
+    guid_concept:       con_35a0c19068b04b5798a7158872f2802a
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_has_items_specified_by_schema
+        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+        id_target:      sch_shell_script
+        guid_target:    sch_d5d7be40ad4440878fc481b54516cacd
+
+      - id_relation:    r_has_items_that_play
+        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+        id_target:      rol_implementation
+        guid_target:    rol_991702df92e147e9915b344c4297f972
