@@ -89,6 +89,20 @@ def test_a_commit_made_without_the_hooks_is_reported(repo):
     _commit(repo, 'Tidy up')
     [found] = cc_public.commit.history.check(repo, 'HEAD')
     assert found.startswith('A commit message is a subject line, a blank line,')
+    assert found.endswith(cc_public.commit.history.HINT_CUT)
+
+
+def test_a_commit_copied_with_git_am_is_reported_with_the_cause(repo):
+    (repo / 'README.md').write_text('Changed.\n')
+    _commit(repo, cc_public.commit.message.compose('Change README.md so that it is short',
+                                                   'It is short.'))
+    patch = _git(repo, 'format-patch', '-1', '--stdout', 'HEAD')
+    _git(repo, 'reset', '--quiet', '--hard', 'HEAD~1')
+    subprocess.run(['git', '-c', 'user.name=x', '-c', 'user.email=x', 'am', '--quiet'],
+                   cwd = repo, check = True, input = patch, text = True)
+    assert _git(repo, 'log', '-1', '--format=%B').strip() == 'Change README.md so that it is short'
+    [found] = cc_public.commit.history.check(repo, 'HEAD')
+    assert found.endswith(cc_public.commit.history.HINT_CUT)
 
 
 def test_a_commit_item_shared_by_two_commits_is_reported(repo):

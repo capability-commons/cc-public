@@ -56,6 +56,12 @@ MARK_FIELD    = '\x00'
 LENGTH_SHORT  = 7
 ZERO          = '0' * 40
 
+# git am ends a commit message at its first --- line, so a commit
+# copied from another machine with format-patch and am loses its item.
+#
+HINT_CUT      = ('If the commit was copied from another machine with git am, which ends '
+                 'a message at its first --- line, copy it with git bundle instead.')
+
 
 # -----------------------------------------------------------------------------
 def commits(root: pathlib.Path, list_arg: list[str]) -> list[str]:
@@ -114,6 +120,9 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
             cc_public.gate.gate.copy_commit(root, commit + '^', dir_before)
 
         list_found = cc_public.commit.message.violations(dir_after, text)
+        if list_found and cc_public.commit.message.LINE_OPEN not in text.split('\n'):
+            return ['{found} {hint}'.format(found = list_found[0], hint = HINT_CUT),
+                    *list_found[1:]]
         if list_found:
             return list_found
 
