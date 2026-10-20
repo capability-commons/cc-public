@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.graph.datalog
+id_self:                pym_cc_public.graph.logic
 guid_self:              pym_c1c7e94e143148229f358c139ee034de
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -11,10 +11,10 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Datalog evaluation
+title:                  Logic program evaluation
 brief:                  |
-                        Evaluate Datalog rules over the facts of the
-                        graph of data items, with clingo.
+                        Evaluate logic program rules over the facts of
+                        the graph of data items, with clingo.
 description:            |
                         The rules are a clingo program. This module
                         adds the facts and a program made of two
@@ -101,7 +101,7 @@ Rows              = dict[str, list[tuple[str, ...]]]
 
 
 # -----------------------------------------------------------------------------
-class ErrorDatalog(Exception):
+class ErrorLogic(Exception):
     """
     The rules given could not be evaluated. The message is clingo's,
     or says what is missing.
@@ -126,8 +126,8 @@ class Context:
         try:
             is_match = _compiled(regex.string).fullmatch(text.string) is not None
         except re.error as error:
-            raise ErrorDatalog('Bad regex {regex!r}: {error}'.format(
-                                    regex = regex.string, error = error)) from error
+            raise ErrorLogic('Bad regex {regex!r}: {error}'.format(
+                                  regex = regex.string, error = error)) from error
         return clingo.Number(int(is_match))
 
     # -------------------------------------------------------------------------
@@ -372,10 +372,10 @@ def run(facts:      cc_public.graph.extract.Facts,
     for (name, arity) in ((match.group(1), int(match.group(2)))
                           for match in REGEX_SHOW.finditer(REGEX_COMMENT.sub('', rules))):
         if (name in map_column) and (arity != len(map_column[name])):
-            raise ErrorDatalog('{name} is shown with arity {arity}, but declared with '
-                               '{count} columns.'.format(name  = name,
-                                                         arity = arity,
-                                                         count = len(map_column[name])))
+            raise ErrorLogic('{name} is shown with arity {arity}, but declared with '
+                             '{count} columns.'.format(name  = name,
+                                                       arity = arity,
+                                                       count = len(map_column[name])))
 
     # Every message clingo gives is an error, a warning included: an
     # atom that occurs in no rule head is most often a misspelt
@@ -392,10 +392,10 @@ def run(facts:      cc_public.graph.extract.Facts,
         control.add('base', [], prelude + rules)
         control.ground([('base', [])], context = Context())
     except RuntimeError as error:
-        raise ErrorDatalog(_message(''.join(list_message) or str(error), line)) from error
+        raise ErrorLogic(_message(''.join(list_message) or str(error), line)) from error
 
     if list_message:
-        raise ErrorDatalog(_message(''.join(list_message), line))
+        raise ErrorLogic(_message(''.join(list_message), line))
 
     # A stratified program has exactly one model, so clingo is asked
     # for two to show that there is no second. None means that a
@@ -409,16 +409,16 @@ def run(facts:      cc_public.graph.extract.Facts,
         for model in handle:
             count += 1
             if count > 1:
-                raise ErrorDatalog('The rules have more than one answer set, so their '
-                                   'rows are not determined. Remove any choice rule.')
+                raise ErrorLogic('The rules have more than one answer set, so their '
+                                 'rows are not determined. Remove any choice rule.')
             for symbol in model.symbols(shown = True):
                 if symbol.name in rows:
                     rows[symbol.name].append(tuple(map(_field, symbol.arguments)))
 
     if count == 0:
-        raise ErrorDatalog('The rules have no answer set, so they give no rows. A '
-                           'constraint (a rule with no head) holds, or the program '
-                           'contradicts itself.')
+        raise ErrorLogic('The rules have no answer set, so they give no rows. A '
+                         'constraint (a rule with no head) holds, or the program '
+                         'contradicts itself.')
 
     return {name: sorted(list_row) for (name, list_row) in rows.items()}
 

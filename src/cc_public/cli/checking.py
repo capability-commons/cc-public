@@ -33,7 +33,7 @@ import click
 
 import cc_public.check.check
 import cc_public.cli.group
-import cc_public.graph.datalog
+import cc_public.graph.logic
 
 
 # -----------------------------------------------------------------------------
@@ -59,16 +59,16 @@ def check(root: pathlib.Path) -> None:
 
     try:
         (failures, advice) = cc_public.check.check.review(root.resolve())
-    except cc_public.graph.datalog.ErrorDatalog as error:
+    except cc_public.graph.logic.ErrorLogic as error:
         click.echo('The checks could not be run: {error}'.format(error = error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
     map_column  = cc_public.check.check.columns()
     map_wording = cc_public.check.check.wording()
 
-    for line in cc_public.graph.datalog.described(advice, map_column, map_wording, 'advice: '):
+    for line in cc_public.graph.logic.described(advice, map_column, map_wording, 'advice: '):
         click.echo(line)
-    for line in cc_public.graph.datalog.described(failures, map_column, map_wording):
+    for line in cc_public.graph.logic.described(failures, map_column, map_wording):
         click.echo(line)
 
     count = sum(len(list_row) for list_row in failures.values())

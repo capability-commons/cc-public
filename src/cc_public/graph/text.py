@@ -31,8 +31,8 @@ description:            |
                         A plain query that names a concept by one of
                         its preferred or admitted terms also matches
                         the other terms of that concept. The hits can
-                        also be given to Datalog rules as text_hit
-                        facts.
+                        also be given to logic program rules as
+                        text_hit facts.
 relation:               []
 
 ...
@@ -43,7 +43,7 @@ import re
 import sqlite3
 import typing
 
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 import cc_public.graph.sql
 
@@ -84,11 +84,11 @@ GROUP BY id
 ORDER BY score, id
 """
 
-# A text hit as a relation for Datalog rules.
+# A text hit as a relation for logic program rules.
 #
 MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL),
                                   ('field', cc_public.graph.extract.TYPE_SYMBOL),
-                                  ('rank',  cc_public.graph.datalog.TYPE_NUMBER))}
+                                  ('rank',  cc_public.graph.logic.TYPE_NUMBER))}
 
 # Each field that matches, with its BM25 score, lower being better.
 # bm25() can be used only in a plain query of the table, so the hits

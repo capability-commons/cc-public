@@ -47,14 +47,14 @@ import pathlib
 
 import cc_public.check.schema
 import cc_public.edit.layout
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
 RULES             = pathlib.Path(__file__).with_name('check.lp')
 ADVICE            = pathlib.Path(__file__).with_name('advise.lp')
 
-# The checks of check.lp, and one more that is not Datalog: each
+# The checks of check.lp, and one more that is not a logic program rule: each
 # document conforms to the schemas that document_schema names for it.
 #
 NAME_PAIR         = 'document_schema'
@@ -66,7 +66,7 @@ NAME_SCHEMA       = 'schema_violation'
 #
 NAME_LAYOUT       = 'unformatted_file'
 
-# The wording of the two checks that are not Datalog. The checks of
+# The wording of the two checks that are not logic program rules. The checks of
 # check.lp are worded there, after their declarations.
 #
 WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
@@ -246,7 +246,7 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
     text_rules  = RULES.read_text(encoding = 'utf-8')
     key         = (text_rules,
                    text_advice,
-                   cc_public.graph.datalog.PATH_DERIVE.read_text(encoding = 'utf-8'),
+                   cc_public.graph.logic.PATH_DERIVE.read_text(encoding = 'utf-8'),
                    tuple((relative, id(document), line)
                          for (relative, (document, line)) in sorted(map_document.items())))
 
@@ -272,19 +272,19 @@ def _review(map_document: cc_public.graph.extract.Documents,
     """
 
     facts       = cc_public.graph.extract.facts_of(map_document)
-    rows        = cc_public.graph.datalog.run(facts,
+    rows        = cc_public.graph.logic.run(facts,
                                               text_rules + '\n'
                                               + text_advice + '\n'
-                                              + cc_public.graph.datalog.show(
+                                              + cc_public.graph.logic.show(
                                                     NAME_PAIR,
-                                                    cc_public.graph.datalog.derived()))
+                                                    cc_public.graph.logic.derived()))
 
     rows[NAME_SCHEMA] = cc_public.check.schema.violations(map_document,
                                                           facts,
                                                           set(rows.pop(NAME_PAIR)),
                                                           cache)
 
-    set_advice = set(cc_public.graph.datalog.declared(text_advice))
+    set_advice = set(cc_public.graph.logic.declared(text_advice))
     failures   = {name: list_row for (name, list_row) in rows.items()
                   if list_row and name not in set_advice}
     advice     = {name: list_row for (name, list_row) in rows.items()
@@ -325,7 +325,7 @@ def columns() -> dict[str, tuple[str, ...]]:
     text       = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
     map_column = {name: tuple(column for (column, _) in tuple_column)
                   for (name, tuple_column)
-                  in cc_public.graph.datalog.declared(text).items()}
+                  in cc_public.graph.logic.declared(text).items()}
 
     map_column[NAME_SCHEMA] = cc_public.check.schema.COLUMNS
     map_column[NAME_LAYOUT] = cc_public.edit.layout.COLUMNS
@@ -363,7 +363,7 @@ def wording() -> dict[str, dict[str, str]]:
     """
 
     text        = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
-    map_wording = cc_public.graph.datalog.worded(text)
+    map_wording = cc_public.graph.logic.worded(text)
 
     map_wording[NAME_SCHEMA] = WORDING_SCHEMA
     map_wording[NAME_LAYOUT] = WORDING_LAYOUT

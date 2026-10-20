@@ -40,7 +40,7 @@ import typing
 
 import cc_public.commit.change
 import cc_public.gate.gate
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -117,7 +117,7 @@ def impact_trees(dir_before: pathlib.Path,
     facts['max_depth']               = {(str(depth),)}
     facts['direction']               = {(direction,)}
 
-    rows       = cc_public.graph.datalog.run(facts, RULES.read_text(encoding = 'utf-8'))
+    rows       = cc_public.graph.logic.run(facts, RULES.read_text(encoding = 'utf-8'))
     map_place  = {row[0]: (row[3], row[4]) for row in before['item']}
     map_place |= {row[0]: (row[3], row[4]) for row in facts['item']}
 

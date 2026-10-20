@@ -62,19 +62,19 @@ def test_sql_prints_json_with_the_count_of_all_rows(tree):
                                          'count':   19}
 
 
-def test_datalog_prints_each_output_relation(tree):
-    result = _run(tree, 'datalog', '% decl o(t: symbol)\n#show o/1. o(T) :- type_of("concern_cost", T).')
+def test_logic_prints_each_output_relation(tree):
+    result = _run(tree, 'logic', '% decl o(t: symbol)\n#show o/1. o(T) :- type_of("concern_cost", T).')
     assert result.exit_code == 0
     assert result.stdout == '# o\nt\nt_concern\n'
 
 
-def test_datalog_gives_a_number_column_as_numbers(tree):
-    result = _run(tree, 'datalog', '% decl o(n: number)\n#show o/1. o(9). o(10).', '--json')
+def test_logic_gives_a_number_column_as_numbers(tree):
+    result = _run(tree, 'logic', '% decl o(n: number)\n#show o/1. o(9). o(10).', '--json')
     assert json.loads(result.stdout) == {'o': {'columns': ['n'], 'rows': [[9], [10]], 'count': 2}}
 
 
-def test_datalog_without_an_output_is_refused(tree):
-    result = _run(tree, 'datalog', 'o(T) :- type_of(_, T).')
+def test_logic_without_an_output_is_refused(tree):
+    result = _run(tree, 'logic', 'o(T) :- type_of(_, T).')
     assert result.exit_code == 2
     assert 'no relation in a #show directive' in result.stderr
 
@@ -152,9 +152,9 @@ def test_text_says_which_terms_of_a_concept_it_adds(tree):
     assert 'Also matching' not in result.stderr
 
 
-def test_datalog_with_text_reads_the_hits_as_facts(tree):
+def test_logic_with_text_reads_the_hits_as_facts(tree):
     rules  = '% decl best(id)\n#show best/1.\nbest(Id) :- text_hit(Id, _, 1).'
-    result = _run(tree, 'datalog', '--text', 'souffle', rules)
+    result = _run(tree, 'logic', '--text', 'souffle', rules)
     assert result.exit_code == 0
     assert result.stdout.splitlines()[0:2] == ['# best', 'id']
     assert len(result.stdout.splitlines()) == 3

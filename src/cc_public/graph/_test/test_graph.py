@@ -13,8 +13,8 @@ protective_mark:
 
 title:                  Graph tests
 brief:                  |
-                        Tests of Datalog and SQL evaluation over the
-                        facts of the graph.
+                        Tests of logic programs and SQL evaluation
+                        over the facts of the graph.
 description:            |
                         Each test queries a copy of the repository's
                         data items, and expects exactly the rows that
@@ -29,7 +29,7 @@ import sqlite3
 
 import pytest
 
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 import cc_public.graph.sql
 import cc_public.graph.text
@@ -40,14 +40,14 @@ ID_CONCERN = 'concern_safety'
 
 def test_declared_reads_the_columns_of_each_relation():
     text = '% decl a(x: symbol,\n%        y: number)\n  %decl b(z)\nc(1). % decl c(w)'
-    assert cc_public.graph.datalog.declared(text) == {'a': (('x', 'symbol'), ('y', 'number')),
+    assert cc_public.graph.logic.declared(text) == {'a': (('x', 'symbol'), ('y', 'number')),
                                                       'b': (('z', 'symbol'),)}
 
 
 def test_worded_reads_the_did_and_fix_after_each_declaration():
     text = ('% decl a(x: symbol)\n% did  {x} is\n%      wrong.\n% fix  Mend it.\n#show a/1.\n'
             '% decl b(y: symbol)\n#show b/1.\n% decl c(z: symbol)\n% fix  Only this.')
-    assert cc_public.graph.datalog.worded(text) == {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'},
+    assert cc_public.graph.logic.worded(text) == {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'},
                                                     'c': {'fix': 'Only this.'}}
 
 
@@ -55,7 +55,7 @@ def test_described_words_each_row_and_gives_the_fix_once():
     rows        = {'a': [('p', 'f.yaml', '3'), ('q', 'f.yaml', '')], 'b': [('r',)]}
     map_column  = {'a': ('x', 'file', 'line'), 'b': ('y',)}
     map_wording = {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'}}
-    assert cc_public.graph.datalog.described(rows, map_column, map_wording) == [
+    assert cc_public.graph.logic.described(rows, map_column, map_wording) == [
                'f.yaml:3: a: p is wrong.',
                'f.yaml: a: q is wrong.',
                '  fix: Mend it.',
@@ -64,55 +64,55 @@ def test_described_words_each_row_and_gives_the_fix_once():
 
 def test_output_reads_every_relation_named_in_order():
     text = '#show b/1.\n#show a/2. #show c / 0 . % #show d/1.\n#show b/1.'
-    assert cc_public.graph.datalog.output(text) == ['b', 'a', 'c']
+    assert cc_public.graph.logic.output(text) == ['b', 'a', 'c']
 
 
-def test_datalog_returns_each_output_relation_in_order(tree):
+def test_logic_returns_each_output_relation_in_order(tree):
     facts = cc_public.graph.extract.extract(tree)
     rules = ('#show t/1. #show i/1.\n'
              't(Type) :- type_of("{c}", Type).\n'
              'i(Id) :- item(Id, _, _, _, _), Id = "{c}".').format(c = ID_CONCERN)
-    rows  = cc_public.graph.datalog.run(facts, rules)
+    rows  = cc_public.graph.logic.run(facts, rules)
     assert list(rows.items()) == [('t', [('t_concern',)]), ('i', [(ID_CONCERN,)])]
 
 
-def test_datalog_reports_where_the_rules_begin(tree):
+def test_logic_reports_where_the_rules_begin(tree):
     facts = cc_public.graph.extract.extract(tree)
-    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'rules given begin at line'):
-        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- item(X), not p(Y).')
+    with pytest.raises(cc_public.graph.logic.ErrorLogic, match = 'rules given begin at line'):
+        cc_public.graph.logic.run(facts, '#show o/1. o(X) :- item(X), not p(Y).')
 
 
-def test_datalog_refuses_a_relation_that_nothing_defines(tree):
+def test_logic_refuses_a_relation_that_nothing_defines(tree):
     facts = cc_public.graph.extract.extract(tree)
-    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'does not occur in any rule head'):
-        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- itme(X, _, _, _, _).')
+    with pytest.raises(cc_public.graph.logic.ErrorLogic, match = 'does not occur in any rule head'):
+        cc_public.graph.logic.run(facts, '#show o/1. o(X) :- itme(X, _, _, _, _).')
 
 
-def test_datalog_accepts_an_input_relation_with_no_rows(tree):
+def test_logic_accepts_an_input_relation_with_no_rows(tree):
     facts = cc_public.graph.extract.extract(tree)
     facts['relation_inverse'] = set()
-    rows  = cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- relation_inverse(X, _).')
+    rows  = cc_public.graph.logic.run(facts, '#show o/1. o(X) :- relation_inverse(X, _).')
     assert rows == {'o': []}
 
 
-def test_datalog_refuses_rules_with_no_answer_set(tree):
+def test_logic_refuses_rules_with_no_answer_set(tree):
     facts = cc_public.graph.extract.extract(tree)
-    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'no answer set'):
-        cc_public.graph.datalog.run(facts, '#show o/1. o(X) :- tree_file(X). :- tree_file(_).')
+    with pytest.raises(cc_public.graph.logic.ErrorLogic, match = 'no answer set'):
+        cc_public.graph.logic.run(facts, '#show o/1. o(X) :- tree_file(X). :- tree_file(_).')
 
 
-def test_datalog_refuses_rules_with_more_than_one_answer_set(tree):
+def test_logic_refuses_rules_with_more_than_one_answer_set(tree):
     facts = cc_public.graph.extract.extract(tree)
-    with pytest.raises(cc_public.graph.datalog.ErrorDatalog, match = 'more than one answer set'):
-        cc_public.graph.datalog.run(facts, '#show o/1. {o(1); o(2)}.')
+    with pytest.raises(cc_public.graph.logic.ErrorLogic, match = 'more than one answer set'):
+        cc_public.graph.logic.run(facts, '#show o/1. {o(1); o(2)}.')
 
 
 def test_a_fact_with_a_tab_or_a_newline_is_read_as_written(tree):
     text = 'A tab\there, and a newline\nthere, with \\ and "quotes".'
     facts = cc_public.graph.extract.extract(tree)
     facts['tree_file'].add((text,))
-    rows  = cc_public.graph.datalog.run(facts, '#show f/1. f(F) :- tree_file(F), F = "{}".'.format(
-        text.translate(cc_public.graph.datalog.MAP_ESCAPE)))
+    rows  = cc_public.graph.logic.run(facts, '#show f/1. f(F) :- tree_file(F), F = "{}".'.format(
+        text.translate(cc_public.graph.logic.MAP_ESCAPE)))
     assert rows == {'f': [(text,)]}
 
 
@@ -192,13 +192,13 @@ def test_text_widens_a_query_by_the_other_terms_of_the_concept_it_names(tree):
         '"each" OR "regentry" OR "register entry"')
 
 
-def test_text_hits_rank_each_item_once_for_datalog(tree):
+def test_text_hits_rank_each_item_once_for_logic(tree):
     map_document = cc_public.graph.extract.documents(tree)
     facts        = cc_public.graph.extract.facts_of(map_document)
     set_hit      = cc_public.graph.text.hits(map_document, 'souffle clingo')
     assert sorted(int(rank) for (_, _, rank) in set_hit) == list(range(1, len(set_hit) + 1))
     rules        = '#show best/1.\nbest(Id) :- text_hit(Id, _, Rank), Rank < 2.'
-    rows         = cc_public.graph.datalog.run(facts | {'text_hit': set_hit}, rules,
+    rows         = cc_public.graph.logic.run(facts | {'text_hit': set_hit}, rules,
                                                cc_public.graph.text.MAP_COLUMN_HIT)
     assert len(rows['best']) == 1
 

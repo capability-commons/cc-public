@@ -63,7 +63,7 @@ import cc_public.check.check
 import cc_public.cli.group
 import cc_public.edit.edit
 import cc_public.edit.layout
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 
 
@@ -428,7 +428,7 @@ def _run(root, is_dry_run, list_operation):
                        nl = False)
 
     if added:
-        for line in cc_public.graph.datalog.described(added,
+        for line in cc_public.graph.logic.described(added,
                                                       cc_public.check.check.columns(),
                                                       cc_public.check.check.wording()):
             click.echo(line, err = True)

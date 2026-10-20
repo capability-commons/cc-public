@@ -35,7 +35,7 @@ import cc_public.cli.group
 import cc_public.commit.change
 import cc_public.commit.message
 import cc_public.gate.gate
-import cc_public.graph.datalog
+import cc_public.graph.logic
 
 
 OPTION_ROOT = click.option('--root',
@@ -100,7 +100,7 @@ def check(file, root: pathlib.Path) -> None:
     (_, item) = cc_public.commit.message.parse(text)
     try:
         failures = cc_public.commit.change.check(root.resolve(), item)
-    except (cc_public.gate.gate.ErrorGate, cc_public.graph.datalog.ErrorDatalog) as error:
+    except (cc_public.gate.gate.ErrorGate, cc_public.graph.logic.ErrorLogic) as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 

@@ -14,18 +14,18 @@ protective_mark:
 title:                  Querying commands
 brief:                  |
                         The commands that query the graph of data
-                        items, in SQL, in Datalog, in SPARQL, in jq or
-                        by text.
+                        items, in SQL, in a logic program, in SPARQL,
+                        in jq or by text.
 description:            |
                         This module holds the query group and its
-                        commands: sql, datalog, sparql, jq, text,
-                        which finds items by the words of their prose,
-                        and schema, which lists the relations SQL and
-                        Datalog see. Output is tab separated text with
-                        a header row, or JSON with --json, and is cut
-                        at --limit rows, with a note on stderr of how
-                        many were left out. A jq query prints one
-                        result to a line.
+                        commands: sql, logic, sparql, jq, text, which
+                        finds items by the words of their prose, and
+                        schema, which lists the relations SQL and
+                        logic programs see. Output is tab separated
+                        text with a header row, or JSON with --json,
+                        and is cut at --limit rows, with a note on
+                        stderr of how many were left out. A jq query
+                        prints one result to a line.
 relation:               []
 
 ...
@@ -41,7 +41,7 @@ import textwrap
 import click
 
 import cc_public.cli.group
-import cc_public.graph.datalog
+import cc_public.graph.logic
 import cc_public.graph.extract
 import cc_public.graph.item
 import cc_public.graph.jq
@@ -62,7 +62,7 @@ HINT_TEXT         = 'Run cctool query text --help to see how a query is read.'
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
                      'FROM type_of GROUP BY type"')
-EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
+EXAMPLE_LOGIC     = ("cctool query logic '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
 EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
                      "{ ?id a cc:t_concern ; f:title ?title }'")
@@ -79,10 +79,10 @@ MAP_HINT          = {EXAMPLE_JQ:     HINT_JQ,
 @cc_public.cli.group.main.group()
 def query():
     """
-    Query the graph of data items, in SQL, in Datalog, in SPARQL or in
+    Query the graph of data items, in SQL, in a logic program, in SPARQL or in
     jq, or find items by the words of their prose.
 
-    SQL and Datalog see the same relations: the base relations
+    SQL and logic programs see the same relations: the base relations
     extracted from the tree, and the relations derived from them.
     Run cctool query schema to list them. SPARQL sees the items as
     RDF triples: their types, fields and primary edges. jq sees the
@@ -154,7 +154,7 @@ def sql(text, path_file, root, limit, is_json):
     try:
         (tuple_column, list_row) = cc_public.graph.sql.query(
                                        facts, text, cc_public.graph.text.rows(map_document))
-    except (sqlite3.Error, cc_public.graph.datalog.ErrorDatalog) as error:
+    except (sqlite3.Error, cc_public.graph.logic.ErrorLogic) as error:
         _fail('SQL error: {error}'.format(error = error), EXAMPLE_SQL)
 
     if is_json:
@@ -172,9 +172,9 @@ def sql(text, path_file, root, limit, is_json):
 @click.option('--exact', 'is_exact',
               is_flag = True,
               help    = 'Match --text on its own words, not the terms of the concepts it names.')
-def datalog(text, path_file, root, limit, is_json, text_search, is_exact):
+def logic(text, path_file, root, limit, is_json, text_search, is_exact):
     """
-    Evaluate Datalog rules over the graph, with clingo.
+    Evaluate logic program rules over the graph, with clingo.
 
     The rules are clingo rules. They are added to a program that
     already holds every relation, so they may use any of them. Each
@@ -191,19 +191,19 @@ def datalog(text, path_file, root, limit, is_json, text_search, is_exact):
 
     \b
     Examples:
-      cctool query datalog '#show out/1.
+      cctool query logic '#show out/1.
         out(Id) :- type_of(Id, "t_concern").'
-      cctool query datalog --file query.lp
-      cctool query datalog --text "status field" '#show out/2.
+      cctool query logic --file query.lp
+      cctool query logic --text "status field" '#show out/2.
         out(Id, Decision) :- text_hit(Id, _, Rank), Rank <= 10, decision_of(Id, Decision).'
 
     """
 
-    text = _read(text, path_file, EXAMPLE_DATALOG)
+    text = _read(text, path_file, EXAMPLE_LOGIC)
 
-    if not cc_public.graph.datalog.output(text):
+    if not cc_public.graph.logic.output(text):
         _fail('The rules name no relation in a #show directive, so there is '
-              'nothing to print.', EXAMPLE_DATALOG)
+              'nothing to print.', EXAMPLE_LOGIC)
 
     map_document = cc_public.graph.extract.documents(root.resolve())
     facts        = cc_public.graph.extract.facts_of(map_document)
@@ -214,14 +214,14 @@ def datalog(text, path_file, root, limit, is_json, text_search, is_exact):
             facts = facts | {'text_hit': cc_public.graph.text.hits(map_document, text_search,
                                                                    list_term = list_term)}
         except cc_public.graph.text.ErrorText as error:
-            _fail(str(error), EXAMPLE_DATALOG)
+            _fail(str(error), EXAMPLE_LOGIC)
 
     try:
-        rows = cc_public.graph.datalog.run(facts, text, cc_public.graph.text.MAP_COLUMN_HIT)
-    except cc_public.graph.datalog.ErrorDatalog as error:
-        _fail('Datalog error: {error}'.format(error = error), EXAMPLE_DATALOG)
+        rows = cc_public.graph.logic.run(facts, text, cc_public.graph.text.MAP_COLUMN_HIT)
+    except cc_public.graph.logic.ErrorLogic as error:
+        _fail('Logic program error: {error}'.format(error = error), EXAMPLE_LOGIC)
 
-    map_declared = cc_public.graph.datalog.declared(text)
+    map_declared = cc_public.graph.logic.declared(text)
     map_column   = {name: tuple(column for (column, _) in tuple_column)
                     for (name, tuple_column) in map_declared.items()}
     rows         = {name: _typed(list_row, map_declared.get(name, ()))
@@ -331,7 +331,7 @@ def sparql(text, path_file, root, limit, is_json):
 @query.command()
 def schema():
     """
-    List the relations that an SQL or Datalog query may use, with
+    List the relations that an SQL or logic program query may use, with
     their columns.
 
     """
@@ -346,12 +346,12 @@ def schema():
                                  subsequent_indent = INDENT_TEXT))
 
     click.echo('\nDerived relations, as defined in cc_public/graph/derive.lp:\n')
-    click.echo(cc_public.graph.datalog.PATH_DERIVE.read_text(encoding = 'utf-8'))
+    click.echo(cc_public.graph.logic.PATH_DERIVE.read_text(encoding = 'utf-8'))
     click.echo('A column is a symbol, or text in SQL, unless it is marked :number,')
     click.echo('an integer in SQL. In SQL each relation is a table.\n')
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
-    click.echo('  ' + EXAMPLE_DATALOG)
+    click.echo('  ' + EXAMPLE_LOGIC)
     click.echo('\nA SPARQL query sees the items as triples, and a jq query the documents,')
     click.echo('not these relations. See cctool query sparql --help and cctool query jq --help.')
 
@@ -405,7 +405,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_decision, is_exact)
                                                                is_match    = is_match,
                                                                is_decision = is_decision,
                                                                list_term   = list_term)
-    except (cc_public.graph.text.ErrorText, cc_public.graph.datalog.ErrorDatalog) as error:
+    except (cc_public.graph.text.ErrorText, cc_public.graph.logic.ErrorLogic) as error:
         _fail(str(error), EXAMPLE_TEXT, HINT_TEXT)
 
     if is_json:
@@ -444,7 +444,7 @@ def _typed(list_row, tuple_column):
     """
 
     set_index = {index for (index, (_, type_column)) in enumerate(tuple_column)
-                 if type_column == cc_public.graph.datalog.TYPE_NUMBER}
+                 if type_column == cc_public.graph.logic.TYPE_NUMBER}
 
     return sorted(tuple(int(value) if index in set_index else value
                         for (index, value) in enumerate(row))

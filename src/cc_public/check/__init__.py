@@ -16,9 +16,10 @@ brief:                  |
                         Check the graph of data items held in the
                         tree.
 description:            |
-                        This package holds the checks, as Datalog
-                        rules over the facts that cc_public.graph
-                        extracts, and the module that evaluates them.
+                        This package holds the checks, as logic
+                        program rules rules over the facts that
+                        cc_public.graph extracts, and the module that
+                        evaluates them.
 relation:               []
 
 ...
