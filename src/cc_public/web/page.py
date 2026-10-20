@@ -38,7 +38,7 @@ description:            |
                         that answer it, each with its mark and how
                         much argument is for and against it. A filter
                         keeps and opens the issues it finds. The page
-                        of an issue opens with its option matrix: a
+                        of an issue opens with its decision matrix: a
                         column for each option and a row for each
                         concern, in the order of the Sankey diagram of
                         pym_cc_public.web.sankey. Options are read

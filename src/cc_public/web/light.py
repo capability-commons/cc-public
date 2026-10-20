@@ -20,7 +20,7 @@ brief:                  |
 description:            |
                         Each chain has a name that is the same
                         everywhere on the page: the id of an option,
-                        concern or annotation, or of the part of a
+                        concern or annotation, or of the part of an
                         option or annotation that one role reaches. A
                         mark in the chain carries the name as a class,
                         and, if the chain shades it, the name with its

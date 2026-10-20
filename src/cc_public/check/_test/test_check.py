@@ -301,7 +301,7 @@ def test_a_module_that_is_not_python_is_reported(tree):
     assert list(failures) == ['unrecorded_module']
 
 
-def test_an_annotation_and_a_option_about_an_item_pass(tree):
+def test_an_annotation_and_an_option_about_an_item_pass(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', 'opt_x'),
@@ -314,7 +314,7 @@ def test_an_annotation_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('ann_x',)]}
 
 
-def test_a_option_that_answers_no_issue_is_reported(tree):
+def test_an_option_that_answers_no_issue_is_reported(tree):
     _item(tree, '_data/option/opt_x.yaml', 'opt_x')
     assert _check(tree) == {'answer_count': [('opt_x', '0')]}
 
@@ -324,7 +324,7 @@ def test_an_issue_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('iss_x',)]}
 
 
-def test_a_option_outside_the_folder_of_its_issue_is_reported(tree):
+def test_an_option_outside_the_folder_of_its_issue_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/option/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'iss_x')])
     assert _check(tree) == {'misplaced_document': [
@@ -338,7 +338,7 @@ def test_an_annotation_about_an_issue_is_kept_in_its_folder(tree):
         ('ann_x', '_data/annotation/ann_x.yaml', DIR_ISSUE + 'ann_x.yaml')]}
 
 
-def test_a_determination_that_upholds_a_option_passes(tree):
+def test_a_determination_that_upholds_an_option_passes(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
     _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
@@ -388,7 +388,7 @@ def test_two_determinations_of_an_issue_are_reported(tree):
     assert _check(tree) == {'competing_determinations': [('iss_x', 'det_x', 'det_y')]}
 
 
-def test_a_option_that_supersedes_a_determination_is_reported(tree):
+def test_an_option_that_supersedes_a_determination_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     _option(tree, 'opt_y', [_edge(tree, 'r_supersedes', 'det_x')])
@@ -1006,14 +1006,14 @@ def test_a_cycle_of_supersession_is_reported(tree):
                                                            ('r_supersedes', 'opt_y')]}
 
 
-def test_an_argument_about_a_option_without_a_concern_is_reported(tree):
+def test_an_argument_about_an_option_without_a_concern_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'opt_x')])
     assert _check(tree) == {'argument_without_concern': [('ann_x',)]}
 
 
-def test_an_argument_about_a_option_with_two_concerns_passes(tree):
+def test_an_argument_about_an_option_with_two_concerns_passes(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'opt_x'),

@@ -471,32 +471,28 @@ table:
     guid_self:          t_db4130e5642c4c019f0c95c9f956875c
     title:              Option type
     brief:              |
-                        Type of decision data items.
+                        Type of option data items.
     description:        |
-                        Each decision data item records one choice
-                        about one or more items in the graph.
+                        Each option data item records one choice about
+                        one or more items in the graph.
     usage:              |
-                        Decision data items are what annotations argue
+                        Option data items are what annotations argue
                         over. The annotations that support or
-                        challenge a decision, and the concerns they
-                        argue for, are its rationale, so that a
-                        decision that proves wrong can be traced back
-                        to the concerns that shaped it.
+                        challenge an option, and the concerns they
+                        argue for, are its rationale, so that an
+                        option that proves wrong can be traced back to
+                        the concerns that shaped it.
     note:               |
-                        Decision data items travel on their own, one
-                        per file, in the folder of the issue they
-                        answer.
+                        Option data items travel on their own, one per
+                        file, in the folder of the issue they answer.
 
-                        Alternatives are decisions that answer the
-                        same issue, each argued over on its own, and
-                        each is kept whatever becomes of it.
+                        Alternatives are options that answer the same
+                        issue, each argued over on its own, and each
+                        is kept whatever becomes of it.
 
-                        The shape of decision data items is defined by
+                        The shape of option data items is defined by
                         the sch_option schema.
-
-    alias:
-      - t_decision
-
+    alias:              []
     prefix:             opt
     regex_id:           ^opt_[a-z][a-z0-9_]*$
     id_concept:         con_option
@@ -539,8 +535,8 @@ table:
                         reliability or safety, that an argument about
                         a design may speak for.
     usage:              |
-                        Concern data items let the argument behind a
-                        decision be read concern by concern.
+                        Concern data items let the argument behind an
+                        option be read concern by concern.
     note:               |
                         Concern data items only ever exist as entries
                         in the concern register, never as data items
@@ -859,17 +855,15 @@ table:
                         Type of determination data items.
     description:        |
                         Each determination data item records that one
-                        or more decisions have been upheld or
-                        rejected.
+                        or more options have been upheld or rejected.
     usage:              |
-                        A decision that no determination names is
-                        open. A determination that upholds one
-                        decision may reject its alternatives in the
-                        same item.
+                        An option that no determination names is open.
+                        A determination that upholds one option may
+                        reject its alternatives in the same item.
     note:               |
                         Determination data items travel on their own,
                         one per file, in the folder of the issue whose
-                        decisions they settle.
+                        options they settle.
 
                         An issue has at most one determination. A
                         change of ruling edits it in place, and what
@@ -907,16 +901,15 @@ table:
                         Type of issue data items.
     description:        |
                         Each issue data item states one question about
-                        the system, which decisions answer.
+                        the system, which options answer.
     usage:              |
                         An issue gathers an argument in one place: the
-                        decisions that answer it, the annotations
-                        about it, and the determinations that settle
-                        it.
+                        options that answer it, the annotations about
+                        it, and the determinations that settle it.
     note:               |
                         Each issue has a folder of its own,
                         _data/issue/ followed by its id, which holds
-                        the issue and every decision, annotation and
+                        the issue and every option, annotation and
                         determination that belongs to it.
 
                         The shape of issue data items is defined by

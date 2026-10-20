@@ -670,7 +670,7 @@ argued(Option, Concern) :-
 % did  {determination} upholds {option}, and no annotation argues
 %      {concern}, a driver, for it or an alternative to it.
 % fix  Add an annotation for that concern to the option or an
-%      alternative, or leave the option open. Do not uphold a
+%      alternative, or leave the option open. Do not uphold an
 %      option while a driver of its issue is unargued.
 #show unargued_driver/3.
 

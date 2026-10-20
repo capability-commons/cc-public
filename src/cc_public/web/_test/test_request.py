@@ -67,7 +67,7 @@ def test_an_id_is_made_from_the_title_in_whole_words():
     assert len(cc_public.web.request.slug('ann_', 'word ' * 30)) <= 4 + 48
 
 
-def test_a_option_answers_its_issue(tree):
+def test_an_option_answers_its_issue(tree):
     assert _operations(tree, kind = 'option', target = ID_OPEN,
                        title = 'Tooling in Go', brief = 'Write it in Go.') == [
         {'new':   'opt_tooling_in_go',
@@ -135,7 +135,7 @@ def test_a_form_from_another_site_is_refused(tree):
         assert status == http.HTTPStatus.FORBIDDEN
 
 
-def test_a_option_sent_is_written_in_its_issue(tree):
+def test_an_option_sent_is_written_in_its_issue(tree):
     (status, _, _, location) = _submit(tree, 'http://' + HOST, kind = 'option',
                                        target = ID_OPEN, title = 'Tooling in Go',
                                        brief = 'Write the tooling in Go.')

@@ -142,7 +142,7 @@ def test_nothing_is_dimmed_at_rest(page):
     assert _astray(page, None) == []
 
 
-def test_a_option_title_lights_its_chains_everywhere(page):
+def test_an_option_title_lights_its_chains_everywhere(page):
     _hover(page, 'section.matrix .row.head .cell > a')
     assert _astray(page, 'opt_tooling_in_python') == []
     assert page.locator('figure.sankey .dims').evaluate_all(

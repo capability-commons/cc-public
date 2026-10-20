@@ -19,7 +19,7 @@ brief:                  |
 description:            |
                         A request is what a form sends: its kind, the
                         item it acts on, the role it takes, and the
-                        fields typed into it. There are four kinds. A
+                        fields typed into it. There are four kinds. An
                         option answers an issue. An argument is an
                         annotation for or against an option, which
                         argues for one or more concerns. An answer is

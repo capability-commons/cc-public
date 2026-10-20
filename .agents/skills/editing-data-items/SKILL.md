@@ -3,7 +3,7 @@ name: editing-data-items
 description: >
   How to add or change data items in cc-public with cctool, and the
   traps that make an edit be refused. Read this BEFORE adding a type,
-  relation, concept, concern, decision or annotation, BEFORE changing
+  relation, concept, concern, option or annotation, BEFORE changing
   any YAML under _data or the item in a module docstring or comment
   header, and ALWAYS when cctool refuses an edit or cctool check fails.
 ---
@@ -61,23 +61,23 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
 - **An argument lives in the folder of its issue.** Start one with an
-  issue (`new iss_NAME --link r_is_about lc_NAME`), then give each decision
-  `--link r_is_option_for iss_NAME` (`answer_count` refuses a decision that
+  issue (`new iss_NAME --link r_is_about lc_NAME`), then give each option
+  `--link r_is_option_for iss_NAME` (`answer_count` refuses an option that
   answers no issue, or two) and each annotation `--link r_is_about
   iss_NAME`. `new` writes all of them, and determinations, in
   `_data/issue/iss_NAME/`; anything moved there by hand is checked by
   `misplaced_document`.
 - **An annotation or issue is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
-- **A determination is refused unless it upholds or rejects a decision**
+- **A determination is refused unless it upholds or rejects an option**
   (`determination_without_option`). Give `--link r_upholds DEC` or
   `--link r_rejects DEC`. Only record a determination that a person
   has made; the commit that adds it says who and when.
-- **A determination that upholds a decision is refused while a driver
+- **A determination that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
   component the issue is about `r_is_driven_by` needs an annotation
-  for it that supports or challenges the decision or another answer to
-  the same issue. Rejecting a decision needs no such annotation.
+  for it that supports or challenges the option or another option for
+  the same issue. Rejecting an option needs no such annotation.
   Argue it; do not drop the driver to pass.
 - **A second determination of an issue is refused**
   (`competing_determinations`). An issue has at most one. When the
@@ -91,9 +91,9 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   `reg_data_item_type.yaml` names with `r_has_items_that_play`. Do not
   pick another relation just to pass. A new type takes part in a
   relation by playing the role it needs, not by changing the relation.
-- **An annotation that supports or challenges a decision needs at least
+- **An annotation that supports or challenges an option needs at least
   one concern** (`argument_without_concern`), and one that bears on no
-  decision needs none (`concern_without_option`). A premise several
+  option needs none (`concern_without_option`). A premise several
   concerns rest on is one annotation linked to each concern, not one
   annotation per concern.
 - **`schema_violation`** names the file, line and field. A list field

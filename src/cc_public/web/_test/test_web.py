@@ -119,7 +119,7 @@ def test_an_issue_opens_to_its_question_and_its_options(tree):
     assert '<a href="/issue/{id}">Decision matrix</a>'.format(id = ID_ISSUE) in text
 
 
-def test_a_option_counts_its_units_for_and_against(tree):
+def test_an_option_counts_its_units_for_and_against(tree):
     graph   = cc_public.web.argument.Graph(tree)
     summary = cc_public.web.page.Summary(graph, graph.issue(ID_ISSUE))
     list_unit = [unit for unit in cc_public.web.sankey.units(summary.issue)
@@ -200,7 +200,7 @@ def test_matrix_has_a_column_for_each_option_and_a_row_for_each_concern(tree):
     assert '<h2>Options</h2>' not in text
 
 
-def test_a_option_title_opens_its_brief_under_the_head(tree):
+def test_an_option_title_opens_its_brief_under_the_head(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text  = body.decode()
@@ -213,7 +213,7 @@ def test_a_option_title_opens_its_brief_under_the_head(tree):
     assert 'src="/static/review.js"' in text
 
 
-def test_a_option_is_one_chain_across_the_page(tree):
+def test_an_option_is_one_chain_across_the_page(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
@@ -492,7 +492,7 @@ def test_graph_node_lights_both_its_chains(tree):
     assert 'lit-' + answer not in css('ann_types_catch_errors_early')
 
 
-def test_sankey_inks_an_answer_by_its_net_effect_on_a_option(tree):
+def test_sankey_inks_an_answer_by_its_net_effect_on_an_option(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
     key     = 'concern_performance_efficiency/ann_python_is_fast_enough'
@@ -512,7 +512,7 @@ def test_sankey_inks_an_answer_by_its_net_effect_on_a_option(tree):
     assert 'lit-against-ann_python_is_fast_enough' in css('Graphs will grow large')
 
 
-def test_item_page_names_the_issue_of_a_option(tree):
+def test_item_page_names_the_issue_of_an_option(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
 

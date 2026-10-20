@@ -98,7 +98,7 @@ MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL)
 # title, and what the graph says of it, read from the issue_of and
 # settles tables that derive.lp gives. The issue is the one it belongs
 # to, the determination is the one that settles that issue, and upheld
-# names the options that determination upholds. The standing of a
+# names the options that determination upholds. The standing of an
 # option is upheld, rejected or open. A higher score is a better
 # match.
 #
