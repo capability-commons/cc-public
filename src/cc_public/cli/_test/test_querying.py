@@ -109,3 +109,29 @@ def test_a_missing_query_is_refused_with_an_example(tree):
     result = _run(tree, 'sql')
     assert result.exit_code == 2
     assert 'For example: cctool query sql' in result.stderr
+
+
+def test_sparql_prints_the_rows_of_a_select(tree):
+    result = _run(tree, 'sparql', 'SELECT ?id WHERE { ?id a cc:t_concern } ORDER BY ?id',
+                  '--limit', '2')
+    assert result.exit_code == 0
+    assert result.stdout == 'id\nconcern_compatibility\nconcern_cost\n'
+    assert result.stderr == '2 of 16 rows shown. Pass --limit 0 to show all.\n'
+
+
+def test_sparql_sees_fields_and_edges(tree):
+    result = _run(tree, 'sparql', 'SELECT ?title WHERE { cc:iss_tooling_language '
+                                  'cc:r_is_about ?lc . ?lc f:title ?title }', '--json')
+    assert json.loads(result.stdout) == {'columns': ['title'], 'rows': [['Tooling']], 'count': 1}
+
+
+def test_sparql_ask_prints_true_or_false(tree):
+    result = _run(tree, 'sparql', 'ASK { cc:lc_tooling a cc:t_logical_component }')
+    assert result.stdout == 'true\n'
+
+
+def test_sparql_error_is_refused_with_an_example(tree):
+    result = _run(tree, 'sparql', 'SELECT ?x WHERE {')
+    assert result.exit_code == 2
+    assert result.stderr.startswith('SPARQL error:')
+    assert 'For example: cctool query sparql' in result.stderr

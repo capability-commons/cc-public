@@ -14,14 +14,14 @@ protective_mark:
 title:                  Querying commands
 brief:                  |
                         The commands that query the graph of data
-                        items, in SQL, in Datalog or in jq.
+                        items, in SQL, in Datalog, in SPARQL or in jq.
 description:            |
                         This module holds the query group and its
-                        commands: sql, datalog, jq, and schema, which
-                        lists the relations SQL and Datalog see.
-                        Output is tab separated text with a header
-                        row, or JSON with --json, and is cut at
-                        --limit rows, with a note on stderr of how
+                        commands: sql, datalog, sparql, jq, and
+                        schema, which lists the relations SQL and
+                        Datalog see. Output is tab separated text with
+                        a header row, or JSON with --json, and is cut
+                        at --limit rows, with a note on stderr of how
                         many were left out. A jq query prints one
                         result to a line.
 relation:               []
@@ -41,7 +41,9 @@ import click
 import cc_public.cli.group
 import cc_public.graph.datalog
 import cc_public.graph.extract
+import cc_public.graph.item
 import cc_public.graph.jq
+import cc_public.graph.sparql
 import cc_public.graph.sql
 
 
@@ -52,25 +54,32 @@ INDENT_TEXT       = '      '
 
 HINT              = 'Run cctool query schema to list the relations and their columns.'
 HINT_JQ           = 'Run cctool query jq --help to see the shape of its input.'
+HINT_SPARQL       = 'Run cctool query sparql --help to see how the graph is named.'
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
                      'FROM type_of GROUP BY type"')
 EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
+EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
+                     "{ ?id a cc:t_concern ; f:title ?title }'")
 EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/issue/\")) "
                      "| .document.id_self'")
+
+MAP_HINT          = {EXAMPLE_JQ: HINT_JQ, EXAMPLE_SPARQL: HINT_SPARQL}
 
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.group()
 def query():
     """
-    Query the graph of data items, in SQL, in Datalog or in jq.
+    Query the graph of data items, in SQL, in Datalog, in SPARQL or in
+    jq.
 
     SQL and Datalog see the same relations: the base relations
     extracted from the tree, and the relations derived from them.
-    Run cctool query schema to list them. jq sees the documents
-    themselves, as they are written.
+    Run cctool query schema to list them. SPARQL sees the items as
+    RDF triples: their types, fields and primary edges. jq sees the
+    documents themselves, as they are written.
 
     """
 
@@ -239,6 +248,54 @@ def jq(text, path_file, root, limit, is_json):
 
 # -----------------------------------------------------------------------------
 @query.command()
+@_option
+def sparql(text, path_file, root, limit, is_json):
+    """
+    Evaluate one SPARQL query over the graph, with Oxigraph.
+
+    Each item is the node cc:ID, such as cc:ann_x. Its type is its
+    rdf:type, such as cc:t_annotation, and each primary edge is a
+    triple of its relation, such as cc:r_is_about; an inverse relation
+    may be used too. Its fields are f:NAME: f:guid, f:file, f:line and
+    f:holder, every field of text, number or truth, such as f:title,
+    and every item it names in an id_NAME field, as f:NAME. The
+    prefixes cc, f, rdf, rdfs and xsd are declared. An item is printed
+    by its id. Give the query as QUERY, as - to read it from stdin, or
+    with --file.
+
+    \b
+    Examples:
+      cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:t_concern ; f:title ?title }'
+      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:iss_licence }'
+      cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
+      cctool query sparql 'ASK { cc:dec_apache_2_0 a cc:t_decision }'
+
+    """
+
+    text         = _read(text, path_file, EXAMPLE_SPARQL)
+    map_document = cc_public.graph.extract.documents(root.resolve())
+    facts        = cc_public.graph.extract.facts_of(map_document)
+    map_item     = cc_public.graph.item.items(map_document, facts)
+
+    try:
+        result = cc_public.graph.sparql.query(map_item, facts, text)
+    except cc_public.graph.sparql.ErrorSparql as error:
+        _fail('SPARQL error: {error}'.format(error = error), EXAMPLE_SPARQL, HINT_SPARQL)
+
+    if isinstance(result, bool):
+        click.echo(json.dumps({'boolean': result}) if is_json else str(result).lower())
+        return
+
+    (tuple_column, list_row) = result
+
+    if is_json:
+        click.echo(json.dumps(_result(tuple_column, list_row, limit)))
+    else:
+        _print(tuple_column, list_row, limit)
+
+
+# -----------------------------------------------------------------------------
+@query.command()
 def schema():
     """
     List the relations that an SQL or Datalog query may use, with
@@ -262,7 +319,8 @@ def schema():
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_DATALOG)
-    click.echo('\nA jq query sees the documents, not these relations. See cctool query jq --help.')
+    click.echo('\nA SPARQL query sees the items as triples, and a jq query the documents,')
+    click.echo('not these relations. See cctool query sparql --help and cctool query jq --help.')
 
 
 # -----------------------------------------------------------------------------
@@ -297,7 +355,7 @@ def _read(text, path_file, example):
 
     return _fail('No query given. Give it as QUERY, as - for stdin, or with --file.',
                  example,
-                 HINT_JQ if example == EXAMPLE_JQ else HINT)
+                 MAP_HINT.get(example, HINT))
 
 
 # -----------------------------------------------------------------------------

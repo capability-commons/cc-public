@@ -79,6 +79,7 @@ pre-push hook runs it with `--gate` on what a push would send.
     cctool history check [RANGE] [--gate]   check commits already made
     cctool format [--check]                 lay out every document
     cctool query sql|datalog QUERY          query the graph
+    cctool query sparql|jq QUERY            query the graph
     cctool query schema                     list the relations and columns
     cctool export obsidian|okf OUT          write the graph as markdown pages
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...

@@ -142,7 +142,8 @@ reads them through `.claude/skills`, a link to the same directory.
 - `cctool query schema` lists every relation and its columns.
 - `cctool query sql "SELECT ..."` for joins and counts, and
   `cctool query datalog '...'` for anything recursive, such as reach
-  through edges.
+  through edges. `cctool query sparql '...'` sees the items as RDF
+  triples, and `cctool query jq '...'` sees the documents as written.
 - Read the schema of a type before writing an item of it: the type
   entry in `reg_data_item_type.yaml` names it.
 
