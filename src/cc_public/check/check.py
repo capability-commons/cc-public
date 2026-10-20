@@ -83,6 +83,14 @@ Failures          = dict[str, list[tuple[str, ...]]]
 #
 CACHE_SCHEMA      = {}
 
+# The failures and advice of the last reviews, kept in one process and
+# keyed by the documents reviewed, as objects, and by the rules. The
+# review before an edit is that of the tree as it was last checked, so
+# it is found here. It is emptied when it holds this many.
+#
+CACHE_REVIEW      = {}
+COUNT_REVIEW      = 8
+
 
 # -----------------------------------------------------------------------------
 def check(root: pathlib.Path) -> Failures:
@@ -220,6 +228,9 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
                             documents, each keyed by check, with the
                             checks that find nothing left out. check.lp
                             and advise.lp are evaluated as one program.
+                            Documents that are the same objects as at an
+                            earlier review, under the same rules, are not
+                            reviewed again.
 
     relation:
 
@@ -232,9 +243,37 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
     """
 
     text_advice = ADVICE.read_text(encoding = 'utf-8')
+    text_rules  = RULES.read_text(encoding = 'utf-8')
+    key         = (text_rules,
+                   text_advice,
+                   cc_public.graph.datalog.PATH_DERIVE.read_text(encoding = 'utf-8'),
+                   tuple((relative, id(document), line)
+                         for (relative, (document, line)) in sorted(map_document.items())))
+
+    if key not in CACHE_REVIEW:
+        if len(CACHE_REVIEW) >= COUNT_REVIEW:
+            CACHE_REVIEW.clear()
+        CACHE_REVIEW[key] = _review(map_document, cache, text_rules, text_advice)
+
+    (failures, advice) = CACHE_REVIEW[key]
+    return ({name: list(list_row) for (name, list_row) in failures.items()},
+            {name: list(list_row) for (name, list_row) in advice.items()})
+
+
+# -----------------------------------------------------------------------------
+def _review(map_document: cc_public.graph.extract.Documents,
+            cache:        dict | None,
+            text_rules:   str,
+            text_advice:  str) -> tuple[Failures, Failures]:
+    """
+    Return the failures and the advice of the documents, as
+    review_documents does, evaluated afresh.
+
+    """
+
     facts       = cc_public.graph.extract.facts_of(map_document)
     rows        = cc_public.graph.datalog.run(facts,
-                                              RULES.read_text(encoding = 'utf-8') + '\n'
+                                              text_rules + '\n'
                                               + text_advice + '\n'
                                               + cc_public.graph.datalog.show(
                                                     NAME_PAIR,
