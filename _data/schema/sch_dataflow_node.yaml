@@ -10,25 +10,26 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Node schema
+title:                  Dataflow node schema
 brief:                  |
-                        The shape of a node, embedded in a system
-                        configuration.
+                        The shape of a dataflow node, embedded in a
+                        system configuration.
 description:            |
-                        A node holds an identity, a brief, the key of
-                        the process it runs on, its settings, and its
-                        edges in the graph of items. One of those
-                        edges realizes the interface control document
-                        whose dataflow step surface the node presents,
-                        and others may realize the logical components
-                        the node implements.
+                        A dataflow node holds an identity, a brief,
+                        the key of the OS process it runs on, its
+                        settings, and its edges in the graph of items.
+                        One of those edges realizes the interface
+                        control document whose dataflow step surface
+                        the dataflow node presents, and others may
+                        realize the logical components it implements.
 
                         The settings are keyed by the names of the
                         settings of that surface, and their values are
                         given as the configuration writes them.
 usage:                  |
                         Composed by sch_system_configuration for each
-                        of its nodes, and named by t_dataflow_node.
+                        of its dataflow nodes, and named by
+                        t_dataflow_node.
 type:                   object
 
 allOf:
@@ -44,7 +45,7 @@ properties:
     type:               string
     minLength:          1
     description:        |
-                        What the node does in this system.
+                        What the dataflow node does in this system.
 
   description:
     type:               string
@@ -52,13 +53,13 @@ properties:
     description:        |
                         Optional. More, where the brief is not enough.
 
-  process:
+  os_process:
     type:               string
     minLength:          1
     pattern:            ^[^\n]+$
     description:        |
-                        Optional. The key of the process the node runs
-                        on.
+                        Optional. The key of the OS process the
+                        dataflow node runs on.
 
   config:
     type:               object
@@ -73,9 +74,9 @@ properties:
       $ref:             https://capability-commons.org/schema/sch_trait_relation.yaml#/$defs/edge
 
     description:        |
-                        The edges this node holds: the interface it
-                        realizes, and any logical component it
-                        implements.
+                        The edges this dataflow node holds in the
+                        graph of items: the interface it realizes, and
+                        any logical component it implements.
 
 unevaluatedProperties:  false
 relation:               []

@@ -149,7 +149,7 @@ node_interface(Node, Interface) :-
 %            direction: symbol)
 
 feeds(Source, Target, Direction) :-
-    system_edge(_, Source, _, Target, _, Direction, _, _),
+    dataflow_edge(_, Source, _, Target, _, Direction, _, _),
     type_of(Source, "t_dataflow_node"),
     type_of(Target, "t_dataflow_node").
 

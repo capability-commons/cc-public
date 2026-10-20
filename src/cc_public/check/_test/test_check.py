@@ -1125,10 +1125,10 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
         (key, port) = text.split('.')
         id_node     = 'dfn_{stem}.{key}'.format(stem = stem, key = key)
         id_port     = 'icm_x.' + port
-        return {'id_node':   id_node,
-                'guid_node': map_guid.get(id_node) or _guid_of(root, id_node),
-                'id_port':   id_port,
-                'guid_port': _guid_of(root, id_port)}
+        return {'id_dataflow_node':   id_node,
+                'guid_dataflow_node': map_guid.get(id_node) or _guid_of(root, id_node),
+                'id_port':            id_port,
+                'guid_port':          _guid_of(root, id_port)}
 
     if not (root / '_data/interface_control_document/icd_x.yaml').exists():
         _step(root, map_extra = map_port)
@@ -1137,20 +1137,20 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
     edge     = _edge(root, 'r_realizes', 'icd_x')
     document = _fields(root, 'sys_' + stem)
     document.update({
-        'host':    {'local': {'hostname': 'localhost'}},
-        'process': {'main':  {'host': 'local'}},
-        'node':    {key: {'id_self':   id_node,
-                          'guid_self': map_guid[id_node],
-                          'brief':     'Node {key}.'.format(key = key),
-                          'process':   'main',
-                          'relation':  [edge],
-                          **(map_node or {}).get(key, {})}
-                    for (id_node, key) in ((id_node, id_node.split('.')[1])
-                                           for id_node in map_guid)},
-        'edge':    [{'source': end(flow[0]),
-                     'target': end(flow[1]),
-                     **({'direction': flow[2]} if len(flow) > 2 else {})}
-                    for flow in list_flow],
+        'host':          {'local': {'hostname': 'localhost'}},
+        'os_process':    {'main':  {'host': 'local'}},
+        'dataflow_node': {key: {'id_self':    id_node,
+                                'guid_self':  map_guid[id_node],
+                                'brief':      'Node {key}.'.format(key = key),
+                                'os_process': 'main',
+                                'relation':   [edge],
+                                **(map_node or {}).get(key, {})}
+                          for (id_node, key) in ((id_node, id_node.split('.')[1])
+                                                 for id_node in map_guid)},
+        'dataflow_edge': [{'source': end(flow[0]),
+                           'target': end(flow[1]),
+                           **({'direction': flow[2]} if len(flow) > 2 else {})}
+                          for flow in list_flow],
         **(map_extra or {})})
     return _item_document(root, '_data/system_configuration/sys_{stem}.yaml'.format(stem = stem),
                           document)
@@ -1220,9 +1220,10 @@ def test_a_node_that_presents_no_interface_is_reported(tree):
 def test_an_edge_to_a_node_of_another_system_is_reported(tree):
     _system(tree, LIST_RING, stem = 'y')
     location = _system(tree, LIST_RING)
-    _replace(tree, location, 'id_node: dfn_x.a\n', 'id_node: dfn_y.a\n')
-    _replace(tree, location, 'guid_node: ' + _guid_of(tree, 'dfn_x.a'),
-             'guid_node: ' + _guid_of(tree, 'dfn_y.a'))
+    _replace(tree, location, 'id_dataflow_node: dfn_x.a\n',
+             'id_dataflow_node: dfn_y.a\n')
+    _replace(tree, location, 'guid_dataflow_node: ' + _guid_of(tree, 'dfn_x.a'),
+             'guid_dataflow_node: ' + _guid_of(tree, 'dfn_y.a'))
     assert _check(tree) == {'foreign_node': [('sys_x', 'source', 'dfn_y.a', location,
                                               _line(tree, location, '- source:'))]}
 
@@ -1274,7 +1275,7 @@ def test_a_setting_the_interface_needs_is_reported_when_left_out(tree):
 
 
 def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
-    _system(tree, LIST_RING, map_node  = {'c': {'process': 'other'}},
-            map_extra = {'process': {'main': {'host': 'remote'}}})
+    _system(tree, LIST_RING, map_node  = {'c': {'os_process': 'other'}},
+            map_extra = {'os_process': {'main': {'host': 'remote'}}})
     assert _check(tree) == {'unplaced': [('sys_x', 'dfn_x.c', 'other'),
                                          ('sys_x', 'main', 'remote')]}

@@ -855,18 +855,20 @@ table:
     guid_self:          con_89522a6f06b34f15b8b6cef1b2a43c51
     title:              System configuration
     brief:              |
-                        A system of interest described as a data flow
-                        graph: its nodes, the edges that carry data
-                        between their ports, and where each node runs.
+                        A system of interest described as a dataflow
+                        graph: its dataflow nodes, the dataflow edges
+                        that carry data between their ports, and where
+                        each dataflow node runs.
     description:        |
                         A system configuration is complete enough to
-                        be run. Each node names the interface control
-                        document whose dataflow step surface it
-                        presents, so that every edge can be checked
-                        against the ports at its ends. A variant of a
-                        system, for a test, a simulation or a
-                        deployment, is a system configuration of its
-                        own.
+                        be run. Each dataflow node names the interface
+                        control document whose dataflow step surface
+                        it presents, so that every dataflow edge can
+                        be checked against the ports at its ends. A
+                        variant of a system, for a test, a simulation
+                        or a deployment, is derived from a system
+                        configuration by transformations, and is not
+                        kept as a copy.
     note:               |
                         ISO/IEC/IEEE 24765:2017 3.770 defines
                         configuration as the arrangement of a computer
@@ -889,34 +891,109 @@ table:
   con_dataflow_node:
     id_self:            con_dataflow_node
     guid_self:          con_93fe20797cb04f98b2a396259f9c15a6
-    title:              Node
+    title:              Dataflow node
     brief:              |
-                        One process of a data flow graph: a step that
-                        reads its inputs, writes its outputs and keeps
-                        state between invocations.
+                        One process of a Kahn process network: a step
+                        that reads its inputs, writes its outputs and
+                        keeps state between invocations.
     description:        |
-                        A node is one use of a step within a system
-                        configuration. Its interface is a dataflow
-                        step surface of an interface control document,
-                        and its settings are the values it is
-                        configured with. Many nodes may present the
-                        same interface.
+                        A dataflow node is one use of a step within a
+                        system configuration. Its interface is a
+                        dataflow step surface of an interface control
+                        document, and its settings are the values it
+                        is configured with. Many dataflow nodes may
+                        present the same interface.
     note:               |
-                        A node is a process of a Kahn process network
-                        (Kahn, The semantics of a simple language for
-                        parallel programming, IFIP 1974), and a node
-                        in the sense of Stableflow (software
-                        architecture description 2.0.0, clause 5.1).
-                        Node is an overloaded word. ISO/IEC/IEEE
-                        24765:2017 3.2598 gives it five senses, among
-                        them a vertex of a graph (sense 1) and a unit
-                        located in space, which is a host (sense 2).
+                        A dataflow node is a process of a Kahn process
+                        network (Kahn, The semantics of a simple
+                        language for parallel programming, IFIP 1974),
+                        and a node in the sense of Stableflow
+                        (software architecture description 2.0.0,
+                        clause 5.1). It is qualified because node is
+                        an overloaded word. ISO/IEC/IEEE 24765:2017
+                        3.2598 gives node five senses, among them a
+                        vertex of a graph (sense 1) and a unit located
+                        in space, which is a host (sense 2), and
                         Arcadia uses it for a physical component that
-                        hosts others. Here it is neither: a node runs
-                        on a process, and a process on a host.
-    term_preferred:     node
+                        hosts others. A dataflow node is neither: it
+                        runs on an OS process, and an OS process on a
+                        host.
+    term_preferred:     dataflow node
+
+    term_admitted:
+      - node
 
     alias:
       - con_node
 
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_dataflow_edge -- Dataflow edge
+  #
+  con_dataflow_edge:
+    id_self:            con_dataflow_edge
+    guid_self:          con_20d58a851b1d42c797c856db69eb893a
+    title:              Dataflow edge
+    brief:              |
+                        A channel of a Kahn process network: it
+                        carries the values one dataflow node writes on
+                        an output port to an input port of another, in
+                        order.
+    description:        |
+                        A dataflow edge is part of a system
+                        configuration. Each end names a dataflow node
+                        and one port of the interface that node
+                        presents. A dataflow edge is feedforward
+                        unless it says feedback; a feedback edge
+                        closes a loop, and its value comes from the
+                        invocation before.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.1006 defines data
+                        flow as the sequence in which data transfer,
+                        use and transformation are performed during
+                        the execution of a computer program. A
+                        dataflow edge is an edge in the sense of
+                        Stableflow (software architecture description
+                        2.0.0, clause 5.1). It is qualified because
+                        the graph of items has edges of its own, which
+                        are relations.
+    term_preferred:     dataflow edge
+
+    term_admitted:
+      - edge
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_os_process -- OS process
+  #
+  con_os_process:
+    id_self:            con_os_process
+    guid_self:          con_50c6801962a0470f95532225278f0408
+    title:              OS process
+    brief:              |
+                        An executable unit managed by an operating
+                        system scheduler, where dataflow nodes run in
+                        order.
+    description:        |
+                        An OS process is part of a system
+                        configuration. Each runs on one host, and each
+                        dataflow node names the OS process it runs in.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.3037 gives process
+                        several senses. This is sense 6, an executable
+                        unit managed by an operating system scheduler.
+                        Sense 1, a set of interrelated or interacting
+                        activities that transforms inputs into
+                        outputs, is the life cycle process of
+                        ISO/IEC/IEEE 15288, which is why the word is
+                        qualified.
+    term_preferred:     OS process
+
+    term_admitted:
+      - process
+
+    alias:              []
     relation:           []

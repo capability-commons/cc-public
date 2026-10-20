@@ -203,24 +203,25 @@ RELATION          = {
                            'A dataflow step surface of the interface control document '
                            'interface has the member, called name, as a port or setting '
                            'of kind: input, output, state or config.'),
-    'system_node':        (('system', 'key', 'node', 'process'),
-                           'The system configuration system holds node under key, '
-                           'placed on the process with that key, or on none if process '
-                           'is empty.'),
-    'system_edge':        (('system', 'source', 'source_port', 'target', 'target_port',
+    'dataflow_node':      (('system', 'key', 'node', 'os_process'),
+                           'The system configuration system holds the dataflow node '
+                           'node under key, placed on the OS process with that key, or '
+                           'on none if os_process is empty.'),
+    'dataflow_edge':      (('system', 'source', 'source_port', 'target', 'target_port',
                             'direction', 'file', 'line:number'),
-                           'The system configuration system carries data from the port '
-                           'source_port of the node source to the port target_port of '
-                           'the node target, feedforward or feedback, written in file at '
-                           'line. An end it does not name is empty.'),
-    'system_setting':     (('node', 'name'),
-                           'The configuration of node gives a value for the setting '
-                           'name.'),
-    'system_process':     (('system', 'key', 'host'),
-                           'The system configuration system has a process under key, '
-                           'which runs on the host with that key, or on none if host is '
-                           'empty.'),
-    'system_host':        (('system', 'key'),
+                           'A dataflow edge of the system configuration system carries '
+                           'data from the port source_port of the dataflow node source '
+                           'to the port target_port of the dataflow node target, '
+                           'feedforward or feedback, written in file at line. An end it '
+                           'does not name is empty.'),
+    'dataflow_setting':   (('node', 'name'),
+                           'The configuration of the dataflow node node gives a value '
+                           'for the setting name.'),
+    'os_process':         (('system', 'key', 'host'),
+                           'The system configuration system has an OS process under '
+                           'key, which runs on the host with that key, or on none if '
+                           'host is empty.'),
+    'host':               (('system', 'key'),
                            'The system configuration system has a host under key.'),
 }
 
@@ -246,22 +247,22 @@ MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
                      ast.AsyncFunctionDef: 'pyf_'}
 
 # Where a dataflow step surface lists its ports and settings, and the
-# fields of a system configuration and of the ends of its edges. An
-# edge is feedforward unless it says otherwise.
+# fields of a system configuration and of the ends of its dataflow
+# edges. A dataflow edge is feedforward unless it says otherwise.
 #
 KEY_SURFACE       = 'surface'
 KEY_DATAFLOW      = 'dataflow_step'
 TUPLE_PORT_KIND   = ('input', 'output', 'state', 'config')
 KEY_NAME          = 'name'
-KEY_NODE          = 'node'
-KEY_EDGE          = 'edge'
-KEY_PROCESS       = 'process'
+KEY_NODE          = 'dataflow_node'
+KEY_EDGE          = 'dataflow_edge'
+KEY_PROCESS       = 'os_process'
 KEY_HOST          = 'host'
 KEY_CONFIG        = 'config'
 KEY_SOURCE        = 'source'
 KEY_TARGET        = 'target'
 KEY_DIRECTION     = 'direction'
-KEY_ID_NODE       = 'id_node'
+KEY_ID_NODE       = 'id_dataflow_node'
 KEY_ID_PORT       = 'id_port'
 FEEDFORWARD       = 'feedforward'
 
@@ -1039,9 +1040,9 @@ def _system(document: dict[str, typing.Any],
             location: tuple[str, int],
             facts:    Facts) -> None:
     """
-    Add the facts of the nodes, edges, processes and hosts of document,
-    if it is a system configuration: a document whose node field maps
-    each key to an item.
+    Add the facts of the dataflow nodes, dataflow edges, OS processes
+    and hosts of document, if it is a system configuration: a document
+    whose dataflow_node field maps each key to an item.
 
     """
 
@@ -1055,16 +1056,17 @@ def _system(document: dict[str, typing.Any],
 
     for (key, node) in map_node.items():
         id_node = str(node[KEY_ID_SELF])
-        facts['system_node'].add((system, str(key), id_node, str(node.get(KEY_PROCESS, ''))))
+        process = str(node.get(KEY_PROCESS, ''))
+        facts['dataflow_node'].add((system, str(key), id_node, process))
         for name in _map(node.get(KEY_CONFIG)):
-            facts['system_setting'].add((id_node, str(name)))
+            facts['dataflow_setting'].add((id_node, str(name)))
 
     for (key, process) in _map(document.get(KEY_PROCESS)).items():
         host = process.get(KEY_HOST, '') if isinstance(process, dict) else ''
-        facts['system_process'].add((system, str(key), str(host)))
+        facts['os_process'].add((system, str(key), str(host)))
 
     for key in _map(document.get(KEY_HOST)):
-        facts['system_host'].add((system, str(key)))
+        facts['host'].add((system, str(key)))
 
     list_edge = document.get(KEY_EDGE)
 
@@ -1076,7 +1078,7 @@ def _system(document: dict[str, typing.Any],
             continue
         source = _map(edge.get(KEY_SOURCE))
         target = _map(edge.get(KEY_TARGET))
-        facts['system_edge'].add((system,
+        facts['dataflow_edge'].add((system,
                                   str(source.get(KEY_ID_NODE, '')),
                                   str(source.get(KEY_ID_PORT, '')),
                                   str(target.get(KEY_ID_NODE, '')),

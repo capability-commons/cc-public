@@ -939,7 +939,7 @@ unused_concept(Id) :-
 #show misnamed_node/2.
 
 misnamed_node(Node, Expected) :-
-    system_node(System, Key, Node, _),
+    dataflow_node(System, Key, Node, _),
     Expected = @cat("dfn_", @substr(System, 4, @strlen(System) - 4), ".", Key),
     Node != Expected.
 
@@ -975,10 +975,10 @@ interface_count(Node, Interfaces) :-
 %               line:   number)
 
 edge_end(System, "source", Node, Port, "output", File, Line) :-
-    system_edge(System, Node, Port, _, _, _, File, Line).
+    dataflow_edge(System, Node, Port, _, _, _, File, Line).
 
 edge_end(System, "target", Node, Port, "input", File, Line) :-
-    system_edge(System, _, _, Node, Port, _, File, Line).
+    dataflow_edge(System, _, _, Node, Port, _, File, Line).
 
 
 % -----------------------------------------------------------------------------
@@ -998,7 +998,7 @@ edge_end(System, "target", Node, Port, "input", File, Line) :-
 
 foreign_node(System, End, Node, File, Line) :-
     edge_end(System, End, Node, _, _, File, Line),
-    not system_node(System, _, Node, _).
+    not dataflow_node(System, _, Node, _).
 
 
 % -----------------------------------------------------------------------------
@@ -1031,7 +1031,7 @@ unknown_port(Node, Port, Kind, File, Line) :-
 %          port: symbol)
 
 fed(Node, Port) :-
-    system_edge(_, _, _, Node, Port, _, _, _).
+    dataflow_edge(_, _, _, Node, Port, _, _, _).
 
 
 % -----------------------------------------------------------------------------
@@ -1047,7 +1047,7 @@ fed(Node, Port) :-
 
 input_fed_twice(Node, Port, Edges) :-
     fed(Node, Port),
-    Edges = #count { Source, Output : system_edge(_, Source, Output, Node, Port, _, _, _) },
+    Edges = #count { Source, Output : dataflow_edge(_, Source, Output, Node, Port, _, _, _) },
     Edges > 1.
 
 
@@ -1064,7 +1064,7 @@ input_fed_twice(Node, Port, Edges) :-
 #show unfed_input/2.
 
 unfed_input(Node, Port) :-
-    system_node(_, _, Node, _),
+    dataflow_node(_, _, Node, _),
     node_interface(Node, Interface),
     interface_port(Interface, "input", _, Port),
     not stated(Port, "optional", "true"),
@@ -1088,7 +1088,7 @@ unfed_input(Node, Port) :-
 #show port_type_mismatch/6.
 
 port_type_mismatch(SourcePort, SourceType, TargetPort, TargetType, File, Line) :-
-    system_edge(_, _, SourcePort, _, TargetPort, _, File, Line),
+    dataflow_edge(_, _, SourcePort, _, TargetPort, _, File, Line),
     stated(SourcePort, "type", SourceType),
     stated(TargetPort, "type", TargetType),
     SourceType != TargetType.
@@ -1136,7 +1136,7 @@ feedforward_loop(Node) :-
 #show unknown_setting/2.
 
 unknown_setting(Node, Setting) :-
-    system_setting(Node, Setting),
+    dataflow_setting(Node, Setting),
     node_interface(Node, Interface),
     not interface_port(Interface, "config", Setting, _).
 
@@ -1152,12 +1152,12 @@ unknown_setting(Node, Setting) :-
 #show missing_setting/2.
 
 missing_setting(Node, Setting) :-
-    system_node(_, _, Node, _),
+    dataflow_node(_, _, Node, _),
     node_interface(Node, Interface),
     interface_port(Interface, "config", Setting, Member),
     not stated(Member, "optional", "true"),
     not stated(Member, "default", _),
-    not system_setting(Node, Setting).
+    not dataflow_setting(Node, Setting).
 
 
 % -----------------------------------------------------------------------------
@@ -1174,10 +1174,10 @@ missing_setting(Node, Setting) :-
 #show unplaced/3.
 
 unplaced(System, Node, Process) :-
-    system_node(System, _, Node, Process),
+    dataflow_node(System, _, Node, Process),
     Process != "",
-    not system_process(System, Process, _).
+    not os_process(System, Process, _).
 
 unplaced(System, Process, Host) :-
-    system_process(System, Process, Host),
-    not system_host(System, Host).
+    os_process(System, Process, Host),
+    not host(System, Host).

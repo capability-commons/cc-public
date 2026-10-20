@@ -12,39 +12,44 @@ protective_mark:
 
 title:                  System configuration schema
 brief:                  |
-                        The shape of a system configuration: hosts,
-                        processes, nodes, and the edges between the
-                        ports of the nodes.
+                        The shape of a system configuration: hosts, OS
+                        processes, dataflow nodes, and the dataflow
+                        edges between the ports of the dataflow nodes.
 description:            |
                         Identity, the descriptive fields and rights
                         come from sch_standalone. The edges of the
                         graph of items come from sch_trait_relation.
                         Beyond them, a system configuration holds its
-                        nodes, each shaped by sch_dataflow_node and
-                        filed under a short local key, and the edges
-                        of data flow between them.
+                        dataflow nodes, each shaped by
+                        sch_dataflow_node and filed under a short
+                        local key, and the dataflow edges between
+                        them.
 
-                        An end of a data flow edge names a node and
-                        one of the ports of the interface that node
-                        presents. Both are references, so the checker
-                        finds an end that names nothing, and a rename
-                        keeps the edge. An edge is feedforward unless
-                        it says feedback. A feedback edge closes a
-                        loop: its value comes from the invocation
-                        before.
+                        An end of a dataflow edge names a dataflow
+                        node and one of the ports of the interface
+                        that node presents. Both are references, so
+                        the checker finds an end that names nothing,
+                        and a rename keeps the dataflow edge. A
+                        dataflow edge is feedforward unless it says
+                        feedback. A feedback edge closes a loop: its
+                        value comes from the invocation before.
 
-                        A process is where nodes run in order, and a
-                        host is where processes run. Each is filed
-                        under a short local key, which a node or a
-                        process names.
+                        An OS process is where dataflow nodes run in
+                        order, and a host is where OS processes run.
+                        Each is filed under a short local key, which a
+                        dataflow node or an OS process names.
 usage:                  |
                         Named by t_system_configuration as the schema
                         of every item in _data/system_configuration/.
 note:                   |
                         The sections follow the configuration model of
-                        Stableflow. An edge states no data type of its
-                        own: the ports at its ends state it, and the
-                        checker holds them to each other.
+                        Stableflow, with its node, edge and process
+                        qualified as con_dataflow_node,
+                        con_dataflow_edge and con_os_process, since
+                        the graph of items has nodes and edges of its
+                        own. A dataflow edge states no data type of
+                        its own: the ports at its ends state it, and
+                        the checker holds them to each other.
 type:                   object
 
 allOf:
@@ -55,7 +60,7 @@ allOf:
 
     required:
       - brief
-      - node
+      - dataflow_node
 
     properties:
 
@@ -69,17 +74,17 @@ allOf:
                         Optional. The hosts, keyed by a short local
                         name.
 
-      process:
+      os_process:
         type:           object
 
         additionalProperties:
-          $ref:         '#/$defs/process'
+          $ref:         '#/$defs/os_process'
 
         description:    |
-                        Optional. The processes, keyed by a short
+                        Optional. The OS processes, keyed by a short
                         local name.
 
-      node:
+      dataflow_node:
         type:           object
         minProperties:  1
 
@@ -87,17 +92,18 @@ allOf:
           $ref:         https://capability-commons.org/schema/sch_dataflow_node.yaml
 
         description:    |
-                        The nodes, keyed by a short local name.
+                        The dataflow nodes, keyed by a short local
+                        name.
 
-      edge:
+      dataflow_edge:
         type:           array
 
         items:
-          $ref:         '#/$defs/edge'
+          $ref:         '#/$defs/dataflow_edge'
 
         description:    |
-                        Optional. The edges that carry data between
-                        the ports of the nodes.
+                        Optional. The dataflow edges that carry data
+                        between the ports of the dataflow nodes.
 
 unevaluatedProperties:  false
 
@@ -119,7 +125,7 @@ $defs:
         description:    |
                         The name the host is reached by.
 
-  process:
+  os_process:
     type:               object
     additionalProperties:  false
 
@@ -133,37 +139,38 @@ $defs:
         minLength:      1
         pattern:        ^[^\n]+$
         description:    |
-                        The key of the host the process runs on.
+                        The key of the host the OS process runs on.
 
   end:
     type:               object
     additionalProperties:  false
 
     required:
-      - id_node
-      - guid_node
+      - id_dataflow_node
+      - guid_dataflow_node
       - id_port
       - guid_port
 
     properties:
 
-      id_node:
+      id_dataflow_node:
         type:           string
         description:    |
-                        The node at this end.
+                        The dataflow node at this end.
 
-      guid_node:
+      guid_dataflow_node:
         type:           string
 
       id_port:
         type:           string
         description:    |
-                        The port of the interface the node presents.
+                        The port of the interface the dataflow node
+                        presents.
 
       guid_port:
         type:           string
 
-  edge:
+  dataflow_edge:
     type:               object
     additionalProperties:  false
 
