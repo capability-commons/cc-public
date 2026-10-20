@@ -1096,7 +1096,7 @@ def _step(root, id_icd = 'icd_x', map_extra = None):
 
     step = {'input':      {'inp': port('inp', 'int')},
             'output':     {'out': port('out', 'int')},
-            'config':     {'rate': port('rate', 'float', optional = True)},
+            'settings':   {'rate': port('rate', 'float', optional = True)},
             'invocation': 'Once for each input.'}
     for (kind, map_port) in (map_extra or {}).items():
         step.setdefault(kind, {}).update({name: port(name, *spec)
@@ -1111,7 +1111,7 @@ def _step(root, id_icd = 'icd_x', map_extra = None):
 # -----------------------------------------------------------------------------
 def _system(root, list_flow, map_node = None, map_extra = None, map_port = None, stem = 'x'):
     """
-    Write the system configuration sys_<stem>, with the nodes a, b and
+    Write the dataflow graph dfg_<stem>, with the nodes a, b and
     c, each presenting icd_x, and an edge for each (source, target) of
     list_flow. An end is a node key and a port name, as 'a.out', and a
     third element, if given, is the direction. map_node, if given, adds
@@ -1135,7 +1135,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
     map_guid = {'dfn_{stem}.{key}'.format(stem = stem, key = key): _guid('dfn')
                 for key in ('a', 'b', 'c')}
     edge     = _edge(root, 'r_realizes', 'icd_x')
-    document = _fields(root, 'sys_' + stem)
+    document = _fields(root, 'dfg_' + stem)
     document.update({
         'host':          {'local': {'hostname': 'localhost'}},
         'os_process':    {'main':  {'host': 'local'}},
@@ -1152,7 +1152,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
                            **({'direction': flow[2]} if len(flow) > 2 else {})}
                           for flow in list_flow],
         **(map_extra or {})})
-    return _item_document(root, '_data/system_configuration/sys_{stem}.yaml'.format(stem = stem),
+    return _item_document(root, '_data/dataflow_graph/dfg_{stem}.yaml'.format(stem = stem),
                           document)
 
 
@@ -1160,8 +1160,8 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
 def _rows(root, relation, arity):
     """
     Return the sorted rows of the derived relation in the tree under
-    root, less those that name a node of a system configuration other
-    than sys_x.
+    root, less those that name a node of a dataflow graph other
+    than dfg_x.
 
     """
 
@@ -1224,7 +1224,7 @@ def test_an_edge_to_a_node_of_another_system_is_reported(tree):
              'id_dataflow_node: dfn_y.a\n')
     _replace(tree, location, 'guid_dataflow_node: ' + _guid_of(tree, 'dfn_x.a'),
              'guid_dataflow_node: ' + _guid_of(tree, 'dfn_y.a'))
-    assert _check(tree) == {'foreign_node': [('sys_x', 'source', 'dfn_y.a', location,
+    assert _check(tree) == {'foreign_node': [('dfg_x', 'source', 'dfn_y.a', location,
                                               _line(tree, location, '- source:'))]}
 
 
@@ -1264,18 +1264,18 @@ def test_a_loop_closed_by_a_feedback_edge_reaches_back_to_where_it_began(tree):
 
 
 def test_a_setting_the_interface_does_not_declare_is_reported(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'config': {'rate': 2.0, 'speed': 1}}})
+    _system(tree, LIST_RING, map_node = {'a': {'settings': {'rate': 2.0, 'speed': 1}}})
     assert _check(tree) == {'unknown_setting': [('dfn_x.a', 'speed')]}
 
 
 def test_a_setting_the_interface_needs_is_reported_when_left_out(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'config': {'size': 3}}},
-            map_port = {'config': {'size': ('int',)}})
+    _system(tree, LIST_RING, map_node = {'a': {'settings': {'size': 3}}},
+            map_port = {'settings': {'size': ('int',)}})
     assert _check(tree) == {'missing_setting': [('dfn_x.b', 'size'), ('dfn_x.c', 'size')]}
 
 
 def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
     _system(tree, LIST_RING, map_node  = {'c': {'os_process': 'other'}},
             map_extra = {'os_process': {'main': {'host': 'remote'}}})
-    assert _check(tree) == {'unplaced': [('sys_x', 'dfn_x.c', 'other'),
-                                         ('sys_x', 'main', 'remote')]}
+    assert _check(tree) == {'unplaced': [('dfg_x', 'dfn_x.c', 'other'),
+                                         ('dfg_x', 'main', 'remote')]}

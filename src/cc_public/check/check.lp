@@ -927,20 +927,20 @@ unused_concept(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% A node is named for the system configuration that holds it and the
-% key it is filed under: the stem of the configuration, with dfn in
-% place of sys, a full stop and the key.
+% A node is named for the dataflow graph that holds it and the
+% key it is filed under: the stem of the dataflow graph, with dfn in
+% place of dfg, a full stop and the key.
 %
 % decl misnamed_node(node:     symbol,
 %                    expected: symbol)
-% did  The node {node} is not named for the system configuration that
+% did  The node {node} is not named for the dataflow graph that
 %      holds it and its key. Its id is {expected}.
 % fix  Rename the node with cctool rename to the id the check expects.
 #show misnamed_node/2.
 
 misnamed_node(Node, Expected) :-
-    dataflow_node(System, Key, Node, _),
-    Expected = @cat("dfn_", @substr(System, 4, @strlen(System) - 4), ".", Key),
+    dataflow_node(Graph, Key, Node, _),
+    Expected = @cat("dfn_", @substr(Graph, 4, @strlen(Graph) - 4), ".", Key),
     Node != Expected.
 
 
@@ -963,42 +963,42 @@ interface_count(Node, Interfaces) :-
 
 
 % -----------------------------------------------------------------------------
-% Each end of an edge of a system configuration, with the kind of port
+% Each end of an edge of a dataflow graph, with the kind of port
 % it must name: an output at the source, and an input at the target.
 %
-% decl edge_end(system: symbol,
-%               end:    symbol,
-%               node:   symbol,
-%               port:   symbol,
-%               kind:   symbol,
-%               file:   symbol,
-%               line:   number)
+% decl edge_end(graph: symbol,
+%               end:   symbol,
+%               node:  symbol,
+%               port:  symbol,
+%               kind:  symbol,
+%               file:  symbol,
+%               line:  number)
 
-edge_end(System, "source", Node, Port, "output", File, Line) :-
-    dataflow_edge(System, Node, Port, _, _, _, File, Line).
+edge_end(Graph, "source", Node, Port, "output", File, Line) :-
+    dataflow_edge(Graph, Node, Port, _, _, _, File, Line).
 
-edge_end(System, "target", Node, Port, "input", File, Line) :-
-    dataflow_edge(System, _, _, Node, Port, _, File, Line).
+edge_end(Graph, "target", Node, Port, "input", File, Line) :-
+    dataflow_edge(Graph, _, _, Node, Port, _, File, Line).
 
 
 % -----------------------------------------------------------------------------
-% Each end of an edge names a node of the system configuration that
+% Each end of an edge names a node of the dataflow graph that
 % holds the edge.
 %
-% decl foreign_node(system: symbol,
-%                   end:    symbol,
-%                   node:   symbol,
-%                   file:   symbol,
-%                   line:   number)
-% did  The {end} of an edge of {system} names {node}, which is not one
+% decl foreign_node(graph: symbol,
+%                   end:   symbol,
+%                   node:  symbol,
+%                   file:  symbol,
+%                   line:  number)
+% did  The {end} of an edge of {graph} names {node}, which is not one
 %      of its nodes.
-% fix  Name a node that the system configuration holds, or add the node
+% fix  Name a node that the dataflow graph holds, or add the node
 %      to it.
 #show foreign_node/5.
 
-foreign_node(System, End, Node, File, Line) :-
-    edge_end(System, End, Node, _, _, File, Line),
-    not dataflow_node(System, _, Node, _).
+foreign_node(Graph, End, Node, File, Line) :-
+    edge_end(Graph, End, Node, _, _, File, Line),
+    not dataflow_node(Graph, _, Node, _).
 
 
 % -----------------------------------------------------------------------------
@@ -1024,7 +1024,7 @@ unknown_port(Node, Port, Kind, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% The node takes a value at the port from an edge of its system
+% The node takes a value at the port from an edge of its dataflow graph
 % configuration.
 %
 % decl fed(node: symbol,
@@ -1138,7 +1138,7 @@ feedforward_loop(Node) :-
 unknown_setting(Node, Setting) :-
     dataflow_setting(Node, Setting),
     node_interface(Node, Interface),
-    not interface_port(Interface, "config", Setting, _).
+    not interface_port(Interface, "settings", Setting, _).
 
 
 % -----------------------------------------------------------------------------
@@ -1148,36 +1148,36 @@ unknown_setting(Node, Setting) :-
 % decl missing_setting(node:    symbol,
 %                      setting: symbol)
 % did  {node} gives no value for {setting}, which its interface needs.
-% fix  Give the setting a value in the config of the node.
+% fix  Give the setting a value in the settings of the node.
 #show missing_setting/2.
 
 missing_setting(Node, Setting) :-
     dataflow_node(_, _, Node, _),
     node_interface(Node, Interface),
-    interface_port(Interface, "config", Setting, Member),
+    interface_port(Interface, "settings", Setting, Member),
     not stated(Member, "optional", "true"),
     not stated(Member, "default", _),
     not dataflow_setting(Node, Setting).
 
 
 % -----------------------------------------------------------------------------
-% A node runs on a process of its system configuration, and a process
+% A node runs on a process of its dataflow graph, and a process
 % on a host of it.
 %
-% decl unplaced(system: symbol,
+% decl unplaced(graph:  symbol,
 %               holder: symbol,
 %               key:    symbol)
-% did  {holder} in {system} runs on {key}, which the system
-%      configuration does not list.
-% fix  Name a process or host the system configuration lists, or add it
+% did  {holder} in {graph} runs on {key}, which the dataflow graph
+%      does not list.
+% fix  Name a process or host the dataflow graph lists, or add it
 %      to the process or host section.
 #show unplaced/3.
 
-unplaced(System, Node, Process) :-
-    dataflow_node(System, _, Node, Process),
+unplaced(Graph, Node, Process) :-
+    dataflow_node(Graph, _, Node, Process),
     Process != "",
-    not os_process(System, Process, _).
+    not os_process(Graph, Process, _).
 
-unplaced(System, Process, Host) :-
-    os_process(System, Process, Host),
-    not host(System, Host).
+unplaced(Graph, Process, Host) :-
+    os_process(Graph, Process, Host),
+    not host(Graph, Host).

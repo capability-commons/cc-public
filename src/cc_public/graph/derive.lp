@@ -142,7 +142,7 @@ node_interface(Node, Interface) :-
 
 % -----------------------------------------------------------------------------
 % Data flows from the node source to the node target along an edge of
-% a system configuration, feedforward or feedback.
+% a dataflow graph, feedforward or feedback.
 %
 % decl feeds(source:    symbol,
 %            target:    symbol,

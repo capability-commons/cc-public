@@ -883,41 +883,49 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # con_system_configuration -- System configuration
+  # con_dataflow_graph -- Dataflow graph
   #
-  con_system_configuration:
-    id_self:            con_system_configuration
+  con_dataflow_graph:
+    id_self:            con_dataflow_graph
     guid_self:          con_89522a6f06b34f15b8b6cef1b2a43c51
-    title:              System configuration
+    title:              Dataflow graph
     brief:              |
                         A system of interest described as a dataflow
                         graph: its dataflow nodes, the dataflow edges
                         that carry data between their ports, and where
                         each dataflow node runs.
     description:        |
-                        A system configuration is complete enough to
-                        be run. Each dataflow node names the interface
-                        control document whose dataflow step surface
-                        it presents, so that every dataflow edge can
-                        be checked against the ports at its ends. A
+                        A dataflow graph is complete enough to be run.
+                        Each dataflow node names the interface control
+                        document whose dataflow step surface it
+                        presents, so that every dataflow edge can be
+                        checked against the ports at its ends. A
                         variant of a system, for a test, a simulation
-                        or a deployment, is derived from a system
-                        configuration by transformations, and is not
-                        kept as a copy.
+                        or a deployment, is derived from a dataflow
+                        graph by transformations, and is not kept as a
+                        copy.
     note:               |
+                        The sections of a dataflow graph follow the
+                        configuration model of Stableflow, the data
+                        flow engine of Design Factory (software
+                        architecture description 2.0.0, clause 5.5).
+
+                        The concept was first called system
+                        configuration. That phrase is kept for its
+                        systems engineering sense: a specific
+                        configuration of software and hardware,
+                        usually the system of interest of a
+                        verification or validation exercise.
                         ISO/IEC/IEEE 24765:2017 3.770 defines
                         configuration as the arrangement of a computer
                         system or component as defined by the number,
                         nature and interconnections of its constituent
-                        parts (sense 1), and as a collection of
-                        objects able to interact at interfaces (sense
-                        6, from ISO/IEC 10746-2). The sections of a
-                        system configuration follow the configuration
-                        model of Stableflow, the data flow engine of
-                        Design Factory (software architecture
-                        description 2.0.0, clause 5.5).
-    term_preferred:     system configuration
-    alias:              []
+                        parts.
+    term_preferred:     dataflow graph
+
+    alias:
+      - con_system_configuration
+
     relation:           []
 
   # ---------------------------------------------------------------------------
@@ -933,10 +941,10 @@ table:
                         between invocations.
     description:        |
                         A dataflow node is one use of a step within a
-                        system configuration. Its interface is a
-                        dataflow step surface of an interface control
-                        document, and its settings are the values it
-                        is configured with. Many dataflow nodes may
+                        dataflow graph. Its interface is a dataflow
+                        step surface of an interface control document,
+                        and its settings are the values it is
+                        configured with. Many dataflow nodes may
                         present the same interface.
     note:               |
                         A dataflow node runs in the dataflow engine
@@ -978,13 +986,12 @@ table:
                         output port to an input port of another, in
                         order.
     description:        |
-                        A dataflow edge is part of a system
-                        configuration. Each end names a dataflow node
-                        and one port of the interface that node
-                        presents. A dataflow edge is feedforward
-                        unless it says feedback; a feedback edge
-                        closes a loop, and its value comes from the
-                        invocation before.
+                        A dataflow edge is part of a dataflow graph.
+                        Each end names a dataflow node and one port of
+                        the interface that node presents. A dataflow
+                        edge is feedforward unless it says feedback; a
+                        feedback edge closes a loop, and its value
+                        comes from the invocation before.
     note:               |
                         ISO/IEC/IEEE 24765:2017 3.1006 defines data
                         flow as the sequence in which data transfer,
@@ -1018,9 +1025,9 @@ table:
                         system scheduler, where dataflow nodes run in
                         order.
     description:        |
-                        An OS process is part of a system
-                        configuration. Each runs on one host, and each
-                        dataflow node names the OS process it runs in.
+                        An OS process is part of a dataflow graph.
+                        Each runs on one host, and each dataflow node
+                        names the OS process it runs in.
     note:               |
                         ISO/IEC/IEEE 24765:2017 3.3037 gives process
                         several senses. This is sense 6, an executable
@@ -1046,20 +1053,20 @@ table:
     guid_self:          con_b7bfc42522104498abc1a46dc8859fe8
     title:              Dataflow engine
     brief:              |
-                        The engine of cc-public that runs a system
-                        configuration: it places each dataflow node on
-                        its OS process and passes values along the
-                        dataflow edges.
+                        The engine of cc-public that runs a dataflow
+                        graph: it places each dataflow node on its OS
+                        process and passes values along the dataflow
+                        edges.
     description:        |
                         The dataflow engine is being ported into
                         cc-public from Stableflow, the dataflow engine
-                        of Design Factory, and reads its configuration
-                        from the graph of items. Its first semantics
-                        are those of a Kahn process network. It is
-                        meant to support others as well, at least
-                        those of actors, so a dataflow node or edge is
-                        not defined by Kahn semantics alone. If it
-                        ever needs a brand, it is the Capability
+                        of Design Factory, and reads its dataflow
+                        graphs from the graph of items. Its first
+                        semantics are those of a Kahn process network.
+                        It is meant to support others as well, at
+                        least those of actors, so a dataflow node or
+                        edge is not defined by Kahn semantics alone.
+                        If it ever needs a brand, it is the Capability
                         Commons Dataflow Engine.
     note:               |
                         The owner settled the name on 2026-10-20,
