@@ -1,0 +1,44 @@
+id_self:                ann_pixi_run_adds_little_time_per_call
+guid_self:              ann_edc54bf6eb214dad9886b8e54bcfc944
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Small run-time cost of the pixi wrapper
+brief:                  |
+                        Running each hook and task through pixi run
+                        --frozen adds about 50 ms to a bare call and
+                        0.2 s to 0.4 s to cctool check, below one
+                        percent of a gated commit.
+description:            |
+                        Measured by the advocate on 2026-10-15 with
+                        pixi 0.82.0 on a scratch clone at 89c74d8:
+                        pixi run --frozen true took 0.041 s to 0.061
+                        s; cctool check took 2.88 s direct and 3.09 s
+                        to 3.26 s through pixi. The gate takes about
+                        75 s per commit (memory/MEMORY.md lines 39 and
+                        54). ASSUMPTION: the cost is fixed per call,
+                        so it shrinks in relative terms as the graph
+                        grows; the larger gap on cctool check was not
+                        explained.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pixi_from_conda_forge
+    guid_target:        opt_13825b46c24c4bb29bf564159018e5ce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

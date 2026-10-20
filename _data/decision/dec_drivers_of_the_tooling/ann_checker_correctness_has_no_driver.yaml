@@ -1,0 +1,72 @@
+id_self:                ann_checker_correctness_has_no_driver
+guid_self:              ann_3ff6bfeadc6247c58374d04e46346432
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checker correctness without a driver
+brief:                  |
+                        The main job of lc_tooling is to give the
+                        right verdict on the item graph, and that job
+                        belongs to functional suitability, which no
+                        chosen driver covers. Adding it gives that job
+                        one required concern.
+description:            |
+                        lc_tooling "checks the item graph against its
+                        rules"
+                        (_data/logical_component/lc_tooling.yaml lines
+                        12-15). Functional suitability covers "whether
+                        each function gives the right result"
+                        (_data/register/reg_concern.yaml lines 56-62).
+                        Reliability excludes "Whether a result is
+                        right" (reg_concern.yaml line 118), as it did
+                        at 68d1924. The 68d1924 message gives
+                        reliability as a driver "because a wrong
+                        checker is worse than none", which is the job
+                        reliability excludes; that reason was written
+                        by an assistant. unargued_driver asks only for
+                        drivers (src/cc_public/check/check.lp lines
+                        448-453). At 89c74d8 no annotation under
+                        _data/decision argues for
+                        concern_functional_suitability. The gap was
+                        raised in
+                        notes/advocate-experiment-2-checks-engine.md
+                        line 73 (assistant-written). lc_argumentation,
+                        proposed alongside this decision, is driven by
+                        functional suitability.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_drivers_of_the_tooling
+    guid_target:        dec_38650a5c44674d6c9b186437afaad898
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_add_functional_suitability
+    guid_target:        opt_a6e1fd7073ba490daa280cfe49bca56a
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_five_tooling_drivers
+    guid_target:        opt_3503fbae2c43425ab4069ea4fa0025ca
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

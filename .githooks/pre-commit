@@ -1,0 +1,28 @@
+#!/bin/sh
+# ---
+#
+# id_self:                file_githooks_pre_commit
+# guid_self:              file_89e55f20777842a387f9b6ada7592d49
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Pre-commit hook
+# brief:                  |
+#                         Refuse a commit whose staged content fails the
+#                         check, the lint or the tests.
+# description:            |
+#                         git runs this hook before it records a commit,
+#                         once core.hooksPath names .githooks, which
+#                         pixi run hooks sets. It runs cctool gate in
+#                         the pixi environment, and a failure stops the
+#                         commit.
+# relation:               []
+#
+# ...
+
+exec pixi run --locked gate

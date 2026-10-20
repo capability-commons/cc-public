@@ -1,0 +1,53 @@
+id_self:                ann_no_edge_names_who_wrote_an_annotation
+guid_self:              ann_7f202e9b0e2c4a6f8e0c98da1f6be157
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No record of who wrote an annotation
+brief:                  |
+                        The chosen alternative drops the author field
+                        and no edge takes its place. Commits of
+                        agent-written annotations have Will as author
+                        and mark model help only by a Co-Authored-By
+                        line for the whole commit, so a reviewer
+                        cannot tell from the graph which item a model
+                        wrote.
+description:            |
+                        No author field (sch_annotation.yaml lines
+                        29-31). No relation in reg_relation.yaml
+                        (lines 64-464) names who asserted an item. The
+                        legacy design had an is-asserted-by relation
+                        (git show bb8c338, t_annotation usage). Will
+                        intends agents to make arguments, each for a
+                        concern (owner's statement,
+                        2026-10-13T16:42:36Z). Commits c7058e3 and
+                        1ba2895 of
+                        ann_rules_are_a_small_review_surface have the
+                        author William Payne and a Co-Authored-By
+                        Claude line. r_argues_for_concern hints at an
+                        advocate but does not name one. ASSUMPTION: an
+                        authorship edge fits the edges-not-fields
+                        principle, so this challenges the "no author"
+                        clause, not edges as such.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_annotation_role_by_edges
+    guid_target:        dec_3fbf2c4793cc4ed1b0c0ee9582f65808
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_role_by_edges_no_status
+    guid_target:        opt_2ab9f0d6d6c943b4990df7836a5e2573
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

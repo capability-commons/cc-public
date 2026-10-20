@@ -1,0 +1,55 @@
+id_self:                ann_failed_trait_field_reports_siblings_unexpected
+guid_self:              ann_ec7bc22af35c4df1967c7b3a1121efdb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Errors that spread across a composed trait
+brief:                  |
+                        One bad value in a composed field also makes
+                        every other field of the failing allOf branch
+                        report as unexpected (in the reproduction, all
+                        the fields of sch_standalone's three traits),
+                        so each tool that validates items needs its
+                        own filter, and the commit message check has
+                        none.
+description:            |
+                        Under 2020-12 a failing subschema yields no
+                        annotations, so unevaluatedProperties treats
+                        its fields as unevaluated (JSON Schema 2020-12
+                        Core). Reproduced with jsonschema 4.26.0:
+                        title set to 5 in
+                        _data/decision/dec_tooling_language/opt_tooling_in_rust.yaml
+                        gives the true error plus one naming brief,
+                        copyright, guid_self, id_self, license,
+                        protective_mark and title (ad hoc run by the
+                        maintainability advocate, 2026-10-15). The
+                        checker filters these in _error,
+                        src/cc_public/check/schema.py lines 174-188,
+                        added in d1c4400 (pre-squash, 2026-10-13).
+                        src/cc_public/commit/message.py lines 270-274
+                        and 290-303 report every error unfiltered
+                        against sch_commit, which closes with
+                        unevaluatedProperties (sch_commit.yaml line
+                        84).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_schema_composition
+    guid_target:        dec_eca15ca3d12e4d50986a846c65ac0dc2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_traits_composed_with_allof
+    guid_target:        opt_42fea73eb92840809455c6409a509cb2
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

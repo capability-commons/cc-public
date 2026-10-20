@@ -1,0 +1,44 @@
+id_self:                ann_legacy_lint_ignores_bound_to_ruff_codes
+guid_self:              ann_e22ccf574da84d6b85ccfeb25c9c2677
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Legacy lint settings bound to ruff rule codes
+brief:                  |
+                        The house style needs ruff rule codes ignored
+                        and thresholds set to make room for itself,
+                        and ruff may remove rules or change its
+                        configuration in minor releases before 1.0.
+                        The coupling is small and does not grow with
+                        the graph.
+description:            |
+                        Sources: pyproject.toml lines 83-112 (UP032
+                        ignored because "format() is the house form",
+                        and five other codes); ruff versioning policy
+                        (https://docs.astral.sh/ruff/versioning/);
+                        ruff 0.16.10 in pixi.lock line 42. At worst a
+                        ruff upgrade past the 0.17 pin means editing a
+                        few lines of pyproject.toml. ASSUMPTION: the
+                        default style would need no UP032 ignore.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_owner_house_style
+    guid_target:        opt_32967fa061284625ad986014b37cb5b9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

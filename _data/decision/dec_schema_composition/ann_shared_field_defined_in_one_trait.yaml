@@ -1,0 +1,49 @@
+id_self:                ann_shared_field_defined_in_one_trait
+guid_self:              ann_2cd6f5580c8645c1a3f92fe714663bb0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One definition per shared field
+brief:                  |
+                        Each shared field bundle and value type is
+                        defined in one file, so a change to it is made
+                        once and reaches every item type that composes
+                        it.
+description:            |
+                        id_self and guid_self as item fields are
+                        defined in
+                        _data/schema/sch_trait_identity.yaml lines
+                        55-119; the one other declaration of the pair,
+                        for a relation's inverse, takes both value
+                        types from sch_primitive
+                        (sch_regentry_relation.yaml lines 84-90). 20
+                        of the 31 schemas $ref sch_standalone, a trait
+                        or sch_register_entry, and there are 9 $refs
+                        to $defs/id and 6 to $defs/guid (grep at
+                        89c74d8). The September review of the previous
+                        iteration found "14 register schemas that are
+                        one template" among jobs done twice
+                        (notes/cc-public-session-context.md, section
+                        "cc-public repository review (Sep 17)").
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_schema_composition
+    guid_target:        dec_eca15ca3d12e4d50986a846c65ac0dc2
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_traits_composed_with_allof
+    guid_target:        opt_42fea73eb92840809455c6409a509cb2
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

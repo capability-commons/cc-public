@@ -1,0 +1,48 @@
+id_self:                ann_gate_stages_have_no_time_limit
+guid_self:              ann_f78b875a3d564a8184c8c4a9824b9320
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate stages with no time limit
+brief:                  |
+                        No gate stage has a time limit, so a slow or
+                        hung stage holds the commit open. Where device
+                        tool calls from a remote session die at 180s,
+                        committing stops working before the gate does.
+description:            |
+                        subprocess.run with no timeout:
+                        src/cc_public/gate/gate.py lines 154-159. The
+                        hooks add no limit (.githooks/pre-commit line
+                        28, pre-merge-commit line 32). Device tool
+                        calls from a remote session die at 180s
+                        (memory MEMORY.md line 45). Gate time: over
+                        three minutes on two processors (5836f80),
+                        about 2 min after side by side stages, about
+                        67s after a cache, about 75s after the clingo
+                        switch (MEMORY.md lines 45, 47, 54).
+                        ASSUMPTION: the runner kills with SIGKILL,
+                        which leaves the temporary directory behind
+                        (gate.py line 95). ASSUMPTION: run time grows
+                        at least linearly with the graph.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commit_gate
+    guid_target:        dec_8ef6be254d2d4bba95d353c4c412a818
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pre_commit_gate_on_staged_copy
+    guid_target:        opt_60d9736d977e4a449eb6143be0b5bc79
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

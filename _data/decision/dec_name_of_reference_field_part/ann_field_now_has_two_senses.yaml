@@ -1,0 +1,63 @@
+id_self:                ann_field_now_has_two_senses
+guid_self:              ann_5b5fe4b243e34b3aa1c000d8466a0a08
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Field in two senses at once
+brief:                  |
+                        Choosing field gives the word a second sense.
+                        It already means a whole key and value of an
+                        item, and now also the part of a reference
+                        field's name after its prefix, so sentences
+                        such as "a field id_<field>" use it both ways
+                        at once.
+description:            |
+                        Sources, at 09cbf25: field as a whole entry:
+                        "Trait with the identity fields", "It holds
+                        only two fields: guid_self and id_self"
+                        (_data/schema/sch_trait_identity.yaml), "Prose
+                        fields are ASCII" (AGENTS.md). Field as the
+                        part after the prefix: "the rest of its name
+                        is its field (for example target, in id_target
+                        or guid_target)" (sch_trait_identity.yaml);
+                        "the rest of its name, its field, tells
+                        references apart"
+                        (_data/schema/sch_primitive.yaml). Both at
+                        once: "A field id_<field> that names an item
+                        is given guid_<field> beside it"
+                        (src/cc_public/edit/edit.py); "A field
+                        id_FIELD that names an item gets guid_FIELD
+                        beside it" (src/cc_public/cli/editing.py); the
+                        failure text "{holder} names {id} in its
+                        {field} field" (src/cc_public/check/check.lp),
+                        which prints "in its target field" though the
+                        fields are id_target and guid_target. The
+                        register deprecated note for annotations
+                        because it "already names the descriptive
+                        field every item carries"
+                        (_data/register/reg_concept.yaml), a precedent
+                        for counting a clash with a field against a
+                        term. No entry of the concept register names
+                        the part after the prefix.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_name_of_reference_field_part
+    guid_target:        dec_b2ef1b2af9824ab8b90767cc21319010
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_reference_part_called_field
+    guid_target:        opt_a378e6b16dd0406386fb72bd9c27ac1e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_terminological_quality
+    guid_target:        concern_d8bf19d2c1a144dd8e38c2ac81e5f3ef

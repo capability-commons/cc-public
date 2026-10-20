@@ -1,0 +1,38 @@
+id_self:                ann_draft_hook_blocking_merges_is_fixed
+guid_self:              ann_4690bb431b284806943bb52ff53b0593
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Draft hook no longer able to stop a commit
+brief:                  |
+                        Commit 2e06752 "Fix the draft hook so that it
+                        never stops a merge or a revert" makes the
+                        draft command catch every error and the hook
+                        always exit 0. At 360ec14 a fault in the draft
+                        leaves git's message for the commit-msg hook
+                        to judge.
+description:            |
+                        message draft catches Exception, prints "No
+                        draft" and leaves the message
+                        (src/cc_public/cli/messaging.py lines 130-135
+                        at 360ec14). The hook runs the command with
+                        "|| echo" and then "exit 0"
+                        (.githooks/prepare-commit-msg lines 28-35).
+                        This is the fix the annotation named.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_git_drafted_messages
+    guid_target:        dec_519395acf62e492a8163bfa6247e5964
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_failing_draft_hook_blocks_merges
+    guid_target:        ann_c027ba32b9e84f22a4e9e5668ff52e21

@@ -1,0 +1,54 @@
+id_self:                ann_ruamel_types_spread_across_six_modules
+guid_self:              ann_b927cc93ab7e4daf9f2f9a64150f6560
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  ruamel types spread across six modules
+brief:                  |
+                        ruamel types, attributes and loader settings
+                        are used directly in six source modules, with
+                        no single place that owns them. A change of
+                        library, or of the ruamel API, touches each of
+                        them.
+description:            |
+                        Imports in edit/edit.py, edit/layout.py,
+                        graph/extract.py, commit/message.py and
+                        cli/editing.py; check/schema.py reads .lc
+                        (lines 203-206). Three loaders built
+                        separately: edit.py line 140, layout.py line
+                        87, extract.py line 47; only layout sets width
+                        and preserve_quotes (lines 88-89). .lc.key and
+                        .lc.item at 7 sites; CommentedMap and
+                        CommentedSeq at layout.py lines 91-92;
+                        YAMLError at edit.py 189, layout.py 212,
+                        message.py 236, editing.py 244 and 335. Pinned
+                        to ruamel.yaml>=0.19.1,<0.20 (pyproject.toml
+                        line 41). This challenges the choice as built,
+                        not the library.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_ruamel_round_trip
+    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

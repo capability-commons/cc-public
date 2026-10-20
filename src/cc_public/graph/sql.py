@@ -1,0 +1,108 @@
+"""
+---
+
+id_self:                pym_cc_public.graph.sql
+guid_self:              pym_a916d15a71794a0f901fcf461341734d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  SQL evaluation
+brief:                  |
+                        Evaluate an SQL query over the facts of the
+                        graph of data items, with SQLite.
+description:            |
+                        This module loads the base relations and the
+                        derived relations into an in-memory SQLite
+                        database, one table for each, with the columns
+                        Datalog gives them. The derived relations are
+                        computed by clingo from derive.lp, so they are
+                        defined once, for both languages. The prose of
+                        each item is in item_text, a full-text table.
+                        A query changes nothing outside the database
+                        it runs in.
+relation:               []
+
+...
+"""
+
+
+import sqlite3
+
+import cc_public.graph.datalog
+import cc_public.graph.extract
+
+
+# A number is an integer in SQL, and a symbol is text.
+#
+MAP_TYPE          = {'symbol': 'TEXT', 'number': 'INTEGER'}
+
+# The prose of each item, one row for each field, as an FTS5 table.
+# Words are stemmed, so that a query for a field also finds fields.
+#
+SQL_TEXT          = ('CREATE VIRTUAL TABLE item_text USING fts5('
+                     "id UNINDEXED, field UNINDEXED, text, tokenize = 'porter unicode61')")
+
+
+# -----------------------------------------------------------------------------
+def connect(facts:    cc_public.graph.extract.Facts,
+            list_text: list[tuple[str, str, str]] = ()) -> sqlite3.Connection:
+    """
+    Return an in-memory database holding the base relations of facts
+    and the relations derived from them, and item_text, a full-text
+    table that holds the rows of list_text.
+
+    """
+
+    map_column = {name: tuple(cc_public.graph.extract.column(spec) for spec in tuple_spec)
+                  for (name, (tuple_spec, _)) in cc_public.graph.extract.RELATION.items()}
+    map_derive = cc_public.graph.datalog.derived()
+    rules      = ''.join(cc_public.graph.datalog.show(name, map_derive) for name in map_derive)
+    rows       = {name: sorted(set_row) for (name, set_row) in facts.items()}
+
+    map_column.update(map_derive)
+    rows.update(cc_public.graph.datalog.run(facts, rules))
+
+    connection = sqlite3.connect(':memory:')
+
+    for (name, tuple_column) in map_column.items():
+        connection.execute('CREATE TABLE "{name}" ({column})'.format(
+                              name   = name,
+                              column = ', '.join('"{c}" {t}'.format(c = column,
+                                                                     t = MAP_TYPE[type_column])
+                                                 for (column, type_column) in tuple_column)))
+        # The names are those declared in RELATION and derive.lp, not input.
+        connection.executemany('INSERT INTO "{name}" VALUES ({mark})'.format(  # noqa: S608
+                                  name = name,
+                                  mark = ', '.join('?' * len(tuple_column))),
+                               rows.get(name, []))
+
+    connection.execute(SQL_TEXT)
+    connection.executemany('INSERT INTO item_text VALUES (?, ?, ?)', list_text)
+
+    return connection
+
+
+# -----------------------------------------------------------------------------
+def query(facts:     cc_public.graph.extract.Facts,
+          text:      str,
+          list_text: list[tuple[str, str, str]] = ()) -> tuple[tuple[str, ...], list[tuple]]:
+    """
+    Return the columns and the rows of the query text, evaluated over
+    facts and the prose in list_text. Raise sqlite3.Error if it cannot
+    be evaluated.
+
+    """
+
+    connection = connect(facts, list_text)
+
+    try:
+        cursor       = connection.execute(text)
+        tuple_column = tuple(each[0] for each in cursor.description or ())
+        return (tuple_column, cursor.fetchall())
+    finally:
+        connection.close()

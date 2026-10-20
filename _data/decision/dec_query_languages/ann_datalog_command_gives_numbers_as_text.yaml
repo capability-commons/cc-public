@@ -1,0 +1,51 @@
+id_self:                ann_datalog_command_gives_numbers_as_text
+guid_self:              ann_73c144d9c7f64b73a2be95f2242453ca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Numbers returned as text by the Datalog command
+brief:                  |
+                        Over the one fact set, SQL returns and sorts a
+                        number as an integer, while the Datalog
+                        command returns and sorts it as text, so the
+                        two languages give differently typed and
+                        ordered results for the same question.
+description:            |
+                        The query group says both languages see the
+                        same relations (querying.py lines 63-67); a
+                        :number column is an integer in SQL
+                        (querying.py lines 210-211; sql.py line 41).
+                        The Datalog command turns every value into
+                        text (datalog.py lines 256-266, _field) and
+                        sorts rows as text (datalog.py line 309).
+                        Advocate's test, 2026-10-15: Datalog gave
+                        ('10',), ('9',) and a #count over a declared
+                        number gave ('203',); SQL gave (9,), (10,).
+                        With --json, Datalog numbers are strings and
+                        SQL numbers are numbers (querying.py lines
+                        134-135, 179-181). Weak: it affects only
+                        numeric columns and ordering, and loses no
+                        value. It points at a fix in the Datalog
+                        adapter, not at another language set.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_query_languages
+    guid_target:        dec_9ef62648af59455cb14f77b64ac2f6a6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_sql_and_datalog_one_fact_set
+    guid_target:        opt_a4e021e1e4624c1a8f52187072585d13
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

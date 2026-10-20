@@ -1,0 +1,57 @@
+id_self:                ann_gate_cost_scales_with_whole_graph
+guid_self:              ann_cb8dbe1785e04df7bc93bfca6ef04039
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate cost scaled by the whole graph
+brief:                  |
+                        Each commit checks, lints and tests the whole
+                        tree, and most tests copy and check the whole
+                        repository, so the gate's time per commit
+                        grows with the graph, whatever the size of the
+                        change.
+description:            |
+                        The gate copies the whole staged index and
+                        runs check over all of it, ruff over all of
+                        src and pytest over every test_*.py file
+                        (src/cc_public/gate/gate.py lines 64-66,
+                        133-134, 174). No stage is chosen by what the
+                        commit changes (gate.py lines 103-111). The
+                        tree fixture copies the whole repository for
+                        each test that uses it
+                        (src/cc_public/conftest.py lines 44-56); 113
+                        of the 161 test functions in src take it (grep
+                        of def test_ at 89c74d8). Measured 2026-10-15
+                        in the cloud container (4 processors, clone at
+                        89c74d8): cctool check 6.2s, the full test
+                        suite in one process 361s, the slowest tests 3
+                        to 8s each. These runs were made under heavy
+                        container load from parallel runs, so the
+                        times are high and rough. ASSUMPTION: check
+                        time and the time of each tree test grow at
+                        least linearly with the number of items. The
+                        point bears on the working tree gate just as
+                        much; only CI moves the cost off the commit
+                        path, and only once a remote exists.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commit_gate
+    guid_target:        dec_8ef6be254d2d4bba95d353c4c412a818
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pre_commit_gate_on_staged_copy
+    guid_target:        opt_60d9736d977e4a449eb6143be0b5bc79
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

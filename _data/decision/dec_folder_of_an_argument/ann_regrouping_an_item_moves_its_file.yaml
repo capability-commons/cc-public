@@ -1,0 +1,55 @@
+id_self:                ann_regrouping_an_item_moves_its_file
+guid_self:              ann_c87bbc05a94c42b79cb1606880397fc6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  File moves when items change decision
+brief:                  |
+                        A change to the decision an item belongs to is
+                        also a file move, so a small change of meaning
+                        arrives as a large rename. The first such
+                        change bundled 35 moves with new checks and
+                        schema edits in one commit.
+description:            |
+                        Commit 1ba2895 changes 48 files, 392
+                        insertions and 164 deletions, and 35 of them
+                        are moves into two decision folders, in the
+                        same commit as changes to check.lp, edit.py,
+                        their tests, three registers and three schemas
+                        (git show -M --stat 1ba2895). Each moved
+                        annotation also changes its r_is_about target,
+                        so each move is a rename with an edit. Git
+                        shows a move as a rename only above 50%
+                        similarity by default
+                        (https://git-scm.com/docs/git-diff). The path
+                        and the edges must change together, or
+                        misplaced_document fails. Under the type
+                        layout a regrouped item keeps its path. The
+                        number of files grows with one argument, not
+                        with the graph. ASSUMPTION: such regrouping is
+                        rare next to adding items. No rule says to
+                        commit moves apart from other edits (search of
+                        .agents/skills/editing-data-items/SKILL.md
+                        only).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_folder_of_an_argument
+    guid_target:        dec_d2fc82ec085d4bfe83889db96ba22cc6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_folder_per_decision
+    guid_target:        opt_b167d8973c9349e6b6be9582405cd4aa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,82 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_dataflow_node.yaml
+id_self:                sch_dataflow_node
+guid_self:              sch_42abc9d2df5544688e9047a09bc6948a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow node schema
+brief:                  |
+                        The shape of a dataflow node, embedded in a
+                        system configuration.
+description:            |
+                        A dataflow node holds an identity, a brief,
+                        the key of the OS process it runs on, its
+                        settings, and its edges in the graph of items.
+                        One of those edges realizes the interface
+                        control document whose dataflow step surface
+                        the dataflow node presents, and others may
+                        realize the logical components it implements.
+
+                        The settings are keyed by the names of the
+                        settings of that surface, and their values are
+                        given as the configuration writes them.
+usage:                  |
+                        Composed by sch_system_configuration for each
+                        of its dataflow nodes, and named by
+                        t_dataflow_node.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_trait_identity.yaml
+
+required:
+  - brief
+  - relation
+
+properties:
+
+  brief:
+    type:               string
+    minLength:          1
+    description:        |
+                        What the dataflow node does in this system.
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. More, where the brief is not enough.
+
+  os_process:
+    type:               string
+    minLength:          1
+    pattern:            ^[^\n]+$
+    description:        |
+                        Optional. The key of the OS process the
+                        dataflow node runs on.
+
+  config:
+    type:               object
+    description:        |
+                        Optional. The value of each setting, keyed by
+                        its name.
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_trait_relation.yaml#/$defs/edge
+
+    description:        |
+                        The edges this dataflow node holds in the
+                        graph of items: the interface it realizes, and
+                        any logical component it implements.
+
+unevaluatedProperties:  false
+relation:               []

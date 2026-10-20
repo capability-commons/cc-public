@@ -1,0 +1,49 @@
+id_self:                ann_pixi_gives_every_gate_stage_its_tool
+guid_self:              ann_69619a4be42d4168b551384ca1d7fe6f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A tool for every gate stage
+brief:                  |
+                        Under pixi each stage the gate runs (check,
+                        lint, test) finds its tool in the one
+                        environment, so every needed function is
+                        present wherever pixi install has run. With
+                        tools on the PATH a machine could lack one,
+                        and that function was absent.
+description:            |
+                        The gate stages are check, lint and test
+                        (src/cc_public/gate/gate.py lines 64-66).
+                        check needs clingo: check.py line 38 imports
+                        cc_public.graph.datalog, which imports clingo
+                        (datalog.py line 55). clingo, pytest and ruff
+                        are declared in tool.pixi.dependencies
+                        (pyproject.toml lines 57-61) and locked for
+                        linux-64 and osx-arm64 (pixi.lock lines 16 and
+                        60). Before pixi the device VM had no pytest,
+                        and the tests were run in a separate container
+                        (memory/MEMORY.md line 25); after pixi they
+                        ran in the VM (MEMORY.md line 28). git is
+                        still taken from the PATH (gate.py line 174).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pixi_from_conda_forge
+    guid_target:        opt_13825b46c24c4bb29bf564159018e5ce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

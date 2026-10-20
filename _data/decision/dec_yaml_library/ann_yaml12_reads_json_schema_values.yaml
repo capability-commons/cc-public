@@ -1,0 +1,67 @@
+id_self:                ann_yaml12_reads_json_schema_values
+guid_self:              ann_5f9414728cfd43dea39e3c96620a68f0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  YAML 1.2 reading for JSON Schema data
+brief:                  |
+                        The schemas are JSON Schema 2020-12 documents
+                        written in YAML, the data items are validated
+                        against them, and YAML 1.2 reads valid scalars
+                        the way JSON does. PyYAML reads YAML 1.1 only,
+                        so some valid values come out different and a
+                        check can fail on correct input.
+description:            |
+                        Every schema under _data/schema declares
+                        $schema
+                        https://json-schema.org/draft/2020-12/schema
+                        (for example _data/schema/sch_register.yaml
+                        line 1); validation uses
+                        jsonschema.Draft202012Validator
+                        (src/cc_public/check/schema.py lines 56-57,
+                        107). Schemas, data items and module
+                        docstrings are read with one YAML(typ='rt')
+                        loader (src/cc_public/graph/extract.py lines
+                        47, 305, 334). PyPI descriptions, fetched
+                        2026-10-15: PyYAML has "a complete YAML 1.1
+                        parser"; ruamel.yaml "is a YAML 1.2
+                        loader/dumper package". YAML 1.2.2 spec,
+                        section 1.2: YAML 1.2 aimed to be "a strict
+                        superset of JSON". Local test, 2026-10-15,
+                        ruamel.yaml 0.19.1 and PyYAML 6.0.1: "1e3"
+                        gives 1000.0 under rt and the string '1e3'
+                        under safe_load; "0777" gives 777 and 511;
+                        "1:20" gives '1:20' and 80; "yes" and "on"
+                        give strings and True. With jsonschema 4.26.0
+                        and type number, the rt value passes and the
+                        safe_load value fails. These inputs are valid,
+                        unlike the faulty input of
+                        ann_round_trip_refuses_duplicate_keys. Raised
+                        by the functional suitability advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_ruamel_round_trip
+    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pyyaml
+    guid_target:        opt_3ce01cad603b4fd0a4d7e24c76474ffc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

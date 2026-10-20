@@ -1,0 +1,43 @@
+id_self:                ann_format_calls_cost_ms_on_fact_writer
+guid_self:              ann_5e201cc1c6124b5c9e3a3f927dfaa4df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  format() costs little on the fact path
+brief:                  |
+                        str.format is five to seven times slower than
+                        an f-string per call, but on the fact writer
+                        that adds up to 1 or 2 ms in a check of one to
+                        three seconds, so f-strings gain almost
+                        nothing.
+description:            |
+                        Sources: pyproject.toml line 98 (UP032
+                        ignored); src/cc_public/graph/datalog.py lines
+                        233-237 and 252. Measured by the advocate on
+                        2026-10-15: 359 ns against 54 ns and 247 ns
+                        against 46 ns per call; write() about 11 ms
+                        for 1376 facts; a full cctool check about 1.1
+                        to 2 s (2.9 s in the verifier's run).
+                        ASSUMPTION: about four string fields per fact.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_common_python_style
+    guid_target:        opt_65167a99d43a45e8bdee55aa42ef5463
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

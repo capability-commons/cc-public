@@ -1,0 +1,63 @@
+id_self:                ann_linux_on_arm_outside_declared_platforms
+guid_self:              ann_d694a614e7da423892b6062e59a7f5a0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Linux on ARM outside the declared platforms
+brief:                  |
+                        The chosen option says Linux, but the pixi
+                        workspace locks only x86-64 Linux, so ARM
+                        servers and arm64 Linux VMs or containers on
+                        Apple silicon Macs cannot install the
+                        environment.
+description:            |
+                        pyproject.toml line 52 lists osx-arm64 and
+                        linux-64. README.md line 28 says Linux and
+                        macOS with no architecture. The pixi
+                        dependencies are clingo, python, pytest and
+                        ruff from conda-forge (pyproject.toml lines 51
+                        and 57-61), and the editable install of the
+                        package brings click, jsonschema and
+                        ruamel.yaml from PyPI (pyproject.toml lines
+                        39-41, 54-55). conda-forge publishes clingo
+                        5.8.2 for linux-aarch64
+                        (https://prefix.dev/channels/conda-forge/packages/clingo).
+                        ASSUMPTION: conda-forge also has python 3.12
+                        or later, pytest 9 and ruff 0.16, and PyPI has
+                        the three packages and their dependencies, for
+                        linux-aarch64; not checked package by package.
+                        pixi workspace platform add adds a platform
+                        and updates the lock file
+                        (https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/).
+                        ASSUMPTION: a Linux VM or container on an
+                        Apple silicon Mac runs arm64 Linux unless it
+                        emulates x86-64. Will plans much larger graphs
+                        (memory/MEMORY.md line 21, recording Will on
+                        2026-10-13); ASSUMPTION: checks on a larger
+                        graph are more likely to run on a hosted
+                        machine, and many hosted Linux machines are
+                        ARM. The fix is likely one command and a
+                        relock, so this challenges the platform list
+                        and wording more than leaving out Windows.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_supported_dev_platforms
+    guid_target:        dec_801eeeb087a1472583cd600349c9aa14
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_linux_and_macos_only
+    guid_target:        opt_cbd9db9e22644016a982f0d69b5d239a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

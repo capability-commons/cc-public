@@ -1,0 +1,61 @@
+id_self:                ann_decl_column_note_misnames_next_column
+guid_self:              ann_cc6c0dae1fbf42dfaf29fee4cdee23a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Column notes in multi-line declarations
+brief:                  |
+                        The declaration parser reads a note written
+                        after a column on a continued line as part of
+                        the next column's name, so a check report
+                        shows a wrong column heading with no error.
+                        The one-line form cannot carry such a note
+                        inside the brackets.
+description:            |
+                        Sources: src/cc_public/graph/datalog.py line
+                        67 (REGEX_DECL continues over any line that
+                        begins with "%") and line 169 (every "%"
+                        stripped, then split on ","); line 284 (the
+                        arity check counts columns only);
+                        src/cc_public/check/_test/test_check.py line
+                        614; column names become check headings
+                        (src/cc_public/check/check.py lines 110-122,
+                        src/cc_public/edit/edit.py line 902) and are
+                        read the same way by cctool query
+                        (src/cc_public/cli/querying.py line 177). Run
+                        by the advocate on 2026-10-15: "% decl a(id:
+                        symbol, % the id" followed by "% line:
+                        number)" gives a second column named "the id"
+                        plus "line". A blank line inside a declaration
+                        drops it. No declaration carries such a note
+                        at 89c74d8, and AGENTS.md lines 81-82 speak of
+                        "a % decl line". Latent; fixed by stripping
+                        notes before the split or by a rule in
+                        AGENTS.md, without giving up the style.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_owner_house_style
+    guid_target:        opt_32967fa061284625ad986014b37cb5b9
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_compact_rule_style
+    guid_target:        opt_bb5c6a3dd2a24c5c9efa823d402a80bd
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

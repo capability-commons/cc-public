@@ -1,0 +1,58 @@
+id_self:                ann_map_key_and_entry_id_name_entry_twice
+guid_self:              ann_7770b9e33e6447a2b6ef82c4dfad97ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Key and id naming each entry twice
+brief:                  |
+                        A map-keyed table names each entry twice, as
+                        key and as id_self, so the system needs an
+                        extra fact and an extra rule to keep the two
+                        in step. An array names each entry once and
+                        traces it just as well.
+description:            |
+                        sch_register.yaml lines 34-42. Fact
+                        register_entry_key
+                        (src/cc_public/graph/extract.py lines 138-139,
+                        428-435); rule key_mismatch
+                        (src/cc_public/check/check.lp lines 214-223)
+                        and its test (test_check.py line 422). Each
+                        entry is already an item with its register as
+                        holder, from lists as well as maps (extract.py
+                        lines 402-423). ASSUMPTION:
+                        misplaced_register_entry could read the holder
+                        instead of the key. The cost is fixed and does
+                        not grow with the graph. Merged from the
+                        simplicity and traceability advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_shape
+    guid_target:        dec_4159ae74c6a5467f98c3ad15d82d3194
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_one_shape_map_keyed_tables
+    guid_target:        opt_48855327c6b44719a2e8015f87f162cd
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_array_tables
+    guid_target:        opt_2d1555d3cbe845d38306873a8b8424c3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

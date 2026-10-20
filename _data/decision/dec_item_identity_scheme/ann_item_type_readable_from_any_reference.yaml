@@ -1,0 +1,50 @@
+id_self:                ann_item_type_readable_from_any_reference
+guid_self:              ann_20733650efea4594adf791ca24f9728e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Item type readable from any reference
+brief:                  |
+                        Because id and guid both begin with the type
+                        prefix, a reader or a tool knows the type of
+                        any reference without a lookup, which keeps
+                        the type checks short and local.
+description:            |
+                        The tooling splits the id at the first
+                        underscore and looks up the prefix
+                        (src/cc_public/edit/edit.py lines 245-254,
+                        334-336). The rename command keeps the type
+                        (edit.py lines 733-736). The checker reports
+                        unknown prefixes and a guid prefix unlike the
+                        id prefix (src/cc_public/check/check.lp lines
+                        35-44, 64-75). ASSUMPTION: a centrally
+                        numbered id or a bare UUID needs a lookup to
+                        give the type; no implementation of either
+                        exists.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_item_identity_scheme
+    guid_target:        dec_d8c22db19f3f49a9922435709d9fd04b
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_prefixed_id_and_guid
+    guid_target:        opt_048841ea1ab14fa29eb5e66512b6dad4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

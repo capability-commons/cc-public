@@ -1,0 +1,40 @@
+id_self:                req_edit_refuses_new_failure
+guid_self:              req_21bd50286c6c4cf486f17aca87f9792e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal of an edit that adds a failure
+brief:                  |
+                        The tooling makes no edit that would add a
+                        failure to the tree.
+condition_kind:         logic
+condition:              an edit would add a failure to the tree
+obligation:             shall
+activity:               autonomous
+object:                 the edit
+rationale:              |
+                        An edit made through the tooling is meant to
+                        leave the tree as sound as it found it. An
+                        edit that adds a failure would leave the next
+                        person a fault they did not make.
+verification_method:    test
+verification_approach:  |
+                        Asked for an edit that adds a failure, the
+                        Tooling names the failure and writes no file.
+
+relation:
+
+  - id_relation:        r_has_subject
+    guid_relation:      r_6b34d5364abb4ddd8f2ff2a9b725e3ef
+    id_target:          lc_tooling
+    guid_target:        lc_cf7da552a58d4d2d91ee21271bd0f800
+
+  - id_relation:        r_has_process
+    guid_relation:      r_18d71931f0c8452c807448226ee71137
+    id_target:          con_refuse
+    guid_target:        con_e01766cef40846da8b66986de345dcc1

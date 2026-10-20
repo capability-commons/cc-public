@@ -1,0 +1,1068 @@
+id_self:                reg_concept
+guid_self:              reg_bcba1ab65d824ac2b2f7af2ded66835a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Concept register
+brief:                  |
+                        Register of the concepts used in the cc-public
+                        repository.
+description:            |
+                        The concept register holds one entry per
+                        concept. Each entry defines the concept and
+                        gives its preferred term, any admitted terms,
+                        and any deprecated terms, as ISO 1087 uses
+                        those words.
+usage:                  |
+                        The concept register keeps the vocabulary of
+                        the repository consistent. A data item that
+                        introduces a concept enters it here. Prose is
+                        judged against it: a term that names a concept
+                        is used in that sense, and a deprecated term
+                        is not used for it.
+
+                        A partner may hold a concept register of their
+                        own. A concept arriving from a partner names
+                        an entry there and not here.
+note:                   |
+                        A concept is entered here whether or not it is
+                        a data item type. What has a type is a subset
+                        of what has a name.
+
+                        One term may name several concepts, and
+                        several terms may name one concept.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_concept
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # con_type -- Type
+  #
+  con_type:
+    id_self:            con_type
+    guid_self:          con_0d0e04ed926841818a9ef3a06243a4fa
+    title:              Type
+    brief:              |
+                        A kind of data item, declared as an entry in
+                        the data item type register and owning one
+                        prefix.
+    description:        |
+                        A type names the schema its data items are
+                        validated against. A data item is never
+                        retyped.
+    term_preferred:     type
+
+    term_deprecated:
+      - kind
+      - class
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_schema -- Schema
+  #
+  con_schema:
+    id_self:            con_schema
+    guid_self:          con_3ce8de2f2d6f422fb6b31309884e798d
+    title:              Schema
+    brief:              |
+                        A JSON Schema, held as a data item, against
+                        which data items of a type are validated.
+    description:        |
+                        A schema is itself a data item with an
+                        identity, and travels on its own, one per
+                        file.
+    term_preferred:     schema
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_register -- Register
+  #
+  con_register:
+    id_self:            con_register
+    guid_self:          con_374dca1dc078449f89c61caae71611e1
+    title:              Register
+    brief:              |
+                        A data item holding a keyed table of entries,
+                        and the source of truth for a vocabulary.
+    description:        |
+                        Entries are keyed by readable id, so a key
+                        appears once. A register names a schema of its
+                        own, which composes sch_register.
+    term_preferred:     register
+
+    term_deprecated:
+      - registry
+      - list
+      - table
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_register_entry -- Register entry
+  #
+  con_register_entry:
+    id_self:            con_register_entry
+    guid_self:          con_ccc4194959314e669edb4d83514b58e4
+    title:              Register entry
+    brief:              |
+                        One record in the table of a register, keyed
+                        by its id.
+    description:        |
+                        A register entry is embedded in its register
+                        and travels with it, so it carries no rights
+                        of its own. Its shape is the general register
+                        entry shape composed with the shape specific
+                        to its register.
+    usage:              |
+                        The admitted term regentry is used in the ids
+                        of schemas specific to one register, such as
+                        sch_regentry_concept, in the way that reg is
+                        used in sch_reg_concept. The schemas that
+                        apply to every register spell the term out, as
+                        in sch_register_entry.
+    term_preferred:     register entry
+
+    term_admitted:
+      - regentry
+
+    term_deprecated:
+      - entry
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_relation -- Relation
+  #
+  con_relation:
+    id_self:            con_relation
+    guid_self:          con_58ca7869cf9443168d8d96d8d70b972c
+    title:              Relation
+    brief:              |
+                        A kind of directed edge between data items,
+                        declared as an entry in the relation register.
+    description:        |
+                        A relation is directional. Where the opposite
+                        reading is useful, the entry embeds an
+                        inverse: a second identity and surface form
+                        for the same relation, and not a relation of
+                        its own.
+    term_preferred:     relation
+
+    term_admitted:
+      - relation type
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_protective_mark -- Protective mark
+  #
+  con_protective_mark:
+    id_self:            con_protective_mark
+    guid_self:          con_547c4fe6a53547e98ed177520f3f6968
+    title:              Protective mark
+    brief:              |
+                        An entry in the protective mark register that
+                        says how a data item may be handled and with
+                        whom it may be shared.
+    description:        |
+                        A data item names one or more protective marks
+                        by reference. Several are conjunctive: the
+                        most restrictive governs.
+    term_preferred:     protective mark
+
+    term_admitted:
+      - mark
+
+    term_deprecated:
+      - classification
+      - label
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_concept -- Concept
+  #
+  con_concept:
+    id_self:            con_concept
+    guid_self:          con_820f9604e6134b9fbefd5a75146d4c40
+    title:              Concept
+    brief:              |
+                        One idea the repository uses, held as an entry
+                        in the concept register.
+    description:        |
+                        A concept carries its preferred term, any
+                        admitted terms, and any deprecated terms. A
+                        concept need not have a type.
+    term_preferred:     concept
+
+    term_deprecated:
+      - term
+      - keyword
+      - tag
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_writing_style_rule -- Writing style rule
+  #
+  con_writing_style_rule:
+    id_self:            con_writing_style_rule
+    guid_self:          con_4c23b1dfc6974fadb122852cdbe5093c
+    title:              Writing style rule
+    brief:              |
+                        One rule that prose in the repository follows,
+                        stated in a sentence with its reasoning and an
+                        example each way.
+    description:        |
+                        An entry in the writing style rule register,
+                        followed by whoever writes prose in the
+                        repository.
+    term_preferred:     writing style rule
+
+    term_admitted:
+      - style rule
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_annotation -- Annotation
+  #
+  con_annotation:
+    id_self:            con_annotation
+    guid_self:          con_b0fd9a9d0569454ebccd4b5fc1721029
+    title:              Annotation
+    brief:              |
+                        One assertion about one or more items in the
+                        graph, held as an item of its own so that it
+                        can be answered.
+    description:        |
+                        An annotation is not a finding, is not
+                        evidence, and is not true for want of an
+                        answer. Its role is carried by its edges: what
+                        it is about, and what it supports or
+                        challenges.
+    note:               |
+                        Note is deprecated because it already names
+                        the descriptive field every item carries.
+                        Comment is deprecated because it suggests
+                        threads and ordering, which nothing needs.
+    term_preferred:     annotation
+
+    term_deprecated:
+      - note
+      - comment
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_option -- Option
+  #
+  con_option:
+    id_self:            con_option
+    guid_self:          con_26a4625162d2482ab375384b716f164a
+    title:              Option
+    brief:              |
+                        One candidate answer to a decision, held as an
+                        item of its own so that it can be argued over.
+    description:        |
+                        An option is not an annotation. An annotation
+                        asserts something and an option proposes
+                        something. Annotations give the reasons for
+                        and against an option, and those reasons are
+                        its rationale. A determination upholds or
+                        rejects it, and an option no determination
+                        names is open.
+    note:               |
+                        The options for a decision are the
+                        alternatives that ISO/IEC/IEEE 42010:2011,
+                        Systems and software engineering --
+                        Architecture description, clause 5.8.2, asks a
+                        record of an architecture decision to
+                        consider. MADR calls them the considered
+                        options, and the decision management process
+                        of ISO/IEC/IEEE 15288 calls them alternatives.
+
+                        r_is_option_for links an option to its
+                        decision and so to the items the decision is
+                        about. r_supersedes relates it to the option
+                        it replaces.
+    term_preferred:     option
+
+    term_admitted:
+      - alternative
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_concern -- Concern
+  #
+  con_concern:
+    id_self:            con_concern
+    guid_self:          con_a8a3fb947d264ab286b5d4077298321c
+    title:              Concern
+    brief:              |
+                        A matter of interest in a system, such as its
+                        security, reliability or safety.
+    description:        |
+                        A concern is something a stakeholder cares
+                        about in a system. An argument about a design
+                        speaks for one or more concerns, and a
+                        decision weighs the concerns its arguments
+                        speak for.
+    note:               |
+                        The concept follows ISO/IEC/IEEE 42010:2022,
+                        Software, systems and enterprise --
+                        Architecture description, which defines a
+                        concern as a matter of interest or importance
+                        to a stakeholder.
+
+                        A concern is distinct from a concept. The two
+                        share no prefix: a concern id begins concern_
+                        and a concept id begins con_.
+    term_preferred:     concern
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_module -- Python module
+  #
+  con_python_module:
+    id_self:            con_python_module
+    guid_self:          con_1f7d2eb2ccc94944b3dd731f63f8284b
+    title:              Python module
+    brief:              |
+                        One file of python source code, as the unit
+                        that python imports.
+    description:        |
+                        A python module is named by the dotted path it
+                        is imported under. It carries its own metadata
+                        in its module docstring.
+    term_preferred:     python module
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_package -- Python package
+  #
+  con_python_package:
+    id_self:            con_python_package
+    guid_self:          con_53a6b71e9dec4a42a8100e03e692f84e
+    title:              Python package
+    brief:              |
+                        A directory of python modules, as a unit that
+                        python imports.
+    description:        |
+                        A python package is named by the dotted path
+                        it is imported under. It carries its own
+                        metadata in the docstring of its __init__
+                        module.
+    term_preferred:     python package
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_logic_program_file -- Logic program file
+  #
+  con_logic_program_file:
+    id_self:            con_logic_program_file
+    guid_self:          con_2d08686dcbbf4a2ebf93e3cb771cfcd9
+    title:              Logic program file
+    brief:              |
+                        One file of a logic program: facts and rules
+                        that are placed in a program with others and
+                        evaluated together.
+    description:        |
+                        A logic program file is named by a dotted path
+                        in the same way as a python module. It carries
+                        its own metadata in a comment at the head of
+                        the file.
+    note:               |
+                        Logic program is the wider term. It covers
+                        Datalog, and the answer set programs that
+                        clingo evaluates. clingo combines the files of
+                        a program into one, and has no module of its
+                        own.
+    term_preferred:     logic program file
+
+    term_deprecated:
+      - Datalog module
+      - Datalog source file
+
+    alias:
+      - con_datalog_source_file
+
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_file -- File
+  #
+  con_file:
+    id_self:            con_file
+    guid_self:          con_75e8c140d26c4fe6bdd8ad37030611cd
+    title:              File
+    brief:              |
+                        One file in the repository that is neither a
+                        data item nor source code with a docstring.
+    description:        |
+                        A file in this sense, such as .gitignore,
+                        carries its metadata in a comment at its head,
+                        because its format has no other place for it.
+    term_preferred:     file
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_commit -- Commit
+  #
+  con_commit:
+    id_self:            con_commit
+    guid_self:          con_bc87eae04b9c42869a3bc825f560b94b
+    title:              Commit
+    brief:              |
+                        One recorded change to the tree, integrated
+                        into a branch of its repository.
+    description:        |
+                        A commit is the change, not the message that
+                        explains it. The commit message is where the
+                        item that records a commit is held.
+    note:               |
+                        The concept follows ISO/IEC/IEEE 24765:2017,
+                        Systems and software engineering --
+                        Vocabulary, which defines a commit (3.644) as
+                        the integration of changes into a branch that
+                        the version control system's repository makes
+                        accessible, and a commit message (3.645) as
+                        the explanatory message that accompanies a
+                        commit. The nearest concept in configuration
+                        management is a change record (3.546).
+    term_preferred:     commit
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_logical_component -- Logical component
+  #
+  con_logical_component:
+    id_self:            con_logical_component
+    guid_self:          con_5afcc0f1b1394c06a76562bcf103444e
+    title:              Logical component
+    brief:              |
+                        One part of a system, defined by what it does
+                        and not by how it is built, so that it stays
+                        the same part whatever technology is chosen
+                        for it.
+    description:        |
+                        A logical component is not the code or the
+                        file that implements it. Those realize it, and
+                        may be replaced by others that realize it in
+                        another way. Decisions about how a part is
+                        built are about the logical component, so that
+                        they keep their subject when the
+                        implementation changes.
+    note:               |
+                        The concept and its name follow the logical
+                        architecture of Arcadia, Thales, Arcadia user
+                        guide: principles and contents overview, 2023,
+                        clause 4.3. There a logical component is a
+                        grouping of functions that does not deal with
+                        technical or technological choices, and it is
+                        realized by the components of the physical
+                        architecture, clause 4.4.4.
+
+                        Arcadia allocates functions to logical
+                        components. cc-public has no function items
+                        yet.
+    term_preferred:     logical component
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_determination -- Determination
+  #
+  con_determination:
+    id_self:            con_determination
+    guid_self:          con_be674cf787004448ac2a890e84893d3a
+    title:              Determination
+    brief:              |
+                        The act of settling, given the arguments
+                        presented, that an option holds or does not
+                        hold, recorded as an item of its own.
+    description:        |
+                        A determination is made by someone, and is
+                        changed in place when they change the ruling,
+                        so that a decision has at most one. It is not
+                        the evaluation of the arguments, which is to
+                        be computed from them for a given ranking of
+                        concerns, and would change whenever an
+                        argument is added. No evaluator exists yet.
+                        Where the two disagree, the arguments have
+                        moved since the determination was made, and it
+                        may be time to change it.
+    note:               |
+                        Abstract argumentation evaluates arguments and
+                        says nothing of who acts on the result: Dung,
+                        On the acceptability of arguments and its
+                        fundamental role in nonmonotonic reasoning,
+                        logic programming and n-person games,
+                        Artificial Intelligence 77, 1995. Committing
+                        to a course of action is a move in a
+                        deliberation dialogue: McBurney, Hitchcock and
+                        Parsons, The eightfold way of deliberation
+                        dialogue, International Journal of Intelligent
+                        Systems 22, 2007.
+
+                        Arcadia has no counterpart.
+    term_preferred:     determination
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_decision -- Decision
+  #
+  con_decision:
+    id_self:            con_decision
+    guid_self:          con_8a86a0e623684e92a43bae922efd3b90
+    title:              Decision
+    brief:              |
+                        A question about the system to be settled, for
+                        which options are offered and around which the
+                        arguments for and against them are gathered.
+    description:        |
+                        A decision is stated before it is settled. Its
+                        options are the alternatives, and every
+                        annotation about it, and every determination
+                        that upholds or rejects one of its options,
+                        belongs to it. A decision with no
+                        determination is open.
+    note:               |
+                        The concept follows architecture decisions and
+                        rationale in ISO/IEC/IEEE 42010:2011, Systems
+                        and software engineering -- Architecture
+                        description, clauses 4.2.7 and 5.8. Of the
+                        points 5.8.2 asks a record of a decision to
+                        consider, the id identifies the decision, the
+                        brief states the question, r_is_about links it
+                        to the items it is about, its options record
+                        the alternatives, annotations carry the
+                        rationale and link it to concerns, and a
+                        determination records the outcome. Owner and
+                        timestamps are left to git. MADR and the
+                        decision management process of ISO/IEC/IEEE
+                        15288 likewise use "decision" for the question
+                        being settled.
+
+                        The structure follows Issue-Based Information
+                        Systems, in which what IBIS calls an issue is
+                        answered by positions, and positions are
+                        argued for and against: Kunz and Rittel,
+                        Issues as elements of information systems,
+                        Working Paper 131, Institute of Urban and
+                        Regional Development, University of
+                        California, Berkeley, 1970. Here an IBIS issue
+                        is a decision and a position is an option. A
+                        deliberation dialogue likewise opens with a
+                        governing question: McBurney, Hitchcock and
+                        Parsons, The eightfold way of deliberation
+                        dialogue, International Journal of Intelligent
+                        Systems 22, 2007.
+
+                        The term "issue" is deprecated because in
+                        everyday use, and in code forges, it means a
+                        problem or a ticket.
+
+                        Arcadia has no counterpart.
+    term_preferred:     decision
+
+    term_admitted:
+      - question
+
+    term_deprecated:
+      - issue
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_requirement -- Requirement
+  #
+  con_requirement:
+    id_self:            con_requirement
+    guid_self:          con_6249464891f44026a856a66ec1b7dd79
+    title:              Requirement
+    brief:              |
+                        A statement which translates or expresses a
+                        need and its associated constraints and
+                        conditions.
+    description:        |
+                        A requirement is an obligation on one system
+                        or system element, its subject. It is written
+                        as one statement that a reader can verify.
+                        Here the statement is not stored: it is
+                        composed from the slots of the requirement, so
+                        that it is well formed by construction.
+    note:               |
+                        The definition is that of ISO/IEC/IEEE
+                        29148:2011, Systems and software engineering
+                        -- Life cycle processes -- Requirements
+                        engineering, clause 4.1.17. Clause 5.2.4 gives
+                        the syntax [Condition] [Subject] [Action]
+                        [Object] [Constraint], and the keywords shall,
+                        should, will and may.
+
+                        The slots follow the SOPHIST MASTER template,
+                        a stricter form of that syntax: Rupp and the
+                        SOPHISTs, Requirements-Engineering und
+                        -Management. The attributes follow the INCOSE
+                        Guide for Writing Requirements, revision 3,
+                        2019, section 5.
+
+                        Arcadia has no counterpart.
+    term_preferred:     requirement
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_keep -- Keeping
+  #
+  con_keep:
+    id_self:            con_keep
+    guid_self:          con_3eb073f9e45d435bbfb0432628c79b26
+    title:              Keeping
+    brief:              |
+                        The process of holding a thing as it is, so
+                        that it does not change.
+    description:        |
+                        A process word: the verb a requirement obliges
+                        its subject to do. What is kept is named by
+                        the object of the requirement.
+    term_preferred:     keep
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_refuse -- Refusing
+  #
+  con_refuse:
+    id_self:            con_refuse
+    guid_self:          con_e01766cef40846da8b66986de345dcc1
+    title:              Refusing
+    brief:              |
+                        The process of declining to carry out what was
+                        asked, so that none of it is done.
+    description:        |
+                        A process word: the verb a requirement obliges
+                        its subject to do. What is refused is named by
+                        the object of the requirement.
+    term_preferred:     refuse
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_role -- Role
+  #
+  con_role:
+    id_self:            con_role
+    guid_self:          con_d9e491abe3374642b8759068895b2056
+    title:              Role
+    brief:              |
+                        Something an item can be cast as in a
+                        relation, shared by every relation that needs
+                        it.
+    description:        |
+                        A role names what an item is to the relations
+                        it takes part in, such as an argument,
+                        something that can be argued for or against,
+                        or a design element. A type says which roles
+                        its items play, and a relation restriction
+                        says which roles an end of a relation needs.
+                        One role serves many relations, and many types
+                        may play it, including the types of a partner
+                        in the federation.
+    note:               |
+                        Role here is the role class of ISO 15926-2,
+                        Industrial automation systems and integration
+                        -- Integration of life-cycle data for process
+                        plants -- Part 2: Data model, whose
+                        role_and_domain is a role shared by many
+                        relationships and played by the members of a
+                        domain. Object-role modelling (Halpin) uses
+                        roles played by object types in the same way.
+
+                        It is not the relation role of ISO/IEC
+                        11179-3:2013, Information technology --
+                        Metadata registries -- Part 3: Registry
+                        metamodel and basic attributes, clause
+                        3.2.120, which is a named end of one relation.
+                        Here the two ends of a relation are its source
+                        and its target, and they are not named items.
+
+                        A role is declared on a type, never on an
+                        item, so that it cannot drift between items of
+                        one type.
+    term_preferred:     role
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_relation_restriction -- Relation restriction
+  #
+  con_relation_restriction:
+    id_self:            con_relation_restriction
+    guid_self:          con_b46ee593c29d4cec9e9ac4238bd98f08
+    title:              Relation restriction
+    brief:              |
+                        A condition on the items that may stand at one
+                        end of a relation, stated in terms of roles.
+    description:        |
+                        A relation restriction is satisfied by an item
+                        whose type plays any role it admits, or does
+                        not play any role it excludes. A relation
+                        names restrictions for its source and for its
+                        target. An end must satisfy every restriction
+                        it names, and an end that names none is open
+                        to any item. The conditions on an end are
+                        therefore in conjunctive normal form, with
+                        negation.
+    note:               |
+                        The name follows the property restrictions of
+                        OWL 2, W3C OWL 2 Web Ontology Language
+                        Structural Specification, section 8, which
+                        state conditions on the values of a property.
+                        A restriction here names roles, never types,
+                        so that a partner in the federation can meet
+                        it by giving its own types a role.
+    term_preferred:     relation restriction
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_class -- Python class
+  #
+  con_python_class:
+    id_self:            con_python_class
+    guid_self:          con_e74c5240999a4e9c95cfd22a38ab5910
+    title:              Python class
+    brief:              |
+                        A class defined in a python module, at the top
+                        of the module or inside another class.
+    description:        |
+                        A python class is named by the dotted path of
+                        its module and the names of the classes it
+                        sits in. It carries its own metadata in its
+                        docstring once something needs to point at it.
+    term_preferred:     python class
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_python_function -- Python function
+  #
+  con_python_function:
+    id_self:            con_python_function
+    guid_self:          con_879798b806c44c3baa25c1e372b90e20
+    title:              Python function
+    brief:              |
+                        A function or method defined in a python
+                        module, at the top of the module or inside a
+                        class.
+    description:        |
+                        A python function is named by the dotted path
+                        of its module and the names of the classes it
+                        sits in. A method is a python function. A
+                        function defined inside another function is
+                        not one in this sense, since nothing outside
+                        can call it. It carries its own metadata in
+                        its docstring once something needs to point at
+                        it.
+    term_preferred:     python function
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_interface_control_document -- Interface control document
+  #
+  con_interface_control_document:
+    id_self:            con_interface_control_document
+    guid_self:          con_d5f7300ab30c44d9ab1523be6a4ca765
+    title:              Interface control document
+    brief:              |
+                        A controlled contract for one interface: what
+                        crosses a shared boundary between system
+                        elements, and what each side may rely on.
+    description:        |
+                        An interface control document states one
+                        version of one interface, in enough detail
+                        that a provider and a caller built by
+                        different developers agree. It may present the
+                        interface in more than one way, such as an API
+                        in one language, a runtime step, or the
+                        artifacts handed across the boundary. Each
+                        declaration it holds can be pointed at on its
+                        own.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017, Systems and software
+                        engineering -- Vocabulary, has no entry for
+                        the preferred term. 3.2059 defines interface
+                        control as the procedures and documentation
+                        that identify the characteristics between
+                        configuration items provided by different
+                        developers. 3.2065 defines interface
+                        specification, sense 2, as a document that
+                        specifies the interface characteristics of an
+                        existing or planned system or component, which
+                        is this concept. The preferred term is the one
+                        the INCOSE Guide to Writing Requirements uses
+                        in attribute A30, trace to interface
+                        definition.
+    term_preferred:     interface control document
+
+    term_admitted:
+      - interface specification
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_interface_member -- Interface member
+  #
+  con_interface_member:
+    id_self:            con_interface_member
+    guid_self:          con_0f574750f53d446daa3eb49ce88513c8
+    title:              Interface member
+    brief:              |
+                        One declaration within an interface control
+                        document: a module, type, constant, function,
+                        class, method, parameter, port or artifact
+                        that crosses the boundary.
+    description:        |
+                        An interface member has its own identity, so
+                        that a requirement, an implementation or a
+                        test can name one member rather than the whole
+                        document. It states what a caller may rely on:
+                        its brief, and its obligation, which says what
+                        the signature does not.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.2064 defines
+                        interface signature as the set of action
+                        signatures associated with the interactions of
+                        an interface. A member is one element of that
+                        set, or one value that an action reads or
+                        writes.
+    term_preferred:     interface member
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_system_configuration -- System configuration
+  #
+  con_system_configuration:
+    id_self:            con_system_configuration
+    guid_self:          con_89522a6f06b34f15b8b6cef1b2a43c51
+    title:              System configuration
+    brief:              |
+                        A system of interest described as a dataflow
+                        graph: its dataflow nodes, the dataflow edges
+                        that carry data between their ports, and where
+                        each dataflow node runs.
+    description:        |
+                        A system configuration is complete enough to
+                        be run. Each dataflow node names the interface
+                        control document whose dataflow step surface
+                        it presents, so that every dataflow edge can
+                        be checked against the ports at its ends. A
+                        variant of a system, for a test, a simulation
+                        or a deployment, is derived from a system
+                        configuration by transformations, and is not
+                        kept as a copy.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.770 defines
+                        configuration as the arrangement of a computer
+                        system or component as defined by the number,
+                        nature and interconnections of its constituent
+                        parts (sense 1), and as a collection of
+                        objects able to interact at interfaces (sense
+                        6, from ISO/IEC 10746-2). The sections of a
+                        system configuration follow the configuration
+                        model of Stableflow, the data flow engine of
+                        Design Factory (software architecture
+                        description 2.0.0, clause 5.5).
+    term_preferred:     system configuration
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_dataflow_node -- Node
+  #
+  con_dataflow_node:
+    id_self:            con_dataflow_node
+    guid_self:          con_93fe20797cb04f98b2a396259f9c15a6
+    title:              Dataflow node
+    brief:              |
+                        One step of a dataflow graph: it reads its
+                        inputs, writes its outputs and keeps state
+                        between invocations.
+    description:        |
+                        A dataflow node is one use of a step within a
+                        system configuration. Its interface is a
+                        dataflow step surface of an interface control
+                        document, and its settings are the values it
+                        is configured with. Many dataflow nodes may
+                        present the same interface.
+    note:               |
+                        A dataflow node runs in the dataflow engine
+                        (con_dataflow_engine). Under the semantics of
+                        a Kahn process network (Kahn, The semantics of
+                        a simple language for parallel programming,
+                        IFIP 1974), which the engine supports first,
+                        it is a process of that network. It is a node
+                        in the sense of Stableflow (software
+                        architecture description 2.0.0, clause 5.1).
+                        It is qualified because node is an overloaded
+                        word. ISO/IEC/IEEE 24765:2017 3.2598 gives
+                        node five senses, among them a vertex of a
+                        graph (sense 1) and a unit located in space,
+                        which is a host (sense 2), and Arcadia uses it
+                        for a physical component that hosts others. A
+                        dataflow node is neither: it runs on an OS
+                        process, and an OS process on a host.
+    term_preferred:     dataflow node
+
+    term_admitted:
+      - node
+
+    alias:
+      - con_node
+
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_dataflow_edge -- Dataflow edge
+  #
+  con_dataflow_edge:
+    id_self:            con_dataflow_edge
+    guid_self:          con_20d58a851b1d42c797c856db69eb893a
+    title:              Dataflow edge
+    brief:              |
+                        A connection of a dataflow graph: it carries
+                        the values one dataflow node writes on an
+                        output port to an input port of another, in
+                        order.
+    description:        |
+                        A dataflow edge is part of a system
+                        configuration. Each end names a dataflow node
+                        and one port of the interface that node
+                        presents. A dataflow edge is feedforward
+                        unless it says feedback; a feedback edge
+                        closes a loop, and its value comes from the
+                        invocation before.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.1006 defines data
+                        flow as the sequence in which data transfer,
+                        use and transformation are performed during
+                        the execution of a computer program. Under the
+                        semantics of a Kahn process network, which the
+                        dataflow engine (con_dataflow_engine) supports
+                        first, a dataflow edge is a channel of that
+                        network. It is an edge in the sense of
+                        Stableflow (software architecture description
+                        2.0.0, clause 5.1). It is qualified because
+                        the graph of items has edges of its own, which
+                        are relations.
+    term_preferred:     dataflow edge
+
+    term_admitted:
+      - edge
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_os_process -- OS process
+  #
+  con_os_process:
+    id_self:            con_os_process
+    guid_self:          con_50c6801962a0470f95532225278f0408
+    title:              OS process
+    brief:              |
+                        An executable unit managed by an operating
+                        system scheduler, where dataflow nodes run in
+                        order.
+    description:        |
+                        An OS process is part of a system
+                        configuration. Each runs on one host, and each
+                        dataflow node names the OS process it runs in.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.3037 gives process
+                        several senses. This is sense 6, an executable
+                        unit managed by an operating system scheduler.
+                        Sense 1, a set of interrelated or interacting
+                        activities that transforms inputs into
+                        outputs, is the life cycle process of
+                        ISO/IEC/IEEE 15288, which is why the word is
+                        qualified.
+    term_preferred:     OS process
+
+    term_admitted:
+      - process
+
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_dataflow_engine -- Dataflow engine
+  #
+  con_dataflow_engine:
+    id_self:            con_dataflow_engine
+    guid_self:          con_b7bfc42522104498abc1a46dc8859fe8
+    title:              Dataflow engine
+    brief:              |
+                        The engine of cc-public that runs a system
+                        configuration: it places each dataflow node on
+                        its OS process and passes values along the
+                        dataflow edges.
+    description:        |
+                        The dataflow engine is being ported into
+                        cc-public from Stableflow, the dataflow engine
+                        of Design Factory, and reads its configuration
+                        from the graph of items. Its first semantics
+                        are those of a Kahn process network. It is
+                        meant to support others as well, at least
+                        those of actors, so a dataflow node or edge is
+                        not defined by Kahn semantics alone. If it
+                        ever needs a brand, it is the Capability
+                        Commons Dataflow Engine.
+    note:               |
+                        The owner settled the name on 2026-10-20,
+                        after an argument among the concern advocates.
+                        ISO/IEC/IEEE 24765:2017 3.1006 defines data
+                        flow. Kahn, The semantics of a simple language
+                        for parallel programming (IFIP 1974), defines
+                        process networks; Hewitt, Bishop and Steiger,
+                        A universal modular ACTOR formalism for
+                        artificial intelligence (IJCAI 1973), defines
+                        actors.
+    term_preferred:     dataflow engine
+    alias:              []
+    relation:           []

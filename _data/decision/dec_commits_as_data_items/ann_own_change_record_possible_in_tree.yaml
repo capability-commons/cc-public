@@ -1,0 +1,46 @@
+id_self:                ann_own_change_record_possible_in_tree
+guid_self:              ann_4347ba2439c64994ac2cf638297afa95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  In-tree record of a commit's own change
+brief:                  |
+                        A file committed with its change can record
+                        that change, as news fragments do. The commit
+                        item does not depend on the hash, so only the
+                        hash and a record written after the commit
+                        cannot sit in the tree.
+description:            |
+                        The id is UTC time and six guid digits, not
+                        the hash
+                        (_data/register/reg_data_item_type.yaml lines
+                        710-718), and no field of sch_commit depends
+                        on it (_data/schema/sch_commit.yaml lines
+                        40-85). towncrier keeps one file per change,
+                        committed with it
+                        (https://towncrier.readthedocs.io/en/stable/tutorial.html).
+                        The type note rejects the tree because "a
+                        commit cannot contain its own record" (lines
+                        706-710). From the reviewability advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commits_as_data_items
+    guid_target:        dec_ecd704e11aba42d88e1bb5a264476819
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_record_and_commit_one_git_object
+    guid_target:        ann_0859599c2ed74100827c31cc03863603
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_message_item_reuses_item_machinery
+    guid_target:        ann_cecbf9bea49b44ea9476f9139cb951f6

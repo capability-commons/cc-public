@@ -1,0 +1,50 @@
+id_self:                ann_full_check_per_test_grows_with_graph
+guid_self:              ann_3fb89941e84f4e469798c906ec43a71a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full checker run per test over the whole tree
+brief:                  |
+                        Each check test copies the whole repository
+                        and runs the full checker over it, so the time
+                        of every test rises with the size of the
+                        graph. The other option does not remove this
+                        cost.
+description:            |
+                        Measured by the performance advocate on
+                        2026-10-15 in a copy of HEAD 89c74d8, pytest
+                        9.1.1, clingo 5.8.2, 4 CPUs, serial; not
+                        Will's machine. A copy takes about 0.02 s and
+                        a full check() about 1.2 s warm, 2.5 s cold.
+                        The 59 tests in src/cc_public/check/_test
+                        spend 71.9 s in call and 1.4 s in setup. The
+                        whole suite of 326 tests takes 3m04s serial.
+                        The gate shards tests per processor (gate.py
+                        lines 33-36). Device tool calls end at 180 s
+                        (memory/MEMORY.md line 45, assistant-written
+                        note). ASSUMPTION: check() time grows at least
+                        linearly with items; not measured at other
+                        sizes. A small fixed fixture tree would keep
+                        the cost flat.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

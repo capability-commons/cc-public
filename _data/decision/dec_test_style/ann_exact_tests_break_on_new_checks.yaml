@@ -1,0 +1,52 @@
+id_self:                ann_exact_tests_break_on_new_checks
+guid_self:              ann_7d402241059842e398d8db5360378627
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check and data model changes spread to tests
+brief:                  |
+                        Because nearly every test pins the whole
+                        failure set, adding a check or changing the
+                        data model forces edits to unrelated tests.
+                        Tests are already loosened case by case.
+description:            |
+                        Commit 586a0e5 rewrote the prefix test to look
+                        only at duplicate_prefix, because options in
+                        the tree raised other failures beside the
+                        planted one. In 1ba2895, moving options under
+                        decisions changed existing expectations (a
+                        missing_about failure on the test option
+                        became answer_count). Commit 7db4229 replaced
+                        fixed line numbers in two schema tests after a
+                        note in sch_option changed length. The seven
+                        latest commits that touched test_check.py
+                        added 233 lines and changed or removed 53 (git
+                        show --numstat for 89c74d8, 1ba2895, 6230e98,
+                        aa23286, 3d7ef5b, 7db4229, d03026b).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,41 @@
+id_self:                ann_exact_comparison_costs_no_extra_time
+guid_self:              ann_910faaccadb0462b9a6e7489c9abe65f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No run-time cost for exact comparison
+brief:                  |
+                        Exact expectations cost the same machine time
+                        as asking for one failure. One call computes
+                        every check, so the stricter assertion only
+                        compares a small dictionary.
+description:            |
+                        check() runs one logic program over all facts
+                        and returns every failure keyed by check
+                        (src/cc_public/check/check.py lines 42,
+                        66-107). It has no argument to select a subset
+                        of checks (line 66). The tests call it through
+                        _check (test_check.py lines 201-212). This
+                        holds while the checks run as one program.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

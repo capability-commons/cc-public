@@ -1,0 +1,60 @@
+id_self:                ann_commit_check_cost_outside_graph_storage
+guid_self:              ann_859b941b62694e05a747aa2b64dddd90
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit check cost outside graph storage
+brief:                  |
+                        Most of the commit check's time goes to laying
+                        out every file of both trees and to evaluating
+                        change.lp, so a stored graph history would not
+                        make the check much faster.
+description:            |
+                        The check extracts both trees, finds changed
+                        files by running the layout printer over every
+                        file of both trees, then evaluates change.lp
+                        (src/cc_public/commit/change.py lines 85-86,
+                        115-123 and 129-141). Advocate's runs,
+                        2026-10-15, on 89c74d8, median of 3, timings
+                        varying up to about 40 percent (scratchpad
+                        advperf63_r.py). At HEAD (203 items, 128
+                        files): finding changed files 3.3 s,
+                        extracting both trees 1.2 s, evaluating
+                        change.lp 1.65 s. 123 of the 128 files are
+                        byte-identical to the parent's. At HEAD~31
+                        (141 items, 80 files): 1.28 s, 0.51 s and 0.44
+                        s. Verifier's re-runs, 2026-10-15, same commit
+                        and scripts, scratch clone: at HEAD 1.8 s to
+                        3.0 s, 0.8 s to 1.2 s and 1.0 s to 1.4 s; at
+                        HEAD~31 1.3 s to 2.0 s, 0.5 s to 1.0 s and 0.4
+                        s to 0.5 s; runs differ by up to about a
+                        factor of two. Evaluation grew fastest in
+                        every run. ASSUMPTION: a stored history holds
+                        each commit's extracted facts, so at most it
+                        replaces extraction of the before tree, about
+                        half of the 1.2 s. ASSUMPTION (advocate's
+                        inference): skipping byte-identical files
+                        before laying them out would remove most of
+                        the 3.3 s, with no stored history.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_defer_graph_history
+    guid_target:        opt_80702d6abccf462b830106cc754ae93e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

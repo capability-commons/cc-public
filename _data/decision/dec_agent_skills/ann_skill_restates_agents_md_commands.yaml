@@ -1,0 +1,68 @@
+id_self:                ann_skill_restates_agents_md_commands
+guid_self:              ann_2833fda8a4094b928a3d4d8ec443770e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commands stated in both AGENTS.md and the skill
+brief:                  |
+                        The skill restates the cctool commands and
+                        rules that AGENTS.md also states, so a reader
+                        meets them twice and a change must be made in
+                        both by hand, with nothing to check that it
+                        was.
+description:            |
+                        Commands: AGENTS.md lines 36-55 and
+                        .agents/skills/editing-data-items/SKILL.md
+                        lines 32-55. The guid rule: AGENTS.md lines
+                        44-45 and SKILL.md lines 110-111. The rename
+                        rule: AGENTS.md lines 49-53 and SKILL.md lines
+                        103-106. SKILL.md line 13 makes AGENTS.md the
+                        reference, which keeps them from conflicting
+                        today. No YAML, Python or logic file refers to
+                        .agents, SKILL.md or editing-data-items, so
+                        cctool check does not see the skill. SKILL.md
+                        also names 13 failure ids, 11 from
+                        src/cc_public/check/check.lp and 2
+                        (schema_violation, unformatted_file) from
+                        check.py. SKILL.md changed in 10 of 33 commits
+                        from 7dda99e to 89c74d8, AGENTS.md in 7.
+                        Shared commands were changed in both by hand
+                        in the same commit in afbcf6f and 29cb646, but
+                        af6ec6e added unlink and unset to SKILL.md
+                        alone, and AGENTS.md listed them only from
+                        29cb646, two commits later. Bears equally on
+                        opt_skills_in_claude_dir. It is cured by
+                        moving procedure out of AGENTS.md, not by
+                        dropping skills.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_skills
+    guid_target:        dec_6be96ce488394ba892982995b40e154c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_skills_in_agents_dir_with_link
+    guid_target:        opt_5ec45c2cfb514601b0a7759f32b3b6e0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_skills_in_claude_dir
+    guid_target:        opt_de874a19faec4720bb20497e9c245f22
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

@@ -1,0 +1,52 @@
+id_self:                ann_register_shape_checked_twice_via_binding
+guid_self:              ann_34aef1b3ed014ff0aaad1e741b88cd00
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register shape checked twice
+brief:                  |
+                        Each register is checked against sch_register
+                        through its type and again through its
+                        binding, so a fault in the shared register
+                        shape is reported twice. A fault in an
+                        entry-specific field is reported once, by the
+                        binding.
+description:            |
+                        t_register names sch_register
+                        (_data/register/reg_data_item_type.yaml lines
+                        178-182). Each binding composes sch_register
+                        (_data/schema/sch_reg_concern.yaml line 25). A
+                        document meets both its type's schema and its
+                        own (src/cc_public/graph/derive.lp lines
+                        70-85). A test expects two schema_violation
+                        rows for one bad title in reg_concern
+                        (src/cc_public/check/_test/test_check.py lines
+                        520-532). It can be fixed inside the chosen
+                        option by dropping the allOf on sch_register
+                        from the bindings. ASSUMPTION: validation
+                        stays complete, since the type edge still
+                        applies sch_register. From the simplicity
+                        advocate; the maintainability advocate cites
+                        the same test.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_binding_schemas
+    guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_keep_per_register_binding
+    guid_target:        opt_433d0e587fb04d9184a15395e14fbf7e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

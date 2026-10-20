@@ -1,0 +1,48 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_python_package.yaml
+id_self:                sch_python_package
+guid_self:              sch_c2b3fe510fa64c80a4c372a3816ef720
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Python package schema
+brief:                  |
+                        The shape of a python package data item: the
+                        metadata of one python package, held in the
+                        docstring of its __init__ module.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A python package item adds
+                        nothing beyond them, and requires a
+                        description.
+
+                        What the item names and where it lives are not
+                        fields. The id names the package, and the item
+                        lives in the __init__ module of the package it
+                        names.
+usage:                  |
+                        Named by t_python_package as the schema of the
+                        item in the docstring of the __init__ module
+                        of every python package.
+note:                   |
+                        The item is a YAML document in the module
+                        docstring, opened by --- and closed by three
+                        full stops.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - description
+
+unevaluatedProperties:  false

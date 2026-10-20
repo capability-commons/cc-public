@@ -1,0 +1,54 @@
+id_self:                ann_round_trip_load_gives_positions_and_style
+guid_self:              ann_bd5e9ef907b34e1babe3650b92bf9ad5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One load for values, positions and prose style
+brief:                  |
+                        One round-trip load yields the data, the line
+                        and column of every key, and whether a value
+                        was written as a literal block. Editing,
+                        layout, fact extraction and schema errors all
+                        use that one record, with no separate pass for
+                        positions or style.
+description:            |
+                        Positions read through .lc:
+                        src/cc_public/edit/edit.py lines 1156 and
+                        1166; edit/layout.py lines 425 and 496;
+                        graph/extract.py lines 519-540;
+                        check/schema.py lines 203-206. Block style
+                        through LiteralScalarString and
+                        FoldedScalarString: extract.py line 501;
+                        edit.py lines 620 and 967; layout.py lines
+                        470-479. Line on item and reference facts:
+                        commit 9a4b995 (pre-squash). ASSUMPTION: with
+                        PyYAML the tooling would need its own walk
+                        from nodes to values, or a second load; this
+                        is not built, so unsourced.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_ruamel_round_trip
+    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,44 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_python_function.yaml
+id_self:                sch_python_function
+guid_self:              sch_d9e817f521cc4c30aa447e4ff8968916
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Python function schema
+brief:                  |
+                        The shape of a python function data item: the
+                        metadata of one python function or method,
+                        held in its docstring.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. A python function item
+                        adds nothing beyond them.
+
+                        What the item names and where it lives are not
+                        fields. The id names the function, and the
+                        item lives in the function it names. Its
+                        parameters are not fields either: the code
+                        holds them.
+usage:                  |
+                        Named by t_python_function as the schema of
+                        the item in the docstring of a python
+                        function.
+note:                   |
+                        The item is a YAML document in the docstring,
+                        opened by --- and closed by three full stops,
+                        and indented as the docstring is.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+unevaluatedProperties:  false
+relation:               []

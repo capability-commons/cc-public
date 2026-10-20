@@ -1,0 +1,54 @@
+id_self:                ann_a_rust_port_is_one_unreadable_change
+guid_self:              ann_5e5248fa6fa14199823528b80de04cdf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A port no one can review in full
+brief:                  |
+                        A move to Rust is a change of thousands of
+                        lines that a person must judge as a whole,
+                        over five times larger than any change the
+                        tooling has had since its first commit. The
+                        owner already calls the review burden
+                        practically impossible.
+description:            |
+                        The Python under src is 7,767 lines, 2,316 of
+                        them tests (wc -l at 89c74d8). Before the
+                        squash, 19 commits changed Python under src,
+                        median 218 lines, largest 1,411 (c4a8721),
+                        lines added plus removed. On main after the
+                        squash commit 7dda99e (5,255 lines, a squash
+                        of that history, not a change made in one go),
+                        22 more did, the largest 536 lines (18d6181).
+                        The owner said he can review recorded
+                        decisions in batches of five (will-messages.md
+                        line 765, 2026-10-14T23:39:41Z) and called the
+                        review burden "huge (and practically
+                        impossible)" (2026-10-15T10:59Z). ASSUMPTION:
+                        a port could be split module by module, but
+                        only with a Python-Rust boundary that is
+                        itself new code to review. This is about
+                        whether the change can be judged, not its
+                        effort (ann_a_port_costs_a_rewrite).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_tooling_language
+    guid_target:        dec_8d57c4200633466bb89ecb1704b6c61d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_tooling_in_rust
+    guid_target:        opt_fb137b8bff8a4e1ab9847f0cfe1a26ee
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

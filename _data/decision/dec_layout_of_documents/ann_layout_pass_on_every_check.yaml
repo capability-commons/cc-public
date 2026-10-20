@@ -1,0 +1,49 @@
+id_self:                ann_layout_pass_on_every_check
+guid_self:              ann_a045545874644b67b3f200d31433ad49
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout pass on every run of check
+brief:                  |
+                        The chosen printer adds a pass over every
+                        document to each cctool check. Today it costs
+                        about as much as extraction, and it grows with
+                        the tree.
+description:            |
+                        check calls layout.violations over every
+                        document (src/cc_public/check/check.py lines
+                        66-79 at 89c74d8, added in b544e09), with no
+                        cache (src/cc_public/edit/layout.py lines
+                        106-128). Advocate measurement, 2026-10-15, at
+                        89c74d8 on 122 documents: layout pass 0.81 s
+                        and 0.91 s, extraction 0.59 s and 0.73 s,
+                        check_documents 1.17 s. format_file costs
+                        about 90 us per line (79 ms for 849 lines of
+                        reg_data_item_type.yaml). ASSUMPTION: linear
+                        growth puts a tenfold tree near 8 to 9 s per
+                        check. A cache keyed on file content would
+                        remove most of it (not built or measured), so
+                        the point argues for a cache more than against
+                        the printer.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_layout_of_documents
+    guid_target:        dec_0dc8b3e1be164db2bbb6d697663d4c47
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_legacy_printer_as_is
+    guid_target:        opt_3957688f2d264583aa6c394f4fb32c8c
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

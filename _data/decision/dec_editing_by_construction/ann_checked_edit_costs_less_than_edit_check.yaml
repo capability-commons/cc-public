@@ -1,0 +1,55 @@
+id_self:                ann_checked_edit_costs_less_than_edit_check
+guid_self:              ann_72e7d0bf3f1645ffb24660fdb0eb57e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checked edit cheaper than edit then check
+brief:                  |
+                        One checked edit is faster than a hand edit
+                        followed by cctool check, since the command
+                        skips the layout check, and a batch spreads
+                        the fixed cost over many operations.
+description:            |
+                        cctool check runs check_documents and
+                        layout.violations; an edit runs
+                        check_documents only, since "An edit lays out
+                        every file it writes"
+                        (src/cc_public/check/check.py, comment above
+                        NAME_LAYOUT). Measured by the advocate on
+                        2026-10-15 at 89c74d8: one set about 2.25 s,
+                        one check about 2.85 s, layout.violations
+                        about 0.99 s, a batch of 100 sets 5.63 s; 100
+                        separate sets would take about 225 s
+                        (computed). A refused edit writes nothing
+                        (edit.py lines 866-890). ASSUMPTION: a failing
+                        hand edit needs at least one more check after
+                        its fix. Does not hold when many hand edits
+                        share one check, unless the commands use
+                        batch.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_transactional_editing_commands
+    guid_target:        opt_d264c7bf70ea4ae28041004fbe298402
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_hand_edit_then_check
+    guid_target:        opt_b4bfefd6dbb149e9b7711774137c4205
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

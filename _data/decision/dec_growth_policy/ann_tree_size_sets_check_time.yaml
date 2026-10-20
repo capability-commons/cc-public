@@ -1,0 +1,53 @@
+id_self:                ann_tree_size_sets_check_time
+guid_self:              ann_8c14508ad52443b88e7cc0fa0b9c711b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check time set by tree size
+brief:                  |
+                        A whole-tree check spends almost all its time
+                        reading, validating and laying out each file,
+                        not on the rules. Check time grows with the
+                        data in the tree, so a small tree keeps it
+                        short.
+description:            |
+                        cctool check at 89c74d8 takes 4.3 s, 4.4 s and
+                        4.6 s in three runs. Under cProfile (19.3 s in
+                        all) YAML loading takes 11.4 s, JSON Schema
+                        validation 9.0 s and the layout check 7.4 s
+                        (these overlap); the clingo evaluation takes
+                        0.69 s, about 4 percent (advocate measurements
+                        2026-10-15, cloud container with 4 CPUs;
+                        Will's VM has 2, memory/MEMORY.md line 45).
+                        check reads, validates and lays out every file
+                        on each call (src/cc_public/check/check.py
+                        lines 66-82). The tree at 89c74d8 holds 75
+                        tracked YAML files; the legacy tree held 665
+                        (note cc-public-session-context.md line 48).
+                        ASSUMPTION: per-file cost is roughly constant,
+                        so a check over a legacy-sized tree takes
+                        about nine times as long. Legacy file sizes
+                        are not recorded, and the legacy tree used a
+                        different checker.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_growth_policy
+    guid_target:        dec_8a2b97ecfefa488a960e1a1301640618
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_regrow_from_small_seed
+    guid_target:        opt_c84e69e79a47497e866c8841ede8d18a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

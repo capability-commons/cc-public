@@ -1,0 +1,46 @@
+id_self:                ann_tooling_driver_reasons_outside_graph
+guid_self:              ann_ac64b0965ddf4d08b9308a1d41b26d0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tooling drivers recorded without reasons
+brief:                  |
+                        The five driver edges of lc_tooling carry no
+                        reason in the graph. Their reasons live only
+                        in an assistant-written commit message, and
+                        one names Souffle, which the checks no longer
+                        use.
+description:            |
+                        _data/logical_component/lc_tooling.yaml lines
+                        17-42 hold five r_is_driven_by edges with no
+                        reason. The 68d1924 message gives dependency
+                        risk "because of Souffle and a development
+                        machine with no network". Commit 6230e98
+                        (2026-10-14 22:51) moved the checks to clingo;
+                        no file under src names Souffle. Each driver
+                        gates every determination on lc_tooling
+                        (src/cc_public/check/check.lp lines 448-453).
+                        Recording this decision repairs the trace; the
+                        point is against the option as first recorded.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_drivers_of_the_tooling
+    guid_target:        dec_38650a5c44674d6c9b186437afaad898
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_five_tooling_drivers
+    guid_target:        opt_3503fbae2c43425ab4069ea4fa0025ca
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

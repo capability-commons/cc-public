@@ -1,0 +1,60 @@
+id_self:                ann_kept_itemless_commits_need_history_exemption
+guid_self:              ann_07b9d3ae5d1246bbba10816a859f3622
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  History exemption for kept itemless commits
+brief:                  |
+                        Kept on main, the 43 commits without items
+                        fail cctool history check, so the pre-push
+                        hook and every tool that walks history would
+                        need an exemption or a boundary marker.
+description:            |
+                        A message without a commit item fails at parse
+                        (src/cc_public/commit/message.py lines
+                        227-241, 255-258); history.check returns the
+                        failure for each commit
+                        (src/cc_public/commit/history.py lines 97-118)
+                        and has no exempt list or cutoff. The pre-push
+                        hook checks every commit the remote lacks
+                        (.githooks/pre-push line 33), and nothing had
+                        been pushed to main (memory/MEMORY.md lines 7,
+                        42). memory/enforcement-approach.md line 12
+                        says a rule that needs exceptions is fixed in
+                        the rule. The history check came after the
+                        squash (18d6181), so this is a consequence,
+                        not part of the owner's reason. ASSUMPTION:
+                        the boundary would take some named form, such
+                        as a tag or a configured commit.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_squash_early_history
+    guid_target:        dec_b0a34b19d8e04d539e43cdcd846722e4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_keep_history
+    guid_target:        opt_43b88c75b5a54c0fa13f38996756e3dc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,48 @@
+id_self:                ann_commit_critic_puts_a_model_in_a_hook
+guid_self:              ann_606ba7258d63496ba0ef6d1a21339d4d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A commit critic puts a model in a hook
+brief:                  |
+                        A model at commit-msg time adds a model call,
+                        a filter for missing ids and a way to answer.
+                        The commit hooks are not the check of record,
+                        so the critic either misses rebased commits or
+                        runs a second time at push.
+description:            |
+                        .githooks/commit-msg runs only cctool message
+                        check. AGENTS.md: git skips the commit hooks
+                        for a rebase or a cherry-pick; cctool history
+                        check is the check of record, run by pre-push;
+                        "Do not add hooks to cover more of git's
+                        paths". cctool check already reports
+                        dangling_reference, so a drafted answer is
+                        already checked for missing ids.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_cross_examination
+    guid_target:        dec_2be9ee5dba28465b82b2692163fe92e8
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_critic_questions_each_commit
+    guid_target:        opt_82295a8f8af54d7cb07da20f5f7ce7b5
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_no_cross_examination
+    guid_target:        opt_762211a3f8964890b975373625b60421
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

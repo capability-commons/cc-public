@@ -1,0 +1,54 @@
+id_self:                ann_placement_rule_coded_in_three_places
+guid_self:              ann_49d4fb9790cf4773b5b4305e5726be55
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Placement rule kept in three places
+brief:                  |
+                        The expected path is computed in the check and
+                        again in the edit tool, and the whitelist
+                        repeats the layout, so a layout change must
+                        touch all three in step.
+description:            |
+                        Sources: src/cc_public/check/check.lp lines
+                        159-185; src/cc_public/edit/edit.py lines
+                        120-125 and 273-298; .gitignore lines 76-98 in
+                        bb8c338. Commit 1ba2895 added the decision
+                        branch to both check and edit tool, so the
+                        rule now has two branches in each copy. No
+                        test compares the copies directly, but
+                        edit.apply runs the check on every edit and
+                        refuses one that adds a failure (edit.py lines
+                        866-869), so a disagreement between check and
+                        edit tool shows as a refused edit; the
+                        .gitignore copy is not checked. ASSUMPTION: a
+                        role-prefix layout would need the same three
+                        copies, so the cost belongs to any checked
+                        layout.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_item_placement_in_tree
+    guid_target:        dec_436cfdc5cc414e07b69e008590eb50d3
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_scope_by_position
+    guid_target:        opt_be86c7c8546a434ebb3479cc50384b06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

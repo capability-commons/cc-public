@@ -1,0 +1,56 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_option.yaml
+id_self:                sch_option
+guid_self:              sch_6fd91c76629042f394ce1addf6f0cd1b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Option schema
+brief:                  |
+                        The shape of an option: one choice about
+                        something in the graph.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. An option carries nothing
+                        beyond them, and requires a brief.
+
+                        title names the option and brief states it.
+                        The brief is required, because an option that
+                        is not stated cannot be argued over.
+
+                        Which decision an option is for, and which
+                        option it replaces, are edges rather than
+                        fields. The rationale is not a field either:
+                        it is the set of annotations that support or
+                        challenge the option.
+usage:                  |
+                        Named by t_option as the schema of every
+                        option, each in the folder of its decision
+                        under _data/decision/.
+note:                   |
+                        Whether an option has been upheld is not a
+                        field. It is recorded by a determination, an
+                        item of its own that upholds or rejects the
+                        option. An option that no determination names
+                        is open.
+
+                        An option that has been replaced is named by
+                        the r_supersedes edge from its successor.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - brief
+
+unevaluatedProperties:  false

@@ -1,0 +1,50 @@
+id_self:                ann_pixi_brings_six_times_the_named_packages
+guid_self:              ann_76d1e01195c24b67a6913fc43fc583f8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Indirect dependencies far outnumber direct ones
+brief:                  |
+                        The environment brings in about six times as
+                        many packages as the project names, plus pixi
+                        itself and two package services. Each can
+                        change or vanish, though pixi records them.
+description:            |
+                        pyproject.toml names 3 runtime libraries and 4
+                        conda packages; the linux-64 environment in
+                        pixi.lock holds 44 entries (lines 12-55) from
+                        conda.anaconda.org/conda-forge and pypi.org
+                        (lines 4-7). No pixi version is pinned (no
+                        requires-pixi key). The device VM has no pixi
+                        and uses a hand-written stand-in
+                        (memory/MEMORY.md line 39). Some locked
+                        packages are GPL-3.0-only or GPL with the GCC
+                        exception (pixi.lock lines 291-299, 385, 399,
+                        501). ASSUMPTION: these are toolchain parts
+                        not distributed with cc-public, so its
+                        Apache-2.0 licence is not affected; not
+                        checked against ISO/IEC 5230. The
+                        tools-on-PATH way carries the same libraries
+                        without a record.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pixi_from_conda_forge
+    guid_target:        opt_13825b46c24c4bb29bf564159018e5ce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

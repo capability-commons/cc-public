@@ -1,0 +1,47 @@
+id_self:                ann_libraries_agree_on_present_data
+guid_self:              ann_2dee6e71c6704edb8fa9d5c88325a97f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same values from every present data file
+brief:                  |
+                        On the data as it stands, PyYAML safe_load and
+                        ruamel.yaml round-trip give the same values
+                        for every file. The difference between them is
+                        latent: none of the scalars they read
+                        differently occurs today.
+description:            |
+                        Local test, 2026-10-15: all 75 YAML files
+                        under _data loaded with YAML(typ='rt') and
+                        with yaml.safe_load, converted to plain types
+                        and compared; 0 files differ. Leaf values are
+                        only str, int and bool; no dates, floats or
+                        nulls. rt loads all 75 without
+                        DuplicateKeyError, so no file holds a repeated
+                        key. The case for the chosen library on
+                        correctness therefore rests on future input,
+                        not on a present misreading. This may change
+                        as the data grows. Raised by the functional
+                        suitability advocate as weak support.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pyyaml
+    guid_target:        opt_3ce01cad603b4fd0a4d7e24c76474ffc
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

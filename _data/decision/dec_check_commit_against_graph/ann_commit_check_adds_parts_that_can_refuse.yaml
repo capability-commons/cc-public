@@ -1,0 +1,51 @@
+id_self:                ann_commit_check_adds_parts_that_can_refuse
+guid_self:              ann_67ad74f23645400fbd72a4a207193717
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  More parts that can stop a commit
+brief:                  |
+                        The graph check puts both graphs, the layout
+                        printer and the rule evaluator on the path of
+                        every commit, so a fault in any of them stops
+                        all commits. A title-only check depends on the
+                        message parser alone.
+description:            |
+                        src/cc_public/commit/change.py lines 66-74,
+                        85-86, 129-160. The evaluator changed to
+                        clingo in 6230e98, after the check was added.
+                        message check catches only ErrorGate and
+                        ErrorDatalog (src/cc_public/cli/messaging.py
+                        lines 101-105), and extract.py turns no YAML
+                        or Python parse error into either (its only
+                        except clause, line 348, is for
+                        UnicodeDecodeError). A revert of a rename was
+                        refused within three hours of the check being
+                        added (a0a519f, after 7520f91). ASSUMPTION
+                        (from the code, not run): a file at HEAD that
+                        does not parse makes every later commit fail
+                        the hook until --no-verify is used, which
+                        AGENTS.md line 14 forbids to agents. The cost
+                        is lost time, not lost data.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

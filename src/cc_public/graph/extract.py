@@ -1,0 +1,1125 @@
+"""
+---
+
+id_self:                pym_cc_public.graph.extract
+guid_self:              pym_067145ba52314db69f64c5605d575451
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fact extraction
+brief:                  |
+                        Extract the facts of the graph of data items
+                        held in a tree.
+description:            |
+                        This module reads every item in the tree: the
+                        YAML files under a _data directory, the
+                        docstrings of python modules and of the
+                        classes and functions in them, and the comment
+                        headers of other files. It returns the facts
+                        they hold, one set of rows for each base
+                        relation. RELATION names each base relation,
+                        its columns and what a row of it means, and is
+                        the one place they are declared, for Datalog
+                        and for SQL alike. A file that ought to hold a
+                        document but cannot be read is not an error
+                        here: it gives a row of unreadable, so that
+                        the checker reports it with every other
+                        failure.
+relation:               []
+
+...
+"""
+
+
+import ast
+import hashlib
+import os
+import pathlib
+import re
+import typing
+
+import ruamel.yaml
+import ruamel.yaml.scalarstring
+
+
+# Round trip loading keeps the line and column of every key and value,
+# so that a fact can later be traced to where it is written.
+#
+YAML              = ruamel.yaml.YAML(typ = 'rt')
+
+KEY_ID_SELF       = 'id_self'
+KEY_GUID_SELF     = 'guid_self'
+KEY_ID_RELATION   = 'id_relation'
+KEY_ID_TARGET     = 'id_target'
+KEY_TABLE         = 'table'
+KEY_PREFIX        = 'prefix'
+KEY_REGEX_ID      = 'regex_id'
+KEY_INVERSE       = 'inverse'
+KEY_ALIAS         = 'alias'
+KEY_ACYCLIC       = 'acyclic'
+KEY_REF           = '$ref'
+
+# The parts of a signature that an item may state, as an interface
+# member does.
+#
+KEY_TYPE          = 'type'
+KEY_DEFAULT       = 'default'
+KEY_OPTIONAL      = 'optional'
+KEY_VARIADIC      = 'variadic'
+KEY_RETURNS       = 'returns'
+KEY_SPELLING      = 'spelling'
+
+# Fields whose text names no item: identity, aliases, which name what
+# no longer exists, patterns, and what code spells a name, a type, a
+# default or a value as. A field named id_<field> or guid_<field> is a
+# reference, and is read as one.
+#
+SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pattern',
+                     '$id', '$schema', '$ref', 'name', 'spelling', 'default', 'value'}
+
+# A word shaped like an id, not part of a path or of a longer word. A
+# file name is read as the id it is named for, and a word that a * ends
+# is a pattern, not a mention.
+#
+REGEX_MENTION     = re.compile(r'(?<![A-Za-z0-9_$./-])[a-z]{1,8}_[a-z0-9][a-z0-9_]*'
+                               r'(?:\.[a-z0-9_][a-z0-9_]*)*')
+REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|dl|toml|json|md)$')
+MARK_GLOB         = '*'
+REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
+
+PREFIX_ID         = 'id_'
+PREFIX_GUID       = 'guid_'
+DELIM_PREFIX      = '_'
+DIR_DATA          = '_data'
+SUFFIX_YAML       = '.yaml'
+SUFFIX_PYTHON     = '.py'
+SUFFIX_PROGRAM    = '.lp'
+
+# A document opens with this line and closes with the next. In a
+# comment header each line also begins with the comment marker: # in
+# most files, and % in a logic program.
+#
+LINE_OPEN         = '---'
+LINE_CLOSE        = '...'
+MARK_COMMENT      = '#'
+MAP_MARK_COMMENT  = {SUFFIX_PROGRAM: '%'}
+
+# A script may open with a line that names its interpreter. Its comment
+# header then opens on the line after.
+#
+MARK_SHEBANG      = '#!'
+
+# Directories that hold no items: version control, environments,
+# caches and local tools.
+#
+SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
+
+# The documents read so far, keyed by the path and the digest of the
+# file that holds each. It is emptied when it holds this many.
+#
+MAP_READ          = {}
+COUNT_READ        = 4096
+
+# How much of the head of a file that is not YAML or python is read to
+# tell whether it has changed. A comment header is far shorter.
+#
+SIZE_HEAD         = 65536
+
+# Each base relation: its columns, and what one row of it states. A
+# column is a symbol unless its name is followed by :number. A line
+# is the line of the file, counted from 1, that the key of the field
+# is on: id_self for an item, and id_<field> for a reference.
+#
+TYPE_SYMBOL       = 'symbol'
+DELIM_TYPE        = ':'
+
+RELATION          = {
+    'item':               (('id', 'guid', 'holder', 'file', 'line:number'),
+                           'The item id, with guid, is written in file at line. holder '
+                           'is the id of the item that contains it, or empty if none '
+                           'does.'),
+    'reference':          (('holder', 'field', 'id', 'guid', 'file', 'line:number'),
+                           'The item holder names the item id, with guid, in a pair '
+                           'of fields id_<field> and guid_<field>, written in file at '
+                           'line.'),
+    'edge':               (('source', 'relation', 'target'),
+                           'The item source records an edge of relation to target, '
+                           'as written. primary_edge reads edges through inverses.'),
+    'type_prefix':        (('type', 'prefix', 'regex'),
+                           'The type has the id prefix, and its ids match regex.'),
+    'relation_inverse':   (('inverse', 'relation'),
+                           'An edge of inverse is an edge of relation, reversed.'),
+    'register_entry_key': (('register', 'key', 'id'),
+                           'The register holds, under key, a register entry with id.'),
+    'module_name':        (('id', 'expected'),
+                           'A python module, package, class or function, or a logic '
+                           'program file, holds the item id, and its place in the tree '
+                           'calls for the id expected.'),
+    'python_parameter':   (('id', 'position:number', 'name'),
+                           'The python function that holds the item id takes the '
+                           'parameter name at position, counted from 0, in the order a '
+                           'caller gives them. The receiver of a method is not one.'),
+    'python_signature':   (('id', 'position:number', 'part', 'value'),
+                           'The parameter at position of the python function that '
+                           'holds the item id has value for part: its type and '
+                           'default as the code writes them, or empty if it has '
+                           'none, and whether it is optional and variadic, as true '
+                           'or false.'),
+    'python_returns':     (('id', 'type'),
+                           'The python function that holds the item id returns type, '
+                           'as the code writes it, or empty if it does not say.'),
+    'stated':             (('id', 'part', 'value'),
+                           'The item id states value for part of a signature: the '
+                           'spelling of its type, its default, whether it is optional '
+                           'or variadic, as true or false, or the spelling of the type '
+                           'it returns.'),
+    'position':           (('id', 'position:number'),
+                           'The item id is written as the element at position, counted '
+                           'from 0, of a list.'),
+    'tree_file':          (('file',),
+                           'The tree holds file, whether or not the file holds an '
+                           'item.'),
+    'mention':            (('holder', 'id', 'file', 'line:number'),
+                           'The text of a field of the item holder names id, in file '
+                           'at line. Any word shaped like an id is a mention, but only '
+                           'one with the prefix of a known type need name an item.'),
+    'alias':              (('id', 'alias'),
+                           'The item id was once named alias.'),
+    'relation_acyclic':   (('relation',),
+                           'No chain of edges of relation may lead from an item back '
+                           'to itself.'),
+    'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
+                           'The schema holder refers to the schema with a $ref, in '
+                           'file at line.'),
+    'unreadable':         (('file', 'line:number', 'message'),
+                           'The file ought to hold a document, but cannot be read: '
+                           'message says why, and line is where.'),
+    'interface_port':     (('interface', 'kind', 'name', 'member'),
+                           'A dataflow step surface of the interface control document '
+                           'interface has the member, called name, as a port or setting '
+                           'of kind: input, output, state or config.'),
+    'dataflow_node':      (('system', 'key', 'node', 'os_process'),
+                           'The system configuration system holds the dataflow node '
+                           'node under key, placed on the OS process with that key, or '
+                           'on none if os_process is empty.'),
+    'dataflow_edge':      (('system', 'source', 'source_port', 'target', 'target_port',
+                            'direction', 'file', 'line:number'),
+                           'A dataflow edge of the system configuration system carries '
+                           'data from the port source_port of the dataflow node source '
+                           'to the port target_port of the dataflow node target, '
+                           'feedforward or feedback, written in file at line. An end it '
+                           'does not name is empty.'),
+    'dataflow_setting':   (('node', 'name'),
+                           'The configuration of the dataflow node node gives a value '
+                           'for the setting name.'),
+    'os_process':         (('system', 'key', 'host'),
+                           'The system configuration system has an OS process under '
+                           'key, which runs on the host with that key, or on none if '
+                           'host is empty.'),
+    'host':               (('system', 'key'),
+                           'The system configuration system has a host under key.'),
+}
+
+# Python modules are imported with src as the root of the path. The
+# item of a package is held in the docstring of its __init__ module.
+# A logic program file is named in the same way as a python module.
+#
+DIR_IMPORT_ROOT   = 'src'
+MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_PROGRAM: 'lpf_'}
+PREFIX_PACKAGE    = 'pyp_'
+NAME_PACKAGE      = '__init__'
+DELIM_MODULE      = '.'
+
+# A class or function holds an item in its docstring, as a module
+# does. Its document is keyed by the path of its file and the names of
+# the definitions down to it, in the form pytest uses:
+# src/cc_public/graph/jq.py::query. Its id is the name of its module
+# and those names, in lower case, under the prefix of its kind.
+#
+DELIM_DEFINITION  = '::'
+MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
+                     ast.FunctionDef:     'pyf_',
+                     ast.AsyncFunctionDef: 'pyf_'}
+
+# Where a dataflow step surface lists its ports and settings, and the
+# fields of a system configuration and of the ends of its dataflow
+# edges. A dataflow edge is feedforward unless it says otherwise.
+#
+KEY_SURFACE       = 'surface'
+KEY_DATAFLOW      = 'dataflow_step'
+TUPLE_PORT_KIND   = ('input', 'output', 'state', 'config')
+KEY_NAME          = 'name'
+KEY_NODE          = 'dataflow_node'
+KEY_EDGE          = 'dataflow_edge'
+KEY_PROCESS       = 'os_process'
+KEY_HOST          = 'host'
+KEY_CONFIG        = 'config'
+KEY_SOURCE        = 'source'
+KEY_TARGET        = 'target'
+KEY_DIRECTION     = 'direction'
+KEY_ID_NODE       = 'id_dataflow_node'
+KEY_ID_PORT       = 'id_port'
+FEEDFORWARD       = 'feedforward'
+
+# What the code says of each class or function that holds a document,
+# by its key: the id its place calls for, the parameters of a function,
+# each as its name and a mapping of the parts of python_signature, and
+# the type it returns. None of it is in the document, so it is noted
+# when the file is read. The receiver of a method is not a parameter.
+#
+MAP_DEFINITION    = {}
+SET_RECEIVER      = {'self', 'cls'}
+
+Facts             = dict[str, set[tuple[str, ...]]]
+Documents         = dict[str, tuple[typing.Any, int]]
+
+
+# -----------------------------------------------------------------------------
+class ErrorRead(Exception):
+    """
+    A file that ought to hold a document cannot be read. line is the
+    line of the file where the fault is.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, message: str, line: int) -> None:
+        """
+        Keep message, on one line, and line.
+
+        """
+
+        super().__init__(' '.join(message.split()))
+        self.line = line
+
+
+# -----------------------------------------------------------------------------
+class Unreadable:
+    """
+    The document of a file that cannot be read, held in its place in
+    the documents of a tree, with the error that says why.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, error: ErrorRead) -> None:
+        """
+        Keep error.
+
+        """
+
+        self.error = error
+
+
+# -----------------------------------------------------------------------------
+def is_document(document: typing.Any) -> bool:
+    """
+    Return True if document is one that a file holds and that could be
+    read, not None or an Unreadable.
+
+    """
+
+    return document is not None and not isinstance(document, Unreadable)
+
+
+# -----------------------------------------------------------------------------
+def extract(root: pathlib.Path) -> Facts:
+    """
+    Return the facts of the tree under root, keyed by relation.
+
+    """
+
+    return facts_of(documents(root))
+
+
+# -----------------------------------------------------------------------------
+def documents(root: pathlib.Path) -> Documents:
+    """
+    Return each document in the tree under root, with the line of its
+    file that its first line is on, keyed by the file's path relative
+    to root.
+
+    Documents are read from YAML files under a _data directory, from
+    the docstrings of a python module and of its classes and functions,
+    and from the comment header of any other file. A file that holds no
+    document is kept, with None in its place, so that the tree's files
+    are known. A file that cannot be read has an Unreadable in place of
+    its document. A class or function is keyed as file_of says.
+
+    """
+
+    map_document = {}
+
+    for path in _files(root):
+        relative = path.relative_to(root)
+        try:
+            map_document.update(read(path, relative))
+        except ErrorRead as error:
+            map_document[str(relative)] = (Unreadable(error), error.line)
+
+    return map_document
+
+
+# -----------------------------------------------------------------------------
+def _files(root: pathlib.Path) -> list[pathlib.Path]:
+    """
+    Return the path of each file under root, in order, leaving out every
+    folder SET_DIR_SKIP names without walking into it. An environment
+    under .pixi holds ten times the files of the tree, so walking it
+    only to skip them was most of the time a read of the tree took.
+
+    """
+
+    list_path = []
+
+    for (dir_walk, list_dir, list_name) in os.walk(root):
+        list_dir[:] = [name for name in list_dir if name not in SET_DIR_SKIP]
+        list_path.extend(pathlib.Path(dir_walk, name) for name in list_name
+                         if name not in SET_DIR_SKIP)
+
+    return sorted(path for path in list_path if path.is_file())
+
+
+# -----------------------------------------------------------------------------
+def file_of(key: str) -> str:
+    """
+    Return the path of the file that holds the document keyed by key:
+    the key itself for the document of a file, and the part before the
+    first :: for that of a class or function.
+
+    """
+
+    return key.partition(DELIM_DEFINITION)[0]
+
+
+# -----------------------------------------------------------------------------
+def files(map_document: Documents) -> list[str]:
+    """
+    Return the path of each file that holds a document that could be
+    read, in order, once each.
+
+    """
+
+    return sorted({file_of(key) for (key, (document, _)) in map_document.items()
+                   if is_document(document)})
+
+
+# -----------------------------------------------------------------------------
+def facts_of(map_document: Documents) -> Facts:
+    """
+    Return the facts that the documents hold, keyed by relation.
+
+    """
+
+    facts = {name: set() for name in RELATION}
+
+    for (file, (document, base)) in map_document.items():
+        if file == file_of(file):
+            facts['tree_file'].add((file,))
+        if isinstance(document, Unreadable):
+            facts['unreadable'].add((file, base, str(document.error)))
+            continue
+        if document is None:
+            continue
+        _walk(document, '', (file, base), facts)
+        if not isinstance(document, dict):
+            continue
+        _ports(document, facts)
+        _system(document, (file, base), facts)
+        if file in MAP_DEFINITION:
+            id_self                              = str(document.get(KEY_ID_SELF))
+            (expected, tuple_parameter, returns) = MAP_DEFINITION[file]
+            facts['module_name'].add((id_self, expected))
+            for (position, (name, map_part)) in enumerate(tuple_parameter):
+                facts['python_parameter'].add((id_self, str(position), name))
+                for (part, value) in map_part.items():
+                    facts['python_signature'].add((id_self, str(position), part, value))
+            if returns is not None:
+                facts['python_returns'].add((id_self, returns))
+        elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
+            facts['module_name'].add((str(document.get(KEY_ID_SELF)),
+                                      module_name(pathlib.Path(file))))
+
+    return facts
+
+
+# -----------------------------------------------------------------------------
+def column(spec: str) -> tuple[str, str]:
+    """
+    Return the name and the type of the column that spec declares.
+
+    """
+
+    (name, _, type_column) = spec.partition(DELIM_TYPE)
+    return (name.strip(), type_column.strip() or TYPE_SYMBOL)
+
+
+# -----------------------------------------------------------------------------
+def module_name(relative: pathlib.Path) -> str:
+    """
+    Return the id that names the python module or logic program file
+    at relative: the prefix and the dotted name it would be imported
+    under, in lower case. An __init__ module is named for its package.
+
+    """
+
+    list_part = list(relative.with_suffix('').parts)
+    prefix    = MAP_PREFIX_MODULE[relative.suffix]
+
+    if list_part and list_part[0] == DIR_IMPORT_ROOT:
+        list_part = list_part[1:]
+
+    if list_part and list_part[-1] == NAME_PACKAGE:
+        list_part = list_part[:-1]
+        prefix    = PREFIX_PACKAGE
+
+    return prefix + DELIM_MODULE.join(list_part).lower()
+
+
+# -----------------------------------------------------------------------------
+def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
+    """
+    Return the documents that the file at path holds, as parse_all
+    does. relative is the path of the file relative to the root of the
+    tree.
+
+    A YAML file or python module that holds what it held when it was
+    last read gives the same documents as then, the same objects, so
+    that what was found by checking them can be reused. So does any
+    other file whose size and head are as they were. A
+    document is never changed once read.
+
+    """
+
+    if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON):
+        data = path.read_bytes()
+        key  = (str(relative), hashlib.blake2b(data, digest_size = 16).digest())
+        if key not in MAP_READ:
+            if len(MAP_READ) >= COUNT_READ:
+                MAP_READ.clear()
+            try:
+                text = data.decode('utf-8')
+            except UnicodeDecodeError as error:
+                raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
+                                data.count(b'\n', 0, error.start) + 1) from error
+            MAP_READ[key] = parse_all(text, relative)
+        return MAP_READ[key]
+
+    # Any other file may be large, or not text, so only its head is
+    # read, and only as far as a comment header could go. It is known
+    # to be unchanged by its size and the digest of its head.
+    #
+    with open(path, 'rb') as file:
+        head = file.read(SIZE_HEAD)
+    key  = (str(relative), path.stat().st_size, hashlib.blake2b(head, digest_size = 16).digest())
+    if key not in MAP_READ:
+        if len(MAP_READ) >= COUNT_READ:
+            MAP_READ.clear()
+        MAP_READ[key] = {str(relative): _header(_line_of_file(path), mark_comment(relative))}
+    return MAP_READ[key]
+
+
+# -----------------------------------------------------------------------------
+def parse_all(text: str, relative: pathlib.Path) -> Documents:
+    """
+    Return every document that text holds, as the content of the file
+    at relative: the document of the file, keyed by relative, as parse
+    returns it, and that of each class or function of a python module
+    that holds one, keyed as file_of says. Raise ErrorRead if one
+    cannot be read.
+
+    """
+
+    map_document = {str(relative): parse(text, relative)}
+
+    if relative.suffix == SUFFIX_PYTHON:
+        for (key, expected, tuple_parameter, returns, document) in definitions(text,
+                                                                                relative):
+            MAP_DEFINITION[key] = (expected, tuple_parameter, returns)
+            map_document[key]   = document
+
+    return map_document
+
+
+# -----------------------------------------------------------------------------
+def definitions(text: str, relative: pathlib.Path) -> list[tuple]:
+    """
+    Return, for each class or function of the python module text, at
+    relative, whose docstring holds a document: its key, the id its
+    place calls for, its parameters as _parameters gives them, the type
+    it returns as _returns gives it, and the document with the line of
+    the file that its first line is on. A class or function is one at the top of the
+    module or in a class, not one inside a function. Raise ErrorRead if
+    a document cannot be read.
+
+    """
+
+    list_found = []
+
+    def visit(list_node, list_name):
+        for node in list_node:
+            if type(node) not in MAP_PREFIX_KIND:
+                continue
+            list_path = [*list_name, node.name]
+            found     = _document_of(node)
+            if found is not None:
+                list_found.append((DELIM_DEFINITION.join([str(relative), *list_path]),
+                                   definition_id(relative, list_path, node),
+                                   _parameters(node, is_method = bool(list_name)),
+                                   _returns(node),
+                                   found))
+            if isinstance(node, ast.ClassDef):
+                visit(node.body, list_path)
+
+    visit(_module(text).body, [])
+
+    return list_found
+
+
+# -----------------------------------------------------------------------------
+def _parameters(node: ast.AST, is_method: bool) -> tuple[tuple[str, dict[str, str]], ...]:
+    """
+    Return the parameters of the function node, in the order a caller
+    gives them, or none if node is a class. Each is its name and a
+    mapping of the parts of python_signature. The receiver of a method
+    is left out.
+
+    """
+
+    if isinstance(node, ast.ClassDef):
+        return ()
+
+    args          = node.args
+    list_position = [*args.posonlyargs, *args.args]
+    list_default  = [None] * (len(list_position) - len(args.defaults)) + list(args.defaults)
+    list_found    = [(arg, default, False)
+                     for (arg, default) in zip(list_position, list_default, strict = True)]
+
+    if is_method and list_found and list_found[0][0].arg in SET_RECEIVER:
+        list_found = list_found[1:]
+
+    list_found += [(args.vararg, None, True)] if args.vararg else []
+    list_found += list(zip(args.kwonlyargs, args.kw_defaults,
+                           [False] * len(args.kwonlyargs), strict = True))
+    list_found += [(args.kwarg, None, True)] if args.kwarg else []
+
+    return tuple((arg.arg, {'type':     _spelling(arg.annotation),
+                            'default':  _spelling(default),
+                            'optional': _truth(default is not None or is_variadic),
+                            'variadic': _truth(is_variadic)})
+                 for (arg, default, is_variadic) in list_found)
+
+
+# -----------------------------------------------------------------------------
+def _returns(node: ast.AST) -> str | None:
+    """
+    Return the type that the function node returns, as the code writes
+    it, or empty if it does not say. Return None if node is a class.
+
+    """
+
+    if isinstance(node, ast.ClassDef):
+        return None
+    return _spelling(node.returns)
+
+
+# -----------------------------------------------------------------------------
+def _spelling(node: ast.AST | None) -> str:
+    """
+    Return node as the code writes it, or empty if there is none.
+
+    """
+
+    return '' if node is None else ast.unparse(node)
+
+
+# -----------------------------------------------------------------------------
+def _truth(value: bool) -> str:
+    """
+    Return value as true or false.
+
+    """
+
+    return 'true' if value else 'false'
+
+
+# -----------------------------------------------------------------------------
+def definition_id(relative: pathlib.Path, list_name: list[str], node: ast.AST) -> str:
+    """
+    Return the id of the item of the class or function node, named by
+    list_name down from the top of the python module at relative: the
+    prefix of its kind, the name of its module, and list_name, in lower
+    case and separated by full stops.
+
+    """
+
+    (_, _, name) = module_name(relative).partition(DELIM_PREFIX)
+
+    return MAP_PREFIX_KIND[type(node)] + DELIM_MODULE.join([name, *list_name]).lower()
+
+
+# -----------------------------------------------------------------------------
+def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
+    """
+    Return the document that text holds, as the content of the file at
+    relative, or None if it holds none, and the line of the file that
+    its first line is on. Raise ErrorRead if it cannot be read.
+
+    """
+
+    if relative.suffix == SUFFIX_YAML:
+        if DIR_DATA not in relative.parts:
+            return (None, 1)
+        return (_load(text, 1), 1)
+
+    if relative.suffix == SUFFIX_PYTHON:
+        return _docstring(text)
+
+    return _header(iter(text.splitlines()), mark_comment(relative))
+
+
+# -----------------------------------------------------------------------------
+def _docstring(text: str) -> tuple[typing.Any, int]:
+    """
+    Return the document in the module docstring of the python module
+    text, or None if it holds none, and the line of the file that its
+    first line is on.
+
+    """
+
+    return _document_of(_module(text)) or (None, 1)
+
+
+# -----------------------------------------------------------------------------
+def _module(text: str) -> ast.Module:
+    """
+    Return the syntax tree of the python module text. Raise ErrorRead
+    if it is not python.
+
+    """
+
+    try:
+        return ast.parse(text)
+    except (SyntaxError, ValueError) as error:
+        raise ErrorRead('The module is not python: {error}'.format(error = error),
+                        getattr(error, 'lineno', None) or 1) from error
+
+
+# -----------------------------------------------------------------------------
+def _document_of(node: ast.AST) -> tuple[typing.Any, int] | None:
+    """
+    Return the document in the docstring of node, a module, class or
+    function, with the line of the file that its first line is on, or
+    None if its docstring holds none.
+
+    """
+
+    docstring = ast.get_docstring(node)
+
+    if not (docstring and docstring.startswith(LINE_OPEN)):
+        return None
+
+    # The docstring is cleaned of the blank lines that open it, and of
+    # the indentation of a definition, so its first line is that many
+    # lines below the opening quotes.
+    #
+    raw     = node.body[0].value.value
+    leading = raw[:len(raw) - len(raw.lstrip())].count('\n')
+    base    = node.body[0].lineno + leading
+
+    return (_load(docstring, base), base)
+
+
+# -----------------------------------------------------------------------------
+def _load(text: str, base: int) -> typing.Any:
+    """
+    Return the YAML document text, whose first line is line base of
+    its file. Raise ErrorRead if it is not YAML, or repeats a key.
+
+    """
+
+    try:
+        return YAML.load(text)
+    except ruamel.yaml.YAMLError as error:
+        mark = getattr(error, 'problem_mark', None)
+        raise ErrorRead('The document is not YAML: {error}'.format(error = error),
+                        base + (mark.line if mark is not None else 0)) from error
+
+
+# -----------------------------------------------------------------------------
+def _line_of_file(path: pathlib.Path) -> typing.Iterator[str]:
+    """
+    Yield the lines of the file at path, and stop at the first that is
+    not text.
+
+    """
+
+    try:
+        with open(path, encoding = 'utf-8') as file:
+            yield from file
+    except UnicodeDecodeError:
+        return
+
+
+# -----------------------------------------------------------------------------
+def mark_comment(relative: pathlib.Path) -> str:
+    """
+    Return the marker that begins a comment line in the file at
+    relative.
+
+    """
+
+    return MAP_MARK_COMMENT.get(relative.suffix, MARK_COMMENT)
+
+
+# -----------------------------------------------------------------------------
+def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int]:
+    """
+    Return the document in the comment header that the lines open
+    with, each line beginning with mark, or None if they do not open
+    with one, and the line of the file that its first line is on. A
+    line that names an interpreter may come before the header.
+
+    """
+
+    list_line = []
+    base      = 1
+
+    for line in iter_line:
+        text = line.rstrip('\n')
+        if base == 1 and (not list_line) and text.startswith(MARK_SHEBANG):
+            base = 2
+            continue
+        if not text.startswith(mark):
+            return (None, 1)
+        text = text[len(mark):].removeprefix(' ')
+        if (not list_line) and text != LINE_OPEN:
+            return (None, 1)
+        list_line.append(text)
+        if text == LINE_CLOSE:
+            return (_load('\n'.join(list_line), base), base)
+
+    return (None, 1)
+
+
+# -----------------------------------------------------------------------------
+def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts) -> None:
+    """
+    Add the facts held by node, whose nearest enclosing item is holder.
+    location is the file that holds node, and the line of the file that
+    the first line of its document is on.
+
+    """
+
+    if isinstance(node, list):
+
+        for (position, value) in enumerate(node):
+            if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
+                facts['position'].add((value[KEY_ID_SELF], str(position)))
+            _walk(value, holder, location, facts)
+        return
+
+    if not isinstance(node, dict):
+        return
+
+    id_self = node.get(KEY_ID_SELF)
+
+    if isinstance(id_self, str):
+
+        facts['item'].add((id_self,
+                           str(node.get(KEY_GUID_SELF, '')),
+                           holder,
+                           location[0],
+                           _line(node, KEY_ID_SELF, location)))
+        _signature(id_self, node, facts)
+        _stated(id_self, node, facts)
+        for alias in _list_str(node.get(KEY_ALIAS)):
+            facts['alias'].add((id_self, alias))
+        holder = id_self
+
+    _reference(node, holder, location, facts)
+    _text(node, holder, location, facts)
+
+    table = node.get(KEY_TABLE)
+
+    if isinstance(id_self, str) and isinstance(table, dict):
+        for (key, entry) in table.items():
+            if isinstance(entry, dict):
+                facts['register_entry_key'].add((id_self,
+                                                 str(key),
+                                                 str(entry.get(KEY_ID_SELF))))
+
+    for value in node.values():
+        _walk(value, holder, location, facts)
+
+
+# -----------------------------------------------------------------------------
+def _reference(node:     dict[str, typing.Any],
+               holder:   str,
+               location: tuple[str, int],
+               facts:    Facts) -> None:
+    """
+    Add a fact for each reference that node makes, and for the edge
+    that node is, if it is one.
+
+    """
+
+    for (key, value) in node.items():
+        if key.startswith(PREFIX_ID) and key != KEY_ID_SELF and isinstance(value, str):
+            field = key[len(PREFIX_ID):]
+            guid  = str(node.get(PREFIX_GUID + field, ''))
+            facts['reference'].add((holder, field, value, guid, location[0],
+                                    _line(node, key, location)))
+
+    if isinstance(node.get(KEY_ID_RELATION), str):
+        facts['edge'].add((holder,
+                           node[KEY_ID_RELATION],
+                           str(node.get(KEY_ID_TARGET))))
+
+
+# -----------------------------------------------------------------------------
+def _text(node:     dict[str, typing.Any],
+          holder:   str,
+          location: tuple[str, int],
+          facts:    Facts) -> None:
+    """
+    Add a fact for each id that the text of a field of node mentions,
+    and for each schema that node refers to with a $ref.
+
+    """
+
+    for (key, value) in node.items():
+        if key == KEY_REF and isinstance(value, str):
+            for match in REGEX_REF.finditer(value):
+                facts['schema_ref'].add((holder, match.group(1), location[0],
+                                         _line(node, key, location)))
+        if key in SET_KEY_UNNAMED or key.startswith((PREFIX_ID, PREFIX_GUID)):
+            continue
+        if isinstance(value, str):
+            _mention(value, holder, location[0], int(_line(node, key, location)), facts)
+        elif isinstance(value, list):
+            for (index, each) in enumerate(value):
+                if isinstance(each, str):
+                    _mention(each, holder, location[0],
+                             int(_line_item(value, index, location)), facts)
+
+
+# -----------------------------------------------------------------------------
+def _mention(text: str, holder: str, file: str, line: int, facts: Facts) -> None:
+    """
+    Add a fact for each id that text mentions. line is the line of the
+    file that the field holding text is on. The text of a block scalar
+    begins on the line below its key.
+
+    """
+
+    offset = 1 if isinstance(text, ruamel.yaml.scalarstring.LiteralScalarString) else 0
+
+    for match in REGEX_MENTION.finditer(text):
+        if text.startswith(MARK_GLOB, match.end()):
+            continue
+        word = REGEX_SUFFIX.sub('', match.group(0))
+        facts['mention'].add((holder, word, file,
+                              str(line + offset + text.count('\n', 0, match.start()))))
+
+
+# -----------------------------------------------------------------------------
+def _line_item(node: list[typing.Any], index: int, location: tuple[str, int]) -> str:
+    """
+    Return the line of the file that item index of node is on, or 0 if
+    the loader did not record it.
+
+    """
+
+    lc = getattr(node, 'lc', None)
+
+    if lc is None:
+        return '0'
+
+    return str(location[1] + lc.item(index)[0])
+
+
+# -----------------------------------------------------------------------------
+def _line(node: dict[str, typing.Any], key: str, location: tuple[str, int]) -> str:
+    """
+    Return the line of the file that key is on in node, or 0 if the
+    loader did not record it.
+
+    """
+
+    lc = getattr(node, 'lc', None)
+
+    if lc is None:
+        return '0'
+
+    return str(location[1] + lc.key(key)[0])
+
+
+# -----------------------------------------------------------------------------
+def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add the type and relation facts that an entry declares.
+
+    """
+
+    prefix   = node.get(KEY_PREFIX)
+    regex_id = node.get(KEY_REGEX_ID)
+
+    if isinstance(prefix, str) and isinstance(regex_id, str):
+        facts['type_prefix'].add((id_self, prefix, regex_id))
+
+    if node.get(KEY_ACYCLIC) is True:
+        facts['relation_acyclic'].add((id_self,))
+
+    inverse = node.get(KEY_INVERSE)
+
+    if isinstance(inverse, dict) and isinstance(inverse.get(KEY_ID_SELF), str):
+        facts['relation_inverse'].add((inverse[KEY_ID_SELF], id_self))
+
+
+# -----------------------------------------------------------------------------
+def _stated(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a stated fact for each part of a signature that the item node
+    states.
+
+    """
+
+    for (part, value) in (('type',     _type_spelling(node.get(KEY_TYPE))),
+                          ('default',  node.get(KEY_DEFAULT)),
+                          ('optional', node.get(KEY_OPTIONAL)),
+                          ('variadic', node.get(KEY_VARIADIC))):
+        if isinstance(value, bool):
+            facts['stated'].add((id_self, part, _truth(value)))
+        elif isinstance(value, str):
+            facts['stated'].add((id_self, part, value))
+
+    returns = node.get(KEY_RETURNS)
+
+    if isinstance(returns, dict):
+        spelling = _type_spelling(returns.get(KEY_TYPE))
+        if spelling is not None:
+            facts['stated'].add((id_self, 'returns', spelling))
+
+
+# -----------------------------------------------------------------------------
+def _ports(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for each port and setting of each dataflow step surface
+    of document.
+
+    """
+
+    surface = document.get(KEY_SURFACE)
+
+    if not isinstance(surface, dict):
+        return
+
+    interface = str(document.get(KEY_ID_SELF))
+
+    for form in surface.values():
+        step = form.get(KEY_DATAFLOW) if isinstance(form, dict) else None
+        if not isinstance(step, dict):
+            continue
+        for kind in TUPLE_PORT_KIND:
+            for (key, member) in _map(step.get(kind)).items():
+                if isinstance(member, dict) and isinstance(member.get(KEY_ID_SELF), str):
+                    facts['interface_port'].add((interface,
+                                                 kind,
+                                                 str(member.get(KEY_NAME, key)),
+                                                 member[KEY_ID_SELF]))
+
+
+# -----------------------------------------------------------------------------
+def _system(document: dict[str, typing.Any],
+            location: tuple[str, int],
+            facts:    Facts) -> None:
+    """
+    Add the facts of the dataflow nodes, dataflow edges, OS processes
+    and hosts of document, if it is a system configuration: a document
+    whose dataflow_node field maps each key to an item.
+
+    """
+
+    map_node = _map(document.get(KEY_NODE))
+
+    if not map_node or not all(isinstance(node, dict) and KEY_ID_SELF in node
+                               for node in map_node.values()):
+        return
+
+    system = str(document.get(KEY_ID_SELF))
+
+    for (key, node) in map_node.items():
+        id_node = str(node[KEY_ID_SELF])
+        process = str(node.get(KEY_PROCESS, ''))
+        facts['dataflow_node'].add((system, str(key), id_node, process))
+        for name in _map(node.get(KEY_CONFIG)):
+            facts['dataflow_setting'].add((id_node, str(name)))
+
+    for (key, process) in _map(document.get(KEY_PROCESS)).items():
+        host = process.get(KEY_HOST, '') if isinstance(process, dict) else ''
+        facts['os_process'].add((system, str(key), str(host)))
+
+    for key in _map(document.get(KEY_HOST)):
+        facts['host'].add((system, str(key)))
+
+    list_edge = document.get(KEY_EDGE)
+
+    if not isinstance(list_edge, list):
+        return
+
+    for (index, edge) in enumerate(list_edge):
+        if not isinstance(edge, dict):
+            continue
+        source = _map(edge.get(KEY_SOURCE))
+        target = _map(edge.get(KEY_TARGET))
+        facts['dataflow_edge'].add((system,
+                                  str(source.get(KEY_ID_NODE, '')),
+                                  str(source.get(KEY_ID_PORT, '')),
+                                  str(target.get(KEY_ID_NODE, '')),
+                                  str(target.get(KEY_ID_PORT, '')),
+                                  str(edge.get(KEY_DIRECTION, FEEDFORWARD)),
+                                  location[0],
+                                  _line_item(list_edge, index, location)))
+
+
+# -----------------------------------------------------------------------------
+def _map(value: typing.Any) -> dict[typing.Any, typing.Any]:
+    """
+    Return value if it is a mapping, and an empty mapping if not.
+
+    """
+
+    if isinstance(value, dict):
+        return value
+    return {}
+
+
+# -----------------------------------------------------------------------------
+def _type_spelling(value: typing.Any) -> str | None:
+    """
+    Return the spelling of the type reference value, or None if it
+    gives none.
+
+    """
+
+    if isinstance(value, dict) and isinstance(value.get(KEY_SPELLING), str):
+        return value[KEY_SPELLING]
+    return None
+
+
+# -----------------------------------------------------------------------------
+def _list_str(value: typing.Any) -> list[str]:
+    """
+    Return value if it is a list of strings, and an empty list if not.
+
+    """
+
+    if isinstance(value, list) and all(isinstance(each, str) for each in value):
+        return value
+    return []

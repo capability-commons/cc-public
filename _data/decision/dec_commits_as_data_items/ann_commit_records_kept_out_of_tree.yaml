@@ -1,0 +1,61 @@
+id_self:                ann_commit_records_kept_out_of_tree
+guid_self:              ann_502c5d2325cc41e79a26acaafbf2d4d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit records kept out of the tree
+brief:                  |
+                        With the item in the message, the tree does
+                        not grow with the number of commits, and all
+                        items are read in one git call. A record file
+                        per commit in the tree would make every
+                        extraction, gate run and change check read one
+                        more file for each commit ever made.
+description:            |
+                        extract walks every file under its root
+                        (src/cc_public/graph/extract.py line 201,
+                        root.rglob); the change check lays out every
+                        file of both trees
+                        (src/cc_public/commit/change.py lines
+                        129-141). The items of the 33 commits on main
+                        are read from one git log call and parsed in
+                        0.045 s (0.067 s in the verifier's re-run;
+                        src/cc_public/commit/history.py lines 139-148;
+                        measured by the performance efficiency
+                        advocate, 2026-10-15). 93a1428 caches
+                        unchanged documents in memory, keyed by a
+                        digest of each file, which softens the parsing
+                        cost within one process (such as a history
+                        check over many commits) but not across hook
+                        runs, not the reading of each file, and not
+                        the layout pass. ASSUMPTION:
+                        opt_commit_record_in_tree adds one file per
+                        commit; no design of it exists. Grows stronger
+                        with the number of commits.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commits_as_data_items
+    guid_target:        dec_ecd704e11aba42d88e1bb5a264476819
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_commit_item_in_message
+    guid_target:        opt_e652b9f410a84fd0aaf9c10792a3aef5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_commit_record_in_tree
+    guid_target:        opt_6d89a15d168c42aaa0f4a2eb649ebbce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

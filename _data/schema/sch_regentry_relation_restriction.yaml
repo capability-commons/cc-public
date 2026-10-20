@@ -1,0 +1,52 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_regentry_relation_restriction.yaml
+id_self:                sch_regentry_relation_restriction
+guid_self:              sch_8735cac167a04016804daac1f6d5dc16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation restriction register entry schema
+brief:                  |
+                        What a relation restriction register entry
+                        carries beyond the general register entry.
+description:            |
+                        A relation restriction is an OR of literals,
+                        and each literal is an edge: r_admits to a
+                        role an item may play, or r_excludes to a role
+                        it may not. An entry has at least one literal
+                        and no other edge. Its brief reads after "the
+                        source" or "the target", as in "is arguable".
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_relation_restriction as the shape of
+                        every entry in the relation restriction
+                        register.
+type:                   object
+
+required:
+  - relation
+
+properties:
+
+  relation:
+    minItems:           1
+
+    items:
+
+      properties:
+
+        id_relation:
+
+          enum:
+            - r_admits
+            - r_excludes
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml
+
+relation:               []

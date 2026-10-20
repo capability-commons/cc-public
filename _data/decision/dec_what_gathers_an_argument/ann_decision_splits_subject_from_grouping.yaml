@@ -1,0 +1,48 @@
+id_self:                ann_decision_splits_subject_from_grouping
+guid_self:              ann_511a4b6447374e0db52d321bca516351
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Separate edges for subject and grouping
+brief:                  |
+                        Under siblings, r_is_about both named the
+                        subject and grouped the alternatives. The
+                        decision item gives each job its own edge, at
+                        the fixed cost of one type with its concept
+                        and schema, one relation and two checks.
+description:            |
+                        Sibling form: commit fb5566b message. Now
+                        argued joins on r_is_option_for (check.lp
+                        lines 423-436) and r_is_about has domain
+                        t_annotation and t_decision only
+                        (_data/register/reg_relation.yaml lines
+                        167-169). Cost: t_decision, con_decision,
+                        sch_decision, r_is_option_for (commit
+                        52e3e6d), answer_count and
+                        determination_across_decisions (check.lp lines
+                        312-315, 353-357). ASSUMPTION: a narrower
+                        subject per question could patch the sibling
+                        form, but that subject would be a decision
+                        under another name. This patch was not tried.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_what_gathers_an_argument
+    guid_target:        dec_1ba4dfc3ca6e48eb836bc787968bee9c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_decision_item_as_in_ibis
+    guid_target:        opt_b760f84550cb4887999e6f24d685198b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

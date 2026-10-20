@@ -1,0 +1,54 @@
+id_self:                ann_component_with_no_drivers_passes_unargued
+guid_self:              ann_462d091d686848d1995a95a0a0609e52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unargued pass for a subject with no drivers
+brief:                  |
+                        The driver check fires only through a driver
+                        edge, and nothing requires a subject to have
+                        one. A determination about a subject with no
+                        drivers passes with no argument at all.
+description:            |
+                        check.lp lines 448-453; the only check on an
+                        decision's subject is that it has an
+                        r_is_about edge (check.lp lines 290-301).
+                        r_is_about has no range, and only a logical
+                        component can have drivers (reg_relation.yaml
+                        lines 145-172, 409-437). No rule refuses a
+                        component with no driver. The tests of the
+                        driver check use a driven subject
+                        (src/cc_public/check/_test/test_check.py lines
+                        324-368); the one test of a determination
+                        about a subject with no drivers (lines
+                        268-273, decision about concern_safety)
+                        expects it to pass, and none expects it
+                        refused. A small added check would close it
+                        without changing the chosen alternative.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_which_concerns_must_speak
+    guid_target:        dec_35e41ba3ea5d452cbcbf289f44ae8979
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_drivers_of_the_component
+    guid_target:        opt_b8c1c5a69496400e8cf53783b7ffcb98
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

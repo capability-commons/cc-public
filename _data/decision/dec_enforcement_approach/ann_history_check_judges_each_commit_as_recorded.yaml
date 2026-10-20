@@ -1,0 +1,67 @@
+id_self:                ann_history_check_judges_each_commit_as_recorded
+guid_self:              ann_1152ef03dfa04e4fb43aa1a9b587118c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verdict on each commit however made
+brief:                  |
+                        The history check judges each commit from what
+                        it records, whatever git command made it. So a
+                        rebase, a cherry-pick or a revert is checked
+                        the same way as an ordinary commit, one commit
+                        at a time.
+description:            |
+                        It checks the message against sch_commit from
+                        the commit's own tree and the change against
+                        its first parent, and reports a sentence per
+                        failure per commit (repo
+                        src/cc_public/commit/history.py lines 18-28
+                        and 97-124; commit 18d6181). It also reports a
+                        commit item id two commits share, as a
+                        cherry-pick makes (history.py lines 128-153).
+                        git skips the checking commit hooks for a
+                        rebase or a cherry-pick (AGENTS.md lines
+                        25-26; README.md lines 56-57); only
+                        prepare-commit-msg runs (memory
+                        enforcement-approach.md). For reliability, the
+                        commits that recovery makes are checked. For
+                        reviewability, the verdict is on the unit a
+                        reviewer reads. For traceability, every commit
+                        that reaches shared history carries a checked
+                        record of its reason (sch_commit lines 14-16).
+                        The check passed on the whole history at 14,
+                        28 and 32 commits (memory MEMORY.md). Holds at
+                        tenfold: its cost grows with commits checked,
+                        not with git entry points.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_enforcement_approach
+    guid_target:        dec_661ee626c38d44af84079fbfe592dd42
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_one_check_of_record
+    guid_target:        opt_6f1d782598a94342a271026732ef9585
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

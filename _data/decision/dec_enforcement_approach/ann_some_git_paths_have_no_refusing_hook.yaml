@@ -1,0 +1,58 @@
+id_self:                ann_some_git_paths_have_no_refusing_hook
+guid_self:              ann_fb76f1fa3ad54c18a43bfcaf74617fde
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Git paths with no refusing hook
+brief:                  |
+                        Hooks for every path would still leave gaps.
+                        Some paths offer no hook that can refuse a
+                        commit, and any hook can be skipped or be
+                        absent from a clone.
+description:            |
+                        githooks page
+                        (https://git-scm.com/docs/githooks):
+                        post-rewrite runs for commit --amend and
+                        rebase but no effect of its exit status is
+                        stated, and fast-import and filter-repo
+                        "typically do not call" it; post-commit
+                        "cannot affect the outcome of git commit";
+                        pre-rebase gets only the upstream and branch,
+                        not the rewritten commits; pre-commit and
+                        commit-msg "can be bypassed with the
+                        --no-verify option". Hooks run only once
+                        core.hooksPath names .githooks (README.md
+                        lines 56-58). Grows stronger with more
+                        contributors and clones.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_enforcement_approach
+    guid_target:        dec_661ee626c38d44af84079fbfe592dd42
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_hooks_for_every_path
+    guid_target:        opt_367c1f466b074096a6fabfa6ab9850f3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

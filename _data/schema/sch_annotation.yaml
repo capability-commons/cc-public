@@ -1,0 +1,41 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_annotation.yaml
+id_self:                sch_annotation
+guid_self:              sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Annotation schema
+brief:                  |
+                        The shape of an annotation: one assertion
+                        about something in the graph.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. An annotation carries
+                        nothing beyond them.
+
+                        title names the assertion, brief states it,
+                        and description carries the reasoning or the
+                        qualification where one is wanted.
+
+                        What an annotation is about and what it argues
+                        with are edges rather than fields. There is no
+                        status, severity, category, author, time,
+                        confidence or verdict field.
+usage:                  |
+                        Named by t_annotation as the schema of every
+                        annotation, each in the folder of its decision
+                        under _data/decision/ if it is about one, and
+                        in _data/annotation/ if not.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+unevaluatedProperties:  false

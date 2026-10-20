@@ -1,0 +1,153 @@
+# ---
+#
+# id_self:                file_pyproject
+# guid_self:              file_db37a056b6f3467c82134c30f201f391
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  CC-Public pyproject.toml
+# brief:                  |
+#                         Project configuration for cc-public: the pixi
+#                         environment, its tasks, and the settings of
+#                         the linter and the test runner.
+# description:            |
+#                         pixi install builds the environment, and
+#                         installs cc_public into it in editable mode,
+#                         with cctool as its command line entry point.
+#                         pixi run check runs the checker over the
+#                         repository, pixi run test runs the tests, and
+#                         pixi run lint runs the linter. pixi run hooks
+#                         points git at the hooks in .githooks, so that
+#                         pixi run gate and the commit message check run
+#                         before each commit. pixi run browsers fetches
+#                         the Chromium that the browser tests of the
+#                         review pages drive; they are slow, so only
+#                         pixi run test and pixi run slow run them.
+# relation:               []
+#
+# ...
+
+[project]
+authors                 = [{name = "William Payne", email = "wtpayne@gmail.com"}]
+name                    = "cc-public"
+version                 = "0.1.0"
+description             = "Capability commons: a document-oriented engineering system in which every artifact is a checked data item."
+license                 = "Apache-2.0"
+requires-python         = ">= 3.12"
+dependencies            = ["click>=8.2,<9",
+                           "clingo>=5.8,<6",
+                           "htpy>=25.10,<27",
+                           "jsonschema>=4.23,<5",
+                           "pyoxigraph>=0.5.12,<0.6",
+                           "referencing>=0.36,<1",
+                           "ruamel.yaml>=0.19.1,<0.20"]
+
+[project.scripts]
+cctool                  = "cc_public.cli.command:main"
+
+[build-system]
+build-backend           = "hatchling.build"
+requires                = ["hatchling"]
+
+[tool.pixi.workspace]
+channels                = ["conda-forge"]
+platforms               = ["osx-arm64", "osx-64", "linux-64"]
+
+[tool.pixi.pypi-dependencies]
+cc_public               = { path = ".", editable = true }
+playwright              = ">=1.48,<2"
+
+[tool.pixi.dependencies]
+clingo                  = ">=5.8.2,<6"
+jq                      = ">=1.7.1,<2"
+python                  = ">=3.12"
+pytest                  = ">=9.1.1,<10"
+pytest-xdist            = ">=3.8,<4"
+ruff                    = ">=0.16.6,<0.17"
+
+[tool.pixi.tasks]
+check                   = "cctool check"
+test                    = "pytest -n auto --dist worksteal"
+lint                    = "ruff check src"
+gate                    = "cctool gate"
+hooks                   = "git config core.hooksPath .githooks"
+browsers                = "playwright install chromium"
+
+# The slow run: the tests on every Python that requires-python admits,
+# each in an environment of its own. It is too slow for the gate, so it
+# is run on its own, such as overnight: pixi run slow.
+#
+slow                    = { depends-on = [{ task = "test", environment = "py312" },
+                                          { task = "test", environment = "py313" },
+                                          { task = "test", environment = "py314" }] }
+
+[tool.pixi.feature.py312.dependencies]
+python                  = "3.12.*"
+
+[tool.pixi.feature.py313.dependencies]
+python                  = "3.13.*"
+
+[tool.pixi.feature.py314.dependencies]
+python                  = "3.14.*"
+
+[tool.pixi.environments]
+py312                   = ["py312"]
+py313                   = ["py313"]
+py314                   = ["py314"]
+
+# What pytest is allowed to assume. strict_config refuses an ini key it
+# does not know, strict_markers a marker nobody registered, and
+# xfail_strict an expected failure that passed. A test marked slow
+# grows with the data or repeats a stage of the gate, so the gate leaves
+# it out; pixi run test and pixi run slow run it.
+#
+[tool.pytest.ini_options]
+minversion              = "9.1"
+testpaths               = ["src"]
+pythonpath              = ["src"]
+addopts                 = "-q"
+strict_config           = true
+strict_markers          = true
+xfail_strict            = true
+markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage"]
+
+# Lint. The house style aligns values in columns and formats strings
+# with format rather than f-strings, so the rules that would fight it
+# are off. The complexity and size thresholds are those of the legacy
+# tool.
+#
+[tool.ruff]
+line-length             = 100
+target-version          = "py312"
+
+[tool.ruff.lint]
+select                  = ["E", "W", "F", "B", "C90", "N", "PL", "UP", "SIM", "RET",
+                           "ARG", "S", "DTZ", "PIE", "FURB",
+                           "SLF",     # an underscore name is its module's
+                           "RUF100",  # a suppression that suppresses nothing
+                           "PTH119"]  # basename(str(p)) is a roundabout p.name
+ignore                  = ["UP032",   # format() is the house form
+                           "PLC0415", # a lazy import keeps an optional dependency optional
+                           "PLR2004", # a literal beside its comparison reads
+                           "N818",    # exceptions are named Error<Thing>
+                           "S603",    # subprocess runs git, by name, on purpose
+                           "S607"]
+
+[tool.ruff.lint.mccabe]
+max-complexity          = 11
+
+[tool.ruff.lint.pylint]
+max-args                = 9
+max-positional-args     = 9
+max-branches            = 10
+max-statements          = 40
+
+[tool.ruff.lint.per-file-ignores]
+"src/**/_test/*.py"     = ["S101", "E501", "PLR0913", "PLR0917", "ARG001",
+                           "SLF001"]  # a test may be long, and reach the internals of what it tests
+"src/**/conftest.py"    = ["ARG001"]  # a fixture may take another only to depend on it

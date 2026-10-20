@@ -1,0 +1,57 @@
+id_self:                ann_rename_fused_number_duplicates_guid
+guid_self:              ann_a3a93f7575124e2d8c9c158f1f9ac473
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fused number as a second stable key
+brief:                  |
+                        A number fused into the id gives each item a
+                        second stable key beside its guid. It removes
+                        the alias list but adds more than it removes.
+description:            |
+                        Every item carries a guid_self that does not
+                        change on rename
+                        (_data/schema/sch_trait_relation.yaml lines
+                        16-24; commit f587284 in the
+                        pre_squash_20261014 history, memory/MEMORY.md
+                        line 35). Commit ids already take a generated
+                        part from the guid: the id of commit 7520f91
+                        ends in the first hex digits of its guid, so a
+                        cheap form with no allocator exists. Other ids
+                        are words after a type prefix, matched by a
+                        regex per type, such as
+                        ^concern_[a-z][a-z0-9_]*$
+                        (_data/register/reg_data_item_type.yaml line
+                        507). ASSUMPTION: a per-type allocator would
+                        be a further mechanism. The point rests mainly
+                        on the number duplicating the guid. From the
+                        simplicity advocate. The maintainability
+                        advocate makes the same point in weighing the
+                        ripple cost.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_rename_safety
+    guid_target:        dec_d016a708d7644881ac870faccf1a98a9
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_allocated_numbers_in_ids
+    guid_target:        opt_fec1458f1eec4f7581d86f4eaa7c048b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

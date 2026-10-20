@@ -1,0 +1,43 @@
+id_self:                ann_per_change_reasons_leave_ancestry_of_main
+guid_self:              ann_e3230fcefd1d4fd48f735fe01bd21ff5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-change reasons off the ancestry of main
+brief:                  |
+                        The squash replaces 45 commits, each with its
+                        own reason, by one root commit with one reason
+                        for the whole seed, so git log and git blame
+                        on main stop at that one reason.
+description:            |
+                        git rev-list --count pre_squash_20261014
+                        gives 45. Example reason: 44034ef says status
+                        "carried no information" (git show 44034ef).
+                        git merge-base --is-ancestor
+                        pre_squash_20261014 main fails.
+                        memory/MEMORY.md line 42: commit hashes named
+                        earlier now exist only under the tag. 41 of
+                        the 45 hashes are cited in work/*/packet.md of
+                        this decision recording.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_squash_early_history
+    guid_target:        dec_b0a34b19d8e04d539e43cdcd846722e4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_squash_with_backup_tag
+    guid_target:        opt_dcddafde32a341e38a282c0579be8caa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

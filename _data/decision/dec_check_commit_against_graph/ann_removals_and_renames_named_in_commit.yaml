@@ -1,0 +1,60 @@
+id_self:                ann_removals_and_renames_named_in_commit
+guid_self:              ann_aa5f45ab497f4921a642422b3c2b3db3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every removal and rename named in its commit
+brief:                  |
+                        Under the graph check, an item cannot leave
+                        the graph or change id unless the commit item
+                        names it. A reviewer need not find removals in
+                        the diff, and each one has a record of the
+                        commit that made it. A title-only check lets
+                        an item vanish unnamed.
+description:            |
+                        unannounced_removal and unannounced_rename in
+                        src/cc_public/commit/change.lp (lines
+                        121-145). Mentions come from the title, brief
+                        and description of the commit item
+                        (src/cc_public/commit/change.py lines
+                        117-122). The title-only check reads one
+                        regular expression
+                        (_data/schema/sch_commit.yaml line
+                        50) and nothing of the graph. cctool history
+                          check reruns the check on commits made
+                          without hooks
+                          (src/cc_public/commit/history.py, commit
+                          18d6181). Proposed by the reviewability and
+                          traceability advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_message_syntax_only
+    guid_target:        opt_89f402f4395846e3bf6d6c24e228a1af
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
