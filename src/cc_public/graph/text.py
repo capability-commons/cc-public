@@ -27,6 +27,12 @@ description:            |
                         the concerns an annotation argues for. A grep
                         of the files finds the words; this also says
                         how each argument they appear in was settled.
+
+                        A plain query that names a concept by one of
+                        its preferred or admitted terms also matches
+                        the other terms of that concept. The hits can
+                        also be given to Datalog rules as text_hit
+                        facts.
 relation:               []
 
 ...
@@ -37,6 +43,7 @@ import re
 import sqlite3
 import typing
 
+import cc_public.graph.datalog
 import cc_public.graph.extract
 import cc_public.graph.sql
 
@@ -53,6 +60,35 @@ PREFIX_SKIP       = (cc_public.graph.extract.PREFIX_ID,
 # that matches more of them ranks higher.
 #
 REGEX_WORD        = re.compile(r'[A-Za-z0-9]+')
+
+# The terms of a concept that widen a query: those that name it. A
+# deprecated term is left out, because several are ordinary words with
+# other senses.
+#
+TUPLE_KEY_TERM    = ('term_preferred', 'term_admitted')
+PREFIX_CONCEPT    = 'con_'
+
+# The query on its own, stemmed as item_text is, so that a term can be
+# looked for in it as a phrase.
+#
+SQL_QUERY_TEXT    = ('CREATE VIRTUAL TABLE query_text USING fts5('
+                     "text, tokenize = 'porter unicode61')")
+
+# The rank of each item that matches, from 1 for the best, and the
+# field it matches best in.
+#
+SQL_RANK          = """
+SELECT id, field, min(score) AS score
+FROM hit
+GROUP BY id
+ORDER BY score, id
+"""
+
+# A text hit as a relation for Datalog rules.
+#
+MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL),
+                                  ('field', cc_public.graph.extract.TYPE_SYMBOL),
+                                  ('rank',  cc_public.graph.datalog.TYPE_NUMBER))}
 
 # Each field that matches, with its BM25 score, lower being better.
 # bm25() can be used only in a plain query of the table, so the hits
@@ -195,10 +231,11 @@ def _is_prose(key: str) -> bool:
 
 
 # -----------------------------------------------------------------------------
-def match(text: str) -> str:
+def match(text: str, list_term: typing.Sequence[str] = ()) -> str:
     """
     Return the FTS5 match expression for the plain query text: each of
-    its words, quoted, any of which may match.
+    its words, quoted, and each of list_term as a phrase, any of which
+    may match.
 
     """
 
@@ -207,7 +244,101 @@ def match(text: str) -> str:
     if not list_word:
         raise ErrorText('The query has no words to search for.')
 
-    return ' OR '.join('"{word}"'.format(word = word) for word in list_word)
+    list_part = ['"{word}"'.format(word = word) for word in list_word]
+    list_part.extend(_phrase(term) for term in list_term if REGEX_WORD.search(term))
+
+    return ' OR '.join(list_part)
+
+
+# -----------------------------------------------------------------------------
+def _phrase(term: str) -> str:
+    """
+    Return term as an FTS5 phrase: its words, in order, in quotes.
+
+    """
+
+    return '"{words}"'.format(words = ' '.join(REGEX_WORD.findall(term)))
+
+
+# -----------------------------------------------------------------------------
+def terms(map_document: cc_public.graph.extract.Documents) -> list[tuple[str, tuple[str, ...]]]:
+    """
+    Return the id of each concept in map_document, with its preferred
+    and admitted terms.
+
+    """
+
+    list_concept = []
+
+    for (document, _) in map_document.values():
+        if cc_public.graph.extract.is_document(document):
+            _concepts(document, list_concept)
+
+    return sorted(list_concept)
+
+
+# -----------------------------------------------------------------------------
+def _concepts(node: typing.Any, list_concept: list) -> None:
+    """
+    Add to list_concept each concept held in node, with its terms.
+
+    """
+
+    if isinstance(node, dict):
+        id_self = node.get(cc_public.graph.extract.KEY_ID_SELF)
+        if isinstance(id_self, str) and id_self.startswith(PREFIX_CONCEPT):
+            list_term = []
+            for key in TUPLE_KEY_TERM:
+                value = node.get(key)
+                list_term.extend([value] if isinstance(value, str) else value or [])
+            list_term = [str(term) for term in list_term if term]
+            if list_term:
+                list_concept.append((id_self, tuple(list_term)))
+        for value in node.values():
+            _concepts(value, list_concept)
+    elif isinstance(node, list):
+        for each in node:
+            _concepts(each, list_concept)
+
+
+# -----------------------------------------------------------------------------
+def widen(text: str, list_concept: list[tuple[str, tuple[str, ...]]]) -> list[tuple[str, str]]:
+    """
+    Return each term to add to the plain query text, with its concept:
+    the other terms of each concept that text names by one of its
+    terms. A term names a concept wherever its words, stemmed, are in
+    text in order.
+
+    """
+
+    list_added = []
+    connection = sqlite3.connect(':memory:')
+
+    try:
+        connection.execute(SQL_QUERY_TEXT)
+        connection.execute('INSERT INTO query_text VALUES (?)', (text,))
+        for (id_concept, tuple_term) in list_concept:
+            set_named = {term for term in tuple_term
+                         if REGEX_WORD.search(term) and _is_in(connection, term)}
+            if set_named:
+                list_added.extend((id_concept, term)
+                                  for term in tuple_term if term not in set_named)
+    finally:
+        connection.close()
+
+    return list_added
+
+
+# -----------------------------------------------------------------------------
+def _is_in(connection: sqlite3.Connection, term: str) -> bool:
+    """
+    Return True if the query held in connection has the words of term.
+
+    """
+
+    cursor = connection.execute('SELECT count(*) FROM query_text WHERE query_text MATCH ?',
+                                (_phrase(term),))
+    return cursor.fetchone()[0] > 0
 
 
 # -----------------------------------------------------------------------------
@@ -215,18 +346,19 @@ def search(facts:        cc_public.graph.extract.Facts,
            map_document: cc_public.graph.extract.Documents,
            text:         str,
            is_match:     bool = False,
-           is_issue:     bool = False) -> tuple[tuple[str, ...], list[tuple]]:
+           is_issue:     bool = False,
+           list_term:    typing.Sequence[str] = ()) -> tuple[tuple[str, ...], list[tuple]]:
     """
     Return the columns and the rows of the items whose prose matches
     text, best first, each with its issue and the standing of what
     settles it. text is a plain query, or an FTS5 match expression if
-    is_match. With is_issue, return a row for each issue instead,
-    ranked by its best match. Raise ErrorText if text cannot be
-    evaluated.
+    is_match. A plain query also matches each of list_term as a
+    phrase. With is_issue, return a row for each issue instead, ranked
+    by its best match. Raise ErrorText if text cannot be evaluated.
 
     """
 
-    expression = text if is_match else match(text)
+    expression = text if is_match else match(text, list_term)
     connection = cc_public.graph.sql.connect(facts, rows(map_document))
 
     try:
@@ -234,6 +366,36 @@ def search(facts:        cc_public.graph.extract.Facts,
         connection.execute(SQL_FOUND)
         cursor = connection.execute(SQL_ISSUE if is_issue else SQL_ITEM)
         return (tuple(each[0] for each in cursor.description), cursor.fetchall())
+    except sqlite3.Error as error:
+        raise ErrorText('The match expression cannot be read: {error}'.format(
+                            error = error)) from error
+    finally:
+        connection.close()
+
+
+# -----------------------------------------------------------------------------
+def hits(map_document: cc_public.graph.extract.Documents,
+         text:         str,
+         is_match:     bool = False,
+         list_term:    typing.Sequence[str] = ()) -> set[tuple[str, str, str]]:
+    """
+    Return a row of text_hit for each item whose prose matches text,
+    read as search reads it: the id of the item, the field it matches
+    best in, and its rank, from 1 for the best. Raise ErrorText if text
+    cannot be evaluated.
+
+    """
+
+    expression = text if is_match else match(text, list_term)
+    connection = sqlite3.connect(':memory:')
+
+    try:
+        connection.execute(cc_public.graph.sql.SQL_TEXT)
+        connection.executemany('INSERT INTO item_text VALUES (?, ?, ?)', rows(map_document))
+        connection.execute(SQL_HIT, (expression,))
+        return {(id_item, field, str(rank))
+                for (rank, (id_item, field, _)) in enumerate(connection.execute(SQL_RANK),
+                                                             start = 1)}
     except sqlite3.Error as error:
         raise ErrorText('The match expression cannot be read: {error}'.format(
                             error = error)) from error

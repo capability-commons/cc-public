@@ -166,7 +166,13 @@ def sql(text, path_file, root, limit, is_json):
 # -----------------------------------------------------------------------------
 @query.command()
 @_option
-def datalog(text, path_file, root, limit, is_json):
+@click.option('--text', 'text_search',
+              metavar = 'WORDS',
+              help    = 'Add text_hit(id, field, rank) for each item whose prose matches WORDS.')
+@click.option('--exact', 'is_exact',
+              is_flag = True,
+              help    = 'Match --text on its own words, not the terms of the concepts it names.')
+def datalog(text, path_file, root, limit, is_json, text_search, is_exact):
     """
     Evaluate Datalog rules over the graph, with clingo.
 
@@ -178,11 +184,18 @@ def datalog(text, path_file, root, limit, is_json):
     in quotes is a string. Give the rules as QUERY, as - to read them
     from stdin, or with --file.
 
+    With --text, the rules may also use text_hit(id, field, rank): one
+    row for each item whose prose matches WORDS, as cctool query text
+    reads them, with the field it matches best in and its rank, from 1
+    for the best.
+
     \b
     Examples:
       cctool query datalog '#show out/1.
         out(Id) :- type_of(Id, "t_concern").'
       cctool query datalog --file query.lp
+      cctool query datalog --text "status field" '#show out/2.
+        out(Id, Issue) :- text_hit(Id, _, Rank), Rank <= 10, issue_of(Id, Issue).'
 
     """
 
@@ -192,10 +205,19 @@ def datalog(text, path_file, root, limit, is_json):
         _fail('The rules name no relation in a #show directive, so there is '
               'nothing to print.', EXAMPLE_DATALOG)
 
-    facts = cc_public.graph.extract.extract(root.resolve())
+    map_document = cc_public.graph.extract.documents(root.resolve())
+    facts        = cc_public.graph.extract.facts_of(map_document)
+
+    if text_search is not None:
+        list_term = _widened(text_search, map_document, is_exact)
+        try:
+            facts = facts | {'text_hit': cc_public.graph.text.hits(map_document, text_search,
+                                                                   list_term = list_term)}
+        except cc_public.graph.text.ErrorText as error:
+            _fail(str(error), EXAMPLE_DATALOG)
 
     try:
-        rows = cc_public.graph.datalog.run(facts, text)
+        rows = cc_public.graph.datalog.run(facts, text, cc_public.graph.text.MAP_COLUMN_HIT)
     except cc_public.graph.datalog.ErrorDatalog as error:
         _fail('Datalog error: {error}'.format(error = error), EXAMPLE_DATALOG)
 
@@ -343,7 +365,10 @@ def schema():
 @click.option('--issue', 'is_issue',
               is_flag = True,
               help    = 'Print one row for each issue, ranked by its best match.')
-def text(text, path_file, root, limit, is_json, is_match, is_issue):
+@click.option('--exact', 'is_exact',
+              is_flag = True,
+              help    = 'Match the words of QUERY, not the terms of the concepts it names.')
+def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
     """
     Find the items whose prose matches the words of QUERY, best first.
 
@@ -357,6 +382,11 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue):
     argument leads to how it was settled. Give the query as QUERY, as
     - to read it from stdin, or with --file.
 
+    A query that names a concept by one of its terms, preferred or
+    admitted, also matches the other terms of that concept, such as
+    "regentry" for "register entry". The terms added are printed to
+    stderr. --exact turns this off, and so does --match.
+
     \b
     Examples:
       cctool query text "status field on a decision"
@@ -368,11 +398,13 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue):
     text         = _read(text, path_file, EXAMPLE_TEXT)
     map_document = cc_public.graph.extract.documents(root.resolve())
     facts        = cc_public.graph.extract.facts_of(map_document)
+    list_term    = _widened(text, map_document, is_match or is_exact)
 
     try:
         (tuple_column, list_row) = cc_public.graph.text.search(facts, map_document, text,
-                                                               is_match = is_match,
-                                                               is_issue = is_issue)
+                                                               is_match  = is_match,
+                                                               is_issue  = is_issue,
+                                                               list_term = list_term)
     except (cc_public.graph.text.ErrorText, cc_public.graph.datalog.ErrorDatalog) as error:
         _fail(str(error), EXAMPLE_TEXT, HINT_TEXT)
 
@@ -380,6 +412,27 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue):
         click.echo(json.dumps(_result(tuple_column, list_row, limit)))
     else:
         _print(tuple_column, list_row, limit)
+
+
+# -----------------------------------------------------------------------------
+def _widened(text, map_document, is_exact):
+    """
+    Return the terms that widen the plain query text, unless is_exact,
+    and say on stderr which they are.
+
+    """
+
+    if is_exact:
+        return []
+
+    list_added = cc_public.graph.text.widen(text, cc_public.graph.text.terms(map_document))
+
+    if list_added:
+        list_text = ['"{term}" ({concept})'.format(term = term, concept = concept)
+                     for (concept, term) in list_added]
+        click.echo('Also matching: {terms}'.format(terms = ', '.join(list_text)), err = True)
+
+    return [term for (_, term) in list_added]
 
 
 # -----------------------------------------------------------------------------

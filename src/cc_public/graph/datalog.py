@@ -353,15 +353,19 @@ def _field(symbol: clingo.Symbol) -> str:
 
 
 # -----------------------------------------------------------------------------
-def run(facts: cc_public.graph.extract.Facts, rules: str) -> Rows:
+def run(facts:      cc_public.graph.extract.Facts,
+        rules:      str,
+        map_extra:  dict[str, tuple[tuple[str, str], ...]] | None = None) -> Rows:
     """
     Return the rows of each output relation of rules, evaluated over
-    facts, keyed by relation in the order rules names them.
+    facts, keyed by relation in the order rules names them. map_extra
+    declares the columns of any relation of facts that is neither a
+    base relation nor derived, such as text_hit.
 
     """
 
     prelude    = PATH_DERIVE.read_text(encoding = 'utf-8') + '\n'
-    map_column = base() | derived() | declared(rules)
+    map_column = base() | derived() | (map_extra or {}) | declared(rules)
     list_name  = output(rules)
     rows       = {name: [] for name in list_name}
 

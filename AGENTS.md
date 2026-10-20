@@ -144,7 +144,10 @@ reads them through `.claude/skills`, a link to the same directory.
   best first, and names the issue of each, how it was settled, and
   the concerns it argues for. With `--issue` it gives one row for each
   issue. Use it before you argue or change something, to find the
-  arguments and determinations already made on the point.
+  arguments and determinations already made on the point. A query
+  that names a concept also matches its other preferred and admitted
+  terms; `--exact` turns that off. `cctool query datalog --text
+  "WORDS"` gives the same hits to rules as `text_hit(id, field, rank)`.
 - `cctool query sql "SELECT ..."` for joins and counts, and
   `cctool query datalog '...'` for anything recursive, such as reach
   through edges. `cctool query sparql '...'` sees the items as RDF

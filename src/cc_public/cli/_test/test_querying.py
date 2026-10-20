@@ -144,6 +144,22 @@ def test_text_prints_a_header_and_the_best_hits(tree):
     assert result.stdout.splitlines()[1].split('\t')[1] == 'iss_cross_item_checks_engine'
 
 
+def test_text_says_which_terms_of_a_concept_it_adds(tree):
+    result = _run(tree, 'text', 'every regentry')
+    assert result.exit_code == 0
+    assert 'Also matching: "register entry" (con_register_entry)' in result.stderr
+    result = _run(tree, 'text', '--exact', 'every regentry')
+    assert 'Also matching' not in result.stderr
+
+
+def test_datalog_with_text_reads_the_hits_as_facts(tree):
+    rules  = '% decl best(id)\n#show best/1.\nbest(Id) :- text_hit(Id, _, 1).'
+    result = _run(tree, 'datalog', '--text', 'souffle', rules)
+    assert result.exit_code == 0
+    assert result.stdout.splitlines()[0:2] == ['# best', 'id']
+    assert len(result.stdout.splitlines()) == 3
+
+
 def test_text_with_no_words_is_refused_with_an_example(tree):
     result = _run(tree, 'text', '?!')
     assert result.exit_code == 2

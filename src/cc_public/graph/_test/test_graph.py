@@ -180,6 +180,29 @@ def test_text_by_issue_leads_from_any_hit_to_its_issue(tree):
     assert rows[0][1] == 'iss_cross_item_checks_engine'
 
 
+def test_text_widens_a_query_by_the_other_terms_of_the_concept_it_names(tree):
+    list_concept = cc_public.graph.text.terms(cc_public.graph.extract.documents(tree))
+    assert ('con_register_entry', 'register entry') in cc_public.graph.text.widen(
+        'each regentry', list_concept)
+    assert ('con_register_entry', 'regentry') in cc_public.graph.text.widen(
+        'the register entries', list_concept)
+    assert not [concept for (concept, _) in cc_public.graph.text.widen('a list', list_concept)
+                if concept == 'con_register']
+    assert cc_public.graph.text.match('each regentry', ['register entry']) == (
+        '"each" OR "regentry" OR "register entry"')
+
+
+def test_text_hits_rank_each_item_once_for_datalog(tree):
+    map_document = cc_public.graph.extract.documents(tree)
+    facts        = cc_public.graph.extract.facts_of(map_document)
+    set_hit      = cc_public.graph.text.hits(map_document, 'souffle clingo')
+    assert sorted(int(rank) for (_, _, rank) in set_hit) == list(range(1, len(set_hit) + 1))
+    rules        = '#show best/1.\nbest(Id) :- text_hit(Id, _, Rank), Rank < 2.'
+    rows         = cc_public.graph.datalog.run(facts | {'text_hit': set_hit}, rules,
+                                               cc_public.graph.text.MAP_COLUMN_HIT)
+    assert len(rows['best']) == 1
+
+
 def test_text_refuses_a_query_it_cannot_read(tree):
     map_document = cc_public.graph.extract.documents(tree)
     facts        = cc_public.graph.extract.facts_of(map_document)
