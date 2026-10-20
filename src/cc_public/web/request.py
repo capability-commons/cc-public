@@ -25,12 +25,12 @@ description:            |
                         which speaks for one or more concerns. An
                         answer is an annotation that supports or
                         challenges another, and speaks for none. A
-                        determination upholds or rejects an option,
-                        with a reason.
+                        ruling upholds or rejects an option, with a
+                        reason.
 
                         operations returns the batch for a request. An
-                        decision has at most one determination, so to
-                        uphold or reject an option changes the one the
+                        decision has at most one ruling, so to uphold
+                        or reject an option changes the one the
                         decision has, or makes it if there is none:
                         the reason becomes its brief, and the option
                         is upheld or rejected in place of what it was
@@ -89,7 +89,7 @@ TUPLE_KEY_TEXT    = (KEY_ID, KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION, KEY_REASON)
 PREFIX_DECISION   = cc_public.web.argument.PREFIX_DECISION
 PREFIX_OPTION     = cc_public.web.argument.PREFIX_OPTION
 PREFIX_ANNOTATION = cc_public.web.argument.PREFIX_ANNOTATION
-PREFIX_DET        = 'det_'
+PREFIX_RULING     = 'ruling_'
 PREFIX_CONCERN    = 'concern_'
 
 R_IS_OPTION_FOR   = cc_public.web.argument.R_IS_OPTION_FOR
@@ -149,7 +149,7 @@ MAP_HINT          = {
                                  'check it.',
     KEY_ID:                      'Optional. Made from the title if left empty.',
     KEY_CONCERN:                 'The drivers of the subject come first. Tick at least one.',
-    KEY_REASON:                  'This becomes the brief of the determination of the decision, '
+    KEY_REASON:                  'This becomes the brief of the ruling of the decision, '
                                  'in place of what it said before.'}
 
 Graph             = cc_public.web.argument.Graph
@@ -262,34 +262,34 @@ def decision_of(graph: Graph, request: Request) -> str:
 
 
 # -----------------------------------------------------------------------------
-def determination(graph: Graph, id_decision: str) -> cc_public.web.argument.Item | None:
+def ruling(graph: Graph, id_decision: str) -> cc_public.web.argument.Item | None:
     """
-    Return the one determination of the decision id_decision, or None if it
+    Return the one ruling of the decision id_decision, or None if it
     has none.
 
     """
 
     decision = graph.decision(id_decision)
-    if decision is None or not decision.list_determination:
+    if decision is None or not decision.list_ruling:
         return None
-    return decision.list_determination[0]
+    return decision.list_ruling[0]
 
 
 # -----------------------------------------------------------------------------
 def id_new(graph: Graph, request: Request) -> str:
     """
     Return the id of the item the request makes: the id typed into it,
-    or one made from its title, or that of the determination it makes or
+    or one made from its title, or that of the ruling it makes or
     changes.
 
     """
 
     if request.kind == KIND_DETERMINE:
         id_decision = decision_of(graph, request)
-        existing    = determination(graph, id_decision)
+        existing    = ruling(graph, id_decision)
         if existing is not None:
             return existing.id
-        return PREFIX_DET + id_decision.removeprefix(PREFIX_DECISION)
+        return PREFIX_RULING + id_decision.removeprefix(PREFIX_DECISION)
 
     prefix = PREFIX_OPTION if request.kind == KIND_OPTION else PREFIX_ANNOTATION
     return request.text(KEY_ID) or slug(prefix, request.text(KEY_TITLE))
@@ -347,8 +347,8 @@ def _determine(graph:    Graph,
                id_item:     str) -> list:
     """
     Return the operations that uphold or reject the option of request
-    in the determination id_item of the decision id_decision, with the reason
-    of request as its brief. The determination is made if the decision has
+    in the ruling id_item of the decision id_decision, with the reason
+    of request as its brief. The ruling is made if the decision has
     none.
 
     """
@@ -356,7 +356,7 @@ def _determine(graph:    Graph,
     id_relation = MAP_RELATION[request.role]
     id_other    = R_REJECTS if id_relation == R_UPHOLDS else R_UPHOLDS
     reason      = request.text(KEY_REASON)
-    existing    = determination(graph, id_decision)
+    existing    = ruling(graph, id_decision)
 
     if existing is None:
         map_field = {KEY_TITLE: graph.title(id_decision)}

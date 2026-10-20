@@ -14,19 +14,18 @@ protective_mark:
 title:                  Argument of a decision
 brief:                  |
                         Read the items of a tree, and gather on each
-                        decision the options, annotations and
-                        determinations that make its argument.
+                        decision the options, annotations and rulings
+                        that make its argument.
 description:            |
                         Graph reads every item in a tree, with its
                         title, brief, description and edges as
                         written. Graph.decision gathers a decision:
                         the options that answer it, the annotations
-                        about it, the determinations that settle its
-                        options, and the driver concerns of its
-                        subject. The standing of each option, upheld,
-                        rejected or open, follows from the
-                        determination of the decision, of which there
-                        is at most one.
+                        about it, the rulings that settle its options,
+                        and the driver concerns of its subject. The
+                        standing of each option, upheld, rejected or
+                        open, follows from the ruling of the decision,
+                        of which there is at most one.
 relation:               []
 
 ...
@@ -102,7 +101,7 @@ class Item:
 class Decision:
     """
     A decision and the argument gathered on it: the options that answer
-    it, the annotations about it, and the determinations that settle
+    it, the annotations about it, and the rulings that settle
     its options.
 
     """
@@ -110,7 +109,7 @@ class Decision:
     item:               Item
     list_option:        list[Item]
     list_annotation:    list[Item]
-    list_determination: list[Item]
+    list_ruling: list[Item]
     list_driver:        list[str]
     map_stance:         dict[str, str]
     set_spoken:         set[str]
@@ -118,11 +117,11 @@ class Decision:
     # -------------------------------------------------------------------------
     def is_open(self) -> bool:
         """
-        Return True if no determination settles the decision.
+        Return True if no ruling settles the decision.
 
         """
 
-        return not self.list_determination
+        return not self.list_ruling
 
     # -------------------------------------------------------------------------
     def unspoken(self) -> list[str]:
@@ -255,7 +254,7 @@ class Graph:
         list_annotation    = self._items(id_item for id_item in
                                          self.sources(R_IS_ABOUT, id_decision)
                                          if id_item.startswith(PREFIX_ANNOTATION))
-        list_determination = self._items(
+        list_ruling = self._items(
                                  {id_item
                                   for id_option in set_option
                                   for id_relation in (R_UPHOLDS, R_REJECTS)
@@ -270,16 +269,16 @@ class Graph:
         decision = Decision(item               = item,
                       list_option        = list_option,
                       list_annotation    = list_annotation,
-                      list_determination = list_determination,
+                      list_ruling        = list_ruling,
                       list_driver        = list_driver,
                       map_stance         = {},
                       set_spoken         = set_spoken)
 
         decision.map_stance = {option.id: STANCE_OPEN for option in list_option}
-        for determination in decision.list_determination:
-            for id_option in determination.targets(R_UPHOLDS):
+        for ruling in decision.list_ruling:
+            for id_option in ruling.targets(R_UPHOLDS):
                 decision.map_stance[id_option] = STANCE_UPHELD
-            for id_option in determination.targets(R_REJECTS):
+            for id_option in ruling.targets(R_REJECTS):
                 decision.map_stance[id_option] = STANCE_REJECTED
 
         return decision

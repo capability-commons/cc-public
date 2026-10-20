@@ -515,34 +515,34 @@ option_count(Option, Decisions) :-
 
 
 % -----------------------------------------------------------------------------
-% Every determination upholds or rejects at least one option.
+% Every ruling upholds or rejects at least one option.
 %
-% decl determination_without_option(id: symbol)
-% did  The determination {id} neither upholds nor rejects an option.
+% decl no_option_in_ruling(id: symbol)
+% did  The ruling {id} neither upholds nor rejects an option.
 % fix  Link it with r_upholds or r_rejects to each option it settles.
-#show determination_without_option/1.
+#show no_option_in_ruling/1.
 
-determination_without_option(Id) :-
-    type_of(Id, "t_determination"),
+no_option_in_ruling(Id) :-
+    type_of(Id, "t_ruling"),
     not primary_edge(Id, "r_upholds", _),
     not primary_edge(Id, "r_rejects", _).
 
 
 % -----------------------------------------------------------------------------
-% A determination settles the options of one decision.
+% A ruling settles the options of one decision.
 %
-% decl determination_across_decisions(determination: symbol,
-%                                  decision:         symbol,
-%                                  other:         symbol)
-% did  The determination {determination} settles options of both
+% decl decisions_mixed_in_ruling(ruling:   symbol,
+%                                decision: symbol,
+%                                other:    symbol)
+% did  The ruling {ruling} settles options of both
 %      {decision} and {other}.
-% fix  Settle each decision with a determination of its own.
-#show determination_across_decisions/3.
+% fix  Settle each decision with a ruling of its own.
+#show decisions_mixed_in_ruling/3.
 
-determination_across_decisions(Determination, Decision, Other) :-
-    type_of(Determination, "t_determination"),
-    decision_of(Determination, Decision),
-    decision_of(Determination, Other),
+decisions_mixed_in_ruling(Ruling, Decision, Other) :-
+    type_of(Ruling, "t_ruling"),
+    decision_of(Ruling, Decision),
+    decision_of(Ruling, Other),
     Decision < Other.
 
 
@@ -551,9 +551,9 @@ determination_across_decisions(Determination, Decision, Other) :-
 % concerns must be argued before an option of the decision is settled.
 % A decision about anything else would escape that check.
 %
-% decl decision_about_non_component(decision:  symbol,
-%                                target: symbol,
-%                                type:   symbol)
+% decl decision_about_non_component(decision: symbol,
+%                                   target:   symbol,
+%                                   type:     symbol)
 % did  The decision {decision} is about {target}, of {type}, which is not a
 %      logical component.
 % fix  Make the decision about the logical component whose design it
@@ -572,9 +572,9 @@ decision_about_non_component(Decision, Target, Type) :-
 % belongs to the same decision as it does.
 %
 % decl argument_across_decisions(annotation: symbol,
-%                             decision:      symbol,
-%                             target:     symbol,
-%                             other:      symbol)
+%                                decision:   symbol,
+%                                target:     symbol,
+%                                other:      symbol)
 % did  The annotation {annotation} of {decision} argues with {target}, of
 %      {other}.
 % fix  Argue within one decision: point the edge at an item of the same
@@ -616,32 +616,32 @@ supersession_across_types(Source, Target) :-
 
 
 % -----------------------------------------------------------------------------
-% A decision has at most one determination. A change of ruling edits it in
+% A decision has at most one ruling. A change of ruling edits it in
 % place, and the history of the ruling is the history of its file.
 %
-% decl competing_determinations(decision:         symbol,
-%                               determination: symbol,
-%                               other:         symbol)
-% did  The decision {decision} has two determinations, {determination} and
+% decl competing_rulings(decision: symbol,
+%                        ruling:   symbol,
+%                        other:    symbol)
+% did  The decision {decision} has two rulings, {ruling} and
 %      {other}.
-% fix  Keep one determination and edit it in place when the ruling
+% fix  Keep one ruling and edit it in place when the ruling
 %      changes. Git keeps the history of the ruling.
-#show competing_determinations/3.
+#show competing_rulings/3.
 
-competing_determinations(Decision, Determination, Other) :-
-    type_of(Determination, "t_determination"),
-    type_of(Other, "t_determination"),
-    decision_of(Determination, Decision),
+competing_rulings(Decision, Ruling, Other) :-
+    type_of(Ruling, "t_ruling"),
+    type_of(Other, "t_ruling"),
+    decision_of(Ruling, Decision),
     decision_of(Other, Decision),
-    Determination < Other.
+    Ruling < Other.
 
 
 % -----------------------------------------------------------------------------
 % The option, or an alternative to it for the same decision,
 % has an annotation that supports or challenges it for the concern.
 %
-% decl argued(option: symbol,
-%             concern:  symbol)
+% decl argued(option:  symbol,
+%             concern: symbol)
 
 argued(Option, Concern) :-
     primary_edge(Option, "r_is_option_for", Decision),
@@ -659,24 +659,24 @@ argued(Option, Concern) :-
 
 
 % -----------------------------------------------------------------------------
-% A determination upholds an option only once every concern that
+% A ruling upholds an option only once every concern that
 % drives the subject of its decision has been argued, for it or for an
 % alternative to it. It may reject an option at any time, since a
 % rejection commits the subject to nothing.
 %
-% decl unargued_driver(determination: symbol,
-%                      option:      symbol,
-%                      concern:       symbol)
-% did  {determination} upholds {option}, and no annotation argues
+% decl unargued_driver(ruling:  symbol,
+%                      option:  symbol,
+%                      concern: symbol)
+% did  {ruling} upholds {option}, and no annotation argues
 %      {concern}, a driver, for it or an alternative to it.
 % fix  Add an annotation for that concern to the option or an
 %      alternative, or leave the option open. Do not uphold an
 %      option while a driver of its decision is unargued.
 #show unargued_driver/3.
 
-unargued_driver(Determination, Option, Concern) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_upholds", Option),
+unargued_driver(Ruling, Option, Concern) :-
+    type_of(Ruling, "t_ruling"),
+    primary_edge(Ruling, "r_upholds", Option),
     primary_edge(Option, "r_is_option_for", Decision),
     primary_edge(Decision, "r_is_about", Subject),
     primary_edge(Subject, "r_is_driven_by", Concern),
@@ -852,7 +852,7 @@ argument_without_concern(Id) :-
 % it is answered with evidence and not outweighed.
 %
 % decl concern_without_option(id:      symbol,
-%                               concern: symbol)
+%                             concern: symbol)
 % did  The annotation {id} speaks for {concern} and bears on no
 %      option.
 % fix  A fact is answered with evidence, not weighed by concern. Remove

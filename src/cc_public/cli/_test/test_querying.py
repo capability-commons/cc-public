@@ -140,7 +140,7 @@ def test_sparql_error_is_refused_with_an_example(tree):
 def test_text_prints_a_header_and_the_best_hits(tree):
     result = _run(tree, 'text', 'souffle clingo', '--decision', '--limit', '1')
     assert result.exit_code == 0
-    assert result.stdout.splitlines()[0] == 'score\tdecision\thits\ttitle\tdetermination\tupheld'
+    assert result.stdout.splitlines()[0] == 'score\tdecision\thits\ttitle\truling\tupheld'
     assert result.stdout.splitlines()[1].split('\t')[1] == 'dec_cross_item_checks_engine'
 
 

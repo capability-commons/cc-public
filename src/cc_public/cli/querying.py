@@ -375,7 +375,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_decision, is_exact)
     Each word is searched for in the title, brief, description and
     other prose of every item, stemmed, and an item that matches more
     of the words, or rarer ones, ranks higher (BM25). Each hit names
-    the decision it belongs to, the determination that settles that decision
+    the decision it belongs to, the ruling that settles that decision
     and the options it upholds, the standing of an option (upheld,
     rejected or open), and the concerns an annotation speaks for. With
     --decision, each row is a decision, so that a hit on any part of an

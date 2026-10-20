@@ -808,7 +808,7 @@ def decision(graph:      Graph,
     return _page(item.title,
                  [_lighting(graph, outline),
                   _matrix(graph, decision, outline, set_show or set()),
-                  _determinations(graph, decision),
+                  _rulings(graph, decision),
                   _diagram('Flow', 'sankey', True,
                            cc_public.web.sankey.figure(graph, outline, set_toggle,
                                                        set_show or set())),
@@ -869,7 +869,7 @@ def _matrix(graph:    Graph,
     for the concern. Each row opens to the annotations that speak for
     its concern; those in set_show are opened. The foot holds the total
     and the standing of each option and the controls that settle it.
-    A driver no annotation speaks for is marked, as a determination
+    A driver no annotation speaks for is marked, as a ruling
     waits on it.
 
     """
@@ -1047,7 +1047,7 @@ def _total(id_option: str, list_unit: list, list_css: list[str]) -> typing.Any:
 def _controls(graph: Graph, decision: Decision, id_option: str) -> typing.Any:
     """
     Return the controls that settle the decision on id_option: uphold it
-    or reject it, each in the one determination of the decision, leaving
+    or reject it, each in the one ruling of the decision, leaving
     the other options as they stand. Uphold waits, greyed, while a
     driver of the decision is unargued, as unargued_driver would refuse it;
     reject never waits, as a rejection needs no driver argued.
@@ -1190,7 +1190,7 @@ def _statement(graph: Graph, item: Item) -> str:
 def _decisions_of(graph: Graph, item: Item) -> list[str]:
     """
     Return the decisions the argument item belongs to: those an option
-    answers, an annotation is about, or a determination settles through
+    answers, an annotation is about, or a ruling settles through
     its options.
 
     """
@@ -2055,7 +2055,7 @@ def edit(graph:      Graph,
         return _field(label, key, value, is_long, cc_public.web.request.hint(request.kind, key))
 
     if request.kind == KIND_DETERMINE:
-        existing = cc_public.web.request.determination(graph, id_decision)
+        existing = cc_public.web.request.ruling(graph, id_decision)
         reason   = (existing.brief or '').strip() if existing is not None else ''
         list_field.append(field('Reason', KEY_REASON, request.map_text.get(KEY_REASON, reason),
                                 is_long = True))
@@ -2319,25 +2319,25 @@ def _option_style(list_option: list[str]) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _determinations(graph: Graph, decision: Decision) -> typing.Any:
+def _rulings(graph: Graph, decision: Decision) -> typing.Any:
     """
-    Return the determinations on the decision, or None if it has none.
+    Return the rulings on the decision, or None if it has none.
 
     """
 
-    if not decision.list_determination:
+    if not decision.list_ruling:
         return None
 
     return htpy.section[
-        htpy.h2['Determination'],
-        [_block([htpy.p[htpy.span(class_ = 'run-in')[determination.title], ' ',
-                        _prose(determination.brief)]],
-                [_note_line('Upholds', _titles(graph, determination.targets(
+        htpy.h2['Ruling'],
+        [_block([htpy.p[htpy.span(class_ = 'run-in')[ruling.title], ' ',
+                        _prose(ruling.brief)]],
+                [_note_line('Upholds', _titles(graph, ruling.targets(
                                                    cc_public.web.argument.R_UPHOLDS))),
-                 _note_line('Rejects', _titles(graph, determination.targets(
+                 _note_line('Rejects', _titles(graph, ruling.targets(
                                                    cc_public.web.argument.R_REJECTS))),
-                 _id(determination.id)])
-         for determination in decision.list_determination]]
+                 _id(ruling.id)])
+         for ruling in decision.list_ruling]]
 
 
 # -----------------------------------------------------------------------------
@@ -2603,7 +2603,7 @@ def _decision_references(graph: Graph, decision: Decision) -> typing.Any:
 
     is_about     = cc_public.web.argument.R_IS_ABOUT
     list_shown   = ([decision.item] + decision.list_option + decision.list_annotation
-                   + decision.list_determination)
+                   + decision.list_ruling)
     set_shown    = {shown.id for shown in list_shown}
     list_subject = decision.item.targets(is_about)
 

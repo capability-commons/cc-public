@@ -156,7 +156,7 @@ reads them through `.claude/skills`, a link to the same directory.
   best first, and names the decision of each, how it was settled, and
   the concerns it speaks for. With `--decision` it gives one row for each
   decision. Use it before you argue or change something, to find the
-  arguments and determinations already made on the point. A query
+  arguments and rulings already made on the point. A query
   that names a concept also matches its other preferred and admitted
   terms; `--exact` turns that off. `cctool query datalog --text
   "WORDS"` gives the same hits to rules as `text_hit(id, field, rank)`.

@@ -46,13 +46,13 @@ import cc_public.web.server
 ID_DECISION      = 'dec_cross_item_checks_engine'
 ID_UPHELD        = 'opt_cross_item_checks_in_clingo'
 ID_REJECTED      = 'opt_cross_item_checks_in_souffle'
-ID_DETERMINATION = 'det_cross_item_checks_engine'
+ID_RULING        = 'ruling_cross_item_checks_engine'
 
 
-def test_decision_gathers_its_options_and_determination(tree):
+def test_decision_gathers_its_options_and_ruling(tree):
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
     assert ID_UPHELD in [option.id for option in decision.list_option]
-    assert [determination.id for determination in decision.list_determination] == [ID_DETERMINATION]
+    assert [ruling.id for ruling in decision.list_ruling] == [ID_RULING]
     assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
     assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_REJECTED
     assert not decision.is_open()
@@ -71,8 +71,8 @@ def test_decision_lists_the_drivers_of_its_subject(tree):
     assert decision.unspoken() == []
 
 
-def test_a_determination_changed_in_place_changes_the_standing(tree):
-    path = tree / '_data' / 'decision' / ID_DECISION / (ID_DETERMINATION + '.yaml')
+def test_a_ruling_changed_in_place_changes_the_standing(tree):
+    path = tree / '_data' / 'decision' / ID_DECISION / (ID_RULING + '.yaml')
     path.write_text(path.read_text().replace('r_upholds', 'r_placeholder')
                                     .replace('r_rejects', 'r_upholds', 1)
                                     .replace('r_placeholder', 'r_rejects'))
@@ -130,7 +130,7 @@ def test_an_option_counts_its_units_for_and_against(tree):
 
 
 def test_a_decision_with_only_rejections_is_narrowed(tree):
-    path = tree / '_data' / 'decision' / ID_DECISION / (ID_DETERMINATION + '.yaml')
+    path = tree / '_data' / 'decision' / ID_DECISION / (ID_RULING + '.yaml')
     path.write_text(path.read_text().replace('r_upholds', 'r_rejects'))
     graph   = cc_public.web.argument.Graph(tree)
     summary = cc_public.web.page.Summary(graph, graph.decision(ID_DECISION))
@@ -630,7 +630,7 @@ def test_item_page_shows_edges_in_and_out(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
     assert status == http.HTTPStatus.OK
     assert ('/decision/' + ID_DECISION).encode() in body
-    assert ('/item/' + ID_DETERMINATION).encode() in body
+    assert ('/item/' + ID_RULING).encode() in body
 
 
 def test_unknown_item_is_not_found(tree):
