@@ -895,7 +895,7 @@ def _matrix(graph:    Graph,
                              for id_option in list_option]
                             + [htpy.span(class_ = 'add')[
                                    _pill('+ Option', '',
-                                         'Add an option that answers this decision',
+                                         'Add an option for this decision',
                                          _edit_href(KIND_OPTION,
                                                     decision.item.id))]],
                         class_ = 'head'),

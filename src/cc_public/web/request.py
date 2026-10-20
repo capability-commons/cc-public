@@ -20,12 +20,13 @@ description:            |
                         A request is what a form sends: its kind, the
                         item it acts on, the role it takes, and the
                         fields typed into it. There are four kinds. An
-                        option answers a decision. An argument is an
-                        annotation for or against an option, which
-                        speaks for one or more concerns. An answer is
-                        an annotation that supports or challenges
-                        another, and speaks for none. A determination
-                        upholds or rejects an option, with a reason.
+                        option is offered for a decision. An argument
+                        is an annotation for or against an option,
+                        which speaks for one or more concerns. An
+                        answer is an annotation that supports or
+                        challenges another, and speaks for none. A
+                        determination upholds or rejects an option,
+                        with a reason.
 
                         operations returns the batch for a request. An
                         decision has at most one determination, so to

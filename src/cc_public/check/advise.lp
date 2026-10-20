@@ -55,21 +55,21 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% A decision that no option answers is open, which is normal while it
-% is argued. It is reported so that it is not forgotten.
+% A decision without options is open, which is normal while it is
+% argued. It is reported so that it is not forgotten.
 %
-% decl unanswered_decision(decision: symbol)
-% did  No option answers the decision {decision}.
-% fix  Add the options that answer it as the decision is argued.
-#show unanswered_decision/1.
+% decl decision_without_options(decision: symbol)
+% did  The decision {decision} has no options.
+% fix  Add its options as the decision is argued.
+#show decision_without_options/1.
 
-unanswered_decision(Decision) :-
+decision_without_options(Decision) :-
     type_of(Decision, "t_decision"),
     not answers_some(Decision).
 
 
 % -----------------------------------------------------------------------------
-% Some option answers the decision.
+% The decision has an option.
 %
 % decl answers_some(decision: symbol)
 
