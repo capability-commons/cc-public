@@ -451,6 +451,35 @@ $defs:
 
     unevaluatedProperties:  false
 
+  setting:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a configuration may leave it
+                        out.
+
+          default:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        Optional. What it is when a configuration
+                        leaves it out, as the surface language writes
+                        it.
+
+    unevaluatedProperties:  false
+
   artifact:
 
     allOf:
@@ -667,9 +696,9 @@ $defs:
                         The interface as a runtime step that reads a
                         fixed set of inputs, writes a fixed set of
                         outputs, and keeps state between invocations.
-                        Each field after the ports states one part of
-                        the execution semantics that compatibility
-                        depends on.
+                        Each field after the ports and the settings
+                        states one part of the execution semantics
+                        that compatibility depends on.
 
     properties:
 
@@ -700,6 +729,17 @@ $defs:
         description:    |
                         Optional. What the step reads and writes
                         between invocations.
+
+      config:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/setting'
+
+        description:    |
+                        Optional. The settings the step is given when
+                        it is configured, which stay the same for the
+                        whole of a run.
 
       invocation:
         $ref:           '#/$defs/semantics'

@@ -116,6 +116,7 @@ MAP_GROUP         = {'declaration': 'Declarations',
                      'input':       'Inputs',
                      'output':      'Outputs',
                      'state':       'State',
+                     'config':      'Configuration',
                      'artifact':    'Artifacts'}
 
 Graph             = cc_public.web.argument.Graph
