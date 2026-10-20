@@ -268,9 +268,9 @@ def test_the_sankey_diagram_is_shown_and_the_graph_folded(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text  = body.decode()
     assert re.search(r'<details class="diagram sankey" open><summary><span class="label">'
-                     r'Argument flow</span></summary><figure class="map sankey">', text)
+                     r'Flow</span></summary><figure class="map sankey">', text)
     assert re.search(r'<details class="diagram network"><summary><span class="label">'
-                     r'Argument tree</span></summary><figure class="map network">', text)
+                     r'Tree</span></summary><figure class="map network">', text)
 
 
 def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
