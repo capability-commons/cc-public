@@ -170,31 +170,6 @@ misplaced_module(Id, Expected) :-
 
 
 % -----------------------------------------------------------------------------
-% The item belongs to the issue: it is the issue, a decision that
-% answers it, an annotation about it, or a determination that settles
-% a decision that answers it.
-%
-% decl issue_of(id:    symbol,
-%               issue: symbol)
-
-issue_of(Id, Id) :-
-    type_of(Id, "t_issue").
-
-issue_of(Id, Issue) :-
-    type_of(Id, "t_decision"),
-    primary_edge(Id, "r_answers", Issue).
-
-issue_of(Id, Issue) :-
-    type_of(Id, "t_annotation"),
-    primary_edge(Id, "r_is_about", Issue),
-    type_of(Issue, "t_issue").
-
-issue_of(Id, Issue) :-
-    settles(Id, Decision),
-    issue_of(Decision, Issue).
-
-
-% -----------------------------------------------------------------------------
 % A document under a _data directory is in the folder named for its
 % type, less the t_, in a file named for its id. A document that
 % belongs to an issue is in the folder of the issue instead, so that
@@ -551,21 +526,6 @@ determination_without_decision(Id) :-
     type_of(Id, "t_determination"),
     not primary_edge(Id, "r_upholds", _),
     not primary_edge(Id, "r_rejects", _).
-
-
-% -----------------------------------------------------------------------------
-% The determination upholds or rejects the decision.
-%
-% decl settles(determination: symbol,
-%              decision:      symbol)
-
-settles(Determination, Decision) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_upholds", Decision).
-
-settles(Determination, Decision) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_rejects", Decision).
 
 
 % -----------------------------------------------------------------------------

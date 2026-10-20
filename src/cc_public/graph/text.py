@@ -59,7 +59,8 @@ REGEX_WORD        = re.compile(r'[A-Za-z0-9]+')
 # are kept in a table of their own, and so is what each hit is.
 #
 # What each hit is: the item, the field that matched best and its
-# title, and what the graph says of it. The issue is the one it belongs
+# title, and what the graph says of it, read from the issue_of and
+# settles tables that derive.lp gives. The issue is the one it belongs
 # to, the determination is the one that settles that issue, and upheld
 # names the decisions that determination upholds. The standing of a
 # decision is upheld, rejected or open. A higher score is a better
@@ -79,31 +80,15 @@ WITH best AS (
     FROM hit
     GROUP BY id
 ),
-issue_of AS (
-    SELECT id, id AS issue FROM type_of WHERE type = 't_issue'
-    UNION
-    SELECT source, target FROM primary_edge WHERE relation = 'r_answers'
-    UNION
-    SELECT edge.source, edge.target
-    FROM primary_edge AS edge
-    JOIN type_of AS source ON source.id = edge.source AND source.type = 't_annotation'
-    JOIN type_of AS target ON target.id = edge.target AND target.type = 't_issue'
-    WHERE edge.relation = 'r_is_about'
-    UNION
-    SELECT settle.source, answer.target
-    FROM primary_edge AS settle
-    JOIN primary_edge AS answer ON answer.source = settle.target
-                               AND answer.relation = 'r_answers'
-    WHERE settle.relation IN ('r_upholds', 'r_rejects')
+settle AS MATERIALIZED (
+    SELECT settles.determination, edge.relation, settles.decision, issue_of.issue
+    FROM settles
+    JOIN primary_edge AS edge ON edge.source = settles.determination
+                             AND edge.target = settles.decision
+                             AND edge.relation IN ('r_upholds', 'r_rejects')
+    JOIN issue_of ON issue_of.id = settles.decision
 ),
-settle AS (
-    SELECT edge.source AS determination, edge.relation, edge.target AS decision,
-           issue_of.issue
-    FROM primary_edge AS edge
-    JOIN issue_of ON issue_of.id = edge.target
-    WHERE edge.relation IN ('r_upholds', 'r_rejects')
-),
-found AS (
+found AS MATERIALIZED (
     SELECT best.id,
            coalesce((SELECT type FROM type_of WHERE type_of.id = best.id), '') AS type,
            round(-best.score, 3) AS score,

@@ -85,3 +85,43 @@ document_schema(Id, Schema) :-
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
     primary_edge(Id, "r_is_specified_by_schema", Schema).
+
+
+% -----------------------------------------------------------------------------
+% The determination upholds or rejects the decision.
+%
+% decl settles(determination: symbol,
+%              decision:      symbol)
+
+settles(Determination, Decision) :-
+    type_of(Determination, "t_determination"),
+    primary_edge(Determination, "r_upholds", Decision).
+
+settles(Determination, Decision) :-
+    type_of(Determination, "t_determination"),
+    primary_edge(Determination, "r_rejects", Decision).
+
+
+% -----------------------------------------------------------------------------
+% The item belongs to the issue: it is the issue, a decision that
+% answers it, an annotation about it, or a determination that settles
+% a decision that answers it.
+%
+% decl issue_of(id:    symbol,
+%               issue: symbol)
+
+issue_of(Id, Id) :-
+    type_of(Id, "t_issue").
+
+issue_of(Id, Issue) :-
+    type_of(Id, "t_decision"),
+    primary_edge(Id, "r_answers", Issue).
+
+issue_of(Id, Issue) :-
+    type_of(Id, "t_annotation"),
+    primary_edge(Id, "r_is_about", Issue),
+    type_of(Issue, "t_issue").
+
+issue_of(Id, Issue) :-
+    settles(Id, Decision),
+    issue_of(Decision, Issue).
