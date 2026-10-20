@@ -924,3 +924,260 @@ named_by_other(Id) :-
 unused_concept(Id) :-
     type_of(Id, "t_concept"),
     not named_by_other(Id).
+
+
+% -----------------------------------------------------------------------------
+% A node is named for the system configuration that holds it and the
+% key it is filed under: the stem of the configuration, with nod in
+% place of sys, a full stop and the key.
+%
+% decl misnamed_node(node:     symbol,
+%                    expected: symbol)
+% did  The node {node} is not named for the system configuration that
+%      holds it and its key. Its id is {expected}.
+% fix  Rename the node with cctool rename to the id the check expects.
+#show misnamed_node/2.
+
+misnamed_node(Node, Expected) :-
+    system_node(System, Key, Node, _),
+    Expected = @cat("nod_", @substr(System, 4, @strlen(System) - 4), ".", Key),
+    Node != Expected.
+
+
+% -----------------------------------------------------------------------------
+% Every node presents exactly one interface: it realizes one interface
+% control document, whose dataflow step surface it presents.
+%
+% decl interface_count(node:       symbol,
+%                      interfaces: number)
+% did  The node {node} realizes {interfaces} interface control
+%      documents, not 1.
+% fix  Give the node one edge of r_realizes to the interface control
+%      document whose dataflow step surface it presents.
+#show interface_count/2.
+
+interface_count(Node, Interfaces) :-
+    type_of(Node, "t_node"),
+    Interfaces = #count { Interface : node_interface(Node, Interface) },
+    Interfaces != 1.
+
+
+% -----------------------------------------------------------------------------
+% Each end of an edge of a system configuration, with the kind of port
+% it must name: an output at the source, and an input at the target.
+%
+% decl edge_end(system: symbol,
+%               end:    symbol,
+%               node:   symbol,
+%               port:   symbol,
+%               kind:   symbol,
+%               file:   symbol,
+%               line:   number)
+
+edge_end(System, "source", Node, Port, "output", File, Line) :-
+    system_edge(System, Node, Port, _, _, _, File, Line).
+
+edge_end(System, "target", Node, Port, "input", File, Line) :-
+    system_edge(System, _, _, Node, Port, _, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% Each end of an edge names a node of the system configuration that
+% holds the edge.
+%
+% decl foreign_node(system: symbol,
+%                   end:    symbol,
+%                   node:   symbol,
+%                   file:   symbol,
+%                   line:   number)
+% did  The {end} of an edge of {system} names {node}, which is not one
+%      of its nodes.
+% fix  Name a node that the system configuration holds, or add the node
+%      to it.
+#show foreign_node/5.
+
+foreign_node(System, End, Node, File, Line) :-
+    edge_end(System, End, Node, _, _, File, Line),
+    not system_node(System, _, Node, _).
+
+
+% -----------------------------------------------------------------------------
+% Each end of an edge names a port of the interface its node presents,
+% of the kind the end needs: an output at the source and an input at
+% the target.
+%
+% decl unknown_port(node: symbol,
+%                   port: symbol,
+%                   kind: symbol,
+%                   file: symbol,
+%                   line: number)
+% did  An edge names {port} at {node}, which is not an {kind} of the
+%      interface the node presents.
+% fix  Name a port of that kind from the dataflow step surface of the
+%      interface the node realizes, or add the port to the surface.
+#show unknown_port/5.
+
+unknown_port(Node, Port, Kind, File, Line) :-
+    edge_end(_, _, Node, Port, Kind, File, Line),
+    node_interface(Node, Interface),
+    not interface_port(Interface, Kind, _, Port).
+
+
+% -----------------------------------------------------------------------------
+% The node takes a value at the port from an edge of its system
+% configuration.
+%
+% decl fed(node: symbol,
+%          port: symbol)
+
+fed(Node, Port) :-
+    system_edge(_, _, _, Node, Port, _, _, _).
+
+
+% -----------------------------------------------------------------------------
+% An input takes its value from at most one edge.
+%
+% decl input_fed_twice(node:  symbol,
+%                      port:  symbol,
+%                      edges: number)
+% did  {edges} edges end at the input {port} of {node}, not 1.
+% fix  Keep one edge into the input. To combine values, add a node that
+%      reads each of them on an input of its own.
+#show input_fed_twice/3.
+
+input_fed_twice(Node, Port, Edges) :-
+    fed(Node, Port),
+    Edges = #count { Source, Output : system_edge(_, Source, Output, Node, Port, _, _, _) },
+    Edges > 1.
+
+
+% -----------------------------------------------------------------------------
+% Every input that the interface of a node does not state to be
+% optional takes its value from an edge.
+%
+% decl unfed_input(node: symbol,
+%                  port: symbol)
+% did  No edge ends at the input {port} of {node}, and the interface
+%      does not state that it is optional.
+% fix  Add an edge into the input, or state optional: true for it in the
+%      interface if a step may run without it.
+#show unfed_input/2.
+
+unfed_input(Node, Port) :-
+    system_node(_, _, Node, _),
+    node_interface(Node, Interface),
+    interface_port(Interface, "input", _, Port),
+    not stated(Port, "optional", "true"),
+    not fed(Node, Port).
+
+
+% -----------------------------------------------------------------------------
+% The ports at the two ends of an edge state the same type, where both
+% state one.
+%
+% decl port_type_mismatch(source_port: symbol,
+%                         source_type: symbol,
+%                         target_port: symbol,
+%                         target_type: symbol,
+%                         file:        symbol,
+%                         line:        number)
+% did  An edge carries {source_type} from {source_port} into
+%      {target_port}, which takes {target_type}.
+% fix  Connect ports of the same type, or correct the type an interface
+%      states. Add a node that converts the value if both are right.
+#show port_type_mismatch/6.
+
+port_type_mismatch(SourcePort, SourceType, TargetPort, TargetType, File, Line) :-
+    system_edge(_, _, SourcePort, _, TargetPort, _, File, Line),
+    stated(SourcePort, "type", SourceType),
+    stated(TargetPort, "type", TargetType),
+    SourceType != TargetType.
+
+
+% -----------------------------------------------------------------------------
+% Data from the node reaches the node other through feedforward edges
+% only.
+%
+% decl feeds_forward(node:  symbol,
+%                    other: symbol)
+
+feeds_forward(Node, Other) :-
+    feeds(Node, Other, "feedforward").
+
+feeds_forward(Node, Other) :-
+    feeds_forward(Node, Between),
+    feeds(Between, Other, "feedforward").
+
+
+% -----------------------------------------------------------------------------
+% Every loop of data flow is closed by a feedback edge, whose value
+% comes from the invocation before. A loop of feedforward edges only
+% has a node wait on its own output, which never comes.
+%
+% decl feedforward_loop(node: symbol)
+% did  Data from {node} comes back to it through feedforward edges only,
+%      so it waits on its own output.
+% fix  Give the edge that closes the loop direction: feedback.
+#show feedforward_loop/1.
+
+feedforward_loop(Node) :-
+    feeds_forward(Node, Node).
+
+
+% -----------------------------------------------------------------------------
+% A node is configured only with settings its interface declares.
+%
+% decl unknown_setting(node:    symbol,
+%                      setting: symbol)
+% did  {node} gives a value for {setting}, which is not a setting of
+%      the interface it presents.
+% fix  Correct the name of the setting, or add the setting to the
+%      dataflow step surface of the interface.
+#show unknown_setting/2.
+
+unknown_setting(Node, Setting) :-
+    system_setting(Node, Setting),
+    node_interface(Node, Interface),
+    not interface_port(Interface, "config", Setting, _).
+
+
+% -----------------------------------------------------------------------------
+% A node gives a value for each setting that its interface neither
+% states to be optional nor gives a default.
+%
+% decl missing_setting(node:    symbol,
+%                      setting: symbol)
+% did  {node} gives no value for {setting}, which its interface needs.
+% fix  Give the setting a value in the config of the node.
+#show missing_setting/2.
+
+missing_setting(Node, Setting) :-
+    system_node(_, _, Node, _),
+    node_interface(Node, Interface),
+    interface_port(Interface, "config", Setting, Member),
+    not stated(Member, "optional", "true"),
+    not stated(Member, "default", _),
+    not system_setting(Node, Setting).
+
+
+% -----------------------------------------------------------------------------
+% A node runs on a process of its system configuration, and a process
+% on a host of it.
+%
+% decl unplaced(system: symbol,
+%               holder: symbol,
+%               key:    symbol)
+% did  {holder} in {system} runs on {key}, which the system
+%      configuration does not list.
+% fix  Name a process or host the system configuration lists, or add it
+%      to the process or host section.
+#show unplaced/3.
+
+unplaced(System, Node, Process) :-
+    system_node(System, _, Node, Process),
+    Process != "",
+    not system_process(System, Process, _).
+
+unplaced(System, Process, Host) :-
+    system_process(System, Process, Host),
+    not system_host(System, Host).

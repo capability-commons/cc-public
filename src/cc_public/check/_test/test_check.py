@@ -1109,31 +1109,33 @@ def _step(root, id_icd = 'icd_x', map_extra = None):
 
 
 # -----------------------------------------------------------------------------
-def _system(root, list_flow, map_node = None, map_extra = None):
+def _system(root, list_flow, map_node = None, map_extra = None, map_port = None, stem = 'x'):
     """
-    Write the system configuration sys_x, with the nodes a, b and c,
-    each presenting icd_x, and an edge for each (source, target) of
+    Write the system configuration sys_<stem>, with the nodes a, b and
+    c, each presenting icd_x, and an edge for each (source, target) of
     list_flow. An end is a node key and a port name, as 'a.out', and a
     third element, if given, is the direction. map_node, if given, adds
-    its fields to each node it names, and map_extra its fields to the
-    document. Return its location.
+    its fields to each node it names, map_extra its fields to the
+    document, and map_port its groups of ports to icd_x, which is
+    written unless the tree has it. Return the location.
 
     """
 
     def end(text):
         (key, port) = text.split('.')
-        id_node     = 'nod_x.' + key
+        id_node     = 'nod_{stem}.{key}'.format(stem = stem, key = key)
         id_port     = 'icm_x.' + port
         return {'id_node':   id_node,
-                'guid_node': map_guid.get(id_node, _guid('nod')),
+                'guid_node': map_guid.get(id_node) or _guid_of(root, id_node),
                 'id_port':   id_port,
-                'guid_port': _guid_of(root, id_port) if id_port in set_port else _guid('icm')}
+                'guid_port': _guid_of(root, id_port)}
 
-    _step(root)
-    set_port = {'icm_x.inp', 'icm_x.out', 'icm_x.rate'}
-    map_guid = {'nod_x.' + key: _guid('nod') for key in ('a', 'b', 'c')}
+    if not (root / '_data/interface_control_document/icd_x.yaml').exists():
+        _step(root, map_extra = map_port)
+    map_guid = {'nod_{stem}.{key}'.format(stem = stem, key = key): _guid('nod')
+                for key in ('a', 'b', 'c')}
     edge     = _edge(root, 'r_realizes', 'icd_x')
-    document = _fields(root, 'sys_x')
+    document = _fields(root, 'sys_' + stem)
     document.update({
         'host':    {'local': {'hostname': 'localhost'}},
         'process': {'main':  {'host': 'local'}},
@@ -1150,7 +1152,8 @@ def _system(root, list_flow, map_node = None, map_extra = None):
                      **({'direction': flow[2]} if len(flow) > 2 else {})}
                     for flow in list_flow],
         **(map_extra or {})})
-    return _item_document(root, '_data/system_configuration/sys_x.yaml', document)
+    return _item_document(root, '_data/system_configuration/sys_{stem}.yaml'.format(stem = stem),
+                          document)
 
 
 # -----------------------------------------------------------------------------
@@ -1166,8 +1169,14 @@ def _rows(root, relation, arity):
     return sorted(cc_public.graph.datalog.run(facts, rules)[relation])
 
 
+# A ring of three nodes, closed by a feedback edge, that feeds every
+# input once.
+#
+LIST_RING = [('a.out', 'b.inp'), ('b.out', 'c.inp'), ('c.out', 'a.inp', 'feedback')]
+
+
 def test_a_system_whose_edges_meet_the_ports_of_its_nodes_passes(tree):
-    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    _system(tree, LIST_RING)
     assert _check(tree) == {}
 
 
@@ -1193,3 +1202,77 @@ def test_the_blast_radius_of_a_port_is_every_node_that_presents_it_and_beyond(tr
             if item == 'nod_x.b'} == {'nod_x.b'}
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
             if item == 'nod_x.a'} == {'nod_x.a', 'nod_x.b'}
+
+
+def test_a_node_named_for_another_place_is_reported(tree):
+    path = tree / _system(tree, LIST_RING)
+    path.write_text(path.read_text().replace('nod_x.c', 'nod_x.d'))
+    assert _check(tree) == {'misnamed_node': [('nod_x.d', 'nod_x.c')]}
+
+
+def test_a_node_that_presents_no_interface_is_reported(tree):
+    _system(tree, LIST_RING, map_node = {'a': {'relation': []}})
+    assert _check(tree) == {'interface_count': [('nod_x.a', '0')]}
+
+
+def test_an_edge_to_a_node_of_another_system_is_reported(tree):
+    _system(tree, LIST_RING, stem = 'y')
+    location = _system(tree, LIST_RING)
+    _replace(tree, location, 'id_node: nod_x.a\n', 'id_node: nod_y.a\n')
+    _replace(tree, location, 'guid_node: ' + _guid_of(tree, 'nod_x.a'),
+             'guid_node: ' + _guid_of(tree, 'nod_y.a'))
+    assert _check(tree) == {'foreign_node': [('sys_x', 'source', 'nod_y.a', location,
+                                              _line(tree, location, '- source:'))]}
+
+
+def test_an_edge_from_an_input_is_reported(tree):
+    location = _system(tree, [('a.inp', 'b.inp'), ('b.out', 'c.inp'),
+                              ('c.out', 'a.inp', 'feedback')])
+    assert _check(tree) == {'unknown_port': [('nod_x.a', 'icm_x.inp', 'output', location,
+                                              _line(tree, location, '- source:'))]}
+
+
+def test_an_input_fed_by_two_edges_is_reported(tree):
+    _system(tree, LIST_RING + [('a.out', 'c.inp')])
+    assert _check(tree) == {'input_fed_twice': [('nod_x.c', 'icm_x.inp', '2')]}
+
+
+def test_an_input_no_edge_feeds_is_reported_unless_it_is_optional(tree):
+    _system(tree, LIST_RING[:2])
+    assert _check(tree) == {'unfed_input': [('nod_x.a', 'icm_x.inp')]}
+
+
+def test_an_edge_between_ports_of_two_types_is_reported(tree):
+    location = _system(tree, [('a.text', 'b.inp'), ('b.out', 'c.inp'),
+                              ('c.out', 'a.inp', 'feedback')],
+                       map_port = {'output': {'text': ('str',)}})
+    assert _check(tree) == {'port_type_mismatch': [('icm_x.text', 'str', 'icm_x.inp', 'int',
+                                                    location, _line(tree, location, '- source:'))]}
+
+
+def test_a_loop_of_feedforward_edges_is_reported(tree):
+    _system(tree, LIST_RING[:2] + [('c.out', 'a.inp')])
+    assert _check(tree) == {'feedforward_loop': [('nod_x.a',), ('nod_x.b',), ('nod_x.c',)]}
+
+
+def test_a_loop_closed_by_a_feedback_edge_reaches_back_to_where_it_began(tree):
+    _system(tree, LIST_RING)
+    assert ('nod_x.b', 'nod_x.b') in _rows(tree, 'downstream', 2)
+
+
+def test_a_setting_the_interface_does_not_declare_is_reported(tree):
+    _system(tree, LIST_RING, map_node = {'a': {'config': {'rate': 2.0, 'speed': 1}}})
+    assert _check(tree) == {'unknown_setting': [('nod_x.a', 'speed')]}
+
+
+def test_a_setting_the_interface_needs_is_reported_when_left_out(tree):
+    _system(tree, LIST_RING, map_node = {'a': {'config': {'size': 3}}},
+            map_port = {'config': {'size': ('int',)}})
+    assert _check(tree) == {'missing_setting': [('nod_x.b', 'size'), ('nod_x.c', 'size')]}
+
+
+def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
+    _system(tree, LIST_RING, map_node  = {'c': {'process': 'other'}},
+            map_extra = {'process': {'main': {'host': 'remote'}}})
+    assert _check(tree) == {'unplaced': [('sys_x', 'main', 'remote'),
+                                         ('sys_x', 'nod_x.c', 'other')]}
