@@ -102,7 +102,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`new`, `remove` and `rename` refuse pym, pyp, pycls, pyf, lpf and
   file ids.** Those items live in the file they name. Give a file its
   item with `cctool header FILEPATH` (a module's id follows from its path;
-  any other file needs ID, such as `file_githooks_pre_commit`). Move or
+  any other file needs ID, such as `shell_githooks_pre_commit`). Move or
   remove the file by hand, then `cctool format`.
 - **A class or function gets an item only when something must point
   at it.** `cctool header src/x.py::Thing::run --field title Run`
