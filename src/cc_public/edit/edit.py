@@ -1208,20 +1208,47 @@ def _referenced(tree: Tree, map_field: dict) -> dict:
     """
     Return the fields of map_field, with the guid of each item that a
     field id_<field> names put after it as guid_<field>, unless given.
+    A field at any depth is filled, so that the edges of an embedded
+    item and the ends of an edge get their guids. An item that the
+    fields themselves hold is named by the guid it is given there.
 
     """
 
-    map_new = {}
+    map_guid = dict(_held(map_field))
 
-    for (key, value) in map_field.items():
-        map_new[key] = value
-        if not (key.startswith(PREFIX_ID) and isinstance(value, str)):
-            continue
-        key_guid = PREFIX_GUID + key[len(PREFIX_ID):]
-        if key_guid not in map_field:
-            map_new[key_guid] = tree.guid(value)
+    def filled(value: typing.Any) -> typing.Any:
+        if isinstance(value, list):
+            return [filled(each) for each in value]
+        if not isinstance(value, dict):
+            return value
+        map_new = {}
+        for (key, each) in value.items():
+            map_new[key] = filled(each)
+            if not (key.startswith(PREFIX_ID) and key != KEY_ID_SELF and isinstance(each, str)):
+                continue
+            key_guid = PREFIX_GUID + key[len(PREFIX_ID):]
+            if key_guid not in value:
+                map_new[key_guid] = map_guid.get(each) or tree.guid(each)
+        return map_new
 
-    return map_new
+    return filled(map_field)
+
+
+# -----------------------------------------------------------------------------
+def _held(value: typing.Any) -> typing.Iterator[tuple[str, str]]:
+    """
+    Yield the id and guid of each item that value holds at any depth.
+
+    """
+
+    if isinstance(value, list):
+        for each in value:
+            yield from _held(each)
+    elif isinstance(value, dict):
+        if isinstance(value.get(KEY_ID_SELF), str) and isinstance(value.get(KEY_GUID_SELF), str):
+            yield (value[KEY_ID_SELF], value[KEY_GUID_SELF])
+        for each in value.values():
+            yield from _held(each)
 
 
 # -----------------------------------------------------------------------------

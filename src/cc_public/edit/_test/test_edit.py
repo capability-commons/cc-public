@@ -249,6 +249,20 @@ def test_a_new_field_that_names_an_item_is_given_its_guid(tree, zero):
         edited.text('_data/register/reg_data_item_type.yaml'))
 
 
+def test_a_field_that_names_an_item_at_any_depth_is_given_its_guid(tree, zero):
+    edited = cc_public.edit.edit.Tree(tree)
+    cc_public.edit.edit.batch(edited, [{'new':   'icd_x',
+                                        'field': {'title':   'X interface',
+                                                  'brief':   'X.',
+                                                  'example': {'member': {'id_self': 'icm_x.y'},
+                                                              'edges':  [{'id_member': 'icm_x.y',
+                                                                          'id_owner':  'lc_tooling'}]}}}])
+    text = edited.text('_data/interface_control_document/icd_x.yaml')
+    list_pair = [line.split() for line in text.splitlines()]
+    assert ['guid_member:', 'icm_' + HEX_ZERO] in list_pair
+    assert ['guid_owner:', cc_public.edit.edit.Tree(tree).guid('lc_tooling')] in list_pair
+
+
 def test_a_link_turns_an_empty_relation_into_a_list(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN, 'link': []},
                        {'link': ['ann_x', 'r_is_about', 'con_concept']}) == {}
