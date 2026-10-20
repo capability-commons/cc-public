@@ -1271,41 +1271,42 @@ table:
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
 
   # ---------------------------------------------------------------------------
-  # t_system_configuration -- System configuration type
+  # t_dataflow_graph -- Dataflow graph type
   #
-  t_system_configuration:
-    id_self:            t_system_configuration
+  t_dataflow_graph:
+    id_self:            t_dataflow_graph
     guid_self:          t_5a42831510754e46a1c877b0122061d6
-    title:              System configuration type
+    title:              Dataflow graph type
     brief:              |
-                        Type of system configuration data items.
+                        Type of dataflow graph data items.
     description:        |
-                        Each system configuration data item describes
-                        one system of interest as a dataflow graph
-                        that can be run: its dataflow nodes, the
-                        dataflow edges between their ports, and where
-                        each dataflow node runs.
+                        Each dataflow graph data item describes one
+                        system of interest as a dataflow graph that
+                        can be run: its dataflow nodes, the dataflow
+                        edges between their ports, and where each
+                        dataflow node runs.
     usage:              |
-                        A system configuration puts the model of a
-                        system in the graph of items, so that rules
-                        can follow data from dataflow node to dataflow
-                        node, and a decision or an argument can be
-                        about one configuration of a model.
+                        A dataflow graph puts the model of a system in
+                        the graph of items, so that rules can follow
+                        data from dataflow node to dataflow node, and
+                        a decision or an argument can be about one
+                        arrangement of a model.
     note:               |
-                        The shape of system configuration data items
-                        is defined by the sch_system_configuration
-                        schema.
-    prefix:             sys
-    regex_id:           ^sys_[a-z][a-z0-9_]*$
-    id_concept:         con_system_configuration
+                        The shape of dataflow graph data items is
+                        defined by the sch_dataflow_graph schema.
+    prefix:             dfg
+    regex_id:           ^dfg_[a-z][a-z0-9_]*$
+    id_concept:         con_dataflow_graph
     guid_concept:       con_89522a6f06b34f15b8b6cef1b2a43c51
-    alias:              []
+
+    alias:
+      - t_system_configuration
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_system_configuration
+        id_target:      sch_dataflow_graph
         guid_target:    sch_58645b97dbbe453eb3b5093260d3d576
 
   # ---------------------------------------------------------------------------
@@ -1319,18 +1320,17 @@ table:
                         Type of dataflow node data items.
     description:        |
                         Each dataflow node data item is one dataflow
-                        node of a system configuration, embedded in
-                        it.
+                        node of a dataflow graph, embedded in it.
     usage:              |
                         A dataflow node can be named on its own: a
                         dataflow edge has one at each end, and a rule
                         can find every dataflow node upstream or
                         downstream of it.
     note:               |
-                        The id is the id of the system configuration
-                        with the prefix dfn in place of sys, then a
-                        full stop and the key the dataflow node is
-                        filed under.
+                        The id is the id of the dataflow graph with
+                        the prefix dfn in place of sys, then a full
+                        stop and the key the dataflow node is filed
+                        under.
 
                         The shape of dataflow node data items is
                         defined by the sch_dataflow_node schema.
