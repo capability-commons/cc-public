@@ -664,7 +664,7 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
     ({'unset': ['con_concept', 'alias']}, ('The field alias is not set this way: cctool rename keeps the old id '
                                                   'as an alias.')),
     ({'set': ['con_register_entry', 'term_admitted.9', 'x']},
-     '9 is not the index of an element of a list of 1.'),
+     '9 is not the index of an element of a list of 2.'),
     ({'set': ['con_concept', 'title.x', 'x']},
      'The path goes into Concept, which has no fields.'),
 ])
