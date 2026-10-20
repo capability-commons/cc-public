@@ -31,6 +31,7 @@ relation:               []
 import cc_public.cli.auditing  # each registers its commands on the group
 import cc_public.cli.checking
 import cc_public.cli.editing
+import cc_public.cli.exporting
 import cc_public.cli.gating
 import cc_public.cli.group
 import cc_public.cli.messaging
