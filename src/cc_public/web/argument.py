@@ -60,7 +60,7 @@ R_SUPPORTS        = 'r_supports'
 R_CHALLENGES      = 'r_challenges'
 R_UPHOLDS         = 'r_upholds'
 R_REJECTS         = 'r_rejects'
-R_ARGUES_FOR      = 'r_argues_for_concern'
+R_SPEAKS_FOR      = 'r_speaks_for_concern'
 R_IS_DRIVEN_BY    = 'r_is_driven_by'
 
 STANCE_UPHELD     = 'upheld'
@@ -128,7 +128,7 @@ class Decision:
     def unspoken(self) -> list[str]:
         """
         Return the driver concerns that no annotation on the decision
-        argues for.
+        speaks for.
 
         """
 
@@ -265,7 +265,7 @@ class Graph:
                                      for id_concern in subject.targets(R_IS_DRIVEN_BY)})
         set_spoken         = {id_concern
                               for annotation in list_annotation
-                              for id_concern in annotation.targets(R_ARGUES_FOR)}
+                              for id_concern in annotation.targets(R_SPEAKS_FOR)}
 
         decision = Decision(item               = item,
                       list_option        = list_option,

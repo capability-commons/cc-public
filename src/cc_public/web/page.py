@@ -44,8 +44,8 @@ description:            |
                         diagram of pym_cc_public.web.sankey. Options
                         are read from most supported to most opposed.
                         Each concern row opens to the annotations that
-                        argue for it, numbered as the diagram numbers
-                        them, an annotation that argues for several
+                        speak for it, numbered as the diagram numbers
+                        them, an annotation that speaks for several
                         concerns under each. An annotation folds to
                         its title, which opens to its brief, which
                         opens to its description, which opens to the
@@ -866,10 +866,10 @@ def _matrix(graph:    Graph,
     Return the decision matrix of the decision: a column for each option
     and a row for each concern, in the order of the diagram, each cell
     showing a square for each unit of weight for or against the option
-    for the concern. Each row opens to the annotations that argue for
+    for the concern. Each row opens to the annotations that speak for
     its concern; those in set_show are opened. The foot holds the total
     and the standing of each option and the controls that settle it.
-    A driver no annotation argues for is marked, as a determination
+    A driver no annotation speaks for is marked, as a determination
     waits on it.
 
     """
@@ -957,7 +957,7 @@ def _concern_label(graph:      Graph,
     Return the label of the row of id_concern in the decision matrix:
     its name, in the chains of list_css, which lights the chains of the
     concern while it is hovered over, marked if it is a driver no
-    annotation argues for.
+    annotation speaks for.
 
     """
 
@@ -976,7 +976,7 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
                id_concern:  str) -> typing.Any:
     """
     Return a cell of the decision matrix, linked to the annotations
-    that argue for id_concern on id_option, all opened in its row and
+    that speak for id_concern on id_option, all opened in its row and
     the first in view.
 
     """
@@ -1058,7 +1058,7 @@ def _controls(graph: Graph, decision: Decision, id_option: str) -> typing.Any:
     list_unspoken = decision.unspoken()
     if list_unspoken:
         uphold = htpy.span(class_ = 'pill for waiting',
-                           title  = 'Uphold waits until an annotation argues for {list}'.format(
+                           title  = 'Uphold waits until an annotation speaks for {list}'.format(
                                         list = _titles(graph, list_unspoken)))['Uphold']
     else:
         uphold = _pill('Uphold', ROLE_FOR, 'Uphold this option',
@@ -2122,7 +2122,7 @@ def _concern_choice(graph:    Graph,
                     request:     Request,
                     id_decision: str) -> typing.Any:
     """
-    Return the boxes that choose the concerns an annotation argues for:
+    Return the boxes that choose the concerns an annotation speaks for:
     the drivers of the subject of the decision id_decision first, then every
     other, with those of request ticked.
 
@@ -2426,7 +2426,7 @@ def _annotation(graph:         Graph,
             list_bearing.append(htpy.li(class_ = role)[
                 MARK_FOR if role == ROLE_FOR else MARK_AGAINST, ' ', name])
 
-    list_concern = annotation.targets(cc_public.web.argument.R_ARGUES_FOR)
+    list_concern = annotation.targets(cc_public.web.argument.R_SPEAKS_FOR)
     list_also    = [id_other for id_other in list_concern if id_other != id_concern]
     list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
                     if id_answer not in set_path]

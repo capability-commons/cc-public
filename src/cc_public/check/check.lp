@@ -648,14 +648,14 @@ argued(Option, Concern) :-
     primary_edge(Other, "r_is_option_for", Decision),
     practical(Id),
     primary_edge(Id, "r_supports", Other),
-    primary_edge(Id, "r_argues_for_concern", Concern).
+    primary_edge(Id, "r_speaks_for_concern", Concern).
 
 argued(Option, Concern) :-
     primary_edge(Option, "r_is_option_for", Decision),
     primary_edge(Other, "r_is_option_for", Decision),
     practical(Id),
     primary_edge(Id, "r_challenges", Other),
-    primary_edge(Id, "r_argues_for_concern", Concern).
+    primary_edge(Id, "r_speaks_for_concern", Concern).
 
 
 % -----------------------------------------------------------------------------
@@ -839,12 +839,12 @@ practical(Id) :-
 % decl argument_without_concern(id: symbol)
 % did  The annotation {id} supports or challenges an option and argues
 %      for no concern.
-% fix  Link it with r_argues_for_concern to each concern it speaks for.
+% fix  Link it with r_speaks_for_concern to each concern it speaks for.
 #show argument_without_concern/1.
 
 argument_without_concern(Id) :-
     practical(Id),
-    not primary_edge(Id, "r_argues_for_concern", _).
+    not primary_edge(Id, "r_speaks_for_concern", _).
 
 
 % -----------------------------------------------------------------------------
@@ -853,7 +853,7 @@ argument_without_concern(Id) :-
 %
 % decl concern_without_option(id:      symbol,
 %                               concern: symbol)
-% did  The annotation {id} argues for {concern} and bears on no
+% did  The annotation {id} speaks for {concern} and bears on no
 %      option.
 % fix  A fact is answered with evidence, not weighed by concern. Remove
 %      the edge to the concern, or link the annotation to the option
@@ -863,7 +863,7 @@ argument_without_concern(Id) :-
 concern_without_option(Id, Concern) :-
     type_of(Id, "t_annotation"),
     not practical(Id),
-    primary_edge(Id, "r_argues_for_concern", Concern).
+    primary_edge(Id, "r_speaks_for_concern", Concern).
 
 
 % -----------------------------------------------------------------------------

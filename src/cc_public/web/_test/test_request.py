@@ -75,18 +75,18 @@ def test_an_option_answers_its_decision(tree):
          'link':  [['r_is_option_for', ID_OPEN]]}]
 
 
-def test_an_argument_bears_on_its_option_and_argues_for_its_concerns(tree):
+def test_an_argument_bears_on_its_option_and_speaks_for_its_concerns(tree):
     [operation] = _operations(tree, kind = 'argument', target = ID_UPHELD, role = 'against',
                               title = 'A', brief = 'B', id = 'ann_x',
                               concern = ['concern_cost', 'concern_simplicity'])
     assert operation['new'] == 'ann_x'
     assert operation['link'] == [['r_is_about', ID_DECISION],
                                  ['r_challenges', ID_UPHELD],
-                                 ['r_argues_for_concern', 'concern_cost'],
-                                 ['r_argues_for_concern', 'concern_simplicity']]
+                                 ['r_speaks_for_concern', 'concern_cost'],
+                                 ['r_speaks_for_concern', 'concern_simplicity']]
 
 
-def test_an_answer_bears_on_its_annotation_and_argues_for_no_concern(tree):
+def test_an_answer_bears_on_its_annotation_and_speaks_for_no_concern(tree):
     [operation] = _operations(tree, kind = 'answer', target = ID_ANNOTATION, role = 'for',
                               title = 'A', brief = 'B', concern = 'concern_cost')
     assert operation['link'] == [['r_is_about', ID_DECISION], ['r_supports', ID_ANNOTATION]]

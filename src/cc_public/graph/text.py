@@ -24,7 +24,7 @@ description:            |
                         decision it belongs to, to the determination
                         that settles that decision and the options it
                         upholds, to the standing of an option, and to
-                        the concerns an annotation argues for. A grep
+                        the concerns an annotation speaks for. A grep
                         of the files finds the words; this also says
                         how each argument they appear in was settled.
 
@@ -150,7 +150,7 @@ SELECT found.*,
                     '') AS upheld,
            coalesce((SELECT group_concat(target, ' ' ORDER BY target)
                      FROM primary_edge
-                     WHERE source = found.id AND relation = 'r_argues_for_concern'),
+                     WHERE source = found.id AND relation = 'r_speaks_for_concern'),
                     '') AS concerns
 FROM found
 """

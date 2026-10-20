@@ -305,7 +305,7 @@ def test_an_annotation_and_an_option_about_an_item_pass(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_supports', 'opt_x'),
-                                                         _edge(tree, 'r_argues_for_concern', ID_ABOUT)])
+                                                         _edge(tree, 'r_speaks_for_concern', ID_ABOUT)])
     assert _check(tree) == {}
 
 
@@ -450,7 +450,7 @@ def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
     _item(tree, '_data/decision/dec_y/opt_z.yaml', 'opt_z', [_edge(tree, 'r_is_option_for', 'dec_y')])
     _item(tree, '_data/decision/dec_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_y'),
                                                           _edge(tree, 'r_challenges', 'opt_z'),
-                                                          _edge(tree, 'r_argues_for_concern',
+                                                          _edge(tree, 'r_speaks_for_concern',
                                                                 'concern_cost')])
     _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {'unargued_driver': [('det_x', 'opt_x', 'concern_cost')]}
@@ -460,7 +460,7 @@ def test_a_driver_argued_for_an_alternative_passes(tree):
     _driven_options(tree)
     _item(tree, DIR_DECISION + 'ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_x'),
                                                     _edge(tree, 'r_challenges', 'opt_y'),
-                                                    _edge(tree, 'r_argues_for_concern',
+                                                    _edge(tree, 'r_speaks_for_concern',
                                                           'concern_cost')])
     _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {}
@@ -1017,9 +1017,9 @@ def test_an_argument_about_an_option_with_two_concerns_passes(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'opt_x'),
-                                                         _edge(tree, 'r_argues_for_concern',
+                                                         _edge(tree, 'r_speaks_for_concern',
                                                                'concern_cost'),
-                                                         _edge(tree, 'r_argues_for_concern',
+                                                         _edge(tree, 'r_speaks_for_concern',
                                                                'concern_schedule')])
     assert _check(tree) == {}
 
@@ -1028,7 +1028,7 @@ def test_an_argument_about_an_annotation_with_a_concern_is_reported(tree):
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     _item(tree, '_data/annotation/ann_y.yaml', 'ann_y', [_edge(tree, 'r_is_about', ID_ABOUT),
                                                          _edge(tree, 'r_challenges', 'ann_x'),
-                                                         _edge(tree, 'r_argues_for_concern',
+                                                         _edge(tree, 'r_speaks_for_concern',
                                                                'concern_cost')])
     assert _check(tree) == {'concern_without_option': [('ann_y', 'concern_cost')]}
 
