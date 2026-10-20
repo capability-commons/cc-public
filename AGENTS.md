@@ -43,6 +43,18 @@ unfinished edits of another.
   `git merge --ff-only TOPIC`. `dev` only moves forward, so its
   history stays linear. If the merge refuses because `dev` has moved,
   rebase again.
+- To move commits between machines, such as from a remote session to
+  the machine that holds the worktree, use `git bundle`:
+
+  ```bash
+  git bundle create topic.bundle dev..TOPIC   # where the commits are
+  git fetch topic.bundle TOPIC:TOPIC          # where they go
+  ```
+
+  Never use `git format-patch` and `git am`: `am` ends a commit
+  message at its first `---` line, which opens the commit item, so
+  every copied commit loses its item. Run `cctool history check` on
+  the commits as soon as they arrive.
 - Once the branch is on `dev` and `git status` in the worktree is
   clean, remove the worktree from the main checkout:
 
