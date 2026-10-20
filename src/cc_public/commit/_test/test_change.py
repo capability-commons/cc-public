@@ -34,8 +34,8 @@ import cc_public.commit.change
 
 
 HOOK      = '.githooks/commit-msg'
-ID_HOOK   = 'file_githooks_commit_msg'
-GUID_HOOK = 'file_b733c0ef3cf14049bef58f5bce854548'
+ID_HOOK   = 'shell_githooks_commit_msg'
+GUID_HOOK = 'shell_62b23a71a636401eb534266abaf6933d'
 REGISTER  = '_data/register/reg_writing_style_rule.yaml'
 ID_STYLE  = 'style_commit_title_template'
 
