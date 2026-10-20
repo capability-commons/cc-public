@@ -1,0 +1,42 @@
+id_self:                ann_message_check_spurious_fields_is_fixed
+guid_self:              ann_9fe119e002c749a8b49903fa33a6755d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One shared filter for both schema checks
+brief:                  |
+                        Commit dfc4e13 "Fix cctool message check so
+                        that it reports no spurious fields" moves the
+                        filter into one function that the checker and
+                        the message check both call. At 360ec14 the
+                        message check has the filter, and a new tool
+                        can call it rather than write its own.
+description:            |
+                        cc_public.check.schema.errors leaves out
+                        unevaluatedProperties errors while any other
+                        error remains (src/cc_public/check/schema.py
+                        lines 280-295 at 360ec14), and the message
+                        check calls it
+                        (src/cc_public/commit/message.py line 274). A
+                        field that no schema allows is still reported
+                        (src/cc_public/commit/_test/test_message.py
+                        lines 127-130). The spread itself is a
+                        property of allOf under 2020-12 and remains
+                        for any other validator a partner uses.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_schema_composition
+    guid_target:        dec_eca15ca3d12e4d50986a846c65ac0dc2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_failed_trait_field_reports_siblings_unexpected
+    guid_target:        ann_ec7bc22af35c4df1967c7b3a1121efdb

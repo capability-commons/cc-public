@@ -1,0 +1,53 @@
+id_self:                ann_binding_pattern_change_touches_every_copy
+guid_self:              ann_cdc792f3d5894d1882d9ce509fc9d053
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Binding pattern copied into every register
+brief:                  |
+                        Each new register needs another near-identical
+                        binding file, and a change to the binding
+                        pattern must be made once per register.
+description:            |
+                        That the six sch_reg_* files are near-copies
+                        is recorded with the issues on register shape
+                        and on schema composition. Commit 97291f6
+                        (pre-squash) touched all six sch_reg_* files
+                        for one change. After it, five sch_regentry_*
+                        usage fields still say "Composed with
+                        sch_register_entry by sch_reg_*"
+                        (_data/schema/sch_regentry_concern.yaml lines
+                        26-29 and four others), while each entry
+                        schema now composes sch_register_entry itself
+                        (sch_regentry_concern.yaml lines 74-75).
+                        ASSUMPTION: generating the binding files would
+                        remove most of the cost; no generator exists.
+                        Merged from the flexibility and
+                        maintainability advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_binding_schemas
+    guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_keep_per_register_binding
+    guid_target:        opt_433d0e587fb04d9184a15395e14fbf7e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

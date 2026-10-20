@@ -1,0 +1,50 @@
+id_self:                ann_python_type_hints_go_unchecked
+guid_self:              ann_cd375c69ddff4c309bd599f0943e1fb8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type hints that nothing checks
+brief:                  |
+                        Most Python functions carry type hints, so a
+                        diff shows each contract, but no type checker
+                        runs in the gate, so the reviewer must check
+                        each hint by reading. A Rust signature is one
+                        the compiler has checked.
+description:            |
+                        140 of 169 function definitions outside tests
+                        and conftest.py carry a return type hint
+                        (Python ast over src at 89c74d8), for example
+                        src/cc_public/edit/edit.py line 207. The gate
+                        runs check, lint and test, and lint is ruff
+                        only (src/cc_public/gate/gate.py lines 64-66;
+                        pyproject.toml line 66), with no annotation
+                        rules selected (pyproject.toml lines 93-97).
+                        Weak against Python as such: adding mypy or
+                        pyright to the gate would remove it without a
+                        port (ASSUMPTION that it fits the gate's
+                        time). It rests on the same fact as
+                        ann_the_compiler_maps_a_change but asserts
+                        what the reader of one diff can rely on, not
+                        how far a change reaches.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_tooling_language
+    guid_target:        dec_8d57c4200633466bb89ecb1704b6c61d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_tooling_in_python
+    guid_target:        opt_8eaef0ebb229483e99df8c23d8eb6e33
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

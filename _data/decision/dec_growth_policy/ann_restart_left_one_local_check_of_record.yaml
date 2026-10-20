@@ -1,0 +1,48 @@
+id_self:                ann_restart_left_one_local_check_of_record
+guid_self:              ann_b5e065fe23f54cc3b8b9696ce734e394
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check of record on one machine only
+brief:                  |
+                        The legacy tree ran its gate in CI. The
+                        regrown tree has its check of record only in a
+                        local pre-push hook, with nothing pushed and
+                        no CI yet, so a fault in one machine's setup
+                        has no second check behind it.
+description:            |
+                        Legacy CI: gate.yml and CodeQL (note
+                        cc-folder-survey.md line 29).
+                        .githooks/pre-push lines 19-28: "the check of
+                        record until CI runs it too". A remote exists
+                        but nothing is pushed (memory/MEMORY.md line
+                        7; enforcement-approach.md line 10). Local
+                        hooks can be skipped (enforcement-approach.md
+                        line 11). The young checker read a missing
+                        output file as no failures (memory/MEMORY.md
+                        line 53). Temporary: adding CI removes most of
+                        it. The legacy gate was not fault-free either
+                        (note cc-public-session-context.md lines 63,
+                        68).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_growth_policy
+    guid_target:        dec_8a2b97ecfefa488a960e1a1301640618
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_regrow_from_small_seed
+    guid_target:        opt_c84e69e79a47497e866c8841ede8d18a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

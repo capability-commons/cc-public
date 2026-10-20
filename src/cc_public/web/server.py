@@ -19,7 +19,7 @@ description:            |
                         respond maps the path of a request to a page
                         (the index of every type, the list of the
                         items of a type, the subjects, a subject, a
-                        search, the issue list, an issue, the
+                        search, the decision list, a decision, the
                         requirement list, a requirement, the list of
                         interface control documents, one of them, or
                         any item), or to a file of the _static
@@ -70,7 +70,7 @@ TYPE_DEFAULT      = 'application/octet-stream'
 SET_HOST_LOCAL    = {'127.0.0.1', 'localhost', '[::1]'}
 LOCK_READ         = threading.Lock()
 MAP_INDEX         = {cc_public.web.page.PATH_HOME:         cc_public.web.page.home,
-                     cc_public.web.page.PATH_ISSUES:       cc_public.web.page.issues,
+                     cc_public.web.page.PATH_DECISIONS:       cc_public.web.page.decisions,
                      cc_public.web.page.PATH_SUBJECTS:     cc_public.web.page.subjects,
                      cc_public.web.page.PATH_REQUIREMENTS: cc_public.web.page.requirements,
                      cc_public.web.page.PATH_INTERFACES:   cc_public.web.page.interfaces}
@@ -97,8 +97,8 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
 
     if path in MAP_INDEX or path == cc_public.web.page.PATH_SEARCH:
         graph = _graph(root)
-        if path == cc_public.web.page.PATH_ISSUES:
-            body = cc_public.web.page.issues(graph, query)
+        if path == cc_public.web.page.PATH_DECISIONS:
+            body = cc_public.web.page.decisions(graph, query)
         elif path in MAP_INDEX:
             body = MAP_INDEX[path](graph)
         else:
@@ -107,7 +107,7 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
 
     for prefix in (cc_public.web.page.PATH_TYPE,
                    cc_public.web.page.PATH_SUBJECT,
-                   cc_public.web.page.PATH_ISSUE,
+                   cc_public.web.page.PATH_DECISION,
                    cc_public.web.page.PATH_REQUIREMENT,
                    cc_public.web.page.PATH_INTERFACE,
                    cc_public.web.page.PATH_ITEM):
@@ -150,7 +150,7 @@ def submit(root:   pathlib.Path,
     from a page at origin.
 
     The form is made as one batch over the tree under root. If it adds
-    no failure it is written, and the response leads to the issue page
+    no failure it is written, and the response leads to the decision page
     at what it made; if it adds any, nothing is written and the form is
     shown again with the failures it would add.
 
@@ -220,7 +220,7 @@ def _item_page(root:    pathlib.Path,
     """
     Return the page of id_item at the path prefix in the tree under
     root, with the query of its address, or None if the tree holds no
-    such issue or item.
+    such decision or item.
 
     """
 
@@ -235,11 +235,11 @@ def _item_page(root:    pathlib.Path,
     if prefix in (cc_public.web.page.PATH_TYPE, cc_public.web.page.PATH_SUBJECT):
         return _catalogue_page(graph, prefix, id_item, query)
 
-    if prefix == cc_public.web.page.PATH_ISSUE:
-        issue = graph.issue(id_item)
-        if issue is None:
+    if prefix == cc_public.web.page.PATH_DECISION:
+        decision = graph.decision(id_item)
+        if decision is None:
             return None
-        return cc_public.web.page.issue(graph, issue,
+        return cc_public.web.page.decision(graph, decision,
                                         cc_public.web.sankey.parse_toggle(query),
                                         cc_public.web.sankey.parse_show(query))
 

@@ -14,7 +14,7 @@
 // unpin lets it go.
 //
 // Each diagram stays open or closed as it was last left, on every
-// page, so moving from issue to issue keeps the same view. The page
+// page, so moving from decision to decision keeps the same view. The page
 // remembers this in the browser; without script, or where the browser
 // keeps nothing, each diagram opens as the page sets it.
 

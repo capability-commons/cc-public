@@ -1,0 +1,58 @@
+id_self:                ann_generic_schema_needs_shared_register_list
+guid_self:              ann_a142fb86b5a34244a561e448e22d1a9c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared register list edited by every register
+brief:                  |
+                        Without binding files, the choice of entry
+                        schema moves into one shared schema or into
+                        shared checker code, so every new register
+                        edits a shared part. With them, a new register
+                        adds only its own files.
+description:            |
+                        JSON Schema 2020-12 can choose a subschema by
+                        instance data only by listing each case, for
+                        example with if/then and const
+                        (https://json-schema.org/draft/2020-12/json-schema-core#section-10.2.2).
+                        A register's id is at its root
+                        (_data/register/reg_concern.yaml line 1), so
+                        the list would sit in sch_register. The other
+                        route is new checker code; no third route was
+                        found in src/cc_public/check/schema.py or
+                        derive.lp (ASSUMPTION). Each binding refers
+                        only outward
+                        (_data/schema/sch_reg_concern.yaml lines
+                        24-36). cc-public is federated
+                        (memory/cc-public-design-principles.md lines
+                        14, 21). ASSUMPTION: partners outside this
+                        repository would add registers; none exists
+                        today. Merged from the compatibility and
+                        maintainability advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_binding_schemas
+    guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_generic_schema_only
+    guid_target:        opt_d2d56f328cde43b4a46c43bf8de77059
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

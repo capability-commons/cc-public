@@ -1,0 +1,46 @@
+id_self:                ann_old_commits_judged_by_current_rules
+guid_self:              ann_233528a9ca394e6389c1be9042a14a9b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Old commits judged by current rules
+brief:                  |
+                        history check reads each commit's message by
+                        the schema in that commit, but its change by
+                        the rules of the installed tool, so tightening
+                        a rule can fail commits that passed when made.
+                        Fixing that means rewriting history.
+description:            |
+                        src/cc_public/commit/history.py lines 23-24,
+                        116 (message by its own sch_commit) and line
+                        121; change.py lines 51, 86 (RULES beside the
+                        installed module). With no range, history
+                        check checks the whole history
+                        (src/cc_public/cli/auditing.py lines 77-78,
+                        92). change.lp changed twice on the day it was
+                        added (a0a519f, 6230e98). The pre-push hook
+                        checks only commits the remote lacks
+                        (history.py lines 72-93), so the push path is
+                        not affected.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

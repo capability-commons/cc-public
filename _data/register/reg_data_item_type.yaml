@@ -891,12 +891,12 @@ table:
         guid_target:    rol_d29d91e4122247f0b0aaa44955219209
 
   # ---------------------------------------------------------------------------
-  # t_issue -- Issue type
+  # t_decision -- Decision type
   #
-  t_issue:
-    id_self:            t_issue
+  t_decision:
+    id_self:            t_decision
     guid_self:          t_d0c9f13b64c94587827beb0537f18ba3
-    title:              Issue type
+    title:              Decision type
     brief:              |
                         Type of issue data items.
     description:        |
@@ -908,23 +908,25 @@ table:
                         it, and the determinations that settle it.
     note:               |
                         Each issue has a folder of its own,
-                        _data/issue/ followed by its id, which holds
-                        the issue and every option, annotation and
-                        determination that belongs to it.
+                        _data/decision/ followed by its id, which
+                        holds the issue and every option, annotation
+                        and determination that belongs to it.
 
                         The shape of issue data items is defined by
-                        the sch_issue schema.
-    prefix:             iss
-    regex_id:           ^iss_[a-z][a-z0-9_]*$
-    id_concept:         con_issue
+                        the sch_decision schema.
+    prefix:             dec
+    regex_id:           ^dec_[a-z][a-z0-9_]*$
+    id_concept:         con_decision
     guid_concept:       con_8a86a0e623684e92a43bae922efd3b90
-    alias:              []
+
+    alias:
+      - t_issue
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_issue
+        id_target:      sch_decision
         guid_target:    sch_41f3412088d54385bdc58036636896ca
 
       - id_relation:    r_has_items_that_play
@@ -934,7 +936,7 @@ table:
 
       - id_relation:    r_has_items_that_play
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
-        id_target:      rol_issue
+        id_target:      rol_decision
         guid_target:    rol_0d69e576c425464b90538d7223c1d3b5
 
   # ---------------------------------------------------------------------------

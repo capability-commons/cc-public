@@ -1,0 +1,62 @@
+id_self:                ann_author_time_fields_duplicate_commit_record
+guid_self:              ann_1f0192e83ae44ae59a1a3a101773c791
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A second record of who and when to keep in step
+brief:                  |
+                        Git and the commit item already record who and
+                        when for each commit. Fields would add a
+                        further value that schemas, cctool new and the
+                        checks must mint, validate and keep in
+                        agreement.
+description:            |
+                        git records an author and a date on every
+                        commit (git log -1 --format='%an %ad'
+                        89c74d8). The id of each commit item is the
+                        UTC time of the commit plus six hex digits of
+                        its guid
+                        (_data/register/reg_data_item_type.yaml lines
+                        710-712 and 718;
+                        src/cc_public/commit/message.py lines 72 and
+                        118). cctool new builds an item only from the
+                        fields and edges it is given
+                        (src/cc_public/edit/edit.py lines 233-271).
+                        ASSUMPTION: a time field could differ from the
+                        commit time, so keeping them consistent needs
+                        a further rule in the commit check. The cost
+                        is per type, not per item, and a creation time
+                        set once by cctool new would rarely change, so
+                        the saving is modest.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_author_and_time_of_items
+    guid_target:        dec_9d6850a445d84bb08d52c79a80680e8f
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_author_and_time_from_git
+    guid_target:        opt_638303c1649e4edfb78466aaec08367b
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_author_and_time_fields
+    guid_target:        opt_9d76c8e3cee94bb488aa6e3fb7abb147
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

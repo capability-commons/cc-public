@@ -1,0 +1,60 @@
+id_self:                ann_driver_check_serves_any_determiner
+guid_self:              ann_9cc5c8d408ab4192b81e3880191ef8ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Driver check that serves any determiner
+brief:                  |
+                        The process the owner asked for is already
+                        built as the driver check, and it does not
+                        read who made a determination. So letting
+                        others determine needs no new mechanism or
+                        code.
+description:            |
+                        unargued_driver matches on settles,
+                        r_is_option_for, r_is_about and r_is_driven_by
+                        only, and neither it nor argued/2 reads who
+                        made a determination
+                        (src/cc_public/check/check.lp lines 416-453).
+                        First added in commit 3d7ef5b, 2026-10-14,
+                        ported to clingo in 6230e98 and revised in
+                        1ba2895. Who made a determination is recorded
+                        by the commit that adds it, not by a field
+                        (_data/schema/sch_determination.yaml lines
+                        33-36). No code in src/ reads a commit author
+                        (search at 89c74d8). Holds at tenfold graph
+                        size, since the rule is per determination.
+                        Merged from the functional suitability,
+                        simplicity and cost advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_who_may_determine
+    guid_target:        dec_6783c315b46e42ffa140620356a1e226
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_anyone_with_a_process
+    guid_target:        opt_bb022b5c3b9b457b9452d0cda985de56
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

@@ -1,0 +1,51 @@
+id_self:                ann_editing_adds_no_third_party_package
+guid_self:              ann_5355fb63958e4366a54d5144409abbf2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No new third-party package for editing
+brief:                  |
+                        The editing commands add no third-party
+                        package. They use the three direct
+                        dependencies the checker already had and the
+                        standard library.
+description:            |
+                        Direct dependencies are click, jsonschema and
+                        ruamel.yaml before and after the commands (git
+                        show c4a8721^:pyproject.toml and
+                        c4a8721:pyproject.toml, lines 41-43). The edit
+                        package imports only the standard library,
+                        ruamel.yaml and cc_public modules
+                        (src/cc_public/edit/edit.py lines 44-56;
+                        src/cc_public/edit/layout.py lines 50-61); the
+                        CLI adds click and difflib
+                        (src/cc_public/cli/editing.py lines 54-65).
+                        Guids come from the standard uuid module
+                        (edit.py line 410). ruamel.yaml is MIT and
+                        cc-public is Apache-2.0
+                        (https://pypi.org/pypi/ruamel.yaml/json;
+                        pyproject.toml). Holds as the tooling grows
+                        only while new commands keep to the same
+                        imports.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_transactional_editing_commands
+    guid_target:        opt_d264c7bf70ea4ae28041004fbe298402
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

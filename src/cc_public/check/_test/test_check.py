@@ -48,7 +48,7 @@ from cc_public.conftest import DIR_REPO
 ID_ABOUT     = 'concern_safety'
 ID_SUBJECT   = 'lc_x'
 FILE_SUBJECT = '_data/logical_component/lc_x.yaml'
-DIR_ISSUE    = '_data/issue/iss_x/'
+DIR_DECISION = '_data/decision/dec_x/'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
 # The widest forms of an id and a guid, from sch_primitive.
@@ -134,7 +134,7 @@ def _item(root, relative, id_self, list_edge = (), guid = None):
 def _subject(root):
     """
     Write ID_SUBJECT, a logical component with no drivers, if it is not
-    there yet, and return an edge to it for an issue to be about.
+    there yet, and return an edge to it for a decision to be about.
 
     """
 
@@ -146,16 +146,16 @@ def _subject(root):
 # -----------------------------------------------------------------------------
 def _option(root, id_self, list_edge = (), guid = None):
     """
-    Write an option that answers iss_x, in the folder of iss_x, and
-    return its location. iss_x is written too, about ID_SUBJECT, if it
+    Write an option that answers dec_x, in the folder of dec_x, and
+    return its location. dec_x is written too, about ID_SUBJECT, if it
     is not there yet.
 
     """
 
-    if not (root / DIR_ISSUE / 'iss_x.yaml').exists():
-        _item(root, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_subject(root)])
-    return _item(root, DIR_ISSUE + id_self + '.yaml', id_self,
-                 [_edge(root, 'r_is_option_for', 'iss_x'), *list_edge], guid)
+    if not (root / DIR_DECISION / 'dec_x.yaml').exists():
+        _item(root, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_subject(root)])
+    return _item(root, DIR_DECISION + id_self + '.yaml', id_self,
+                 [_edge(root, 'r_is_option_for', 'dec_x'), *list_edge], guid)
 
 
 # -----------------------------------------------------------------------------
@@ -276,7 +276,7 @@ def test_a_pattern_end_matches_only_at_the_end_of_the_text():
 
 def test_a_title_that_ends_in_a_newline_is_reported(tree):
     _option(tree, 'opt_x')
-    _replace(tree, DIR_ISSUE + 'opt_x.yaml', 'title: Test item', 'title: "Test item\\n"')
+    _replace(tree, DIR_DECISION + 'opt_x.yaml', 'title: Test item', 'title: "Test item\\n"')
     failures = _check(tree)
     assert list(failures) == ['schema_violation']
     assert [row[4] for row in failures['schema_violation']] == ['title']
@@ -314,83 +314,83 @@ def test_an_annotation_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('ann_x',)]}
 
 
-def test_an_option_that_answers_no_issue_is_reported(tree):
+def test_an_option_that_answers_no_decision_is_reported(tree):
     _item(tree, '_data/option/opt_x.yaml', 'opt_x')
     assert _check(tree) == {'answer_count': [('opt_x', '0')]}
 
 
-def test_an_issue_about_nothing_is_reported(tree):
-    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x')
-    assert _check(tree) == {'missing_about': [('iss_x',)]}
+def test_a_decision_about_nothing_is_reported(tree):
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x')
+    assert _check(tree) == {'missing_about': [('dec_x',)]}
 
 
-def test_an_option_outside_the_folder_of_its_issue_is_reported(tree):
+def test_an_option_outside_the_folder_of_its_decision_is_reported(tree):
     _option(tree, 'opt_x')
-    _item(tree, '_data/option/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'iss_x')])
+    _item(tree, '_data/option/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'dec_x')])
     assert _check(tree) == {'misplaced_document': [
-        ('opt_y', '_data/option/opt_y.yaml', DIR_ISSUE + 'opt_y.yaml')]}
+        ('opt_y', '_data/option/opt_y.yaml', DIR_DECISION + 'opt_y.yaml')]}
 
 
-def test_an_annotation_about_an_issue_is_kept_in_its_folder(tree):
+def test_an_annotation_about_a_decision_is_kept_in_its_folder(tree):
     _option(tree, 'opt_x')
-    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_x')])
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_x')])
     assert _check(tree) == {'misplaced_document': [
-        ('ann_x', '_data/annotation/ann_x.yaml', DIR_ISSUE + 'ann_x.yaml')]}
+        ('ann_x', '_data/annotation/ann_x.yaml', DIR_DECISION + 'ann_x.yaml')]}
 
 
 def test_a_determination_that_upholds_an_option_passes(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
                                                     _edge(tree, 'r_rejects', 'opt_y')])
     assert _check(tree) == {}
 
 
-def test_an_issue_about_other_than_a_component_is_reported(tree):
-    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
+def test_a_decision_about_other_than_a_component_is_reported(tree):
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     failures = _check(tree)
-    assert failures['issue_about_non_component'] == [('iss_x', ID_ABOUT, 't_concern')]
+    assert failures['decision_about_non_component'] == [('dec_x', ID_ABOUT, 't_concern')]
 
 
-def test_an_argument_across_two_issues_is_reported(tree):
+def test_an_argument_across_two_decisions_is_reported(tree):
     _option(tree, 'opt_x')
-    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_subject(tree)])
-    _item(tree, '_data/issue/iss_y/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'iss_y')])
-    _item(tree, '_data/issue/iss_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_y'),
+    _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_subject(tree)])
+    _item(tree, '_data/decision/dec_y/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'dec_y')])
+    _item(tree, '_data/decision/dec_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_y'),
                                                           _edge(tree, 'r_challenges', 'opt_x')])
     failures = _check(tree)
-    assert failures['argument_across_issues'] == [('ann_x', 'iss_y', 'opt_x', 'iss_x')]
+    assert failures['argument_across_decisions'] == [('ann_x', 'dec_y', 'opt_x', 'dec_x')]
 
 
-def test_an_issue_no_option_answers_is_advice(tree):
-    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_subject(tree)])
+def test_a_decision_no_option_answers_is_advice(tree):
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_subject(tree)])
     (failures, advice) = cc_public.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
-    assert advice == {'unanswered_issue': [('iss_x',)]}
+    assert advice == {'unanswered_decision': [('dec_x',)]}
 
 
-def test_a_determination_across_two_issues_is_reported(tree):
+def test_a_determination_across_two_decisions_is_reported(tree):
     _option(tree, 'opt_x')
-    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_subject(tree)])
-    _item(tree, '_data/issue/iss_y/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'iss_y')])
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
+    _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_subject(tree)])
+    _item(tree, '_data/decision/dec_y/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'dec_y')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
                                                     _edge(tree, 'r_rejects', 'opt_y')])
     failures = _check(tree)
-    assert failures['determination_across_issues'] == [('det_x', 'iss_x', 'iss_y')]
+    assert failures['determination_across_decisions'] == [('det_x', 'dec_x', 'dec_y')]
 
 
-def test_two_determinations_of_an_issue_are_reported(tree):
+def test_two_determinations_of_a_decision_are_reported(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    _item(tree, DIR_ISSUE + 'det_y.yaml', 'det_y', [_edge(tree, 'r_upholds', 'opt_y')])
-    assert _check(tree) == {'competing_determinations': [('iss_x', 'det_x', 'det_y')]}
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_y.yaml', 'det_y', [_edge(tree, 'r_upholds', 'opt_y')])
+    assert _check(tree) == {'competing_determinations': [('dec_x', 'det_x', 'det_y')]}
 
 
 def test_an_option_that_supersedes_a_determination_is_reported(tree):
     _option(tree, 'opt_x')
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     _option(tree, 'opt_y', [_edge(tree, 'r_supersedes', 'det_x')])
     assert _check(tree)['supersession_across_types'] == [('opt_y', 'det_x')]
 
@@ -398,8 +398,8 @@ def test_an_option_that_supersedes_a_determination_is_reported(tree):
 def test_a_determination_that_supersedes_is_reported(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    _item(tree, DIR_ISSUE + 'det_y.yaml', 'det_y',
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_y.yaml', 'det_y',
           [_edge(tree, 'r_upholds', 'opt_y'), _edge(tree, 'r_supersedes', 'det_x')])
     assert ('det_y', 'r_supersedes', 'det_x', 'source', 'rrs_is_supersedable') \
         in _check(tree)['restriction_violation']
@@ -420,49 +420,49 @@ def test_a_determination_of_nothing_is_reported(tree):
 
 def _driven_options(tree):
     """
-    Write lc_x, driven by concern_cost, an issue about it, and two
-    options that answer the issue.
+    Write lc_x, driven by concern_cost, a decision about it, and two
+    options that answer the decision.
 
     """
 
     _item(tree, '_data/logical_component/lc_x.yaml', 'lc_x',
           [_edge(tree, 'r_is_driven_by', 'concern_cost')])
-    _item(tree, DIR_ISSUE + 'iss_x.yaml', 'iss_x', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', 'lc_x')])
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
 
 
 def test_a_determination_with_a_driver_unargued_is_reported(tree):
     _driven_options(tree)
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {'unargued_driver': [('det_x', 'opt_x', 'concern_cost')]}
 
 
 def test_a_rejection_with_a_driver_unargued_passes(tree):
     _driven_options(tree)
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_rejects', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_rejects', 'opt_x')])
     assert _check(tree) == {}
 
 
-def test_a_driver_argued_only_in_another_issue_is_unargued(tree):
+def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
     _driven_options(tree)
-    _item(tree, '_data/issue/iss_y/iss_y.yaml', 'iss_y', [_edge(tree, 'r_is_about', 'lc_x')])
-    _item(tree, '_data/issue/iss_y/opt_z.yaml', 'opt_z', [_edge(tree, 'r_is_option_for', 'iss_y')])
-    _item(tree, '_data/issue/iss_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_y'),
+    _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, '_data/decision/dec_y/opt_z.yaml', 'opt_z', [_edge(tree, 'r_is_option_for', 'dec_y')])
+    _item(tree, '_data/decision/dec_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_y'),
                                                           _edge(tree, 'r_challenges', 'opt_z'),
                                                           _edge(tree, 'r_argues_for_concern',
                                                                 'concern_cost')])
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {'unargued_driver': [('det_x', 'opt_x', 'concern_cost')]}
 
 
 def test_a_driver_argued_for_an_alternative_passes(tree):
     _driven_options(tree)
-    _item(tree, DIR_ISSUE + 'ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'iss_x'),
+    _item(tree, DIR_DECISION + 'ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_x'),
                                                     _edge(tree, 'r_challenges', 'opt_y'),
                                                     _edge(tree, 'r_argues_for_concern',
                                                           'concern_cost')])
-    _item(tree, DIR_ISSUE + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {}
 
 

@@ -154,12 +154,12 @@ def test_a_line_is_an_integer_in_sql(tree):
 
 def test_text_rows_hold_the_prose_of_each_item_and_no_names(tree):
     list_row = cc_public.graph.text.rows(cc_public.graph.extract.documents(tree))
-    assert ('iss_cross_item_checks_engine', 'title', 'Engine of the cross-item checks') in list_row
+    assert ('dec_cross_item_checks_engine', 'title', 'Engine of the cross-item checks') in list_row
     assert not [row for row in list_row
                 if row[1].startswith(('id_', 'guid_', '$')) or row[1] == 'copyright']
 
 
-def test_text_names_the_issue_and_standing_of_each_option_it_finds(tree):
+def test_text_names_the_decision_and_standing_of_each_option_it_finds(tree):
     map_document          = cc_public.graph.extract.documents(tree)
     facts                 = cc_public.graph.extract.facts_of(map_document)
     (tuple_column, rows)  = cc_public.graph.text.search(facts, map_document,
@@ -169,15 +169,15 @@ def test_text_names_the_issue_and_standing_of_each_option_it_finds(tree):
     assert map_hit['opt_cross_item_checks_in_souffle']['determination'] == 'det_cross_item_checks_engine'
     assert map_hit['opt_cross_item_checks_in_souffle']['upheld']        == 'opt_cross_item_checks_in_clingo'
     assert map_hit['opt_tooling_in_rust']['standing']                   == 'open'
-    assert map_hit['opt_tooling_in_rust']['issue']                      == 'iss_tooling_language'
+    assert map_hit['opt_tooling_in_rust']['decision']                      == 'dec_tooling_language'
 
 
-def test_text_by_issue_leads_from_any_hit_to_its_issue(tree):
+def test_text_by_decision_leads_from_any_hit_to_its_decision(tree):
     map_document  = cc_public.graph.extract.documents(tree)
     facts         = cc_public.graph.extract.facts_of(map_document)
     (_, rows)     = cc_public.graph.text.search(facts, map_document, 'souffle clingo',
-                                                is_issue = True)
-    assert rows[0][1] == 'iss_cross_item_checks_engine'
+                                                is_decision = True)
+    assert rows[0][1] == 'dec_cross_item_checks_engine'
 
 
 def test_text_widens_a_query_by_the_other_terms_of_the_concept_it_names(tree):

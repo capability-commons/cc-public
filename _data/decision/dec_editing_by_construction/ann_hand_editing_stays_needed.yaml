@@ -1,0 +1,65 @@
+id_self:                ann_hand_editing_stays_needed
+guid_self:              ann_e11ca7c3f7a54542b9f149aebbef8305
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hand editing as a path still needed
+brief:                  |
+                        The commands do not replace hand editing. Some
+                        changes have no command, and a file that does
+                        not parse stops every command, so hand editing
+                        followed by a check stays in use as a second
+                        path and the path of recovery.
+description:            |
+                        The tools refuse to rename or remove an item
+                        that lives in the file it names and tell the
+                        user to do it by hand (src/cc_public/edit/
+                        edit.py lines 774-785). Not built by choice:
+                        moving or removing source files, class and
+                        function items, insert of embedded items (note
+                        review-2026-10-14.md, Open threads). AGENTS.md
+                        lines 48-53 say to run cctool format then
+                        cctool check after any hand edit. A YAML file
+                        that does not parse raises when the tree is
+                        read (src/cc_public/graph/extract.py lines
+                        284, 305), and _run catches only ErrorEdit
+                        (src/cc_public/cli/editing.py lines 398-404).
+                        The pre-commit gate and cctool history check
+                        check the tree whatever made the change
+                        (AGENTS.md lines 13-15; memory/
+                        enforcement-approach.md). Supports hand
+                        editing as a fallback alongside the chosen
+                        option, not in its place. More item kinds make
+                        edits outside the commands more likely.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_hand_edit_then_check
+    guid_target:        opt_b4bfefd6dbb149e9b7711774137c4205
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

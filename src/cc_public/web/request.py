@@ -20,7 +20,7 @@ description:            |
                         A request is what a form sends: its kind, the
                         item it acts on, the role it takes, and the
                         fields typed into it. There are four kinds. An
-                        option answers an issue. An argument is an
+                        option answers a decision. An argument is an
                         annotation for or against an option, which
                         argues for one or more concerns. An answer is
                         an annotation that supports or challenges
@@ -28,11 +28,11 @@ description:            |
                         upholds or rejects an option, with a reason.
 
                         operations returns the batch for a request. An
-                        issue has at most one determination, so to
+                        decision has at most one determination, so to
                         uphold or reject an option changes the one the
-                        issue has, or makes it if there is none: the
-                        reason becomes its brief, and the option is
-                        upheld or rejected in place of what it was
+                        decision has, or makes it if there is none:
+                        the reason becomes its brief, and the option
+                        is upheld or rejected in place of what it was
                         before. Other options keep their standing. A
                         new item takes its id from its title unless
                         one is given.
@@ -40,9 +40,9 @@ description:            |
                         Each form tells the reviewer what it wants, as
                         a brief tells an agent: MAP_LEAD holds what to
                         write for each kind, and MAP_HINT what each
-                        field is for. address returns the issue page
-                        to show once a request is made, naming the
-                        item to show in its query as well as its
+                        field is for. address returns the decision
+                        page to show once a request is made, naming
+                        the item to show in its query as well as its
                         fragment, since a page that sends a form by
                         script is not told the fragment.
 relation:               []
@@ -85,7 +85,7 @@ KEY_REASON        = 'reason'
 KEY_CONCERN       = 'concern'
 TUPLE_KEY_TEXT    = (KEY_ID, KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION, KEY_REASON)
 
-PREFIX_ISSUE      = cc_public.web.argument.PREFIX_ISSUE
+PREFIX_DECISION   = cc_public.web.argument.PREFIX_DECISION
 PREFIX_OPTION     = cc_public.web.argument.PREFIX_OPTION
 PREFIX_ANNOTATION = cc_public.web.argument.PREFIX_ANNOTATION
 PREFIX_DET        = 'det_'
@@ -148,7 +148,7 @@ MAP_HINT          = {
                                  'check it.',
     KEY_ID:                      'Optional. Made from the title if left empty.',
     KEY_CONCERN:                 'The drivers of the subject come first. Tick at least one.',
-    KEY_REASON:                  'This becomes the brief of the determination of the issue, '
+    KEY_REASON:                  'This becomes the brief of the determination of the decision, '
                                  'in place of what it said before.'}
 
 Graph             = cc_public.web.argument.Graph
@@ -168,7 +168,7 @@ class ErrorRequest(Exception):
 class Request:
     """
     What a form of the review pages sends: its kind, the id of the item
-    it acts on, the role it takes, the key of that item on the issue
+    it acts on, the role it takes, the key of that item on the decision
     page, the text of each field, and the concerns ticked.
 
     """
@@ -223,7 +223,7 @@ def parse(text: str) -> Request:
 def query(kind: str, target: str, role: str = '', at: str = '') -> str:
     """
     Return the query of the address of the form of kind, acting on
-    target in role, at the key at on the issue page.
+    target in role, at the key at on the decision page.
 
     """
 
@@ -233,9 +233,9 @@ def query(kind: str, target: str, role: str = '', at: str = '') -> str:
 
 
 # -----------------------------------------------------------------------------
-def issue_of(graph: Graph, request: Request) -> str:
+def decision_of(graph: Graph, request: Request) -> str:
     """
-    Return the id of the issue the request adds to. Raise ErrorRequest
+    Return the id of the decision the request adds to. Raise ErrorRequest
     if its target is not what its kind acts on.
 
     """
@@ -245,33 +245,33 @@ def issue_of(graph: Graph, request: Request) -> str:
         raise ErrorRequest('The tree holds no item {id}.'.format(id = request.target))
 
     if request.kind == KIND_OPTION:
-        list_issue = [request.target] if request.target.startswith(PREFIX_ISSUE) else []
+        list_decision = [request.target] if request.target.startswith(PREFIX_DECISION) else []
     elif request.kind == KIND_ANSWER:
-        list_issue = [id_issue for id_issue in item.targets(R_IS_ABOUT)
+        list_decision = [id_decision for id_decision in item.targets(R_IS_ABOUT)
                       if request.target.startswith(PREFIX_ANNOTATION)
-                      and id_issue.startswith(PREFIX_ISSUE)]
+                      and id_decision.startswith(PREFIX_DECISION)]
     else:
-        list_issue = [id_issue for id_issue in item.targets(R_IS_OPTION_FOR)
+        list_decision = [id_decision for id_decision in item.targets(R_IS_OPTION_FOR)
                       if request.target.startswith(PREFIX_OPTION)]
 
-    if not list_issue:
+    if not list_decision:
         raise ErrorRequest('A {kind} cannot be added to {id}.'.format(kind = request.kind,
                                                                      id   = request.target))
-    return list_issue[0]
+    return list_decision[0]
 
 
 # -----------------------------------------------------------------------------
-def determination(graph: Graph, id_issue: str) -> cc_public.web.argument.Item | None:
+def determination(graph: Graph, id_decision: str) -> cc_public.web.argument.Item | None:
     """
-    Return the one determination of the issue id_issue, or None if it
+    Return the one determination of the decision id_decision, or None if it
     has none.
 
     """
 
-    issue = graph.issue(id_issue)
-    if issue is None or not issue.list_determination:
+    decision = graph.decision(id_decision)
+    if decision is None or not decision.list_determination:
         return None
-    return issue.list_determination[0]
+    return decision.list_determination[0]
 
 
 # -----------------------------------------------------------------------------
@@ -284,11 +284,11 @@ def id_new(graph: Graph, request: Request) -> str:
     """
 
     if request.kind == KIND_DETERMINE:
-        id_issue = issue_of(graph, request)
-        existing = determination(graph, id_issue)
+        id_decision = decision_of(graph, request)
+        existing    = determination(graph, id_decision)
         if existing is not None:
             return existing.id
-        return PREFIX_DET + id_issue.removeprefix(PREFIX_ISSUE)
+        return PREFIX_DET + id_decision.removeprefix(PREFIX_DECISION)
 
     prefix = PREFIX_OPTION if request.kind == KIND_OPTION else PREFIX_ANNOTATION
     return request.text(KEY_ID) or slug(prefix, request.text(KEY_TITLE))
@@ -319,19 +319,19 @@ def operations(graph: Graph, request: Request) -> list:
 
     """
 
-    id_issue = issue_of(graph, request)
-    id_item  = id_new(graph, request)
+    id_decision = decision_of(graph, request)
+    id_item     = id_new(graph, request)
 
     if request.kind == KIND_DETERMINE:
-        return _determine(graph, request, id_issue, id_item)
+        return _determine(graph, request, id_decision, id_item)
 
     map_field = {key: request.text(key) for key in (KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION)
                  if request.text(key)}
 
     if request.kind == KIND_OPTION:
-        list_link = [[R_IS_OPTION_FOR, id_issue]]
+        list_link = [[R_IS_OPTION_FOR, id_decision]]
     else:
-        list_link = [[R_IS_ABOUT, id_issue],
+        list_link = [[R_IS_ABOUT, id_decision],
                      [MAP_RELATION[request.role], request.target]]
     if request.kind == KIND_ARGUMENT:
         list_link += [[R_ARGUES_FOR, id_concern] for id_concern in request.list_concern]
@@ -341,13 +341,13 @@ def operations(graph: Graph, request: Request) -> list:
 
 # -----------------------------------------------------------------------------
 def _determine(graph:    Graph,
-               request:  Request,
-               id_issue: str,
-               id_item:  str) -> list:
+               request:     Request,
+               id_decision: str,
+               id_item:     str) -> list:
     """
     Return the operations that uphold or reject the option of request
-    in the determination id_item of the issue id_issue, with the reason
-    of request as its brief. The determination is made if the issue has
+    in the determination id_item of the decision id_decision, with the reason
+    of request as its brief. The determination is made if the decision has
     none.
 
     """
@@ -355,10 +355,10 @@ def _determine(graph:    Graph,
     id_relation = MAP_RELATION[request.role]
     id_other    = R_REJECTS if id_relation == R_UPHOLDS else R_UPHOLDS
     reason      = request.text(KEY_REASON)
-    existing    = determination(graph, id_issue)
+    existing    = determination(graph, id_decision)
 
     if existing is None:
-        map_field = {KEY_TITLE: graph.title(id_issue)}
+        map_field = {KEY_TITLE: graph.title(id_decision)}
         if reason:
             map_field[KEY_BRIEF] = reason
         return [{'new': id_item, 'field': map_field, 'link': [[id_relation, request.target]]}]
@@ -376,12 +376,12 @@ def _determine(graph:    Graph,
 # -----------------------------------------------------------------------------
 def address(graph: Graph, request: Request, id_item: str) -> str:
     """
-    Return the address of the issue page to show once the request is
+    Return the address of the decision page to show once the request is
     made, at the item it made or changed.
 
     """
 
-    path = '/issue/' + issue_of(graph, request)
+    path = '/decision/' + decision_of(graph, request)
 
     if request.kind == KIND_OPTION:
         list_pair = [(KEY_TO, id_item)]
@@ -413,15 +413,15 @@ def hint(kind: str, key: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def concerns(graph: Graph, id_issue: str) -> tuple[list[str], list[str]]:
+def concerns(graph: Graph, id_decision: str) -> tuple[list[str], list[str]]:
     """
-    Return the concerns an argument on the issue id_issue may argue for:
+    Return the concerns an argument on the decision id_decision may argue for:
     the drivers of its subject, and every other concern.
 
     """
 
-    issue      = graph.issue(id_issue)
-    list_drive = list(issue.list_driver) if issue is not None else []
+    decision   = graph.decision(id_decision)
+    list_drive = list(decision.list_driver) if decision is not None else []
     list_other = sorted(id_item for id_item in graph.map_item
                         if id_item.startswith(PREFIX_CONCERN) and id_item not in list_drive)
     return (list_drive, list_other)

@@ -1,0 +1,48 @@
+id_self:                ann_driver_check_ties_settlement_to_arguments
+guid_self:              ann_2f124409e4634416850a76bdacabee84
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Settlement traced to recorded arguments
+brief:                  |
+                        A determination fails until each driver of its
+                        subject has an argument on the issue, so every
+                        settled decision traces back to recorded
+                        reasons, whoever determines it.
+description:            |
+                        src/cc_public/check/check.lp lines 420-453;
+                        commit 3d7ef5b: "A determination is refused
+                        until each driver of the subject of an option
+                        it settles has an argument". Limit: a
+                        determination settles options with r_upholds
+                        and r_rejects edges, and since 89c74d8 may
+                        carry r_supersedes to an earlier
+                        determination, but no relation runs from a
+                        determination to the annotations it weighed
+                        (reg_relation.yaml), so which arguments the
+                        determiner relied on lives only in the brief
+                        (_data/schema/sch_determination.yaml lines
+                        24-28; det_cross_item_checks_engine.yaml lines
+                        21-36).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_who_may_determine
+    guid_target:        dec_6783c315b46e42ffa140620356a1e226
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_anyone_with_a_process
+    guid_target:        opt_bb022b5c3b9b457b9452d0cda985de56
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

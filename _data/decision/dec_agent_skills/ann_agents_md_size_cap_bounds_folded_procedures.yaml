@@ -1,0 +1,61 @@
+id_self:                ann_agents_md_size_cap_bounds_folded_procedures
+guid_self:              ann_02808e71f330453d97c8cdb1dc1e6a74
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Size ceiling on procedures folded into AGENTS.md
+brief:                  |
+                        Codex stops reading instruction files once
+                        their combined size reaches 32 KiB by default,
+                        so putting every tool procedure in AGENTS.md
+                        has a ceiling on the procedures themselves;
+                        skills have a budget only on their list of
+                        names and descriptions, and load bodies one at
+                        a time.
+description:            |
+                        Codex reads AGENTS.md files up to
+                        project_doc_max_bytes, 32 KiB by default, and
+                        "stops adding files once the combined size
+                        reaches the limit"
+                        (https://learn.chatgpt.com/docs/agent-configuration/agents-md,
+                        redirected from
+                        https://developers.openai.com/codex/guides/agents-md,
+                        fetched 2026-10-15). AGENTS.md is 4602 bytes
+                        and SKILL.md 6283 bytes (wc -c at 89c74d8);
+                        folded together they come to 10885 bytes,
+                        about a third of the limit, for one tool
+                        procedure. Skills load a body only when a
+                        skill is chosen
+                        (ann_skill_loads_when_cctool_refuses_an_edit
+                        covers the per-session cost; this adds the
+                        hard limit). Codex does cap the initial list
+                        of skill names and descriptions, by default at
+                        2% of the context window or 8,000 characters,
+                        shortening or omitting entries beyond it, but
+                        states no limit on SKILL.md bodies
+                        (https://learn.chatgpt.com/docs/build-skills,
+                        fetched 2026-10-15). ASSUMPTION: more tool
+                        procedures will come; none is planned in the
+                        sources read.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_skills
+    guid_target:        dec_6be96ce488394ba892982995b40e154c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_no_skills
+    guid_target:        opt_7673c9d62a4944ee834052cdc407ae94
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

@@ -154,7 +154,7 @@ reads them through `.claude/skills`, a link to the same directory.
 - `cctool query schema` lists every relation and its columns.
 - `cctool query text "WORDS"` finds items by the words of their prose,
   best first, and names the issue of each, how it was settled, and
-  the concerns it argues for. With `--issue` it gives one row for each
+  the concerns it argues for. With `--decision` it gives one row for each
   issue. Use it before you argue or change something, to find the
   arguments and determinations already made on the point. A query
   that names a concept also matches its other preferred and admitted

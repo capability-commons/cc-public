@@ -1,0 +1,44 @@
+id_self:                ann_removed_elements_lose_their_reasons
+guid_self:              ann_3f0b741d80a94903b1692db4be11f18f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reasons for removed elements outside the graph
+brief:                  |
+                        The graph holds only the present tree, so the
+                        reason an element existed and was removed
+                        lives only in a git commit message that no
+                        graph item links to.
+description:            |
+                        A removal is named in the commit item
+                        (src/cc_public/commit/change.lp lines 121-131,
+                        rule unannounced_removal). A commit item is
+                        held in its git commit message, not in the
+                        tree (_data/register/reg_data_item_type.yaml
+                        lines 705-711). The extractor skips .git
+                        (src/cc_public/graph/extract.py line 102). All
+                        33 commit items on the branch have an empty
+                        relation list (git log, grep for "relation:
+                        []").
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_defer_graph_history
+    guid_target:        opt_80702d6abccf462b830106cc754ae93e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

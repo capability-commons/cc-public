@@ -1,0 +1,56 @@
+id_self:                ann_author_and_time_lost_in_copies_without_history
+guid_self:              ann_a08cfd7948a3430f8f89e7470113fb98
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Author and time lost in copies without history
+brief:                  |
+                        Who made an item and when exists only in the
+                        history of the repository that holds it. Items
+                        exchanged as a subset, or held in a squashed,
+                        shallow or exported copy, have no author or
+                        time.
+description:            |
+                        No author or time field: _data/schema/
+                        sch_annotation.yaml line 30;
+                        _data/schema/sch_determination.yaml lines
+                        33-36; _data/register/reg_concept.yaml line
+                        310. The tooling asks git log only for hashes,
+                        subjects and bodies (src/cc_public/commit/
+                        history.py lines 53, 105, 139 and 163), so the
+                        graph holds no author or time. Each
+                        determination sits in its issue folder
+                        (sch_determination.yaml lines 30-32), which
+                        can be copied without history.
+                        actions/checkout fetches one commit by default
+                        (fetch-depth: 1,
+                        https://github.com/actions/checkout README).
+                        The loss repeats with each squash, shallow
+                        clone or move to a new host.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_author_and_time_of_items
+    guid_target:        dec_9d6850a445d84bb08d52c79a80680e8f
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_author_and_time_from_git
+    guid_target:        opt_638303c1649e4edfb78466aaec08367b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

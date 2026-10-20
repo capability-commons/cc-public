@@ -1,0 +1,43 @@
+id_self:                ann_driver_check_silent_on_other_subjects
+guid_self:              ann_b7a4a158c7914a93bf68ab0d76de0e0b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silent pass of the driver check
+brief:                  |
+                        Nothing makes an issue be about a logical
+                        component. If one is not, the driver check
+                        reports no missing driver, so a determination
+                        can look fully argued when no driver was
+                        looked at.
+description:            |
+                        r_is_about has no range (reg_relation.yaml
+                        lines 167-172). range_violation fires only
+                        when a range exists (check.lp lines 282-286).
+                        missing_about accepts a subject of any type
+                        (check.lp lines 296-301). unargued_driver
+                        needs r_is_driven_by on the subject (check.lp
+                        lines 448-453). Both current issues are about
+                        lc_tooling, so no wrong result has occurred.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_subject_of_a_decision
+    guid_target:        dec_5ddead5ed64c43e8aacc41b5b1f3d286
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_logical_component_subject
+    guid_target:        opt_abe48035fc794774a7790d7b05a089c3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,42 @@
+id_self:                ann_broken_schema_reported_as_a_row
+guid_self:              ann_74eeb99ccf274055884b39379983d0f6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faulty schemas reported as rows
+brief:                  |
+                        A schema that is itself broken does not crash
+                        the check. It is reported as a violation row,
+                        the run fails, and validation against the
+                        other schemas goes on.
+description:            |
+                        src/cc_public/check/schema.py lines 52-60 and
+                        87-114. Experiment on a git archive of HEAD
+                        89c74d8, 2026-10-15: a bad type in
+                        sch_regentry_concern gives a row, other rows
+                        still appear, exit 1. In the same run a stray
+                        field in a concern entry is not reported,
+                        because its schema refers to the broken one.
+                        So degradation is visible but not complete.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_checker_approach
+    guid_target:        dec_5ef7187d9f45495185cf63ad06846915
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_json_schema_plus_rules_over_facts
+    guid_target:        opt_7ec967f84fab485888f1ee10867377ee
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

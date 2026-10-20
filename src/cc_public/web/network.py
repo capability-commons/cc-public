@@ -13,7 +13,7 @@ protective_mark:
 
 title:                  Graph of an argument
 brief:                  |
-                        Draw the argument on an issue as a tree for
+                        Draw the argument on a decision as a tree for
                         each option: its concerns as small ports
                         beside it, and from each port the annotations
                         that argue for that concern on it, with the

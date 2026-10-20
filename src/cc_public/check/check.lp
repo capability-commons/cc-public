@@ -172,21 +172,21 @@ misplaced_module(Id, Expected) :-
 % -----------------------------------------------------------------------------
 % A document under a _data directory is in the folder named for its
 % type, less the t_, in a file named for its id. A document that
-% belongs to an issue is in the folder of the issue instead, so that
-% everything argued about one issue is kept together.
+% belongs to a decision is in the folder of the decision instead, so that
+% everything argued about one decision is kept together.
 %
 % decl misplaced_document(id:       symbol,
 %                         file:     symbol,
 %                         expected: symbol)
 % did  {id} is in {file}, not in {expected}.
 % fix  Move the file to where the check expects it. Everything argued
-%      about an issue goes in the folder of the issue.
+%      about a decision goes in the folder of the decision.
 #show misplaced_document/3.
 
 misplaced_document(Id, File, Expected) :-
     item(Id, _, "", File, _),
     @match("(.*/)?_data/.*\\.yaml", File) = 1,
-    not issue_of(Id, _),
+    not decision_of(Id, _),
     type_of(Id, Type),
     Stem     = @substr(Type, 2, @strlen(Type) - 2),
     Expected = @cat("_data/", Stem, "/", Id, ".yaml"),
@@ -195,8 +195,8 @@ misplaced_document(Id, File, Expected) :-
 misplaced_document(Id, File, Expected) :-
     item(Id, _, "", File, _),
     @match("(.*/)?_data/.*\\.yaml", File) = 1,
-    issue_of(Id, Issue),
-    Expected = @cat("_data/issue/", Issue, "/", Id, ".yaml"),
+    decision_of(Id, Decision),
+    Expected = @cat("_data/decision/", Decision, "/", Id, ".yaml"),
     @match(@cat("(.*/)?", Expected), File) = 0.
 
 
@@ -482,7 +482,7 @@ restriction_violation(Source, Relation, Target, "target", Restriction) :-
 
 
 % -----------------------------------------------------------------------------
-% Every annotation and every issue is about something.
+% Every annotation and every decision is about something.
 %
 % decl missing_about(id: symbol)
 % did  {id} is about nothing: it has no edge of r_is_about.
@@ -494,24 +494,24 @@ missing_about(Id) :-
     not primary_edge(Id, "r_is_about", _).
 
 missing_about(Id) :-
-    type_of(Id, "t_issue"),
+    type_of(Id, "t_decision"),
     not primary_edge(Id, "r_is_about", _).
 
 
 % -----------------------------------------------------------------------------
-% Every option answers exactly one issue. The options that answer
-% an issue are its alternatives.
+% Every option answers exactly one decision. The options that answer
+% a decision are its alternatives.
 %
 % decl answer_count(option: symbol,
-%                   issues:   number)
-% did  The option {option} answers {issues} issues, not 1.
-% fix  Give the option one edge of r_is_option_for, to the issue it answers.
+%                   decisions:   number)
+% did  The option {option} answers {decisions} decisions, not 1.
+% fix  Give the option one edge of r_is_option_for, to the decision it answers.
 #show answer_count/2.
 
-answer_count(Option, Issues) :-
+answer_count(Option, Decisions) :-
     type_of(Option, "t_option"),
-    Issues = #count { Issue : primary_edge(Option, "r_is_option_for", Issue) },
-    Issues != 1.
+    Decisions = #count { Decision : primary_edge(Option, "r_is_option_for", Decision) },
+    Decisions != 1.
 
 
 % -----------------------------------------------------------------------------
@@ -529,65 +529,65 @@ determination_without_option(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% A determination settles the options of one issue.
+% A determination settles the options of one decision.
 %
-% decl determination_across_issues(determination: symbol,
-%                                  issue:         symbol,
+% decl determination_across_decisions(determination: symbol,
+%                                  decision:         symbol,
 %                                  other:         symbol)
 % did  The determination {determination} settles options of both
-%      {issue} and {other}.
-% fix  Settle each issue with a determination of its own.
-#show determination_across_issues/3.
+%      {decision} and {other}.
+% fix  Settle each decision with a determination of its own.
+#show determination_across_decisions/3.
 
-determination_across_issues(Determination, Issue, Other) :-
+determination_across_decisions(Determination, Decision, Other) :-
     type_of(Determination, "t_determination"),
-    issue_of(Determination, Issue),
-    issue_of(Determination, Other),
-    Issue < Other.
+    decision_of(Determination, Decision),
+    decision_of(Determination, Other),
+    Decision < Other.
 
 
 % -----------------------------------------------------------------------------
-% An issue is about logical components, since their drivers say which
-% concerns must be argued before an option of the issue is settled.
-% An issue about anything else would escape that check.
+% A decision is about logical components, since their drivers say which
+% concerns must be argued before an option of the decision is settled.
+% A decision about anything else would escape that check.
 %
-% decl issue_about_non_component(issue:  symbol,
+% decl decision_about_non_component(decision:  symbol,
 %                                target: symbol,
 %                                type:   symbol)
-% did  The issue {issue} is about {target}, of {type}, which is not a
+% did  The decision {decision} is about {target}, of {type}, which is not a
 %      logical component.
-% fix  Make the issue about the logical component whose design it
+% fix  Make the decision about the logical component whose design it
 %      decides.
-#show issue_about_non_component/3.
+#show decision_about_non_component/3.
 
-issue_about_non_component(Issue, Target, Type) :-
-    type_of(Issue, "t_issue"),
-    primary_edge(Issue, "r_is_about", Target),
+decision_about_non_component(Decision, Target, Type) :-
+    type_of(Decision, "t_decision"),
+    primary_edge(Decision, "r_is_about", Target),
     type_of(Target, Type),
     Type != "t_logical_component".
 
 
 % -----------------------------------------------------------------------------
-% An annotation argues within its issue: what it supports or challenges
-% belongs to the same issue as it does.
+% An annotation argues within its decision: what it supports or challenges
+% belongs to the same decision as it does.
 %
-% decl argument_across_issues(annotation: symbol,
-%                             issue:      symbol,
+% decl argument_across_decisions(annotation: symbol,
+%                             decision:      symbol,
 %                             target:     symbol,
 %                             other:      symbol)
-% did  The annotation {annotation} of {issue} argues with {target}, of
+% did  The annotation {annotation} of {decision} argues with {target}, of
 %      {other}.
-% fix  Argue within one issue: point the edge at an item of the same
-%      issue, or move the annotation to the issue it argues.
-#show argument_across_issues/4.
+% fix  Argue within one decision: point the edge at an item of the same
+%      decision, or move the annotation to the decision it argues.
+#show argument_across_decisions/4.
 
-argument_across_issues(Annotation, Issue, Target, Other) :-
+argument_across_decisions(Annotation, Decision, Target, Other) :-
     type_of(Annotation, "t_annotation"),
     primary_edge(Annotation, Relation, Target),
     argues(Relation),
-    issue_of(Annotation, Issue),
-    issue_of(Target, Other),
-    Issue != Other.
+    decision_of(Annotation, Decision),
+    decision_of(Target, Other),
+    Decision != Other.
 
 
 % -----------------------------------------------------------------------------
@@ -616,43 +616,43 @@ supersession_across_types(Source, Target) :-
 
 
 % -----------------------------------------------------------------------------
-% An issue has at most one determination. A change of ruling edits it in
+% A decision has at most one determination. A change of ruling edits it in
 % place, and the history of the ruling is the history of its file.
 %
-% decl competing_determinations(issue:         symbol,
+% decl competing_determinations(decision:         symbol,
 %                               determination: symbol,
 %                               other:         symbol)
-% did  The issue {issue} has two determinations, {determination} and
+% did  The decision {decision} has two determinations, {determination} and
 %      {other}.
 % fix  Keep one determination and edit it in place when the ruling
 %      changes. Git keeps the history of the ruling.
 #show competing_determinations/3.
 
-competing_determinations(Issue, Determination, Other) :-
+competing_determinations(Decision, Determination, Other) :-
     type_of(Determination, "t_determination"),
     type_of(Other, "t_determination"),
-    issue_of(Determination, Issue),
-    issue_of(Other, Issue),
+    decision_of(Determination, Decision),
+    decision_of(Other, Decision),
     Determination < Other.
 
 
 % -----------------------------------------------------------------------------
-% The option, or an alternative to it that answers the same issue,
+% The option, or an alternative to it that answers the same decision,
 % has an annotation that supports or challenges it for the concern.
 %
 % decl argued(option: symbol,
 %             concern:  symbol)
 
 argued(Option, Concern) :-
-    primary_edge(Option, "r_is_option_for", Issue),
-    primary_edge(Other, "r_is_option_for", Issue),
+    primary_edge(Option, "r_is_option_for", Decision),
+    primary_edge(Other, "r_is_option_for", Decision),
     practical(Id),
     primary_edge(Id, "r_supports", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
 
 argued(Option, Concern) :-
-    primary_edge(Option, "r_is_option_for", Issue),
-    primary_edge(Other, "r_is_option_for", Issue),
+    primary_edge(Option, "r_is_option_for", Decision),
+    primary_edge(Other, "r_is_option_for", Decision),
     practical(Id),
     primary_edge(Id, "r_challenges", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
@@ -660,7 +660,7 @@ argued(Option, Concern) :-
 
 % -----------------------------------------------------------------------------
 % A determination upholds an option only once every concern that
-% drives the subject of its issue has been argued, for it or for an
+% drives the subject of its decision has been argued, for it or for an
 % alternative to it. It may reject an option at any time, since a
 % rejection commits the subject to nothing.
 %
@@ -671,14 +671,14 @@ argued(Option, Concern) :-
 %      {concern}, a driver, for it or an alternative to it.
 % fix  Add an annotation for that concern to the option or an
 %      alternative, or leave the option open. Do not uphold an
-%      option while a driver of its issue is unargued.
+%      option while a driver of its decision is unargued.
 #show unargued_driver/3.
 
 unargued_driver(Determination, Option, Concern) :-
     type_of(Determination, "t_determination"),
     primary_edge(Determination, "r_upholds", Option),
-    primary_edge(Option, "r_is_option_for", Issue),
-    primary_edge(Issue, "r_is_about", Subject),
+    primary_edge(Option, "r_is_option_for", Decision),
+    primary_edge(Decision, "r_is_about", Subject),
     primary_edge(Subject, "r_is_driven_by", Concern),
     not argued(Option, Concern).
 

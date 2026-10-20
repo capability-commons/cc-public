@@ -11,22 +11,22 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Argument of an issue
+title:                  Argument of a decision
 brief:                  |
                         Read the items of a tree, and gather on each
-                        issue the options, annotations and
+                        decision the options, annotations and
                         determinations that make its argument.
 description:            |
                         Graph reads every item in a tree, with its
                         title, brief, description and edges as
-                        written. Graph.issue gathers an issue: the
-                        options that answer it, the annotations about
-                        it, the determinations that settle its
+                        written. Graph.decision gathers a decision:
+                        the options that answer it, the annotations
+                        about it, the determinations that settle its
                         options, and the driver concerns of its
                         subject. The standing of each option, upheld,
                         rejected or open, follows from the
-                        determination of the issue, of which there is
-                        at most one.
+                        determination of the decision, of which there
+                        is at most one.
 relation:               []
 
 ...
@@ -50,7 +50,7 @@ KEY_RELATION      = 'relation'
 KEY_ID_RELATION   = 'id_relation'
 KEY_ID_TARGET     = 'id_target'
 
-PREFIX_ISSUE      = 'iss_'
+PREFIX_DECISION   = 'dec_'
 PREFIX_OPTION     = 'opt_'
 PREFIX_ANNOTATION = 'ann_'
 
@@ -99,9 +99,9 @@ class Item:
 
 # -----------------------------------------------------------------------------
 @dataclasses.dataclass
-class Issue:
+class Decision:
     """
-    An issue and the argument gathered on it: the options that answer
+    A decision and the argument gathered on it: the options that answer
     it, the annotations about it, and the determinations that settle
     its options.
 
@@ -118,7 +118,7 @@ class Issue:
     # -------------------------------------------------------------------------
     def is_open(self) -> bool:
         """
-        Return True if no determination settles the issue.
+        Return True if no determination settles the decision.
 
         """
 
@@ -127,7 +127,7 @@ class Issue:
     # -------------------------------------------------------------------------
     def unspoken(self) -> list[str]:
         """
-        Return the driver concerns that no annotation on the issue
+        Return the driver concerns that no annotation on the decision
         argues for.
 
         """
@@ -228,32 +228,32 @@ class Graph:
         return sorted(self.map_mention.get(id_item, []))
 
     # -------------------------------------------------------------------------
-    def list_issue(self) -> list[Issue]:
+    def list_decision(self) -> list[Decision]:
         """
-        Return every issue in the tree, sorted by title.
+        Return every decision in the tree, sorted by title.
 
         """
 
-        list_id = [id_item for id_item in self.map_item if id_item.startswith(PREFIX_ISSUE)]
-        return sorted((self.issue(id_item) for id_item in list_id),
-                      key = lambda issue: issue.item.title.casefold())
+        list_id = [id_item for id_item in self.map_item if id_item.startswith(PREFIX_DECISION)]
+        return sorted((self.decision(id_item) for id_item in list_id),
+                      key = lambda decision: decision.item.title.casefold())
 
     # -------------------------------------------------------------------------
-    def issue(self, id_issue: str) -> Issue | None:
+    def decision(self, id_decision: str) -> Decision | None:
         """
-        Return the issue id_issue with its argument, or None if the tree
-        has no such issue.
+        Return the decision id_decision with its argument, or None if the tree
+        has no such decision.
 
         """
 
-        item = self.map_item.get(id_issue)
-        if item is None or not id_issue.startswith(PREFIX_ISSUE):
+        item = self.map_item.get(id_decision)
+        if item is None or not id_decision.startswith(PREFIX_DECISION):
             return None
 
-        list_option        = self._items(self.sources(R_IS_OPTION_FOR, id_issue))
+        list_option        = self._items(self.sources(R_IS_OPTION_FOR, id_decision))
         set_option         = {option.id for option in list_option}
         list_annotation    = self._items(id_item for id_item in
-                                         self.sources(R_IS_ABOUT, id_issue)
+                                         self.sources(R_IS_ABOUT, id_decision)
                                          if id_item.startswith(PREFIX_ANNOTATION))
         list_determination = self._items(
                                  {id_item
@@ -267,7 +267,7 @@ class Graph:
                               for annotation in list_annotation
                               for id_concern in annotation.targets(R_ARGUES_FOR)}
 
-        issue = Issue(item               = item,
+        decision = Decision(item               = item,
                       list_option        = list_option,
                       list_annotation    = list_annotation,
                       list_determination = list_determination,
@@ -275,14 +275,14 @@ class Graph:
                       map_stance         = {},
                       set_spoken         = set_spoken)
 
-        issue.map_stance = {option.id: STANCE_OPEN for option in list_option}
-        for determination in issue.list_determination:
+        decision.map_stance = {option.id: STANCE_OPEN for option in list_option}
+        for determination in decision.list_determination:
             for id_option in determination.targets(R_UPHOLDS):
-                issue.map_stance[id_option] = STANCE_UPHELD
+                decision.map_stance[id_option] = STANCE_UPHELD
             for id_option in determination.targets(R_REJECTS):
-                issue.map_stance[id_option] = STANCE_REJECTED
+                decision.map_stance[id_option] = STANCE_REJECTED
 
-        return issue
+        return decision
 
     # -------------------------------------------------------------------------
     def _items(self, iter_id: typing.Iterable[str]) -> list[Item]:

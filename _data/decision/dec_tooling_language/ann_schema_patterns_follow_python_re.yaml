@@ -1,0 +1,57 @@
+id_self:                ann_schema_patterns_follow_python_re
+guid_self:              ann_e49b1ad6d81c4df8ad02d36efe436476
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Python regex dialect in schema patterns
+brief:                  |
+                        The schemas are checked by a validator that
+                        reads each pattern with Python re, not with
+                        the ECMA-262 dialect that JSON Schema names.
+                        So the one-line title pattern accepts a title
+                        that ends in a newline.
+description:            |
+                        The schemas declare JSON Schema 2020-12
+                        (_data/schema/sch_trait_descriptive.yaml:1)
+                        and are validated with Draft202012Validator
+                        (src/cc_public/check/schema.py:56, 107). JSON
+                        Schema says pattern uses ECMA-262 syntax. The
+                        jsonschema library checks pattern with
+                        re.search (jsonschema 4.26.0, _keywords.py
+                        215-220). In Python re, $ also matches before
+                        a final newline; in ECMA-262 without the m
+                        flag it does not. The title pattern is
+                        ^[^\n]+$ (sch_trait_descriptive.yaml:35-42).
+                        Run on 2026-10-15: a block-scalar title loads
+                        as 'A title\n' and the validator accepts it;
+                        Node rejects the same string. The same $ form
+                        ends the patterns in sch_primitive.yaml:48,
+                        67, 101 and sch_commit.yaml:50. No item in
+                        _data has a block-scalar title today, so no
+                        present item is wrongly accepted. ASSUMPTION:
+                        the defect can be fixed inside Python, for
+                        example with a schema clause that forbids a
+                        newline, and the Rust jsonschema crate is not
+                        shown to follow ECMA-262 exactly either.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_tooling_language
+    guid_target:        dec_8d57c4200633466bb89ecb1704b6c61d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_tooling_in_python
+    guid_target:        opt_8eaef0ebb229483e99df8c23d8eb6e33
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

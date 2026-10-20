@@ -14,9 +14,10 @@ protective_mark:
 title:                  Review pages
 brief:                  |
                         Pages in a web browser for reviewing the
-                        issues of the tree and the argument on each.
+                        decisions of the tree and the argument on
+                        each.
 description:            |
-                        This package reads the issues, options,
+                        This package reads the decisions, options,
                         annotations and determinations of a tree, and
                         serves them as pages on this computer, set
                         after Tufte: serif text, a margin for notes,

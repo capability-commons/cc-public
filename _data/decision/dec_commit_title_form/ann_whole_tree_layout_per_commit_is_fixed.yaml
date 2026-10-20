@@ -1,0 +1,37 @@
+id_self:                ann_whole_tree_layout_per_commit_is_fixed
+guid_self:              ann_dcb1efc2787449db98e5ea53a42cbae3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit check layout now limited to changed files
+brief:                  |
+                        Commit 5acf7c2 "Change the commit check so
+                        that it lays out only files that differ"
+                        removes the layout of unchanged files from
+                        each commit check. At 360ec14 only the parse
+                        of both whole trees still costs the same for a
+                        small commit as for a large one.
+description:            |
+                        src/cc_public/commit/change.py lines 129-146
+                        at 360ec14 lay out only files whose bytes
+                        differ; lines 115-116 still extract both whole
+                        trees, the YAML parsing that the verifier's
+                        profile found to take most of the time. Not
+                        re-measured at 360ec14.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commit_title_form
+    guid_target:        dec_20fd8d51cfaa4f52be42ba3284ad918d
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_whole_tree_check_cost_per_commit
+    guid_target:        ann_605cc5728f5a41e28c6305861074be41

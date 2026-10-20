@@ -13,10 +13,10 @@ protective_mark:
 
 title:                  Review page browser tests
 brief:                  |
-                        Tests of how the issue page lights its chains,
-                        in a browser.
+                        Tests of how the decision page lights its
+                        chains, in a browser.
 description:            |
-                        Each test opens the page of an issue in
+                        Each test opens the page of a decision in
                         Chromium, through Playwright, with every
                         request answered by the server's own respond
                         so no port is opened, then hovers over or
@@ -45,8 +45,8 @@ import cc_public.web.server
 
 pytestmark = pytest.mark.slow
 
-URL_BASE   = 'http://review.test'
-ID_ISSUE   = 'iss_tooling_language'
+URL_BASE    = 'http://review.test'
+ID_DECISION = 'dec_tooling_language'
 
 # For a chain called name, the marks in each region it reaches that are
 # out of step with it: dimmed, faded or muted although in the chain, or
@@ -83,7 +83,7 @@ JS_ASTRAY = '''
 @pytest.fixture
 def page(tree):
     """
-    Return a browser page on the issue, its graph unfolded, answered
+    Return a browser page on the decision, its graph unfolded, answered
     from the copy of the repository at tree.
 
     """
@@ -104,7 +104,7 @@ def page(tree):
             pytest.skip('no browser for Playwright (pixi run browsers): {e}'.format(e = error))
         page = browser.new_page(viewport = {'width': 1400, 'height': 1100})
         page.route(URL_BASE + '/**', answer)
-        page.goto('{base}/issue/{id}'.format(base = URL_BASE, id = ID_ISSUE))
+        page.goto('{base}/decision/{id}'.format(base = URL_BASE, id = ID_DECISION))
         page.add_style_tag(content = '* { transition: none !important; }')
         page.locator('details.diagram.network > summary').click()
         page.mouse.move(1, 1)
@@ -203,8 +203,8 @@ def test_clicking_an_annotation_in_the_graph_pins_it_in_place(page):
                "e => e.style.getPropertyValue('--brace-left').startsWith('url(')")
 
 
-def test_the_folding_of_each_diagram_is_kept_from_issue_to_issue(page):
+def test_the_folding_of_each_diagram_is_kept_from_decision_to_decision(page):
     page.locator('details.diagram.sankey > summary').click()
-    page.goto('{base}/issue/{id}'.format(base = URL_BASE, id = 'iss_cross_item_checks_engine'))
+    page.goto('{base}/decision/{id}'.format(base = URL_BASE, id = 'dec_cross_item_checks_engine'))
     assert page.locator('details.diagram.network').evaluate('e => e.open')
     assert not page.locator('details.diagram.sankey').evaluate('e => e.open')

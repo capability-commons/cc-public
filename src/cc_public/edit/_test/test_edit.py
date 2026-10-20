@@ -51,10 +51,10 @@ TEXT_RIGHTS   = ('copyright:              Copyright 2026 William Payne\n'
                  '\n'
                  '  - id_mark:            mark_public\n'
                  '    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f\n')
-# A logical component with no drivers, for an issue to be about.
+# A logical component with no drivers, for a decision to be about.
 #
 NEW_SUBJECT   = {'new': 'lc_x', 'field': {'title': 'Subject',
-                                          'brief': 'A logical component for an issue.'}}
+                                          'brief': 'A logical component for a decision.'}}
 FIELD_ANN     = {'title': 'Edits work',
                  'brief': 'The editing commands keep the tree free of new failures, '
                           'whatever they change.'}
@@ -103,9 +103,9 @@ def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
     monkeypatch.setattr(pathlib.Path, 'write_text', _refuse)
     with pytest.raises(cc_public.edit.edit.ErrorEdit, match = 'nothing was changed'):
         _edit(tree, NEW_SUBJECT,
-                    {'new': 'iss_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'lc_x']]},
-                    {'new': 'opt_x', 'field': FIELD_ANN, 'link': [['r_is_option_for', 'iss_x']]})
-    assert [path for path in (tree / '_data/issue/iss_x').rglob('*') if path.is_file()] == []
+                    {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'lc_x']]},
+                    {'new': 'opt_x', 'field': FIELD_ANN, 'link': [['r_is_option_for', 'dec_x']]})
+    assert [path for path in (tree / '_data/decision/dec_x').rglob('*') if path.is_file()] == []
     assert list(tree.rglob('*' + cc_public.edit.edit.SUFFIX_STAGED)) == []
 
 
@@ -317,18 +317,18 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
         tree / '_data/register/reg_data_item_type.yaml').read_text()
 
 
-def test_rename_of_an_issue_moves_its_folder(tree):
+def test_rename_of_a_decision_moves_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
-                       {'new': 'iss_x', 'field': FIELD_ANN,
+                       {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'lc_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
-                        'link': [['r_is_option_for', 'iss_x']]}) == {}
-    assert _edit(tree, {'rename': ['iss_x', 'iss_y']}) == {}
-    assert sorted(path.name for path in (tree / '_data/issue/iss_y').iterdir()) == [
-        'iss_y.yaml', 'opt_x.yaml']
-    assert not (tree / '_data/issue/iss_x').exists() or not any(
-        (tree / '_data/issue/iss_x').iterdir())
-    assert 'id_target:          iss_y\n' in (tree / '_data/issue/iss_y/opt_x.yaml').read_text()
+                        'link': [['r_is_option_for', 'dec_x']]}) == {}
+    assert _edit(tree, {'rename': ['dec_x', 'dec_y']}) == {}
+    assert sorted(path.name for path in (tree / '_data/decision/dec_y').iterdir()) == [
+        'dec_y.yaml', 'opt_x.yaml']
+    assert not (tree / '_data/decision/dec_x').exists() or not any(
+        (tree / '_data/decision/dec_x').iterdir())
+    assert 'id_target:          dec_y\n' in (tree / '_data/decision/dec_y/opt_x.yaml').read_text()
 
 
 def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
@@ -340,40 +340,40 @@ def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
 
 def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
     assert _edit(tree, NEW_SUBJECT,
-                       {'new': 'iss_x', 'field': FIELD_ANN,
+                       {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'lc_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
-                        'link': [['r_is_option_for', 'iss_x']]},
+                        'link': [['r_is_option_for', 'dec_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'opt_x']]}) == {}
     assert _edit(tree, {'rename': ['opt_x', 'opt_y']}) == {}
-    assert not (tree / '_data/issue/iss_x/opt_x.yaml').exists()
-    assert 'id_self:                opt_y\n' in (tree / '_data/issue/iss_x/opt_y.yaml').read_text()
+    assert not (tree / '_data/decision/dec_x/opt_x.yaml').exists()
+    assert 'id_self:                opt_y\n' in (tree / '_data/decision/dec_x/opt_y.yaml').read_text()
     assert 'id_target:          opt_y\n' in (tree / '_data/annotation/ann_x.yaml').read_text()
 
 
-def test_new_writes_the_items_of_an_issue_in_its_folder(tree):
+def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
-                       {'new': 'iss_x', 'field': FIELD_ANN,
+                       {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'lc_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
-                        'link': [['r_is_option_for', 'iss_x']]},
+                        'link': [['r_is_option_for', 'dec_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'iss_x']]},
+                        'link': [['r_is_about', 'dec_x']]},
                        {'new': 'det_x', 'field': FIELD_ANN,
                         'link': [['r_upholds', 'opt_x']]}) == {}
-    assert sorted(path.name for path in (tree / '_data/issue/iss_x').iterdir()) == [
-        'ann_x.yaml', 'det_x.yaml', 'iss_x.yaml', 'opt_x.yaml']
+    assert sorted(path.name for path in (tree / '_data/decision/dec_x').iterdir()) == [
+        'ann_x.yaml', 'dec_x.yaml', 'det_x.yaml', 'opt_x.yaml']
 
 
-def test_new_follows_an_edge_to_an_issue_made_later_in_the_batch(tree):
+def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
     assert _edit(tree, NEW_SUBJECT,
-                       {'new': 'iss_x', 'field': FIELD_ANN,
+                       {'new': 'dec_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'lc_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN},
-                       {'link': ['ann_x', 'r_is_about', 'iss_x']}) == {}
-    assert sorted(path.name for path in (tree / '_data/issue/iss_x').iterdir()) == [
-        'ann_x.yaml', 'iss_x.yaml']
+                       {'link': ['ann_x', 'r_is_about', 'dec_x']}) == {}
+    assert sorted(path.name for path in (tree / '_data/decision/dec_x').iterdir()) == [
+        'ann_x.yaml', 'dec_x.yaml']
     assert not (tree / '_data/annotation/ann_x.yaml').exists()
 
 

@@ -1,0 +1,65 @@
+id_self:                ann_condition_date_is_prose_no_check_reads
+guid_self:              ann_e555c5b4920843c99a81e8d50801d9dc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Date of a condition held only in prose
+brief:                  |
+                        The date and source of a condition live only
+                        in its brief, and no check reads them. The
+                        graph cannot list stale conditions, so
+                        re-measuring depends on a person noticing.
+description:            |
+                        An annotation has no time field
+                        (_data/schema/sch_annotation.yaml lines
+                        29-31). The date, machine and tree size of
+                        ann_gate_takes_a_minute are in its brief
+                        (lines 12-15). No relation links an annotation
+                        to a commit or a run
+                        (_data/register/reg_relation.yaml lines
+                        64-464). No rule in
+                        src/cc_public/check/check.lp reads a date or
+                        an unanswered challenge; r_challenges appears
+                        only at lines 434 and 562. The gate time moved
+                        between about 2 min and about 75s on
+                        2026-10-14 (memory/MEMORY.md lines 45, 47,
+                        54), and no item challenges
+                        ann_gate_takes_a_minute. No check output
+                        changed for the determination of 6c0a949 when
+                        86df114 challenged
+                        ann_each_evaluation_pays_a_fixed_cost, an
+                        argument in the same issue (the determination
+                        names no premises). ASSUMPTION: re-measuring
+                        is manual work.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_changing_conditions_in_arguments
+    guid_target:        dec_9903cef4ae774728afab94a9fcfe9ab2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_dated_condition_annotation
+    guid_target:        opt_7ecc470ca0c74e72b03872dfd0d01807
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

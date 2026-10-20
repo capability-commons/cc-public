@@ -62,14 +62,14 @@ def test_obsidian_writes_a_note_for_each_item_with_wikilinks(tree, tmp_path):
     dir_out = tmp_path / 'vault'
     result  = _run(tree, 'obsidian', str(dir_out))
     assert result.exit_code == 0
-    text = (dir_out / 'issue' / 'iss_tooling_language.md').read_text()
-    assert _frontmatter(text)[:5] == ['type: "t_issue"',
+    text = (dir_out / 'decision' / 'dec_tooling_language.md').read_text()
+    assert _frontmatter(text)[:5] == ['type: "t_decision"',
                                       'title: "Language of the tooling"',
                                       'aliases: ["Language of the tooling"]',
-                                      'tags: ["issue"]',
-                                      'id: "iss_tooling_language"']
+                                      'tags: ["decision"]',
+                                      'id: "dec_tooling_language"']
     assert '# Language of the tooling\n' in text
-    assert '- This issue makes its assertion about [[lc_tooling|Tooling]].\n' in text
+    assert '- This decision makes its assertion about [[lc_tooling|Tooling]].\n' in text
 
 
 def test_obsidian_links_a_dotted_id_by_its_file():
@@ -92,14 +92,14 @@ def test_okf_bundle_is_conformant(tree, tmp_path):
 def test_okf_concept_links_from_the_root_of_the_bundle(tree, tmp_path):
     dir_out = tmp_path / 'bundle'
     _run(tree, 'okf', str(dir_out))
-    text = (dir_out / 'issue' / 'iss_tooling_language.md').read_text()
-    assert _frontmatter(text)[:3] == ['type: "Issue"',
+    text = (dir_out / 'decision' / 'dec_tooling_language.md').read_text()
+    assert _frontmatter(text)[:3] == ['type: "Decision"',
                                       'title: "Language of the tooling"',
                                       'description: "In which programming language should '
                                       'the tooling be written?"']
     assert '[Tooling](/logical_component/lc_tooling.md)' in text
-    index = (dir_out / 'issue' / 'index.md').read_text()
-    assert ('* [Language of the tooling](iss_tooling_language.md) - In which programming '
+    index = (dir_out / 'decision' / 'index.md').read_text()
+    assert ('* [Language of the tooling](dec_tooling_language.md) - In which programming '
             'language should the tooling be written?') in index
 
 
@@ -123,4 +123,4 @@ def test_replace_removes_old_pages_and_keeps_other_files(tree, tmp_path):
     assert result.exit_code == 0
     assert (dir_out / '.obsidian' / 'app.json').read_text() == '{}\n'
     assert not (dir_out / 'gone').exists()
-    assert (dir_out / 'issue' / 'iss_tooling_language.md').exists()
+    assert (dir_out / 'decision' / 'dec_tooling_language.md').exists()

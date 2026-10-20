@@ -1,0 +1,44 @@
+id_self:                ann_agent_directories_admit_any_file
+guid_self:              ann_4afa135055e449c595513bc0fce338bb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Agent directories open to any file type
+brief:                  |
+                        The whitelist admits every file under .agents/
+                        and .claude/, so third-party skills or plugins
+                        copied there are tracked as readily as under a
+                        blacklist.
+description:            |
+                        Rules `!/.agents/**` and `!/.claude/**`
+                        (repo/.gitignore lines 60-61). git
+                        check-ignore -v reports
+                        .agents/skills/x/run.js and
+                        .claude/plugins/x/LICENSE as tracked
+                        (hypothetical paths, 2026-10-15). Tracked
+                        agent material today is one skill written here
+                        and a symlink (git ls-files .agents .claude).
+                        ASSUMPTION: the project may later take skills
+                        or plugins from others.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_ignore_file_policy
+    guid_target:        dec_f52bbfa6bb704e53a0538320bb3cd34c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_whitelist_gitignore
+    guid_target:        opt_ca42f8b1bd5d4040b15ef444ac8b6605
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

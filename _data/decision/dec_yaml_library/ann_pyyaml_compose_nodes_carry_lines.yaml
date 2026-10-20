@@ -1,0 +1,43 @@
+id_self:                ann_pyyaml_compose_nodes_carry_lines
+guid_self:              ann_cb4f8d92378548eeb2de571e268ea95e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  PyYAML nodes also carry source lines
+brief:                  |
+                        PyYAML also records line and column, on every
+                        node that yaml.compose returns. What it lacks
+                        is positions on the loaded Python values,
+                        which ruamel.yaml keeps through .lc.
+description:            |
+                        yaml.compose returns nodes whose start_mark
+                        and end_mark hold line and column. Local tests
+                        with PyYAML 6.0.1 and 6.0.2 on 2026-10-15:
+                        composing "a:\n b: 1\n c: [x, y]\n" gives key
+                        a at line 0 and keys b and c at lines 1 and 2.
+                        yaml.safe_load returns plain dict, list and
+                        str with no position. Sources:
+                        https://pyyaml.org/wiki/PyYAMLDocumentation
+                        (Nodes and Marks); pyyaml lib/yaml/nodes.py
+                        lines 1-6 and error.py lines 3-11. The owner
+                        asked at the time whether his information was
+                        out of date. Raised by the dependency risk,
+                        maintainability, performance and reliability
+                        advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_ruamel_lines_trace_fields_to_files
+    guid_target:        ann_72287f8af9564ebbafed91c9a1626935

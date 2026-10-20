@@ -13,8 +13,8 @@ protective_mark:
 
 title:                  Sankey diagram of an argument
 brief:                  |
-                        Draw the weight of the argument on an issue as
-                        a Sankey diagram, from its options to the
+                        Draw the weight of the argument on a decision
+                        as a Sankey diagram, from its options to the
                         concerns argued on them.
 description:            |
                         A unit of weight is one annotation arguing for
@@ -75,7 +75,7 @@ MARK_OPEN         = '▾'
 MARK_CLOSED       = '▸'
 
 Graph             = cc_public.web.argument.Graph
-Issue             = cc_public.web.argument.Issue
+Decision          = cc_public.web.argument.Decision
 
 
 # -----------------------------------------------------------------------------
@@ -146,15 +146,15 @@ def figure(graph:      Graph,
 
 
 # -----------------------------------------------------------------------------
-def units(issue: Issue) -> list[Unit]:
+def units(decision: Decision) -> list[Unit]:
     """
-    Return the units of weight of the argument on issue.
+    Return the units of weight of the argument on decision.
 
     """
 
-    set_option = {option.id for option in issue.list_option}
+    set_option = {option.id for option in decision.list_option}
     return [Unit(id_target, id_concern, annotation.id, role)
-            for annotation in issue.list_annotation
+            for annotation in decision.list_annotation
             for (id_relation, role) in MAP_ROLE.items()
             for id_target in annotation.targets(id_relation)
             if id_target in set_option
@@ -162,27 +162,27 @@ def units(issue: Issue) -> list[Unit]:
 
 
 # -----------------------------------------------------------------------------
-def ordered_options(issue: Issue) -> list[cc_public.web.argument.Item]:
+def ordered_options(decision: Decision) -> list[cc_public.web.argument.Item]:
     """
-    Return the options of issue from most supported to most opposed:
+    Return the options of decision from most supported to most opposed:
     by the share of their weight that supports them, then by how much
     supports them.
 
     """
 
-    list_unit = units(issue)
+    list_unit = units(decision)
 
     def key(option: cc_public.web.argument.Item) -> tuple:
         list_own = [unit for unit in list_unit if unit.option == option.id]
         return (lean(list_own), -sum(1 for unit in list_own if unit.is_for()), option.id)
 
-    return sorted(issue.list_option, key = key)
+    return sorted(decision.list_option, key = key)
 
 
 # -----------------------------------------------------------------------------
 class Outline:
     """
-    The order in which the diagram shows the argument on an issue, and
+    The order in which the diagram shows the argument on a decision, and
     the numbers of its annotations.
 
     The concerns run from most supportive to most opposed, then drivers
@@ -195,21 +195,21 @@ class Outline:
     """
 
     # -------------------------------------------------------------------------
-    def __init__(self, graph: Graph, issue: Issue) -> None:
+    def __init__(self, graph: Graph, decision: Decision) -> None:
         """
-        Order the argument on issue.
+        Order the argument on decision.
 
         """
 
-        self.issue         = issue
-        self.list_unit     = units(issue)
-        self.list_option   = [option.id for option in ordered_options(issue)]
+        self.decision      = decision
+        self.list_unit     = units(decision)
+        self.list_option   = [option.id for option in ordered_options(decision)]
 
-        map_annotation = {annotation.id: annotation for annotation in issue.list_annotation}
+        map_annotation = {annotation.id: annotation for annotation in decision.list_annotation}
         self.map_title = {id_item: item.title for (id_item, item) in map_annotation.items()}
 
         self.map_answer = {}
-        for annotation in issue.list_annotation:
+        for annotation in decision.list_annotation:
             for (id_relation, role) in MAP_ROLE.items():
                 for id_target in annotation.targets(id_relation):
                     if id_target in map_annotation:
@@ -222,9 +222,9 @@ class Outline:
         self.list_concern = (sorted(set_argued,
                                     key = lambda id_concern: (
                                               lean(self.units(concern = id_concern)),
-                                              id_concern not in issue.list_driver,
+                                              id_concern not in decision.list_driver,
                                               graph.title(id_concern)))
-                             + [id_concern for id_concern in issue.list_driver
+                             + [id_concern for id_concern in decision.list_driver
                                 if id_concern not in set_argued])
 
         self.map_annotation = {id_concern: self._annotations(id_concern)
@@ -234,7 +234,7 @@ class Outline:
         for id_concern in self.list_concern:
             for id_annotation in self.map_annotation[id_concern]:
                 self._number(id_annotation, set())
-        self.list_other = [annotation.id for annotation in issue.list_annotation
+        self.list_other = [annotation.id for annotation in decision.list_annotation
                            if annotation.id not in self.map_number]
         for id_annotation in self.list_other:
             self._number(id_annotation, set())
@@ -341,7 +341,7 @@ class _Drawing:
 
         self.graph         = graph
         self.outline       = outline
-        self.issue         = outline.issue
+        self.decision      = outline.decision
         self.map_number    = outline.map_number
         self.map_title     = outline.map_title
         self.list_option   = outline.list_option
@@ -384,7 +384,7 @@ class _Drawing:
         map_top = {}
         y       = top
 
-        for option in ordered_options(self.issue):
+        for option in ordered_options(self.decision):
             list_unit   = self._units(option = option.id)
             count_for   = sum(1 for unit in list_unit if unit.is_for())
             count_total = len(list_unit)
@@ -403,7 +403,7 @@ class _Drawing:
             if not count_total:
                 self._bar(LIST_X[0], y, 2, 'none', list_css)
 
-            stance    = self.issue.map_stance[option.id]
+            stance    = self.decision.map_stance[option.id]
             list_line = _lines_option(option.title)
             top_text  = y + height / 2 - 2 - LINE_OPTION * (len(list_line) - 1) / 2
             name      = cc_public.web.light.chain(option.id)
@@ -466,14 +466,14 @@ class _Drawing:
             height    = self._height(list_unit)
             map_top[id_concern] = y
 
-            css      = 'concern' if id_concern in self.issue.list_driver else 'concern other'
+            css      = 'concern' if id_concern in self.decision.list_driver else 'concern other'
             list_css = self.css_concern(id_concern)
             if list_unit:
                 list_css = [*list_css,
                             cc_public.web.light.show(cc_public.web.light.chain(id_concern))]
             css      = ' '.join([css, cc_public.web.light.CSS_DIMS] + list_css)
             title    = self.graph.title(id_concern)
-            self._bar(LIST_X[1], y, height, 'driver' if id_concern in self.issue.list_driver
+            self._bar(LIST_X[1], y, height, 'driver' if id_concern in self.decision.list_driver
                                             else 'other', list_css)
 
             if not list_unit:

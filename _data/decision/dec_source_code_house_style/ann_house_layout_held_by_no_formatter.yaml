@@ -1,0 +1,53 @@
+id_self:                ann_house_layout_held_by_no_formatter
+guid_self:              ann_79b32db201e2473fabace1d3fcb79f06
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout held by no third-party formatter
+brief:                  |
+                        Under the house style no third-party formatter
+                        writes the layout, so a change to a
+                        formatter's stable style cannot rewrite the
+                        code, while the common style hands the layout
+                        to a tool whose style may change in a minor
+                        release.
+description:            |
+                        Sources: pyproject.toml line 66 (lint task
+                        runs "ruff check src" only);
+                        src/cc_public/gate/gate.py line 65; no "ruff
+                        format" or black call in the repository at
+                        89c74d8; ruff makes a minor release when "the
+                        stable style changed"
+                        (https://docs.astral.sh/ruff/versioning/);
+                        ruff pinned ">=0.16.6,<0.17" (pyproject.toml
+                        line 61) and locked at 0.16.10 (pixi.lock line
+                        42). ASSUMPTION: ruff format and black remove
+                        the aligned columns, so neither can produce
+                        the house style.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_owner_house_style
+    guid_target:        opt_32967fa061284625ad986014b37cb5b9
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_common_python_style
+    guid_target:        opt_65167a99d43a45e8bdee55aa42ef5463
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

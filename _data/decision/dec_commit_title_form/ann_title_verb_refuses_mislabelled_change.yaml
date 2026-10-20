@@ -1,0 +1,60 @@
+id_self:                ann_title_verb_refuses_mislabelled_change
+guid_self:              ann_18ae7ad847d54c45970c9d68e804c394
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verb checks against the change
+brief:                  |
+                        Because the verb comes from a closed list, the
+                        commit check can refuse a commit whose change
+                        contradicts its verb, such as an Add that
+                        removes an item or a Reformat that changes
+                        content. Reader and record can trust the kind
+                        of change before reading the diff.
+description:            |
+                        change.py line 120 takes the first word of the
+                        title as the commit verb. change.lp lines
+                        176-183 forbid, per verb, kinds of change (Add
+                        may not remove or rename, Remove may not add
+                        or rename, Rename and Move may not add or
+                        remove), and lines 207-221 report a
+                        contradicted verb and a Reformat that changes
+                        content. Check added in 7520f91. cctool
+                        history check runs it on every pushed commit
+                        however it was made (README.md lines 56-60;
+                        history.py lines 16-31). sch_commit lines
+                        80-82 and reg_writing_style_rule lines 436-439
+                        give this as the purpose of the closed list.
+                        Holds for the five checked verbs only.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commit_title_form
+    guid_target:        dec_20fd8d51cfaa4f52be42ba3284ad918d
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_imperative_from_templates
+    guid_target:        opt_4c8c8e6e49314c8da9db6b76f8172c17
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

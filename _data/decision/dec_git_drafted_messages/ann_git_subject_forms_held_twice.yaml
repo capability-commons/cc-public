@@ -1,0 +1,44 @@
+id_self:                ann_git_subject_forms_held_twice
+guid_self:              ann_12e50944ca194663bd23b1d509e9fb7c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Git subject forms held in two places
+brief:                  |
+                        The subject forms git drafts are written once
+                        in the sch_commit title pattern and again as
+                        regular expressions in message.py, so a new
+                        form must be added in both.
+description:            |
+                        _data/schema/sch_commit.yaml line 50;
+                        src/cc_public/commit/message.py lines 87-89.
+                        Before 4e6db4c the pattern held only Merge
+                        branch ... into ... and Revert "..."; the four
+                        other merge words and Reapply came with the
+                        hook, because it keeps git's subject (git show
+                        4e6db4c). ASSUMPTION: by hand, authors would
+                        use the one Merge branch form. Grows if squash
+                        or fixup drafts are later converted the same
+                        way.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_git_drafted_messages
+    guid_target:        dec_519395acf62e492a8163bfa6247e5964
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_prepare_commit_msg_converts
+    guid_target:        opt_a2e4758393894a3d841c8fe780d3f73d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

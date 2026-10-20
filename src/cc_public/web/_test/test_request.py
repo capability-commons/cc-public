@@ -35,11 +35,11 @@ import cc_public.web.request
 import cc_public.web.server
 
 
-ID_ISSUE         = 'iss_cross_item_checks_engine'
+ID_DECISION      = 'dec_cross_item_checks_engine'
 ID_UPHELD        = 'opt_cross_item_checks_in_clingo'
 ID_REJECTED      = 'opt_cross_item_checks_in_souffle'
 ID_DETERMINATION = 'det_cross_item_checks_engine'
-ID_OPEN          = 'iss_tooling_language'
+ID_OPEN          = 'dec_tooling_language'
 ID_ANNOTATION    = 'ann_clingo_is_slower_at_this_size'
 HOST             = '127.0.0.1:8100'
 
@@ -67,7 +67,7 @@ def test_an_id_is_made_from_the_title_in_whole_words():
     assert len(cc_public.web.request.slug('ann_', 'word ' * 30)) <= 4 + 48
 
 
-def test_an_option_answers_its_issue(tree):
+def test_an_option_answers_its_decision(tree):
     assert _operations(tree, kind = 'option', target = ID_OPEN,
                        title = 'Tooling in Go', brief = 'Write it in Go.') == [
         {'new':   'opt_tooling_in_go',
@@ -80,7 +80,7 @@ def test_an_argument_bears_on_its_option_and_argues_for_its_concerns(tree):
                               title = 'A', brief = 'B', id = 'ann_x',
                               concern = ['concern_cost', 'concern_simplicity'])
     assert operation['new'] == 'ann_x'
-    assert operation['link'] == [['r_is_about', ID_ISSUE],
+    assert operation['link'] == [['r_is_about', ID_DECISION],
                                  ['r_challenges', ID_UPHELD],
                                  ['r_argues_for_concern', 'concern_cost'],
                                  ['r_argues_for_concern', 'concern_simplicity']]
@@ -89,10 +89,10 @@ def test_an_argument_bears_on_its_option_and_argues_for_its_concerns(tree):
 def test_an_answer_bears_on_its_annotation_and_argues_for_no_concern(tree):
     [operation] = _operations(tree, kind = 'answer', target = ID_ANNOTATION, role = 'for',
                               title = 'A', brief = 'B', concern = 'concern_cost')
-    assert operation['link'] == [['r_is_about', ID_ISSUE], ['r_supports', ID_ANNOTATION]]
+    assert operation['link'] == [['r_is_about', ID_DECISION], ['r_supports', ID_ANNOTATION]]
 
 
-def test_to_uphold_changes_the_one_determination_of_the_issue(tree):
+def test_to_uphold_changes_the_one_determination_of_the_decision(tree):
     assert _operations(tree, kind = 'determine', target = ID_REJECTED, role = 'uphold',
                        reason = 'Because.') == [
         {'set':    [ID_DETERMINATION, 'brief', 'Because.']},
@@ -100,9 +100,9 @@ def test_to_uphold_changes_the_one_determination_of_the_issue(tree):
         {'link':   [ID_DETERMINATION, 'r_upholds', ID_REJECTED]}]
 
 
-def test_to_reject_an_open_issue_makes_its_determination(tree):
+def test_to_reject_an_open_decision_makes_its_determination(tree):
     graph = cc_public.web.argument.Graph(tree)
-    [id_option, *_] = [option.id for option in graph.issue(ID_OPEN).list_option]
+    [id_option, *_] = [option.id for option in graph.decision(ID_OPEN).list_option]
     assert _operations(tree, kind = 'determine', target = id_option, role = 'reject',
                        reason = 'Because.') == [
         {'new':   'det_tooling_language',
@@ -135,14 +135,14 @@ def test_a_form_from_another_site_is_refused(tree):
         assert status == http.HTTPStatus.FORBIDDEN
 
 
-def test_an_option_sent_is_written_in_its_issue(tree):
+def test_an_option_sent_is_written_in_its_decision(tree):
     (status, _, _, location) = _submit(tree, 'http://' + HOST, kind = 'option',
                                        target = ID_OPEN, title = 'Tooling in Go',
                                        brief = 'Write the tooling in Go.')
     assert status == http.HTTPStatus.SEE_OTHER
-    assert location == '/issue/{id}?to=opt_tooling_in_go#opt_tooling_in_go'.format(id = ID_OPEN)
-    issue = cc_public.web.argument.Graph(tree).issue(ID_OPEN)
-    assert 'opt_tooling_in_go' in [option.id for option in issue.list_option]
+    assert location == '/decision/{id}?to=opt_tooling_in_go#opt_tooling_in_go'.format(id = ID_OPEN)
+    decision = cc_public.web.argument.Graph(tree).decision(ID_OPEN)
+    assert 'opt_tooling_in_go' in [option.id for option in decision.list_option]
 
 
 def test_an_argument_without_a_concern_is_refused_and_writes_nothing(tree):
@@ -158,11 +158,11 @@ def test_an_uphold_sent_changes_the_determination_in_place(tree):
     (status, _, _, _) = _submit(tree, kind = 'determine', target = ID_REJECTED,
                                 role = 'uphold', reason = 'Both, for now.')
     assert status == http.HTTPStatus.SEE_OTHER
-    issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
-    assert [item.id for item in issue.list_determination] == [ID_DETERMINATION]
-    assert issue.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
-    assert issue.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
-    assert issue.list_determination[0].brief.strip() == 'Both, for now.'
+    decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
+    assert [item.id for item in decision.list_determination] == [ID_DETERMINATION]
+    assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
+    assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
+    assert decision.list_determination[0].brief.strip() == 'Both, for now.'
 
 
 def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):

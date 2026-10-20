@@ -1,0 +1,51 @@
+id_self:                ann_commit_check_needed_further_machinery
+guid_self:              ann_7967ac2b2ea34e15b29c2293df5e1d37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Further machinery and an exception for the check
+brief:                  |
+                        The graph check has already needed a drafting
+                        step for merge and revert messages and an
+                        exception for reverts in its rename rule.
+description:            |
+                        prepare-commit-msg drafting names each removed
+                        or renamed item "as the check of the commit
+                        requires" and runs the check to find them
+                        (src/cc_public/commit/message.py lines 31-37,
+                        167-177), added in 4e6db4c (330 lines, 8
+                        files). rename_without_alias exempts Revert
+                        and Reapply since a0a519f (change.lp lines
+                        159-165). The approach that a rule which keeps
+                        needing exceptions is fixed in the rule, not
+                        with more machinery, was the assistant's
+                        proposal (session transcript,
+                        2026-10-14T14:46:30Z), approved by Will at
+                        14:47:25Z ("OK. This feels like the wiser
+                        choice. Go ahead on that."). That proposal
+                        named the revert exemption as such a fix
+                        (memory/enforcement-approach.md). ASSUMPTION:
+                        more verb exceptions follow; only one has
+                        occurred so far.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -103,28 +103,28 @@ settles(Determination, Option) :-
 
 
 % -----------------------------------------------------------------------------
-% The item belongs to the issue: it is the issue, an option that
+% The item belongs to the decision: it is the decision, an option that
 % answers it, an annotation about it, or a determination that settles
 % an option that answers it.
 %
-% decl issue_of(id:    symbol,
-%               issue: symbol)
+% decl decision_of(id:    symbol,
+%               decision: symbol)
 
-issue_of(Id, Id) :-
-    type_of(Id, "t_issue").
+decision_of(Id, Id) :-
+    type_of(Id, "t_decision").
 
-issue_of(Id, Issue) :-
+decision_of(Id, Decision) :-
     type_of(Id, "t_option"),
-    primary_edge(Id, "r_is_option_for", Issue).
+    primary_edge(Id, "r_is_option_for", Decision).
 
-issue_of(Id, Issue) :-
+decision_of(Id, Decision) :-
     type_of(Id, "t_annotation"),
-    primary_edge(Id, "r_is_about", Issue),
-    type_of(Issue, "t_issue").
+    primary_edge(Id, "r_is_about", Decision),
+    type_of(Decision, "t_decision").
 
-issue_of(Id, Issue) :-
+decision_of(Id, Decision) :-
     settles(Id, Option),
-    issue_of(Option, Issue).
+    decision_of(Option, Decision).
 
 
 % -----------------------------------------------------------------------------

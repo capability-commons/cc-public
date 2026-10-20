@@ -66,8 +66,8 @@ EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
 EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
                      "{ ?id a cc:t_concern ; f:title ?title }'")
-EXAMPLE_TEXT      = 'cctool query text --issue "status field on an option"'
-EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/issue/\")) "
+EXAMPLE_TEXT      = 'cctool query text --decision "status field on an option"'
+EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/decision/\")) "
                      "| .document.id_self'")
 
 MAP_HINT          = {EXAMPLE_JQ:     HINT_JQ,
@@ -195,7 +195,7 @@ def datalog(text, path_file, root, limit, is_json, text_search, is_exact):
         out(Id) :- type_of(Id, "t_concern").'
       cctool query datalog --file query.lp
       cctool query datalog --text "status field" '#show out/2.
-        out(Id, Issue) :- text_hit(Id, _, Rank), Rank <= 10, issue_of(Id, Issue).'
+        out(Id, Decision) :- text_hit(Id, _, Rank), Rank <= 10, decision_of(Id, Decision).'
 
     """
 
@@ -256,7 +256,7 @@ def jq(text, path_file, root, limit, is_json):
     \b
     Examples:
       cctool query jq 'length'
-      cctool query jq '.[] | select(.file | startswith("_data/issue/"))
+      cctool query jq '.[] | select(.file | startswith("_data/decision/"))
         | .document.id_self'
       cctool query jq '[.[].document | objects | .title // empty]'
 
@@ -299,7 +299,7 @@ def sparql(text, path_file, root, limit, is_json):
     \b
     Examples:
       cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:t_concern ; f:title ?title }'
-      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:iss_licence }'
+      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:dec_licence }'
       cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
       cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:t_option }'
 
@@ -362,23 +362,23 @@ def schema():
 @click.option('--match', 'is_match',
               is_flag = True,
               help    = 'Read QUERY as an FTS5 match expression, such as "status NEAR field".')
-@click.option('--issue', 'is_issue',
+@click.option('--decision', 'is_decision',
               is_flag = True,
-              help    = 'Print one row for each issue, ranked by its best match.')
+              help    = 'Print one row for each decision, ranked by its best match.')
 @click.option('--exact', 'is_exact',
               is_flag = True,
               help    = 'Match the words of QUERY, not the terms of the concepts it names.')
-def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
+def text(text, path_file, root, limit, is_json, is_match, is_decision, is_exact):
     """
     Find the items whose prose matches the words of QUERY, best first.
 
     Each word is searched for in the title, brief, description and
     other prose of every item, stemmed, and an item that matches more
     of the words, or rarer ones, ranks higher (BM25). Each hit names
-    the issue it belongs to, the determination that settles that issue
+    the decision it belongs to, the determination that settles that decision
     and the options it upholds, the standing of an option (upheld,
     rejected or open), and the concerns an annotation argues for. With
-    --issue, each row is an issue, so that a hit on any part of an
+    --decision, each row is a decision, so that a hit on any part of an
     argument leads to how it was settled. Give the query as QUERY, as
     - to read it from stdin, or with --file.
 
@@ -390,7 +390,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
     \b
     Examples:
       cctool query text "status field on an option"
-      cctool query text --issue "checks engine"
+      cctool query text --decision "checks engine"
       cctool query text --match '"commit" NEAR "title"'
 
     """
@@ -402,9 +402,9 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
 
     try:
         (tuple_column, list_row) = cc_public.graph.text.search(facts, map_document, text,
-                                                               is_match  = is_match,
-                                                               is_issue  = is_issue,
-                                                               list_term = list_term)
+                                                               is_match    = is_match,
+                                                               is_decision = is_decision,
+                                                               list_term   = list_term)
     except (cc_public.graph.text.ErrorText, cc_public.graph.datalog.ErrorDatalog) as error:
         _fail(str(error), EXAMPLE_TEXT, HINT_TEXT)
 

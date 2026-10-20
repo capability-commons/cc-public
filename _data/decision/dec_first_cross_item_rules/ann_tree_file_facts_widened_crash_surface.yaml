@@ -1,0 +1,45 @@
+id_self:                ann_tree_file_facts_widened_crash_surface
+guid_self:              ann_35fb92d041f4435491907749108f5a92
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Wider crash surface from file facts
+brief:                  |
+                        The rules made every file name in the tree a
+                        fact. At the time one file name with a tab or
+                        a newline could stop the whole checker, and,
+                        once they were built, the edit layer and the
+                        gate.
+description:            |
+                        tree_file rows for every file read (fd6323a
+                        extract.py lines 128, 184-203). datalog.write
+                        raised ValueError on a tab or newline (fd6323a
+                        datalog.py lines 141-143), recorded as
+                        uncaught in cctool check (memory/MEMORY.md
+                        line 53). The edit layer (c4a8721) and gate
+                        (653e172) came on 2026-10-14. The clingo port
+                        escapes newlines (datalog.py line 79).
+                        ASSUMPTION: the recorded fault was reachable
+                        through tree_file.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_first_cross_item_rules
+    guid_target:        dec_9226ef2ca11b42e1b558831f156985b9
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_seven_proposed_rules
+    guid_target:        opt_42fca933cae545599fe9aac580953e78
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

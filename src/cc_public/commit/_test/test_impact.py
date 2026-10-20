@@ -36,9 +36,9 @@ import cc_public.cli.command
 import cc_public.commit.impact
 
 
-ISSUE      = '_data/issue/iss_tooling_language/'
+DECISION   = '_data/decision/dec_tooling_language/'
 ANN        = 'ann_a_port_costs_a_rewrite'
-FILE_ANN   = ISSUE + ANN + '.yaml'
+FILE_ANN   = DECISION + ANN + '.yaml'
 FILE_CHECK = 'src/cc_public/check/check.py'
 PYF_CHECK  = 'pyf_cc_public.check.check.check'
 PYM_CHECK  = 'pym_cc_public.check.check'
@@ -104,7 +104,7 @@ def test_a_changed_annotation_shows_what_it_argues_about(tree, before):
     assert _touched(result) == [(ANN, 'changed', '')]
     assert _links(result) == {
         ('opt_tooling_in_rust',  '1', ANN, 'r_challenges',         'out'),
-        ('iss_tooling_language', '1', ANN, 'r_is_about',           'out'),
+        ('dec_tooling_language', '1', ANN, 'r_is_about',           'out'),
         ('concern_cost',         '1', ANN, 'r_argues_for_concern', 'out'),
         ('mark_public',          '1', ANN, 'mark',                 'out'),
         ('t_annotation',         '1', ANN, 'has_type',             'out'),

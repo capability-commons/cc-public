@@ -21,12 +21,12 @@ description:            |
                         item as item_text, an FTS5 table, and ranks
                         the items whose prose matches a query. Each
                         hit is expanded through the graph: to the
-                        issue it belongs to, to the determination that
-                        settles that issue and the options it upholds,
-                        to the standing of an option, and to the
-                        concerns an annotation argues for. A grep of
-                        the files finds the words; this also says how
-                        each argument they appear in was settled.
+                        decision it belongs to, to the determination
+                        that settles that decision and the options it
+                        upholds, to the standing of an option, and to
+                        the concerns an annotation argues for. A grep
+                        of the files finds the words; this also says
+                        how each argument they appear in was settled.
 
                         A plain query that names a concept by one of
                         its preferred or admitted terms also matches
@@ -95,9 +95,9 @@ MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL)
 # are kept in a table of their own, and so is what each hit is.
 #
 # What each hit is: the item, the field that matched best and its
-# title, and what the graph says of it, read from the issue_of and
-# settles tables that derive.lp gives. The issue is the one it belongs
-# to, the determination is the one that settles that issue, and upheld
+# title, and what the graph says of it, read from the decision_of and
+# settles tables that derive.lp gives. The decision is the one it belongs
+# to, the determination is the one that settles that decision, and upheld
 # names the options that determination upholds. The standing of an
 # option is upheld, rejected or open. A higher score is a better
 # match.
@@ -117,12 +117,12 @@ WITH best AS (
     GROUP BY id
 ),
 settle AS MATERIALIZED (
-    SELECT settles.determination, edge.relation, settles.option, issue_of.issue
+    SELECT settles.determination, edge.relation, settles.option, decision_of.decision
     FROM settles
     JOIN primary_edge AS edge ON edge.source = settles.determination
                              AND edge.target = settles.option
                              AND edge.relation IN ('r_upholds', 'r_rejects')
-    JOIN issue_of ON issue_of.id = settles.option
+    JOIN decision_of ON decision_of.id = settles.option
 ),
 found AS MATERIALIZED (
     SELECT best.id,
@@ -132,7 +132,8 @@ found AS MATERIALIZED (
            best.field,
            coalesce((SELECT text FROM item_text
                      WHERE item_text.id = best.id AND item_text.field = 'title'), '') AS title,
-           coalesce((SELECT min(issue) FROM issue_of WHERE issue_of.id = best.id), '') AS issue
+           coalesce((SELECT min(decision) FROM decision_of
+                     WHERE decision_of.id = best.id), '') AS decision
     FROM best
 )
 SELECT found.*,
@@ -142,10 +143,10 @@ SELECT found.*,
                                FROM settle WHERE settle.option = found.id), 'open')
            END AS standing,
            coalesce((SELECT group_concat(DISTINCT determination ORDER BY determination)
-                     FROM settle WHERE settle.issue = found.issue), '') AS determination,
+                     FROM settle WHERE settle.decision = found.decision), '') AS determination,
            coalesce((SELECT group_concat(option, ' ' ORDER BY option)
                      FROM settle
-                     WHERE settle.issue = found.issue AND settle.relation = 'r_upholds'),
+                     WHERE settle.decision = found.decision AND settle.relation = 'r_upholds'),
                     '') AS upheld,
            coalesce((SELECT group_concat(target, ' ' ORDER BY target)
                      FROM primary_edge
@@ -155,20 +156,20 @@ FROM found
 """
 
 SQL_ITEM          = """
-SELECT score, id, type, field, title, issue, standing, determination, upheld, concerns
+SELECT score, id, type, field, title, decision, standing, determination, upheld, concerns
 FROM described
 ORDER BY bm25, id
 """
 
-SQL_ISSUE         = """
-SELECT round(-min(bm25), 3) AS score, issue, count(*) AS hits,
+SQL_DECISION         = """
+SELECT round(-min(bm25), 3) AS score, decision, count(*) AS hits,
        (SELECT text FROM item_text
-        WHERE item_text.id = described.issue AND item_text.field = 'title') AS title,
+        WHERE item_text.id = described.decision AND item_text.field = 'title') AS title,
        determination, upheld
 FROM described
-WHERE issue != ''
-GROUP BY issue
-ORDER BY min(bm25), issue
+WHERE decision != ''
+GROUP BY decision
+ORDER BY min(bm25), decision
 """
 
 
@@ -345,15 +346,15 @@ def _is_in(connection: sqlite3.Connection, term: str) -> bool:
 def search(facts:        cc_public.graph.extract.Facts,
            map_document: cc_public.graph.extract.Documents,
            text:         str,
-           is_match:     bool = False,
-           is_issue:     bool = False,
+           is_match:     bool    = False,
+           is_decision:  bool = False,
            list_term:    typing.Sequence[str] = ()) -> tuple[tuple[str, ...], list[tuple]]:
     """
     Return the columns and the rows of the items whose prose matches
-    text, best first, each with its issue and the standing of what
+    text, best first, each with its decision and the standing of what
     settles it. text is a plain query, or an FTS5 match expression if
     is_match. A plain query also matches each of list_term as a
-    phrase. With is_issue, return a row for each issue instead, ranked
+    phrase. With is_decision, return a row for each decision instead, ranked
     by its best match. Raise ErrorText if text cannot be evaluated.
 
     """
@@ -364,7 +365,7 @@ def search(facts:        cc_public.graph.extract.Facts,
     try:
         connection.execute(SQL_HIT, (expression,))
         connection.execute(SQL_FOUND)
-        cursor = connection.execute(SQL_ISSUE if is_issue else SQL_ITEM)
+        cursor = connection.execute(SQL_DECISION if is_decision else SQL_ITEM)
         return (tuple(each[0] for each in cursor.description), cursor.fetchall())
     except sqlite3.Error as error:
         raise ErrorText('The match expression cannot be read: {error}'.format(

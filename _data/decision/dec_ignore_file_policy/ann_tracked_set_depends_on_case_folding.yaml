@@ -1,0 +1,64 @@
+id_self:                ann_tracked_set_depends_on_case_folding
+guid_self:              ann_fab289e37014462a9e5c720848c22eb1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tracked set dependent on platform case folding
+brief:                  |
+                        The whitelist admits files by lower-case
+                        extension, and git folds case in those
+                        patterns only where core.ignoreCase is true,
+                        which git init and git clone set on a
+                        case-insensitive filesystem. So a file such as
+                        x.YAML is admitted on a clone on such a
+                        filesystem (as on a default macOS volume) and
+                        silently left out on a Linux clone.
+description:            |
+                        pyproject.toml line 52 declares the pixi
+                        platforms osx-arm64 and linux-64. Admit rules
+                        name extensions in lower case only, for
+                        example `!_data/**/*.yaml` (repo/.gitignore
+                        lines 79-102). git init and git clone set
+                        core.ignoreCase true on filesystems that are
+                        not case sensitive, naming APFS, HFS+, FAT and
+                        NTFS
+                        (https://raw.githubusercontent.com/git/git/master/Documentation/config/core.adoc
+                        lines 29-39). In a scratch repository with
+                        this .gitignore (git 2.43.0, 2026-10-15), with
+                        core.ignorecase=false `git status --porcelain
+                        -uall` lists _data/x.yaml only; with
+                        core.ignorecase=true it lists _data/x.yaml and
+                        _data/y.YAML. No tracked file has an
+                        upper-case extension today (git ls-files,
+                        2026-10-15). ASSUMPTION: the default macOS
+                        APFS volume is case insensitive. A blacklist
+                        matches by the same rule, but there a mismatch
+                        lets an unwanted file in, which git status
+                        shows; under the whitelist a mismatch drops a
+                        wanted file, which git status does not show
+                        (see
+                        ann_unadmitted_file_type_skipped_silently).
+                        Narrow today, and fixable by naming both cases
+                        without changing policy.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_ignore_file_policy
+    guid_target:        dec_f52bbfa6bb704e53a0538320bb3cd34c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_whitelist_gitignore
+    guid_target:        opt_ca42f8b1bd5d4040b15ef444ac8b6605
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

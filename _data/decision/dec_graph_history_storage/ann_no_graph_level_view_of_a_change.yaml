@@ -1,0 +1,45 @@
+id_self:                ann_no_graph_level_view_of_a_change
+guid_self:              ann_a66dd709e66248f49be042168b68a2ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No graph-level view of a change
+brief:                  |
+                        A reviewer sees the check's failures and the
+                        text diff, not the items and edges a commit
+                        adds, removes or changes, and that view needs
+                        no stored history.
+description:            |
+                        Each shown relation of change.lp is one check
+                        and each row is one failure
+                        (src/cc_public/commit/change.py lines 23-25).
+                        "Change, Fix, Split, Merge and Lock are not
+                        checked against the graph" (commit 7520f91
+                        message). The before and after graphs are
+                        already extracted (change.py lines 115-116).
+                        This challenges the scope of the deferral, not
+                        its choice of storage. ASSUMPTION: a rename
+                        touches every referring item, so its text diff
+                        spans many files.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_defer_graph_history
+    guid_target:        opt_80702d6abccf462b830106cc754ae93e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

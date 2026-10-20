@@ -120,8 +120,8 @@ SET_SUFFIX_BARE   = {'.yaml', '.json', '.md'}
 QUOTE_DOCSTRING   = '"""'
 
 # A new file is first written in the folder of its type. Where the
-# check says it belongs elsewhere, as an item of an issue belongs in
-# the folder of the issue, apply moves it there.
+# check says it belongs elsewhere, as an item of a decision belongs in
+# the folder of the decision, apply moves it there.
 #
 NAME_MISPLACED    = 'misplaced_document'
 
@@ -869,7 +869,7 @@ def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> 
     """
     Add to edit the move of every file in dir_old, as edit leaves it,
     to a folder named id_new beside it. An item that gathers others, as
-    an issue gathers its argument, is kept in a folder named for it,
+    a decision gathers its argument, is kept in a folder named for it,
     and the folder moves with it.
 
     """

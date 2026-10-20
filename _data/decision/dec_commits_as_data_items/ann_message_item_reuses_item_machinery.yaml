@@ -1,0 +1,50 @@
+id_self:                ann_message_item_reuses_item_machinery
+guid_self:              ann_cecbf9bea49b44ea9476f9139cb951f6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Message item reuses the item machinery
+brief:                  |
+                        The item in the message adds no new store and
+                        no extra commit. It uses the document markers,
+                        trait schemas and layout writer of every other
+                        item, where a record in the tree would need a
+                        second mechanism to record the commit that
+                        adds it.
+description:            |
+                        src/cc_public/commit/message.py lines 75-78
+                        and 130-136; src/cc_public/graph/extract.py
+                        lines 89-90; _data/schema/sch_commit.yaml
+                        lines 18-21 and 40-43;
+                        src/cc_public/commit/change.py lines 45-48 and
+                        115-122. ASSUMPTION: a tree record needs a
+                        following commit per change, or a rule that
+                        each commit records its parent. This is
+                        reasoning, not a sourced fact.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commits_as_data_items
+    guid_target:        dec_ecd704e11aba42d88e1bb5a264476819
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_commit_item_in_message
+    guid_target:        opt_e652b9f410a84fd0aaf9c10792a3aef5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_commit_record_in_tree
+    guid_target:        opt_6d89a15d168c42aaa0f4a2eb649ebbce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

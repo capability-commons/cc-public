@@ -1,0 +1,43 @@
+id_self:                ann_source_header_parse_traceback_is_fixed
+guid_self:              ann_9a56ef6aa9854817bdb244f0fa2294ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Header parse errors now reported with their file
+brief:                  |
+                        Commit 0d16c2a "Fix cctool check so that an
+                        unreadable file is a failure, not a traceback"
+                        reports a header or module that cannot be read
+                        as unreadable_file with its file and line. At
+                        360ec14 a slip in a source header no longer
+                        stops the check.
+description:            |
+                        A YAML error in a header and a Python syntax
+                        error both raise ErrorRead with the line of
+                        the file (src/cc_public/graph/extract.py lines
+                        388-393, 412-422 at 360ec14), which documents
+                        keeps as Unreadable (lines 258-264) and
+                        check.lp shows as unreadable_file (lines
+                        476-482).
+                        test_a_module_that_is_not_python_is_reported
+                        covers it
+                        (src/cc_public/check/_test/test_check.py lines
+                        276-282). Every source file still carries a
+                        header the checker parses.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_source_header_parse_error_names_no_file
+    guid_target:        ann_e794f955731d4facbc0051004bf26b31

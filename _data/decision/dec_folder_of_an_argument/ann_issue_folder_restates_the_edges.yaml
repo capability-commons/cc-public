@@ -1,0 +1,61 @@
+id_self:                ann_issue_folder_restates_the_edges
+guid_self:              ann_78da2df92bfe4034b328666ede6d1aff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Folder that restates the issue edges
+brief:                  |
+                        Which issue an item belongs to is already in
+                        its edges, and the checks read the edges, not
+                        the path. The folder records the same fact
+                        again and adds no check result and no trace.
+description:            |
+                        The extractor reads every file by rglob,
+                        whatever its folder
+                        (src/cc_public/graph/extract.py lines
+                        201-205). argued and unargued_driver join on
+                        r_is_option_for, with no file path (check.lp
+                        lines 423-453). t_decision and r_is_option_for
+                        were added in 52e3e6d; options took
+                        r_is_option_for and the driver check came to
+                        read it in 1ba2895, the same commit as the
+                        folder move, and its brief credits the fix to
+                        r_is_option_for. The two are separable: the
+                        fix reads edges only. The test that two issues
+                        do not count each other's arguments works by
+                        edges (src/cc_public/check/_test/test_check.py
+                        lines 344-355). The second misplaced_document
+                        clause exists to keep the path in step with
+                        the edges (check.lp lines 178-184).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_folder_of_an_argument
+    guid_target:        dec_d2fc82ec085d4bfe83889db96ba22cc6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_folder_per_issue
+    guid_target:        opt_b167d8973c9349e6b6be9582405cd4aa
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

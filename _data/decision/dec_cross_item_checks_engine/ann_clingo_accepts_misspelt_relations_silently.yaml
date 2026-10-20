@@ -1,0 +1,75 @@
+id_self:                ann_clingo_accepts_misspelt_relations_silently
+guid_self:              ann_1e7e6d6a70a9407cb0ee1f5d40ecf440
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Misspelt relations accepted silently
+brief:                  |
+                        As configured, clingo reports nothing when a
+                        rule names a relation that nothing defines, so
+                        a misspelt name silently changes what a check
+                        finds and a reviewer must check each name by
+                        eye. Souffle refuses an undeclared relation.
+description:            |
+                        datalog.py creates the control with
+                        --warn=none (src/cc_public/graph/datalog.py
+                        line 291). Without it, clingo 5.8.2 logs
+                        "info: atom does not occur in any rule head";
+                        with it, nothing. A misspelt positive body
+                        atom makes a check find nothing; a misspelt
+                        negated atom makes every candidate a failure
+                        (trials run on 2026-10-15; the script is not
+                        in the repository). A relation needs no
+                        declaration in the clingo path: the % decl
+                        comment is optional (datalog.py lines 27-35),
+                        and only #show arity is checked against it
+                        (lines 282-288). Souffle requires every
+                        relation to be declared
+                        (https://souffle-lang.github.io/relations) and
+                        reports "Undefined relation" as an error for
+                        an atom whose relation is not declared
+                        (src/ast/transform/SemanticChecker.cpp in the
+                        Souffle source). Of the 33 relations shown in
+                        check.lp, supersession_across_issues (lines
+                        377-385, commit 89c74d8) is named in no test.
+                        The rules of a logic query are written for the
+                        occasion and run directly, so no test guards
+                        them (cli/querying.py lines 163-172), though
+                        the query command itself is tested
+                        (cli/_test/test_querying.py). Holds at any
+                        size and grows with the rules. ASSUMPTION:
+                        dropping --warn=none and failing on that
+                        message would close most of the gap without
+                        changing engine.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_cross_item_checks_engine
+    guid_target:        dec_7167fc2bed6c477fbfe3f1fcf0a249fa
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_cross_item_checks_in_clingo
+    guid_target:        opt_3919f0bf87f14959878137396539675c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_cross_item_checks_in_souffle
+    guid_target:        opt_459f7c693fe44666b7dd13280d424b57
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

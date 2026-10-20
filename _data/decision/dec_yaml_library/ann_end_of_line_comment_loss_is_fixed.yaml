@@ -1,0 +1,43 @@
+id_self:                ann_end_of_line_comment_loss_is_fixed
+guid_self:              ann_fd28f5d1aa63433d8c9ca9920dba6dd0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  End-of-line comments now refused, not dropped
+brief:                  |
+                        Commit f298c4a "Fix the layout printer so that
+                        it refuses what it would lose" raises
+                        Unsupported for a comment at the end of a
+                        line. At 360ec14 an edit or format refuses
+                        such a file instead of dropping the comment
+                        silently.
+description:            |
+                        The printer walks each node and raises
+                        Unsupported for an anchor, an alias, a tag or
+                        an end-of-line comment
+                        (src/cc_public/edit/layout.py lines 102-105,
+                        237-271 at 360ec14);
+                        test_what_the_printer_would_drop_or_expand_is_refused
+                        covers it
+                        (src/cc_public/edit/_test/test_edit.py lines
+                        529-540). An edit that would leave a refused
+                        file is refused, and cctool check reports the
+                        file as unformatted_file. The printer still
+                        cannot keep such a comment.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_layout_drops_end_of_line_comments
+    guid_target:        ann_17ac200626f64507b90ebe687db1499c

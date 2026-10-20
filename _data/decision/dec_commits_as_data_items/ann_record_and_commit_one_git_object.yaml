@@ -1,0 +1,55 @@
+id_self:                ann_record_and_commit_one_git_object
+guid_self:              ann_0859599c2ed74100827c31cc03863603
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Record and commit written as one object
+brief:                  |
+                        With the item in the message, the record of a
+                        commit and the commit are one git object, so
+                        neither exists without the other. A record in
+                        a later commit leaves a window with no record,
+                        and a rewrite leaves records naming hashes
+                        that main no longer reaches.
+description:            |
+                        The commit hash is computed over tree,
+                        parents, author, committer and message
+                        (https://git-scm.com/book/en/v2/Git-Internals-Git-Objects,
+                        "Commit Objects"). The history check needs
+                        only the message and two trees
+                        (src/cc_public/commit/history.py lines
+                        97-124). The squash of 2026-10-14 would have
+                        left tree records of the 45 old commits
+                        pointing at unreachable hashes (owner's
+                        statement 2026-10-14T12:26:48Z; memory
+                        MEMORY.md line 42). ASSUMPTION: a tree record
+                        of commit N sits in commit N+1 or later and
+                        names it by hash; no design of that
+                        alternative exists.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commits_as_data_items
+    guid_target:        dec_ecd704e11aba42d88e1bb5a264476819
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_commit_item_in_message
+    guid_target:        opt_e652b9f410a84fd0aaf9c10792a3aef5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_commit_record_in_tree
+    guid_target:        opt_6d89a15d168c42aaa0f4a2eb649ebbce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,44 @@
+id_self:                ann_rules_widen_engine_string_builtins
+guid_self:              ann_7a269cd1ba8a4e4886eddb90547148e3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Wider use of engine string builtins
+brief:                  |
+                        The rules widen the use of the engine's own
+                        string functions, so leaving the engine costs
+                        more. That cost was paid a day later in the
+                        port to clingo.
+description:            |
+                        ba66f33 uses the Souffle builtins match and
+                        cat only (src/check/check.dl lines 29, 52,
+                        58). fd6323a adds substr and strlen and more
+                        match and cat (check.dl lines 54-56, 69, 123).
+                        Commit 6230e98 (2026-10-14) ported the checks
+                        to clingo and made these builtins the Python
+                        helpers @match, @cat, @strlen and @substr
+                        (check.lp lines 60, 75, 171-183, 209, 469).
+                        ASSUMPTION: a future engine would accept the
+                        same helpers.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_first_cross_item_rules
+    guid_target:        dec_9226ef2ca11b42e1b558831f156985b9
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_seven_proposed_rules
+    guid_target:        opt_42fca933cae545599fe9aac580953e78
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

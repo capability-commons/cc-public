@@ -1,0 +1,61 @@
+id_self:                ann_skills_link_lost_without_git_symlinks
+guid_self:              ann_3ca33167d0eb46d2956500de57ce6732
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Skills tied to a checkout that keeps links
+brief:                  |
+                        Claude Code gets the skills only through a
+                        symbolic link, so on a clone where git does
+                        not make links the skills would vanish for
+                        Claude Code, presumably without any error
+                        (assumed, not tested).
+description:            |
+                        .claude/skills is the only entry of git mode
+                        120000 in the tree (git ls-files -s at
+                        89c74d8), added in 7f3412f (pre-squash). With
+                        core.symlinks false, git checks a link out as
+                        a plain file holding the link text, and git
+                        clone sets it false where the file system
+                        needs it (git Documentation/config/core.txt
+                        lines 237-246, v2.43.0). Claude Code loads
+                        project skills from
+                        .claude/skills/<skill-name>/SKILL.md
+                        (https://code.claude.com/docs/en/skills,
+                        fetched 2026-10-15). Will asked "Can git store
+                        symbolic links?" at 2026-10-14T10:11:03Z and
+                        at 10:11:55Z asked for a note that Windows is
+                        not supported; README.md lines 28-30 give the
+                        links as the first reason. The cost is small
+                        today, since the pixi platforms are osx-arm64
+                        and linux-64 only (pyproject.toml line 52) and
+                        the git hooks need /bin/sh. It grows if the
+                        platforms widen or an agent runs where links
+                        are not kept, since the link is the one
+                        barrier that fails silently. A check that
+                        .claude/skills resolves to the same SKILL.md
+                        files would guard it while keeping the layout.
+                        ASSUMPTION: Claude Code finds no skills when
+                        .claude/skills is a plain file; not tested.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_skills
+    guid_target:        dec_6be96ce488394ba892982995b40e154c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_skills_in_agents_dir_with_link
+    guid_target:        opt_5ec45c2cfb514601b0a7759f32b3b6e0
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

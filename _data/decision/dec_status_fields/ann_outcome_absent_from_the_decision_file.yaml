@@ -1,0 +1,56 @@
+id_self:                ann_outcome_absent_from_the_decision_file
+guid_self:              ann_28437ff093b043128b2470c006827b38
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outcome absent from the option file
+brief:                  |
+                        Whether an option stands is derived from
+                        determinations, their edges and supersession
+                        over the whole graph, not read from the
+                        option's own file. A partner or any consumer
+                        outside the checker must load the graph and
+                        reproduce that rule.
+description:            |
+                        current_determination uses negation over all
+                        r_supersedes edges
+                        (src/cc_public/check/check.lp lines 389-398,
+                        commit 89c74d8). Upholds and rejects are edges
+                        on the determination
+                        (_data/schema/sch_determination.yaml lines
+                        24-28). Nygard's format keeps Status inside
+                        the record; MADR has an optional status field
+                        (https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions,
+                        https://adr.github.io/madr/). The checker
+                        already loads the whole tree on each run
+                        (src/cc_public/check/check.py lines 66-80),
+                        and one evaluation took about 0.12 s on the
+                        tree of 2026-10-14. No second consumer exists
+                        yet.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_status_fields
+    guid_target:        dec_4ee246ee64104c8eabc6c2d7f56c1ad3
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_no_status_fields
+    guid_target:        opt_85c99d07908e4fca96f1d754f4b1d10a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
