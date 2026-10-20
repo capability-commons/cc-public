@@ -957,7 +957,7 @@ misnamed_node(Node, Expected) :-
 #show interface_count/2.
 
 interface_count(Node, Interfaces) :-
-    type_of(Node, "t_node"),
+    type_of(Node, "t_dataflow_node"),
     Interfaces = #count { Interface : node_interface(Node, Interface) },
     Interfaces != 1.
 

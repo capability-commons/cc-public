@@ -135,7 +135,7 @@ issue_of(Id, Issue) :-
 %                     interface: symbol)
 
 node_interface(Node, Interface) :-
-    type_of(Node, "t_node"),
+    type_of(Node, "t_dataflow_node"),
     primary_edge(Node, "r_realizes", Interface),
     type_of(Interface, "t_interface_control_document").
 
@@ -150,8 +150,8 @@ node_interface(Node, Interface) :-
 
 feeds(Source, Target, Direction) :-
     system_edge(_, Source, _, Target, _, Direction, _, _),
-    type_of(Source, "t_node"),
-    type_of(Target, "t_node").
+    type_of(Source, "t_dataflow_node"),
+    type_of(Target, "t_dataflow_node").
 
 
 % -----------------------------------------------------------------------------
@@ -189,10 +189,10 @@ upstream(Node, Other) :-
 %               node: symbol)
 
 bears_on(Node, Node) :-
-    type_of(Node, "t_node").
+    type_of(Node, "t_dataflow_node").
 
 bears_on(Item, Node) :-
-    type_of(Node, "t_node"),
+    type_of(Node, "t_dataflow_node"),
     primary_edge(Node, "r_realizes", Item).
 
 bears_on(Member, Node) :-

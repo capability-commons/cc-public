@@ -1310,10 +1310,10 @@ table:
         guid_target:    sch_58645b97dbbe453eb3b5093260d3d576
 
   # ---------------------------------------------------------------------------
-  # t_node -- Node type
+  # t_dataflow_node -- Node type
   #
-  t_node:
-    id_self:            t_node
+  t_dataflow_node:
+    id_self:            t_dataflow_node
     guid_self:          t_f07f858ee0104b4b9d62bc38623d40de
     title:              Node type
     brief:              |
@@ -1331,18 +1331,20 @@ table:
                         full stop and the key the node is filed under.
 
                         The shape of node data items is defined by the
-                        sch_node schema.
+                        sch_dataflow_node schema.
     prefix:             nod
     regex_id:           ^nod_[a-z][a-z0-9_]*\.[a-z0-9_]+$
-    id_concept:         con_node
+    id_concept:         con_dataflow_node
     guid_concept:       con_93fe20797cb04f98b2a396259f9c15a6
-    alias:              []
+
+    alias:
+      - t_node
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_node
+        id_target:      sch_dataflow_node
         guid_target:    sch_42abc9d2df5544688e9047a09bc6948a
 
       - id_relation:    r_has_items_that_play
