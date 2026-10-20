@@ -109,7 +109,7 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # name of the file gives the id, so new does not make them.
 #
 ID_HELD           = 'r_has_items_held_in_register'
-SET_PREFIX_SOURCE = {'pym', 'pyp', 'pyc', 'pyf', 'lpf', 'file'}
+SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'file'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
