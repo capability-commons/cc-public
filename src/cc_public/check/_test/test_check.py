@@ -1072,3 +1072,124 @@ def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
     facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
     rows  = cc_public.graph.datalog.run(facts, cc_public.check.check.RULES.read_text())
     assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 't_annotation')]
+
+
+# -----------------------------------------------------------------------------
+def _step(root, id_icd = 'icd_x', map_extra = None):
+    """
+    Write the interface control document id_icd, whose dataflow step
+    surface reads the input inp and writes the output out, both ints,
+    with the setting rate. map_extra, if given, adds its groups of
+    ports to the surface.
+
+    """
+
+    stem = 'icm' + id_icd[len('icd'):]
+
+    def port(name, spelling, **map_field):
+        return {'id_self':   '{stem}.{name}'.format(stem = stem, name = name),
+                'guid_self': _guid('icm'),
+                'name':      name,
+                'brief':     'The {name}.'.format(name = name),
+                'type':      {'spelling': spelling},
+                **map_field}
+
+    step = {'input':      {'inp': port('inp', 'int')},
+            'output':     {'out': port('out', 'int')},
+            'config':     {'rate': port('rate', 'float', optional = True)},
+            'invocation': 'Once for each input.'}
+    for (kind, map_port) in (map_extra or {}).items():
+        step.setdefault(kind, {}).update({name: port(name, *spec)
+                                          for (name, spec) in map_port.items()})
+    document = _fields(root, id_icd)
+    document.update({'version_interface': '1.0',
+                     'surface':           {'step': {'dataflow_step': step}}})
+    return _item_document(root, '_data/interface_control_document/{id}.yaml'.format(id = id_icd),
+                          document)
+
+
+# -----------------------------------------------------------------------------
+def _system(root, list_flow, map_node = None, map_extra = None):
+    """
+    Write the system configuration sys_x, with the nodes a, b and c,
+    each presenting icd_x, and an edge for each (source, target) of
+    list_flow. An end is a node key and a port name, as 'a.out', and a
+    third element, if given, is the direction. map_node, if given, adds
+    its fields to each node it names, and map_extra its fields to the
+    document. Return its location.
+
+    """
+
+    def end(text):
+        (key, port) = text.split('.')
+        id_node     = 'nod_x.' + key
+        id_port     = 'icm_x.' + port
+        return {'id_node':   id_node,
+                'guid_node': map_guid.get(id_node, _guid('nod')),
+                'id_port':   id_port,
+                'guid_port': _guid_of(root, id_port) if id_port in set_port else _guid('icm')}
+
+    _step(root)
+    set_port = {'icm_x.inp', 'icm_x.out', 'icm_x.rate'}
+    map_guid = {'nod_x.' + key: _guid('nod') for key in ('a', 'b', 'c')}
+    edge     = _edge(root, 'r_realizes', 'icd_x')
+    document = _fields(root, 'sys_x')
+    document.update({
+        'host':    {'local': {'hostname': 'localhost'}},
+        'process': {'main':  {'host': 'local'}},
+        'node':    {key: {'id_self':   id_node,
+                          'guid_self': map_guid[id_node],
+                          'brief':     'Node {key}.'.format(key = key),
+                          'process':   'main',
+                          'relation':  [edge],
+                          **(map_node or {}).get(key, {})}
+                    for (id_node, key) in ((id_node, id_node.split('.')[1])
+                                           for id_node in map_guid)},
+        'edge':    [{'source': end(flow[0]),
+                     'target': end(flow[1]),
+                     **({'direction': flow[2]} if len(flow) > 2 else {})}
+                    for flow in list_flow],
+        **(map_extra or {})})
+    return _item_document(root, '_data/system_configuration/sys_x.yaml', document)
+
+
+# -----------------------------------------------------------------------------
+def _rows(root, relation, arity):
+    """
+    Return the sorted rows of the derived relation in the tree under
+    root.
+
+    """
+
+    facts = cc_public.graph.extract.extract(root)
+    rules = '#show {relation}/{arity}.'.format(relation = relation, arity = arity)
+    return sorted(cc_public.graph.datalog.run(facts, rules)[relation])
+
+
+def test_a_system_whose_edges_meet_the_ports_of_its_nodes_passes(tree):
+    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    assert _check(tree) == {}
+
+
+def test_downstream_follows_data_through_every_edge(tree):
+    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    assert _rows(tree, 'downstream', 2) == [('nod_x.a', 'nod_x.b'),
+                                            ('nod_x.a', 'nod_x.c'),
+                                            ('nod_x.b', 'nod_x.c')]
+
+
+def test_upstream_is_downstream_reversed(tree):
+    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    assert _rows(tree, 'upstream', 2) == [('nod_x.b', 'nod_x.a'),
+                                          ('nod_x.c', 'nod_x.a'),
+                                          ('nod_x.c', 'nod_x.b')]
+
+
+def test_the_blast_radius_of_a_port_is_every_node_that_presents_it_and_beyond(tree):
+    _system(tree, [('a.out', 'b.inp')])
+    assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
+            if item == 'icm_x.inp'} == {'nod_x.a', 'nod_x.b', 'nod_x.c'}
+    assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
+            if item == 'nod_x.b'} == {'nod_x.b'}
+    assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
+            if item == 'nod_x.a'} == {'nod_x.a', 'nod_x.b'}

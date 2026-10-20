@@ -125,3 +125,96 @@ issue_of(Id, Issue) :-
 issue_of(Id, Issue) :-
     settles(Id, Decision),
     issue_of(Decision, Issue).
+
+
+% -----------------------------------------------------------------------------
+% The interface a node presents is the interface control document it
+% realizes.
+%
+% decl node_interface(node:      symbol,
+%                     interface: symbol)
+
+node_interface(Node, Interface) :-
+    type_of(Node, "t_node"),
+    primary_edge(Node, "r_realizes", Interface),
+    type_of(Interface, "t_interface_control_document").
+
+
+% -----------------------------------------------------------------------------
+% Data flows from the node source to the node target along an edge of
+% a system configuration, feedforward or feedback.
+%
+% decl feeds(source:    symbol,
+%            target:    symbol,
+%            direction: symbol)
+
+feeds(Source, Target, Direction) :-
+    system_edge(_, Source, _, Target, _, Direction, _, _),
+    type_of(Source, "t_node"),
+    type_of(Target, "t_node").
+
+
+% -----------------------------------------------------------------------------
+% Data from the node reaches the node other, through one or more edges
+% of either direction.
+%
+% decl downstream(node:  symbol,
+%                 other: symbol)
+
+downstream(Node, Other) :-
+    feeds(Node, Other, _).
+
+downstream(Node, Other) :-
+    downstream(Node, Between),
+    feeds(Between, Other, _).
+
+
+% -----------------------------------------------------------------------------
+% Data from the node other reaches the node.
+%
+% decl upstream(node:  symbol,
+%               other: symbol)
+
+upstream(Node, Other) :-
+    downstream(Other, Node).
+
+
+% -----------------------------------------------------------------------------
+% A change to the item changes what the node does: the item is the
+% node, or something the node realizes, such as its interface or a
+% logical component, or a member of its interface, or code that
+% realizes that member.
+%
+% decl bears_on(item: symbol,
+%               node: symbol)
+
+bears_on(Node, Node) :-
+    type_of(Node, "t_node").
+
+bears_on(Item, Node) :-
+    type_of(Node, "t_node"),
+    primary_edge(Node, "r_realizes", Item).
+
+bears_on(Member, Node) :-
+    node_interface(Node, Interface),
+    item(Member, _, Interface, _, _).
+
+bears_on(Code, Node) :-
+    node_interface(Node, Interface),
+    item(Member, _, Interface, _, _),
+    primary_edge(Code, "r_realizes", Member).
+
+
+% -----------------------------------------------------------------------------
+% The blast radius of a change to the item: every node it bears on,
+% and every node downstream of one of those.
+%
+% decl blast_radius(item: symbol,
+%                   node: symbol)
+
+blast_radius(Item, Node) :-
+    bears_on(Item, Node).
+
+blast_radius(Item, Other) :-
+    bears_on(Item, Node),
+    downstream(Node, Other).

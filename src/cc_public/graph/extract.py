@@ -199,6 +199,29 @@ RELATION          = {
     'unreadable':         (('file', 'line:number', 'message'),
                            'The file ought to hold a document, but cannot be read: '
                            'message says why, and line is where.'),
+    'interface_port':     (('interface', 'kind', 'name', 'member'),
+                           'A dataflow step surface of the interface control document '
+                           'interface has the member, called name, as a port or setting '
+                           'of kind: input, output, state or config.'),
+    'system_node':        (('system', 'key', 'node', 'process'),
+                           'The system configuration system holds node under key, '
+                           'placed on the process with that key, or on none if process '
+                           'is empty.'),
+    'system_edge':        (('system', 'source', 'source_port', 'target', 'target_port',
+                            'direction', 'file', 'line:number'),
+                           'The system configuration system carries data from the port '
+                           'source_port of the node source to the port target_port of '
+                           'the node target, feedforward or feedback, written in file at '
+                           'line. An end it does not name is empty.'),
+    'system_setting':     (('node', 'name'),
+                           'The configuration of node gives a value for the setting '
+                           'name.'),
+    'system_process':     (('system', 'key', 'host'),
+                           'The system configuration system has a process under key, '
+                           'which runs on the host with that key, or on none if host is '
+                           'empty.'),
+    'system_host':        (('system', 'key'),
+                           'The system configuration system has a host under key.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -221,6 +244,26 @@ DELIM_DEFINITION  = '::'
 MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
                      ast.FunctionDef:     'pyf_',
                      ast.AsyncFunctionDef: 'pyf_'}
+
+# Where a dataflow step surface lists its ports and settings, and the
+# fields of a system configuration and of the ends of its edges. An
+# edge is feedforward unless it says otherwise.
+#
+KEY_SURFACE       = 'surface'
+KEY_DATAFLOW      = 'dataflow_step'
+TUPLE_PORT_KIND   = ('input', 'output', 'state', 'config')
+KEY_NAME          = 'name'
+KEY_NODE          = 'node'
+KEY_EDGE          = 'edge'
+KEY_PROCESS       = 'process'
+KEY_HOST          = 'host'
+KEY_CONFIG        = 'config'
+KEY_SOURCE        = 'source'
+KEY_TARGET        = 'target'
+KEY_DIRECTION     = 'direction'
+KEY_ID_NODE       = 'id_node'
+KEY_ID_PORT       = 'id_port'
+FEEDFORWARD       = 'feedforward'
 
 # What the code says of each class or function that holds a document,
 # by its key: the id its place calls for, the parameters of a function,
@@ -385,6 +428,8 @@ def facts_of(map_document: Documents) -> Facts:
         _walk(document, '', (file, base), facts)
         if not isinstance(document, dict):
             continue
+        _ports(document, facts)
+        _system(document, (file, base), facts)
         if file in MAP_DEFINITION:
             id_self                              = str(document.get(KEY_ID_SELF))
             (expected, tuple_parameter, returns) = MAP_DEFINITION[file]
@@ -959,6 +1004,98 @@ def _stated(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
         spelling = _type_spelling(returns.get(KEY_TYPE))
         if spelling is not None:
             facts['stated'].add((id_self, 'returns', spelling))
+
+
+# -----------------------------------------------------------------------------
+def _ports(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for each port and setting of each dataflow step surface
+    of document.
+
+    """
+
+    surface = document.get(KEY_SURFACE)
+
+    if not isinstance(surface, dict):
+        return
+
+    interface = str(document.get(KEY_ID_SELF))
+
+    for form in surface.values():
+        step = form.get(KEY_DATAFLOW) if isinstance(form, dict) else None
+        if not isinstance(step, dict):
+            continue
+        for kind in TUPLE_PORT_KIND:
+            for (key, member) in _map(step.get(kind)).items():
+                if isinstance(member, dict) and isinstance(member.get(KEY_ID_SELF), str):
+                    facts['interface_port'].add((interface,
+                                                 kind,
+                                                 str(member.get(KEY_NAME, key)),
+                                                 member[KEY_ID_SELF]))
+
+
+# -----------------------------------------------------------------------------
+def _system(document: dict[str, typing.Any],
+            location: tuple[str, int],
+            facts:    Facts) -> None:
+    """
+    Add the facts of the nodes, edges, processes and hosts of document,
+    if it is a system configuration: a document whose node field maps
+    each key to an item.
+
+    """
+
+    map_node = _map(document.get(KEY_NODE))
+
+    if not map_node or not all(isinstance(node, dict) and KEY_ID_SELF in node
+                               for node in map_node.values()):
+        return
+
+    system = str(document.get(KEY_ID_SELF))
+
+    for (key, node) in map_node.items():
+        id_node = str(node[KEY_ID_SELF])
+        facts['system_node'].add((system, str(key), id_node, str(node.get(KEY_PROCESS, ''))))
+        for name in _map(node.get(KEY_CONFIG)):
+            facts['system_setting'].add((id_node, str(name)))
+
+    for (key, process) in _map(document.get(KEY_PROCESS)).items():
+        host = process.get(KEY_HOST, '') if isinstance(process, dict) else ''
+        facts['system_process'].add((system, str(key), str(host)))
+
+    for key in _map(document.get(KEY_HOST)):
+        facts['system_host'].add((system, str(key)))
+
+    list_edge = document.get(KEY_EDGE)
+
+    if not isinstance(list_edge, list):
+        return
+
+    for (index, edge) in enumerate(list_edge):
+        if not isinstance(edge, dict):
+            continue
+        source = _map(edge.get(KEY_SOURCE))
+        target = _map(edge.get(KEY_TARGET))
+        facts['system_edge'].add((system,
+                                  str(source.get(KEY_ID_NODE, '')),
+                                  str(source.get(KEY_ID_PORT, '')),
+                                  str(target.get(KEY_ID_NODE, '')),
+                                  str(target.get(KEY_ID_PORT, '')),
+                                  str(edge.get(KEY_DIRECTION, FEEDFORWARD)),
+                                  location[0],
+                                  _line_item(list_edge, index, location)))
+
+
+# -----------------------------------------------------------------------------
+def _map(value: typing.Any) -> dict[typing.Any, typing.Any]:
+    """
+    Return value if it is a mapping, and an empty mapping if not.
+
+    """
+
+    if isinstance(value, dict):
+        return value
+    return {}
 
 
 # -----------------------------------------------------------------------------
