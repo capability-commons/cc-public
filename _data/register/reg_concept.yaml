@@ -893,9 +893,9 @@ table:
     guid_self:          con_93fe20797cb04f98b2a396259f9c15a6
     title:              Dataflow node
     brief:              |
-                        One process of a Kahn process network: a step
-                        that reads its inputs, writes its outputs and
-                        keeps state between invocations.
+                        One step of a dataflow graph: it reads its
+                        inputs, writes its outputs and keeps state
+                        between invocations.
     description:        |
                         A dataflow node is one use of a step within a
                         system configuration. Its interface is a
@@ -904,20 +904,22 @@ table:
                         is configured with. Many dataflow nodes may
                         present the same interface.
     note:               |
-                        A dataflow node is a process of a Kahn process
-                        network (Kahn, The semantics of a simple
-                        language for parallel programming, IFIP 1974),
-                        and a node in the sense of Stableflow
-                        (software architecture description 2.0.0,
-                        clause 5.1). It is qualified because node is
-                        an overloaded word. ISO/IEC/IEEE 24765:2017
-                        3.2598 gives node five senses, among them a
-                        vertex of a graph (sense 1) and a unit located
-                        in space, which is a host (sense 2), and
-                        Arcadia uses it for a physical component that
-                        hosts others. A dataflow node is neither: it
-                        runs on an OS process, and an OS process on a
-                        host.
+                        A dataflow node runs in the dataflow engine
+                        (con_dataflow_engine). Under the semantics of
+                        a Kahn process network (Kahn, The semantics of
+                        a simple language for parallel programming,
+                        IFIP 1974), which the engine supports first,
+                        it is a process of that network. It is a node
+                        in the sense of Stableflow (software
+                        architecture description 2.0.0, clause 5.1).
+                        It is qualified because node is an overloaded
+                        word. ISO/IEC/IEEE 24765:2017 3.2598 gives
+                        node five senses, among them a vertex of a
+                        graph (sense 1) and a unit located in space,
+                        which is a host (sense 2), and Arcadia uses it
+                        for a physical component that hosts others. A
+                        dataflow node is neither: it runs on an OS
+                        process, and an OS process on a host.
     term_preferred:     dataflow node
 
     term_admitted:
@@ -936,9 +938,9 @@ table:
     guid_self:          con_20d58a851b1d42c797c856db69eb893a
     title:              Dataflow edge
     brief:              |
-                        A channel of a Kahn process network: it
-                        carries the values one dataflow node writes on
-                        an output port to an input port of another, in
+                        A connection of a dataflow graph: it carries
+                        the values one dataflow node writes on an
+                        output port to an input port of another, in
                         order.
     description:        |
                         A dataflow edge is part of a system
@@ -952,8 +954,11 @@ table:
                         ISO/IEC/IEEE 24765:2017 3.1006 defines data
                         flow as the sequence in which data transfer,
                         use and transformation are performed during
-                        the execution of a computer program. A
-                        dataflow edge is an edge in the sense of
+                        the execution of a computer program. Under the
+                        semantics of a Kahn process network, which the
+                        dataflow engine (con_dataflow_engine) supports
+                        first, a dataflow edge is a channel of that
+                        network. It is an edge in the sense of
                         Stableflow (software architecture description
                         2.0.0, clause 5.1). It is qualified because
                         the graph of items has edges of its own, which
@@ -995,5 +1000,42 @@ table:
     term_admitted:
       - process
 
+    alias:              []
+    relation:           []
+
+  # ---------------------------------------------------------------------------
+  # con_dataflow_engine -- Dataflow engine
+  #
+  con_dataflow_engine:
+    id_self:            con_dataflow_engine
+    guid_self:          con_b7bfc42522104498abc1a46dc8859fe8
+    title:              Dataflow engine
+    brief:              |
+                        The engine of cc-public that runs a system
+                        configuration: it places each dataflow node on
+                        its OS process and passes values along the
+                        dataflow edges.
+    description:        |
+                        The dataflow engine is being ported into
+                        cc-public from Stableflow, the dataflow engine
+                        of Design Factory, and reads its configuration
+                        from the graph of items. Its first semantics
+                        are those of a Kahn process network. It is
+                        meant to support others as well, at least
+                        those of actors, so a dataflow node or edge is
+                        not defined by Kahn semantics alone. If it
+                        ever needs a brand, it is the Capability
+                        Commons Dataflow Engine.
+    note:               |
+                        The owner settled the name on 2026-10-20,
+                        after an argument among the concern advocates.
+                        ISO/IEC/IEEE 24765:2017 3.1006 defines data
+                        flow. Kahn, The semantics of a simple language
+                        for parallel programming (IFIP 1974), defines
+                        process networks; Hewitt, Bishop and Steiger,
+                        A universal modular ACTOR formalism for
+                        artificial intelligence (IJCAI 1973), defines
+                        actors.
+    term_preferred:     dataflow engine
     alias:              []
     relation:           []
