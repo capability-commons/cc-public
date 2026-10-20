@@ -77,6 +77,32 @@ def test_obsidian_links_a_dotted_id_by_its_file():
     assert cc_public.export.obsidian.link({}, 'lc_a') == '[[lc_a|lc_a]]'
 
 
+def test_okf_bundle_is_conformant(tree, tmp_path):
+    dir_out = tmp_path / 'bundle'
+    result  = _run(tree, 'okf', str(dir_out))
+    assert result.exit_code == 0
+    for path in dir_out.rglob('*.md'):
+        list_line = _frontmatter(path.read_text())
+        if path.name == 'index.md':
+            assert list_line == (['okf_version: "0.2"'] if path.parent == dir_out else None)
+        else:
+            assert list_line[0].startswith('type: "') and list_line[0] != 'type: ""'
+
+
+def test_okf_concept_links_from_the_root_of_the_bundle(tree, tmp_path):
+    dir_out = tmp_path / 'bundle'
+    _run(tree, 'okf', str(dir_out))
+    text = (dir_out / 'issue' / 'iss_tooling_language.md').read_text()
+    assert _frontmatter(text)[:3] == ['type: "Issue"',
+                                      'title: "Language of the tooling"',
+                                      'description: "In which programming language should '
+                                      'the tooling be written?"']
+    assert '[Tooling](/logical_component/lc_tooling.md)' in text
+    index = (dir_out / 'issue' / 'index.md').read_text()
+    assert ('* [Language of the tooling](iss_tooling_language.md) - In which programming '
+            'language should the tooling be written?') in index
+
+
 def test_a_folder_that_is_not_empty_is_refused(tree, tmp_path):
     dir_out = tmp_path / 'vault'
     dir_out.mkdir()

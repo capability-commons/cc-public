@@ -14,13 +14,14 @@ protective_mark:
 title:                  Exporting commands
 brief:                  |
                         The commands that export the graph of data
-                        items, as an Obsidian vault.
+                        items, as an Obsidian vault or as an Open
+                        Knowledge Format bundle.
 description:            |
                         This module holds the export group and its
-                        commands: obsidian. Each reads the tree, makes
-                        the pages of its format, and writes them to
-                        the folder it is given, which must be empty
-                        unless --replace is passed.
+                        commands: obsidian and okf. Each reads the
+                        tree, makes the pages of its format, and
+                        writes them to the folder it is given, which
+                        must be empty unless --replace is passed.
 relation:               []
 
 ...
@@ -34,6 +35,7 @@ import click
 
 import cc_public.cli.group
 import cc_public.export.obsidian
+import cc_public.export.okf
 import cc_public.export.page
 import cc_public.graph.item
 
@@ -100,6 +102,29 @@ def obsidian(dir_out, root, is_replace):
     """
 
     _write(cc_public.export.obsidian.pages, dir_out, root, is_replace)
+
+
+# -----------------------------------------------------------------------------
+@export.command()
+@_option
+def okf(dir_out, root, is_replace):
+    """
+    Write the graph as an Open Knowledge Format bundle in the folder OUT.
+
+    The bundle follows OKF version 0.2: each concept has the name of
+    the type of its item as its type, and its brief as its description,
+    and links to other concepts from the root of the bundle. An index
+    in the root lists the folders, and one in each folder lists its
+    concepts.
+
+    \b
+    Examples:
+      cctool export okf ../bundle
+      cctool export okf ../bundle --replace
+
+    """
+
+    _write(cc_public.export.okf.pages, dir_out, root, is_replace)
 
 
 # -----------------------------------------------------------------------------

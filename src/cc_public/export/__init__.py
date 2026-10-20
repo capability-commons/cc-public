@@ -17,8 +17,9 @@ brief:                  |
                         markdown, for other tools to read.
 description:            |
                         This package holds the parts that every export
-                        shares, and one module for each format, such
-                        as an Obsidian vault.
+                        shares, and one module for each format: an
+                        Obsidian vault and an Open Knowledge Format
+                        bundle.
 relation:               []
 
 ...
