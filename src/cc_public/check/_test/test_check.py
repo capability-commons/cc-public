@@ -817,14 +817,14 @@ def test_a_part_the_member_does_not_state_is_not_compared(tree):
 
 
 def test_a_class_and_a_method_named_for_their_place_pass(tree):
-    _definitions(tree, 'src/x/y.py', 'pyc_x.y.thing', 'pyf_x.y.thing.run')
+    _definitions(tree, 'src/x/y.py', 'pycls_x.y.thing', 'pyf_x.y.thing.run')
     assert _check(tree) == {}
 
 
 def test_a_class_or_method_named_for_another_place_is_reported(tree):
     _definitions(tree, 'src/x/y.py', 'pyf_x.y.thing', 'pyf_x.y.run')
     assert _check(tree) == {'misplaced_module': [('pyf_x.y.run', 'pyf_x.y.thing.run'),
-                                                 ('pyf_x.y.thing', 'pyc_x.y.thing')]}
+                                                 ('pyf_x.y.thing', 'pycls_x.y.thing')]}
 
 
 def test_a_package_named_for_its_place_passes(tree):

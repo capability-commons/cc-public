@@ -242,7 +242,7 @@ DELIM_MODULE      = '.'
 # and those names, in lower case, under the prefix of its kind.
 #
 DELIM_DEFINITION  = '::'
-MAP_PREFIX_KIND   = {ast.ClassDef:        'pyc_',
+MAP_PREFIX_KIND   = {ast.ClassDef:        'pycls_',
                      ast.FunctionDef:     'pyf_',
                      ast.AsyncFunctionDef: 'pyf_'}
 

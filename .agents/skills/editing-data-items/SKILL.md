@@ -99,7 +99,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.
-- **`new`, `remove` and `rename` refuse pym, pyp, pyc, pyf, lpf and
+- **`new`, `remove` and `rename` refuse pym, pyp, pycls, pyf, lpf and
   file ids.** Those items live in the file they name. Give a file its
   item with `cctool header PATH` (a module's id follows from its path;
   any other file needs ID, such as `file_githooks_pre_commit`). Move or
