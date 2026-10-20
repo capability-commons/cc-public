@@ -65,7 +65,7 @@ def _excluded(tree, id_role):
 def test_a_relation_page_reads_each_end_by_its_restrictions(tree):
     body = _body(tree, 'r_supports')
     assert 'The source <a href="/item/rrs_is_argument">is an argument</a>.' in body
-    assert 'The target <a href="/item/rrs_is_arguable">is arguable</a>.' in body
+    assert 'The target <a href="/item/rrs_can_be_target_of_an_argument">can be the target of an argument</a>.' in body
 
 
 def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
@@ -73,7 +73,7 @@ def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
 
 
 def test_a_role_page_names_its_players_and_the_relations_that_admit_it(tree):
-    body = _body(tree, 'rol_arguable')
+    body = _body(tree, 'rol_can_be_target_of_an_argument')
     assert ('Played by the items of <a href="/type/t_annotation">Annotation type</a> and '
             '<a href="/type/t_option">Option type</a>.') in body
     assert ('Admitted at the target of <a href="/item/r_challenges">Challenges relation</a> and '
