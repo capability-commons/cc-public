@@ -51,6 +51,7 @@
   --gap: 2.5rem;
   --shade: #eae1d3;
   --shade-deep: #e3dacc;
+  --shade-deeper: #dcd3c5;
   --band-for: rgba(74, 107, 82, 0.36);
   --band-against: rgba(139, 74, 68, 0.36);
   --net-for: #c9cfbd;
@@ -942,14 +943,19 @@ section.matrix a.cell:hover {
    answers go: depth is read from what each annotation bears on, in its
    margin, not from how far it is pushed in. */
 
-/* Answers, and answers to answers, stand on one darker shade, out to
-   the edges of the shading above them. */
+/* Answers stand on a darker shade, and answers to answers, however
+   deep, on a darker one still, out to the edges of the shading above
+   them. */
 
 section.matrix .drill .answers {
   display: flow-root;
   margin-left: -1.3rem;
   padding-left: 1.3rem;
   background: var(--shade-deep);
+}
+
+section.matrix .drill .answers .answers {
+  background: var(--shade-deeper);
 }
 
 /* The shade of answers holds the space below the last of them, and
