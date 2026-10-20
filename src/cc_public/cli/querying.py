@@ -378,8 +378,8 @@ def text(text, path_file, root, limit, is_json, is_match, is_decision, is_exact)
     the decision it belongs to, the ruling that settles that decision
     and the options it upholds, the standing of an option (upheld,
     rejected or open), and the concerns an annotation speaks for. With
-    --decision, each row is a decision, so that a hit on any part of an
-    argument leads to how it was settled. Give the query as QUERY, as
+    --decision, each row is a decision, so that a hit on any part of a
+    deliberation leads to how it was settled. Give the query as QUERY, as
     - to read it from stdin, or with --file.
 
     A query that names a concept by one of its terms, preferred or

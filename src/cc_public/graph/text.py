@@ -26,7 +26,8 @@ description:            |
                         upholds, to the standing of an option, and to
                         the concerns an annotation speaks for. A grep
                         of the files finds the words; this also says
-                        how each argument they appear in was settled.
+                        how each deliberation they appear in was
+                        settled.
 
                         A plain query that names a concept by one of
                         its preferred or admitted terms also matches

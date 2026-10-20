@@ -14,7 +14,7 @@ protective_mark:
 title:                  Review pages
 brief:                  |
                         Pages in a web browser for reviewing the
-                        decisions of the tree and the argument on
+                        decisions of the tree and the deliberation on
                         each.
 description:            |
                         This package reads the decisions, options,

@@ -50,7 +50,7 @@ import cc_public.web.server
 def serve(root: pathlib.Path, host: str, port: int) -> None:
     """
     Serve pages to review the decisions of the tree under --root, and the
-    argument on each, until interrupted.
+    deliberation on each, until interrupted.
 
     The pages change nothing. Each page shows the tree as it is when
     the page is loaded.

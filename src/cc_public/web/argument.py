@@ -11,11 +11,11 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Argument of a decision
+title:                  Deliberation of a decision
 brief:                  |
                         Read the items of a tree, and gather on each
                         decision the options, annotations and rulings
-                        that make its argument.
+                        that make its deliberation.
 description:            |
                         Graph reads every item in a tree, with its
                         title, brief, description and edges as
@@ -100,7 +100,7 @@ class Item:
 @dataclasses.dataclass
 class Decision:
     """
-    A decision and the argument gathered on it: the options that answer
+    A decision and the deliberation gathered on it: the options that answer
     it, the annotations about it, and the rulings that settle
     its options.
 
@@ -240,8 +240,8 @@ class Graph:
     # -------------------------------------------------------------------------
     def decision(self, id_decision: str) -> Decision | None:
         """
-        Return the decision id_decision with its argument, or None if the tree
-        has no such decision.
+        Return the decision id_decision with its deliberation, or None if the
+        tree has no such decision.
 
         """
 

@@ -11,10 +11,10 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Graph of an argument
+title:                  Graph of a deliberation
 brief:                  |
-                        Draw the argument on a decision as a tree for
-                        each option: its concerns as small ports
+                        Draw the deliberation on a decision as a tree
+                        for each option: its concerns as small ports
                         beside it, and from each port the annotations
                         that speak for that concern on it, with the
                         annotations that answer them beyond.
@@ -84,7 +84,7 @@ MAP_MARK          = {ROLE_FOR: '\u2713', ROLE_AGAINST: '\u2717'}
 # -----------------------------------------------------------------------------
 class _Tree:
     """
-    The marks of the graph of one argument, placed branch by branch
+    The marks of the graph of one deliberation, placed branch by branch
     from the top down.
 
     """
@@ -171,7 +171,7 @@ class _Tree:
         Place a copy of id_annotation at depth, with the branches of
         the annotations that answer it, and return its height. It
         stands level with its first answer, if it has any. key names
-        the same place in the argument under the decision matrix.
+        the same place in the deliberation under the decision matrix.
 
         """
 
@@ -247,7 +247,7 @@ class _Tree:
         """
         Return node, linked to the page with every chain into id_item
         lit if id_item is picked. A key, if given, names the entry of
-        the argument under the decision matrix that a click chooses
+        the deliberation under the decision matrix that a click chooses
         (see review.js).
 
         """
@@ -360,7 +360,7 @@ class _Tree:
 # -----------------------------------------------------------------------------
 def figure(graph: Graph, outline: Outline) -> typing.Any:
     """
-    Return the graph of the argument in outline, a tree for each
+    Return the graph of the deliberation in outline, a tree for each
     option.
 
     Hovering over or clicking an option or an annotation lights every
@@ -404,7 +404,7 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
 # -----------------------------------------------------------------------------
 def names(outline: Outline) -> list[str]:
     """
-    Return the names of the chains the graph of the argument in outline
+    Return the names of the chains the graph of the deliberation in outline
     can light: one into each option or annotation in each role, each
     option or annotation that is picked, and each concern.
 
@@ -419,7 +419,7 @@ def names(outline: Outline) -> list[str]:
 # -----------------------------------------------------------------------------
 def _graph(outline: Outline) -> tuple:
     """
-    Return the kind of each option and annotation of the argument in
+    Return the kind of each option and annotation of the deliberation in
     outline, and its edges.
 
     """
@@ -455,7 +455,7 @@ def _chains(map_kind: dict[str, str], list_edge: list[tuple[str, str, str]]) -> 
 # -----------------------------------------------------------------------------
 def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
     """
-    Return the edges of the argument, each from its source to its target
+    Return the edges of the deliberation, each from its source to its target
     with its role: from an annotation to what it answers, from an
     annotation to the hub of each concern it speaks for on an option
     in each role, and from each hub to its option in that role. The
