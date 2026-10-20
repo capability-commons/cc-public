@@ -35,6 +35,7 @@ import htpy
 import pytest
 
 import cc_public.web.argument
+import cc_public.web.catalogue
 import cc_public.web.description
 import cc_public.web.network
 import cc_public.web.page
@@ -87,7 +88,7 @@ def test_issue_is_none_for_an_id_that_is_not_an_issue(tree):
 
 
 def test_index_links_every_issue(tree):
-    (status, type_content, body) = cc_public.web.server.respond(tree, '/')
+    (status, type_content, body) = cc_public.web.server.respond(tree, '/issues')
     assert status == http.HTTPStatus.OK
     assert type_content.startswith('text/html')
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
@@ -549,7 +550,7 @@ def test_issue_page_ends_with_cross_references(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     footer = body.split(b'<footer class="bookend">')[1]
     assert b'Cross-references' in footer
-    assert b'/item/lc_tooling' in footer
+    assert b'/subject/lc_tooling' in footer
 
 
 def test_item_page_shows_edges_in_and_out(tree):
@@ -593,10 +594,61 @@ def test_issue_page_offers_to_add_to_the_argument(tree):
 
 
 def test_every_page_links_to_the_indexes(tree):
-    (_, _, body) = cc_public.web.server.respond(tree, '/')
-    assert b'<a href="/">Issues</a>' in body
-    assert b'<a href="/requirements">Requirements</a>' in body
-    assert b'<a href="/interfaces">Interfaces</a>' in body
+    for path in ('/', '/issue/' + ID_ISSUE, '/item/' + ID_UPHELD):
+        (_, _, body) = cc_public.web.server.respond(tree, path)
+        assert b'<a href="/">Index</a>' in body
+        assert b'<a href="/subjects">Subjects</a>' in body
+        assert b'<form class="search masthead" method="get" action="/search">' in body
+
+
+def test_home_lists_every_type_with_its_count(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/')
+    assert status == http.HTTPStatus.OK
+    text      = body.decode()
+    graph     = cc_public.web.argument.Graph(tree)
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    list_type = [id_item for id_item in graph.map_item if id_item.startswith('t_')]
+    for id_type in list_type:
+        assert 'href="{href}"'.format(href = cc_public.web.page._type_href(id_type)) in text
+    assert '<a href="/issues">Issue</a>' in text
+    assert '<a href="/type/t_decision">Decision</a>' in text
+    count = len(catalogue.items('t_decision'))
+    assert re.search(r'href="/type/t_decision">.*?<td class="number">{count}<'.format(
+        count = count), text, re.DOTALL)
+    assert '<tr class="empty">' in text
+
+
+def test_type_page_lists_its_items_and_filters_them(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/type/t_decision')
+    assert status == http.HTTPStatus.OK
+    assert '/item/{id}'.format(id = ID_UPHELD).encode() in body
+    (_, _, body) = cc_public.web.server.respond(tree, '/type/t_decision?q=no+such+words+at+all')
+    assert '/item/{id}'.format(id = ID_UPHELD).encode() not in body
+    (status, _, _) = cc_public.web.server.respond(tree, '/type/t_no_such_type')
+    assert status == http.HTTPStatus.NOT_FOUND
+    (status, _, _) = cc_public.web.server.respond(tree, '/type/' + ID_UPHELD)
+    assert status == http.HTTPStatus.NOT_FOUND
+
+
+def test_subject_page_gathers_what_is_about_it(tree):
+    (status, _, body) = cc_public.web.server.respond(tree, '/subjects')
+    assert status == http.HTTPStatus.OK
+    assert b'href="/subject/lc_tooling"' in body
+    (status, _, body) = cc_public.web.server.respond(tree, '/subject/lc_tooling')
+    assert status == http.HTTPStatus.OK
+    assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
+    (status, _, _) = cc_public.web.server.respond(tree, '/subject/' + ID_UPHELD)
+    assert status == http.HTTPStatus.NOT_FOUND
+
+
+def test_search_finds_items_by_their_words(tree):
+    title = cc_public.web.argument.Graph(tree).title(ID_UPHELD)
+    query = urllib.parse.urlencode({'q': title})
+    (status, _, body) = cc_public.web.server.respond(tree, '/search?' + query)
+    assert status == http.HTTPStatus.OK
+    assert '/item/{id}'.format(id = ID_UPHELD).encode() in body
+    (_, _, body) = cc_public.web.server.respond(tree, '/search?q=zzqqxx')
+    assert b'No item holds those words.' in body
 
 
 def test_interface_index_lists_interface_control_documents(tree):

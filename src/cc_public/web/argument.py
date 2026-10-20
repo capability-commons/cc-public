@@ -73,7 +73,8 @@ STANCE_OPEN       = 'open'
 class Item:
     """
     An item of the graph, as the review shows it: its id, its prose,
-    and its edges as written, keyed by relation.
+    its edges as written, keyed by relation, and the file that holds
+    it.
 
     """
 
@@ -83,6 +84,7 @@ class Item:
     description: str
     map_edge:    dict[str, list[str]]
     node:        dict = dataclasses.field(default_factory = dict, repr = False)
+    file:        str = ''
 
     # -------------------------------------------------------------------------
     def targets(self, id_relation: str) -> list[str]:
@@ -150,9 +152,9 @@ class Graph:
 
         self.map_item = {}
 
-        for (document, _) in cc_public.graph.extract.documents(root).values():
+        for (key, (document, _)) in cc_public.graph.extract.documents(root).items():
             if cc_public.graph.extract.is_document(document):
-                _collect(document, self.map_item)
+                _collect(document, self.map_item, cc_public.graph.extract.file_of(key))
 
         self.map_source = collections.defaultdict(list)
         for item in self.map_item.values():
@@ -294,15 +296,16 @@ class Graph:
 
 
 # -----------------------------------------------------------------------------
-def _collect(node: typing.Any, map_item: dict[str, Item]) -> None:
+def _collect(node: typing.Any, map_item: dict[str, Item], file: str = '') -> None:
     """
-    Add to map_item an Item for node and for every item nested in it.
+    Add to map_item an Item for node and for every item nested in it,
+    each held in file.
 
     """
 
     if isinstance(node, list):
         for value in node:
-            _collect(value, map_item)
+            _collect(value, map_item, file)
         return
 
     if not isinstance(node, dict):
@@ -315,11 +318,12 @@ def _collect(node: typing.Any, map_item: dict[str, Item]) -> None:
                                  brief       = _text(node.get(KEY_BRIEF)),
                                  description = _text(node.get(KEY_DESCRIPTION)),
                                  map_edge    = _edges(node.get(KEY_RELATION)),
-                                 node        = node)
+                                 node        = node,
+                                 file        = file)
 
     for (key, value) in node.items():
         if key != KEY_RELATION:
-            _collect(value, map_item)
+            _collect(value, map_item, file)
 
 
 # -----------------------------------------------------------------------------

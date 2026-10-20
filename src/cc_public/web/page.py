@@ -13,11 +13,24 @@ protective_mark:
 
 title:                  Review page rendering
 brief:                  |
-                        Render the issue list, the page of an issue,
-                        the requirement list, the page of a
+                        Render the index of every type, the lists and
+                        pages it leads to, the issue list, the page of
+                        an issue, the requirement list, the page of a
                         requirement, the list of interface control
                         documents and the page of one as HTML.
 description:            |
+                        The index lists every type, grouped as
+                        pym_cc_public.web.catalogue groups them, with
+                        how many items each has. Each type leads to
+                        the list of its items, which a few words
+                        filter, or to a fuller list of its own for
+                        issues, requirements and interface control
+                        documents. The subjects page lists the logical
+                        components, and the page of each gathers the
+                        items about it by type. A search box in the
+                        masthead of every page finds items by the
+                        words of their id, title or brief.
+
                         The issue list groups the issues by subject,
                         with the size of each argument and whether it
                         is settled. The page of an issue opens with
@@ -86,6 +99,7 @@ import htpy
 import cc_public.requirement.compose
 import cc_public.requirement.review
 import cc_public.web.argument
+import cc_public.web.catalogue
 import cc_public.web.contract
 import cc_public.web.description
 import cc_public.web.light
@@ -97,11 +111,25 @@ import cc_public.web.step
 
 
 TITLE_SITE        = 'Capability Commons'
+PATH_HOME         = '/'
+PATH_ISSUES       = '/issues'
 PATH_REQUIREMENTS = '/requirements'
 PATH_INTERFACES   = '/interfaces'
-LIST_INDEX        = (('Issues',       '/'),
-                     ('Requirements', PATH_REQUIREMENTS),
-                     ('Interfaces',   PATH_INTERFACES))
+PATH_SUBJECTS     = '/subjects'
+PATH_SUBJECT      = '/subject/'
+PATH_TYPE         = '/type/'
+PATH_SEARCH       = '/search'
+LIST_INDEX        = (('Index',    PATH_HOME),
+                     ('Subjects', PATH_SUBJECTS))
+KEY_QUERY         = 'q'
+KEY_CONCEPT       = 'id_concept'
+
+# The types whose items have a list of their own, richer than the list
+# of a type page, which the index leads to instead.
+#
+MAP_TYPE_LIST     = {'t_issue':                      PATH_ISSUES,
+                     't_requirement':                PATH_REQUIREMENTS,
+                     't_interface_control_document': PATH_INTERFACES}
 PATH_STATIC       = '/static/'
 PATH_ISSUE        = '/issue/'
 PATH_REQUIREMENT  = '/requirement/'
@@ -193,7 +221,266 @@ Request           = cc_public.web.request.Request
 
 
 # -----------------------------------------------------------------------------
-def index(graph: Graph) -> str:
+def home(graph: Graph) -> str:
+    """
+    Return the index of every item: each type, in the groups of the
+    catalogue, with how many items it has and what it is, leading to
+    the list of its items.
+
+    """
+
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    list_type = [id_type for (_, list_group) in catalogue.groups() for id_type in list_group]
+
+    def row(id_type: str) -> typing.Any:
+        count = len(catalogue.items(id_type))
+        return htpy.tr(class_ = None if count else 'empty')[
+            htpy.td[htpy.a(href = _type_href(id_type))[_type_name(graph, id_type)],
+                    htpy.span(class_ = 'statement')[_prose(_type_brief(graph, id_type))]],
+            htpy.td(class_ = 'number')[str(count)]]
+
+    return _page('Index',
+                 [[htpy.section[
+                       htpy.h2[name],
+                       htpy.table(class_ = 'catalogue')[
+                           htpy.thead[htpy.tr[htpy.th['Type'],
+                                              htpy.th(class_ = 'number')['Items']]],
+                           htpy.tbody[[row(id_type) for id_type in list_group]]]]
+                   for (name, list_group) in catalogue.groups()]],
+                 [htpy.h1['Index'],
+                  htpy.p(class_ = 'subtitle')[
+                      '{count} items of {types} types'.format(
+                          count = sum(len(catalogue.items(id_type)) for id_type in list_type),
+                          types = len(list_type))]])
+
+
+# -----------------------------------------------------------------------------
+def type_list(graph: Graph, id_type: str, text: str = '') -> str | None:
+    """
+    Return the list of the items of the type id_type, those whose words
+    hold text if it is given, or None if the tree has no such type.
+
+    """
+
+    if not id_type.startswith(cc_public.web.catalogue.PREFIX_TYPE) \
+            or id_type not in graph.map_item:
+        return None
+
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    list_item = catalogue.items(id_type)
+    if text:
+        set_found = set(catalogue.search(text))
+        list_item = [id_item for id_item in list_item if id_item in set_found]
+
+    list_other = []
+    if id_type in MAP_TYPE_LIST:
+        list_other = [htpy.p['A fuller list is ',
+                             htpy.a(href = MAP_TYPE_LIST[id_type])['on its own page'], '.']]
+
+    return _page(_type_name(graph, id_type),
+                 [list_other,
+                  _search_form(text, PATH_TYPE + id_type, 'Filter'),
+                  _item_table(graph, list_item)],
+                 [htpy.h1[_type_name(graph, id_type)],
+                  htpy.p(class_ = 'subtitle')[_prose(_type_brief(graph, id_type))]],
+                 [htpy.table(class_ = 'facts')[htpy.tbody[
+                     htpy.tr[htpy.th(scope = 'row')['Items'],
+                             htpy.td[str(len(catalogue.items(id_type)))]],
+                     htpy.tr[htpy.th(scope = 'row')['Prefix'],
+                             htpy.td[htpy.code[str(graph.map_item[id_type].node.get(
+                                 cc_public.web.catalogue.KEY_PREFIX, ''))]]],
+                     htpy.tr[htpy.th(scope = 'row')['Defined'],
+                             htpy.td[htpy.a(href = PATH_ITEM + id_type)[id_type]]]]]])
+
+
+# -----------------------------------------------------------------------------
+def subjects(graph: Graph) -> str:
+    """
+    Return the list of the subjects, the logical components, each with
+    the concerns that drive it and how many items are about it.
+
+    """
+
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+
+    def row(id_subject: str) -> typing.Any:
+        subject = graph.map_item[id_subject]
+        return htpy.tr[
+            htpy.td[htpy.a(href = PATH_SUBJECT + id_subject)[subject.title or id_subject],
+                    htpy.span(class_ = 'statement')[_prose(subject.brief)]],
+            htpy.td[_titles(graph, subject.targets(cc_public.web.argument.R_IS_DRIVEN_BY))],
+            htpy.td(class_ = 'number')[
+                str(sum(len(list_item) for (_, list_item) in catalogue.about(id_subject)))]]
+
+    return _page('Subjects',
+                 [htpy.table(class_ = 'catalogue subjects')[
+                      htpy.thead[htpy.tr[htpy.th['Subject'],
+                                         htpy.th['Driving concerns'],
+                                         htpy.th(class_ = 'number')['Items']]],
+                      htpy.tbody[[row(id_subject) for id_subject in catalogue.subjects()]]]],
+                 [htpy.h1['Subjects'],
+                  htpy.p(class_ = 'subtitle')[
+                      'The logical components, and what is about each.']])
+
+
+# -----------------------------------------------------------------------------
+def subject(graph: Graph, id_subject: str) -> str | None:
+    """
+    Return the page of the subject id_subject: the items about it,
+    gathered by type, with the concerns that drive it beside its head,
+    or None if the tree has no such subject.
+
+    """
+
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    if id_subject not in catalogue.subjects():
+        return None
+
+    item = graph.map_item[id_subject]
+
+    def listed(id_type: str, list_id: list[str]) -> typing.Any:
+        if id_type == 't_issue':
+            return _issue_table(graph, [graph.issue(id_item) for id_item in list_id])
+        if id_type == 't_requirement':
+            return _requirement_table(graph, [graph.map_item[id_item] for id_item in list_id])
+        return _item_table(graph, list_id)
+
+    return _page(item.title or id_subject,
+                 [[htpy.section[htpy.h2[_type_name(graph, id_type)], listed(id_type, list_id)]
+                   for (id_type, list_id) in catalogue.about(id_subject)]
+                  or htpy.p['Nothing is about this subject yet.']],
+                 [htpy.h1[item.title or id_subject],
+                  htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
+                 [htpy.table(class_ = 'facts')[htpy.tbody[
+                     htpy.tr[htpy.th(scope = 'row')['Concerns'],
+                             htpy.td[[htpy.span(class_ = 'line')[graph.title(id_concern)]
+                                      for id_concern in item.targets(
+                                          cc_public.web.argument.R_IS_DRIVEN_BY)]]],
+                     htpy.tr[htpy.th(scope = 'row')['Id'],
+                             htpy.td[htpy.a(href = PATH_ITEM + id_subject)[id_subject]]]]]])
+
+
+# -----------------------------------------------------------------------------
+def search(graph: Graph, text: str) -> str:
+    """
+    Return the items whose words hold text, with the type of each, those
+    that match by id or title first.
+
+    """
+
+    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    list_item = catalogue.search(text)
+
+    if not text.strip():
+        subtitle = 'Type words from an id, a title or a brief.'
+    elif not list_item:
+        subtitle = 'No item holds those words.'
+    elif len(list_item) >= cc_public.web.catalogue.COUNT_FOUND:
+        subtitle = 'The first {count} items that hold those words.'.format(count = len(list_item))
+    else:
+        subtitle = '{count} item{s} hold{verb} those words.'.format(
+                       count = len(list_item),
+                       s     = '' if len(list_item) == 1 else 's',
+                       verb  = 's' if len(list_item) == 1 else '')
+
+    return _page('Search',
+                 [_item_table(graph, list_item, catalogue) if list_item else None],
+                 [htpy.h1['Search'],
+                  htpy.p(class_ = 'subtitle')[subtitle]],
+                 text_search = text)
+
+
+# -----------------------------------------------------------------------------
+def _item_table(graph:     Graph,
+                list_id:   list[str],
+                catalogue: cc_public.web.catalogue.Catalogue | None = None) -> typing.Any:
+    """
+    Return a table of the items list_id: each with its brief under its
+    title and its id and file under that, and its type beside it if
+    catalogue is given.
+
+    """
+
+    def row(id_item: str) -> typing.Any:
+        item = graph.map_item[id_item]
+        return htpy.tr[
+            htpy.td[htpy.a(href = _href(id_item))[item.title or id_item],
+                    htpy.span(class_ = 'statement')[_prose(item.brief)],
+                    htpy.span(class_ = 'where')[htpy.code[id_item],
+                                                [htpy.span(class_ = 'bar')['|'], item.file]
+                                                if item.file else None]],
+            htpy.td[_type_name(graph, catalogue.type_of(id_item))] if catalogue else None]
+
+    return htpy.table(class_ = 'catalogue items')[
+        htpy.thead[htpy.tr[htpy.th['Item'],
+                           htpy.th['Type'] if catalogue else None]],
+        htpy.tbody[[row(id_item) for id_item in list_id]]]
+
+
+# -----------------------------------------------------------------------------
+def _search_form(text:   str,
+                 action: str = PATH_SEARCH,
+                 label:  str = 'Search',
+                 css:    str = 'search') -> typing.Any:
+    """
+    Return the form that finds items by their words, sent to action,
+    holding text, with label on its button and the classes css. The
+    box in the masthead is too narrow to say what to type.
+
+    """
+
+    placeholder = '' if 'masthead' in css else 'Words from an id, a title or a brief'
+
+    return htpy.form(class_ = css, method = 'get', action = action)[
+        htpy.input(type        = 'search',
+                   name        = KEY_QUERY,
+                   value       = text,
+                   placeholder = placeholder,
+                   aria_label  = label),
+        ' ',
+        htpy.button(type = 'submit', class_ = 'plain')[label]]
+
+
+# -----------------------------------------------------------------------------
+def _type_href(id_type: str) -> str:
+    """
+    Return the address of the list of the items of the type id_type.
+
+    """
+
+    return MAP_TYPE_LIST.get(id_type, PATH_TYPE + id_type)
+
+
+# -----------------------------------------------------------------------------
+def _type_brief(graph: Graph, id_type: str) -> str:
+    """
+    Return what the items of the type id_type are: the brief of the
+    concept the type names, or else the brief of the type.
+
+    """
+
+    item       = graph.map_item[id_type]
+    id_concept = str(item.node.get(KEY_CONCEPT, ''))
+    if id_concept in graph.map_item and graph.map_item[id_concept].brief:
+        return graph.map_item[id_concept].brief
+    return item.brief
+
+
+# -----------------------------------------------------------------------------
+def _type_name(graph: Graph, id_type: str) -> str:
+    """
+    Return the name of the type id_type, its title without the word
+    type, or Item if id_type is ''.
+
+    """
+
+    if not id_type:
+        return 'Item'
+    return graph.title(id_type).removesuffix(' type') or id_type
+
+
+# -----------------------------------------------------------------------------
+def issues(graph: Graph) -> str:
     """
     Return the page that lists every issue, grouped by its subject.
 
@@ -1620,12 +1907,13 @@ def refused(message: str) -> str:
 def _page(title:       str,
           body:        typing.Any,
           head:        typing.Any = None,
-          head_margin: typing.Any = None) -> str:
+          head_margin: typing.Any = None,
+          text_search: str        = '') -> str:
     """
     Return the HTML of a page with title and body. head follows the
-    name of the site and the links to the indexes in the text column,
-    with head_margin beside them in the margin, so the margin starts at
-    the top of the page.
+    name of the site, the links to the indexes and the search box,
+    holding text_search, in the text column, with head_margin beside
+    them in the margin, so the margin starts at the top of the page.
 
     """
 
@@ -1641,7 +1929,8 @@ def _page(title:       str,
                 _block([htpy.header[TITLE_SITE,
                                     [[htpy.span(class_ = 'bar')['|'],
                                       htpy.a(href = href)[name]]
-                                     for (name, href) in LIST_INDEX]],
+                                     for (name, href) in LIST_INDEX],
+                                    _search_form(text_search, css = 'search masthead')],
                         head],
                        [head_margin],
                        class_ = 'masthead ruled' if head_margin else 'masthead'),
@@ -2105,7 +2394,9 @@ def _href(id_item: str) -> str:
     """
     Return the address of the page of id_item: the issue page for an
     issue, the requirement page for a requirement, the interface page
-    for an interface control document, the item page otherwise.
+    for an interface control document, the subject page for a logical
+    component, the list of its items for a type, and the item page
+    otherwise.
 
     """
 
@@ -2115,6 +2406,10 @@ def _href(id_item: str) -> str:
         return PATH_REQUIREMENT + id_item
     if id_item.startswith(cc_public.web.contract.PREFIX_INTERFACE):
         return PATH_INTERFACE + id_item
+    if id_item.startswith(cc_public.web.catalogue.PREFIX_SUBJECT):
+        return PATH_SUBJECT + id_item
+    if id_item.startswith(cc_public.web.catalogue.PREFIX_TYPE):
+        return PATH_TYPE + id_item
     return PATH_ITEM + id_item
 
 

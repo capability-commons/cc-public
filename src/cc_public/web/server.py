@@ -17,14 +17,16 @@ brief:                  |
                         computer.
 description:            |
                         respond maps the path of a request to a page
-                        (the issue list, an issue, the requirement
-                        list, a requirement, the list of interface
-                        control documents, one of them, or any item),
-                        or to a file of the _static directory, and
-                        reads the tree afresh for each page. serve
-                        answers GET requests with respond, until
-                        interrupted. It uses the HTTP server of the
-                        standard library.
+                        (the index of every type, the list of the
+                        items of a type, the subjects, a subject, a
+                        search, the issue list, an issue, the
+                        requirement list, a requirement, the list of
+                        interface control documents, one of them, or
+                        any item), or to a file of the _static
+                        directory, and reads the tree afresh for each
+                        page. serve answers GET requests with respond,
+                        until interrupted. It uses the HTTP server of
+                        the standard library.
 
                         submit answers the forms of the pages that
                         change the data. It turns a form into a batch
@@ -67,7 +69,9 @@ TYPE_HTML         = 'text/html; charset=utf-8'
 TYPE_DEFAULT      = 'application/octet-stream'
 SET_HOST_LOCAL    = {'127.0.0.1', 'localhost', '[::1]'}
 LOCK_READ         = threading.Lock()
-MAP_INDEX         = {'/':                                 cc_public.web.page.index,
+MAP_INDEX         = {cc_public.web.page.PATH_HOME:         cc_public.web.page.home,
+                     cc_public.web.page.PATH_ISSUES:       cc_public.web.page.issues,
+                     cc_public.web.page.PATH_SUBJECTS:     cc_public.web.page.subjects,
                      cc_public.web.page.PATH_REQUIREMENTS: cc_public.web.page.requirements,
                      cc_public.web.page.PATH_INTERFACES:   cc_public.web.page.interfaces}
 
@@ -91,10 +95,15 @@ def respond(root: pathlib.Path, path: str) -> tuple[int, str, bytes]:
     if path == cc_public.web.page.PATH_EDIT:
         return _form(root, query)
 
-    if path in MAP_INDEX:
-        return (http.HTTPStatus.OK, TYPE_HTML, MAP_INDEX[path](_graph(root)).encode())
+    if path in MAP_INDEX or path == cc_public.web.page.PATH_SEARCH:
+        graph = _graph(root)
+        body  = (MAP_INDEX[path](graph) if path in MAP_INDEX
+                 else cc_public.web.page.search(graph, _text(query)))
+        return (http.HTTPStatus.OK, TYPE_HTML, body.encode())
 
-    for prefix in (cc_public.web.page.PATH_ISSUE,
+    for prefix in (cc_public.web.page.PATH_TYPE,
+                   cc_public.web.page.PATH_SUBJECT,
+                   cc_public.web.page.PATH_ISSUE,
                    cc_public.web.page.PATH_REQUIREMENT,
                    cc_public.web.page.PATH_INTERFACE,
                    cc_public.web.page.PATH_ITEM):
@@ -219,6 +228,9 @@ def _item_page(root:    pathlib.Path,
 
     graph = _graph(root)
 
+    if prefix in (cc_public.web.page.PATH_TYPE, cc_public.web.page.PATH_SUBJECT):
+        return _catalogue_page(graph, prefix, id_item, query)
+
     if prefix == cc_public.web.page.PATH_ISSUE:
         issue = graph.issue(id_item)
         if issue is None:
@@ -230,9 +242,35 @@ def _item_page(root:    pathlib.Path,
     if prefix == cc_public.web.page.PATH_REQUIREMENT:
         return cc_public.web.page.requirement(graph, id_item)
 
-    if id_item not in graph.map_item:
-        return None
-    return cc_public.web.page.item(graph, id_item)
+    return cc_public.web.page.item(graph, id_item) if id_item in graph.map_item else None
+
+
+# -----------------------------------------------------------------------------
+def _catalogue_page(graph:   cc_public.web.argument.Graph,
+                    prefix:  str,
+                    id_item: str,
+                    query:   str) -> str | None:
+    """
+    Return the list of the items of the type id_item, or the page of
+    the subject id_item, as prefix says, or None if graph has no such
+    type or subject.
+
+    """
+
+    if prefix == cc_public.web.page.PATH_TYPE:
+        return cc_public.web.page.type_list(graph, id_item, _text(query))
+    return cc_public.web.page.subject(graph, id_item)
+
+
+# -----------------------------------------------------------------------------
+def _text(query: str) -> str:
+    """
+    Return the words typed into the search box, from query.
+
+    """
+
+    map_value = urllib.parse.parse_qs(query)
+    return map_value.get(cc_public.web.page.KEY_QUERY, [''])[0].strip()
 
 
 # -----------------------------------------------------------------------------
