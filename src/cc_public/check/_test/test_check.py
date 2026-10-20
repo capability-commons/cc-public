@@ -316,7 +316,7 @@ def test_an_annotation_about_nothing_is_reported(tree):
 
 def test_an_option_that_answers_no_decision_is_reported(tree):
     _item(tree, '_data/option/opt_x.yaml', 'opt_x')
-    assert _check(tree) == {'answer_count': [('opt_x', '0')]}
+    assert _check(tree) == {'option_count': [('opt_x', '0')]}
 
 
 def test_a_decision_about_nothing_is_reported(tree):
@@ -367,7 +367,7 @@ def test_a_decision_no_option_answers_is_advice(tree):
     (failures, advice) = cc_public.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
-    assert advice == {'unanswered_decision': [('dec_x',)]}
+    assert advice == {'decision_without_options': [('dec_x',)]}
 
 
 def test_a_determination_across_two_decisions_is_reported(tree):
@@ -559,7 +559,7 @@ def test_a_mark_held_nowhere_here_is_advice_not_a_failure(tree):
 def test_a_reference_with_a_stale_guid_is_reported(tree):
     edge = dict(_edge(tree, 'r_is_about', ID_ABOUT), guid_target = _guid('concern'))
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
-    assert _check(tree) == {'stale_guid': [('ann_x', 'target', ID_ABOUT,
+    assert _check(tree) == {'guid_mismatch': [('ann_x', 'target', ID_ABOUT,
                                                  edge['guid_target'], location, LINE_TARGET)]}
 
 

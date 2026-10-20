@@ -416,19 +416,19 @@ dangling_reference(Holder, Field, Id, File, Line) :-
 % -----------------------------------------------------------------------------
 % Every reference carries the guid of the item it names.
 %
-% decl stale_guid(holder: symbol,
-%                 field:  symbol,
-%                 id:     symbol,
-%                 guid:   symbol,
-%                 file:   symbol,
-%                 line:   number)
+% decl guid_mismatch(holder: symbol,
+%                    field:  symbol,
+%                    id:     symbol,
+%                    guid:   symbol,
+%                    file:   symbol,
+%                    line:   number)
 % did  {holder} names {id} in its {field} field with the guid {guid},
 %      which is not the guid of {id}.
 % fix  Copy the guid of the item named, or write the edge with cctool
 %      link, which copies it.
-#show stale_guid/6.
+#show guid_mismatch/6.
 
-stale_guid(Holder, Field, Id, Guid, File, Line) :-
+guid_mismatch(Holder, Field, Id, Guid, File, Line) :-
     reference(Holder, Field, Id, Guid, File, Line),
     item(Id, Other, _, _, _),
     Guid != Other.
@@ -499,16 +499,16 @@ missing_about(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% Every option answers exactly one decision. The options that answer
+% Every option is an option for exactly one decision. The options for
 % a decision are its alternatives.
 %
-% decl answer_count(option: symbol,
-%                   decisions:   number)
-% did  The option {option} answers {decisions} decisions, not 1.
-% fix  Give the option one edge of r_is_option_for, to the decision it answers.
-#show answer_count/2.
+% decl option_count(option:    symbol,
+%                   decisions: number)
+% did  The option {option} is an option for {decisions} decisions, not 1.
+% fix  Give the option one edge of r_is_option_for, to its decision.
+#show option_count/2.
 
-answer_count(Option, Decisions) :-
+option_count(Option, Decisions) :-
     type_of(Option, "t_option"),
     Decisions = #count { Decision : primary_edge(Option, "r_is_option_for", Decision) },
     Decisions != 1.
@@ -637,7 +637,7 @@ competing_determinations(Decision, Determination, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% The option, or an alternative to it that answers the same decision,
+% The option, or an alternative to it for the same decision,
 % has an annotation that supports or challenges it for the concern.
 %
 % decl argued(option: symbol,

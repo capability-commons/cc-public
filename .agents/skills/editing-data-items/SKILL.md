@@ -62,7 +62,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   it, such as the annotation or type that uses it.
 - **An argument lives in the folder of its decision.** Start one with a
   decision (`new dec_NAME --link r_is_about lc_NAME`), then give each option
-  `--link r_is_option_for dec_NAME` (`answer_count` refuses an option that
+  `--link r_is_option_for dec_NAME` (`option_count` refuses an option that
   is linked to no decision, or to two) and each annotation `--link r_is_about
   dec_NAME`. `new` writes all of them, and determinations, in
   `_data/decision/dec_NAME/`; anything moved there by hand is checked by
