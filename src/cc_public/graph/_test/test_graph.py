@@ -166,7 +166,7 @@ def test_text_names_the_decision_and_standing_of_each_option_it_finds(tree):
                                                         'cross-item checks in Souffle or Rust')
     map_hit               = {row[1]: dict(zip(tuple_column, row, strict = True)) for row in rows}
     assert map_hit['opt_cross_item_checks_in_souffle']['standing']      == 'rejected'
-    assert map_hit['opt_cross_item_checks_in_souffle']['determination'] == 'det_cross_item_checks_engine'
+    assert map_hit['opt_cross_item_checks_in_souffle']['ruling'] == 'ruling_cross_item_checks_engine'
     assert map_hit['opt_cross_item_checks_in_souffle']['upheld']        == 'opt_cross_item_checks_in_clingo'
     assert map_hit['opt_tooling_in_rust']['standing']                   == 'open'
     assert map_hit['opt_tooling_in_rust']['decision']                      == 'dec_tooling_language'

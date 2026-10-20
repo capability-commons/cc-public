@@ -38,7 +38,7 @@ import cc_public.web.server
 ID_DECISION      = 'dec_cross_item_checks_engine'
 ID_UPHELD        = 'opt_cross_item_checks_in_clingo'
 ID_REJECTED      = 'opt_cross_item_checks_in_souffle'
-ID_DETERMINATION = 'det_cross_item_checks_engine'
+ID_RULING        = 'ruling_cross_item_checks_engine'
 ID_OPEN          = 'dec_tooling_language'
 ID_ANNOTATION    = 'ann_clingo_is_slower_at_this_size'
 HOST             = '127.0.0.1:8100'
@@ -92,20 +92,20 @@ def test_an_answer_bears_on_its_annotation_and_speaks_for_no_concern(tree):
     assert operation['link'] == [['r_is_about', ID_DECISION], ['r_supports', ID_ANNOTATION]]
 
 
-def test_to_uphold_changes_the_one_determination_of_the_decision(tree):
+def test_to_uphold_changes_the_one_ruling_of_the_decision(tree):
     assert _operations(tree, kind = 'determine', target = ID_REJECTED, role = 'uphold',
                        reason = 'Because.') == [
-        {'set':    [ID_DETERMINATION, 'brief', 'Because.']},
-        {'unlink': [ID_DETERMINATION, 'r_rejects', ID_REJECTED]},
-        {'link':   [ID_DETERMINATION, 'r_upholds', ID_REJECTED]}]
+        {'set':    [ID_RULING, 'brief', 'Because.']},
+        {'unlink': [ID_RULING, 'r_rejects', ID_REJECTED]},
+        {'link':   [ID_RULING, 'r_upholds', ID_REJECTED]}]
 
 
-def test_to_reject_an_open_decision_makes_its_determination(tree):
+def test_to_reject_an_open_decision_makes_its_ruling(tree):
     graph = cc_public.web.argument.Graph(tree)
     [id_option, *_] = [option.id for option in graph.decision(ID_OPEN).list_option]
     assert _operations(tree, kind = 'determine', target = id_option, role = 'reject',
                        reason = 'Because.') == [
-        {'new':   'det_tooling_language',
+        {'new':   'ruling_tooling_language',
          'field': {'title': graph.title(ID_OPEN), 'brief': 'Because.'},
          'link':  [['r_rejects', id_option]]}]
 
@@ -154,15 +154,15 @@ def test_an_argument_without_a_concern_is_refused_and_writes_nothing(tree):
     assert cc_public.edit.edit.Tree(tree).map_original.keys() == before
 
 
-def test_an_uphold_sent_changes_the_determination_in_place(tree):
+def test_an_uphold_sent_changes_the_ruling_in_place(tree):
     (status, _, _, _) = _submit(tree, kind = 'determine', target = ID_REJECTED,
                                 role = 'uphold', reason = 'Both, for now.')
     assert status == http.HTTPStatus.SEE_OTHER
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
-    assert [item.id for item in decision.list_determination] == [ID_DETERMINATION]
+    assert [item.id for item in decision.list_ruling] == [ID_RULING]
     assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
     assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
-    assert decision.list_determination[0].brief.strip() == 'Both, for now.'
+    assert decision.list_ruling[0].brief.strip() == 'Both, for now.'
 
 
 def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):

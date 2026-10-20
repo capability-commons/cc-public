@@ -290,9 +290,8 @@ table:
                         asserts something and an option proposes
                         something. Annotations give the reasons for
                         and against an option, and those reasons are
-                        its rationale. A determination upholds or
-                        rejects it, and an option no determination
-                        names is open.
+                        its rationale. A ruling upholds or rejects it,
+                        and an option no ruling names is open.
     note:               |
                         The options for a decision are the
                         alternatives that ISO/IEC/IEEE 42010:2011,
@@ -499,27 +498,27 @@ table:
     relation:           []
 
   # ---------------------------------------------------------------------------
-  # con_determination -- Determination
+  # con_ruling -- Ruling
   #
-  con_determination:
-    id_self:            con_determination
+  con_ruling:
+    id_self:            con_ruling
     guid_self:          con_be674cf787004448ac2a890e84893d3a
-    title:              Determination
+    title:              Ruling
     brief:              |
                         The act of settling, given the arguments
                         presented, that an option holds or does not
                         hold, recorded as an item of its own.
     description:        |
-                        A determination is made by someone, and is
-                        changed in place when they change the ruling,
-                        so that a decision has at most one. It is not
-                        the evaluation of the arguments, which is to
-                        be computed from them for a given ranking of
+                        A ruling is made by someone, and is changed in
+                        place when they change the ruling, so that a
+                        decision has at most one. It is not the
+                        evaluation of the arguments, which is to be
+                        computed from them for a given ranking of
                         concerns, and would change whenever an
                         argument is added. No evaluator exists yet.
                         Where the two disagree, the arguments have
-                        moved since the determination was made, and it
-                        may be time to change it.
+                        moved since the ruling was made, and it may be
+                        time to change it.
     note:               |
                         Abstract argumentation evaluates arguments and
                         says nothing of who acts on the result: Dung,
@@ -534,8 +533,18 @@ table:
                         Systems 22, 2007.
 
                         Arcadia has no counterpart.
-    term_preferred:     determination
-    alias:              []
+
+                        The term "determination" was the first name of
+                        the concept and is deprecated: "ruling" says
+                        the same thing in plainer words.
+    term_preferred:     ruling
+
+    term_deprecated:
+      - determination
+
+    alias:
+      - con_determination
+
     relation:           []
 
   # ---------------------------------------------------------------------------
@@ -552,10 +561,9 @@ table:
     description:        |
                         A decision is stated before it is settled. Its
                         options are the alternatives, and every
-                        annotation about it, and every determination
-                        that upholds or rejects one of its options,
-                        belongs to it. A decision with no
-                        determination is open.
+                        annotation about it, and every ruling that
+                        upholds or rejects one of its options, belongs
+                        to it. A decision with no ruling is open.
     note:               |
                         The concept follows architecture decisions and
                         rationale in ISO/IEC/IEEE 42010:2011, Systems
@@ -567,7 +575,7 @@ table:
                         to the items it is about, its options record
                         the alternatives, annotations carry the
                         rationale and link it to concerns, and a
-                        determination records the outcome. Owner and
+                        ruling records the outcome. Owner and
                         timestamps are left to git. MADR and the
                         decision management process of ISO/IEC/IEEE
                         15288 likewise use "decision" for the question

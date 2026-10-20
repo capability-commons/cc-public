@@ -88,27 +88,27 @@ document_schema(Id, Schema) :-
 
 
 % -----------------------------------------------------------------------------
-% The determination upholds or rejects the option.
+% The ruling upholds or rejects the option.
 %
-% decl settles(determination: symbol,
-%              option:      symbol)
+% decl settles(ruling: symbol,
+%              option: symbol)
 
-settles(Determination, Option) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_upholds", Option).
+settles(Ruling, Option) :-
+    type_of(Ruling, "t_ruling"),
+    primary_edge(Ruling, "r_upholds", Option).
 
-settles(Determination, Option) :-
-    type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_rejects", Option).
+settles(Ruling, Option) :-
+    type_of(Ruling, "t_ruling"),
+    primary_edge(Ruling, "r_rejects", Option).
 
 
 % -----------------------------------------------------------------------------
 % The item belongs to the decision: it is the decision, an option that
-% answers it, an annotation about it, or a determination that settles
+% answers it, an annotation about it, or a ruling that settles
 % an option that answers it.
 %
-% decl decision_of(id:    symbol,
-%               decision: symbol)
+% decl decision_of(id:       symbol,
+%                  decision: symbol)
 
 decision_of(Id, Id) :-
     type_of(Id, "t_decision").

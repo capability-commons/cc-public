@@ -18,11 +18,11 @@ brief:                  |
                         each.
 description:            |
                         This package reads the decisions, options,
-                        annotations and determinations of a tree, and
-                        serves them as pages on this computer, set
-                        after Tufte: serif text, a margin for notes,
-                        and colour only in marks that carry meaning.
-                        The pages change nothing.
+                        annotations and rulings of a tree, and serves
+                        them as pages on this computer, set after
+                        Tufte: serif text, a margin for notes, and
+                        colour only in marks that carry meaning. The
+                        pages change nothing.
 relation:               []
 
 ...

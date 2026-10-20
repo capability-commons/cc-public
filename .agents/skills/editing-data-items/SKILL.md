@@ -64,24 +64,24 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   decision (`new dec_NAME --link r_is_about lc_NAME`), then give each option
   `--link r_is_option_for dec_NAME` (`option_count` refuses an option that
   is linked to no decision, or to two) and each annotation `--link r_is_about
-  dec_NAME`. `new` writes all of them, and determinations, in
+  dec_NAME`. `new` writes all of them, and rulings, in
   `_data/decision/dec_NAME/`; anything moved there by hand is checked by
   `misplaced_document`.
 - **An annotation or decision is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
-- **A determination is refused unless it upholds or rejects an option**
-  (`determination_without_option`). Give `--link r_upholds DEC` or
-  `--link r_rejects DEC`. Only record a determination that a person
+- **A ruling is refused unless it upholds or rejects an option**
+  (`no_option_in_ruling`). Give `--link r_upholds DEC` or
+  `--link r_rejects DEC`. Only record a ruling that a person
   has made; the commit that adds it says who and when.
-- **A determination that upholds an option is refused while a driver
+- **A ruling that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
   component the decision is about `r_is_driven_by` needs an annotation
   for it that supports or challenges the option or another option for
   the same decision. Rejecting an option needs no such annotation.
   Argue it; do not drop the driver to pass.
-- **A second determination of a decision is refused**
-  (`competing_determinations`). A decision has at most one. When the
-  person who settled it changes their ruling, edit that determination
+- **A second ruling of a decision is refused**
+  (`competing_rulings`). A decision has at most one. When the
+  person who settled it changes their ruling, edit that ruling
   in place with `set`, `link` and `unlink`; the commits that change its
   file are the history of the ruling.
 - **`restriction_violation`** means an end of the edge does not meet a

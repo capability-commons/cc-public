@@ -845,49 +845,51 @@ table:
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
 
   # ---------------------------------------------------------------------------
-  # t_determination -- Determination type
+  # t_ruling -- Ruling type
   #
-  t_determination:
-    id_self:            t_determination
+  t_ruling:
+    id_self:            t_ruling
     guid_self:          t_98455ab5aded4a16b18756fe0f991d21
-    title:              Determination type
+    title:              Ruling type
     brief:              |
-                        Type of determination data items.
+                        Type of ruling data items.
     description:        |
-                        Each determination data item records that one
-                        or more options have been upheld or rejected.
+                        Each ruling data item records that one or more
+                        options have been upheld or rejected.
     usage:              |
-                        An option that no determination names is open.
-                        A determination that upholds one option may
-                        reject its alternatives in the same item.
+                        An option that no ruling names is open. A
+                        ruling that upholds one option may reject its
+                        alternatives in the same item.
     note:               |
-                        Determination data items travel on their own,
-                        one per file, in the folder of the decision
-                        whose options they settle.
+                        Ruling data items travel on their own, one per
+                        file, in the folder of the decision whose
+                        options they settle.
 
-                        A decision has at most one determination. A
-                        change of ruling edits it in place, and what
-                        was determined before is in the history of its
+                        A decision has at most one ruling. A change of
+                        ruling edits it in place, and what was
+                        determined before is in the history of its
                         file.
 
-                        The shape of determination data items is
-                        defined by the sch_determination schema.
-    prefix:             det
-    regex_id:           ^det_[a-z][a-z0-9_]*$
-    id_concept:         con_determination
+                        The shape of ruling data items is defined by
+                        the sch_ruling schema.
+    prefix:             ruling
+    regex_id:           ^ruling_[a-z][a-z0-9_]*$
+    id_concept:         con_ruling
     guid_concept:       con_be674cf787004448ac2a890e84893d3a
-    alias:              []
+
+    alias:
+      - t_determination
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_determination
+        id_target:      sch_ruling
         guid_target:    sch_bc22fad5b8e54f2fa6a099f34cc7dc6c
 
       - id_relation:    r_has_items_that_play
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
-        id_target:      rol_determination
+        id_target:      rol_ruling
         guid_target:    rol_d29d91e4122247f0b0aaa44955219209
 
   # ---------------------------------------------------------------------------
@@ -906,13 +908,12 @@ table:
     usage:              |
                         A decision gathers an argument in one place:
                         the options for it, the annotations about it,
-                        and the determinations that settle it.
+                        and the rulings that settle it.
     note:               |
                         Each decision has a folder of its own,
                         _data/decision/ followed by its id, which
                         holds the decision and every option,
-                        annotation and determination that belongs to
-                        it.
+                        annotation and ruling that belongs to it.
 
                         The shape of decision data items is defined by
                         the sch_decision schema.

@@ -360,10 +360,10 @@ def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
                         'link': [['r_is_option_for', 'dec_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
                         'link': [['r_is_about', 'dec_x']]},
-                       {'new': 'det_x', 'field': FIELD_ANN,
+                       {'new': 'ruling_x', 'field': FIELD_ANN,
                         'link': [['r_upholds', 'opt_x']]}) == {}
     assert sorted(path.name for path in (tree / '_data/decision/dec_x').iterdir()) == [
-        'ann_x.yaml', 'dec_x.yaml', 'det_x.yaml', 'opt_x.yaml']
+        'ann_x.yaml', 'dec_x.yaml', 'opt_x.yaml', 'ruling_x.yaml']
 
 
 def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):

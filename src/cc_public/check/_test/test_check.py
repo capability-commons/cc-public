@@ -338,10 +338,10 @@ def test_an_annotation_about_a_decision_is_kept_in_its_folder(tree):
         ('ann_x', '_data/annotation/ann_x.yaml', DIR_DECISION + 'ann_x.yaml')]}
 
 
-def test_a_determination_that_upholds_an_option_passes(tree):
+def test_a_ruling_that_upholds_an_option_passes(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x'),
                                                     _edge(tree, 'r_rejects', 'opt_y')])
     assert _check(tree) == {}
 
@@ -370,38 +370,38 @@ def test_a_decision_no_option_answers_is_advice(tree):
     assert advice == {'decision_without_options': [('dec_x',)]}
 
 
-def test_a_determination_across_two_decisions_is_reported(tree):
+def test_a_ruling_across_two_decisions_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_subject(tree)])
     _item(tree, '_data/decision/dec_y/opt_y.yaml', 'opt_y', [_edge(tree, 'r_is_option_for', 'dec_y')])
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x'),
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x'),
                                                     _edge(tree, 'r_rejects', 'opt_y')])
     failures = _check(tree)
-    assert failures['determination_across_decisions'] == [('det_x', 'dec_x', 'dec_y')]
+    assert failures['decisions_mixed_in_ruling'] == [('ruling_x', 'dec_x', 'dec_y')]
 
 
-def test_two_determinations_of_a_decision_are_reported(tree):
+def test_two_rulings_of_a_decision_are_reported(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    _item(tree, DIR_DECISION + 'det_y.yaml', 'det_y', [_edge(tree, 'r_upholds', 'opt_y')])
-    assert _check(tree) == {'competing_determinations': [('dec_x', 'det_x', 'det_y')]}
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'ruling_y.yaml', 'ruling_y', [_edge(tree, 'r_upholds', 'opt_y')])
+    assert _check(tree) == {'competing_rulings': [('dec_x', 'ruling_x', 'ruling_y')]}
 
 
-def test_an_option_that_supersedes_a_determination_is_reported(tree):
+def test_an_option_that_supersedes_a_ruling_is_reported(tree):
     _option(tree, 'opt_x')
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    _option(tree, 'opt_y', [_edge(tree, 'r_supersedes', 'det_x')])
-    assert _check(tree)['supersession_across_types'] == [('opt_y', 'det_x')]
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _option(tree, 'opt_y', [_edge(tree, 'r_supersedes', 'ruling_x')])
+    assert _check(tree)['supersession_across_types'] == [('opt_y', 'ruling_x')]
 
 
-def test_a_determination_that_supersedes_is_reported(tree):
+def test_a_ruling_that_supersedes_is_reported(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    _item(tree, DIR_DECISION + 'det_y.yaml', 'det_y',
-          [_edge(tree, 'r_upholds', 'opt_y'), _edge(tree, 'r_supersedes', 'det_x')])
-    assert ('det_y', 'r_supersedes', 'det_x', 'source', 'rrs_is_supersedable') \
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'ruling_y.yaml', 'ruling_y',
+          [_edge(tree, 'r_upholds', 'opt_y'), _edge(tree, 'r_supersedes', 'ruling_x')])
+    assert ('ruling_y', 'r_supersedes', 'ruling_x', 'source', 'rrs_is_supersedable') \
         in _check(tree)['restriction_violation']
 
 
@@ -413,9 +413,9 @@ def test_a_copy_of_an_item_is_reported(tree):
         ('lc_tooling', '_data/logical_component/lc_tooling_copy.yaml', '1')]
 
 
-def test_a_determination_of_nothing_is_reported(tree):
-    _item(tree, '_data/determination/det_x.yaml', 'det_x')
-    assert _check(tree) == {'determination_without_option': [('det_x',)]}
+def test_a_ruling_of_nothing_is_reported(tree):
+    _item(tree, '_data/ruling/ruling_x.yaml', 'ruling_x')
+    assert _check(tree) == {'no_option_in_ruling': [('ruling_x',)]}
 
 
 def _driven_options(tree):
@@ -432,15 +432,15 @@ def _driven_options(tree):
     _option(tree, 'opt_y')
 
 
-def test_a_determination_with_a_driver_unargued_is_reported(tree):
+def test_a_ruling_with_a_driver_unargued_is_reported(tree):
     _driven_options(tree)
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    assert _check(tree) == {'unargued_driver': [('det_x', 'opt_x', 'concern_cost')]}
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_cost')]}
 
 
 def test_a_rejection_with_a_driver_unargued_passes(tree):
     _driven_options(tree)
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_rejects', 'opt_x')])
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_rejects', 'opt_x')])
     assert _check(tree) == {}
 
 
@@ -452,8 +452,8 @@ def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
                                                           _edge(tree, 'r_challenges', 'opt_z'),
                                                           _edge(tree, 'r_speaks_for_concern',
                                                                 'concern_cost')])
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
-    assert _check(tree) == {'unargued_driver': [('det_x', 'opt_x', 'concern_cost')]}
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_cost')]}
 
 
 def test_a_driver_argued_for_an_alternative_passes(tree):
@@ -462,7 +462,7 @@ def test_a_driver_argued_for_an_alternative_passes(tree):
                                                     _edge(tree, 'r_challenges', 'opt_y'),
                                                     _edge(tree, 'r_speaks_for_concern',
                                                           'concern_cost')])
-    _item(tree, DIR_DECISION + 'det_x.yaml', 'det_x', [_edge(tree, 'r_upholds', 'opt_x')])
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'r_upholds', 'opt_x')])
     assert _check(tree) == {}
 
 

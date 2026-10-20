@@ -21,8 +21,8 @@ description:            |
                         item as item_text, an FTS5 table, and ranks
                         the items whose prose matches a query. Each
                         hit is expanded through the graph: to the
-                        decision it belongs to, to the determination
-                        that settles that decision and the options it
+                        decision it belongs to, to the ruling that
+                        settles that decision and the options it
                         upholds, to the standing of an option, and to
                         the concerns an annotation speaks for. A grep
                         of the files finds the words; this also says
@@ -97,8 +97,8 @@ MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL)
 # What each hit is: the item, the field that matched best and its
 # title, and what the graph says of it, read from the decision_of and
 # settles tables that derive.lp gives. The decision is the one it belongs
-# to, the determination is the one that settles that decision, and upheld
-# names the options that determination upholds. The standing of an
+# to, the ruling is the one that settles that decision, and upheld
+# names the options that ruling upholds. The standing of an
 # option is upheld, rejected or open. A higher score is a better
 # match.
 #
@@ -117,9 +117,9 @@ WITH best AS (
     GROUP BY id
 ),
 settle AS MATERIALIZED (
-    SELECT settles.determination, edge.relation, settles.option, decision_of.decision
+    SELECT settles.ruling, edge.relation, settles.option, decision_of.decision
     FROM settles
-    JOIN primary_edge AS edge ON edge.source = settles.determination
+    JOIN primary_edge AS edge ON edge.source = settles.ruling
                              AND edge.target = settles.option
                              AND edge.relation IN ('r_upholds', 'r_rejects')
     JOIN decision_of ON decision_of.id = settles.option
@@ -142,8 +142,8 @@ SELECT found.*,
                                                            ELSE 'rejected' END
                                FROM settle WHERE settle.option = found.id), 'open')
            END AS standing,
-           coalesce((SELECT group_concat(DISTINCT determination ORDER BY determination)
-                     FROM settle WHERE settle.decision = found.decision), '') AS determination,
+           coalesce((SELECT group_concat(DISTINCT ruling ORDER BY ruling)
+                     FROM settle WHERE settle.decision = found.decision), '') AS ruling,
            coalesce((SELECT group_concat(option, ' ' ORDER BY option)
                      FROM settle
                      WHERE settle.decision = found.decision AND settle.relation = 'r_upholds'),
@@ -156,7 +156,7 @@ FROM found
 """
 
 SQL_ITEM          = """
-SELECT score, id, type, field, title, decision, standing, determination, upheld, concerns
+SELECT score, id, type, field, title, decision, standing, ruling, upheld, concerns
 FROM described
 ORDER BY bm25, id
 """
@@ -165,7 +165,7 @@ SQL_DECISION         = """
 SELECT round(-min(bm25), 3) AS score, decision, count(*) AS hits,
        (SELECT text FROM item_text
         WHERE item_text.id = described.decision AND item_text.field = 'title') AS title,
-       determination, upheld
+       ruling, upheld
 FROM described
 WHERE decision != ''
 GROUP BY decision
