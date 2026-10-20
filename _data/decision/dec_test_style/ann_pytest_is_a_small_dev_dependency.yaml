@@ -1,0 +1,47 @@
+id_self:                ann_pytest_is_a_small_dev_dependency
+guid_self:              ann_36991dd703654e3392d4364bf426e4ed
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Small development-only test runner
+brief:                  |
+                        pytest is a development dependency that pulls
+                        in seven packages of its own, all under
+                        permissive licences. Use of its API grows with
+                        the suite.
+description:            |
+                        pytest is in the pixi environment only, not in
+                        the runtime dependencies (pyproject.toml lines
+                        39-41 and 57-61). pytest 9.1.1 is MIT and
+                        depends on colorama, pygments, iniconfig,
+                        packaging, pluggy, tomli and exceptiongroup,
+                        which nothing else in pixi.lock needs
+                        (pixi.lock lines 639-657). Their licences are
+                        BSD-3-Clause, BSD-2-Clause, MIT, Apache-2.0
+                        and "MIT and PSF-2.0". The tests call
+                        pytest.fixture, pytest.mark.parametrize and
+                        pytest.raises 21 times across 8 files.
+                        ASSUMPTION: the other option would keep pytest
+                        too, so this point does not separate them.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

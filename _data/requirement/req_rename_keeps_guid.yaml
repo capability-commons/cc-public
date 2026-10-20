@@ -1,0 +1,38 @@
+id_self:                req_rename_keeps_guid
+guid_self:              req_2bd087b92cc74fa288ad3dfc55979f51
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Guid kept through a rename
+brief:                  |
+                        Renaming an item leaves its guid as it was.
+condition_kind:         event
+condition:              the Tooling renames an item
+obligation:             shall
+activity:               autonomous
+object:                 the guid of the item
+rationale:              |
+                        A reference resolves by its guid where its id
+                        does not. A rename that changed the guid would
+                        break every reference to the item at once.
+verification_method:    test
+verification_approach:  |
+                        After a rename, the renamed item and every
+                        item it holds have the guid they had before.
+
+relation:
+
+  - id_relation:        r_has_subject
+    guid_relation:      r_6b34d5364abb4ddd8f2ff2a9b725e3ef
+    id_target:          lc_tooling
+    guid_target:        lc_cf7da552a58d4d2d91ee21271bd0f800
+
+  - id_relation:        r_has_process
+    guid_relation:      r_18d71931f0c8452c807448226ee71137
+    id_target:          con_keep
+    guid_target:        con_3eb073f9e45d435bbfb0432628c79b26

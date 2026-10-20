@@ -1,0 +1,44 @@
+id_self:                ann_checker_output_is_the_test_oracle
+guid_self:              ann_5ab3095524e24b92b47014b8ddae94a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checker output as the one oracle
+brief:                  |
+                        Each test compares the dictionary the checker
+                        already returns with one literal, so the tests
+                        need no vocabulary of their own. The sound
+                        case and the fault cases share one form.
+description:            |
+                        check() returns a dict from check name to
+                        rows, passing checks left out
+                        (src/cc_public/check/check.py lines 56,
+                        66-80). Fault tests assert equality with one
+                        literal (test_check.py lines 239-241,
+                        244-246); the sound case uses check(DIR_REPO)
+                        == {} (lines 227-228). ASSUMPTION: asking only
+                        for some failure would need a second form, a
+                        membership test on one key; no code for it
+                        exists.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

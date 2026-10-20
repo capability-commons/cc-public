@@ -1,0 +1,52 @@
+id_self:                ann_unstaged_link_target_cannot_pass_gate
+guid_self:              ann_b6d6b3be883944b2ae8976a888a517a7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorded graph as the checked graph
+brief:                  |
+                        On the staged copy, the check judges the graph
+                        the commit records, so a gated commit cannot
+                        record a trace link whose target was left
+                        unstaged. On the working tree, an unstaged
+                        target would pass while the commit records a
+                        dangling link.
+description:            |
+                        Check stage: src/cc_public/gate/gate.py lines
+                        64-66. dangling_reference and
+                        dangling_mention: src/cc_public/check/check.lp
+                        lines 236-239 and 466-472. Staged copy:
+                        gate.py lines 95-100 and 167-182. The
+                        commit-msg change check also compares HEAD
+                        with the staged copy
+                        (src/cc_public/commit/change.py lines 59-74).
+                        ASSUMPTION: commits with part of the working
+                        tree unstaged happen here; no record shows how
+                        often.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commit_gate
+    guid_target:        dec_8ef6be254d2d4bba95d353c4c412a818
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_pre_commit_gate_on_staged_copy
+    guid_target:        opt_60d9736d977e4a449eb6143be0b5bc79
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_gate_on_working_tree
+    guid_target:        opt_56b9134735e34ed0ab25f552515d740b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

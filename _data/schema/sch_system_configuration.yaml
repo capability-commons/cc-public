@@ -1,0 +1,205 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_system_configuration.yaml
+id_self:                sch_system_configuration
+guid_self:              sch_58645b97dbbe453eb3b5093260d3d576
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  System configuration schema
+brief:                  |
+                        The shape of a system configuration: hosts, OS
+                        processes, dataflow nodes, and the dataflow
+                        edges between the ports of the dataflow nodes.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges of the
+                        graph of items come from sch_trait_relation.
+                        Beyond them, a system configuration holds its
+                        dataflow nodes, each shaped by
+                        sch_dataflow_node and filed under a short
+                        local key, and the dataflow edges between
+                        them.
+
+                        An end of a dataflow edge names a dataflow
+                        node and one of the ports of the interface
+                        that node presents. Both are references, so
+                        the checker finds an end that names nothing,
+                        and a rename keeps the dataflow edge. A
+                        dataflow edge is feedforward unless it says
+                        feedback. A feedback edge closes a loop: its
+                        value comes from the invocation before.
+
+                        An OS process is where dataflow nodes run in
+                        order, and a host is where OS processes run.
+                        Each is filed under a short local key, which a
+                        dataflow node or an OS process names.
+usage:                  |
+                        Named by t_system_configuration as the schema
+                        of every item in _data/system_configuration/.
+note:                   |
+                        The sections follow the configuration model of
+                        Stableflow, with its node, edge and process
+                        qualified as con_dataflow_node,
+                        con_dataflow_edge and con_os_process, since
+                        the graph of items has nodes and edges of its
+                        own. A dataflow edge states no data type of
+                        its own: the ports at its ends state it, and
+                        the checker holds them to each other.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - brief
+      - dataflow_node
+
+    properties:
+
+      host:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/host'
+
+        description:    |
+                        Optional. The hosts, keyed by a short local
+                        name.
+
+      os_process:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/os_process'
+
+        description:    |
+                        Optional. The OS processes, keyed by a short
+                        local name.
+
+      dataflow_node:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         https://capability-commons.org/schema/sch_dataflow_node.yaml
+
+        description:    |
+                        The dataflow nodes, keyed by a short local
+                        name.
+
+      dataflow_edge:
+        type:           array
+
+        items:
+          $ref:         '#/$defs/dataflow_edge'
+
+        description:    |
+                        Optional. The dataflow edges that carry data
+                        between the ports of the dataflow nodes.
+
+unevaluatedProperties:  false
+
+$defs:
+
+  host:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - hostname
+
+    properties:
+
+      hostname:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        The name the host is reached by.
+
+  os_process:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - host
+
+    properties:
+
+      host:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        The key of the host the OS process runs on.
+
+  end:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - id_dataflow_node
+      - guid_dataflow_node
+      - id_port
+      - guid_port
+
+    properties:
+
+      id_dataflow_node:
+        type:           string
+        description:    |
+                        The dataflow node at this end.
+
+      guid_dataflow_node:
+        type:           string
+
+      id_port:
+        type:           string
+        description:    |
+                        The port of the interface the dataflow node
+                        presents.
+
+      guid_port:
+        type:           string
+
+  dataflow_edge:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - source
+      - target
+
+    properties:
+
+      source:
+        $ref:           '#/$defs/end'
+        description:    |
+                        The output port the data comes from.
+
+      target:
+        $ref:           '#/$defs/end'
+        description:    |
+                        The input port the data goes to.
+
+      direction:
+        type:           string
+
+        enum:
+          - feedforward
+          - feedback
+
+        description:    |
+                        Optional. feedback if the edge closes a loop,
+                        so that its value comes from the invocation
+                        before. It is feedforward if left out.
+
+relation:               []

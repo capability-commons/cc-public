@@ -1,0 +1,64 @@
+id_self:                ann_git_holds_every_past_graph_state
+guid_self:              ann_430c21c7ce9e4c0c87931aa30c1dd489
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every past graph state already in git
+brief:                  |
+                        The graph at any commit is rebuilt from git on
+                        demand, so a stored history would be a second
+                        copy of what git holds, one that could drift
+                        from it.
+description:            |
+                        copy_commit writes any commit's tree out with
+                        git archive (src/cc_public/gate/gate.py lines
+                        186-203). The commit check builds the graph
+                        before from HEAD and after from the staged
+                        content (src/cc_public/commit/change.py lines
+                        59-74). check_trees checks the change between
+                        any two trees (change.py lines 27-31). cctool
+                        history check rebuilds each commit and its
+                        first parent the same way
+                        (src/cc_public/commit/history.py lines
+                        112-121; commit 18d6181). On 2026-10-15 it
+                        reported "33 commits checked, all passed"
+                        (advocate's run). No stored graph history
+                        exists in the tree (git show --stat 7520f91).
+                        Will's principle, as a memory note quotes it:
+                        "one mechanism does one job and nothing is
+                        done twice"
+                        (memory/cc-public-design-principles.md line
+                        11). Judging one commit needs only the two
+                        trees, not the series.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_store_graph_history_now
+    guid_target:        opt_7cf5e9d7c9d740d4865eb9e0bbf34c60
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

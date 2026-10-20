@@ -1,0 +1,46 @@
+id_self:                ann_reused_guid_across_commits_unseen
+guid_self:              ann_721c7111ac104a4e85dd0d7413bc9759
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Guid reuse across commits not detected
+brief:                  |
+                        The guid checks compare one commit with its
+                        parent only, so a guid removed in one commit
+                        and brought back several commits later goes
+                        unseen.
+description:            |
+                        src/cc_public/commit/change.lp lines 104-118
+                        compare before_guid with after_guid only. The
+                        candidate rule "a removed guid never comes
+                        back" is listed as a guid stability check
+                        (memory/commit-triples.md line 13), and the
+                        assistant's 12:35:57Z reply that Will accepted
+                        named it among the commit checks, but
+                        change.lp has no such rule. ASSUMPTION
+                        (advocate's inference): it needs guids from
+                        commits before the parent, which a one-step
+                        check does not see. The gap grows with each
+                        removal.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_defer_graph_history
+    guid_target:        opt_80702d6abccf462b830106cc754ae93e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

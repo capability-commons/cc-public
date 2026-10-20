@@ -1,0 +1,74 @@
+id_self:                ann_note_already_names_the_descriptive_field
+guid_self:              ann_69b812074a5e4a91abc5f90c842b6219
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Note already names a field on every item
+brief:                  |
+                        The descriptive trait already has a field
+                        named note, so a type called note would give
+                        one word two meanings in the same files.
+description:            |
+                        Relayed by Will: "annotation keeps its name,
+                        because the descriptive trait already has a
+                        note field" (will-messages.md line 63, in a
+                        session summary Will pasted on
+                        2026-10-09T17:52:14Z). The summary was written
+                        by the assistant in another thread, so the
+                        wording is not Will's own. The field is
+                        defined in
+                        _data/schema/sch_trait_descriptive.yaml lines
+                        65-73. Every standalone item composes that
+                        trait (_data/schema/sch_standalone.yaml line
+                        42), and an annotation composes sch_standalone
+                        (_data/schema/sch_annotation.yaml lines
+                        38-39), so a note item could carry a note
+                        field of its own. 71 YAML lines under _data
+                        begin with the key note: (grep at HEAD
+                        89c74d8). The edit tooling sets note as a
+                        prose key by name (src/cc_public/edit/edit.py
+                        line 83; src/cc_public/edit/layout.py line
+                        79). The field description says the reasoning
+                        behind an item belongs in a separate
+                        annotation item; under the name note it would
+                        point to a separate note
+                        (sch_trait_descriptive.yaml lines 69-73). The
+                        collision grows with the graph, since each new
+                        item can carry the field.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_name_of_annotation_type
+    guid_target:        dec_d900e5300ad6469e85478b8bd8d798a8
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_call_it_annotation
+    guid_target:        opt_f435c8e05f81461b9372c6754a67e5a7
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_call_it_note
+    guid_target:        opt_c33dc660881546bdaf516d0c2d27c23e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

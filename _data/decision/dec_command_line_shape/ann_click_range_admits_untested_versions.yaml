@@ -1,0 +1,45 @@
+id_self:                ann_click_range_admits_untested_versions
+guid_self:              ann_23d7d8158de049c68efb5f59c6390f23
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Click range wider than the tests allow
+brief:                  |
+                        The package admits click from 8.1, but the
+                        tests read stderr apart from stdout, which
+                        click does only from 8.2.0. Only the lock file
+                        keeps the tests working.
+description:            |
+                        pyproject.toml declares click>=8.1,<9. Tests
+                        build CliRunner() with no arguments and assert
+                        on result.stderr (src/cc_public/cli/_test/
+                        test_editing.py lines 43, 84, 91;
+                        test_querying.py lines 46, 55). In click 8.1.8
+                        CliRunner mixes stderr by default and
+                        Result.stderr raises ValueError (click 8.1.8
+                        src/click/testing.py lines 147-150, 184).
+                        Click 8.2.0 keeps the streams apart
+                        (CHANGES.md). pixi.lock pins 8.5.0. The fix is
+                        to raise the lower bound.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_command_line_shape
+    guid_target:        dec_1ae9a1b1f08544869e7a7edd3ea734ac
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_small_click_cli_for_agents
+    guid_target:        opt_0a6b2653724a445ba5864e76302bdff3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

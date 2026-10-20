@@ -1,0 +1,59 @@
+id_self:                ann_full_history_check_grows_commits_by_tree
+guid_self:              ann_50c28aa55d5d4a19b8dff811d11d9868
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full history check growing with commits times tree size
+brief:                  |
+                        history check with no range reruns the graph
+                        check on every commit against whole-tree
+                        copies, so its time grows with commits times
+                        tree size. It takes about two minutes for 33
+                        commits.
+description:            |
+                        With no range, history check checks the whole
+                        history (src/cc_public/cli/auditing.py lines
+                        77-78, 92). Each commit and its parent are
+                        copied whole and passed to check_trees
+                        (src/cc_public/commit/history.py lines
+                        107-121). Measured 2026-10-15 in a 4-CPU
+                        session container at 89c74d8: 33 commits in 1
+                        min 59 s to 2 min 25 s over two runs (about 1
+                        min 15 s of CPU); five sampled commits took
+                        3.0 to 4.8 s each. The pre-push hook checks
+                        only commits the remote lacks (history.py
+                        lines 72-93), so pushes are not affected. A
+                        device tool call dies at 180 s
+                        (memory/MEMORY.md line 45). ASSUMPTION:
+                        tenfold files and tenfold commits make a full
+                        run about a hundred times longer. As built,
+                        the message check alone copies each commit's
+                        tree and reads every document in it to find
+                        sch_commit (history.py lines 112-116;
+                        message.py lines 260-265), so a syntax-only
+                        history check grows the same way at a smaller
+                        cost per commit (0.75 s measured for the
+                        syntax part). Proposed by the performance
+                        efficiency advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

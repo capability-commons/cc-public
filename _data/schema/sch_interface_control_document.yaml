@@ -1,0 +1,921 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_interface_control_document.yaml
+id_self:                sch_interface_control_document
+guid_self:              sch_fec3632e3c3942bd903984cc03ddae25
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface control document schema
+brief:                  |
+                        The shape of an interface control document: a
+                        versioned contract for one interface, made of
+                        surfaces whose members can each be pointed at.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_relation. Beyond them, an interface
+                        control document carries the version of its
+                        interface, the declarations its surfaces
+                        share, and one or more surfaces, each filed
+                        under a short local key.
+
+                        A surface holds exactly one of three forms. A
+                        native surface presents the interface as an
+                        API in one implementation language. A dataflow
+                        step surface presents it as a runtime step
+                        that reads inputs, writes outputs and keeps
+                        state, with the execution semantics that
+                        compatibility depends on. An artifact surface
+                        presents it as files, messages or records
+                        handed from a producer to a reader, with what
+                        a reader needs to interpret one.
+
+                        Every declaration a surface holds is an
+                        interface member, shaped by
+                        sch_interface_member. Its id is the id of what
+                        it sits in, then a full stop and a name of its
+                        own, and the member prefix takes the place of
+                        the document prefix.
+
+                        A runtime type is not a data item type. A type
+                        reference names a declaration the document
+                        shares, or the spelling the surface language
+                        uses, or both, and is never a reference to an
+                        item.
+usage:                  |
+                        Named by t_interface_control_document as the
+                        schema of every item in
+                        _data/interface_control_document/.
+note:                   |
+                        Ported from the interface control document of
+                        the previous iteration,
+                        cc-public-legacy-20260918, without its
+                        lifecycle status. A new version of an
+                        interface is a new document, which names the
+                        one it replaces with r_supersedes. Code names
+                        the member it implements with r_realizes, so
+                        the document names no implementation and can
+                        travel to a partner who has none of the code.
+
+                        A function member restates the parameters of
+                        the function that realizes it, for a reader
+                        without the code. The check holds the two to
+                        each other by name and order, so that the
+                        restatement cannot drift from the code unseen.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml
+
+  - type:               object
+
+    required:
+      - version_interface
+      - surface
+
+    properties:
+
+      version_interface:
+        type:           string
+        pattern:        ^[0-9]+(\.[0-9]+)*$
+        description:    |
+                        The version of the interface this document
+                        states.
+
+      declaration:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The types this document shares
+                        across its surfaces, keyed by a short local
+                        name.
+
+      surface:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         '#/$defs/surface'
+
+        description:    |
+                        One or more surfaces, keyed by a short local
+                        name, so that one document may hold several
+                        presentations of one boundary.
+
+unevaluatedProperties:  false
+
+$defs:
+
+  type_reference:
+    type:               object
+    additionalProperties:  false
+    minProperties:      1
+    description:        |
+                        The type of a value, as this surface states
+                        it. declaration is the key of a type this
+                        document shares, and spelling is the type as
+                        the surface language writes it.
+
+    properties:
+
+      declaration:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The key of a declaration this
+                        document shares.
+
+      spelling:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The type as the surface language
+                        spells it.
+
+  declaration:
+    description:        |
+                        A package, module, namespace or named type.
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          shape:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. What this type is, in enough detail
+                        for a caller to use it.
+
+    unevaluatedProperties:  false
+
+  constant:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - value
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          value:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        The value, as the surface language writes it.
+
+    unevaluatedProperties:  false
+
+  parameter:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          mode:
+            type:       string
+
+            enum:
+              - input
+              - output
+              - input_output
+
+            description:  |
+                        Optional. Whether the callee reads this
+                        parameter, writes it, or both.
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a caller may leave it out.
+
+          default:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        Optional. What it is when a caller leaves it
+                        out, as the surface language writes it.
+
+          variadic:
+            type:       boolean
+            description:  |
+                        Optional. Whether it takes any number of
+                        values.
+
+          nullable:
+            type:       boolean
+            description:  |
+                        Optional. Whether it may carry no value.
+
+          mutability:
+            type:       string
+
+            enum:
+              - immutable
+              - mutable
+
+            description:  |
+                        Optional. Whether the callee may change what
+                        it refers to.
+
+          ownership:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. Who releases what this parameter
+                        refers to, and when.
+
+          lifetime:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. How long what it refers to must stay
+                        valid.
+
+    unevaluatedProperties:  false
+
+  error:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          condition:
+            type:       string
+            minLength:  1
+            description:  |
+                        When this error is raised.
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+    unevaluatedProperties:  false
+
+  callable:
+    description:        |
+                        A function, method, constructor or destructor.
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          parameter:
+            type:       array
+
+            items:
+              $ref:     '#/$defs/parameter'
+
+            description:  |
+                        Optional. The parameters, in the order the
+                        language takes them. The receiver of a method,
+                        such as self in python, is not one.
+
+          returns:
+            type:       object
+            additionalProperties:  false
+
+            required:
+              - brief
+
+            properties:
+
+              type:
+                $ref:   '#/$defs/type_reference'
+
+              brief:
+                type:   string
+                minLength:  1
+
+            description:  |
+                        Optional. What is returned, and its type. Left
+                        out where nothing is.
+
+          error:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/error'
+
+            description:  |
+                        Optional. The errors a caller must expect,
+                        keyed by a short local name.
+
+    unevaluatedProperties:  false
+
+  attribute:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          mutability:
+            type:       string
+
+            enum:
+              - immutable
+              - mutable
+
+            description:  |
+                        Optional. Whether a caller may write it.
+
+    unevaluatedProperties:  false
+
+  class:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          base:
+            type:       array
+            minItems:   1
+
+            items:
+              type:     string
+              minLength:  1
+              pattern:  ^[^\n]+$
+
+            description:  |
+                        Optional. What this class inherits from, as
+                        the surface language spells it.
+
+          constructor:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. How an instance is made.
+
+          destructor:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. How an instance is released, where
+                        the language says so.
+
+          method:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/callable'
+
+            description:  |
+                        Optional. The methods.
+
+          property:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/attribute'
+
+            description:  |
+                        Optional. The values reached through an
+                        accessor.
+
+          attribute:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/attribute'
+
+            description:  |
+                        Optional. The values reached directly.
+
+    unevaluatedProperties:  false
+
+  port:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a step may run with no value
+                        here.
+
+    unevaluatedProperties:  false
+
+  setting:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a configuration may leave it
+                        out.
+
+          default:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        Optional. What it is when a configuration
+                        leaves it out, as the surface language writes
+                        it.
+
+    unevaluatedProperties:  false
+
+  artifact:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - content
+          - encoding
+          - convention
+
+        properties:
+
+          content:
+            type:       string
+            minLength:  1
+            description:  |
+                        What one instance carries and what it is
+                        about.
+
+          payload:
+            type:       object
+            additionalProperties:  false
+            minProperties:  1
+
+            properties:
+
+              declaration:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+
+              spelling:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+
+              version:
+                type:   string
+                minLength:  1
+                pattern:  ^[^\n]+$
+
+            description:  |
+                        Optional. The schema the payload conforms to,
+                        as a shared declaration or as its own world
+                        names it, and the version of that schema. An
+                        artifact whose structure is its encoding alone
+                        declares none.
+
+          encoding:
+            type:       string
+            minLength:  1
+            description:  |
+                        How an instance is written down: the media
+                        type, the character or byte encoding, the
+                        serialisation, and any container or
+                        compression a reader undoes first.
+
+          convention:
+            type:       string
+            minLength:  1
+            description:  |
+                        What a reader needs to read a value correctly
+                        rather than merely parse it: units, numeric
+                        representation and range, coordinate and
+                        reference frames, origins and axis directions,
+                        and what the values denote and in what state
+                        they were captured.
+
+          identity:
+            type:       string
+            minLength:  1
+            description:  |
+                        Optional. How one instance is named, what
+                        provenance travels with it, and what a digest
+                        covers where one is carried.
+
+    unevaluatedProperties:  false
+
+  surface:
+    type:               object
+    minProperties:      1
+    maxProperties:      1
+
+    propertyNames:
+
+      enum:
+        - native
+        - dataflow_step
+        - artifact
+
+    properties:
+
+      native:
+        $ref:           '#/$defs/surface_native'
+
+      dataflow_step:
+        $ref:           '#/$defs/surface_dataflow_step'
+
+      artifact:
+        $ref:           '#/$defs/surface_artifact'
+
+    description:        |
+                        Exactly one form of presentation of the
+                        interface.
+
+  surface_native:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - language
+
+    description:        |
+                        The interface as an API in one implementation
+                        language. A surface names exactly one
+                        language, because a name and a spelling belong
+                        to the language that writes them.
+
+    properties:
+
+      language:
+        type:           string
+
+        enum:
+          - python
+          - c
+          - cpp
+
+        description:    |
+                        The one implementation language this surface
+                        presents.
+
+      dialect:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\n]+$
+        description:    |
+                        Optional. The dialect or standard the surface
+                        is written to, such as c17 or python3.12.
+
+      package:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The packages the surface presents.
+
+      module:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The modules the surface presents.
+
+      namespace:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The namespaces the surface presents.
+
+      constant:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/constant'
+
+        description:    |
+                        Optional. The constants.
+
+      type:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/declaration'
+
+        description:    |
+                        Optional. The named data types.
+
+      function:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/callable'
+
+        description:    |
+                        Optional. The free functions.
+
+      class:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/class'
+
+        description:    |
+                        Optional. The classes.
+
+  surface_dataflow_step:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - invocation
+
+    description:        |
+                        The interface as a runtime step that reads a
+                        fixed set of inputs, writes a fixed set of
+                        outputs, and keeps state between invocations.
+                        Each field after the ports and the settings
+                        states one part of the execution semantics
+                        that compatibility depends on.
+
+    properties:
+
+      input:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. The ports the step reads.
+
+      output:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. The ports the step writes.
+
+      state:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/port'
+
+        description:    |
+                        Optional. What the step reads and writes
+                        between invocations.
+
+      config:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/setting'
+
+        description:    |
+                        Optional. The settings the step is given when
+                        it is configured, which stay the same for the
+                        whole of a run.
+
+      invocation:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        When the step runs, and with what.
+
+      initialization:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What runs before the first
+                        invocation.
+
+      finalization:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What runs after the last one.
+
+      persistence:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What of the state survives an
+                        invocation, and what survives a restart.
+
+      atomicity:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What another reader sees part way
+                        through an invocation.
+
+      availability:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What the step does when an input
+                        carries no value.
+
+      cardinality:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. How many values an invocation writes
+                        to an output.
+
+      ordering:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What order invocations and their
+                        outputs are in.
+
+      back_pressure:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What the step does when a reader is
+                        slower than it.
+
+      concurrency:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. How many invocations may run at
+                        once.
+
+      determinism:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. Whether one input always yields one
+                        output.
+
+      failure:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What the step does when an
+                        invocation fails, and whether it may be
+                        retried.
+
+  surface_artifact:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - artifact
+      - production
+
+    description:        |
+                        The interface as artifacts handed from a
+                        producer to a reader. Nothing is called and
+                        nothing is invoked: what crosses the boundary
+                        is the artifact itself. Each field after the
+                        artifacts states one part of the semantics
+                        that compatibility depends on.
+
+    properties:
+
+      artifact:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/artifact'
+
+        description:    |
+                        The artifacts this surface carries, keyed by a
+                        short local name.
+
+      production:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        When an instance is produced and by what: the
+                        event, the schedule or the request that causes
+                        one to exist.
+
+      cardinality:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. How many instances one production
+                        makes, and what decides the number.
+
+      ordering:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What order instances are in, what
+                        that order means, and whether a reader may
+                        rely on it.
+
+      batching:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. Whether instances are grouped, what
+                        makes a group, and whether a reader may see
+                        part of one.
+
+      determinism:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. Whether the same inputs yield the
+                        same artifact, and in what sense: byte for
+                        byte, value for value, or within a stated
+                        tolerance.
+
+      availability:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What a reader does when an instance
+                        is absent or not yet written, and how long it
+                        waits.
+
+      atomicity:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What a reader sees while an instance
+                        is being written, and what makes one visible.
+
+      failure:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What is written when production
+                        fails part way, whether an incomplete instance
+                        can be told from a complete one, and whether
+                        production may be retried.
+
+      retention:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. How long an instance is kept, what
+                        removes one, and what a reader holding a
+                        reference to a removed instance sees.
+
+      compatibility:
+        $ref:           '#/$defs/semantics'
+        description:    |
+                        Optional. What changes to the payload or the
+                        conventions a reader must tolerate, and what
+                        makes a new version of the interface rather
+                        than a change within this one.
+
+  semantics:
+    type:               string
+    minLength:          1
+    description:        |
+                        One part of how the interface behaves, in
+                        prose.
+
+relation:               []

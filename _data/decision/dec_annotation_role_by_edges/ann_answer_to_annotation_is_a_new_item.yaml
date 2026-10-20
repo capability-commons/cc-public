@@ -1,0 +1,61 @@
+id_self:                ann_answer_to_annotation_is_a_new_item
+guid_self:              ann_be78c895a08342a18fb2ea3830922e52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Answer as a new item, not an edit
+brief:                  |
+                        With no status field, an answer is a new item
+                        with its own brief, and the answered
+                        annotation is never edited. A status field
+                        adds an edit of one line, with no reason, to
+                        every answer.
+description:            |
+                        An annotation has no status field
+                        (_data/schema/sch_annotation.yaml lines
+                        27-31). r_supports and r_challenges run from
+                        an annotation to an annotation or an option
+                        (reg_data_item_type.yaml lines 409-414;
+                        reg_relation.yaml lines 177-233). The legacy
+                        usage said what became of an annotation is
+                        another annotation or a later item (git show
+                        bb8c338, t_annotation usage). An option no
+                        determination names is open, and a
+                        determination states its reason in its brief
+                        (reg_data_item_type.yaml lines 782-783;
+                        det_cross_item_checks_engine.yaml lines
+                        12-19). Upkeep of a status field grows with
+                        the number of answers. Existing annotations
+                        are 28 to 59 lines each (wc -l at 89c74d8).
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_annotation_role_by_edges
+    guid_target:        dec_3fbf2c4793cc4ed1b0c0ee9582f65808
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_role_by_edges_no_status
+    guid_target:        opt_2ab9f0d6d6c943b4990df7836a5e2573
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_typed_annotation_fields
+    guid_target:        opt_163bd8612ab24e92a35b74848b56744d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

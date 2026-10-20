@@ -1,0 +1,60 @@
+id_self:                ann_rename_allocated_number_needs_coordination
+guid_self:              ann_db59f7a99d11432587cd109b2c8d7972
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Allocator shared by every clone and partner
+brief:                  |
+                        An allocated number is unique only where one
+                        allocator hands it out, so every clone and
+                        partner must reach that allocator or risk a
+                        clash. A random guid needs no coordination.
+description:            |
+                        New items get guid_self from uuid.uuid4() in
+                        the local process (src/cc_public/edit/edit.py
+                        line 410; src/cc_public/commit/message.py line
+                        117). guid_self is assigned once, never
+                        changes, and tells apart items whose ids
+                        collide (_data/schema/sch_trait_identity.yaml
+                        lines 27-30 and 105-115). Global uniqueness of
+                        readable ids is impossible across a federation
+                        (same file lines 83-98). A rename is computed
+                        from the local tree alone (edit.py lines
+                        722-770). ASSUMPTION: an allocated number
+                        comes from one authority. The packet does not
+                        say how allocation would work. Grows stronger
+                        with more clones, partners and environments.
+                        Merged from the compatibility and flexibility
+                        advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_rename_safety
+    guid_target:        dec_d016a708d7644881ac870faccf1a98a9
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_alias_list_of_old_ids
+    guid_target:        opt_b7f2b33789e74be9be491fadbb8ffe83
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_allocated_numbers_in_ids
+    guid_target:        opt_fec1458f1eec4f7581d86f4eaa7c048b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

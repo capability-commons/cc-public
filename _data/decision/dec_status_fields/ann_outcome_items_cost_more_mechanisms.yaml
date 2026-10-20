@@ -1,0 +1,48 @@
+id_self:                ann_outcome_items_cost_more_mechanisms
+guid_self:              ann_acbf7f5f116e47e9a4d758cc667da2ea
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outcome items costing more mechanisms than a field
+brief:                  |
+                        Recording outcomes as items of their own added
+                        a type, a schema, two relations, a widened
+                        r_supersedes and several check rules, where an
+                        enum on sch_option was one field and one
+                        definition.
+description:            |
+                        Bears on the second clause of the chosen
+                        option, "record outcomes as items of their
+                        own". Before 44034ef: one status property and
+                        a three-value enum in sch_option. Commit
+                        7db4229 adds t_determination, r_upholds and
+                        r_rejects and a check; sch_determination.yaml
+                        is a separate schema; check.lp lines 133-155,
+                        318-413 and 439-453 hold the rules that
+                        involve determinations; 89c74d8 widens
+                        r_supersedes to two types. The extra
+                        mechanisms buy attribution and settling
+                        several alternatives at once, which an enum
+                        lacks.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_status_fields
+    guid_target:        dec_4ee246ee64104c8eabc6c2d7f56c1ad3
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_no_status_fields
+    guid_target:        opt_85c99d07908e4fca96f1d754f4b1d10a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

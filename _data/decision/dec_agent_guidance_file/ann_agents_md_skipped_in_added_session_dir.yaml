@@ -1,0 +1,62 @@
+id_self:                ann_agents_md_skipped_in_added_session_dir
+guid_self:              ann_562ea0a3f66f47798423acfe6443ba44
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  AGENTS.md skipped in a directory added to a session
+brief:                  |
+                        When cc-public is added with --add-dir to a
+                        Claude Code session rooted in another
+                        repository, its CLAUDE.md can load but its
+                        AGENTS.md does not, so that session gets none
+                        of the guidance.
+description:            |
+                        With
+                        CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD
+                        set, an added directory's CLAUDE.md loads but
+                        its AGENTS.md does not:
+                        https://code.claude.com/docs/en/memory, "Where
+                        AGENTS.md differs from CLAUDE.md", fetched
+                        2026-10-15. Codex reads AGENTS.md only on the
+                        chain to its working directory (openai/codex
+                        codex-rs/core/src/agents_md.rs lines 7-18,
+                        60-110, fetched 2026-10-15). cc-dtu and
+                        cc-dtu-pii are content repositories beside
+                        cc-public (pd/memory/cc-folder-layout.md line
+                        14). ASSUMPTION: agents will sometimes work in
+                        a content repository with cc-public added;
+                        Will has not said so. ASSUMPTION, not checked:
+                        Codex reads no AGENTS.md from a directory
+                        added another way. Without that variable an
+                        added directory's CLAUDE.md does not load
+                        either (same page, "Load from additional
+                        directories"). With it, a one-line CLAUDE.md
+                        holding "@AGENTS.md" would close the gap for
+                        Claude Code (same page, "Share one file with
+                        other coding tools"). ASSUMPTION: that import
+                        is not held back as an external import needing
+                        approval; the page does not say whether an
+                        added directory counts as outside the working
+                        directory.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_guidance_file
+    guid_target:        dec_21fca3c07f5244c8a47746f613ae7fa4
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_agents_md
+    guid_target:        opt_b49b2816c41b44a1b6cf7e178b78188e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

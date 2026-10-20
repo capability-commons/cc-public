@@ -1,0 +1,44 @@
+id_self:                ann_rename_of_rule_strings_is_fixed
+guid_self:              ann_1faba39cf80f4a42865383565f2a8ab3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rename now carried into the logic programs
+brief:                  |
+                        Commit 52ecf93 "Fix cctool rename so that
+                        rules naming the item follow the rename"
+                        rewrites every string of a logic program that
+                        is the old id. At 360ec14 renaming a relation
+                        that check.lp names no longer drops it from
+                        the rules.
+description:            |
+                        rename replaces "old" with "new" in every .lp
+                        file of the tree (src/cc_public/edit/edit.py
+                        lines 750-756 at 360ec14);
+                        test_rename_of_a_relation_changes_the_rules_that_name_it
+                        covers it
+                        (src/cc_public/edit/_test/test_edit.py line
+                        273). Python code is still not changed and is
+                        only listed: edit.py still names r_upholds in
+                        SET_LINK_SETTLE (line 125), which places a new
+                        determination in its decision folder, and the
+                        tests name relations by id. So the premise
+                        still holds for ids named in Python, but not
+                        for the rules.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_accepted_rename_leaves_rules_stale
+    guid_target:        ann_1a7af21c7a344dcf89dd5ed7bfc9d66a

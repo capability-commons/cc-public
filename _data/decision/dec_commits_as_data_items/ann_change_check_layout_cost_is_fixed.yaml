@@ -1,0 +1,40 @@
+id_self:                ann_change_check_layout_cost_is_fixed
+guid_self:              ann_8a3e6bd957a846919a176a3ca7b6b3d7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit check now laying out only differing files
+brief:                  |
+                        Commit 5acf7c2 "Change the commit check so
+                        that it lays out only files that differ" skips
+                        the layout of files that are byte for byte the
+                        same. At 360ec14 the layout pass, about half
+                        of the measured time, falls away for an
+                        ordinary commit; both trees are still copied
+                        and extracted whole.
+description:            |
+                        _changed compares the bytes of each file first
+                        and lays out only the files that differ
+                        (src/cc_public/commit/change.py lines 129-146
+                        at 360ec14). facts_of still extracts both
+                        whole trees (lines 115-116), the remainder
+                        that ann_change_check_limited_to_changed_files
+                        put at 2.1 to 5.1 s per commit. Not
+                        re-measured at 360ec14.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_commits_as_data_items
+    guid_target:        dec_ecd704e11aba42d88e1bb5a264476819
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_change_check_cost_free_text_avoids
+    guid_target:        ann_2598e08eb056450b8ce2744d8092bd3f

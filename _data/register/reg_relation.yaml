@@ -1,0 +1,753 @@
+id_self:                reg_relation
+guid_self:              reg_512fbf5c51be4efaa4517b52310ddf80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation register
+brief:                  |
+                        Register of relations.
+description:            |
+                        The relation register lists every relation,
+                        with the metadata each relation carries. An
+                        entry may also hold an inverse reading of the
+                        same relation, embedded within it.
+usage:                  |
+                        The relation register enables general-purpose
+                        processing of networks of items. Any item that
+                        carries an identifier may take part in such a
+                        network as a node, and any pair of such items
+                        may be joined by a labelled edge. The label is
+                        drawn from this register, and the entry it
+                        names defines what the edge means.
+note:                   |
+                        The register holds one mechanism for labelling
+                        an edge between any pair of items that carry
+                        identifiers. A relation is added here before
+                        an edge uses it.
+
+                        An entry holds the semantics of its relation:
+                        the relation restrictions on its source and
+                        target, the cardinality at each end, and
+                        whatever else a checker reads. Where the
+                        opposite reading is useful, the entry embeds
+                        an inverse, which holds an identity and a
+                        surface form and nothing else. An inverse is
+                        minted when an item wants to record an edge
+                        that way, and not as a matter of course.
+
+                        An edge may be recorded in either direction,
+                        and tooling reads it in both. The choice of
+                        direction is not only a question of which
+                        reading is easier. An edge is held by the item
+                        that records it, so the direction decides
+                        which item carries the fact when it travels on
+                        its own, and in a federation it decides who is
+                        able to record the fact at all, since an
+                        author may write only to items they own.
+
+relation:
+
+  - id_relation:        r_is_specified_by_schema
+    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+    id_target:          sch_reg_relation
+    guid_target:        sch_a33e76be6e524a50a16719280319a7e6
+
+table:
+
+  # ---------------------------------------------------------------------------
+  # r_is_specified_by_schema -- Is specified by schema relation
+  #
+  r_is_specified_by_schema:
+    id_self:            r_is_specified_by_schema
+    guid_self:          r_d70024bd40444f93b4fc1903379ded81
+    title:              Is specified by schema relation
+    brief:              SUBJ is specified by schema OBJ
+    description:        |
+                        The schema data item identified by OBJ
+                        specifies the structure of the data item
+                        identified by SUBJ itself.
+
+                        The edge is about SUBJ, not about the items of
+                        a type. A type names the schema of its items
+                        with r_has_items_specified_by_schema.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_register
+        guid_target:    rrs_5ecccc51a43a49cb9434bec48c32ddc3
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_schema
+        guid_target:    rrs_de14daf3e78e467985b37be34b3e8127
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_specified_by_schema -- Has items specified by schema relation
+  #
+  r_has_items_specified_by_schema:
+    id_self:            r_has_items_specified_by_schema
+    guid_self:          r_c233cc9d78af4ec6bbaec8a4bbc43344
+    title:              Has items specified by schema relation
+    brief:              SUBJ has items specified by schema OBJ
+    description:        |
+                        The schema data item identified by OBJ
+                        specifies the structure of each item of the
+                        type identified by SUBJ.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. The shape of a type entry is
+                        named by the edge on t_type.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_schema
+        guid_target:    rrs_de14daf3e78e467985b37be34b3e8127
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_held_in_register -- Has items held in register relation
+  #
+  r_has_items_held_in_register:
+    id_self:            r_has_items_held_in_register
+    guid_self:          r_016e74a0abea4a3990cc3259942baf92
+    title:              Has items held in register relation
+    brief:              SUBJ has items held in register OBJ
+    description:        |
+                        The register data item identified by OBJ holds
+                        each item of the type identified by SUBJ, as
+                        an entry in its table.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself. A type entry is held in the data
+                        item type register by containment, and needs
+                        no edge to say so.
+
+    alias:
+      - r_is_held_in_register
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_register
+        guid_target:    rrs_5ecccc51a43a49cb9434bec48c32ddc3
+
+  # ---------------------------------------------------------------------------
+  # r_is_about -- Is about relation
+  #
+  r_is_about:
+    id_self:            r_is_about
+    guid_self:          r_17ca99102b0b431b85235445a4635ae8
+    title:              Is about relation
+    brief:              SUBJ makes its assertion about OBJ
+    description:        |
+                        The annotation or decision identified by SUBJ
+                        makes its assertion or asks its question about
+                        the item identified by OBJ.
+
+                        The edge says what the assertion or question
+                        is about and nothing about it. It does not say
+                        that it is right, that it is adverse, or that
+                        anything follows from it.
+
+                        Every annotation and every decision holds at
+                        least one such edge, so that nothing is
+                        asserted or asked about nothing. Either may
+                        hold several, where it concerns how two items
+                        meet. An annotation about a decision belongs
+                        to that decision, and is kept in its folder.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_discussion
+        guid_target:    rrs_065e1f2ffda14288bc1ae33b75b7160b
+
+  # ---------------------------------------------------------------------------
+  # r_supports -- Supports relation
+  #
+  r_supports:
+    id_self:            r_supports
+    guid_self:          r_5d87b0c1741548108f5b851ad76a8605
+    title:              Supports relation
+    brief:              SUBJ gives a reason to accept OBJ
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason to accept, or to hold with greater
+                        confidence, the annotation or option
+                        identified by OBJ.
+
+                        Support does not establish what it supports,
+                        and an assertion or a choice with many
+                        supporters is not thereby right. An annotation
+                        may both support and challenge another, where
+                        it qualifies it.
+
+                        A chain of support may not lead back to where
+                        it began, since an argument cannot be its own
+                        reason.
+    acyclic:            true
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_arguable
+        guid_target:    rrs_2759285afc9b496dbd990556c25ceba1
+
+  # ---------------------------------------------------------------------------
+  # r_challenges -- Challenges relation
+  #
+  r_challenges:
+    id_self:            r_challenges
+    guid_self:          r_08792b8910554df3a181ecb43aae429d
+    title:              Challenges relation
+    brief:              SUBJ gives a reason not to accept OBJ
+    description:        |
+                        The annotation identified by SUBJ gives a
+                        reason not to accept, or not to accept without
+                        qualification, the annotation or option
+                        identified by OBJ.
+
+                        A challenge does not defeat what it
+                        challenges. Nothing here computes which
+                        assertion or choice prevails, and one that
+                        nothing answers is not thereby established.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_arguable
+        guid_target:    rrs_2759285afc9b496dbd990556c25ceba1
+
+  # ---------------------------------------------------------------------------
+  # r_supersedes -- Supersedes relation
+  #
+  r_supersedes:
+    id_self:            r_supersedes
+    guid_self:          r_d687c4ca485e47b78c0a361b221fdf6a
+    title:              Supersedes relation
+    brief:              SUBJ supersedes OBJ
+    description:        |
+                        The item identified by SUBJ replaces the one
+                        of the same type identified by OBJ, which no
+                        longer governs. An option or an interface
+                        control document may be superseded.
+
+                        OBJ keeps its argument, or its content, so
+                        that what it said stays on record.
+
+                        An option may supersede several, where one
+                        choice replaces a number of earlier ones. A
+                        new version of an interface is a new interface
+                        control document that supersedes the last. A
+                        chain of supersession may not lead back to
+                        where it began.
+    acyclic:            true
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_supersedable
+        guid_target:    rrs_2042666b9e044eea8d54334d94d6b2d8
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_supersedable
+        guid_target:    rrs_2042666b9e044eea8d54334d94d6b2d8
+
+  # ---------------------------------------------------------------------------
+  # r_argues_for_concern -- Argues for concern relation
+  #
+  r_argues_for_concern:
+    id_self:            r_argues_for_concern
+    guid_self:          r_ded2d80983a74f7b8271530a881686bf
+    title:              Argues for concern relation
+    brief:              SUBJ argues for concern OBJ
+    description:        |
+                        The annotation identified by SUBJ makes its
+                        assertion on behalf of the concern identified
+                        by OBJ.
+
+                        The edge says which concern an argument speaks
+                        for, not who made it or whether it is sound.
+
+                        An annotation that supports or challenges an
+                        option argues for at least one concern. Where
+                        several concerns rest on the same premise, it
+                        is one annotation with an edge to each, so
+                        that the premise is stated and challenged
+                        once. An annotation that bears only on other
+                        annotations argues for none: it is a matter of
+                        fact, answered with evidence, and not
+                        outweighed by a concern that ranks higher.
+    note:               |
+                        Value-based argumentation gives each argument
+                        one value: Bench-Capon, Persuasion in
+                        practical argument using value-based
+                        argumentation frameworks, Journal of Logic and
+                        Computation 13, 2003. Arguments that promote
+                        several values are treated by Kaci and van der
+                        Torre, Preference-based argumentation:
+                        arguments supporting multiple values,
+                        International Journal of Approximate Reasoning
+                        48, 2008. How the concerns of one annotation
+                        are weighed together is left to the
+                        evaluation.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_argument
+        guid_target:    rrs_771607fb955949638a49417b6f010586
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_concern
+        guid_target:    rrs_9e0c9b6a125a4ebcadbd4568ca952b78
+
+  # ---------------------------------------------------------------------------
+  # r_realizes -- Realizes relation
+  #
+  r_realizes:
+    id_self:            r_realizes
+    guid_self:          r_2b5f499c599a435c9a5184462525dd9b
+    title:              Realizes relation
+    brief:              |
+                        SUBJ realizes OBJ
+    description:        |
+                        The item identified by SUBJ implements the
+                        design element identified by OBJ, in one
+                        technology: a logical component, or a member
+                        of an interface control document.
+
+                        A design element may be realized by several
+                        items, and by none while it is only planned.
+                        When an implementation is replaced, the new
+                        one realizes the same design element, and what
+                        was decided about the design element stays
+                        with it.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_implementation
+        guid_target:    rrs_04f6c05bf3d641b1a276d22fe1bea5f8
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_design_element
+        guid_target:    rrs_8094112c3eac4da688eaa0103995dfbf
+
+  # ---------------------------------------------------------------------------
+  # r_upholds -- Upholds relation
+  #
+  r_upholds:
+    id_self:            r_upholds
+    guid_self:          r_434abb759a1e4442bef038fbd83d7441
+    title:              Upholds relation
+    brief:              |
+                        SUBJ upholds OBJ
+    description:        |
+                        The determination identified by SUBJ settles
+                        that the option identified by OBJ holds, given
+                        the arguments presented when it was made.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_determination
+        guid_target:    rrs_ca8e9fa5e342480ab3e051b55d2e979c
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_option
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
+
+  # ---------------------------------------------------------------------------
+  # r_rejects -- Rejects relation
+  #
+  r_rejects:
+    id_self:            r_rejects
+    guid_self:          r_1dcb50b2281349bf9e8972dfedde64f3
+    title:              Rejects relation
+    brief:              |
+                        SUBJ rejects OBJ
+    description:        |
+                        The determination identified by SUBJ settles
+                        that the option identified by OBJ does not
+                        hold, given the arguments presented when it
+                        was made.
+
+                        The option keeps its argument, so that the
+                        reasons it was rejected stay on record.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_determination
+        guid_target:    rrs_ca8e9fa5e342480ab3e051b55d2e979c
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_option
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
+
+  # ---------------------------------------------------------------------------
+  # r_is_driven_by -- Is driven by relation
+  #
+  r_is_driven_by:
+    id_self:            r_is_driven_by
+    guid_self:          r_11e221e2e58140ca869e92bedfc15fbc
+    title:              Is driven by relation
+    brief:              |
+                        SUBJ is driven by OBJ
+    description:        |
+                        The concern identified by OBJ is one of the
+                        few that the logical component identified by
+                        SUBJ should favour, so that every decision
+                        about the logical component is argued for it.
+
+                        Concerns that drive no logical component are
+                        not expected to speak on decisions about it,
+                        so that a decision is not weighed against
+                        every concern there is.
+    note:               |
+                        The relation follows the architecture drivers
+                        of Arcadia, Thales, Arcadia user guide:
+                        principles and contents overview, 2023, clause
+                        4.3.1, which are the stakes and properties an
+                        architecture should favour, and against which
+                        each design decision is checked.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_design_element
+        guid_target:    rrs_8094112c3eac4da688eaa0103995dfbf
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_concern
+        guid_target:    rrs_9e0c9b6a125a4ebcadbd4568ca952b78
+
+  # ---------------------------------------------------------------------------
+  # r_is_option_for -- Is option for relation
+  #
+  r_is_option_for:
+    id_self:            r_is_option_for
+    guid_self:          r_336826c81f7043b89ae024d44a35bb41
+    title:              Is option for relation
+    brief:              |
+                        SUBJ is an option for OBJ
+    description:        |
+                        The option identified by SUBJ is one possible
+                        answer to the decision identified by OBJ. The
+                        options for one decision are alternatives to
+                        one another.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_option
+        guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_decision
+        guid_target:    rrs_75d4f18b3e7941dd88a2694320c7a98f
+
+  # ---------------------------------------------------------------------------
+  # r_has_subject -- Has subject relation
+  #
+  r_has_subject:
+    id_self:            r_has_subject
+    guid_self:          r_6b34d5364abb4ddd8f2ff2a9b725e3ef
+    title:              Has subject relation
+    brief:              |
+                        SUBJ has the subject OBJ
+    description:        |
+                        The requirement identified by SUBJ is an
+                        obligation on the item identified by OBJ, the
+                        system or system element that is the Subject
+                        of the syntax in ISO/IEC/IEEE 29148 clause
+                        5.2.4. The statement names it by its title.
+    note:               |
+                        The target must be a design element. Most
+                        subjects belong to a project or a partner, not
+                        to cc-public, and such a subject qualifies
+                        when its type's items play rol_design_element,
+                        which its own register says.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_design_element
+        guid_target:    rrs_8094112c3eac4da688eaa0103995dfbf
+
+  # ---------------------------------------------------------------------------
+  # r_has_actor -- Has actor relation
+  #
+  r_has_actor:
+    id_self:            r_has_actor
+    guid_self:          r_c4a81b697a3e4b2ebc2108745a7d389d
+    title:              Has actor relation
+    brief:              |
+                        SUBJ has the actor OBJ
+    description:        |
+                        The requirement identified by SUBJ obliges its
+                        subject to provide the item identified by OBJ
+                        with the ability to do its process. The
+                        statement names the actor by its title.
+    note:               |
+                        Held only by a requirement whose activity is
+                        interaction. The target is open for now, and
+                        is to be revisited.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
+
+  # ---------------------------------------------------------------------------
+  # r_has_process -- Has process relation
+  #
+  r_has_process:
+    id_self:            r_has_process
+    guid_self:          r_18d71931f0c8452c807448226ee71137
+    title:              Has process relation
+    brief:              |
+                        SUBJ has the process OBJ
+    description:        |
+                        The requirement identified by SUBJ obliges its
+                        subject to do the process designated by the
+                        concept identified by OBJ. The statement
+                        writes the preferred term of the concept as
+                        its verb, so a deprecated or undefined verb
+                        cannot be written.
+    note:               |
+                        The process word of the SOPHIST MASTER
+                        template. The target is open for now, and is
+                        to be revisited.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_requirement
+        guid_target:    rrs_c8d404c954f348e99acb571ea4362b5f
+
+  # ---------------------------------------------------------------------------
+  # r_has_items_that_play -- Has items that play relation
+  #
+  r_has_items_that_play:
+    id_self:            r_has_items_that_play
+    guid_self:          r_7eb3dc69d8ab45e79b18bec97de5ffa9
+    title:              Has items that play relation
+    brief:              |
+                        SUBJ has items that play OBJ
+    description:        |
+                        Each item of the type identified by SUBJ can
+                        play the role identified by OBJ, so it meets
+                        any relation restriction that admits that
+                        role.
+
+                        The edge is about the items of SUBJ, not about
+                        SUBJ itself.
+    note:               |
+                        A partner gives its own types roles with this
+                        edge, in its own register.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_type
+        guid_target:    rrs_ce29f33ae43f47fa8bc867607ce71d7e
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
+
+  # ---------------------------------------------------------------------------
+  # r_admits -- Admits relation
+  #
+  r_admits:
+    id_self:            r_admits
+    guid_self:          r_df3f1550b33d496295249f45049e0c9c
+    title:              Admits relation
+    brief:              |
+                        SUBJ admits OBJ
+    description:        |
+                        The relation restriction identified by SUBJ is
+                        satisfied by an item whose type plays the role
+                        identified by OBJ. A restriction is satisfied
+                        if any one of its literals is.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
+
+  # ---------------------------------------------------------------------------
+  # r_excludes -- Excludes relation
+  #
+  r_excludes:
+    id_self:            r_excludes
+    guid_self:          r_57233cb7d0d44ba2b66771f544767cc3
+    title:              Excludes relation
+    brief:              |
+                        SUBJ excludes OBJ
+    description:        |
+                        The relation restriction identified by SUBJ is
+                        satisfied by an item whose type does not play
+                        the role identified by OBJ. A restriction is
+                        satisfied if any one of its literals is.
+    note:               |
+                        Two excludes in one restriction pass anything
+                        that does not play both roles. Neither of two
+                        roles is two restrictions with one exclude
+                        each.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_role
+        guid_target:    rrs_a93e00f8801f49d6a8cf92aaf710acde
+
+  # ---------------------------------------------------------------------------
+  # r_restricts_source -- Restricts source relation
+  #
+  r_restricts_source:
+    id_self:            r_restricts_source
+    guid_self:          r_adcac8092b664b269c2a774e5320d32d
+    title:              Restricts source relation
+    brief:              |
+                        SUBJ restricts its source by OBJ
+    description:        |
+                        Every edge of the relation identified by SUBJ
+                        is recorded by an item that satisfies the
+                        relation restriction identified by OBJ. A
+                        source must satisfy every restriction its
+                        relation names for it, and a relation that
+                        names none has an open source.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation
+        guid_target:    rrs_c011b9bbb7f843abbbfdfa3d9546ceaa
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+  # ---------------------------------------------------------------------------
+  # r_restricts_target -- Restricts target relation
+  #
+  r_restricts_target:
+    id_self:            r_restricts_target
+    guid_self:          r_589d8b04783d49c698c6471080254c8a
+    title:              Restricts target relation
+    brief:              |
+                        SUBJ restricts its target by OBJ
+    description:        |
+                        Every edge of the relation identified by SUBJ
+                        points at an item that satisfies the relation
+                        restriction identified by OBJ. A target must
+                        satisfy every restriction its relation names
+                        for it, and a relation that names none has an
+                        open target.
+    alias:              []
+
+    relation:
+
+      - id_relation:    r_restricts_source
+        guid_relation:  r_adcac8092b664b269c2a774e5320d32d
+        id_target:      rrs_is_relation
+        guid_target:    rrs_c011b9bbb7f843abbbfdfa3d9546ceaa
+
+      - id_relation:    r_restricts_target
+        guid_relation:  r_589d8b04783d49c698c6471080254c8a
+        id_target:      rrs_is_relation_restriction
+        guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b

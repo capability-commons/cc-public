@@ -1,0 +1,43 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_standalone.yaml
+id_self:                sch_standalone
+guid_self:              sch_5d99a2001bc440308bbe122f2e4cc9b8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Standalone data item
+brief:                  |
+                        Traits carried by every standalone data item.
+description:            |
+                        This schema composes the three traits that
+                        every standalone data item carries: identity,
+                        description and rights.
+
+                        A standalone data item can travel on its own.
+                        An embedded data item always travels with its
+                        container, and inherits its rights from it.
+
+                        Composing this schema marks a type as
+                        standalone rather than embedded. The schema
+                        adds no constraints of its own beyond those of
+                        the three traits it composes.
+usage:                  |
+                        Concrete item types compose this schema via
+                        allOf, then add whatever further fields and
+                        constraints they need.
+note:                   |
+                        This schema does not compose
+                        sch_trait_relation.yaml. A type whose items
+                        carry outgoing edges composes that trait
+                        alongside this one.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_trait_identity.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_descriptive.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_rights.yaml

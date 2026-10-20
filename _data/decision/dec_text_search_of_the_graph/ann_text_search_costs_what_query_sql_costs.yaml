@@ -1,0 +1,40 @@
+id_self:                ann_text_search_costs_what_query_sql_costs
+guid_self:              ann_8a2aaa57e8b84c84bec743303d64660a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Text search costs what query sql costs
+brief:                  |
+                        A text search takes as long as any query sql,
+                        about 9 s on the device VM, because both build
+                        the same database from the tree. Grep answers
+                        at once.
+description:            |
+                        Measured on the device VM, 2026-10-20: query
+                        sql "SELECT count(*) FROM item" 8.6 s and 8.8
+                        s; query text --decision "status field" 8.7 s
+                        and 8.8 s. Most of the time is reading the
+                        tree and deriving relations with clingo. The
+                        point weakens as that reading is made faster.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_text_search_of_the_graph
+    guid_target:        dec_ac091669c4ef4db2b45dacc829190ed5
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_no_text_search
+    guid_target:        opt_6dc09aa02b064938965841ad9e9284c9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

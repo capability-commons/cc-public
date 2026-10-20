@@ -1,0 +1,44 @@
+id_self:                ann_windows_changes_unchecked_without_ci
+guid_self:              ann_1144e07fd7284848ae0e4242387e364f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unchecked platform without CI
+brief:                  |
+                        A change is checked only by hooks on the
+                        machine that makes it, since there is no CI,
+                        so a Windows platform would have no routine
+                        check and could break unseen.
+description:            |
+                        The hooks are the check of record "until CI
+                        runs it too" (.githooks/pre-push lines 20-28).
+                        The repository has no .github directory or
+                        other CI workflow. All five hooks are /bin/sh
+                        scripts (line 1 of each file in .githooks/).
+                        The gate and history code call git through
+                        subprocess (src/cc_public/gate/gate.py lines
+                        174, 194; src/cc_public/commit/history.py line
+                        176). The point weakens once CI runs a
+                        platform matrix.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_supported_dev_platforms
+    guid_target:        dec_801eeeb087a1472583cd600349c9aa14
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_linux_and_macos_only
+    guid_target:        opt_cbd9db9e22644016a982f0d69b5d239a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

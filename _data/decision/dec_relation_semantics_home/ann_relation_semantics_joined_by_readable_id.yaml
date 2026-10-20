@@ -1,0 +1,47 @@
+id_self:                ann_relation_semantics_joined_by_readable_id
+guid_self:              ann_1098b0e328aa4cdb8af35a13300544eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation semantics joined by readable id
+brief:                  |
+                        The tooling joins an edge to its relation, and
+                        an inverse to its primary, by readable id,
+                        which the schema says does not resolve
+                        reliably across a federation, so register
+                        semantics reach a partner's edges only while
+                        both sides keep the same ids.
+description:            |
+                        "The guid is what resolves; the readable id is
+                        an advisory copy" (sch_trait_relation.yaml
+                        lines 22-24, 99-104). The extractor builds
+                        edges from id_relation and id_target
+                        (extract.py lines 459-462) and inverses as
+                        readable id pairs (extract.py lines 563-566);
+                        derive.lp lines 60-66 reverse through that
+                        pair. It bears equally on
+                        opt_paired_relations. ASSUMPTION: partners
+                        will reuse relations under a different or
+                        stale id; no such case is recorded.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_relation_semantics_home
+    guid_target:        dec_96e12926359243b6a9168828c8cd0928
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_one_entry_per_fact_type
+    guid_target:        opt_1f432d038a3b4bf5a9c5171c2fe9a37b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

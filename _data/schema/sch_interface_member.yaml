@@ -1,0 +1,86 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_interface_member.yaml
+id_self:                sch_interface_member
+guid_self:              sch_78d55e71f65b45579d01dee5fc7ce19a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface member schema
+brief:                  |
+                        What every declaration within an interface
+                        control document carries.
+description:            |
+                        An interface member holds an identity, the
+                        name the surface language spells it by, and
+                        what it is for. Each kind of declaration
+                        composes this schema and adds what that kind
+                        needs: a function adds its parameters, a class
+                        adds its methods, and a port adds its type.
+
+                        The identity is what lets a requirement or an
+                        implementation name one declaration rather
+                        than the document that holds it. The local key
+                        a member is filed under is a presentation
+                        name, and is not that identity.
+usage:                  |
+                        Composed by every kind of declaration in
+                        sch_interface_control_document, and named by
+                        t_interface_member.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_trait_identity.yaml
+
+required:
+  - name
+  - brief
+
+properties:
+
+  name:
+    type:               string
+    minLength:          1
+    pattern:            ^[^\n]+$
+    description:        |
+                        The name the surface language spells this
+                        declaration by.
+
+  brief:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this declaration is for.
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What a caller has to know beyond the
+                        brief.
+
+  obligation:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. What a provider must do and a caller
+                        may rely on, beyond what the signature says:
+                        ordering, ownership, lifetime, concurrency,
+                        and what holds after an error.
+
+  relation:
+    type:               array
+
+    items:
+      $ref:             https://capability-commons.org/schema/sch_trait_relation.yaml#/$defs/edge
+
+    description:        |
+                        Optional. The edges this declaration holds.
+                        Code points at the member it implements, so
+                        most members hold none.
+
+relation:               []

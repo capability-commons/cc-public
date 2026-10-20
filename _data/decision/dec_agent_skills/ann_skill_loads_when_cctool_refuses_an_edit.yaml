@@ -1,0 +1,54 @@
+id_self:                ann_skill_loads_when_cctool_refuses_an_edit
+guid_self:              ann_1015d504bf5a48d2937e70fbbc31c0f1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Procedure loaded when an edit is refused
+brief:                  |
+                        A skill puts the cctool procedure and its
+                        traps in front of the agent when it starts an
+                        edit or an edit is refused, and costs only a
+                        short description otherwise, where AGENTS.md
+                        is read whole in every session.
+description:            |
+                        Claude Code loads each skill's name and
+                        description at start, about 100 tokens, and
+                        reads the body only when a request matches
+                        (https://platform.claude.com/docs/agents-and-tools/agent-skills/overview).
+                        Codex does the same
+                        (https://learn.chatgpt.com/docs/build-skills).
+                        The description of editing-data-items says to
+                        read it before edits and ALWAYS when cctool
+                        refuses an edit or check fails (SKILL.md lines
+                        3-8). It lists traps by check name, such as
+                        unused_concept and unargued_driver, with the
+                        fix (SKILL.md lines 57-80). AGENTS.md is 93
+                        lines and loads at session start. ASSUMPTION:
+                        future descriptions keep matching the tasks.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_skills
+    guid_target:        dec_6be96ce488394ba892982995b40e154c
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_skills_in_agents_dir_with_link
+    guid_target:        opt_5ec45c2cfb514601b0a7759f32b3b6e0
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_no_skills
+    guid_target:        opt_7673c9d62a4944ee834052cdc407ae94
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

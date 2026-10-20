@@ -1,0 +1,56 @@
+id_self:                ann_shared_subject_mixes_two_questions
+guid_self:              ann_990bfd14b9674f9792045997406f30ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mixed arguments under a shared subject
+brief:                  |
+                        Once one component has two questions, grouping
+                        by shared subject lets an annotation on one
+                        question count for the other. The driver check
+                        then gives a wrong result, and a reviewer
+                        cannot read one argument as a bounded set.
+description:            |
+                        Before 1ba2895, argued/2 joined options on a
+                        shared r_is_about subject (git show 1ba2895 --
+                        src/cc_public/check/check.lp, removed lines).
+                        At c7058e3, opt_tooling_in_python and
+                        opt_cross_item_checks_in_clingo both held
+                        r_is_about lc_tooling, though they are options
+                        for different questions. unargued_driver uses
+                        argued/2 (check.lp lines 448-453). The harm
+                        grows with the number of questions per
+                        component, so more pairs miscount and the cost
+                        of finding them rises.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_what_gathers_an_argument
+    guid_target:        dec_1ba4dfc3ca6e48eb836bc787968bee9c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_siblings_by_shared_subject
+    guid_target:        opt_7ef78db0c96344a5b86793bb7e3e665a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

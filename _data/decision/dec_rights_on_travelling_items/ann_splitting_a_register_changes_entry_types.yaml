@@ -1,0 +1,45 @@
+id_self:                ann_splitting_a_register_changes_entry_types
+guid_self:              ann_422c5a36032047b99b78fc3396fadf7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register split as a type change
+brief:                  |
+                        Whether an item may travel alone is fixed by
+                        its type, so splitting a register into one
+                        file per entry would need a schema change to
+                        give entries rights, not just a file move.
+description:            |
+                        Composing sch_standalone marks a type as
+                        standalone (_data/schema/sch_standalone.yaml
+                        lines 25-27). The largest register is 849
+                        lines with 18 entries (reg_data_item_type.yaml
+                        at 89c74d8). The owner has restructured
+                        storage when it grew (commit 1ba2895), but
+                        that moved standalone items. cctool rename
+                        moves the file of a standalone item and
+                        renames an entry in place (AGENTS.md lines
+                        49-53). No split is planned. ASSUMPTION:
+                        linear growth, about 8,500 lines at tenfold.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_rights_on_travelling_items
+    guid_target:        dec_64b0b59bf1d34e31a0812f465f27f706
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_rights_on_standalone_items_only
+    guid_target:        opt_d7a368d76f7945648d5e8f7b175cd3b9
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

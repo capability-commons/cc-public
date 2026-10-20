@@ -1,0 +1,47 @@
+id_self:                ann_cli_shared_options_copied_per_module
+guid_self:              ann_527eae50bb8e42d081535e5e994efb31
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared options copied in each module
+brief:                  |
+                        The --root option is written out seven times
+                        in six modules with differing help, and
+                        --limit and --json exist only for queries. A
+                        change to a common convention spreads to many
+                        files.
+description:            |
+                        --root in src/cc_public/cli/auditing.py line
+                        67, checking.py line 38, editing.py lines 76
+                        and 344, gating.py line 39, messaging.py line
+                        41 and querying.py line 86. editing.py and
+                        querying.py each define their own _option
+                        helper; messaging.py uses a constant
+                        OPTION_ROOT. group.py holds no shared options.
+                        --limit and --json are only in querying.py
+                        lines 92-99; cctool check has no --json. A
+                        fault of the implementation, not of the shape:
+                        moving shared options into group.py answers
+                        it.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_command_line_shape
+    guid_target:        dec_1ae9a1b1f08544869e7a7edd3ea734ac
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_small_click_cli_for_agents
+    guid_target:        opt_0a6b2653724a445ba5864e76302bdff3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

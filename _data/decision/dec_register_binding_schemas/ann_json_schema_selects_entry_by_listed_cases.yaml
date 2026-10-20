@@ -1,0 +1,39 @@
+id_self:                ann_json_schema_selects_entry_by_listed_cases
+guid_self:              ann_a2172694624a44d28e98002a2b67958c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Entry schema choice by listed cases
+brief:                  |
+                        JSON Schema 2020-12 can pick an entry schema
+                        from the data, with if/then on a register's id
+                        or with patternProperties on the key prefix,
+                        if one schema lists every case. What it cannot
+                        do is build a $ref from data or read the
+                        mapping from another document.
+description:            |
+                        https://json-schema.org/draft/2020-12/json-schema-core#section-10.2.2
+                        (if/then), section 10.3.2.2
+                        (patternProperties), section 8.2.3.1 ($ref is
+                        a static reference). Entry keys carry their
+                        type prefix (_data/schema/sch_register.yaml
+                        lines 68-72). So the limit is that selection
+                        needs a central list, not that selection is
+                        impossible. Raised by all five advocates.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_binding_schemas
+    guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_binding_kept_as_json_schema_cannot_choose
+    guid_target:        ann_8e387b072812412285de89b78469b448

@@ -1,0 +1,46 @@
+id_self:                ann_option_status_enum_unlike_adr_formats
+guid_self:              ann_a815daa817714d2d8acee6914a5c2e30
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Option status enum unlike common ADR formats
+brief:                  |
+                        The removed option status enum held only
+                        proposed, accepted and rejected. It had no
+                        deprecated or superseded value, so it did not
+                        map without loss to Nygard records or MADR.
+description:            |
+                        Before 44034ef the enum held three values, and
+                        the schema note said there was no superseded
+                        status because r_supersedes records
+                        replacement (git show 44034ef, diff of
+                        _data/schema/sch_option.yaml). Nygard's format
+                        and MADR both have deprecated and superseded
+                        values:
+                        https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+                        and https://adr.github.io/madr/ . A search of
+                        the tree at 89c74d8 for "adr", "madr" and
+                        "export" finds no tooling that exchanges
+                        options with another system.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_status_fields
+    guid_target:        dec_4ee246ee64104c8eabc6c2d7f56c1ad3
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_status_enum_on_items
+    guid_target:        opt_da224b0da99d4071be72396dbb75767d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

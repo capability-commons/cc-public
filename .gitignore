@@ -1,0 +1,175 @@
+# ---
+#
+# id_self:                file_gitignore
+# guid_self:              file_f690133d913f429fa479a4379d5b0ce3
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  CC-Public .gitignore
+# brief:                  |
+#                         Whitelist based .gitignore file for the
+#                         cc-public repository.
+# description:            |
+#                         This .gitignore is configured such that the
+#                         file types intended to be placed under
+#                         revision control must be explicitly specified
+#                         here.
+# note:                   |
+#                         This .gitignore configures a rules based
+#                         system. The order in which rules are listed
+#                         matters, with rules that appear later in this
+#                         this file overriding rules that appear
+#                         earlier.
+# relation:               []
+#
+# ...
+
+# -----------------------------------------------------------------------------
+# Ignore all files and all directories (unless
+# otherwise specified).
+#
+
+*
+
+
+# -----------------------------------------------------------------------------
+# Override the global ignore rule for directories
+# and subdirectories so that git will search them
+# recursively (unless otherwise specified).
+#
+# If this rule is not present, git will only
+# search the root directory for files to include.
+#
+
+!*/
+
+
+# -----------------------------------------------------------------------------
+# Override the global ignore rule for some
+# specific files and file types that we intend
+# to be included (unless otherwise specified).
+#
+
+# Project root configuration and documentation
+#
+!/.agents/**
+!/.claude/**
+!/.githooks/*
+!/.gitignore
+!/.github/**
+!/.mcp.json
+!/AGENTS.md
+!/CLAUDE.md
+!/LICENSE
+!/mypy.ini
+!/NOTICE
+!/pixi.lock
+!/pixi.toml
+!/pyproject.toml
+!/README.md
+!/ruff.toml
+
+# Globally-scoped design documents (data items)
+#
+!_data/**/*.json
+!_data/**/*.xml
+!_data/**/*.yaml
+
+# Source-scoped design documents (data items)
+#
+!src/**/_data/**/*.json
+!src/**/_data/**/*.xml
+!src/**/_data/**/*.yaml
+
+# Programming language design documents.
+#
+!src/**/*.lp
+!src/**/*.py
+!src/**/*.pyi
+!src/**/*.sh
+!src/**/py.typed
+
+# Static files of the review pages: style sheets, the script, the
+# fonts they use, and the licences of those fonts.
+#
+!src/**/_static/*.css
+!src/**/_static/*.js
+!src/**/_static/*.woff
+!src/**/_static/LICENSE-*
+
+# Tests and test fixtures
+#
+!src/**/_test/**/*.py
+!src/**/_test/**/*.json
+!src/**/_test/**/*.xml
+!src/**/_test/**/*.yaml
+
+
+# -----------------------------------------------------------------------------
+# Explicitly ignore specific directories,
+# files and file types that we intend to be
+# excluded.
+#
+
+.gate/
+.pixi/
+.venv/
+build/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+junit.xml
+.test_map.json
+.gate.yaml
+
+# Claude local settings.
+#
+.claude/settings.local.json
+
+# Python bytecode files.
+#
+*.pyc
+*__pycache__*
+
+# Python build and test output.
+#
+*.egg-info/
+*.pytest_cache/
+
+# Editor metadata (Atom, Eclipse, EMACS, Gradle,
+# Jetbrains, Visual Studio, VSCode and XCode)
+#
+.atom/
+.metadata/
+.classpath/
+.project/
+.emacs
+.emacs.d/
+.idea/
+*.iml
+local.properties
+.vs/
+.vscode/
+.xcodeproj/
+.xcworkspace/
+.xcuserstate
+
+
+# Catch-all for secrets files
+#
+.env
+*.env
+secrets.*
+*.secrets
+credentials.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*

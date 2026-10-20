@@ -1,0 +1,49 @@
+id_self:                ann_annotation_decision_is_unchecked_against_target
+guid_self:              ann_d071b1e18e004464a7680161adb7b5c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decision of an annotation held twice and unchecked
+brief:                  |
+                        An annotation joins a decision by its
+                        r_is_about edge and again by the option it
+                        argues. No check keeps the two equal, so a
+                        misfiled annotation can make a driver count as
+                        argued in the wrong decision.
+description:            |
+                        decision_of reads r_is_about (check.lp lines
+                        148-151). argued reads r_supports and
+                        r_challenges to an option and its
+                        r_is_option_for (check.lp lines 423-436). No
+                        rule compares the two (search of check.lp and
+                        src/ for r_supports). All 29 annotations in
+                        _data/decision/ agree today (count by script).
+                        An annotation that bears on no option has only
+                        r_is_about. One rule would close the gap.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_what_gathers_an_argument
+    guid_target:        dec_1ba4dfc3ca6e48eb836bc787968bee9c
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_decision_item_as_in_ibis
+    guid_target:        opt_b760f84550cb4887999e6f24d685198b
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

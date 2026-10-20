@@ -1,0 +1,47 @@
+id_self:                ann_no_time_limit_on_either_evaluator
+guid_self:              ann_1ceb942065b04e4c83a5b0a6473985d9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No time limit on either query evaluator
+brief:                  |
+                        Each language accepts a query that never ends
+                        and neither command has a time limit, so a
+                        caller, often an agent, must kill a hung
+                        command by hand.
+description:            |
+                        clingo 5.8.2 did not finish grounding "n(0).
+                        n(X+1) :- n(X)." in 5 s; SQLite 3.45.1 did not
+                        finish an unbounded WITH RECURSIVE in 5 s
+                        (advocate's local tests, 2026-10-15).
+                        datalog.run has no time limit (datalog.py
+                        lines 290-309); sql.query has no progress
+                        handler (sql.py lines 87-94); at the decision
+                        the souffle subprocess had no timeout (commit
+                        12f83b7). The project is mainly driven by
+                        agents (owner's statement,
+                        2026-10-14T22:59:35Z). The same gap applies to
+                        each single-language alternative, so it argues
+                        for a guard, not for a different language set.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_query_languages
+    guid_target:        dec_9ef62648af59455cb14f77b64ac2f6a6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_sql_and_datalog_one_fact_set
+    guid_target:        opt_a4e021e1e4624c1a8f52187072585d13
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

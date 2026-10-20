@@ -1,0 +1,60 @@
+id_self:                ann_history_check_cost_commits_times_tree
+guid_self:              ann_eb68068243204d5084e037b6c4631640
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-commit cost of the check of record
+brief:                  |
+                        The check of record copies two whole trees,
+                        extracts the facts of both and runs the change
+                        rules once for every commit it checks. Its
+                        time grows with commits pushed times tree
+                        size, so a push of many fine commits on a
+                        large graph will be slow.
+description:            |
+                        src/cc_public/commit/history.py lines 107-114
+                        copy the commit and its parent; each copy is a
+                        git archive of the whole commit unpacked with
+                        tarfile (src/cc_public/gate/gate.py lines
+                        186-203). change.py lines 78-88 and 105-116
+                        extract facts and run clingo. extract.read
+                        caches parsed documents within one run (memory
+                        MEMORY.md, entry on 93a1428); the copies and
+                        the clingo run are not cached. Measured for
+                        this note (scratch clone, 4-CPU container):
+                        about 3 to 5 s per commit on trees of 84 to
+                        129 files (advocate: 36.8 s for 10 commits;
+                        verifier re-run under load: 41 to 56 s for 10,
+                        43 to 48 s for the first 11). Will prefers
+                        fine commits (MEMORY.md, "Commit titles") and
+                        plans much larger graphs (MEMORY.md, "Checker
+                        direction", 2026-10-13). With no range the
+                        check covers the whole history (auditing.py
+                        lines 77-78 and 92). ASSUMPTION: time per
+                        commit grows about linearly with tree size. It
+                        argues for an incremental check, which
+                        finishes the chosen approach rather than
+                        favouring an alternative. CI moves the wait
+                        off the person but not the processor time.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_enforcement_approach
+    guid_target:        dec_661ee626c38d44af84079fbfe592dd42
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_one_check_of_record
+    guid_target:        opt_6f1d782598a94342a271026732ef9585
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

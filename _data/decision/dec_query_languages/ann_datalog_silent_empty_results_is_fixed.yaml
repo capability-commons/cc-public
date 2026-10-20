@@ -1,0 +1,41 @@
+id_self:                ann_datalog_silent_empty_results_is_fixed
+guid_self:              ann_f2004a02e95f43208b473d56878b2e7c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Datalog command errors on empty-result faults
+brief:                  |
+                        Commit 627e2b5 "Fix datalog.run so that clingo
+                        warnings and no answer set are errors" makes a
+                        misspelt relation, a program with no model and
+                        a choice rule each an error. At 360ec14 the
+                        Datalog command no longer returns an empty
+                        result for them.
+description:            |
+                        run() raises ErrorDatalog on any clingo
+                        message, on no answer set and on a second
+                        answer set (src/cc_public/graph/datalog.py
+                        lines 296-337 at 360ec14). cctool query
+                        datalog reports ErrorDatalog as a Datalog
+                        error (src/cc_public/cli/querying.py line
+                        180). The guard that the annotation said would
+                        remove the point against opt_datalog_only is
+                        now in place. The lack of a time limit on
+                        either evaluator is not changed.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_query_languages
+    guid_target:        dec_9ef62648af59455cb14f77b64ac2f6a6
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_datalog_command_gives_silent_empty_results
+    guid_target:        ann_b4e540ea72784f939cd8d48d50c9ae83

@@ -1,0 +1,61 @@
+id_self:                ann_text_search_reuses_the_sqlite_graph
+guid_self:              ann_14d771c238a8496bb47c21a190ac9cd7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Text search reuses the SQLite graph
+brief:                  |
+                        The FTS5 form adds no library and no model
+                        spend. It ranks text in the in-memory SQLite
+                        database that cctool query sql already builds.
+                        It still adds a hook, a record of what was
+                        shown and a check against that record.
+description:            |
+                        src/cc_public/graph/sql.py loads the graph
+                        with sqlite3.connect(':memory:'). sqlite3 is
+                        in the Python standard library; the pixi
+                        python has SQLite 3.54.1 with FTS5 and bm25()
+                        working (device VM, 2026-10-19). Runtime
+                        dependencies today are click, clingo, htpy,
+                        jsonschema, referencing and ruamel.yaml
+                        (pyproject.toml). Assumption: the shown set
+                        must be kept until commit time, for example in
+                        a file in the worktree; nothing does this
+                        today.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_agent_cross_examination
+    guid_target:        dec_2be9ee5dba28465b82b2692163fe92e8
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_determinations_retrieved_by_text
+    guid_target:        opt_440924f5693b4ddfa4d582d3cfcb6cae
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_critic_questions_each_commit
+    guid_target:        opt_82295a8f8af54d7cb07da20f5f7ce7b5
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_advocates_question_each_plan
+    guid_target:        opt_cd5cf303ce80479f821fd5583d647fa7
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

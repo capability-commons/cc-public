@@ -1,0 +1,2010 @@
+/*
+ * Review pages of cc-public.
+ *
+ * After Tufte: serif text on cream paper, a wide margin beside the
+ * text column for notes, hairline rules, and colour only in the few
+ * marks that carry meaning. The paper and the inks come from the
+ * earlier capability-commons web prototype. ET Book is under the MIT
+ * licence, in LICENSE-et-book.
+ */
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-roman-old-style-figures.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-display-italic-old-style-figures.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("et-book-semi-bold-old-style-figures.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f3eadc;
+  --ink: #1f1b16;
+  --ink-muted: #5e5648;
+  --ink-faint: #a99f8c;
+  --rule: #cfc4b0;
+  --link: #3d4a5c;
+
+  --ink-upheld: #4a6b52;
+  --ink-open: #7a746a;
+  --ink-rejected: #8b4a44;
+  --ink-for: #4a6b52;
+  --ink-against: #8b4a44;
+
+  --width-text: 40rem;
+  --width-margin: 17rem;
+  --gap: 2.5rem;
+  --shade: #eae1d3;
+  --shade-deep: #e3dacc;
+  --shade-deeper: #dcd3c5;
+  --band-for: rgba(74, 107, 82, 0.36);
+  --band-against: rgba(139, 74, 68, 0.36);
+  --net-for: #c9cfbd;
+  --net-against: #dcc0b5;
+  --mark-for: #263a2c;
+  --mark-against: #4f2320;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  margin: 0;
+  padding: 0 1rem 6rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  font-variant-numeric: oldstyle-nums;
+}
+
+article {
+  max-width: calc(var(--width-text) + var(--gap) + var(--width-margin));
+  margin: 0 auto;
+}
+
+/* The masthead: the name of the site and the head of the page in the
+   text column, with any facts beside them from the top of the page. */
+
+.masthead > .margin {
+  padding-top: 1.5rem;
+}
+
+/* A masthead with facts is ruled above and below across both columns,
+   setting the head of the page apart from the rest. */
+
+.masthead.ruled {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 0.3rem;
+}
+
+.masthead.ruled > .margin {
+  padding-top: 0;
+}
+
+.masthead.ruled header {
+  padding-top: 0.3rem;
+}
+
+.masthead.ruled table.facts {
+  border: none;
+}
+
+/* The title and brief sit at the foot of the masthead, level with the
+   foot of the facts; any space falls between the links and the title. */
+
+.masthead > .main {
+  display: flex;
+  flex-direction: column;
+}
+
+.masthead > .main > h1 {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.masthead > .main > .subtitle {
+  margin-bottom: 0;
+}
+
+.masthead header {
+  padding: 1.5rem 0 0;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  font-size: 1.1rem;
+  color: var(--ink-muted);
+}
+
+/* The indexes stand beside the name of the site, each after a light
+   bar. */
+
+.masthead header .bar {
+  color: var(--rule);
+  margin: 0 0.6em;
+}
+
+.masthead header a {
+  color: var(--link);
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 2.8rem;
+  line-height: 1.1;
+  margin: 2rem 0 1rem;
+  max-width: var(--width-text);
+}
+
+h2 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 1.9rem;
+  margin: 3rem 0 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+code {
+  font-family: Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.8em;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.35;
+}
+
+/* A block sets its text in the text column and its notes beside it. */
+
+.block {
+  display: grid;
+  grid-template-columns: minmax(0, var(--width-text)) var(--width-margin);
+  column-gap: var(--gap);
+  margin: 0 0 0.75rem;
+}
+
+.margin {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--ink-muted);
+  padding-top: 0.25rem;
+}
+
+.margin p,
+.margin ul {
+  margin: 0 0 0.3rem;
+}
+
+.margin ul {
+  list-style: none;
+  padding: 0;
+}
+
+.label,
+.run-in,
+.concerns {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+.run-in {
+  font-size: 1.05em;
+}
+
+.label {
+  color: var(--ink);
+}
+
+.id code {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.number {
+  color: var(--ink-muted);
+}
+
+details {
+  font-size: 1.2rem;
+  margin: -0.5rem 0 1rem;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+details p {
+  margin: 0.4rem 0 0.6rem;
+}
+
+/* The argument under a row of the matrix: annotations, each folded to
+   one line, its title, that opens to its brief. The brief and the
+   description each have a mark of their own and open in turn to the
+   description and to the answers. */
+
+details.annotation {
+  font-size: inherit;
+  margin: 0;
+}
+
+details.annotation > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+details.annotation > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.annotation > summary .block {
+  margin: 0;
+  padding: 0.2rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+details.annotation > summary p,
+details.annotation > summary ul {
+  margin: 0;
+}
+
+details.annotation > summary .number::before {
+  content: "\25B8\00A0";
+}
+
+details.annotation[open] > summary .number::before {
+  content: "\25BE\00A0";
+}
+
+details.annotation > summary:hover .run-in {
+  color: var(--link);
+}
+
+/* The annotation a diagram points to (by link, or by a script when
+   a node of the graph is clicked) is held between a pair of marks
+   just outside the shading on either side, as far down as it is
+   open. Shading means depth, so the marks carry the choice instead.
+   With script, each mark is a brace: one curve drawn at the height of
+   the entry, again whenever it opens or closes (see review.js).
+   Without script, each is a plain square bracket. */
+
+details.annotation:is(:target, .chosen) {
+  position: relative;
+}
+
+details.annotation:is(:target, .chosen)::before,
+details.annotation:is(:target, .chosen)::after {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  width: 6px;
+  border: 1.1px solid var(--ink-muted);
+  pointer-events: none;
+}
+
+details.annotation:is(:target, .chosen)::before {
+  left: calc(-1.3rem - 0.85rem);
+  border-right: none;
+}
+
+details.annotation:is(:target, .chosen)::after {
+  right: -0.85rem;
+  border-left: none;
+}
+
+details.annotation:is(:target, .chosen)[style*="--brace-left"]::before {
+  left: calc(-1.3rem - 1.15rem);
+  width: 12px;
+  border: none;
+  background: var(--brace-left) left top / 100% 100% no-repeat;
+}
+
+details.annotation:is(:target, .chosen)[style*="--brace-right"]::after {
+  right: -1.15rem;
+  width: 12px;
+  border: none;
+  background: var(--brace-right) left top / 100% 100% no-repeat;
+}
+
+details.annotation > summary .main p {
+  padding-left: 1.3rem;
+  text-indent: -1.3rem;
+}
+
+details.annotation > summary .note {
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+details.annotation > .body {
+  margin: 0.2rem 0 0.6rem;
+}
+
+details.annotation > .body .main > p {
+  margin-left: 1.3rem;
+}
+
+
+.for {
+  color: var(--ink-for);
+}
+
+.against {
+  color: var(--ink-against);
+}
+
+.stance {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+.stance::before {
+  content: "\25CF\00A0";
+  font-size: 0.8em;
+}
+
+.stance-upheld { color: var(--ink-upheld); }
+.stance-open { color: var(--ink-open); }
+.stance-rejected { color: var(--ink-rejected); }
+
+s {
+  text-decoration-color: var(--ink-against);
+}
+
+/* Tables: rules only above and below the head and at the foot. */
+
+table {
+  border-collapse: collapse;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  margin: 0 0 1.5rem;
+  width: 100%;
+}
+
+section > table {
+  table-layout: fixed;
+}
+
+section > table th:first-child {
+  width: 50%;
+}
+
+thead th {
+  font-weight: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  text-align: left;
+  vertical-align: bottom;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.4rem 0.6rem 0.3rem 0;
+}
+
+tbody td,
+tbody th {
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+  padding: 0.3rem 0.6rem 0.3rem 0;
+}
+
+tbody tr:last-child td,
+tbody tr:last-child th {
+  border-bottom: 1px solid var(--ink);
+}
+
+th.number,
+td.number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+figure {
+  margin: 1.5rem 0 0;
+  overflow-x: auto;
+}
+
+figcaption {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  max-width: var(--width-text);
+}
+
+/* The facts beside the brief of a decision: a label column in small
+   capitals and a value column, ruled above and below only. */
+
+table.facts {
+  font-size: 1.05rem;
+  line-height: 1.3;
+  margin: 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+table.facts th,
+table.facts td {
+  padding: 0.3rem 0 0.3rem 0;
+  border: none;
+  vertical-align: baseline;
+}
+
+table.facts th {
+  width: 5.5rem;
+  padding-right: 0.8rem;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+
+table.facts tr + tr th,
+table.facts tr + tr td {
+  border-top: 1px solid var(--rule);
+}
+
+table.facts tbody tr:last-child th,
+table.facts tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table.facts .line {
+  display: block;
+}
+
+/* The bookend at the foot of a page: cross-references, folded, ruled
+   above and below across both columns like the masthead. */
+
+footer.bookend {
+  margin: 3rem 0 0;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+footer.bookend details {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+footer.bookend summary {
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+footer.bookend .note {
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+table.references {
+  margin: 0.4rem 0 0;
+  border: none;
+}
+
+table.references tbody tr:last-child th,
+table.references tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table.references th {
+  width: 9rem;
+}
+
+/* On a narrow screen the margin folds in under the text. */
+
+@media (max-width: 760px) {
+  html {
+    font-size: 13px;
+  }
+
+  .block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .margin {
+    padding: 0 0 0 1rem;
+    border-left: 1px solid var(--rule);
+    margin: -0.5rem 0 1rem;
+  }
+}
+
+/* Each diagram folds under a caption, as the rows of the matrix do. */
+
+details.diagram {
+  font-size: inherit;
+  margin: 2rem 0 0;
+}
+
+details.diagram > summary {
+  list-style: none;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+
+details.diagram > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.diagram > summary .label {
+  color: var(--ink-muted);
+}
+
+details.diagram > summary .label::before {
+  content: "\25B8\00A0";
+}
+
+details.diagram[open] > summary .label::before {
+  content: "\25BE\00A0";
+}
+
+details.diagram > summary:hover .label {
+  color: var(--link);
+}
+
+details.diagram > figure.map {
+  margin-top: 1rem;
+}
+
+/* The diagram of an argument breaks out of the text column. */
+
+figure.map {
+  --dim: 0.18;
+  width: calc(100vw - 2rem);
+  margin: 2rem 0 0 calc(50% - 50vw + 1rem);
+  overflow-x: auto;
+}
+
+figure.map svg {
+  display: block;
+  margin: 0 auto;
+  font-family: "et-book", Palatino, Georgia, serif;
+}
+
+.map text {
+  fill: var(--ink);
+  font-size: 12.5px;
+}
+
+.map text.option {
+  font-size: 15px;
+  font-style: italic;
+}
+
+.map text.concern {
+  font-size: 13px;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+.map text.tally {
+  font-size: 12px;
+  font-variant: small-caps;
+}
+
+.map text.other,
+.map .note,
+.map .number {
+  fill: var(--ink-muted);
+}
+
+.map .note,
+.map .number {
+  font-size: 11px;
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+.map a:hover text {
+  fill: var(--link);
+  text-decoration: underline;
+}
+
+.map .for { fill: var(--ink-for); }
+.map .against { fill: var(--ink-against); }
+.map .stance-upheld { fill: var(--ink-upheld); }
+.map .stance-open { fill: var(--ink-open); }
+.map .stance-rejected { fill: var(--ink-rejected); }
+
+.bar-for { fill: var(--lit-ink, var(--ink-for)); }
+.bar-against { fill: var(--lit-ink, var(--ink-against)); }
+.bar-driver { fill: var(--ink); }
+.bar-other,
+.bar-none { fill: var(--ink-muted); }
+
+.band-for { fill: var(--band-for); }
+.band-against { fill: var(--band-against); }
+
+.map text.annotation { fill: var(--lit-ink, var(--ink)); }
+.map .pin { cursor: pointer; outline: none; }
+.map a.pin:hover text { fill: var(--ink); text-decoration: none; }
+.map .unpin { outline: none; cursor: default; }
+.map .unpin rect { fill: transparent; }
+
+.map text.shown {
+  fill: var(--link);
+  text-decoration: underline;
+}
+
+/* The graph of an argument, after Mark Lombardi: a tree for each
+   option, of hairline circles joined by thin lines. */
+
+.network .node .shape {
+  --rule-node: var(--ink-muted);
+  fill: var(--lit, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) calc(var(--lit-at) * 100%), var(--rule-node));
+  stroke-width: calc(1 + 0.8 * var(--lit-at));
+}
+
+/* Titles wear a halo of paper, so lines that pass behind them break
+   rather than strike through them. */
+
+.network text {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.network .node text.name { font-size: 12.5px; }
+.network .node text.above,
+.network .node text.number { text-anchor: middle; }
+.network .node text.number { font-size: 10.5px; stroke-width: 0; }
+.network .node.option text.name {
+  text-anchor: end;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* An option holds its tally: how much supports it and how much
+   challenges it. */
+
+.network .tally { outline: none; cursor: pointer; }
+.network .tally text { text-anchor: middle; font-size: 12px; stroke-width: 0; }
+.network .tally-for text { fill: var(--ink-for); }
+.network .tally-against text { fill: var(--ink-against); }
+.network a.tally:hover text { text-decoration: underline; }
+
+/* A concern is a small port beside its option, named only while it
+   is lit. */
+
+.network .node.concern .area { fill: transparent; }
+.network .labels text.concern {
+  pointer-events: none;
+  font-size: 12.5px;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  opacity: var(--lit-at);
+}
+
+.network .spoke { stroke: var(--ink-muted); stroke-width: 1; }
+.network .edges path { fill: none; stroke-width: 1.2; }
+.network .edge-for { stroke: var(--ink-for); }
+.network .edge-against { stroke: var(--ink-against); }
+
+.map { --net-mixed: #d5d0c6; --ink-mixed: var(--ink-muted); }
+.network .pick { outline: none; cursor: pointer; }
+.network a:hover text { fill: var(--ink); text-decoration: none; }
+
+/* Lighting (see cc_public.web.light). While a chain is lit, the page
+   sets --lit-on on each mark in it, --lit-away on each region it
+   reaches, a diagram or the matrix, and --lit-at on each mark that
+   shows it. Each kind of mark says here what it makes of them: in a
+   region that is away, a mark outside the chain dims to --dim, fades
+   to --fade, or mutes to the faint ink, by its class. The node or port
+   a chain is shown at is outlined (above). */
+
+@property --lit-on { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --lit-away { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --lit-at { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+.dims,
+.fades,
+.mutes { --lit-off: calc(var(--lit-away) * (1 - var(--lit-on))); }
+
+.dims,
+.fades { transition: opacity 0.12s; }
+.dims { opacity: calc(1 - var(--lit-off) * (1 - var(--dim))); }
+.fades { opacity: calc(1 - var(--lit-off) * (1 - var(--fade, 0.3))); }
+
+.mutes {
+  color: color-mix(in srgb, var(--ink-faint) calc(var(--lit-off) * 100%), currentColor);
+  transition: color 0.12s;
+}
+
+.mutes .number {
+  color: color-mix(in srgb, var(--ink-faint) calc(var(--lit-off) * 100%), var(--ink-muted));
+}
+
+/* The decision matrix: a column for each option and a row for each
+   concern, as the foot of the masthead. The options share the width
+   the concern names leave, their names set level and wrapped. Each
+   cell shows a square for each unit of weight, in the colours of the
+   bands of the diagram and marked + or −, so colour is never the only
+   sign. What a row opens to is lightly shaded and keeps the columns of
+   the page. */
+
+section.matrix {
+  margin: -0.75rem 0 1rem;
+  border-bottom: 1px solid var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+section.matrix .row {
+  display: grid;
+  grid-template-columns: 17rem repeat(var(--options), minmax(0, 1fr)) 6.5rem;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+section.matrix .row > .label {
+  padding: 0.35rem 0 0.35rem 1.3rem;
+}
+
+/* The type steps down as the matrix opens: the concern, then the title
+   of an annotation, then its brief and description at one size. */
+
+section.matrix details.concern > summary .label,
+section.matrix .row.concern > .label {
+  font-size: 1.25rem;
+}
+
+section.matrix .row > .cell {
+  text-align: left;
+  padding: 0.35rem 0;
+}
+
+section.matrix .row.head {
+  align-items: end;
+  border-bottom: 1px solid var(--rule);
+}
+
+section.matrix .row.head > .cell {
+  padding: 0.8rem 0 0.4rem;
+  line-height: 1.2;
+}
+
+section.matrix .row.head > .cell > a {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+
+section.matrix .row.head .total { --fade: 0.45; }
+
+/* An option chosen in the head shows its brief under it (the rule
+   that shows it for a chosen count is written into the page); its
+   chains light, so the titles of the others mute. */
+
+section.matrix .drill.option {
+  display: none;
+  border-bottom: 1px solid var(--rule);
+  padding-top: 0.8rem;
+}
+
+section.matrix .drill.option:target {
+  display: block;
+}
+
+/* The counts under an option's title show the option and pin the
+   chains that reach it with that role. */
+
+section.matrix .row.head .total {
+  font-size: 0.95rem;
+  margin-top: 0.15rem;
+}
+
+section.matrix .row.head .total a {
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+}
+
+section.matrix .row.head .total a:hover { text-decoration: underline; }
+section.matrix .row.head .total .for { color: var(--ink-for); }
+section.matrix .row.head .total .against { color: var(--ink-against); }
+
+section.matrix details.concern,
+section.matrix .row.concern {
+  border-bottom: 1px solid var(--rule);
+}
+
+section.matrix details.concern {
+  font-size: inherit;
+  margin: 0;
+}
+
+section.matrix details.concern > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+section.matrix details.concern > summary::-webkit-details-marker {
+  display: none;
+}
+
+section.matrix details.concern > summary .label {
+  position: relative;
+}
+
+section.matrix details.concern > summary .label::before {
+  content: "\25B8";
+  position: absolute;
+  left: 0.15rem;
+  color: var(--ink-muted);
+}
+
+section.matrix details.concern[open] > summary .label::before {
+  content: "\25BE";
+}
+
+section.matrix .unargued {
+  margin-left: 0.6em;
+  font-style: italic;
+  color: var(--ink-open);
+}
+
+section.matrix .row.foot > .label {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+
+section.matrix .row.foot.controls > .cell {
+  padding: 0.5rem 0;
+}
+
+section.matrix .row.foot.controls div.determine {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+section.matrix .none { color: var(--rule); }
+
+section.matrix .units {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  vertical-align: middle;
+}
+
+/* A unit is a disc drawn as a small vector image, so its mark is at its
+   exact centre and evenly weighted at any size; the disc takes the
+   colour of the bands of the diagram on the paper, marked with a tick
+   for and a cross against. The mark stays in the text, hidden, for
+   reading aloud and copying. */
+
+section.matrix .unit {
+  display: inline-block;
+  width: 1.4rem;
+  height: 1.4rem;
+  color: transparent;
+  font-size: 0.1rem;
+  overflow: hidden;
+  background-size: 100% 100%;
+}
+
+section.matrix .unit.for {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23b6bcaa'/%3E%3Cg stroke='%23263a2c' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M5.8 10.3l2.9 2.9 5.5-6.2' fill='none' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+section.matrix .unit.against {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23ceb0a5'/%3E%3Cg stroke='%234f2320' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M6.6 6.6l6.8 6.8'/%3E%3Cpath d='M13.4 6.6l-6.8 6.8'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+section.matrix a.cell {
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 0.8rem;
+}
+
+section.matrix a.cell:hover {
+  outline: 1px solid var(--ink-muted);
+  outline-offset: 2px;
+}
+
+/* The shading of what a row opens to starts at the rule under the row:
+   the first annotation's rule is that rule. */
+
+/* Everything a row opens to sits at one indent, however deep the
+   answers go: depth is read from what each annotation bears on, in its
+   margin, not from how far it is pushed in. */
+
+/* Answers stand on a darker shade, and answers to answers, however
+   deep, on a darker one still, out to the edges of the shading above
+   them. */
+
+section.matrix .drill .answers {
+  display: flow-root;
+  margin-left: -1.3rem;
+  padding-left: 1.3rem;
+  background: var(--shade-deep);
+}
+
+section.matrix .drill .answers .answers {
+  background: var(--shade-deeper);
+}
+
+/* The shade of answers holds the space below the last of them, and
+   when they end the row it reaches the rule below with no gap: the
+   row drops its own padding. */
+
+section.matrix .drill:has(
+    > details.annotation:last-child > .body > details.brief[open] > .answers,
+    > details.annotation:last-child > .body > details.brief[open]
+      > details.description[open] > .answers) {
+  padding-bottom: 0;
+}
+
+/* Open answers end the body of what they answer, so its shade meets
+   the rule below with no gap. */
+
+section.matrix .drill details.annotation > .body:has(
+    > details.brief[open] > .answers,
+    > details.brief[open] > details.description[open] > .answers) {
+  margin-bottom: 0;
+}
+
+section.matrix .drill details.annotation.answer > summary .main > p {
+  margin-left: 0;
+}
+
+section.matrix .drill {
+  padding: 0 0 0.8rem 1.3rem;
+  background: var(--shade);
+  font-size: 1.12rem;
+  line-height: 1.5;
+}
+
+section.matrix .drill details.annotation > summary .run-in {
+  font-size: 1.05em;
+}
+
+section.matrix .drill details.annotation .block.description .main > p.description {
+  font-size: 1em;
+}
+
+/* On a narrow screen the concern names take less room. */
+
+@media (max-width: 760px) {
+  section.matrix .row {
+    grid-template-columns: 9rem repeat(var(--options), minmax(0, 1fr)) 6.5rem;
+    column-gap: 0.5rem;
+  }
+
+  section.matrix .row.foot.controls div.determine {
+    flex-direction: column;
+  }
+}
+
+div.determine {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: stretch;
+}
+
+/* A control that changes the data is a flat pill, in the light green
+   or red of the annotation nodes for and against, or in the deep shade
+   when it is neither. A hairline outline appears under the pointer to
+   show that it can be pressed, and pressing darkens both. A control
+   that waits on something is greyed, and cannot be pressed. */
+
+.pill {
+  display: inline-block;
+  font: inherit;
+  font-size: 0.95rem;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--shade-deep);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.05rem 0.75rem;
+  cursor: pointer;
+}
+
+.pill.for { background: var(--net-for); }
+.pill.against { background: var(--net-against); }
+
+.pill:hover,
+.pill:focus-visible { border-color: var(--ink-muted); outline: none; }
+.pill.for:hover,
+.pill.for:focus-visible { border-color: var(--ink-for); }
+.pill.against:hover,
+.pill.against:focus-visible { border-color: var(--ink-against); }
+
+.pill:active { background: #d6ccbb; border-color: var(--ink); }
+.pill.for:active { background: #b6bcaa; border-color: var(--mark-for); }
+.pill.against:active { background: #ceb0a5; border-color: var(--mark-against); }
+
+.pill.waiting,
+.pill.waiting:hover,
+.pill.waiting:active {
+  color: var(--ink-muted);
+  background: var(--shade);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+/* The controls that add to the argument sit in the margin, after the
+   last level of what they add to, so they show only once it is open. */
+
+.add {
+  margin: 0.2rem 0 0.4rem;
+}
+
+.add .pill + .pill {
+  margin-left: 0.3rem;
+}
+
+.block.add {
+  margin-bottom: 0.4rem;
+}
+
+.block.add > .margin {
+  padding-top: 0;
+}
+
+/* The control that adds an option stands in a narrow column of its
+   own at the end of the head of the matrix, where the new option
+   would go. */
+
+section.matrix .row.head > .cell > .add {
+  display: block;
+  margin: 0;
+  text-align: right;
+}
+
+/* The description of an annotation: prose with its sources numbered in
+   the margin beside it. An assumption is set apart from what was checked,
+   and an item the prose names reads by its title. */
+
+details.annotation .block.description .main > p.description {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+sup.cite {
+  font-size: 0.75em;
+  line-height: 0;
+  margin-left: 0.05em;
+}
+
+sup.cite a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+ol.sources {
+  margin: 0;
+  padding-left: 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+ol.sources li {
+  margin-bottom: 0.3rem;
+}
+
+ol.sources li::marker {
+  font-size: 0.85em;
+}
+
+ol.sources li:target {
+  color: var(--ink);
+}
+
+.assumption {
+  font-style: italic;
+}
+
+.assumption .label {
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-open);
+}
+
+a.mention {
+  color: inherit;
+  text-decoration: underline dotted var(--ink-muted);
+  text-underline-offset: 0.15em;
+}
+
+details.annotation > .body > .block,
+details.annotation > .body > details.brief > summary > .block {
+  margin-bottom: 0.2rem;
+}
+
+details.annotation .block.description .main > p.description {
+  margin-top: 0;
+}
+
+details.annotation details.brief,
+details.annotation details.description {
+  font-size: inherit;
+  margin: 0;
+}
+
+/* A brief or description with more under it folds over it, with its
+   mark in the gutter under the mark of the title. */
+
+details.brief > summary,
+details.description > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+details.brief > summary::-webkit-details-marker,
+details.description > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.brief > summary > .block > .main > p,
+details.description > summary > .block > .main > p {
+  position: relative;
+}
+
+details.brief > summary > .block > .main > p::before,
+details.description > summary > .block > .main > p::before {
+  content: "\25B8";
+  position: absolute;
+  left: -1.1rem;
+  color: var(--ink-muted);
+}
+
+details.brief[open] > summary > .block > .main > p::before,
+details.description[open] > summary > .block > .main > p::before {
+  content: "\25BE";
+}
+
+details.brief > summary:hover > .block > .main > p::before,
+details.description > summary:hover > .block > .main > p::before {
+  color: var(--link);
+}
+
+/* The place of a decision or a requirement among all of them, under its
+   title, with steps to those before and after it. */
+
+.masthead nav.sequence {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  margin: -0.6rem 0 0.8rem;
+}
+
+.masthead nav.sequence a.step {
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-family: Georgia, serif;
+}
+
+.masthead nav.sequence a.step:hover {
+  color: var(--link);
+}
+
+/* The requirement index sets the statement of each requirement under
+   its title, quieter than the title. */
+
+table.requirements .statement {
+  display: block;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 1.05rem;
+}
+
+/* What the tree does not record reads faint, so a gap shows as a gap. */
+
+.gap {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.gloss {
+  color: var(--ink-muted);
+}
+
+section.trace .gloss {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.masthead table.facts code {
+  overflow-wrap: anywhere;
+}
+
+/* The trace of a requirement: stations down a spine in the text
+   column, each a circle on the spine as in the diagrams of an
+   argument. A station the tree records nothing for is hollow, and the
+   statement is the large circle at the centre of the trace. */
+
+section.trace .station > .main {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 1rem;
+}
+
+section.trace .station {
+  margin-bottom: 0;
+}
+
+section.trace .station > .main::before {
+  content: "";
+  position: absolute;
+  left: 0.55rem;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--rule);
+}
+
+section.trace .station:first-of-type > .main::before { top: 0.9rem; }
+section.trace .station:last-child > .main::before { bottom: auto; height: 0.9rem; }
+
+section.trace .station > .main::after {
+  content: "";
+  position: absolute;
+  left: calc(0.55rem - 0.35rem);
+  top: calc(0.9rem - 0.35rem);
+  width: 0.7rem;
+  height: 0.7rem;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+
+section.trace .station.gap > .main::after {
+  background: var(--paper);
+  border: 1px dashed var(--ink-faint);
+}
+
+section.trace .station.statement > .main::after {
+  left: calc(0.55rem - 0.55rem);
+  top: calc(1.2rem - 0.55rem);
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--ink);
+}
+
+section.trace .station.gap .margin .label {
+  color: var(--ink-faint);
+}
+
+/* The anatomy of a statement: each part over the name of the slot it
+   fills, on a hairline, as a sentence is parsed on paper. */
+
+p.anatomy {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+p.anatomy .part {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: top;
+  max-width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+p.anatomy .slot {
+  border-top: 1px solid var(--rule);
+  margin-top: 0.15rem;
+  padding-top: 0.05rem;
+  font-size: 0.95rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+p.anatomy .part-subject .slot,
+p.anatomy .part-process .slot,
+p.anatomy .part-obligation .slot {
+  border-top-color: var(--ink-muted);
+}
+
+/* The questions for review, a list in the text column under each
+   transformation, with what it looks for in the margin. */
+
+section.questions ul {
+  margin: 0 0 0.5rem;
+  padding-left: 1.2rem;
+  font-size: 1.25rem;
+}
+
+section.questions li {
+  margin-bottom: 0.3rem;
+}
+
+/* The characteristics a requirement is reviewed against. */
+
+table.characteristics {
+  max-width: var(--width-text);
+}
+
+section > table.characteristics th:first-child {
+  width: 65%;
+}
+
+table.characteristics .code {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+table.characteristics .said {
+  color: var(--ink-muted);
+}
+
+/* The contract of an interface control document: a column for each
+   part of a signature and a row for each member, as the foot of the
+   masthead, the members grouped by kind. A disc says whether the code
+   that realizes a member agrees with what the member states: ticked
+   where it agrees, crossed in ochre where it differs, hollow where the
+   member states nothing to compare, dashed where no code realizes it.
+   Nothing here is for or against, so the colours of argument are not
+   used. The mark stays in the text, hidden, for reading aloud. */
+
+section.matrix.contract .row {
+  grid-template-columns: 17rem repeat(var(--options), minmax(0, 1fr));
+}
+
+section.matrix.contract .row.head .column {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+section.matrix.contract .row.group {
+  border-bottom: 1px solid var(--rule);
+}
+
+section.matrix.contract .row.group > .label {
+  padding-top: 0.9rem;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+section.matrix.contract details.member > summary .label {
+  font-size: 1.15rem;
+}
+
+section.matrix.contract code.name {
+  font-size: 0.85em;
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+section.matrix.contract .row.foot > .cell {
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+section.matrix.contract .verdict {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  color: transparent;
+  font-size: 0.1rem;
+  overflow: hidden;
+  vertical-align: middle;
+  background-size: 100% 100%;
+}
+
+section.matrix.contract .verdict.agrees {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23d6ccb9'/%3E%3Cpath d='M5.8 10.3l2.9 2.9 5.5-6.2' fill='none' stroke='%233d372d' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+section.matrix.contract .verdict.differs {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23dcc99a'/%3E%3Cg stroke='%235a4722' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M6.6 6.6l6.8 6.8'/%3E%3Cpath d='M13.4 6.6l-6.8 6.8'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+section.matrix.contract .verdict.unstated {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='none' stroke='%23a99f8c' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+section.matrix.contract .verdict.unrealized {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='none' stroke='%238a7344' stroke-width='1.2' stroke-dasharray='2.4 2'/%3E%3C/svg%3E");
+}
+
+section.matrix.contract p.signature {
+  margin-top: 0.8rem;
+}
+
+section.matrix.contract p.signature code {
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+section.matrix.contract .location {
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+/* The parameters of a member: each with its brief under its name, a
+   part the code says otherwise of shown as stated, struck in ochre,
+   with what the code says under it. */
+
+table.parameters {
+  margin: 0.6rem 0 0.4rem;
+  font-size: 1.05rem;
+  table-layout: auto;
+}
+
+table.parameters .statement {
+  display: block;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 0.98rem;
+}
+
+table.parameters .statement.obligation {
+  font-style: normal;
+}
+
+.stated.differs {
+  text-decoration: line-through;
+  text-decoration-color: #8a7344;
+}
+
+.code-says {
+  display: block;
+  color: #8a7344;
+}
+
+.code-says::before {
+  content: "code: ";
+  font-family: "et-book", Palatino, Georgia, serif;
+  font-style: italic;
+}
+
+.statement.differs {
+  color: #8a7344;
+}
+
+section.use {
+  margin-top: 1.5rem;
+}
+
+/* A surface that is not native: a dataflow step, drawn as a box with
+   its ports as named arrows, then its ports; or its artifacts. Then
+   each part of its semantics, the question it answers in the margin,
+   a part the surface leaves unstated drawn hollow. */
+
+section.surface {
+  margin-top: 1.5rem;
+}
+
+section.surface h2 .key {
+  font-size: 0.7em;
+  color: var(--ink-muted);
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+figure.step {
+  margin: 0.5rem 0 1rem;
+  max-width: var(--width-text);
+}
+
+figure.step svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  font-family: "et-book", Palatino, Georgia, serif;
+}
+
+figure.step .box {
+  fill: var(--shade);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+figure.step text {
+  fill: var(--ink);
+  font-size: 15px;
+}
+
+figure.step text.type {
+  fill: var(--ink-muted);
+  font-style: italic;
+  font-size: 13px;
+}
+
+figure.step .port line {
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+
+figure.step .port.optional line {
+  stroke-dasharray: 4 3;
+}
+
+figure.step .head {
+  fill: var(--ink-muted);
+}
+
+figure.step a:hover text.name {
+  fill: var(--link);
+}
+
+table.ports tr.group th {
+  padding-top: 0.6rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--rule);
+}
+
+table.ports tr:target td {
+  background: var(--shade);
+}
+
+section.surface .semantics h3 {
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: normal;
+  margin: 1.4rem 0 0.4rem;
+}
+
+section.surface .semantics h3 .note {
+  font-style: normal;
+  font-size: 0.85em;
+  color: var(--ink-muted);
+}
+
+section.surface .semantics .block.part {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.3rem;
+}
+
+section.surface .semantics .block.part .main p {
+  margin: 0 0 0.4rem;
+}
+
+section.surface .semantics .margin .gloss {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+section.surface .semantics .block.unstated .label {
+  color: var(--ink-faint);
+}
+
+section.surface .block.artifact {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.3rem;
+}
+
+/* The form that adds to the argument or settles it: each field in the
+   text column, under its label, with a note on it in the margin. */
+
+form.edit .block.field {
+  margin-bottom: 0.9rem;
+}
+
+form.edit label,
+form.edit .label {
+  display: block;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+
+form.edit input[type=text],
+form.edit textarea {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.25rem 0.4rem;
+}
+
+form.edit textarea {
+  line-height: 1.45;
+  resize: vertical;
+}
+
+form.edit input[type=text]:focus,
+form.edit textarea:focus {
+  outline: none;
+  border-color: var(--ink-muted);
+}
+
+form.edit .choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.1rem;
+  margin-top: 0.2rem;
+}
+
+form.edit .choice.other {
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--rule);
+}
+
+form.edit label.concern {
+  display: inline;
+  font-variant: normal;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+form.edit p.press {
+  margin-top: 1.2rem;
+}
+
+form.edit p.press .pill {
+  margin-right: 0.8rem;
+}
+
+p.refused {
+  color: var(--ink-against);
+  margin-bottom: 0.2rem;
+}
+
+ul.refused {
+  margin-top: 0;
+  font-size: 0.95rem;
+}
+
+/* A form opened from a page stands over it in a dialog, and the page
+   falls back behind a wash of paper. The dialog keeps the text column
+   and the margin of the page, so the form reads as it does on its own
+   page. */
+
+dialog.edit {
+  box-sizing: border-box;
+  width: min(calc(var(--width-text) + var(--gap) + var(--width-margin) + 4rem), 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 1.2rem 2rem 1.5rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: 0 0.3rem 2rem rgba(31, 27, 22, 0.12);
+}
+
+dialog.edit::backdrop {
+  background: rgba(243, 234, 220, 0.78);
+}
+
+dialog.edit header h1 {
+  margin: 0 0 0.2rem;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+dialog.edit header .subtitle {
+  margin: 0 0 1rem;
+}
+
+dialog.edit button.pill:disabled {
+  color: var(--ink-muted);
+  cursor: progress;
+}
+
+/* What to write: the brief of the form, for the reviewer. */
+
+ul.prompt {
+  margin: 0 0 0.6rem;
+  padding-left: 1.2rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+ul.prompt li + li {
+  margin-top: 0.15rem;
+}
+
+.block.prompt > .margin {
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 760px) {
+  dialog.edit {
+    padding: 1rem;
+  }
+}
+
+/* The catalogue lists items of any type: the brief under each title,
+   quieter than the title, and the id and file in a narrow column. A
+   type the tree has no item of reads faint. */
+
+table.catalogue {
+  width: 100%;
+  max-width: var(--width-text);
+}
+
+table.catalogue .statement {
+  display: block;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 1.05rem;
+}
+
+table.catalogue tr.empty,
+table.catalogue tr.empty a {
+  color: var(--ink-faint);
+}
+
+table.catalogue .where {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
+}
+
+table.catalogue .where code {
+  color: var(--ink-muted);
+}
+
+table.catalogue .where .bar {
+  color: var(--rule);
+  margin: 0 0.5em;
+}
+
+table.catalogue.items td {
+  padding-bottom: 0.6rem;
+}
+
+section > table.catalogue th:first-child {
+  width: auto;
+}
+
+table.catalogue th.number {
+  width: 5rem;
+}
+
+table.catalogue.items th:nth-child(2) {
+  width: 22%;
+}
+
+/* The search box is a hairline field with a plain button, set in the
+   masthead after the indexes and above a filtered list. */
+
+form.search {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  max-width: var(--width-text);
+  margin: 1rem 0 1.5rem;
+}
+
+form.search input[type=search] {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.15rem 0;
+}
+
+form.search input[type=search]:focus {
+  outline: none;
+  border-bottom-color: var(--ink-muted);
+}
+
+button.plain {
+  font: inherit;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  color: var(--link);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+form.search.masthead {
+  display: inline-flex;
+  width: 11rem;
+  margin: 0 0 0 1.2em;
+  font-variant: normal;
+  letter-spacing: normal;
+}
+
+/* The decision list: each decision folds to a line of its title and
+   standing, which opens to its question and the options that answer
+   it. Controls above the list choose folded or open, the order and a
+   filter. */
+
+.decision-controls {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  margin: 1.5rem 0 0;
+}
+
+.decision-controls p {
+  margin: 0.1rem 0;
+}
+
+.decision-controls .label {
+  display: inline-block;
+  width: 4rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+.decision-controls .chosen {
+  color: var(--ink);
+}
+
+.decision-controls .bar {
+  color: var(--rule);
+  margin: 0 0.5em;
+}
+
+.decision-controls form.search {
+  margin: 0.4rem 0 0;
+}
+
+h2 .drivers {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+}
+
+.mark {
+  display: inline-block;
+  width: 1.2em;
+  font-style: normal;
+}
+
+.mark-upheld { color: var(--ink-upheld); }
+.mark-rejected { color: var(--ink-rejected); }
+.mark-open { color: var(--ink-faint); }
+
+.decision-answers .answer-rejected .main,
+.decision-answers .answer-rejected .main a {
+  color: var(--ink-muted);
+}
+
+.decision-answers .counts {
+  font-size: 0.95rem;
+  color: var(--ink-faint);
+}
+
+.decision-answers .counts .for { color: var(--ink-for); }
+.decision-answers .counts .against { color: var(--ink-against); }
+
+.decision-answers {
+  border-bottom: 1px solid var(--rule);
+}
+
+.decision-answers details.decision-entry {
+  font-size: inherit;
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.decision-answers details.decision-entry > summary {
+  list-style: none;
+  font-style: normal;
+  color: var(--ink);
+}
+
+.decision-answers details.decision-entry > summary::-webkit-details-marker {
+  display: none;
+}
+
+.decision-answers .block {
+  margin: 0;
+}
+
+.decision-answers summary .block {
+  padding: 0.25rem 0;
+}
+
+.decision-answers summary .title {
+  font-size: 1.25rem;
+}
+
+.decision-answers summary .main {
+  position: relative;
+}
+
+.decision-answers summary .title::before {
+  content: "\25B8";
+  position: absolute;
+  left: -1.1em;
+  color: var(--ink-faint);
+}
+
+.decision-answers details[open] > summary .title::before {
+  content: "\25BE";
+}
+
+.decision-answers summary .margin {
+  padding-top: 0.2rem;
+}
+
+.decision-answers summary .subject {
+  margin-left: 0.8em;
+  font-size: 1rem;
+  color: var(--ink-muted);
+}
+
+.decision-answers .question {
+  font-size: 1.25rem;
+  font-style: italic;
+  margin: 0 0 0.5rem;
+}
+
+.decision-answers .answer .main p {
+  position: relative;
+  margin: 0 0 0.45rem;
+  padding-left: 1.2em;
+  font-size: 1.1rem;
+}
+
+.decision-answers .answer .main p > .mark {
+  position: absolute;
+  left: 0;
+}
+
+.decision-answers .answer .run-in {
+  margin-right: 0.3em;
+}
+
+.decision-answers .answer .margin {
+  padding-top: 0.15rem;
+}
+
+.decision-answers .onward {
+  margin: 0.1rem 0 0.7rem;
+  padding-left: 1.2em;
+  font-size: 1rem;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}

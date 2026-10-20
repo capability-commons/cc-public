@@ -1,0 +1,51 @@
+id_self:                ann_one_dry_run_diff_for_every_edit
+guid_self:              ann_e8c01104b7514e668b582f020811126d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One dry-run diff for every edit
+brief:                  |
+                        Every edit command and batch share one
+                        --dry-run that prints the edit as a unified
+                        diff and writes nothing, so a person can read
+                        a proposed change to the data as a small,
+                        uniform diff before it lands.
+description:            |
+                        The edit commands share one _option helper
+                        with --root and --dry-run
+                        (src/cc_public/cli/editing.py lines 69-89).
+                        Each single edit and batch pass to the same
+                        _run (lines 120-295, 339), which with
+                        --dry-run prints difflib.unified_diff of each
+                        file (lines 390-414). Every edit is laid out
+                        by format_file, the same printer as cctool
+                        format (edit/layout.py lines 35-37;
+                        edit/edit.py line 1059). A batch file is
+                        itself readable before it is applied. Before
+                        6c8d3d5 data was edited by hand with no
+                        preview. ASSUMPTION: scripts run directly
+                        could offer a dry-run too; the gain is one
+                        option and one code path for every edit, and
+                        nothing makes new edit commands use _run.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_command_line_shape
+    guid_target:        dec_1ae9a1b1f08544869e7a7edd3ea734ac
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_small_click_cli_for_agents
+    guid_target:        opt_0a6b2653724a445ba5864e76302bdff3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

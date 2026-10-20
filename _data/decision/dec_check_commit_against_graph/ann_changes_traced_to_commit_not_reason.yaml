@@ -1,0 +1,48 @@
+id_self:                ann_changes_traced_to_commit_not_reason
+guid_self:              ann_dfc70b0474d74676a381563e21cd14b6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Changes traced to a commit but not to a reason
+brief:                  |
+                        No rule ties a commit to the need, decision or
+                        option that called for it, and commits are not
+                        read into the graph, so the graph cannot say
+                        why an item was removed or changed.
+description:            |
+                        sch_commit allows relation edges
+                        (_data/schema/sch_commit.yaml lines 19-20,
+                        43), but all 33 commits carry relation: []
+                        (git log --format=%B). change.lp has no rule
+                        over commit relations; its commit inputs are
+                        commit_verb, commit_mention and content_change
+                        (change.py lines 119-123). The rule "Option
+                        status changes only in a commit that names the
+                        option" was recorded and not built
+                        (memory/commit-triples.md). extract.py does
+                        not read git log. Will deferred graph history:
+                        "something for later, not for now" (owner's
+                        statement, 2026-10-14T12:39:46Z). The
+                        title-only check does less here.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_before_after_commit_check
+    guid_target:        opt_09d79d57eb364b659ebeb702bde495e5
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

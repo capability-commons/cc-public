@@ -1,0 +1,52 @@
+id_self:                ann_ordinary_commit_draft_startup_only
+guid_self:              ann_ff494dc582514fabb8d9ad66b718ff05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Start-up cost only for ordinary commits
+brief:                  |
+                        The hook runs on every commit, but for an
+                        ordinary message draft returns before any
+                        extraction. The added cost is one process
+                        start, about half a second, independent of
+                        graph size.
+description:            |
+                        The prepare-commit-msg hook runs message draft
+                        for every commit (.githooks/prepare-commit-msg
+                        line 31). draft returns the text unchanged
+                        when the message already holds an item or the
+                        subject is neither a merge nor a revert
+                        (src/cc_public/commit/message.py lines
+                        155-164). Measured 2026-10-15 in the cloud
+                        container, no pixi, three runs: draft on an
+                        ordinary message 0.46 to 0.53 s, 35 MB peak;
+                        import of cc_public.cli.command alone 0.23 to
+                        0.52 s. Re-measured by the verifier in a
+                        scratch clone at 89c74d8: draft 0.45 to 0.46
+                        s, import 0.46 to 0.56 s. Beside it, message
+                        check takes 8.6 to 10.0 s and the gate about
+                        75 s (memory/MEMORY.md line 54). ASSUMPTION:
+                        pixi start-up, not measured, adds a similar
+                        fixed cost.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_git_drafted_messages
+    guid_target:        dec_519395acf62e492a8163bfa6247e5964
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_prepare_commit_msg_converts
+    guid_target:        opt_a2e4758393894a3d841c8fe780d3f73d
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

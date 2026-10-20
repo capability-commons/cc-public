@@ -1,0 +1,48 @@
+id_self:                ann_gate_tests_only_the_locked_python
+guid_self:              ann_bb654b777161402296cf88645a204178
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate checks on one Python only
+brief:                  |
+                        The project claims Python 3.12 and later, but
+                        the locked environment, and so the gate, runs
+                        only Python 3.15. Nothing checks the lowest
+                        version the project claims.
+description:            |
+                        pyproject.toml line 38 sets requires-python
+                        ">= 3.12" and line 59 python ">=3.12";
+                        pixi.lock holds python 3.15.0 only (lines 40
+                        and 80). The pre-commit hook runs the gate in
+                        the pixi environment (.githooks/pre-commit
+                        line 28). ruff targets py312 (pyproject.toml
+                        line 90), which catches some newer syntax but
+                        tests no library behaviour (ASSUMPTION). A
+                        weak point today: measured by the advocate on
+                        2026-10-15 on Python 3.12.3 at 89c74d8, all
+                        326 tests pass and cctool check reports 0
+                        failures. Tools on the PATH would test on
+                        whatever Python each machine has, which is no
+                        better as a guarantee.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_pixi_from_conda_forge
+    guid_target:        opt_13825b46c24c4bb29bf564159018e5ce
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,73 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_trait_descriptive.yaml
+id_self:                sch_trait_descriptive
+guid_self:              sch_02a7f7d40e0c42fe8e82b170c4d15eaf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Descriptive trait
+brief:                  |
+                        Trait with the description fields.
+description:            |
+                        This trait holds the fields an item uses to
+                        describe itself: title, brief, description,
+                        usage and note.
+
+                        Only title and brief are required by this
+                        trait. A schema that composes it requires
+                        whichever of the other three it needs.
+usage:                  |
+                        Types whose items describe themselves compose
+                        this trait via allOf.
+type:                   object
+
+required:
+  - title
+  - brief
+
+properties:
+
+  title:
+    type:               string
+    minLength:          1
+    description:        |
+                        Human-facing name. A noun phrase, not a
+                        sentence.
+    maxLength:          80
+    pattern:            ^[^\n]+$
+
+  brief:
+    type:               string
+    minLength:          1
+    description:        |
+                        One-line statement of what this is. A reader
+                        who reads only this field should still
+                        understand the item.
+
+  description:
+    type:               string
+    minLength:          1
+    description:        |
+                        Full explanation of what this is, and what it
+                        is not.
+
+  usage:
+    type:               string
+    minLength:          1
+    description:        |
+                        What this is used for, and by whom or what.
+
+  note:
+    type:               string
+    minLength:          1
+    description:        |
+                        Scope caveats, and guidance on choosing
+                        between this and a neighbouring alternative.
+                        Not the place for the reasoning that produced
+                        the item -- that belongs in a separate
+                        annotation data item.

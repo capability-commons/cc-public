@@ -1,0 +1,60 @@
+id_self:                ann_edits_judged_by_the_one_checker
+guid_self:              ann_cc938aec4b254540b8dc2f54296c2544
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One checker judges every edit
+brief:                  |
+                        The editing commands do not judge validity
+                        themselves. They run the same checker before
+                        and after the edit, so a new or changed check
+                        governs edits with no change to the edit code,
+                        unless the editor must build what the rule
+                        asks.
+description:            |
+                        edit.apply calls check_documents on the tree
+                        before and after the edit and writes only if
+                        no failure is added
+                        (src/cc_public/edit/edit.py lines 866-891);
+                        added failures are found by comparing failure
+                        sets without line numbers (lines 894-918). The
+                        edit package imports cc_public.check.check for
+                        validity (edit.py line 54). The layout printer
+                        format_file is shared by the layout check,
+                        cctool format and every edit
+                        (src/cc_public/edit/layout.py lines 36-38;
+                        src/cc_public/check/check.py lines 37, 75).
+                        Commit 6230e98 moved every cross-item check
+                        from check.dl to check.lp (524 lines added)
+                        and changed edit.py by 4 lines (git show
+                        --stat 6230e98). Will expects the checks to
+                        grow (W 2026-10-13T21:57:52Z). Holds at ten
+                        times the graph and twice the tooling, as long
+                        as new commands also go through apply.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_transactional_editing_commands
+    guid_target:        opt_d264c7bf70ea4ae28041004fbe298402
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

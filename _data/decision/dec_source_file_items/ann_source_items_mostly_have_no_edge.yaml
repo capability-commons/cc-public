@@ -1,0 +1,46 @@
+id_self:                ann_source_items_mostly_have_no_edge
+guid_self:              ann_20800c30529041d78d14e17decbd29dc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Source items with no edge
+brief:                  |
+                        The rule makes each source file hold an item
+                        but not name the reason it exists. 39 of the
+                        40 items under src have no relation, and no
+                        check reports it, so the decision gives a
+                        place for a trace, not the trace.
+description:            |
+                        40 files under src (37 .py, 3 .lp) at HEAD
+                        89c74d8; all but src/cc_public/__init__.py
+                        hold "relation: []". unrecorded_module tests
+                        only that an item exists
+                        (src/cc_public/check/check.lp lines 207-210).
+                        derive.lp has no rule that lets a module
+                        inherit its package's r_realizes edge
+                        (src/cc_public/graph/derive.lp lines 35-83).
+                        ASSUMPTION: such a rule could use the dotted
+                        id. A sidecar would have the same gap. From
+                        the traceability advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_source_file_items
+    guid_target:        dec_37fca4ea2699487580a34decc29450df
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_item_in_docstring_or_header
+    guid_target:        opt_6ed9df510efc4e61a41d2253563d92ac
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

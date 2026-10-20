@@ -1,0 +1,75 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_regentry_type.yaml
+id_self:                sch_regentry_type
+guid_self:              sch_4a17e1ea6a1143c59c0a634b38f902bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type register entry schema
+brief:                  |
+                        What a type register entry carries beyond the
+                        general register entry.
+description:            |
+                        A type entry names the prefix that marks the
+                        identifiers of its type, the pattern those
+                        identifiers must match, and the concept the
+                        type represents.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_data_item_type as the shape of every
+                        entry in the data item type register.
+note:                   |
+                        The pattern in regex_id is the authority on
+                        the form of an identifier of this type. It is
+                        narrower than the id form in sch_primitive,
+                        which every identifier must also match.
+
+                        That regex_id begins with the prefix, and that
+                        no two entries claim the same prefix, are left
+                        to a companion check. JSON Schema cannot
+                        compare one field with another, nor one entry
+                        with another.
+type:                   object
+
+required:
+  - prefix
+  - regex_id
+  - id_concept
+  - guid_concept
+
+properties:
+
+  prefix:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/prefix
+    description:        |
+                        The prefix carried by the id and the guid of
+                        every thing of this type.
+
+  regex_id:
+    type:               string
+    format:             regex
+    minLength:          1
+    description:        |
+                        The pattern every readable id of this type
+                        must match.
+
+  id_concept:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
+    pattern:            ^con_
+    description:        |
+                        The id of the entry in the concept register
+                        for the concept this type represents.
+
+  guid_concept:
+    $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
+    pattern:            ^con_
+    description:        |
+                        The guid of the same concept register entry.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml

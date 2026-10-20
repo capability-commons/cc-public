@@ -1,0 +1,44 @@
+id_self:                ann_edit_write_atomicity_is_fixed
+guid_self:              ann_e3142b4db5c6414e83ffbd9f52d0e010
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edit writes now staged before replacing
+brief:                  |
+                        Commit b5fe6e6 "Fix edit.apply so that an edit
+                        is written all or none" writes each new text
+                        beside its file and replaces the files only
+                        once all are written. At 360ec14 a full disk
+                        or a failed write leaves the tree as it was.
+description:            |
+                        _write stages each text as a file beside its
+                        target, removes the staged files and raises
+                        ErrorEdit if any write fails, and only then
+                        moves each into place with os.replace
+                        (src/cc_public/edit/edit.py lines 941-972 at
+                        360ec14);
+                        test_an_edit_that_cannot_be_written_changes_nothing
+                        covers it
+                        (src/cc_public/edit/_test/test_edit.py line
+                        91). Each os.replace is atomic for its file,
+                        but the set of replaces is not one step: a
+                        crash between two of them can still leave an
+                        edit half applied, a much narrower window than
+                        before.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_edit_writes_are_not_atomic
+    guid_target:        ann_eaa7aa65affe411a8555f1f7fc9fc736

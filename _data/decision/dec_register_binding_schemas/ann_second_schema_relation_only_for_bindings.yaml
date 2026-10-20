@@ -1,0 +1,54 @@
+id_self:                ann_second_schema_relation_only_for_bindings
+guid_self:              ann_d52e5a4a58ee4d6a8973f918d42f8fbd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A schema relation kept only for bindings
+brief:                  |
+                        The bindings need a second way to select a
+                        schema, r_is_specified_by_schema, beside the
+                        type edge every other item uses. Only
+                        registers use it, and only to name their
+                        binding.
+description:            |
+                        Domain t_register only
+                        (_data/register/reg_relation.yaml lines
+                        64-82). Every type names exactly one schema
+                        for its items (src/cc_public/check/check.lp
+                        lines 596-604). One derive rule per mechanism
+                        (src/cc_public/graph/derive.lp lines 78-85);
+                        unused_schema names both
+                        (src/cc_public/check/check.lp lines 614-618).
+                        The relation dates from the placeholder commit
+                        bb8c338, where types also used it; f587284
+                        (pre-squash) moved types to
+                        r_has_items_specified_by_schema and narrowed
+                        its domain to t_register. Dropping the
+                        bindings would need the checker to apply an
+                        entry schema per table entry and close each
+                        entry, which sch_reg_* does today. ASSUMPTION:
+                        that is one Datalog rule and a small change to
+                        src/cc_public/check/schema.py; not sized. From
+                        the simplicity advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_binding_schemas
+    guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_keep_per_register_binding
+    guid_target:        opt_433d0e587fb04d9184a15395e14fbf7e
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

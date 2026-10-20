@@ -1,0 +1,46 @@
+id_self:                ann_duplicate_id_check_also_gives_uniqueness
+guid_self:              ann_bc5ce711a0884f97a2d39b325e0b7983
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Duplicate id check as a second guarantee
+brief:                  |
+                        The checker rule duplicate_id reports one id
+                        that names two items, and register entries are
+                        items, so a repeated entry id is caught with a
+                        map or an array. The map is now a second
+                        guarantee, though it was the only one when the
+                        reason was given.
+description:            |
+                        src/cc_public/check/check.lp lines 93-103;
+                        src/cc_public/graph/extract.py lines 412-418.
+                        When the reason was given there was no
+                        checker: an assistant-written session summary
+                        that Will pasted on 2026-10-09 still says
+                        "There is no checker" (will-messages.md line
+                        76). The rule first appears in commit ba66f33,
+                        2026-10-13 (tag pre_squash_20261014), squashed
+                        into 7dda99e, 2026-10-14. Limit: duplicate_id
+                        fires only when the two guids differ (check.lp
+                        lines 100-103), and duplicate_guid only when
+                        the two ids differ (lines 114-117), so an
+                        exact copy with the same id and guid is
+                        reported by neither. From the simplicity
+                        advocate.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_register_shape
+    guid_target:        dec_4159ae74c6a5467f98c3ad15d82d3194
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          ann_register_maps_give_uniqueness_one_shape
+    guid_target:        ann_b1cda026d6d04ba8bb9efd3cce5cf241

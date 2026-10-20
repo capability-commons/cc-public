@@ -1,0 +1,49 @@
+id_self:                ann_edits_refuse_items_in_source_files
+guid_self:              ann_33698841b0c9498e9b20348e1e127f06
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edits refused for items in source files
+brief:                  |
+                        The edit commands cannot remove or rename an
+                        item that lives in a source file, and rename
+                        leaves ids in code unchanged, so some graph
+                        changes are made by hand, outside the checked
+                        route.
+description:            |
+                        remove and rename refuse items with prefix
+                        pym, pyp, lpf or file and say to "move or
+                        remove the file by hand"
+                        (src/cc_public/edit/edit.py lines 105,
+                        774-786). rename: "Text outside documents,
+                        such as code, is not changed", and files that
+                        still name the old id are listed on stderr
+                        (src/cc_public/cli/editing.py lines 285-308).
+                        A hand edit is checked only when cctool check
+                        runs, as in the gate (gate.py line 64). The
+                        rejected alternative had no edit commands, so
+                        this does not favour it. A gap in the
+                        functions built, closed by a move command, not
+                        by another shape.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_command_line_shape
+    guid_target:        dec_1ae9a1b1f08544869e7a7edd3ea734ac
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_small_click_cli_for_agents
+    guid_target:        opt_0a6b2653724a445ba5864e76302bdff3
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

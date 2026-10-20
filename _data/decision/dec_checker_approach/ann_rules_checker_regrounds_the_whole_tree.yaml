@@ -1,0 +1,47 @@
+id_self:                ann_rules_checker_regrounds_the_whole_tree
+guid_self:              ann_c51ef68ebae04741855c8de93df0181d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-tree cost on every check
+brief:                  |
+                        The chosen checker re-extracts the facts of
+                        every document and re-grounds the whole graph
+                        on each evaluation, and an edit evaluates
+                        twice. Only parsing and schema validation of
+                        unchanged documents are cached; nothing is
+                        incremental at the rule level.
+description:            |
+                        Each evaluation builds a new clingo control
+                        and grounds from nothing:
+                        src/cc_public/graph/datalog.py lines 277-303;
+                        ann_no_graph_state_is_kept. Before caching,
+                        reading and validating took most of each check
+                        (commit 93a1428). Caches cut the gate from
+                        2m04s to about 1m07s (memory/MEMORY.md line
+                        47). Device tool calls die at 180 s
+                        (memory/MEMORY.md line 45). The legacy checker
+                        was never timed on this tree, so this does not
+                        show a port would be cheaper.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_checker_approach
+    guid_target:        dec_5ef7187d9f45495185cf63ad06846915
+
+  - id_relation:        r_challenges
+    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+    id_target:          opt_json_schema_plus_rules_over_facts
+    guid_target:        opt_7ec967f84fab485888f1ee10867377ee
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

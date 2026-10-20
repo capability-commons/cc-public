@@ -1,0 +1,46 @@
+id_self:                ann_fewer_platforms_fewer_locked_builds
+guid_self:              ann_b45773f1ca2b4becad55596d5c110725
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fewer locked builds to track
+brief:                  |
+                        Every third-party package must exist and keep
+                        being built for each listed platform, so
+                        adding Windows adds a third set of builds that
+                        can lag, break or be withdrawn on its own.
+description:            |
+                        pyproject.toml line 52 lists osx-arm64 and
+                        linux-64. pixi.lock resolves a package list
+                        per platform (linux-64 at line 11, osx-arm64
+                        at line 56). ASSUMPTION: a package missing for
+                        one listed platform fails the solve for the
+                        whole environment; from general pixi
+                        behaviour, not checked. Windows support also
+                        adds Git for Windows symlink settings to what
+                        the project depends on
+                        (https://gitforwindows.org/symbolic-links).
+                        The point grows with the tooling's
+                        dependencies.
+
+relation:
+
+  - id_relation:        r_is_about
+    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+    id_target:          dec_supported_dev_platforms
+    guid_target:        dec_801eeeb087a1472583cd600349c9aa14
+
+  - id_relation:        r_supports
+    guid_relation:      r_5d87b0c1741548108f5b851ad76a8605
+    id_target:          opt_linux_and_macos_only
+    guid_target:        opt_cbd9db9e22644016a982f0d69b5d239a
+
+  - id_relation:        r_argues_for_concern
+    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
