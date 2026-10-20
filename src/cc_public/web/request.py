@@ -22,9 +22,9 @@ description:            |
                         fields typed into it. There are four kinds. An
                         option answers a decision. An argument is an
                         annotation for or against an option, which
-                        argues for one or more concerns. An answer is
+                        speaks for one or more concerns. An answer is
                         an annotation that supports or challenges
-                        another, and argues for none. A determination
+                        another, and speaks for none. A determination
                         upholds or rejects an option, with a reason.
 
                         operations returns the batch for a request. An
@@ -97,7 +97,7 @@ R_SUPPORTS        = cc_public.web.argument.R_SUPPORTS
 R_CHALLENGES      = cc_public.web.argument.R_CHALLENGES
 R_UPHOLDS         = cc_public.web.argument.R_UPHOLDS
 R_REJECTS         = cc_public.web.argument.R_REJECTS
-R_ARGUES_FOR      = cc_public.web.argument.R_ARGUES_FOR
+R_SPEAKS_FOR      = cc_public.web.argument.R_SPEAKS_FOR
 MAP_RELATION      = {ROLE_FOR:     R_SUPPORTS,
                      ROLE_AGAINST: R_CHALLENGES,
                      ROLE_UPHOLD:  R_UPHOLDS,
@@ -120,12 +120,12 @@ MAP_LEAD          = {
                      'anything else.',
                      'Say how it differs from the options already here.'),
     KIND_ARGUMENT:  ('Make one assertion that one person could check.',
-                     'Tick the concern it argues for: the one it would weigh for in a ruling.',
+                     'Tick the concern it speaks for: the one it would weigh for in a ruling.',
                      'Say where it comes from in the description: a file and line, a commit, '
                      'a document, or your own judgement.'),
     KIND_ANSWER:    ('Say what in the annotation is wrong, missing or out of date, and how '
                      'you know.',
-                     'An answer settles a fact, so it argues for no concern.',
+                     'An answer settles a fact, so it speaks for no concern.',
                      'If what you write is a rule or a commitment, it may belong in an option '
                      'instead.'),
     KIND_DETERMINE: ('Say why this option is better than its rivals, not only why it is '
@@ -334,7 +334,7 @@ def operations(graph: Graph, request: Request) -> list:
         list_link = [[R_IS_ABOUT, id_decision],
                      [MAP_RELATION[request.role], request.target]]
     if request.kind == KIND_ARGUMENT:
-        list_link += [[R_ARGUES_FOR, id_concern] for id_concern in request.list_concern]
+        list_link += [[R_SPEAKS_FOR, id_concern] for id_concern in request.list_concern]
 
     return [{'new': id_item, 'field': map_field, 'link': list_link}]
 
@@ -415,7 +415,7 @@ def hint(kind: str, key: str) -> str:
 # -----------------------------------------------------------------------------
 def concerns(graph: Graph, id_decision: str) -> tuple[list[str], list[str]]:
     """
-    Return the concerns an argument on the decision id_decision may argue for:
+    Return the concerns an argument on the decision id_decision may speak for:
     the drivers of its subject, and every other concern.
 
     """

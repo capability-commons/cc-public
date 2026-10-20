@@ -17,8 +17,8 @@ brief:                  |
                         as a Sankey diagram, from its options to the
                         concerns argued on them.
 description:            |
-                        A unit of weight is one annotation arguing for
-                        one concern, for or against one option.
+                        A unit of weight is one annotation speaking
+                        for one concern, for or against one option.
                         Options stand on the left and concerns on the
                         right, joined by a band for each unit, with
                         support above challenge throughout: options,
@@ -55,7 +55,7 @@ MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
                      cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
 
 # Sizes, in units of the drawing. A unit of weight is one annotation
-# arguing for one concern on one option.
+# speaking for one concern on one option.
 #
 UNIT              = 9
 WIDTH_BAR         = 7
@@ -82,7 +82,7 @@ Decision          = cc_public.web.argument.Decision
 @dataclasses.dataclass(frozen = True)
 class Unit:
     """
-    One unit of weight: the annotation argues for the concern, for or
+    One unit of weight: the annotation speaks for the concern, for or
     against the option.
 
     """
@@ -158,7 +158,7 @@ def units(decision: Decision) -> list[Unit]:
             for (id_relation, role) in MAP_ROLE.items()
             for id_target in annotation.targets(id_relation)
             if id_target in set_option
-            for id_concern in annotation.targets(cc_public.web.argument.R_ARGUES_FOR)]
+            for id_concern in annotation.targets(cc_public.web.argument.R_SPEAKS_FOR)]
 
 
 # -----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ class Outline:
     the numbers of its annotations.
 
     The concerns run from most supportive to most opposed, then drivers
-    no annotation argues for. Each concern holds its annotations, most
+    no annotation speaks for. Each concern holds its annotations, most
     supportive first, and each annotation the annotations that answer
     it, support first. An annotation is numbered where it first
     appears with everything open, read from the top down; those the
@@ -268,7 +268,7 @@ class Outline:
     # -------------------------------------------------------------------------
     def _annotations(self, id_concern: str) -> list[str]:
         """
-        Return the annotations that argue for id_concern, most
+        Return the annotations that speak for id_concern, most
         supportive first, then by the first option they bear on.
 
         """

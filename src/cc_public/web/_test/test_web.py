@@ -537,7 +537,7 @@ def test_static_refuses_a_path_out_of_its_directory(tree):
 
 def test_units_count_each_annotation_concern_and_option(tree):
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
-    count    = sum(len(annotation.targets('r_argues_for_concern'))
+    count    = sum(len(annotation.targets('r_speaks_for_concern'))
                 * len([id_target
                        for id_relation in ('r_supports', 'r_challenges')
                        for id_target in annotation.targets(id_relation)

@@ -16,7 +16,7 @@ brief:                  |
                         Draw the argument on a decision as a tree for
                         each option: its concerns as small ports
                         beside it, and from each port the annotations
-                        that argue for that concern on it, with the
+                        that speak for that concern on it, with the
                         annotations that answer them beyond.
 description:            |
                         The drawing follows the diagrams of Mark
@@ -26,7 +26,7 @@ description:            |
                         argued on it is a small circle beside it,
                         joined to it by a short spoke, and named only
                         while it is lit. From each concern run lines
-                        to the annotations that argue for it on that
+                        to the annotations that speak for it on that
                         option, and from each annotation to those that
                         answer it. As in the Sankey diagram, an
                         annotation is drawn once for each place it
@@ -457,7 +457,7 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
     """
     Return the edges of the argument, each from its source to its target
     with its role: from an annotation to what it answers, from an
-    annotation to the hub of each concern it argues for on an option
+    annotation to the hub of each concern it speaks for on an option
     in each role, and from each hub to its option in that role. The
     edge into a hub passes the effect on unchanged.
 
