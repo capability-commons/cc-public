@@ -19,14 +19,14 @@ brief:                  |
                         pinned, and dim the rest.
 description:            |
                         Each chain has a name that is the same
-                        everywhere on the page: the id of a decision,
+                        everywhere on the page: the id of an option,
                         concern or annotation, or of the part of a
-                        decision or annotation that one role reaches.
-                        A mark in the chain carries the name as a
-                        class, and, if the chain shades it, the name
-                        with its net effect on what the chain reaches.
-                        A mark that shows the chain carries a class
-                        that names it, and lights the chain in every
+                        option or annotation that one role reaches. A
+                        mark in the chain carries the name as a class,
+                        and, if the chain shades it, the name with its
+                        net effect on what the chain reaches. A mark
+                        that shows the chain carries a class that
+                        names it, and lights the chain in every
                         diagram and in the matrix while it is hovered
                         over. The element whose id is the name pins
                         the chain while it is the target of the

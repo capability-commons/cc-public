@@ -36,8 +36,8 @@ import cc_public.web.server
 
 
 ID_ISSUE         = 'iss_cross_item_checks_engine'
-ID_UPHELD        = 'dec_cross_item_checks_in_clingo'
-ID_REJECTED      = 'dec_cross_item_checks_in_souffle'
+ID_UPHELD        = 'opt_cross_item_checks_in_clingo'
+ID_REJECTED      = 'opt_cross_item_checks_in_souffle'
 ID_DETERMINATION = 'det_cross_item_checks_engine'
 ID_OPEN          = 'iss_tooling_language'
 ID_ANNOTATION    = 'ann_clingo_is_slower_at_this_size'
@@ -63,19 +63,19 @@ def _submit(tree, origin: str | None = None, **map_value: str | list[str]):
 
 # -----------------------------------------------------------------------------
 def test_an_id_is_made_from_the_title_in_whole_words():
-    assert cc_public.web.request.slug('dec_', 'Tooling in Go, for now!') == 'dec_tooling_in_go_for_now'
+    assert cc_public.web.request.slug('opt_', 'Tooling in Go, for now!') == 'opt_tooling_in_go_for_now'
     assert len(cc_public.web.request.slug('ann_', 'word ' * 30)) <= 4 + 48
 
 
-def test_a_decision_answers_its_issue(tree):
-    assert _operations(tree, kind = 'decision', target = ID_OPEN,
+def test_a_option_answers_its_issue(tree):
+    assert _operations(tree, kind = 'option', target = ID_OPEN,
                        title = 'Tooling in Go', brief = 'Write it in Go.') == [
-        {'new':   'dec_tooling_in_go',
+        {'new':   'opt_tooling_in_go',
          'field': {'title': 'Tooling in Go', 'brief': 'Write it in Go.'},
-         'link':  [['r_answers', ID_OPEN]]}]
+         'link':  [['r_is_option_for', ID_OPEN]]}]
 
 
-def test_an_argument_bears_on_its_decision_and_argues_for_its_concerns(tree):
+def test_an_argument_bears_on_its_option_and_argues_for_its_concerns(tree):
     [operation] = _operations(tree, kind = 'argument', target = ID_UPHELD, role = 'against',
                               title = 'A', brief = 'B', id = 'ann_x',
                               concern = ['concern_cost', 'concern_simplicity'])
@@ -102,12 +102,12 @@ def test_to_uphold_changes_the_one_determination_of_the_issue(tree):
 
 def test_to_reject_an_open_issue_makes_its_determination(tree):
     graph = cc_public.web.argument.Graph(tree)
-    [id_decision, *_] = [decision.id for decision in graph.issue(ID_OPEN).list_decision]
-    assert _operations(tree, kind = 'determine', target = id_decision, role = 'reject',
+    [id_option, *_] = [option.id for option in graph.issue(ID_OPEN).list_option]
+    assert _operations(tree, kind = 'determine', target = id_option, role = 'reject',
                        reason = 'Because.') == [
         {'new':   'det_tooling_language',
          'field': {'title': graph.title(ID_OPEN), 'brief': 'Because.'},
-         'link':  [['r_rejects', id_decision]]}]
+         'link':  [['r_rejects', id_option]]}]
 
 
 def test_a_form_holds_the_fields_of_its_kind(tree):
@@ -131,18 +131,18 @@ def test_a_form_for_what_it_cannot_act_on_is_refused(tree):
 
 def test_a_form_from_another_site_is_refused(tree):
     for (host, origin) in ((HOST, 'http://example.com'), ('example.com', None)):
-        (status, _, _, _) = cc_public.web.server.submit(tree, host, origin, b'kind=decision')
+        (status, _, _, _) = cc_public.web.server.submit(tree, host, origin, b'kind=option')
         assert status == http.HTTPStatus.FORBIDDEN
 
 
-def test_a_decision_sent_is_written_in_its_issue(tree):
-    (status, _, _, location) = _submit(tree, 'http://' + HOST, kind = 'decision',
+def test_a_option_sent_is_written_in_its_issue(tree):
+    (status, _, _, location) = _submit(tree, 'http://' + HOST, kind = 'option',
                                        target = ID_OPEN, title = 'Tooling in Go',
                                        brief = 'Write the tooling in Go.')
     assert status == http.HTTPStatus.SEE_OTHER
-    assert location == '/issue/{id}?to=dec_tooling_in_go#dec_tooling_in_go'.format(id = ID_OPEN)
+    assert location == '/issue/{id}?to=opt_tooling_in_go#opt_tooling_in_go'.format(id = ID_OPEN)
     issue = cc_public.web.argument.Graph(tree).issue(ID_OPEN)
-    assert 'dec_tooling_in_go' in [decision.id for decision in issue.list_decision]
+    assert 'opt_tooling_in_go' in [option.id for option in issue.list_option]
 
 
 def test_an_argument_without_a_concern_is_refused_and_writes_nothing(tree):
@@ -166,7 +166,7 @@ def test_an_uphold_sent_changes_the_determination_in_place(tree):
 
 
 def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
-    for (kind, target, role) in (('decision', ID_OPEN, ''), ('argument', ID_UPHELD, 'for'),
+    for (kind, target, role) in (('option', ID_OPEN, ''), ('argument', ID_UPHELD, 'for'),
                                  ('answer', ID_ANNOTATION, 'against'),
                                  ('determine', ID_UPHELD, 'uphold')):
         query = cc_public.web.request.query(kind, target, role)
@@ -175,5 +175,5 @@ def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
             assert line in text
         assert '<section class="edit-form">' in text
     assert cc_public.web.request.hint('argument', 'title') != cc_public.web.request.hint(
-                                                                'decision', 'title')
+                                                                'option', 'title')
     assert cc_public.web.request.hint('answer', 'brief') == 'One or two sentences.'

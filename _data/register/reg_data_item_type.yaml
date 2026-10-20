@@ -464,12 +464,12 @@ table:
         guid_target:    rol_a955ca53eb9d4a6eb6bcaf6be33821c9
 
   # ---------------------------------------------------------------------------
-  # t_decision -- Decision type
+  # t_option -- Option type
   #
-  t_decision:
-    id_self:            t_decision
+  t_option:
+    id_self:            t_option
     guid_self:          t_db4130e5642c4c019f0c95c9f956875c
-    title:              Decision type
+    title:              Option type
     brief:              |
                         Type of decision data items.
     description:        |
@@ -492,18 +492,21 @@ table:
                         each is kept whatever becomes of it.
 
                         The shape of decision data items is defined by
-                        the sch_decision schema.
-    alias:              []
-    prefix:             dec
-    regex_id:           ^dec_[a-z][a-z0-9_]*$
-    id_concept:         con_decision
+                        the sch_option schema.
+
+    alias:
+      - t_decision
+
+    prefix:             opt
+    regex_id:           ^opt_[a-z][a-z0-9_]*$
+    id_concept:         con_option
     guid_concept:       con_26a4625162d2482ab375384b716f164a
 
     relation:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_decision
+        id_target:      sch_option
         guid_target:    sch_6fd91c76629042f394ce1addf6f0cd1b
 
       - id_relation:    r_has_items_that_play
@@ -518,7 +521,7 @@ table:
 
       - id_relation:    r_has_items_that_play
         guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
-        id_target:      rol_decision
+        id_target:      rol_option
         guid_target:    rol_ce75f8f10f8c432386adf334d921a91f
 
   # ---------------------------------------------------------------------------

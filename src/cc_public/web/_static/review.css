@@ -598,7 +598,7 @@ figure.map svg {
   font-size: 12.5px;
 }
 
-.map text.decision {
+.map text.option {
   font-size: 15px;
   font-style: italic;
 }
@@ -659,7 +659,7 @@ figure.map svg {
 }
 
 /* The graph of an argument, after Mark Lombardi: a tree for each
-   decision, of hairline circles joined by thin lines. */
+   option, of hairline circles joined by thin lines. */
 
 .network .node .shape {
   --rule-node: var(--ink-muted);
@@ -682,13 +682,13 @@ figure.map svg {
 .network .node text.above,
 .network .node text.number { text-anchor: middle; }
 .network .node text.number { font-size: 10.5px; stroke-width: 0; }
-.network .node.decision text.name {
+.network .node.option text.name {
   text-anchor: end;
   font-style: italic;
   font-size: 14px;
 }
 
-/* A decision holds its tally: how much supports it and how much
+/* An option holds its tally: how much supports it and how much
    challenges it. */
 
 .network .tally { outline: none; cursor: pointer; }
@@ -697,7 +697,7 @@ figure.map svg {
 .network .tally-against text { fill: var(--ink-against); }
 .network a.tally:hover text { text-decoration: underline; }
 
-/* A concern is a small port beside its decision, named only while it
+/* A concern is a small port beside its option, named only while it
    is lit. */
 
 .network .node.concern .area { fill: transparent; }
@@ -748,8 +748,8 @@ figure.map svg {
   color: color-mix(in srgb, var(--ink-faint) calc(var(--lit-off) * 100%), var(--ink-muted));
 }
 
-/* The decision matrix: a column for each decision and a row for each
-   concern, as the foot of the masthead. The decisions share the width
+/* The decision matrix: a column for each option and a row for each
+   concern, as the foot of the masthead. The options share the width
    the concern names leave, their names set level and wrapped. Each
    cell shows a square for each unit of weight, in the colours of the
    bands of the diagram and marked + or −, so colour is never the only
@@ -765,7 +765,7 @@ section.matrix {
 
 section.matrix .row {
   display: grid;
-  grid-template-columns: 17rem repeat(var(--decisions), minmax(0, 1fr)) 6.5rem;
+  grid-template-columns: 17rem repeat(var(--options), minmax(0, 1fr)) 6.5rem;
   column-gap: 1rem;
   align-items: center;
 }
@@ -805,21 +805,21 @@ section.matrix .row.head > .cell > a {
 
 section.matrix .row.head .total { --fade: 0.45; }
 
-/* A decision chosen in the head shows its brief under it (the rule
+/* An option chosen in the head shows its brief under it (the rule
    that shows it for a chosen count is written into the page); its
    chains light, so the titles of the others mute. */
 
-section.matrix .drill.decision {
+section.matrix .drill.option {
   display: none;
   border-bottom: 1px solid var(--rule);
   padding-top: 0.8rem;
 }
 
-section.matrix .drill.decision:target {
+section.matrix .drill.option:target {
   display: block;
 }
 
-/* The counts under a decision's title show the decision and pin the
+/* The counts under an option's title show the option and pin the
    chains that reach it with that role. */
 
 section.matrix .row.head .total {
@@ -1001,7 +1001,7 @@ section.matrix .drill details.annotation .block.description .main > p.descriptio
 
 @media (max-width: 760px) {
   section.matrix .row {
-    grid-template-columns: 9rem repeat(var(--decisions), minmax(0, 1fr)) 6.5rem;
+    grid-template-columns: 9rem repeat(var(--options), minmax(0, 1fr)) 6.5rem;
     column-gap: 0.5rem;
   }
 
@@ -1084,8 +1084,8 @@ div.determine {
   padding-top: 0;
 }
 
-/* The control that adds a decision stands in a narrow column of its
-   own at the end of the head of the matrix, where the new decision
+/* The control that adds an option stands in a narrow column of its
+   own at the end of the head of the matrix, where the new option
    would go. */
 
 section.matrix .row.head > .cell > .add {
@@ -1385,7 +1385,7 @@ table.characteristics .said {
    used. The mark stays in the text, hidden, for reading aloud. */
 
 section.matrix.contract .row {
-  grid-template-columns: 17rem repeat(var(--decisions), minmax(0, 1fr));
+  grid-template-columns: 17rem repeat(var(--options), minmax(0, 1fr));
 }
 
 section.matrix.contract .row.head .column {
@@ -1853,7 +1853,7 @@ form.search.masthead {
 }
 
 /* The issue list: each issue folds to a line of its title and
-   standing, which opens to its question and the decisions that answer
+   standing, which opens to its question and the options that answer
    it. Controls above the list choose folded or open, the order and a
    filter. */
 

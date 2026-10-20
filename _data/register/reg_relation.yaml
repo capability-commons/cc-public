@@ -405,7 +405,7 @@ table:
 
       - id_relation:    r_restricts_target
         guid_relation:  r_589d8b04783d49c698c6471080254c8a
-        id_target:      rrs_is_decision
+        id_target:      rrs_is_option
         guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
 
   # ---------------------------------------------------------------------------
@@ -436,7 +436,7 @@ table:
 
       - id_relation:    r_restricts_target
         guid_relation:  r_589d8b04783d49c698c6471080254c8a
-        id_target:      rrs_is_decision
+        id_target:      rrs_is_option
         guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
 
   # ---------------------------------------------------------------------------
@@ -480,26 +480,28 @@ table:
         guid_target:    rrs_9e0c9b6a125a4ebcadbd4568ca952b78
 
   # ---------------------------------------------------------------------------
-  # r_answers -- Answers relation
+  # r_is_option_for -- Is option for relation
   #
-  r_answers:
-    id_self:            r_answers
+  r_is_option_for:
+    id_self:            r_is_option_for
     guid_self:          r_336826c81f7043b89ae024d44a35bb41
-    title:              Answers relation
+    title:              Is option for relation
     brief:              |
-                        SUBJ answers OBJ
+                        SUBJ is an option for OBJ
     description:        |
-                        The decision identified by SUBJ is one answer
-                        to the issue identified by OBJ. The decisions
-                        that answer one issue are alternatives to one
+                        The option identified by SUBJ is one possible
+                        answer to the issue identified by OBJ. The
+                        options for one issue are alternatives to one
                         another.
-    alias:              []
+
+    alias:
+      - r_answers
 
     relation:
 
       - id_relation:    r_restricts_source
         guid_relation:  r_adcac8092b664b269c2a774e5320d32d
-        id_target:      rrs_is_decision
+        id_target:      rrs_is_option
         guid_target:    rrs_0794525f5015464d8c03f6b465fd4148
 
       - id_relation:    r_restricts_target

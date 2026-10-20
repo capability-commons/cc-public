@@ -14,24 +14,24 @@ protective_mark:
 title:                  Sankey diagram of an argument
 brief:                  |
                         Draw the weight of the argument on an issue as
-                        a Sankey diagram, from its decisions to the
+                        a Sankey diagram, from its options to the
                         concerns argued on them.
 description:            |
                         A unit of weight is one annotation arguing for
-                        one concern, for or against one decision.
-                        Decisions stand on the left and concerns on
-                        the right, joined by a band for each unit,
-                        with support above challenge throughout:
-                        decisions, concerns and annotations are each
-                        ordered from most supported to most opposed.
-                        Each concern is open by default, showing its
-                        annotations, and an annotation opens into the
-                        annotations that answer it. Links that name
-                        the parts toggled from their default in the
-                        address of the page open and close them, so no
-                        script is needed. The title of an annotation
-                        links to the same annotation opened in the
-                        list below the diagram.
+                        one concern, for or against one option.
+                        Options stand on the left and concerns on the
+                        right, joined by a band for each unit, with
+                        support above challenge throughout: options,
+                        concerns and annotations are each ordered from
+                        most supported to most opposed. Each concern
+                        is open by default, showing its annotations,
+                        and an annotation opens into the annotations
+                        that answer it. Links that name the parts
+                        toggled from their default in the address of
+                        the page open and close them, so no script is
+                        needed. The title of an annotation links to
+                        the same annotation opened in the list below
+                        the diagram.
 relation:               []
 
 ...
@@ -55,17 +55,17 @@ MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
                      cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
 
 # Sizes, in units of the drawing. A unit of weight is one annotation
-# arguing for one concern on one decision.
+# arguing for one concern on one option.
 #
 UNIT              = 9
 WIDTH_BAR         = 7
 GAP               = 12
-GAP_DECISION      = 30
+GAP_OPTION        = 30
 ROW               = 18
 ROOM_LABEL        = 16
 ROOM_TITLE        = 300
-CHARS_DECISION    = 38
-LINE_DECISION     = 15
+CHARS_OPTION      = 38
+LINE_OPTION       = 15
 LIST_X            = (270, 500, 730, 960, 1190)
 
 DELIM_KEY         = '/'
@@ -83,11 +83,11 @@ Issue             = cc_public.web.argument.Issue
 class Unit:
     """
     One unit of weight: the annotation argues for the concern, for or
-    against the decision.
+    against the option.
 
     """
 
-    decision:   str
+    option:     str
     concern:    str
     annotation: str
     role:       str
@@ -95,7 +95,7 @@ class Unit:
     # -------------------------------------------------------------------------
     def is_for(self) -> bool:
         """
-        Return True if the unit supports its decision.
+        Return True if the unit supports its option.
 
         """
 
@@ -108,17 +108,17 @@ def figure(graph:      Graph,
            set_toggle: set[str],
            set_show:   set[str]) -> typing.Any:
     """
-    Return the Sankey diagram of the argument in outline: its decisions
+    Return the Sankey diagram of the argument in outline: its options
     on the left, each joined to the concerns that are argued on it,
     with support above challenge. A concern opens into its
     annotations, and an annotation into the annotations that answer
     it. The title of an annotation links to it, opened, in the list
     below; set_show holds those the page shows opened.
 
-    Hovering over a decision, either part of its bar, a concern argued
+    Hovering over an option, either part of its bar, a concern argued
     for, or an annotation lights the chains that reach it and dims the
     rest, each annotation in them inked by its net effect on what was
-    hovered over; clicking a bar or the name of a decision pins the
+    hovered over; clicking a bar or the name of an option pins the
     chains, and clicking anywhere else unpins them. The page holds the
     rules that light the chains and the elements that pin them (see
     cc_public.web.light), as the matrix and the graph share them.
@@ -152,19 +152,19 @@ def units(issue: Issue) -> list[Unit]:
 
     """
 
-    set_decision = {decision.id for decision in issue.list_decision}
+    set_option = {option.id for option in issue.list_option}
     return [Unit(id_target, id_concern, annotation.id, role)
             for annotation in issue.list_annotation
             for (id_relation, role) in MAP_ROLE.items()
             for id_target in annotation.targets(id_relation)
-            if id_target in set_decision
+            if id_target in set_option
             for id_concern in annotation.targets(cc_public.web.argument.R_ARGUES_FOR)]
 
 
 # -----------------------------------------------------------------------------
-def ordered_decisions(issue: Issue) -> list[cc_public.web.argument.Item]:
+def ordered_options(issue: Issue) -> list[cc_public.web.argument.Item]:
     """
-    Return the decisions of issue from most supported to most opposed:
+    Return the options of issue from most supported to most opposed:
     by the share of their weight that supports them, then by how much
     supports them.
 
@@ -172,11 +172,11 @@ def ordered_decisions(issue: Issue) -> list[cc_public.web.argument.Item]:
 
     list_unit = units(issue)
 
-    def key(decision: cc_public.web.argument.Item) -> tuple:
-        list_own = [unit for unit in list_unit if unit.decision == decision.id]
-        return (lean(list_own), -sum(1 for unit in list_own if unit.is_for()), decision.id)
+    def key(option: cc_public.web.argument.Item) -> tuple:
+        list_own = [unit for unit in list_unit if unit.option == option.id]
+        return (lean(list_own), -sum(1 for unit in list_own if unit.is_for()), option.id)
 
-    return sorted(issue.list_decision, key = key)
+    return sorted(issue.list_option, key = key)
 
 
 # -----------------------------------------------------------------------------
@@ -203,7 +203,7 @@ class Outline:
 
         self.issue         = issue
         self.list_unit     = units(issue)
-        self.list_decision = [decision.id for decision in ordered_decisions(issue)]
+        self.list_option   = [option.id for option in ordered_options(issue)]
 
         map_annotation = {annotation.id: annotation for annotation in issue.list_annotation}
         self.map_title = {id_item: item.title for (id_item, item) in map_annotation.items()}
@@ -251,17 +251,17 @@ class Outline:
 
     # -------------------------------------------------------------------------
     def units(self,
-              decision:   str | None = None,
+              option:     str | None   = None,
               concern:    str | None = None,
               annotation: str | None = None) -> list[Unit]:
         """
-        Return the units on decision, concern and annotation, for those
+        Return the units on option, concern and annotation, for those
         given.
 
         """
 
         return [unit for unit in self.list_unit
-                if decision in (None, unit.decision)
+                if option in (None, unit.option)
                 and concern in (None, unit.concern)
                 and annotation in (None, unit.annotation)]
 
@@ -269,14 +269,14 @@ class Outline:
     def _annotations(self, id_concern: str) -> list[str]:
         """
         Return the annotations that argue for id_concern, most
-        supportive first, then by the first decision they bear on.
+        supportive first, then by the first option they bear on.
 
         """
 
         def key(id_annotation: str) -> tuple:
             list_own = self.units(concern = id_concern, annotation = id_annotation)
             return (lean(list_own),
-                    min(self.list_decision.index(unit.decision) for unit in list_own),
+                    min(self.list_option.index(unit.option) for unit in list_own),
                     self.map_title[id_annotation])
 
         return sorted({unit.annotation for unit in self.units(concern = id_concern)},
@@ -344,7 +344,7 @@ class _Drawing:
         self.issue         = outline.issue
         self.map_number    = outline.map_number
         self.map_title     = outline.map_title
-        self.list_decision = outline.list_decision
+        self.list_option   = outline.list_option
         self.list_concern  = outline.list_concern
         self.set_toggle    = set_toggle
         self.set_show      = set_show
@@ -363,19 +363,19 @@ class _Drawing:
         """
 
         (map_top_concern, bottom) = self._column_concerns()
-        height_decision           = (sum(self._extent(id_decision)
-                                         for id_decision in self.list_decision)
-                                     + GAP_DECISION * (len(self.list_decision) - 1))
-        map_top_decision          = self._column_decisions(max(0.0,
-                                                               (bottom - height_decision) / 2))
-        self._bands_to_concerns(map_top_decision, map_top_concern)
+        height_option             = (sum(self._extent(id_option)
+                                         for id_option in self.list_option)
+                                     + GAP_OPTION * (len(self.list_option) - 1))
+        map_top_option          = self._column_options(max(0.0,
+                                                               (bottom - height_option) / 2))
+        self._bands_to_concerns(map_top_option, map_top_concern)
 
-        return max(bottom, height_decision) + GAP
+        return max(bottom, height_option) + GAP
 
     # -------------------------------------------------------------------------
-    def _column_decisions(self, top: float) -> dict[str, float]:
+    def _column_options(self, top: float) -> dict[str, float]:
         """
-        Draw the decisions from top down, each a bar of its support
+        Draw the options from top down, each a bar of its support
         above its challenge, labelled with its standing and its tally.
         Return the top of each.
 
@@ -384,41 +384,41 @@ class _Drawing:
         map_top = {}
         y       = top
 
-        for decision in ordered_decisions(self.issue):
-            list_unit   = self._units(decision = decision.id)
+        for option in ordered_options(self.issue):
+            list_unit   = self._units(option = option.id)
             count_for   = sum(1 for unit in list_unit if unit.is_for())
             count_total = len(list_unit)
             height      = self._height(list_unit)
-            extent      = self._extent(decision.id)
-            y_next      = y + extent + GAP_DECISION
+            extent      = self._extent(option.id)
+            y_next      = y + extent + GAP_OPTION
             y          += (extent - height) / 2
-            map_top[decision.id] = y
+            map_top[option.id] = y
 
-            list_css = self.css_decision(decision.id)
+            list_css = self.css_option(option.id)
             self._bar(LIST_X[0], y, count_for * UNIT, ROLE_FOR, list_css,
-                      cc_public.web.light.chain(decision.id, ROLE_FOR))
+                      cc_public.web.light.chain(option.id, ROLE_FOR))
             self._bar(LIST_X[0], y + count_for * UNIT, (count_total - count_for) * UNIT,
                       ROLE_AGAINST, list_css,
-                      cc_public.web.light.chain(decision.id, ROLE_AGAINST))
+                      cc_public.web.light.chain(option.id, ROLE_AGAINST))
             if not count_total:
                 self._bar(LIST_X[0], y, 2, 'none', list_css)
 
-            stance    = self.issue.map_stance[decision.id]
-            list_line = _lines_decision(decision.title)
-            top_text  = y + height / 2 - 2 - LINE_DECISION * (len(list_line) - 1) / 2
-            name      = cc_public.web.light.chain(decision.id)
-            css       = ' '.join(['decision', cc_public.web.light.CSS_DIMS,
+            stance    = self.issue.map_stance[option.id]
+            list_line = _lines_option(option.title)
+            top_text  = y + height / 2 - 2 - LINE_OPTION * (len(list_line) - 1) / 2
+            name      = cc_public.web.light.chain(option.id)
+            css       = ' '.join(['option', cc_public.web.light.CSS_DIMS,
                                   cc_public.web.light.show(name)]
                                  + list_css)
             self.list_label.append(htpy.a(href = '#' + name, class_ = 'pin')[
                 htpy.text(x = str(LIST_X[0] - 10), y = _num(top_text),
                           class_ = css, text_anchor = 'end')[
                     [htpy.tspan(x = str(LIST_X[0] - 10),
-                                dy = '0' if index == 0 else str(LINE_DECISION))[line]
+                                dy = '0' if index == 0 else str(LINE_OPTION))[line]
                      for (index, line) in enumerate(list_line)]]])
             self.list_label.append(
                 htpy.text(x = str(LIST_X[0] - 10),
-                          y = _num(top_text + LINE_DECISION * (len(list_line) - 1) + 16),
+                          y = _num(top_text + LINE_OPTION * (len(list_line) - 1) + 16),
                           class_ = ' '.join(['tally', cc_public.web.light.CSS_DIMS] + list_css),
                           text_anchor = 'end')[
                     htpy.tspan(class_ = 'stance-' + stance)['● ' + stance],
@@ -435,16 +435,16 @@ class _Drawing:
         return map_top
 
     # -------------------------------------------------------------------------
-    def _extent(self, id_decision: str) -> float:
+    def _extent(self, id_option: str) -> float:
         """
-        Return the height id_decision takes in its column: its bar, or
+        Return the height id_option takes in its column: its bar, or
         its label if that is taller.
 
         """
 
-        list_line = _lines_decision(self.graph.title(id_decision))
-        return max(self._height(self._units(decision = id_decision)),
-                   LINE_DECISION * (len(list_line) + 1))
+        list_line = _lines_option(self.graph.title(id_option))
+        return max(self._height(self._units(option = id_option)),
+                   LINE_OPTION * (len(list_line) + 1))
 
     # -------------------------------------------------------------------------
     def _column_concerns(self) -> tuple[dict[str, float], float]:
@@ -498,31 +498,31 @@ class _Drawing:
 
     # -------------------------------------------------------------------------
     def _bands_to_concerns(self,
-                           map_top_decision: dict[str, float],
+                           map_top_option:   dict[str, float],
                            map_top_concern:  dict[str, float]) -> None:
         """
-        Draw a band for each unit from its decision to its concern. On
+        Draw a band for each unit from its option to its concern. On
         each side the units are stacked support first, so the bands of
-        one decision and concern lie together.
+        one option and concern lie together.
 
         """
 
-        map_y_decision = {}
-        for id_decision in self.list_decision:
-            list_unit = sorted(self._units(decision = id_decision),
+        map_y_option = {}
+        for id_option in self.list_option:
+            list_unit = sorted(self._units(option = id_option),
                                key = lambda unit: (not unit.is_for(),
                                                    self.list_concern.index(unit.concern),
                                                    unit.annotation))
             for (index, unit) in enumerate(list_unit):
-                map_y_decision[unit] = map_top_decision[id_decision] + index * UNIT
+                map_y_option[unit] = map_top_option[id_option] + index * UNIT
 
         for id_concern in self.list_concern:
             list_unit = sorted(self._units(concern = id_concern),
                                key = lambda unit: (not unit.is_for(),
-                                                   self.list_decision.index(unit.decision),
+                                                   self.list_option.index(unit.option),
                                                    unit.annotation))
             for (index, unit) in enumerate(list_unit):
-                self._band(LIST_X[0] + WIDTH_BAR, map_y_decision[unit],
+                self._band(LIST_X[0] + WIDTH_BAR, map_y_option[unit],
                            LIST_X[1], map_top_concern[id_concern] + index * UNIT,
                            UNIT, unit.role, self.css_unit(unit))
 
@@ -543,7 +543,7 @@ class _Drawing:
             y  += ROOM_LABEL if self._is_open(key, id_annotation) else 0
             list_own = sorted(self._units(concern = id_concern, annotation = id_annotation),
                               key = lambda unit: (not unit.is_for(),
-                                                  self.list_decision.index(unit.decision)))
+                                                  self.list_option.index(unit.option)))
             for (index, unit) in enumerate(list_own):
                 list_css = self.css_unit(unit)
                 self._band(LIST_X[1] + WIDTH_BAR, y_from, LIST_X[2], y + index * UNIT,
@@ -642,14 +642,14 @@ class _Drawing:
     def names(self) -> list[str]:
         """
         Return the names of the chains that can be lit: one for each
-        decision, each part of the bar of a decision, each concern
+        option, each part of the bar of an option, each concern
         argued for, and each annotation.
 
         """
 
         chain = cc_public.web.light.chain
-        return ([chain(id_decision) for id_decision in self.list_decision]
-                + [chain(id_decision, role) for id_decision in self.list_decision
+        return ([chain(id_option) for id_option in self.list_option]
+                + [chain(id_option, role) for id_option in self.list_option
                    for role in (ROLE_FOR, ROLE_AGAINST)]
                 + [chain(id_concern) for id_concern in self.list_concern
                    if self._units(concern = id_concern)]
@@ -674,7 +674,7 @@ class _Drawing:
     def css_unit(self, unit: Unit) -> list[str]:
         """
         Return the classes of a mark of unit: in the chains of its
-        decision and of the part of its bar for its role, inked by its
+        option and of the part of its bar for its role, inked by its
         role, as it is in the chains of its concern, and in the chains
         of its annotation and of every annotation that answers it,
         unshaded.
@@ -684,8 +684,8 @@ class _Drawing:
         map_sign = {}
         add      = cc_public.web.light.add
         chain    = cc_public.web.light.chain
-        add(map_sign, chain(unit.decision), unit.role)
-        add(map_sign, chain(unit.decision, unit.role), unit.role)
+        add(map_sign, chain(unit.option), unit.role)
+        add(map_sign, chain(unit.option, unit.role), unit.role)
         add(map_sign, chain(unit.concern), unit.role)
         for id_annotation in self.map_closure[unit.annotation]:
             add(map_sign, chain(id_annotation), None)
@@ -695,7 +695,7 @@ class _Drawing:
     def css_path(self, key: str) -> list[str]:
         """
         Return the classes of a mark of the annotation at key: in the
-        chains of each decision it bears on through the first
+        chains of each option it bears on through the first
         annotation of key, of the concern of key, and of each
         annotation above it in key, each inked by its net effect
         there; and, unshaded, in its own chain and the chains of the
@@ -720,8 +720,8 @@ class _Drawing:
         chain    = cc_public.web.light.chain
         for unit in self._units(concern = id_concern, annotation = list_path[0]):
             sign = cc_public.web.light.times(unit.role, net(list_role))
-            add(map_sign, chain(unit.decision), sign)
-            add(map_sign, chain(unit.decision, unit.role), sign)
+            add(map_sign, chain(unit.option), sign)
+            add(map_sign, chain(unit.option, unit.role), sign)
             add(map_sign, chain(id_concern), sign)
         for (index, id_above) in enumerate(list_path[:-1]):
             add(map_sign, chain(id_above), net(list_role[index:]))
@@ -730,9 +730,9 @@ class _Drawing:
         return cc_public.web.light.css(map_sign)
 
     # -------------------------------------------------------------------------
-    def css_decision(self, id_decision: str) -> list[str]:
+    def css_option(self, id_option: str) -> list[str]:
         """
-        Return the classes of a mark of id_decision: in its own chains,
+        Return the classes of a mark of id_option: in its own chains,
         and in those of every concern and annotation that bears on it,
         unshaded.
 
@@ -741,10 +741,10 @@ class _Drawing:
         map_sign = {}
         add      = cc_public.web.light.add
         chain    = cc_public.web.light.chain
-        add(map_sign, chain(id_decision), None)
+        add(map_sign, chain(id_option), None)
         for role in (ROLE_FOR, ROLE_AGAINST):
-            add(map_sign, chain(id_decision, role), None)
-        for unit in self._units(decision = id_decision):
+            add(map_sign, chain(id_option, role), None)
+        for unit in self._units(option = id_option):
             add(map_sign, chain(unit.concern), None)
             for id_annotation in self.map_closure[unit.annotation]:
                 add(map_sign, chain(id_annotation), None)
@@ -754,7 +754,7 @@ class _Drawing:
     def css_concern(self, id_concern: str) -> list[str]:
         """
         Return the classes of a mark of id_concern: in its own chains,
-        in the chains of the decisions and parts of bars it carries,
+        in the chains of the options and parts of bars it carries,
         and of every annotation argued on it, unshaded.
 
         """
@@ -764,8 +764,8 @@ class _Drawing:
         chain    = cc_public.web.light.chain
         add(map_sign, chain(id_concern), None)
         for unit in self._units(concern = id_concern):
-            add(map_sign, chain(unit.decision), None)
-            add(map_sign, chain(unit.decision, unit.role), None)
+            add(map_sign, chain(unit.option), None)
+            add(map_sign, chain(unit.option, unit.role), None)
             for id_annotation in self.map_closure[unit.annotation]:
                 add(map_sign, chain(id_annotation), None)
         return cc_public.web.light.css(map_sign)
@@ -833,7 +833,7 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def _units(self, **map_given: str) -> list[Unit]:
         """
-        Return the units of the outline on the decision, concern and
+        Return the units of the outline on the option, concern and
         annotation given.
 
         """
@@ -918,14 +918,14 @@ def lighting(graph: Graph, outline: Outline) -> _Drawing:
 
 
 # -----------------------------------------------------------------------------
-def _lines_decision(title: str) -> list[str]:
+def _lines_option(title: str) -> list[str]:
     """
     Return title broken into lines short enough for the room left of
-    the column of decisions.
+    the column of options.
 
     """
 
-    return textwrap.wrap(title, CHARS_DECISION) or ['']
+    return textwrap.wrap(title, CHARS_OPTION) or ['']
 
 
 # -----------------------------------------------------------------------------

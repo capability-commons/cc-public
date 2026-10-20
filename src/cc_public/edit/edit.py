@@ -795,7 +795,7 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     of its file, or of its folder, if it is named for it. A register
     entry keeps id_old in its alias list.
 
-    The rules match items by id, in strings such as "r_answers". Left
+    The rules match items by id, in strings such as "r_is_option_for". Left
     as they were, the rules that name id_old would match nothing, and
     so pass without a word.
 

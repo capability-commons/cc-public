@@ -499,42 +499,42 @@ missing_about(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% Every decision answers exactly one issue. The decisions that answer
+% Every option answers exactly one issue. The options that answer
 % an issue are its alternatives.
 %
-% decl answer_count(decision: symbol,
+% decl answer_count(option: symbol,
 %                   issues:   number)
-% did  The decision {decision} answers {issues} issues, not 1.
-% fix  Give the decision one edge of r_answers, to the issue it answers.
+% did  The option {option} answers {issues} issues, not 1.
+% fix  Give the option one edge of r_is_option_for, to the issue it answers.
 #show answer_count/2.
 
-answer_count(Decision, Issues) :-
-    type_of(Decision, "t_decision"),
-    Issues = #count { Issue : primary_edge(Decision, "r_answers", Issue) },
+answer_count(Option, Issues) :-
+    type_of(Option, "t_option"),
+    Issues = #count { Issue : primary_edge(Option, "r_is_option_for", Issue) },
     Issues != 1.
 
 
 % -----------------------------------------------------------------------------
-% Every determination upholds or rejects at least one decision.
+% Every determination upholds or rejects at least one option.
 %
-% decl determination_without_decision(id: symbol)
-% did  The determination {id} neither upholds nor rejects a decision.
-% fix  Link it with r_upholds or r_rejects to each decision it settles.
-#show determination_without_decision/1.
+% decl determination_without_option(id: symbol)
+% did  The determination {id} neither upholds nor rejects an option.
+% fix  Link it with r_upholds or r_rejects to each option it settles.
+#show determination_without_option/1.
 
-determination_without_decision(Id) :-
+determination_without_option(Id) :-
     type_of(Id, "t_determination"),
     not primary_edge(Id, "r_upholds", _),
     not primary_edge(Id, "r_rejects", _).
 
 
 % -----------------------------------------------------------------------------
-% A determination settles the decisions of one issue.
+% A determination settles the options of one issue.
 %
 % decl determination_across_issues(determination: symbol,
 %                                  issue:         symbol,
 %                                  other:         symbol)
-% did  The determination {determination} settles decisions of both
+% did  The determination {determination} settles options of both
 %      {issue} and {other}.
 % fix  Settle each issue with a determination of its own.
 #show determination_across_issues/3.
@@ -548,7 +548,7 @@ determination_across_issues(Determination, Issue, Other) :-
 
 % -----------------------------------------------------------------------------
 % An issue is about logical components, since their drivers say which
-% concerns must be argued before a decision of the issue is settled.
+% concerns must be argued before an option of the issue is settled.
 % An issue about anything else would escape that check.
 %
 % decl issue_about_non_component(issue:  symbol,
@@ -600,8 +600,8 @@ argues("r_challenges").
 
 
 % -----------------------------------------------------------------------------
-% An item supersedes only an item of its own type: a decision another
-% decision, and an interface control document another.
+% An item supersedes only an item of its own type: an option another
+% option, and an interface control document another.
 %
 % decl supersession_across_types(source: symbol,
 %                                target: symbol)
@@ -637,50 +637,50 @@ competing_determinations(Issue, Determination, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% The decision, or an alternative to it that answers the same issue,
+% The option, or an alternative to it that answers the same issue,
 % has an annotation that supports or challenges it for the concern.
 %
-% decl argued(decision: symbol,
+% decl argued(option: symbol,
 %             concern:  symbol)
 
-argued(Decision, Concern) :-
-    primary_edge(Decision, "r_answers", Issue),
-    primary_edge(Other, "r_answers", Issue),
+argued(Option, Concern) :-
+    primary_edge(Option, "r_is_option_for", Issue),
+    primary_edge(Other, "r_is_option_for", Issue),
     practical(Id),
     primary_edge(Id, "r_supports", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
 
-argued(Decision, Concern) :-
-    primary_edge(Decision, "r_answers", Issue),
-    primary_edge(Other, "r_answers", Issue),
+argued(Option, Concern) :-
+    primary_edge(Option, "r_is_option_for", Issue),
+    primary_edge(Other, "r_is_option_for", Issue),
     practical(Id),
     primary_edge(Id, "r_challenges", Other),
     primary_edge(Id, "r_argues_for_concern", Concern).
 
 
 % -----------------------------------------------------------------------------
-% A determination upholds a decision only once every concern that
+% A determination upholds an option only once every concern that
 % drives the subject of its issue has been argued, for it or for an
-% alternative to it. It may reject a decision at any time, since a
+% alternative to it. It may reject an option at any time, since a
 % rejection commits the subject to nothing.
 %
 % decl unargued_driver(determination: symbol,
-%                      decision:      symbol,
+%                      option:      symbol,
 %                      concern:       symbol)
-% did  {determination} upholds {decision}, and no annotation argues
+% did  {determination} upholds {option}, and no annotation argues
 %      {concern}, a driver, for it or an alternative to it.
-% fix  Add an annotation for that concern to the decision or an
-%      alternative, or leave the decision open. Do not uphold a
-%      decision while a driver of its issue is unargued.
+% fix  Add an annotation for that concern to the option or an
+%      alternative, or leave the option open. Do not uphold a
+%      option while a driver of its issue is unargued.
 #show unargued_driver/3.
 
-unargued_driver(Determination, Decision, Concern) :-
+unargued_driver(Determination, Option, Concern) :-
     type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_upholds", Decision),
-    primary_edge(Decision, "r_answers", Issue),
+    primary_edge(Determination, "r_upholds", Option),
+    primary_edge(Option, "r_is_option_for", Issue),
     primary_edge(Issue, "r_is_about", Subject),
     primary_edge(Subject, "r_is_driven_by", Concern),
-    not argued(Decision, Concern).
+    not argued(Option, Concern).
 
 
 % -----------------------------------------------------------------------------
@@ -816,28 +816,28 @@ cycle(Relation, Id) :-
 
 
 % -----------------------------------------------------------------------------
-% The annotation supports or challenges a decision.
+% The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)
 
 practical(Id) :-
     type_of(Id, "t_annotation"),
     primary_edge(Id, "r_supports", Target),
-    type_of(Target, "t_decision").
+    type_of(Target, "t_option").
 
 practical(Id) :-
     type_of(Id, "t_annotation"),
     primary_edge(Id, "r_challenges", Target),
-    type_of(Target, "t_decision").
+    type_of(Target, "t_option").
 
 
 % -----------------------------------------------------------------------------
-% An annotation that supports or challenges a decision speaks for at
+% An annotation that supports or challenges an option speaks for at
 % least one concern. A premise that several concerns rest on is one
 % annotation that speaks for each of them.
 %
 % decl argument_without_concern(id: symbol)
-% did  The annotation {id} supports or challenges a decision and argues
+% did  The annotation {id} supports or challenges an option and argues
 %      for no concern.
 % fix  Link it with r_argues_for_concern to each concern it speaks for.
 #show argument_without_concern/1.
@@ -848,19 +848,19 @@ argument_without_concern(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% An annotation that bears on no decision speaks for no concern, since
+% An annotation that bears on no option speaks for no concern, since
 % it is answered with evidence and not outweighed.
 %
-% decl concern_without_decision(id:      symbol,
+% decl concern_without_option(id:      symbol,
 %                               concern: symbol)
 % did  The annotation {id} argues for {concern} and bears on no
-%      decision.
+%      option.
 % fix  A fact is answered with evidence, not weighed by concern. Remove
-%      the edge to the concern, or link the annotation to the decision
+%      the edge to the concern, or link the annotation to the option
 %      it argues.
-#show concern_without_decision/2.
+#show concern_without_option/2.
 
-concern_without_decision(Id, Concern) :-
+concern_without_option(Id, Concern) :-
     type_of(Id, "t_annotation"),
     not practical(Id),
     primary_edge(Id, "r_argues_for_concern", Concern).

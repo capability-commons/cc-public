@@ -1,12 +1,12 @@
 // Small conveniences on top of pages that work without script.
 //
-// A link that pins a decision or a lit chain changes only the fragment
+// A link that pins an option or a lit chain changes only the fragment
 // of the address, so the page keeps its place instead of jumping to the
-// pinned element. A click off the decision matrix while a decision is
+// pinned element. A click off the decision matrix while an option is
 // shown points the address at a fragment no element has, which hides the
-// decision; folding or opening a diagram does not, nor does a click in a
+// option; folding or opening a diagram does not, nor does a click in a
 // form opened over the page. Without script the
-// page jumps, and a decision stays shown until another is chosen.
+// page jumps, and an option stays shown until another is chosen.
 //
 // A click on an annotation in the graph also chooses its entry in the
 // argument under the decision matrix: the entry and those around it
@@ -164,13 +164,13 @@ document.addEventListener('click', function (event) {
   var link = event.target.closest('a[href^="#"]');
   if (link) {
     var target = document.getElementById(link.getAttribute('href').slice(1));
-    if (!target || target.matches('.decision, .decision-role, .lit-pin')) {
+    if (!target || target.matches('.option, .option-role, .lit-pin')) {
       keep = window.scrollY;
       choose(link.getAttribute('data-key'));
     }
     return;
   }
-  var shown = document.querySelector('section.matrix :is(.decision, .decision-role):target');
+  var shown = document.querySelector('section.matrix :is(.option, .option-role):target');
   if (shown && !event.target.closest('section.matrix, details.diagram > summary, dialog')) {
     keep = window.scrollY;
     location.hash = 'unpin';

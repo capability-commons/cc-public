@@ -20,20 +20,20 @@ description:            |
                         A request is what a form sends: its kind, the
                         item it acts on, the role it takes, and the
                         fields typed into it. There are four kinds. A
-                        decision answers an issue. An argument is an
-                        annotation for or against a decision, which
+                        option answers an issue. An argument is an
+                        annotation for or against an option, which
                         argues for one or more concerns. An answer is
                         an annotation that supports or challenges
                         another, and argues for none. A determination
-                        upholds or rejects a decision, with a reason.
+                        upholds or rejects an option, with a reason.
 
                         operations returns the batch for a request. An
                         issue has at most one determination, so to
-                        uphold or reject a decision changes the one
-                        the issue has, or makes it if there is none:
-                        the reason becomes its brief, and the decision
-                        is upheld or rejected in place of what it was
-                        before. Other decisions keep their standing. A
+                        uphold or reject an option changes the one the
+                        issue has, or makes it if there is none: the
+                        reason becomes its brief, and the option is
+                        upheld or rejected in place of what it was
+                        before. Other options keep their standing. A
                         new item takes its id from its title unless
                         one is given.
 
@@ -58,17 +58,17 @@ import urllib.parse
 import cc_public.web.argument
 
 
-KIND_DECISION     = 'decision'
+KIND_OPTION       = 'option'
 KIND_ARGUMENT     = 'argument'
 KIND_ANSWER       = 'answer'
 KIND_DETERMINE    = 'determine'
-TUPLE_KIND        = (KIND_DECISION, KIND_ARGUMENT, KIND_ANSWER, KIND_DETERMINE)
+TUPLE_KIND        = (KIND_OPTION, KIND_ARGUMENT, KIND_ANSWER, KIND_DETERMINE)
 
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
 ROLE_UPHOLD       = 'uphold'
 ROLE_REJECT       = 'reject'
-MAP_ROLE          = {KIND_DECISION:  ('',),
+MAP_ROLE          = {KIND_OPTION:  ('',),
                      KIND_ARGUMENT:  (ROLE_FOR, ROLE_AGAINST),
                      KIND_ANSWER:    (ROLE_FOR, ROLE_AGAINST),
                      KIND_DETERMINE: (ROLE_UPHOLD, ROLE_REJECT)}
@@ -86,12 +86,12 @@ KEY_CONCERN       = 'concern'
 TUPLE_KEY_TEXT    = (KEY_ID, KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION, KEY_REASON)
 
 PREFIX_ISSUE      = cc_public.web.argument.PREFIX_ISSUE
-PREFIX_DECISION   = cc_public.web.argument.PREFIX_DECISION
+PREFIX_OPTION     = cc_public.web.argument.PREFIX_OPTION
 PREFIX_ANNOTATION = cc_public.web.argument.PREFIX_ANNOTATION
 PREFIX_DET        = 'det_'
 PREFIX_CONCERN    = 'concern_'
 
-R_ANSWERS         = cc_public.web.argument.R_ANSWERS
+R_IS_OPTION_FOR   = cc_public.web.argument.R_IS_OPTION_FOR
 R_IS_ABOUT        = cc_public.web.argument.R_IS_ABOUT
 R_SUPPORTS        = cc_public.web.argument.R_SUPPORTS
 R_CHALLENGES      = cc_public.web.argument.R_CHALLENGES
@@ -116,9 +116,9 @@ KEY_TO            = 'to'
 # fields, so that the reviewer writes what the argument needs.
 #
 MAP_LEAD          = {
-    KIND_DECISION:  ('State the choice, so that it can be upheld or rejected without reading '
+    KIND_OPTION:  ('State the choice, so that it can be upheld or rejected without reading '
                      'anything else.',
-                     'Say how it differs from the decisions already here.'),
+                     'Say how it differs from the options already here.'),
     KIND_ARGUMENT:  ('Make one assertion that one person could check.',
                      'Tick the concern it argues for: the one it would weigh for in a ruling.',
                      'Say where it comes from in the description: a file and line, a commit, '
@@ -126,9 +126,9 @@ MAP_LEAD          = {
     KIND_ANSWER:    ('Say what in the annotation is wrong, missing or out of date, and how '
                      'you know.',
                      'An answer settles a fact, so it argues for no concern.',
-                     'If what you write is a rule or a commitment, it may belong in a decision '
+                     'If what you write is a rule or a commitment, it may belong in an option '
                      'instead.'),
-    KIND_DETERMINE: ('Say why this decision is better than its rivals, not only why it is '
+    KIND_DETERMINE: ('Say why this option is better than its rivals, not only why it is '
                      'good.',
                      'Name the challenge you found strongest, and say why it does not change '
                      'the ruling.',
@@ -139,8 +139,8 @@ MAP_LEAD          = {
 # alone where every kind uses it alike.
 #
 MAP_HINT          = {
-    (KIND_DECISION, KEY_TITLE):  'A short name for the choice.',
-    (KIND_DECISION, KEY_BRIEF):  'The choice itself, in one or two sentences.',
+    (KIND_OPTION, KEY_TITLE):  'A short name for the choice.',
+    (KIND_OPTION, KEY_BRIEF):  'The choice itself, in one or two sentences.',
     (KIND_ARGUMENT, KEY_TITLE):  'A short phrase that states the claim.',
     (KIND_ANSWER,   KEY_TITLE):  'A short phrase that states what you found.',
     KEY_BRIEF:                   'One or two sentences.',
@@ -244,15 +244,15 @@ def issue_of(graph: Graph, request: Request) -> str:
     if item is None:
         raise ErrorRequest('The tree holds no item {id}.'.format(id = request.target))
 
-    if request.kind == KIND_DECISION:
+    if request.kind == KIND_OPTION:
         list_issue = [request.target] if request.target.startswith(PREFIX_ISSUE) else []
     elif request.kind == KIND_ANSWER:
         list_issue = [id_issue for id_issue in item.targets(R_IS_ABOUT)
                       if request.target.startswith(PREFIX_ANNOTATION)
                       and id_issue.startswith(PREFIX_ISSUE)]
     else:
-        list_issue = [id_issue for id_issue in item.targets(R_ANSWERS)
-                      if request.target.startswith(PREFIX_DECISION)]
+        list_issue = [id_issue for id_issue in item.targets(R_IS_OPTION_FOR)
+                      if request.target.startswith(PREFIX_OPTION)]
 
     if not list_issue:
         raise ErrorRequest('A {kind} cannot be added to {id}.'.format(kind = request.kind,
@@ -290,7 +290,7 @@ def id_new(graph: Graph, request: Request) -> str:
             return existing.id
         return PREFIX_DET + id_issue.removeprefix(PREFIX_ISSUE)
 
-    prefix = PREFIX_DECISION if request.kind == KIND_DECISION else PREFIX_ANNOTATION
+    prefix = PREFIX_OPTION if request.kind == KIND_OPTION else PREFIX_ANNOTATION
     return request.text(KEY_ID) or slug(prefix, request.text(KEY_TITLE))
 
 
@@ -328,8 +328,8 @@ def operations(graph: Graph, request: Request) -> list:
     map_field = {key: request.text(key) for key in (KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION)
                  if request.text(key)}
 
-    if request.kind == KIND_DECISION:
-        list_link = [[R_ANSWERS, id_issue]]
+    if request.kind == KIND_OPTION:
+        list_link = [[R_IS_OPTION_FOR, id_issue]]
     else:
         list_link = [[R_IS_ABOUT, id_issue],
                      [MAP_RELATION[request.role], request.target]]
@@ -345,7 +345,7 @@ def _determine(graph:    Graph,
                id_issue: str,
                id_item:  str) -> list:
     """
-    Return the operations that uphold or reject the decision of request
+    Return the operations that uphold or reject the option of request
     in the determination id_item of the issue id_issue, with the reason
     of request as its brief. The determination is made if the issue has
     none.
@@ -383,7 +383,7 @@ def address(graph: Graph, request: Request, id_item: str) -> str:
 
     path = '/issue/' + issue_of(graph, request)
 
-    if request.kind == KIND_DECISION:
+    if request.kind == KIND_OPTION:
         list_pair = [(KEY_TO, id_item)]
     elif request.kind == KIND_DETERMINE:
         list_pair = [(KEY_TO, request.target)]

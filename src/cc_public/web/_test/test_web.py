@@ -44,14 +44,14 @@ import cc_public.web.server
 
 
 ID_ISSUE         = 'iss_cross_item_checks_engine'
-ID_UPHELD        = 'dec_cross_item_checks_in_clingo'
-ID_REJECTED      = 'dec_cross_item_checks_in_souffle'
+ID_UPHELD        = 'opt_cross_item_checks_in_clingo'
+ID_REJECTED      = 'opt_cross_item_checks_in_souffle'
 ID_DETERMINATION = 'det_cross_item_checks_engine'
 
 
-def test_issue_gathers_its_decisions_and_determination(tree):
+def test_issue_gathers_its_options_and_determination(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
-    assert ID_UPHELD in [decision.id for decision in issue.list_decision]
+    assert ID_UPHELD in [option.id for option in issue.list_option]
     assert [determination.id for determination in issue.list_determination] == [ID_DETERMINATION]
     assert issue.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
     assert issue.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_REJECTED
@@ -103,15 +103,15 @@ def test_issue_list_folds_each_issue_to_its_title_and_standing(tree):
     assert '<span class="drivers">Driven by ' in text
 
 
-def test_an_issue_opens_to_its_question_and_its_decisions(tree):
+def test_an_issue_opens_to_its_question_and_its_options(tree):
     graph = cc_public.web.argument.Graph(tree)
     issue = graph.issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issues')
     text = body.decode()
     assert '<p class="question">{brief}</p>'.format(
         brief = cc_public.web.page._prose(issue.item.brief)) in text
-    for decision in issue.list_decision:
-        assert 'href="/issue/{issue}#{id}"'.format(issue = ID_ISSUE, id = decision.id) in text
+    for option in issue.list_option:
+        assert 'href="/issue/{issue}#{id}"'.format(issue = ID_ISSUE, id = option.id) in text
     assert re.search(r'answer-upheld"><div class="main"><p><span class="mark mark-upheld" '
                      r'title="upheld">✓</span><a class="run-in" href="/issue/{issue}#{id}"'.format(
                          issue = ID_ISSUE, id = ID_UPHELD), text)
@@ -119,11 +119,11 @@ def test_an_issue_opens_to_its_question_and_its_decisions(tree):
     assert '<a href="/issue/{id}">Decision matrix</a>'.format(id = ID_ISSUE) in text
 
 
-def test_a_decision_counts_its_units_for_and_against(tree):
+def test_a_option_counts_its_units_for_and_against(tree):
     graph   = cc_public.web.argument.Graph(tree)
     summary = cc_public.web.page.Summary(graph, graph.issue(ID_ISSUE))
     list_unit = [unit for unit in cc_public.web.sankey.units(summary.issue)
-                 if unit.decision == ID_UPHELD]
+                 if unit.option == ID_UPHELD]
     assert summary.map_for[ID_UPHELD] == sum(1 for unit in list_unit if unit.is_for())
     assert summary.map_against[ID_UPHELD] == sum(1 for unit in list_unit if not unit.is_for())
     assert summary.standing == cc_public.web.page.STANDING_SETTLED
@@ -182,38 +182,38 @@ def test_issue_page_escapes_prose(tree):
     assert b'&lt;b&gt;one&lt;/b&gt; item?' in body
 
 
-def test_matrix_has_a_column_for_each_decision_and_a_row_for_each_concern(tree):
+def test_matrix_has_a_column_for_each_option_and_a_row_for_each_concern(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue(ID_ISSUE))
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
     matrix  = text[text.index('<section class="matrix'):text.index('</section>')]
     head    = matrix[matrix.index('<div class="row head">'):matrix.index('<style>')]
-    assert head.count('<div class="cell">') == len(outline.list_decision) + 1
-    assert '>+ Decision</a></span></div></div>' in head
-    for id_decision in outline.list_decision:
-        assert 'href="#{id}"'.format(id = id_decision) in head
+    assert head.count('<div class="cell">') == len(outline.list_option) + 1
+    assert '>+ Option</a></span></div></div>' in head
+    for id_option in outline.list_option:
+        assert 'href="#{id}"'.format(id = id_option) in head
     assert len(re.findall(r'class="(?:row )?concern"', matrix)) == len(outline.list_concern)
-    assert '--decisions: {count}'.format(count = len(outline.list_decision)) in matrix
+    assert '--options: {count}'.format(count = len(outline.list_option)) in matrix
     assert 'matrix-style' not in matrix
     assert '<h2>Decision matrix</h2>' not in text
-    assert '<h2>Decisions</h2>' not in text
+    assert '<h2>Options</h2>' not in text
 
 
-def test_a_decision_title_opens_its_brief_under_the_head(tree):
+def test_a_option_title_opens_its_brief_under_the_head(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text  = body.decode()
-    for decision in issue.list_decision:
-        panel = text[text.index('<div class="drill decision" id="{id}">'.format(id = decision.id)):]
+    for option in issue.list_option:
+        panel = text[text.index('<div class="drill option" id="{id}">'.format(id = option.id)):]
         assert panel.index('<div class="row') > panel.index('<code>{id}</code>'.format(
-                                                                id = decision.id))
+                                                                id = option.id))
         assert re.search(r'<a href="#{id}" class="mutes [^"]*\blit-show show-{id}"'.format(
-                             id = decision.id), text)
+                             id = option.id), text)
     assert 'src="/static/review.js"' in text
 
 
-def test_a_decision_is_one_chain_across_the_page(tree):
+def test_a_option_is_one_chain_across_the_page(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text    = body.decode()
@@ -222,8 +222,8 @@ def test_a_decision_is_one_chain_across_the_page(tree):
     sankey  = sankey[:sankey.index('</figure>')]
     network = text[text.index('<figure class="map network">'):]
     network = network[:network.index('</figure>')]
-    for decision in issue.list_decision:
-        for name in (decision.id, decision.id + '--for', decision.id + '--against'):
+    for option in issue.list_option:
+        for name in (option.id, option.id + '--for', option.id + '--against'):
             assert ':has(.show-{n}:hover)'.format(n = name) in text
             assert ':has(#{n}:target)'.format(n = name) in text
             assert text.count('id="{n}"'.format(n = name)) == 1
@@ -243,9 +243,9 @@ def test_matrix_text_is_in_the_chains_of_the_sankey_diagram(tree):
     for id_concern in outline.list_concern:
         if not outline.units(concern = id_concern):
             continue
-        id_decision = outline.units(concern = id_concern)[0].decision
+        id_option = outline.units(concern = id_concern)[0].option
         assert re.search(r'<span class="name mutes [^"]*\blit-{id}\b[^"]*">'.format(
-                             id = id_decision), matrix)
+                             id = id_option), matrix)
         for id_annotation in outline.map_annotation[id_concern]:
             start = matrix.index('id="{c}/{a}"'.format(c = id_concern, a = id_annotation))
             assert re.match(r'[^>]*>\s*<summary><div class="block"><div class="main mutes [^"]*'
@@ -281,8 +281,8 @@ def test_the_graph_keeps_the_order_of_the_sankey_diagram(tree):
             continue
         text    = str(cc_public.web.network.figure(graph, outline))
         list_y  = [float(re.search(r'id="node-{id}"><title>[^<]*</title><circle cx="[^"]*" '
-                                   r'cy="([^"]*)"'.format(id = id_decision), text).group(1))
-                   for id_decision in outline.list_decision]
+                                   r'cy="([^"]*)"'.format(id = id_option), text).group(1))
+                   for id_option in outline.list_option]
         assert list_y == sorted(list_y)
 
 
@@ -342,15 +342,15 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(
     assert len(re.findall(r'<span class="unit for fades lit-[^"]*">✓</span>', matrix)) == count_for
     assert (len(re.findall(r'<span class="unit against fades lit-[^"]*">✗</span>', matrix))
             == len(list_unit) - count_for)
-    for id_decision in outline.list_decision:
-        list_own = outline.units(decision = id_decision)
+    for id_option in outline.list_option:
+        list_own = outline.units(option = id_option)
         count    = sum(1 for unit in list_own if unit.is_for())
         head     = matrix[:matrix.index('<style>')]
         assert re.search((r'<a class="for fades [^"]*\blit-show show-{id}--for" href="#{id}--for">'
                           r'{f} for</a>, <a class="against fades [^"]*\blit-show show-{id}--against" '
                           r'href="#{id}--against">{a} against</a>')
-                         .format(id = id_decision, f = count, a = len(list_own) - count), head)
-        assert 'id="{id}--for"'.format(id = id_decision) in matrix
+                         .format(id = id_option, f = count, a = len(list_own) - count), head)
+        assert 'id="{id}--for"'.format(id = id_option) in matrix
     assert 'matrix=' not in matrix
     assert '>All<' not in matrix
 
@@ -358,7 +358,7 @@ def test_matrix_cells_show_a_marked_disc_for_each_unit_and_head_totals_in_words(
 def test_description_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
     graph = cc_public.web.argument.Graph(tree)
     text  = ('It is so (check.py lines 3-4) and slow (a guess). ASSUMPTION: it stays so. '
-             'See dec_cross_item_checks_in_clingo (https://example.org/a).')
+             'See opt_cross_item_checks_in_clingo (https://example.org/a).')
     (list_prose, list_note) = cc_public.web.description.description(graph, text, 'k')
     prose = str(htpy.p[list_prose])
     assert [str(note) for note in list_note] == [
@@ -386,7 +386,7 @@ def test_matrix_cell_opens_every_annotation_it_counts(tree):
         list_unit  = [unit for unit in outline.units(concern = id_concern)
                       if unit.annotation in {key.split(cc_public.web.sankey.DELIM_KEY)[1]
                                              for key in list_key}]
-        assert len({unit.decision for unit in list_unit}) >= 1
+        assert len({unit.option for unit in list_unit}) >= 1
         assert href.endswith('#' + list_key[0])
         (_, _, opened) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE + href.split('#')[0])
         for key in list_key:
@@ -406,11 +406,11 @@ def test_an_annotation_brief_folds_over_its_description(tree):
     assert 'Evidence' not in text
 
 
-def test_graph_decision_lights_its_chains_through_concerns(tree):
+def test_graph_option_lights_its_chains_through_concerns(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
     body    = str(cc_public.web.network.figure(graph, outline))
-    name    = 'dec_tooling_in_python'
+    name    = 'opt_tooling_in_python'
     assert 'href="#{n}" class="pick lit-show show-{n}"'.format(n = name) in body
 
     def css(id_item):
@@ -448,24 +448,24 @@ def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
         network, 'class="([^"]*)" id="node-ann_dependencies_are_few_and_permissive"')
     assert 'lit-' + concern not in classes(network,
                                            'class="([^"]*)" id="node-ann_types_catch_errors_early"')
-    assert 'lit-' + concern in classes(network, 'class="([^"]*)" id="node-dec_tooling_in_rust"')
+    assert 'lit-' + concern in classes(network, 'class="([^"]*)" id="node-opt_tooling_in_rust"')
     assert re.search(r'<text [^>]*class="concern [^"]*\bshow-{c}\b'.format(c = concern), sankey)
     assert ':has(.show-{c}:hover)'.format(c = concern) in text
     assert re.search(r'<span class="name mutes [^"]*\blit-{c} [^"]*lit-show show-{c}"'.format(
                          c = concern), text)
 
 
-def test_the_head_of_the_matrix_is_in_the_chains_of_its_decisions(tree):
+def test_the_head_of_the_matrix_is_in_the_chains_of_its_options(tree):
     (_, _, page) = cc_public.web.server.respond(tree, '/issue/iss_tooling_language')
     text  = page.decode()
     head  = text[text.index('<div class="row head">'):]
     head  = head[:head.index('<style>')]
-    title = re.search(r'<a href="#dec_tooling_in_rust" class="([^"]*)"', head).group(1).split()
-    assert {'mutes', 'lit-dec_tooling_in_rust', 'lit-dec_tooling_in_rust--for',
+    title = re.search(r'<a href="#opt_tooling_in_rust" class="([^"]*)"', head).group(1).split()
+    assert {'mutes', 'lit-opt_tooling_in_rust', 'lit-opt_tooling_in_rust--for',
             'lit-concern_cost'} <= set(title)
-    assert 'lit-dec_tooling_in_python' not in title
-    count = re.search(r'<a class="([^"]*)" href="#dec_tooling_in_rust--for"', head).group(1)
-    assert {'fades', 'lit-dec_tooling_in_rust'} <= set(count.split())
+    assert 'lit-opt_tooling_in_python' not in title
+    count = re.search(r'<a class="([^"]*)" href="#opt_tooling_in_rust--for"', head).group(1)
+    assert {'fades', 'lit-opt_tooling_in_rust'} <= set(count.split())
 
 
 def test_graph_node_lights_both_its_chains(tree):
@@ -484,35 +484,35 @@ def test_graph_node_lights_both_its_chains(tree):
     assert 'lit-for-' + name in css('ann_gate_takes_a_minute')
     assert 'lit-against-' + name in css('ann_graphs_will_grow')
     assert 'lit-for-' + name in css('ann_cross_item_checks_run_in_clingo')
-    assert 'lit-' + name in css('dec_tooling_in_python')
-    assert 'lit-' + name not in css('dec_tooling_in_rust')
+    assert 'lit-' + name in css('opt_tooling_in_python')
+    assert 'lit-' + name not in css('opt_tooling_in_rust')
     answer = 'ann_cross_item_checks_run_in_clingo'
     assert 'lit-' + answer in css('ann_graphs_will_grow')
-    assert 'lit-' + answer in css('dec_tooling_in_rust')
+    assert 'lit-' + answer in css('opt_tooling_in_rust')
     assert 'lit-' + answer not in css('ann_types_catch_errors_early')
 
 
-def test_sankey_inks_an_answer_by_its_net_effect_on_a_decision(tree):
+def test_sankey_inks_an_answer_by_its_net_effect_on_a_option(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.issue('iss_tooling_language'))
     key     = 'concern_performance_efficiency/ann_python_is_fast_enough'
     body    = str(cc_public.web.sankey.figure(
                   graph, outline, {key, key + '/ann_graphs_will_grow'}, set()))
-    assert 'href="#dec_tooling_in_python--for"' in body
-    assert 'lit-show show-dec_tooling_in_python--for' in body
+    assert 'href="#opt_tooling_in_python--for"' in body
+    assert 'lit-show show-opt_tooling_in_python--for' in body
 
     def css(title):
         pattern = r'<text [^>]*class="([^"]*)"[^>]*>(?:(?!</text>).)*?</tspan> {title}<'
         return re.search(pattern.format(title = title), body).group(1).split()
 
-    name = 'dec_tooling_in_python'
+    name = 'opt_tooling_in_python'
     assert 'lit-for-' + name in css('Python is fast enough')
     assert 'lit-against-' + name in css('Graphs will grow large')
     assert 'lit-for-' + name in css('Cross-item checks run in clingo')
     assert 'lit-against-ann_python_is_fast_enough' in css('Graphs will grow large')
 
 
-def test_item_page_names_the_issue_of_a_decision(tree):
+def test_item_page_names_the_issue_of_a_option(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/item/' + ID_UPHELD)
     assert '/issue/{id}'.format(id = ID_ISSUE).encode() in body
 
@@ -535,23 +535,23 @@ def test_static_refuses_a_path_out_of_its_directory(tree):
     assert status == http.HTTPStatus.NOT_FOUND
 
 
-def test_units_count_each_annotation_concern_and_decision(tree):
+def test_units_count_each_annotation_concern_and_option(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     count = sum(len(annotation.targets('r_argues_for_concern'))
                 * len([id_target
                        for id_relation in ('r_supports', 'r_challenges')
                        for id_target in annotation.targets(id_relation)
-                       if id_target.startswith('dec_')])
+                       if id_target.startswith('opt_')])
                 for annotation in issue.list_annotation)
     assert len(cc_public.web.sankey.units(issue)) == count > 0
 
 
-def test_decisions_are_ordered_from_most_supported(tree):
+def test_options_are_ordered_from_most_supported(tree):
     issue = cc_public.web.argument.Graph(tree).issue(ID_ISSUE)
     list_unit = cc_public.web.sankey.units(issue)
     list_lean = [cc_public.web.sankey.lean([unit for unit in list_unit
-                                             if unit.decision == decision.id])
-                 for decision in cc_public.web.sankey.ordered_decisions(issue)]
+                                             if unit.option == option.id])
+                 for option in cc_public.web.sankey.ordered_options(issue)]
     assert list_lean == sorted(list_lean)
 
 
@@ -634,7 +634,7 @@ def test_item_page_shows_edges_in_and_out(tree):
 
 
 def test_unknown_item_is_not_found(tree):
-    (status, _, _) = cc_public.web.server.respond(tree, '/item/dec_no_such_decision')
+    (status, _, _) = cc_public.web.server.respond(tree, '/item/opt_no_such_option')
     assert status == http.HTTPStatus.NOT_FOUND
 
 
@@ -658,8 +658,8 @@ def test_requirement_page_shows_its_statement(tree):
 def test_issue_page_offers_to_add_to_the_argument(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/issue/' + ID_ISSUE)
     text = body.decode()
-    assert text.count('>+ Decision</a>') == 1
-    assert text.count('>+ For</a>') == len(re.findall(r'class="drill decision"', text))
+    assert text.count('>+ Option</a>') == 1
+    assert text.count('>+ For</a>') == len(re.findall(r'class="drill option"', text))
     for id_annotation in re.findall(r'class="block add" data-for="(\w+)"', text):
         assert id_annotation.startswith('ann_')
     assert re.findall(r'<a class="pill (for|against)"[^>]*>(\w+)<', text)[-2:] \
@@ -684,18 +684,18 @@ def test_home_lists_every_type_with_its_count(tree):
     for id_type in list_type:
         assert 'href="{href}"'.format(href = cc_public.web.page._type_href(id_type)) in text
     assert '<a href="/issues">Issue</a>' in text
-    assert '<a href="/type/t_decision">Decision</a>' in text
-    count = len(catalogue.items('t_decision'))
-    assert re.search(r'href="/type/t_decision">.*?<td class="number">{count}<'.format(
+    assert '<a href="/type/t_option">Option</a>' in text
+    count = len(catalogue.items('t_option'))
+    assert re.search(r'href="/type/t_option">.*?<td class="number">{count}<'.format(
         count = count), text, re.DOTALL)
     assert '<tr class="empty">' in text
 
 
 def test_type_page_lists_its_items_and_filters_them(tree):
-    (status, _, body) = cc_public.web.server.respond(tree, '/type/t_decision')
+    (status, _, body) = cc_public.web.server.respond(tree, '/type/t_option')
     assert status == http.HTTPStatus.OK
     assert '/item/{id}'.format(id = ID_UPHELD).encode() in body
-    (_, _, body) = cc_public.web.server.respond(tree, '/type/t_decision?q=no+such+words+at+all')
+    (_, _, body) = cc_public.web.server.respond(tree, '/type/t_option?q=no+such+words+at+all')
     assert '/item/{id}'.format(id = ID_UPHELD).encode() not in body
     (status, _, _) = cc_public.web.server.respond(tree, '/type/t_no_such_type')
     assert status == http.HTTPStatus.NOT_FOUND

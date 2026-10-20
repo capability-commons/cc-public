@@ -16,7 +16,7 @@ brief:                  |
                         Pages in a web browser for reviewing the
                         issues of the tree and the argument on each.
 description:            |
-                        This package reads the issues, decisions,
+                        This package reads the issues, options,
                         annotations and determinations of a tree, and
                         serves them as pages on this computer, set
                         after Tufte: serif text, a margin for notes,

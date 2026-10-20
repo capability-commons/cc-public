@@ -34,16 +34,16 @@ description:            |
                         The issue list folds each issue to its title
                         and standing, grouped by subject under the
                         concerns that drive it, or in another order.
-                        An issue opens to its question and the
-                        decisions that answer it, each with its mark
-                        and how much argument is for and against it. A
-                        filter keeps and opens the issues it finds.
-                        The page of an issue opens with its decision
-                        matrix: a column for each decision and a row
-                        for each concern, in the order of the Sankey
-                        diagram of pym_cc_public.web.sankey. Decisions
-                        are read from most supported to most opposed.
-                        Each concern row opens to the annotations that
+                        An issue opens to its question and the options
+                        that answer it, each with its mark and how
+                        much argument is for and against it. A filter
+                        keeps and opens the issues it finds. The page
+                        of an issue opens with its option matrix: a
+                        column for each option and a row for each
+                        concern, in the order of the Sankey diagram of
+                        pym_cc_public.web.sankey. Options are read
+                        from most supported to most opposed. Each
+                        concern row opens to the annotations that
                         argue for it, numbered as the diagram numbers
                         them, an annotation that argues for several
                         concerns under each. An annotation folds to
@@ -51,7 +51,7 @@ description:            |
                         opens to its description, which opens to the
                         annotations that answer it. Opened parts set
                         their text in the text column and their notes
-                        in the margin. The decisions, the diagram and
+                        in the margin. The options, the diagram and
                         the cross-references follow.
 
                         The requirement list groups the requirements
@@ -82,12 +82,11 @@ description:            |
 
                         The pills of the page of an issue lead to the
                         forms that add to its argument or settle it,
-                        which edit renders: a decision, an annotation
-                        for or against a decision, an answer to an
+                        which edit renders: an option, an annotation
+                        for or against an option, an answer to an
                         annotation, and the upholding or rejecting of
-                        a decision with a reason. Uphold waits,
-                        greyed, while a driver of the issue is
-                        unargued.
+                        an option with a reason. Uphold waits, greyed,
+                        while a driver of the issue is unargued.
 relation:               []
 
 ...
@@ -227,7 +226,7 @@ MAP_SORT_KEY      = {
     SORT_TITLE:    lambda summary: summary.issue.item.title}
 R_IS_DRIVEN_BY    = 'r_is_driven_by'
 
-KIND_DECISION     = cc_public.web.request.KIND_DECISION
+KIND_OPTION       = cc_public.web.request.KIND_OPTION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
 KIND_ANSWER       = cc_public.web.request.KIND_ANSWER
 KIND_DETERMINE    = cc_public.web.request.KIND_DETERMINE
@@ -246,7 +245,7 @@ KEY_CONCERN       = cc_public.web.request.KEY_CONCERN
 
 # The heading of the form of each kind and role.
 #
-MAP_HEADING       = {(KIND_DECISION,  ''):           'Add a decision',
+MAP_HEADING       = {(KIND_OPTION,  ''):           'Add an option',
                      (KIND_ARGUMENT,  ROLE_FOR):     'Add an annotation for',
                      (KIND_ARGUMENT,  ROLE_AGAINST): 'Add an annotation against',
                      (KIND_ANSWER,    ROLE_FOR):     'Support',
@@ -531,7 +530,7 @@ def issues(graph: Graph, query: str = '') -> str:
     filtered as query asks.
 
     Each issue folds to a line of its title and standing, which opens
-    to its question and the decisions that answer it; a filter opens
+    to its question and the options that answer it; a filter opens
     the issues it finds. The layouts are
     prototypes to compare: every issue folded, every issue open, and
     the table of counts the page had before.
@@ -579,7 +578,7 @@ def issues(graph: Graph, query: str = '') -> str:
 # -----------------------------------------------------------------------------
 class Summary:
     """
-    What the list of issues says about one issue: its decisions, most
+    What the list of issues says about one issue: its options, most
     supported first, the standing of each, how many units of argument
     are for and against each, and the standing of the issue.
 
@@ -593,14 +592,14 @@ class Summary:
         """
 
         self.issue         = issue
-        self.list_decision = cc_public.web.sankey.ordered_decisions(issue)
-        self.map_for       = {decision.id: 0 for decision in issue.list_decision}
+        self.list_option   = cc_public.web.sankey.ordered_options(issue)
+        self.map_for       = {option.id: 0 for option in issue.list_option}
         self.map_against   = dict(self.map_for)
         for unit in cc_public.web.sankey.units(issue):
             if unit.is_for():
-                self.map_for[unit.decision] += 1
+                self.map_for[unit.option] += 1
             else:
-                self.map_against[unit.decision] += 1
+                self.map_against[unit.option] += 1
         self.subject = ', '.join(graph.title(id_subject) for id_subject
                                  in issue.item.targets(cc_public.web.argument.R_IS_ABOUT))
         list_stance  = list(issue.map_stance.values())
@@ -612,13 +611,13 @@ class Summary:
             self.standing = STANDING_OPEN
 
     # -------------------------------------------------------------------------
-    def stance(self, id_decision: str) -> str:
+    def stance(self, id_option: str) -> str:
         """
-        Return the standing of the decision id_decision.
+        Return the standing of the option id_option.
 
         """
 
-        return self.issue.map_stance.get(id_decision, STANCE_OPEN)
+        return self.issue.map_stance.get(id_option, STANCE_OPEN)
 
     # -------------------------------------------------------------------------
     def size(self) -> int:
@@ -646,13 +645,13 @@ def _choice(map_query: dict, key: str, list_value: list[str]) -> str:
 def _holds(issue: Issue, text: str) -> bool:
     """
     Return True if every word of text is in the title or brief of the
-    issue or of one of its decisions.
+    issue or of one of its options.
 
     """
 
     words = ' '.join([issue.item.title, issue.item.brief]
-                     + [part for decision in issue.list_decision
-                        for part in (decision.title, decision.brief)]).lower()
+                     + [part for option in issue.list_option
+                        for part in (option.title, option.brief)]).lower()
     return all(word in words for word in text.lower().split())
 
 
@@ -705,7 +704,7 @@ def _issue_controls(layout: str, sort: str, text: str) -> typing.Any:
             htpy.input(type        = 'search',
                        name        = KEY_QUERY,
                        value       = text,
-                       placeholder = 'Words from an issue or its decisions',
+                       placeholder = 'Words from an issue or its options',
                        aria_label  = 'Filter'),
             ' ',
             htpy.button(type = 'submit', class_ = 'plain')['Filter']]]
@@ -714,7 +713,7 @@ def _issue_controls(layout: str, sort: str, text: str) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _mark(stance: str) -> typing.Any:
     """
-    Return the mark of the standing of a decision: a tick if upheld, a
+    Return the mark of the standing of an option: a tick if upheld, a
     cross if rejected, an open circle if open.
 
     """
@@ -727,7 +726,7 @@ def _mark(stance: str) -> typing.Any:
 def _standing(summary: Summary) -> typing.Any:
     """
     Return the standing of the issue, as a word in the colour of the
-    standing of a decision.
+    standing of an option.
 
     """
 
@@ -736,15 +735,15 @@ def _standing(summary: Summary) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _counts(summary: Summary, id_decision: str) -> typing.Any:
+def _counts(summary: Summary, id_option: str) -> typing.Any:
     """
-    Return how many units of argument are for and against id_decision.
+    Return how many units of argument are for and against id_option.
 
     """
 
     return htpy.span(class_ = 'counts')[
-        htpy.span(class_ = 'for')[str(summary.map_for[id_decision]), MARK_FOR], ' ',
-        htpy.span(class_ = 'against')[str(summary.map_against[id_decision]), MARK_AGAINST]]
+        htpy.span(class_ = 'for')[str(summary.map_for[id_option]), MARK_FOR], ' ',
+        htpy.span(class_ = 'against')[str(summary.map_against[id_option]), MARK_AGAINST]]
 
 
 # -----------------------------------------------------------------------------
@@ -754,21 +753,21 @@ def _issue_answers(list_summary: list[Summary],
     """
     Return the issues of list_summary, each folded to a line of its
     title, with its standing in the margin, unless is_open. Each opens
-    to its question and the decisions that answer it, in full: each
-    decision with its mark hung before it, its title run in and linked
-    to the decision on the page of the issue, and its counts in the
-    margin. A link after the decisions leads to the page of the issue.
+    to its question and the options that answer it, in full: each
+    option with its mark hung before it, its title run in and linked
+    to the option on the page of the issue, and its counts in the
+    margin. A link after the options leads to the page of the issue.
 
     """
 
-    def answer(summary: Summary, decision: Item) -> typing.Any:
-        stance = summary.stance(decision.id)
+    def answer(summary: Summary, option: Item) -> typing.Any:
+        stance = summary.stance(option.id)
         return _block([htpy.p[_mark(stance),
                               htpy.a(class_ = 'run-in',
                                      href   = PATH_ISSUE + summary.issue.item.id
-                                              + '#' + decision.id)[decision.title],
-                              ' ', _prose(decision.brief)]],
-                      [_counts(summary, decision.id)],
+                                              + '#' + option.id)[option.title],
+                              ' ', _prose(option.brief)]],
+                      [_counts(summary, option.id)],
                       class_ = 'answer answer-' + stance)
 
     def entry(summary: Summary) -> typing.Any:
@@ -779,7 +778,7 @@ def _issue_answers(list_summary: list[Summary],
                                  htpy.span(class_ = 'subject')[summary.subject]
                                  if show_subject else None])],
             _block([htpy.p(class_ = 'question')[_prose(item.brief)]], []),
-            [answer(summary, decision) for decision in summary.list_decision],
+            [answer(summary, option) for option in summary.list_option],
             _block([htpy.p(class_ = 'onward')[
                         htpy.a(href = PATH_ISSUE + item.id)['Decision matrix'],
                         ' ', MARK_NEXT]], [])]
@@ -827,13 +826,13 @@ def _lighting(graph: Graph, outline: cc_public.web.sankey.Outline) -> list:
     Return the rules that light each chain of the argument in outline,
     in the matrix and in both diagrams alike, and an element that pins
     each chain whose name the page does not already hold as an id: the
-    matrix holds a decision, each of its roles, and each concern that
+    matrix holds an option, each of its roles, and each concern that
     opens to annotations.
 
     """
 
     chain    = cc_public.web.light.chain
-    set_held = {chain(id_decision, role) for id_decision in outline.list_decision
+    set_held = {chain(id_option, role) for id_option in outline.list_option
                 for role in (None, ROLE_FOR, ROLE_AGAINST)}
     set_held |= {chain(id_concern) for id_concern in outline.list_concern
                  if outline.map_annotation[id_concern]}
@@ -863,18 +862,18 @@ def _matrix(graph:    Graph,
             outline:  cc_public.web.sankey.Outline,
             set_show: set[str]) -> typing.Any:
     """
-    Return the decision matrix of the issue: a column for each decision
+    Return the decision matrix of the issue: a column for each option
     and a row for each concern, in the order of the diagram, each cell
-    showing a square for each unit of weight for or against the decision
+    showing a square for each unit of weight for or against the option
     for the concern. Each row opens to the annotations that argue for
     its concern; those in set_show are opened. The foot holds the total
-    and the standing of each decision and the controls that settle it.
+    and the standing of each option and the controls that settle it.
     A driver no annotation argues for is marked, as a determination
     waits on it.
 
     """
 
-    list_decision = outline.list_decision
+    list_option = outline.list_option
 
     def row(list_label: list, list_cell: list, **map_attribute: str) -> typing.Any:
         css = 'row ' + map_attribute.pop('class_', '')
@@ -882,35 +881,35 @@ def _matrix(graph:    Graph,
             htpy.div(class_ = 'label')[list_label],
             [htpy.div(class_ = 'cell')[cell] for cell in list_cell]]
 
-    map_decision = {decision.id: decision for decision in issue.list_decision}
+    map_option   = {option.id: option for option in issue.list_option}
     drawing      = cc_public.web.sankey.lighting(graph, outline)
-    list_row     = [row([], [[htpy.a(href   = '#' + id_decision,
+    list_row     = [row([], [[htpy.a(href   = '#' + id_option,
                                      class_ = ' '.join([CSS_MUTES,
-                                                        *drawing.css_decision(id_decision),
-                                                        cc_public.web.light.show(id_decision)]))[
-                                  graph.title(id_decision)],
+                                                        *drawing.css_option(id_option),
+                                                        cc_public.web.light.show(id_option)]))[
+                                  graph.title(id_option)],
                               htpy.div(class_ = 'total')[
-                                  _total(id_decision, outline.units(decision = id_decision),
-                                         drawing.css_decision(id_decision))]]
-                             for id_decision in list_decision]
+                                  _total(id_option, outline.units(option = id_option),
+                                         drawing.css_option(id_option))]]
+                             for id_option in list_option]
                             + [htpy.span(class_ = 'add')[
-                                   _pill('+ Decision', '',
-                                         'Add a decision that answers this issue',
-                                         _edit_href(KIND_DECISION,
+                                   _pill('+ Option', '',
+                                         'Add an option that answers this issue',
+                                         _edit_href(KIND_OPTION,
                                                     issue.item.id))]],
                         class_ = 'head'),
-                    _decision_style(list_decision),
-                    [htpy.span(class_ = 'decision-role',
-                               id     = cc_public.web.light.chain(id_decision, role))
-                     for id_decision in list_decision
+                    _option_style(list_option),
+                    [htpy.span(class_ = 'option-role',
+                               id     = cc_public.web.light.chain(id_option, role))
+                     for id_option in list_option
                      for role in (cc_public.web.light.ROLE_FOR, cc_public.web.light.ROLE_AGAINST)],
-                    [_decision(graph, issue, map_decision[id_decision])
-                     for id_decision in list_decision]]
+                    [_option(graph, issue, map_option[id_option])
+                     for id_option in list_option]]
 
     for id_concern in outline.list_concern:
         list_annotation = outline.map_annotation[id_concern]
-        list_cell       = [_cell_link(outline, drawing, id_decision, id_concern)
-                           for id_decision in list_decision]
+        list_cell       = [_cell_link(outline, drawing, id_option, id_concern)
+                           for id_option in list_option]
         label           = _concern_label(graph, issue, id_concern,
                                              drawing.css_concern(id_concern))
         if not list_annotation:
@@ -930,21 +929,21 @@ def _matrix(graph:    Graph,
                                      open   = any(_is_within(set_show, id_annotation)
                                                   for id_annotation in outline.list_other))[
             htpy.summary[row([htpy.span(class_ = 'name')['Other annotations']],
-                             [None for _ in list_decision])],
+                             [None for _ in list_option])],
             htpy.div(class_ = 'drill')[
                 [_annotation(graph, outline, drawing, id_annotation, id_annotation, None, set(),
                              set_show)
                  for id_annotation in outline.list_other]]])
 
     list_row += [
-        row(['Standing'], [_stance(issue.map_stance.get(id_decision,
+        row(['Standing'], [_stance(issue.map_stance.get(id_option,
                                                         cc_public.web.argument.STANCE_OPEN))
-                           for id_decision in list_decision], class_ = 'foot standing'),
-        row([], [_controls(graph, issue, id_decision) for id_decision in list_decision],
+                           for id_option in list_option], class_ = 'foot standing'),
+        row([], [_controls(graph, issue, id_option) for id_option in list_option],
             class_ = 'foot controls')]
 
     return htpy.section(class_ = 'matrix ' + cc_public.web.light.CSS_REGION,
-                        style  = '--decisions: {count}'.format(count = len(list_decision)))[
+                        style  = '--options: {count}'.format(count = len(list_option)))[
         list_row]
 
 
@@ -972,16 +971,16 @@ def _concern_label(graph:      Graph,
 # -----------------------------------------------------------------------------
 def _cell_link(outline:     cc_public.web.sankey.Outline,
                drawing:     typing.Any,
-               id_decision: str,
+               id_option:   str,
                id_concern:  str) -> typing.Any:
     """
     Return a cell of the decision matrix, linked to the annotations
-    that argue for id_concern on id_decision, all opened in its row and
+    that argue for id_concern on id_option, all opened in its row and
     the first in view.
 
     """
 
-    list_unit = outline.units(decision = id_decision, concern = id_concern)
+    list_unit = outline.units(option = id_option, concern = id_concern)
     if not list_unit:
         return _cell(list_unit, drawing)
 
@@ -1001,7 +1000,7 @@ def _cell_link(outline:     cc_public.web.sankey.Outline,
 def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
     """
     Return what a cell of the decision matrix shows of list_unit, the
-    units of weight on one decision for one concern: a disc marked with
+    units of weight on one option for one concern: a disc marked with
     a tick for each unit for, then one marked with a cross for each
     unit against, each in the chains of drawing that the unit is in.
 
@@ -1022,20 +1021,20 @@ def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _total(id_decision: str, list_unit: list, list_css: list[str]) -> typing.Any:
+def _total(id_option: str, list_unit: list, list_css: list[str]) -> typing.Any:
     """
-    Return the total of list_unit, the units of weight on id_decision,
+    Return the total of list_unit, the units of weight on id_option,
     in words: how many are for it and how many against, each in the
     chains of list_css. Each count lights the chains that reach the
-    decision with that role while it is hovered over, and shows the
-    decision and pins them when it is clicked.
+    option with that role while it is hovered over, and shows the
+    option and pins them when it is clicked.
 
     """
 
     count_for = sum(1 for unit in list_unit if unit.is_for())
     list_link = []
     for (role, count) in ((ROLE_FOR, count_for), (ROLE_AGAINST, len(list_unit) - count_for)):
-        name = cc_public.web.light.chain(id_decision, role)
+        name = cc_public.web.light.chain(id_option, role)
         list_link.append(htpy.a(class_ = ' '.join([role, CSS_FADES, *list_css,
                                                    cc_public.web.light.show(name)]),
                                 href   = '#' + name)[
@@ -1044,11 +1043,11 @@ def _total(id_decision: str, list_unit: list, list_css: list[str]) -> typing.Any
 
 
 # -----------------------------------------------------------------------------
-def _controls(graph: Graph, issue: Issue, id_decision: str) -> typing.Any:
+def _controls(graph: Graph, issue: Issue, id_option: str) -> typing.Any:
     """
-    Return the controls that settle the issue on id_decision: uphold it
+    Return the controls that settle the issue on id_option: uphold it
     or reject it, each in the one determination of the issue, leaving
-    the other decisions as they stand. Uphold waits, greyed, while a
+    the other options as they stand. Uphold waits, greyed, while a
     driver of the issue is unargued, as unargued_driver would refuse it;
     reject never waits, as a rejection needs no driver argued.
 
@@ -1061,12 +1060,12 @@ def _controls(graph: Graph, issue: Issue, id_decision: str) -> typing.Any:
                            title  = 'Uphold waits until an annotation argues for {list}'.format(
                                         list = _titles(graph, list_unspoken)))['Uphold']
     else:
-        uphold = _pill('Uphold', ROLE_FOR, 'Uphold this decision',
-                       _edit_href(kind, id_decision, ROLE_UPHOLD))
+        uphold = _pill('Uphold', ROLE_FOR, 'Uphold this option',
+                       _edit_href(kind, id_option, ROLE_UPHOLD))
     return htpy.div(class_ = 'determine')[
         uphold,
-        _pill('Reject', ROLE_AGAINST, 'Reject this decision',
-              _edit_href(kind, id_decision, ROLE_REJECT))]
+        _pill('Reject', ROLE_AGAINST, 'Reject this option',
+              _edit_href(kind, id_option, ROLE_REJECT))]
 
 
 # -----------------------------------------------------------------------------
@@ -1188,20 +1187,20 @@ def _statement(graph: Graph, item: Item) -> str:
 # -----------------------------------------------------------------------------
 def _issues_of(graph: Graph, item: Item) -> list[str]:
     """
-    Return the issues the argument item belongs to: those a decision
+    Return the issues the argument item belongs to: those an option
     answers, an annotation is about, or a determination settles through
-    its decisions.
+    its options.
 
     """
 
-    list_decision = (item.targets(cc_public.web.argument.R_UPHOLDS)
+    list_option = (item.targets(cc_public.web.argument.R_UPHOLDS)
                      + item.targets(cc_public.web.argument.R_REJECTS))
-    list_target   = (item.targets(cc_public.web.argument.R_ANSWERS)
+    list_target   = (item.targets(cc_public.web.argument.R_IS_OPTION_FOR)
                      + item.targets(cc_public.web.argument.R_IS_ABOUT)
-                     + [id_issue for id_decision in list_decision
-                        if id_decision in graph.map_item
-                        for id_issue in graph.map_item[id_decision].targets(
-                                            cc_public.web.argument.R_ANSWERS)])
+                     + [id_issue for id_option in list_option
+                        if id_option in graph.map_item
+                        for id_issue in graph.map_item[id_option].targets(
+                                            cc_public.web.argument.R_IS_OPTION_FOR)])
 
     return [id_target for id_target in dict.fromkeys(list_target)
             if id_target.startswith(cc_public.web.argument.PREFIX_ISSUE)]
@@ -1698,7 +1697,7 @@ def _contract(graph: Graph, contract: Contract) -> typing.Any:
                         class_ = 'foot'))
 
     return htpy.section(class_ = 'matrix contract',
-                        style  = '--decisions: {count}'.format(count = len(list_column)))[
+                        style  = '--options: {count}'.format(count = len(list_column)))[
         list_row]
 
 
@@ -2039,7 +2038,7 @@ def edit(graph:      Graph,
 
     id_issue = cc_public.web.request.issue_of(graph, request)
     heading  = MAP_HEADING[(request.kind, request.role)]
-    if request.kind != KIND_DECISION:
+    if request.kind != KIND_OPTION:
         heading = '{heading} \u2018{target}\u2019'.format(heading = heading,
                                                         target  = graph.title(request.target))
 
@@ -2232,14 +2231,14 @@ def _issue_table(graph: Graph, list_issue: list[Issue]) -> typing.Any:
 
     return htpy.table[
         htpy.thead[htpy.tr[htpy.th['Issue'],
-                           htpy.th(class_ = 'number')['Decisions'],
+                           htpy.th(class_ = 'number')['Options'],
                            htpy.th(class_ = 'number')['Annotations'],
                            htpy.th(class_ = 'number')['Concerns'],
                            htpy.th['Determined']]],
         htpy.tbody[[
             htpy.tr[
                 htpy.td[htpy.a(href = PATH_ISSUE + issue.item.id)[issue.item.title]],
-                htpy.td(class_ = 'number')[str(len(issue.list_decision))],
+                htpy.td(class_ = 'number')[str(len(issue.list_option))],
                 htpy.td(class_ = 'number')[str(len(issue.list_annotation))],
                 htpy.td(class_ = 'number')[
                     '{spoken} of {count}'.format(
@@ -2252,62 +2251,62 @@ def _issue_table(graph: Graph, list_issue: list[Issue]) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _settlement(graph: Graph, issue: Issue) -> typing.Any:
     """
-    Return the decision the issue was settled on, or a mark that it is
+    Return the option the issue was settled on, or a mark that it is
     open.
 
     """
 
-    list_upheld = [id_decision for (id_decision, stance) in issue.map_stance.items()
+    list_upheld = [id_option for (id_option, stance) in issue.map_stance.items()
                    if stance == cc_public.web.argument.STANCE_UPHELD]
     if not list_upheld:
         return _stance(cc_public.web.argument.STANCE_OPEN)
     return [_stance(cc_public.web.argument.STANCE_UPHELD), ' ',
-            ', '.join(graph.title(id_decision) for id_decision in list_upheld)]
+            ', '.join(graph.title(id_option) for id_option in list_upheld)]
 
 
 # -----------------------------------------------------------------------------
-def _decision(graph: Graph, issue: Issue, decision: Item) -> typing.Any:
+def _option(graph: Graph, issue: Issue, option: Item) -> typing.Any:
     """
-    Return the panel of a decision under the head of the matrix: its
+    Return the panel of an option under the head of the matrix: its
     brief, folded over its description if it has one, with its standing
     in the margin. The panel shows only while it is the target of the
-    address, which a click on the title of the decision makes it.
+    address, which a click on the title of the option makes it.
 
     """
 
-    block = _block([htpy.p[_prose(decision.brief)]],
-                   [_stance(issue.map_stance.get(decision.id,
+    block = _block([htpy.p[_prose(option.brief)]],
+                   [_stance(issue.map_stance.get(option.id,
                                                  cc_public.web.argument.STANCE_OPEN)),
-                    _id(decision.id),
+                    _id(option.id),
                     htpy.p(class_ = 'add')[
-                        _pill('+ For', ROLE_FOR, 'Add an annotation for this decision',
-                              _edit_href(KIND_ARGUMENT, decision.id,
+                        _pill('+ For', ROLE_FOR, 'Add an annotation for this option',
+                              _edit_href(KIND_ARGUMENT, option.id,
                                          ROLE_FOR)),
                         ' ',
                         _pill('+ Against', ROLE_AGAINST,
-                              'Add an annotation against this decision',
-                              _edit_href(KIND_ARGUMENT, decision.id,
+                              'Add an annotation against this option',
+                              _edit_href(KIND_ARGUMENT, option.id,
                                          ROLE_AGAINST))]])
-    if decision.description:
+    if option.description:
         block = htpy.details(class_ = 'brief')[htpy.summary[block],
-                                               _description(graph, decision, decision.id)]
-    return htpy.div(class_ = 'drill decision', id = decision.id)[block]
+                                               _description(graph, option, option.id)]
+    return htpy.div(class_ = 'drill option', id = option.id)[block]
 
 
 # -----------------------------------------------------------------------------
-def _decision_style(list_decision: list[str]) -> typing.Any:
+def _option_style(list_option: list[str]) -> typing.Any:
     """
-    Return the rules that show the panel of a decision while one of its
-    counts is chosen, as it shows while the decision is, and underline
+    Return the rules that show the panel of an option while one of its
+    counts is chosen, as it shows while the option is, and underline
     the chosen count.
 
     """
 
     list_rule = []
-    for id_decision in list_decision:
-        map_id = {'id':      id_decision,
-                  'for':     cc_public.web.light.chain(id_decision, ROLE_FOR),
-                  'against': cc_public.web.light.chain(id_decision, ROLE_AGAINST)}
+    for id_option in list_option:
+        map_id = {'id':      id_option,
+                  'for':     cc_public.web.light.chain(id_option, ROLE_FOR),
+                  'against': cc_public.web.light.chain(id_option, ROLE_AGAINST)}
         list_rule += [
             ('section.matrix:has(#{for}:target, #{against}:target) #{id} '
              '{{ display: block; }}').format(**map_id),
@@ -2585,8 +2584,8 @@ def _facts(graph: Graph, issue: Issue, list_subject: list[str]) -> typing.Any:
         row('Standing', _settlement(graph, issue)),
         row('Subject',  ', '.join(list_subject)) if list_subject else None,
         row('Concerns', list_driver) if list_driver else None,
-        row('Argument', '{decisions} decisions, {annotations} annotations'.format(
-                            decisions   = len(issue.list_decision),
+        row('Argument', '{options} options, {annotations} annotations'.format(
+                            options     = len(issue.list_option),
                             annotations = len(issue.list_annotation)))]]
 
 
@@ -2601,7 +2600,7 @@ def _issue_references(graph: Graph, issue: Issue) -> typing.Any:
     """
 
     is_about     = cc_public.web.argument.R_IS_ABOUT
-    list_shown   = ([issue.item] + issue.list_decision + issue.list_annotation
+    list_shown   = ([issue.item] + issue.list_option + issue.list_annotation
                    + issue.list_determination)
     set_shown    = {shown.id for shown in list_shown}
     list_subject = issue.item.targets(is_about)
@@ -2732,7 +2731,7 @@ def _note_line(label: str, value: typing.Any) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _stance(stance: str) -> typing.Any:
     """
-    Return the mark of the stance of a decision.
+    Return the mark of the stance of an option.
 
     """
 

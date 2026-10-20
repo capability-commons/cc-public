@@ -22,11 +22,11 @@ description:            |
                         the items whose prose matches a query. Each
                         hit is expanded through the graph: to the
                         issue it belongs to, to the determination that
-                        settles that issue and the decisions it
-                        upholds, to the standing of a decision, and to
-                        the concerns an annotation argues for. A grep
-                        of the files finds the words; this also says
-                        how each argument they appear in was settled.
+                        settles that issue and the options it upholds,
+                        to the standing of an option, and to the
+                        concerns an annotation argues for. A grep of
+                        the files finds the words; this also says how
+                        each argument they appear in was settled.
 
                         A plain query that names a concept by one of
                         its preferred or admitted terms also matches
@@ -98,8 +98,8 @@ MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL)
 # title, and what the graph says of it, read from the issue_of and
 # settles tables that derive.lp gives. The issue is the one it belongs
 # to, the determination is the one that settles that issue, and upheld
-# names the decisions that determination upholds. The standing of a
-# decision is upheld, rejected or open. A higher score is a better
+# names the options that determination upholds. The standing of a
+# option is upheld, rejected or open. A higher score is a better
 # match.
 #
 SQL_HIT           = """
@@ -117,12 +117,12 @@ WITH best AS (
     GROUP BY id
 ),
 settle AS MATERIALIZED (
-    SELECT settles.determination, edge.relation, settles.decision, issue_of.issue
+    SELECT settles.determination, edge.relation, settles.option, issue_of.issue
     FROM settles
     JOIN primary_edge AS edge ON edge.source = settles.determination
-                             AND edge.target = settles.decision
+                             AND edge.target = settles.option
                              AND edge.relation IN ('r_upholds', 'r_rejects')
-    JOIN issue_of ON issue_of.id = settles.decision
+    JOIN issue_of ON issue_of.id = settles.option
 ),
 found AS MATERIALIZED (
     SELECT best.id,
@@ -136,14 +136,14 @@ found AS MATERIALIZED (
     FROM best
 )
 SELECT found.*,
-           CASE WHEN type != 't_decision' THEN ''
+           CASE WHEN type != 't_option' THEN ''
                 ELSE coalesce((SELECT CASE settle.relation WHEN 'r_upholds' THEN 'upheld'
                                                            ELSE 'rejected' END
-                               FROM settle WHERE settle.decision = found.id), 'open')
+                               FROM settle WHERE settle.option = found.id), 'open')
            END AS standing,
            coalesce((SELECT group_concat(DISTINCT determination ORDER BY determination)
                      FROM settle WHERE settle.issue = found.issue), '') AS determination,
-           coalesce((SELECT group_concat(decision, ' ' ORDER BY decision)
+           coalesce((SELECT group_concat(option, ' ' ORDER BY option)
                      FROM settle
                      WHERE settle.issue = found.issue AND settle.relation = 'r_upholds'),
                     '') AS upheld,

@@ -88,24 +88,24 @@ document_schema(Id, Schema) :-
 
 
 % -----------------------------------------------------------------------------
-% The determination upholds or rejects the decision.
+% The determination upholds or rejects the option.
 %
 % decl settles(determination: symbol,
-%              decision:      symbol)
+%              option:      symbol)
 
-settles(Determination, Decision) :-
+settles(Determination, Option) :-
     type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_upholds", Decision).
+    primary_edge(Determination, "r_upholds", Option).
 
-settles(Determination, Decision) :-
+settles(Determination, Option) :-
     type_of(Determination, "t_determination"),
-    primary_edge(Determination, "r_rejects", Decision).
+    primary_edge(Determination, "r_rejects", Option).
 
 
 % -----------------------------------------------------------------------------
-% The item belongs to the issue: it is the issue, a decision that
+% The item belongs to the issue: it is the issue, an option that
 % answers it, an annotation about it, or a determination that settles
-% a decision that answers it.
+% an option that answers it.
 %
 % decl issue_of(id:    symbol,
 %               issue: symbol)
@@ -114,8 +114,8 @@ issue_of(Id, Id) :-
     type_of(Id, "t_issue").
 
 issue_of(Id, Issue) :-
-    type_of(Id, "t_decision"),
-    primary_edge(Id, "r_answers", Issue).
+    type_of(Id, "t_option"),
+    primary_edge(Id, "r_is_option_for", Issue).
 
 issue_of(Id, Issue) :-
     type_of(Id, "t_annotation"),
@@ -123,8 +123,8 @@ issue_of(Id, Issue) :-
     type_of(Issue, "t_issue").
 
 issue_of(Id, Issue) :-
-    settles(Id, Decision),
-    issue_of(Decision, Issue).
+    settles(Id, Option),
+    issue_of(Option, Issue).
 
 
 % -----------------------------------------------------------------------------

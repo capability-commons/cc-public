@@ -66,7 +66,7 @@ EXAMPLE_DATALOG   = ("cctool query datalog '#show out/1. "
                      "out(Id) :- type_of(Id, \"t_concern\").'")
 EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
                      "{ ?id a cc:t_concern ; f:title ?title }'")
-EXAMPLE_TEXT      = 'cctool query text --issue "status field on a decision"'
+EXAMPLE_TEXT      = 'cctool query text --issue "status field on an option"'
 EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/issue/\")) "
                      "| .document.id_self'")
 
@@ -141,7 +141,7 @@ def sql(text, path_file, root, limit, is_json):
 
     \b
     Examples:
-      cctool query sql "SELECT * FROM item WHERE id LIKE 'dec_%'"
+      cctool query sql "SELECT * FROM item WHERE id LIKE 'opt_%'"
       cctool query sql "SELECT type, count(*) AS n FROM type_of GROUP BY type"
       cctool query sql "SELECT source FROM primary_edge WHERE relation = 'r_is_about'"
 
@@ -301,7 +301,7 @@ def sparql(text, path_file, root, limit, is_json):
       cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:t_concern ; f:title ?title }'
       cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:iss_licence }'
       cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
-      cctool query sparql 'ASK { cc:dec_apache_2_0 a cc:t_decision }'
+      cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:t_option }'
 
     """
 
@@ -376,7 +376,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
     other prose of every item, stemmed, and an item that matches more
     of the words, or rarer ones, ranks higher (BM25). Each hit names
     the issue it belongs to, the determination that settles that issue
-    and the decisions it upholds, the standing of a decision (upheld,
+    and the options it upholds, the standing of an option (upheld,
     rejected or open), and the concerns an annotation argues for. With
     --issue, each row is an issue, so that a hit on any part of an
     argument leads to how it was settled. Give the query as QUERY, as
@@ -389,7 +389,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_issue, is_exact):
 
     \b
     Examples:
-      cctool query text "status field on a decision"
+      cctool query text "status field on an option"
       cctool query text --issue "checks engine"
       cctool query text --match '"commit" NEAR "title"'
 

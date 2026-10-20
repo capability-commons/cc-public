@@ -14,21 +14,21 @@ protective_mark:
 title:                  Graph of an argument
 brief:                  |
                         Draw the argument on an issue as a tree for
-                        each decision: its concerns as small ports
+                        each option: its concerns as small ports
                         beside it, and from each port the annotations
                         that argue for that concern on it, with the
                         annotations that answer them beyond.
 description:            |
                         The drawing follows the diagrams of Mark
                         Lombardi: circles joined by thin lines, with
-                        room to spare. Each decision is a large circle
+                        room to spare. Each option is a large circle
                         with its title to its left. Each concern
                         argued on it is a small circle beside it,
                         joined to it by a short spoke, and named only
                         while it is lit. From each concern run lines
                         to the annotations that argue for it on that
-                        decision, and from each annotation to those
-                        that answer it. As in the Sankey diagram, an
+                        option, and from each annotation to those that
+                        answer it. As in the Sankey diagram, an
                         annotation is drawn once for each place it
                         argues, so no two lines cross. A leaf has its
                         title to its right, and an annotation with
@@ -54,7 +54,7 @@ Outline = cc_public.web.sankey.Outline
 
 # Sizes, in units of the drawing.
 #
-RADIUS_DECISION   = 24
+RADIUS_OPTION     = 24
 RADIUS_ANNOTATION = 10
 RADIUS_CONCERN    = 4.5
 SPOKE             = 12
@@ -62,20 +62,20 @@ ANGLE_STEP        = 0.42
 ANGLE_MAX         = 1.15
 ROW               = 30
 GAP_PARENT        = 20
-GAP_DECISION      = 44
-HEIGHT_DECISION   = 72
-X_DECISION        = 250
-X_FIRST           = X_DECISION + 190
+GAP_OPTION        = 44
+HEIGHT_OPTION     = 72
+X_OPTION          = 250
+X_FIRST           = X_OPTION + 190
 COLUMN            = 250
-CHARS_DECISION    = 26
-LINE_DECISION     = 17
+CHARS_OPTION      = 26
+LINE_OPTION       = 17
 WIDTH_CHAR        = 6.4
 MARGIN            = 16
 DELIM_HUB         = '--'
 ROLE_FOR          = cc_public.web.sankey.ROLE_FOR
 ROLE_AGAINST      = cc_public.web.sankey.ROLE_AGAINST
 ROLE_LINK         = 'link'
-KIND_DECISION     = 'decision'
+KIND_OPTION       = 'option'
 KIND_CONCERN      = 'concern'
 KIND_ANNOTATION   = 'annotation'
 MAP_MARK          = {ROLE_FOR: '\u2713', ROLE_AGAINST: '\u2717'}
@@ -92,7 +92,7 @@ class _Tree:
     # -------------------------------------------------------------------------
     def __init__(self, graph: Graph, outline: Outline) -> None:
         """
-        Place the trees of the decisions of outline.
+        Place the trees of the options of outline.
 
         """
 
@@ -105,30 +105,30 @@ class _Tree:
         self.set_pick   = set_pick
         self.set_id     = set()
         self.y          = 0.0
-        self.right      = X_DECISION
+        self.right      = X_OPTION
         self.list_path  = []
         self.list_node  = []
         self.list_label = []
-        for id_decision in outline.list_decision:
-            self._decision(id_decision)
-            self.y += GAP_DECISION
+        for id_option in outline.list_option:
+            self._option(id_option)
+            self.y += GAP_OPTION
 
     # -------------------------------------------------------------------------
-    def _decision(self, id_decision: str) -> None:
+    def _option(self, id_option: str) -> None:
         """
-        Place the tree of id_decision: its ports, one for each concern
+        Place the tree of id_option: its ports, one for each concern
         argued on it, and the branches beyond them.
 
         """
 
         list_concern = [id_concern for id_concern in self.outline.list_concern
-                        if self.outline.units(decision = id_decision, concern = id_concern)]
+                        if self.outline.units(option = id_option, concern = id_concern)]
         top          = self.y
         list_branch  = []
         for id_concern in list_concern:
             list_place = []
             for id_annotation in self.outline.map_annotation[id_concern]:
-                for unit in self.outline.units(decision   = id_decision,
+                for unit in self.outline.units(option     = id_option,
                                                concern    = id_concern,
                                                annotation = id_annotation):
                     key = cc_public.web.sankey.DELIM_KEY.join((id_concern, id_annotation))
@@ -137,30 +137,30 @@ class _Tree:
             list_branch.append((id_concern, list_place))
         bottom = max(self.y - ROW, top)
         y      = (top + bottom) / 2
-        self.y = max(self.y, y + HEIGHT_DECISION / 2)
-        self._node_decision(id_decision, y)
+        self.y = max(self.y, y + HEIGHT_OPTION / 2)
+        self._node_option(id_option, y)
 
         count = len(list_branch)
         step  = min(ANGLE_STEP, 2 * ANGLE_MAX / max(count - 1, 1))
         for (index, (id_concern, list_place)) in enumerate(list_branch):
             angle  = (index - (count - 1) / 2) * step
-            reach  = RADIUS_DECISION + SPOKE + RADIUS_CONCERN
-            (x, y_port) = (X_DECISION + reach * math.cos(angle), y + reach * math.sin(angle))
-            list_hub = [_hub(id_decision, id_concern, role) for role in (ROLE_FOR, ROLE_AGAINST)
-                        if _hub(id_decision, id_concern, role) in self.map_sign]
+            reach  = RADIUS_OPTION + SPOKE + RADIUS_CONCERN
+            (x, y_port) = (X_OPTION + reach * math.cos(angle), y + reach * math.sin(angle))
+            list_hub = [_hub(id_option, id_concern, role) for role in (ROLE_FOR, ROLE_AGAINST)
+                        if _hub(id_option, id_concern, role) in self.map_sign]
             map_sign = _merged([self.map_sign[id_hub] for id_hub in list_hub]
-                               + [self.map_sign_edge[(id_hub, id_decision,
+                               + [self.map_sign_edge[(id_hub, id_option,
                                                       id_hub.split(DELIM_HUB)[2])]
                                   for id_hub in list_hub])
             list_css = cc_public.web.light.css(map_sign)
             self.list_path.append(htpy.line(
-                x1 = _num(X_DECISION + RADIUS_DECISION * math.cos(angle)),
-                y1 = _num(y + RADIUS_DECISION * math.sin(angle)),
+                x1 = _num(X_OPTION + RADIUS_OPTION * math.cos(angle)),
+                y1 = _num(y + RADIUS_OPTION * math.sin(angle)),
                 x2 = _num(x - RADIUS_CONCERN * math.cos(angle)),
                 y2 = _num(y_port - RADIUS_CONCERN * math.sin(angle)),
                 class_ = ' '.join(['spoke', cc_public.web.light.CSS_DIMS] + list_css)))
             for (y_to, id_annotation, role) in list_place:
-                edge = (id_annotation, _hub(id_decision, id_concern, role), ROLE_LINK)
+                edge = (id_annotation, _hub(id_option, id_concern, role), ROLE_LINK)
                 self._path(x + RADIUS_CONCERN, y_port, X_FIRST - RADIUS_ANNOTATION, y_to, role,
                            self.map_sign_edge[edge])
             self._node_concern(id_concern, x, y_port, list_css)
@@ -259,48 +259,48 @@ class _Tree:
                       href = '#' + name, class_ = 'pick ' + cc_public.web.light.show(name))[node]
 
     # -------------------------------------------------------------------------
-    def _node_decision(self, id_decision: str, y: float) -> None:
+    def _node_option(self, id_option: str, y: float) -> None:
         """
-        Add the circle of id_decision at y, with its title to its left.
+        Add the circle of id_option at y, with its title to its left.
 
         """
 
-        list_line = _lines(self.graph.title(id_decision), CHARS_DECISION)
-        y_first   = y + 5 - LINE_DECISION * (len(list_line) - 1) / 2
-        x_title   = X_DECISION - RADIUS_DECISION - 12
-        node      = htpy.g(class_ = self._css(KIND_DECISION,
-                                              cc_public.web.light.css(self.map_sign[id_decision])),
-                           id     = self._id(id_decision))[
-            htpy.title[self.graph.title(id_decision)],
-            htpy.circle(cx = _num(X_DECISION), cy = _num(y), r = str(RADIUS_DECISION),
+        list_line = _lines(self.graph.title(id_option), CHARS_OPTION)
+        y_first   = y + 5 - LINE_OPTION * (len(list_line) - 1) / 2
+        x_title   = X_OPTION - RADIUS_OPTION - 12
+        node      = htpy.g(class_ = self._css(KIND_OPTION,
+                                              cc_public.web.light.css(self.map_sign[id_option])),
+                           id     = self._id(id_option))[
+            htpy.title[self.graph.title(id_option)],
+            htpy.circle(cx = _num(X_OPTION), cy = _num(y), r = str(RADIUS_OPTION),
                         class_ = 'shape'),
-            [htpy.text(x = _num(x_title), y = _num(y_first + LINE_DECISION * index),
+            [htpy.text(x = _num(x_title), y = _num(y_first + LINE_OPTION * index),
                        class_ = 'name')[line]
              for (index, line) in enumerate(list_line)]]
-        self.list_node.append(self._pick(id_decision, node))
-        self._tally(id_decision, y)
+        self.list_node.append(self._pick(id_option, node))
+        self._tally(id_option, y)
 
     # -------------------------------------------------------------------------
-    def _tally(self, id_decision: str, y: float) -> None:
+    def _tally(self, id_option: str, y: float) -> None:
         """
-        Add, inside the circle of id_decision at y, how many units of
+        Add, inside the circle of id_option at y, how many units of
         weight support it and how many challenge it. Each count lights
-        the chains that reach the decision in its role while it is
+        the chains that reach the option in its role while it is
         hovered over, and pins them when it is clicked.
 
         """
 
-        list_unit = self.outline.units(decision = id_decision)
-        list_css  = cc_public.web.light.css(self.map_sign[id_decision])
+        list_unit = self.outline.units(option = id_option)
+        list_css  = cc_public.web.light.css(self.map_sign[id_option])
         for (index, role) in enumerate((ROLE_FOR, ROLE_AGAINST)):
             count = sum(1 for unit in list_unit if unit.role == role)
-            name  = cc_public.web.light.chain(id_decision, role)
+            name  = cc_public.web.light.chain(id_option, role)
             css   = ' '.join(['tally', 'tally-' + role, cc_public.web.light.CSS_DIMS, *list_css,
                               cc_public.web.light.show(name)])
             self.list_node.append(htpy.a(href = '#' + name, class_ = css)[
                 htpy.title['{count} {verb} this'.format(
                     count = count, verb = 'support' if role == ROLE_FOR else 'challenge')],
-                htpy.text(x = _num(X_DECISION), y = _num(y - 2 + 14 * index))[
+                htpy.text(x = _num(X_OPTION), y = _num(y - 2 + 14 * index))[
                     '{count}{mark}'.format(count = count, mark = MAP_MARK[role])]])
 
     # -------------------------------------------------------------------------
@@ -361,20 +361,20 @@ class _Tree:
 def figure(graph: Graph, outline: Outline) -> typing.Any:
     """
     Return the graph of the argument in outline, a tree for each
-    decision.
+    option.
 
-    Hovering over or clicking a decision or an annotation lights every
+    Hovering over or clicking an option or an annotation lights every
     chain into it and dims the rest; each annotation in the chain is
     shaded by its net effect, the product of the roles along its paths.
     Each copy of an annotation lights with the others. Hovering over a
-    concern lights the chains through it, on every decision, and names
+    concern lights the chains through it, on every option, and names
     each of its ports. Clicking anywhere else in the graph unpins: the
     link names no element, so the page does not move. The page holds
     the rules that light the chains and the elements that pin them (see
     cc_public.web.light).
 
     The chains are traced through a hub for each concern on each
-    decision, in each role, so an annotation lights for the decisions
+    option, in each role, so an annotation lights for the options
     it argues on and no others.
 
     """
@@ -405,8 +405,8 @@ def figure(graph: Graph, outline: Outline) -> typing.Any:
 def names(outline: Outline) -> list[str]:
     """
     Return the names of the chains the graph of the argument in outline
-    can light: one into each decision or annotation in each role, each
-    decision or annotation that is picked, and each concern.
+    can light: one into each option or annotation in each role, each
+    option or annotation that is picked, and each concern.
 
     """
 
@@ -419,22 +419,22 @@ def names(outline: Outline) -> list[str]:
 # -----------------------------------------------------------------------------
 def _graph(outline: Outline) -> tuple:
     """
-    Return the kind of each decision and annotation of the argument in
+    Return the kind of each option and annotation of the argument in
     outline, and its edges.
 
     """
 
     list_row = sorted(outline.map_number, key = outline.map_number.get)
     map_kind = ({id_annotation: KIND_ANNOTATION for id_annotation in list_row}
-                | {id_decision: KIND_DECISION for id_decision in outline.list_decision})
+                | {id_option: KIND_OPTION for id_option in outline.list_option})
     return (map_kind, _edges(outline, list_row))
 
 
 # -----------------------------------------------------------------------------
 def _chains(map_kind: dict[str, str], list_edge: list[tuple[str, str, str]]) -> tuple:
     """
-    Return the name of the chains into each decision and annotation in
-    each role, the decisions and annotations a click picks, and the
+    Return the name of the chains into each option and annotation in
+    each role, the options and annotations a click picks, and the
     concerns argued for.
 
     """
@@ -457,8 +457,8 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
     """
     Return the edges of the argument, each from its source to its target
     with its role: from an annotation to what it answers, from an
-    annotation to the hub of each concern it argues for on a decision
-    in each role, and from each hub to its decision in that role. The
+    annotation to the hub of each concern it argues for on an option
+    in each role, and from each hub to its option in that role. The
     edge into a hub passes the effect on unchanged.
 
     """
@@ -468,11 +468,11 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
         for (id_target, role) in _answered(outline, id_annotation):
             list_edge.append((id_annotation, id_target, role))
         for unit in outline.units(annotation = id_annotation):
-            edge = (id_annotation, _hub(unit.decision, unit.concern, unit.role), ROLE_LINK)
+            edge = (id_annotation, _hub(unit.option, unit.concern, unit.role), ROLE_LINK)
             if edge not in list_edge:
                 list_edge.append(edge)
     for unit in outline.list_unit:
-        edge = (_hub(unit.decision, unit.concern, unit.role), unit.decision, unit.role)
+        edge = (_hub(unit.option, unit.concern, unit.role), unit.option, unit.role)
         if edge not in list_edge:
             list_edge.append(edge)
     return list_edge
@@ -485,12 +485,12 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
               set_pick:     set[str],
               list_concern: list[str]) -> tuple:
     """
-    Return, for each decision, annotation and hub, and for each edge,
+    Return, for each option, annotation and hub, and for each edge,
     the names of the chains that light it, each with the net effects
     that shade it there. The chains of a concern are those through its
-    hubs, each net effect taken on to the decision of the hub. The
+    hubs, each net effect taken on to the option of the hub. The
     chain of a picked item also holds, unshaded, the path onward from
-    it to each decision it bears on, as in the Sankey diagram. A hub
+    it to each option it bears on, as in the Sankey diagram. A hub
     is never shaded.
 
     """
@@ -512,10 +512,10 @@ def _lighting(list_edge:    list[tuple[str, str, str]],
     for id_concern in list_concern:
         key = cc_public.web.light.chain(id_concern)
         for edge in list_edge:
-            (id_hub, id_decision, role) = edge
+            (id_hub, id_option, role) = edge
             if DELIM_HUB in id_hub and _unhub(id_hub) == id_concern:
                 cc_public.web.light.add(map_sign_node[id_hub], key, None)
-                cc_public.web.light.add(map_sign_node[id_decision], key, None)
+                cc_public.web.light.add(map_sign_node[id_option], key, None)
                 cc_public.web.light.add(map_sign_edge[edge], key, None)
                 _light(map_sign_node, map_sign_edge, key, *_chain(list_edge, id_hub, None), role)
     return (map_sign_node, map_sign_edge)
@@ -550,7 +550,7 @@ def _light(map_sign_node: dict[str, dict[str, set[str]]],
 def _onward(list_edge: list[tuple[str, str, str]], id_node: str) -> set[tuple]:
     """
     Return the edges of the paths from id_node onward: to what it
-    answers, through the hubs it argues through, to the decisions.
+    answers, through the hubs it argues through, to the options.
 
     """
 
@@ -583,15 +583,15 @@ def _merged(list_map_sign: list[dict[str, set[str]]]) -> dict[str, set[str]]:
 
 
 # -----------------------------------------------------------------------------
-def _hub(id_decision: str, id_concern: str, role: str) -> str:
+def _hub(id_option: str, id_concern: str, role: str) -> str:
     """
     Return the id of the hub of id_concern argued in role on
-    id_decision: the bundle of edges it carries through the port of
+    id_option: the bundle of edges it carries through the port of
     the concern.
 
     """
 
-    return DELIM_HUB.join((id_decision, id_concern, role))
+    return DELIM_HUB.join((id_option, id_concern, role))
 
 
 # -----------------------------------------------------------------------------

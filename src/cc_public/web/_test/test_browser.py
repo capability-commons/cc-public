@@ -142,9 +142,9 @@ def test_nothing_is_dimmed_at_rest(page):
     assert _astray(page, None) == []
 
 
-def test_a_decision_title_lights_its_chains_everywhere(page):
+def test_a_option_title_lights_its_chains_everywhere(page):
     _hover(page, 'section.matrix .row.head .cell > a')
-    assert _astray(page, 'dec_tooling_in_python') == []
+    assert _astray(page, 'opt_tooling_in_python') == []
     assert page.locator('figure.sankey .dims').evaluate_all(
                'list => list.some(e => parseFloat(getComputedStyle(e).opacity) < 0.6)')
 
@@ -153,7 +153,7 @@ def test_a_decision_title_lights_its_chains_everywhere(page):
                                       'figure.network a.tally-against'])
 def test_a_count_lights_the_chains_of_its_role(page, selector):
     _hover(page, selector)
-    assert _astray(page, 'dec_tooling_in_python--against') == []
+    assert _astray(page, 'opt_tooling_in_python--against') == []
 
 
 @pytest.mark.parametrize('selector', ['section.matrix details.concern > summary .name',
@@ -176,10 +176,10 @@ def test_a_pin_holds_until_a_hover_and_a_click_off_clears_it(page):
     page.locator('section.matrix .row.head .cell > a').first.click()
     page.mouse.move(1, 1)
     page.wait_for_timeout(300)
-    assert page.evaluate('location.hash') == '#dec_tooling_in_python'
-    assert _astray(page, 'dec_tooling_in_python') == []
+    assert page.evaluate('location.hash') == '#opt_tooling_in_python'
+    assert _astray(page, 'opt_tooling_in_python') == []
     _hover(page, 'section.matrix .row.head .cell > a >> nth=1')
-    assert _astray(page, 'dec_tooling_in_rust') == []
+    assert _astray(page, 'opt_tooling_in_rust') == []
     page.mouse.move(1, 1)
     page.mouse.click(1, 1)
     page.wait_for_timeout(300)

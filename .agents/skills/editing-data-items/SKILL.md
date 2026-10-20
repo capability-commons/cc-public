@@ -62,7 +62,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   it, such as the annotation or type that uses it.
 - **An argument lives in the folder of its issue.** Start one with an
   issue (`new iss_NAME --link r_is_about lc_NAME`), then give each decision
-  `--link r_answers iss_NAME` (`answer_count` refuses a decision that
+  `--link r_is_option_for iss_NAME` (`answer_count` refuses a decision that
   answers no issue, or two) and each annotation `--link r_is_about
   iss_NAME`. `new` writes all of them, and determinations, in
   `_data/issue/iss_NAME/`; anything moved there by hand is checked by
@@ -70,7 +70,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **An annotation or issue is refused without `r_is_about`**
   (`missing_about`). Give `--link r_is_about TARGET` with `new`.
 - **A determination is refused unless it upholds or rejects a decision**
-  (`determination_without_decision`). Give `--link r_upholds DEC` or
+  (`determination_without_option`). Give `--link r_upholds DEC` or
   `--link r_rejects DEC`. Only record a determination that a person
   has made; the commit that adds it says who and when.
 - **A determination that upholds a decision is refused while a driver
@@ -93,7 +93,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   relation by playing the role it needs, not by changing the relation.
 - **An annotation that supports or challenges a decision needs at least
   one concern** (`argument_without_concern`), and one that bears on no
-  decision needs none (`concern_without_decision`). A premise several
+  decision needs none (`concern_without_option`). A premise several
   concerns rest on is one annotation linked to each concern, not one
   annotation per concern.
 - **`schema_violation`** names the file, line and field. A list field

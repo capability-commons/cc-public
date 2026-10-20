@@ -14,17 +14,17 @@ protective_mark:
 title:                  Argument of an issue
 brief:                  |
                         Read the items of a tree, and gather on each
-                        issue the decisions, annotations and
+                        issue the options, annotations and
                         determinations that make its argument.
 description:            |
                         Graph reads every item in a tree, with its
                         title, brief, description and edges as
                         written. Graph.issue gathers an issue: the
-                        decisions that answer it, the annotations
-                        about it, the determinations that settle its
-                        decisions, and the driver concerns of its
-                        subject. The standing of each decision,
-                        upheld, rejected or open, follows from the
+                        options that answer it, the annotations about
+                        it, the determinations that settle its
+                        options, and the driver concerns of its
+                        subject. The standing of each option, upheld,
+                        rejected or open, follows from the
                         determination of the issue, of which there is
                         at most one.
 relation:               []
@@ -51,10 +51,10 @@ KEY_ID_RELATION   = 'id_relation'
 KEY_ID_TARGET     = 'id_target'
 
 PREFIX_ISSUE      = 'iss_'
-PREFIX_DECISION   = 'dec_'
+PREFIX_OPTION     = 'opt_'
 PREFIX_ANNOTATION = 'ann_'
 
-R_ANSWERS         = 'r_answers'
+R_IS_OPTION_FOR   = 'r_is_option_for'
 R_IS_ABOUT        = 'r_is_about'
 R_SUPPORTS        = 'r_supports'
 R_CHALLENGES      = 'r_challenges'
@@ -101,14 +101,14 @@ class Item:
 @dataclasses.dataclass
 class Issue:
     """
-    An issue and the argument gathered on it: the decisions that answer
+    An issue and the argument gathered on it: the options that answer
     it, the annotations about it, and the determinations that settle
-    its decisions.
+    its options.
 
     """
 
     item:               Item
-    list_decision:      list[Item]
+    list_option:        list[Item]
     list_annotation:    list[Item]
     list_determination: list[Item]
     list_driver:        list[str]
@@ -250,16 +250,16 @@ class Graph:
         if item is None or not id_issue.startswith(PREFIX_ISSUE):
             return None
 
-        list_decision      = self._items(self.sources(R_ANSWERS, id_issue))
-        set_decision       = {decision.id for decision in list_decision}
+        list_option        = self._items(self.sources(R_IS_OPTION_FOR, id_issue))
+        set_option         = {option.id for option in list_option}
         list_annotation    = self._items(id_item for id_item in
                                          self.sources(R_IS_ABOUT, id_issue)
                                          if id_item.startswith(PREFIX_ANNOTATION))
         list_determination = self._items(
                                  {id_item
-                                  for id_decision in set_decision
+                                  for id_option in set_option
                                   for id_relation in (R_UPHOLDS, R_REJECTS)
-                                  for id_item in self.sources(id_relation, id_decision)})
+                                  for id_item in self.sources(id_relation, id_option)})
         list_driver        = sorted({id_concern
                                      for subject in self._items(item.targets(R_IS_ABOUT))
                                      for id_concern in subject.targets(R_IS_DRIVEN_BY)})
@@ -268,19 +268,19 @@ class Graph:
                               for id_concern in annotation.targets(R_ARGUES_FOR)}
 
         issue = Issue(item               = item,
-                      list_decision      = list_decision,
+                      list_option        = list_option,
                       list_annotation    = list_annotation,
                       list_determination = list_determination,
                       list_driver        = list_driver,
                       map_stance         = {},
                       set_spoken         = set_spoken)
 
-        issue.map_stance = {decision.id: STANCE_OPEN for decision in list_decision}
+        issue.map_stance = {option.id: STANCE_OPEN for option in list_option}
         for determination in issue.list_determination:
-            for id_decision in determination.targets(R_UPHOLDS):
-                issue.map_stance[id_decision] = STANCE_UPHELD
-            for id_decision in determination.targets(R_REJECTS):
-                issue.map_stance[id_decision] = STANCE_REJECTED
+            for id_option in determination.targets(R_UPHOLDS):
+                issue.map_stance[id_option] = STANCE_UPHELD
+            for id_option in determination.targets(R_REJECTS):
+                issue.map_stance[id_option] = STANCE_REJECTED
 
         return issue
 

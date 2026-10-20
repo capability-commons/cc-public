@@ -55,12 +55,12 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% An issue that no decision answers is open, which is normal while it
+% An issue that no option answers is open, which is normal while it
 % is argued. It is reported so that it is not forgotten.
 %
 % decl unanswered_issue(issue: symbol)
-% did  No decision answers the issue {issue}.
-% fix  Add the decisions that answer it as the issue is argued.
+% did  No option answers the issue {issue}.
+% fix  Add the options that answer it as the issue is argued.
 #show unanswered_issue/1.
 
 unanswered_issue(Issue) :-
@@ -69,9 +69,9 @@ unanswered_issue(Issue) :-
 
 
 % -----------------------------------------------------------------------------
-% Some decision answers the issue.
+% Some option answers the issue.
 %
 % decl answers_some(issue: symbol)
 
 answers_some(Issue) :-
-    primary_edge(_, "r_answers", Issue).
+    primary_edge(_, "r_is_option_for", Issue).

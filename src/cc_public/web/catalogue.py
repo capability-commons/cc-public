@@ -56,7 +56,7 @@ COUNT_FOUND       = 200
 # in the order they are listed under it.
 #
 TUPLE_GROUP       = (
-    ('Argument',         ('t_issue', 't_decision', 't_annotation', 't_determination',
+    ('Argument',         ('t_issue', 't_option', 't_annotation', 't_determination',
                           't_concern')),
     ('Requirements and architecture',
                          ('t_requirement', 't_logical_component',
