@@ -618,7 +618,7 @@ def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
     register = ruamel.yaml.YAML().load(path.read_text())
     register['table']['r_is_about']['inverse'] = {'id_self':   'r_is_subject_of',
                                                   'guid_self': _guid('r'),
-                                                  'brief':     'SUBJ is the subject of OBJ'}
+                                                  'brief':     'SOURCE is the subject of TARGET'}
     path.write_text(_dump(register))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
     _option(tree, 'opt_x', [_edge(tree, 'r_is_subject_of', 'ann_x')])

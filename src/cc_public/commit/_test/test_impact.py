@@ -157,8 +157,8 @@ def test_a_change_of_code_touches_its_function_and_module(tree, before):
 # -----------------------------------------------------------------------------
 def test_an_item_reaches_the_items_that_use_its_relation(tree, before):
     _edit(tree, '_data/register/reg_relation.yaml',
-          'brief:              SUBJ gives a reason not to accept OBJ',
-          'brief:              SUBJ gives a reason to doubt OBJ')
+          'brief:              SOURCE gives a reason not to accept TARGET',
+          'brief:              SOURCE gives a reason to doubt TARGET')
 
     result = cc_public.commit.impact.impact_trees(before, tree, direction = 'in')
 

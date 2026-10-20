@@ -25,7 +25,7 @@ description:            |
                         not name falls under Other, so that a new type
                         shows in the index with nothing more to do.
 
-                        The subjects are the logical components. The
+                        The components are the logical components. The
                         items about a subject are those with an edge
                         to it, of any relation, gathered by type.
 
@@ -47,7 +47,7 @@ import cc_public.web.argument
 KEY_PREFIX        = 'prefix'
 PREFIX_TYPE       = 't_'
 PREFIX_SUBJECT    = 'lc_'
-ID_SUBJECT_TYPE   = 't_logical_component'
+ID_COMPONENT_TYPE = 't_logical_component'
 DELIM_PREFIX      = '_'
 NAME_OTHER        = 'Other'
 COUNT_FOUND       = 200
@@ -139,25 +139,25 @@ class Catalogue:
         return [(name, list_type) for (name, list_type) in list_group if list_type]
 
     # -------------------------------------------------------------------------
-    def subjects(self) -> list[str]:
+    def components(self) -> list[str]:
         """
-        Return the ids of the subjects, the logical components, in the
+        Return the ids of the logical components, in the
         order of their titles.
 
         """
 
-        return self.items(ID_SUBJECT_TYPE)
+        return self.items(ID_COMPONENT_TYPE)
 
     # -------------------------------------------------------------------------
-    def about(self, id_subject: str) -> list[tuple[str, list[str]]]:
+    def about(self, id_component: str) -> list[tuple[str, list[str]]]:
         """
-        Return the items with an edge to the subject id_subject, gathered
+        Return the items with an edge to the subject id_component, gathered
         by type in the order of the groups, each type with its items in
         the order of their titles.
 
         """
 
-        set_about = set(self.map_about.get(id_subject, []))
+        set_about = set(self.map_about.get(id_component, []))
         list_type = [id_type for (_, list_group) in self.groups() for id_type in list_group]
         return [(id_type, [id_item for id_item in self.map_type[id_type]
                            if id_item in set_about])

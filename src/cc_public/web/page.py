@@ -25,14 +25,14 @@ description:            |
                         the list of its items, which a few words
                         filter, or to a fuller list of its own for
                         decisions, requirements and interface control
-                        documents. The subjects page lists the logical
-                        components, and the page of each gathers the
-                        items about it by type. A search box in the
-                        masthead of every page finds items by the
-                        words of their id, title or brief.
+                        documents. The components page lists the
+                        logical components, and the page of each
+                        gathers the items about it by type. A search
+                        box in the masthead of every page finds items
+                        by the words of their id, title or brief.
 
                         The decision list folds each decision to its
-                        title and standing, grouped by subject under
+                        title and standing, grouped by component under
                         the concerns that drive it, or in another
                         order. A decision opens to its question and
                         the options that answer it, each with its mark
@@ -119,12 +119,12 @@ PATH_HOME         = '/'
 PATH_DECISIONS    = '/decisions'
 PATH_REQUIREMENTS = '/requirements'
 PATH_INTERFACES   = '/interfaces'
-PATH_SUBJECTS     = '/subjects'
-PATH_SUBJECT      = '/subject/'
+PATH_COMPONENTS   = '/components'
+PATH_COMPONENT    = '/component/'
 PATH_TYPE         = '/type/'
 PATH_SEARCH       = '/search'
 LIST_INDEX        = (('Index',    PATH_HOME),
-                     ('Subjects', PATH_SUBJECTS))
+                     ('Components', PATH_COMPONENTS))
 KEY_QUERY         = 'q'
 KEY_CONCEPT       = 'id_concept'
 
@@ -198,12 +198,12 @@ LIST_LAYOUT       = [LAYOUT_FOLDED, LAYOUT_OPEN, LAYOUT_COUNTS]
 MAP_LAYOUT_NAME   = {LAYOUT_FOLDED: 'Titles',
                      LAYOUT_OPEN:   'Questions and answers',
                      LAYOUT_COUNTS: 'Before'}
-SORT_SUBJECT      = 'subject'
+SORT_COMPONENT    = 'component'
 SORT_STANDING     = 'standing'
 SORT_SIZE         = 'size'
 SORT_TITLE        = 'title'
-LIST_SORT         = [SORT_SUBJECT, SORT_STANDING, SORT_SIZE, SORT_TITLE]
-MAP_SORT_NAME     = {SORT_SUBJECT:  'Subject',
+LIST_SORT         = [SORT_COMPONENT, SORT_STANDING, SORT_SIZE, SORT_TITLE]
+MAP_SORT_NAME     = {SORT_COMPONENT:  'Component',
                      SORT_STANDING: 'Standing',
                      SORT_SIZE:     'Most argued',
                      SORT_TITLE:    'Title'}
@@ -339,49 +339,49 @@ def type_list(graph: Graph, id_type: str, text: str = '') -> str | None:
 
 
 # -----------------------------------------------------------------------------
-def subjects(graph: Graph) -> str:
+def components(graph: Graph) -> str:
     """
-    Return the list of the subjects, the logical components, each with
+    Return the list of the logical components, each with
     the concerns that drive it and how many items are about it.
 
     """
 
     catalogue = cc_public.web.catalogue.Catalogue(graph)
 
-    def row(id_subject: str) -> typing.Any:
-        subject = graph.map_item[id_subject]
+    def row(id_component: str) -> typing.Any:
+        component = graph.map_item[id_component]
         return htpy.tr[
-            htpy.td[htpy.a(href = PATH_SUBJECT + id_subject)[subject.title or id_subject],
-                    htpy.span(class_ = 'statement')[_prose(subject.brief)]],
-            htpy.td[_titles(graph, subject.targets(cc_public.web.argument.R_IS_DRIVEN_BY))],
+            htpy.td[htpy.a(href = PATH_COMPONENT + id_component)[component.title or id_component],
+                    htpy.span(class_ = 'statement')[_prose(component.brief)]],
+            htpy.td[_titles(graph, component.targets(cc_public.web.argument.R_IS_DRIVEN_BY))],
             htpy.td(class_ = 'number')[
-                str(sum(len(list_item) for (_, list_item) in catalogue.about(id_subject)))]]
+                str(sum(len(list_item) for (_, list_item) in catalogue.about(id_component)))]]
 
-    return _page('Subjects',
-                 [htpy.table(class_ = 'catalogue subjects')[
-                      htpy.thead[htpy.tr[htpy.th['Subject'],
+    return _page('Components',
+                 [htpy.table(class_ = 'catalogue components')[
+                      htpy.thead[htpy.tr[htpy.th['Component'],
                                          htpy.th['Driving concerns'],
                                          htpy.th(class_ = 'number')['Items']]],
-                      htpy.tbody[[row(id_subject) for id_subject in catalogue.subjects()]]]],
-                 [htpy.h1['Subjects'],
+                      htpy.tbody[[row(id_component) for id_component in catalogue.components()]]]],
+                 [htpy.h1['Components'],
                   htpy.p(class_ = 'subtitle')[
                       'The logical components, and what is about each.']])
 
 
 # -----------------------------------------------------------------------------
-def subject(graph: Graph, id_subject: str) -> str | None:
+def component(graph: Graph, id_component: str) -> str | None:
     """
-    Return the page of the subject id_subject: the items about it,
+    Return the page of the logical component id_component: the items about it,
     gathered by type, with the concerns that drive it beside its head,
-    or None if the tree has no such subject.
+    or None if the tree has no such logical component.
 
     """
 
     catalogue = cc_public.web.catalogue.Catalogue(graph)
-    if id_subject not in catalogue.subjects():
+    if id_component not in catalogue.components():
         return None
 
-    item = graph.map_item[id_subject]
+    item = graph.map_item[id_component]
 
     def listed(id_type: str, list_id: list[str]) -> typing.Any:
         if id_type == 't_decision':
@@ -390,11 +390,11 @@ def subject(graph: Graph, id_subject: str) -> str | None:
             return _requirement_table(graph, [graph.map_item[id_item] for id_item in list_id])
         return _item_table(graph, list_id)
 
-    return _page(item.title or id_subject,
+    return _page(item.title or id_component,
                  [[htpy.section[htpy.h2[_type_name(graph, id_type)], listed(id_type, list_id)]
-                   for (id_type, list_id) in catalogue.about(id_subject)]
-                  or htpy.p['Nothing is about this subject yet.']],
-                 [htpy.h1[item.title or id_subject],
+                   for (id_type, list_id) in catalogue.about(id_component)]
+                  or htpy.p['Nothing is about this component yet.']],
+                 [htpy.h1[item.title or id_component],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
                  [htpy.table(class_ = 'facts')[htpy.tbody[
                      htpy.tr[htpy.th(scope = 'row')['Concerns'],
@@ -402,7 +402,7 @@ def subject(graph: Graph, id_subject: str) -> str | None:
                                       for id_concern in item.targets(
                                           cc_public.web.argument.R_IS_DRIVEN_BY)]]],
                      htpy.tr[htpy.th(scope = 'row')['Id'],
-                             htpy.td[htpy.a(href = PATH_ITEM + id_subject)[id_subject]]]]]])
+                             htpy.td[htpy.a(href = PATH_ITEM + id_component)[id_component]]]]]])
 
 
 # -----------------------------------------------------------------------------
@@ -551,18 +551,18 @@ def decisions(graph: Graph, query: str = '') -> str:
         if layout == LAYOUT_COUNTS:
             return _decision_table(graph, [summary.decision for summary in list_summary])
         return _decision_answers(list_summary,
-                              show_subject = sort != SORT_SUBJECT,
+                              show_subject = sort != SORT_COMPONENT,
                               is_open      = layout == LAYOUT_OPEN or bool(text))
 
-    if sort == SORT_SUBJECT:
+    if sort == SORT_COMPONENT:
         map_found = {summary.decision.item.id: summary for summary in list_found}
         list_body = [htpy.section[
-                         htpy.h2[graph.title(id_subject) if id_subject else 'No subject',
+                         htpy.h2[graph.title(id_component) if id_component else 'No subject',
                                  htpy.span(class_ = 'drivers')[
-                                     _drivers(graph, id_subject)]],
+                                     _drivers(graph, id_component)]],
                          render([map_found[decision.item.id] for decision in list_group
                                  if decision.item.id in map_found])]
-                     for (id_subject, list_group) in _groups(graph)
+                     for (id_component, list_group) in _groups(graph)
                      if any(decision.item.id in map_found for decision in list_group)]
     else:
         list_body = [render(sorted(list_found, key = MAP_SORT_KEY[sort]))]
@@ -601,7 +601,7 @@ class Summary:
                 self.map_for[unit.option] += 1
             else:
                 self.map_against[unit.option] += 1
-        self.subject = ', '.join(graph.title(id_subject) for id_subject
+        self.subject = ', '.join(graph.title(id_component) for id_component
                                  in decision.item.targets(cc_public.web.argument.R_IS_ABOUT))
         list_stance  = list(decision.map_stance.values())
         if STANCE_UPHELD in list_stance:
@@ -657,16 +657,16 @@ def _holds(decision: Decision, text: str) -> bool:
 
 
 # -----------------------------------------------------------------------------
-def _drivers(graph: Graph, id_subject: str) -> str:
+def _drivers(graph: Graph, id_component: str) -> str:
     """
-    Return the concerns that drive the subject id_subject, as the head of
+    Return the concerns that drive the subject id_component, as the head of
     its group says them once for all its decisions.
 
     """
 
-    if not id_subject or id_subject not in graph.map_item:
+    if not id_component or id_component not in graph.map_item:
         return ''
-    list_concern = graph.map_item[id_subject].targets(R_IS_DRIVEN_BY)
+    list_concern = graph.map_item[id_component].targets(R_IS_DRIVEN_BY)
     if not list_concern:
         return ''
     return 'Driven by ' + ', '.join(graph.title(id_concern).lower()
@@ -802,8 +802,8 @@ def decision(graph:      Graph,
 
     item         = decision.item
     outline      = cc_public.web.sankey.Outline(graph, decision)
-    list_subject = [graph.title(id_subject)
-                    for id_subject in item.targets(cc_public.web.argument.R_IS_ABOUT)]
+    list_subject = [graph.title(id_component)
+                    for id_component in item.targets(cc_public.web.argument.R_IS_ABOUT)]
 
     return _page(item.title,
                  [_lighting(graph, outline),
@@ -2351,11 +2351,11 @@ def _groups(graph: Graph) -> list[tuple[str, list[Decision]]]:
 
     map_group = collections.defaultdict(list)
     for decision in graph.list_decision():
-        for id_subject in decision.item.targets(cc_public.web.argument.R_IS_ABOUT) or ['']:
-            map_group[id_subject].append(decision)
+        for id_component in decision.item.targets(cc_public.web.argument.R_IS_ABOUT) or ['']:
+            map_group[id_component].append(decision)
 
-    return [(id_subject, map_group[id_subject])
-            for id_subject in sorted(map_group, key = graph.title)]
+    return [(id_component, map_group[id_component])
+            for id_component in sorted(map_group, key = graph.title)]
 
 
 # -----------------------------------------------------------------------------
@@ -2608,8 +2608,8 @@ def _decision_references(graph: Graph, decision: Decision) -> typing.Any:
     list_subject = decision.item.targets(is_about)
 
     list_same    = sorted({id_other
-                           for id_subject in list_subject
-                           for id_other in graph.sources(is_about, id_subject)
+                           for id_component in list_subject
+                           for id_other in graph.sources(is_about, id_component)
                            if id_other.startswith(cc_public.web.argument.PREFIX_DECISION)
                            and id_other != decision.item.id})
     list_concern = sorted(decision.set_spoken, key = graph.title)
@@ -2693,7 +2693,7 @@ def _href(id_item: str) -> str:
     if id_item.startswith(cc_public.web.contract.PREFIX_INTERFACE):
         return PATH_INTERFACE + id_item
     if id_item.startswith(cc_public.web.catalogue.PREFIX_SUBJECT):
-        return PATH_SUBJECT + id_item
+        return PATH_COMPONENT + id_item
     if id_item.startswith(cc_public.web.catalogue.PREFIX_TYPE):
         return PATH_TYPE + id_item
     return PATH_ITEM + id_item

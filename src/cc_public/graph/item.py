@@ -48,8 +48,8 @@ PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
 PREFIX_TYPE       = 't_'
 NAME_NO_TYPE      = 'Item'
-MARK_SUBJECT      = 'SUBJ'
-MARK_OBJECT       = 'OBJ'
+MARK_SOURCE       = 'SOURCE'
+MARK_TARGET       = 'TARGET'
 
 # The fields of an edge, which are read as the edge and not as
 # references.
@@ -188,14 +188,14 @@ def folder(id_type: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def sentence(map_item:     dict[str, Item],
-             relation:     str,
-             text_subject: str,
-             text_object:  str) -> str:
+def sentence(map_item:    dict[str, Item],
+             relation:    str,
+             text_source: str,
+             text_target: str) -> str:
     """
     Return the sentence that an edge of relation states, from the brief
-    of the relation, with SUBJ and OBJ replaced by text_subject and
-    text_object.
+    of the relation, with SOURCE and TARGET replaced by text_source and
+    text_target.
     Without such a brief, the sentence names the relation.
 
     """
@@ -203,14 +203,14 @@ def sentence(map_item:     dict[str, Item],
     item  = map_item.get(relation)
     brief = item.map_field.get(KEY_BRIEF) if item else None
 
-    if isinstance(brief, str) and MARK_SUBJECT in brief and MARK_OBJECT in brief:
+    if isinstance(brief, str) and MARK_SOURCE in brief and MARK_TARGET in brief:
         text = ' '.join(brief.split())
-        text = text.replace(MARK_SUBJECT, '\0').replace(MARK_OBJECT, text_object)
-        return text.replace('\0', text_subject).rstrip('.') + '.'
+        text = text.replace(MARK_SOURCE, '\0').replace(MARK_TARGET, text_target)
+        return text.replace('\0', text_source).rstrip('.') + '.'
 
-    return '{subject} {relation} {object}.'.format(subject  = text_subject,
-                                                   relation = relation,
-                                                   object   = text_object)
+    return '{source} {relation} {target}.'.format(source   = text_source,
+                                                  relation  = relation,
+                                                  target    = text_target)
 
 
 # -----------------------------------------------------------------------------
