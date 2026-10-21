@@ -29,6 +29,7 @@ import sqlite3
 
 import pytest
 
+import cc_public.graph.item
 import cc_public.graph.logic
 import cc_public.graph.extract
 import cc_public.graph.sql
@@ -226,3 +227,10 @@ def test_sql_searches_the_prose_of_items(tree):
                     "AND id = 'opt_cross_item_checks_in_souffle' AND field = 'title'")
     assert cc_public.graph.sql.query(facts, text, cc_public.graph.text.rows(map_document)) == (
         ('id',), [('opt_cross_item_checks_in_souffle',)])
+
+
+def test_a_link_to_a_term_reads_as_the_term():
+    text = 'Each [[items]] and [[concept_item|thing]].'
+    assert cc_public.graph.item.terms(text) == 'Each items and thing.'
+    assert cc_public.graph.item.terms(text, lambda term, concept: concept or term) == (
+        'Each items and concept_item.')

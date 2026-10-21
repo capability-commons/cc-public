@@ -806,6 +806,106 @@ word_to_replace(Holder, Word, Preferred, Rule, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
+% A link [[term]] finds its concept among the concepts that the item
+% holding it uses, or that an item holding that item uses: the one with
+% a preferred or admitted term of the same form.
+%
+% decl unresolved_term(holder: symbol,
+%                      term:   symbol,
+%                      file:   symbol,
+%                      line:   number)
+% did  {holder} links [[{term}]], and no concept it uses has that term.
+% fix  Add an edge of relation_uses_concept from the item to the
+%      concept meant, or write a term that concept gives.
+#show unresolved_term/4.
+
+unresolved_term(Holder, Term, File, Line) :-
+    term_link(Holder, Term, "", File, Line),
+    not term_has_sense(Holder, Term).
+
+
+% -----------------------------------------------------------------------------
+% A link [[term]] finds one concept. Where the item uses two concepts
+% with that term, each link to either is written [[concept|term]].
+%
+% decl ambiguous_term(holder:   symbol,
+%                     term:     symbol,
+%                     concepts: number,
+%                     file:     symbol,
+%                     line:     number)
+% did  {holder} links [[{term}]], and {concepts} concepts it uses have
+%      that term.
+% fix  Name the concept meant in each such link, as [[concept|term]].
+#show ambiguous_term/5.
+
+ambiguous_term(Holder, Term, Concepts, File, Line) :-
+    term_link(Holder, Term, "", File, Line),
+    Concepts = #count { Concept : term_sense(Holder, Term, Concept) },
+    Concepts > 1.
+
+
+% -----------------------------------------------------------------------------
+% A link [[concept|term]] names a concept that the item uses.
+%
+% decl unused_linked_concept(holder:  symbol,
+%                            concept: symbol,
+%                            file:    symbol,
+%                            line:    number)
+% did  {holder} links to {concept}, which it does not use.
+% fix  Add an edge of relation_uses_concept from the item to the
+%      concept, or link to a concept the item uses.
+#show unused_linked_concept/4.
+
+unused_linked_concept(Holder, Concept, File, Line) :-
+    term_link(Holder, _, Concept, File, Line),
+    Concept != "",
+    not uses_concept(Holder, Concept).
+
+
+% -----------------------------------------------------------------------------
+% The item uses the concept: it, or an item that holds it, has an edge
+% of relation_uses_concept to the concept.
+%
+% decl uses_concept(holder:  symbol,
+%                   concept: symbol)
+
+uses_concept(Holder, Concept) :-
+    primary_edge(Holder, "relation_uses_concept", Concept).
+
+uses_concept(Holder, Concept) :-
+    item(Holder, _, Container, _, _),
+    Container != "",
+    uses_concept(Container, Concept).
+
+
+% -----------------------------------------------------------------------------
+% A link [[term]] in the item could mean the concept: the item uses it,
+% and one of its preferred or admitted terms has a form of the term.
+%
+% decl term_sense(holder:  symbol,
+%                 term:    symbol,
+%                 concept: symbol)
+
+term_sense(Holder, Term, Concept) :-
+    term_link(Holder, Term, "", _, _),
+    uses_concept(Holder, Concept),
+    designation(Concept, Designation, Rating),
+    Rating != "deprecated",
+    term_form(Term, Form),
+    term_form(Designation, Form).
+
+
+% -----------------------------------------------------------------------------
+% The link [[term]] in the item finds at least one concept.
+%
+% decl term_has_sense(holder: symbol,
+%                     term:   symbol)
+
+term_has_sense(Holder, Term) :-
+    term_sense(Holder, Term, _).
+
+
+% -----------------------------------------------------------------------------
 % An alias is an old id, so no item has it.
 %
 % decl alias_in_use(alias: symbol,

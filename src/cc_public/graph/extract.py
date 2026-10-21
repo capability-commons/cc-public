@@ -108,6 +108,12 @@ REGEX_WORD        = re.compile(r'[A-Za-z]+')
 REGEX_QUOTED      = re.compile(r'"[^"\n]*"')
 REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
+# A link to a concept, written as in a wiki: [[term]], or [[concept|label]]
+# where the concept is named by its id and the label is shown in its place.
+#
+REGEX_TERM_LINK   = re.compile(r'\[\[([^\[\]|\n]+?)(?:\|([^\[\]|\n]+?))?\]\]')
+TUPLE_PLURAL      = ('es', 's')
+
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
 DELIM_PREFIX      = '_'
@@ -182,6 +188,16 @@ PREDICATE         = {
     'designation':        (('concept', 'term', 'rating'),
                            'The concept has the term, rated preferred, admitted or '
                            'deprecated.'),
+    'term_link':          (('holder', 'term', 'concept', 'file', 'line:number'),
+                           'The text of a field of the item holder links term to a '
+                           'concept, in file at line. A link written [[term]] leaves '
+                           'concept empty, to be found by the term; one written '
+                           '[[concept|term]] names it.'),
+    'term_form':          (('text', 'form'),
+                           'The text, a term of a concept or the term of a link, has '
+                           'form when lower-cased, and also with a plural s or es '
+                           'dropped if it is the term of a link. Texts with a form in '
+                           'common name the same term.'),
     'inverse_relation':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
     'register_entry_key': (('register', 'key', 'id'),
@@ -476,7 +492,45 @@ def facts_of(map_document: Documents) -> Facts:
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       module_name(pathlib.Path(file))))
 
+    facts['term_form'] = _forms(facts)
+
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _forms(facts: Facts) -> set[tuple[str, str]]:
+    """
+    Return the forms of each term of a concept, and of each term that a
+    link finds its concept by, so that a link may give a term in the
+    plural or with a capital letter.
+
+    """
+
+    set_form = {(term, term.lower()) for (_, term, _) in facts['designation']}
+
+    for (_, term, concept, _, _) in facts['term_link']:
+        if not concept:
+            set_form.update((term, form) for form in forms(term))
+
+    return set_form
+
+
+# -----------------------------------------------------------------------------
+def forms(term: str) -> set[str]:
+    """
+    Return the forms that the term of a link may match a term of a
+    concept by: lower-cased, and also with a plural s or es dropped.
+
+    """
+
+    form     = term.lower()
+    set_form = {form}
+
+    for suffix in TUPLE_PLURAL:
+        if form.endswith(suffix):
+            set_form.add(form.removesuffix(suffix))
+
+    return set_form
 
 
 # -----------------------------------------------------------------------------
@@ -972,8 +1026,8 @@ def _mention(text:      str,
              is_judged: bool = True) -> None:
     """
     Add a fact for each id that text mentions, and, if is_judged, for
-    each word outside double quotes that a writing style rule asks to
-    replace. line is the line of the file that the field holding text
+    each link to a concept and each word that a writing style rule asks
+    to replace, outside double quotes. line is the line of the file that the field holding text
     is on. The text of a block scalar begins on the line below its key.
 
     """
@@ -986,6 +1040,14 @@ def _mention(text:      str,
         word = REGEX_SUFFIX.sub('', match.group(0))
         facts['mention'].add((holder, word, file,
                               str(line + offset + text.count('\n', 0, match.start()))))
+
+    if is_judged:
+        unquoted = REGEX_QUOTED.sub(lambda match: ' ' * len(match.group(0)), text)
+        for match in REGEX_TERM_LINK.finditer(unquoted):
+            (target, label) = (match.group(1).strip(), match.group(2))
+            (term, concept) = (target, '') if label is None else (label.strip(), target)
+            facts['term_link'].add((holder, term, concept, file,
+                                    str(line + offset + text.count('\n', 0, match.start()))))
 
     set_avoided = {row[1] for row in facts['word_replacement']}
 

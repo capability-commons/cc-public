@@ -75,3 +75,37 @@ decision_without_options(Decision) :-
 
 answers_some(Decision) :-
     primary_edge(_, "relation_is_option_for", Decision).
+
+
+% -----------------------------------------------------------------------------
+% An item that uses a concept links one of its terms somewhere in its
+% text, or the edge says nothing a reader can see.
+%
+% decl concept_used_without_link(holder:  symbol,
+%                                concept: symbol)
+% did  {holder} uses {concept}, and no link in its text is to it.
+% fix  Write a link [[term]] where the text means the concept, or take
+%      the edge out.
+#show concept_used_without_link/2.
+
+concept_used_without_link(Holder, Concept) :-
+    primary_edge(Holder, "relation_uses_concept", Concept),
+    not links_to(Holder, Concept).
+
+
+% -----------------------------------------------------------------------------
+% The text of the item, or of an item it holds, links to the concept.
+%
+% decl links_to(holder:  symbol,
+%               concept: symbol)
+
+links_to(Holder, Concept) :-
+    term_sense(Holder, _, Concept).
+
+links_to(Holder, Concept) :-
+    term_link(Holder, _, Concept, _, _).
+
+links_to(Holder, Concept) :-
+    item(Inner, _, Holder, _, _),
+    links_to(Inner, Concept).
+

@@ -225,6 +225,23 @@ def paragraphs(text: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
+def terms(text: str, link: typing.Callable[[str, str], str] | None = None) -> str:
+    """
+    Return text with each link to a concept, [[term]] or [[concept|term]],
+    replaced by link of its term and concept, or by its term alone if
+    link is None. The concept is empty for a link written [[term]].
+
+    """
+
+    def _replace(match):
+        (target, label) = (match.group(1).strip(), match.group(2))
+        (term, concept) = (target, '') if label is None else (label.strip(), target)
+        return term if link is None else link(term, concept)
+
+    return cc_public.graph.extract.REGEX_TERM_LINK.sub(_replace, text)
+
+
+# -----------------------------------------------------------------------------
 def mentions(text: str, map_item: dict[str, Item], link: typing.Callable[[str], str]) -> str:
     """
     Return text with each id of an item in map_item that it mentions

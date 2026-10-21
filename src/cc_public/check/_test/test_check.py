@@ -1303,3 +1303,62 @@ def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
             map_extra = {'os_process': {'main': {'host': 'remote'}}})
     assert _check(tree) == {'unplaced': [('dfg_x', 'dfn_x.c', 'other'),
                                          ('dfg_x', 'main', 'remote')]}
+
+
+# -----------------------------------------------------------------------------
+def _text_item(root, id_self, text, list_concept = ()):
+    """
+    Write a logical component with id_self whose description is text,
+    and with an edge of relation_uses_concept to each concept in
+    list_concept.
+
+    """
+
+    relative = '_data/logical_component/{id}.yaml'.format(id = id_self)
+    list_edge = [_edge(root, 'relation_uses_concept', each) for each in list_concept]
+    fields    = _fields(root, id_self, list_edge)
+    fields['description'] = text
+    (root / relative).write_text(_dump(fields))
+    return relative
+
+
+def test_a_link_finds_the_concept_its_item_uses(tree):
+    _text_item(tree, 'lco_y', 'Each [[items]] has a guid.', ['concept_identifiable_data_item'])
+    (failures, advice) = cc_public.check.check.review(tree)
+    failures.pop('unformatted_file', None)
+    assert failures == {}
+    assert 'concept_used_without_link' not in advice
+
+
+def test_a_link_to_a_concept_the_item_does_not_use_is_reported(tree):
+    _text_item(tree, 'lco_y', 'Each [[item]] has a guid.')
+    assert [row[:2] for row in _check(tree)['unresolved_term']] == [('lco_y', 'item')]
+
+
+def test_a_link_two_used_concepts_share_is_reported(tree):
+    _text_item(tree, 'lco_y', 'Each [[item]] has a guid.',
+               ['concept_item', 'concept_identifiable_data_item'])
+    assert [row[:3] for row in _check(tree)['ambiguous_term']] == [('lco_y', 'item', '2')]
+
+
+def test_a_link_that_names_its_concept_settles_a_shared_term(tree):
+    _text_item(tree, 'lco_y', ('Each [[concept_identifiable_data_item|item]] is an '
+                               '[[concept_item|item]].'),
+               ['concept_item', 'concept_identifiable_data_item'])
+    assert _check(tree) == {}
+
+
+def test_a_link_that_names_a_concept_the_item_does_not_use_is_reported(tree):
+    _text_item(tree, 'lco_y', 'Each [[concept_item|item]] has a guid.')
+    assert [row[:2] for row in _check(tree)['unused_linked_concept']] == [('lco_y', 'concept_item')]
+
+
+def test_a_link_in_double_quotes_is_quoted_and_not_judged(tree):
+    _text_item(tree, 'lco_y', 'It is written "[[item]]".')
+    assert _check(tree) == {}
+
+
+def test_a_concept_used_with_no_link_to_it_is_advice(tree):
+    _text_item(tree, 'lco_y', 'Each item has a guid.', ['concept_item'])
+    (failures, advice) = cc_public.check.check.review(tree)
+    assert advice['concept_used_without_link'] == [('lco_y', 'concept_item')]
