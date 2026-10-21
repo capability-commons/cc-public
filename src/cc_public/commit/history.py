@@ -28,7 +28,9 @@ description:            |
                         has, as a cherry-pick makes, is reported.
                         pushed reads the lines git gives a pre-push
                         hook, and selects the commits the remote does
-                        not have.
+                        not have. A pushed tag is not checked: it
+                        names history already made, and a commit it
+                        names is checked when a branch brings it in.
 usage:                  |
                         cctool history check [RANGE] [--gate]
                         [--pre-push REMOTE]
@@ -55,6 +57,7 @@ MARK_RECORD   = '\x01'
 MARK_FIELD    = '\x00'
 LENGTH_SHORT  = 7
 ZERO          = '0' * 40
+PREFIX_TAG    = 'refs/tags/'
 
 # git am ends a commit message at its first --- line, so a commit
 # copied from another machine with format-patch and am loses its item.
@@ -80,7 +83,7 @@ def pushed(root: pathlib.Path, remote: str, text: str) -> tuple[list[str], list[
     Return the commits that a push to remote would send, oldest first,
     and the tip of each ref it updates, from text, the lines that git
     gives a pre-push hook. A commit any ref of remote already has is
-    not sent.
+    not sent. A tag is passed over, since it names history already made.
 
     """
 
@@ -89,7 +92,7 @@ def pushed(root: pathlib.Path, remote: str, text: str) -> tuple[list[str], list[
 
     for line in text.splitlines():
         list_part = line.split()
-        if len(list_part) != 4 or list_part[1] == ZERO:
+        if len(list_part) != 4 or list_part[1] == ZERO or list_part[0].startswith(PREFIX_TAG):
             continue
         list_tip.append(list_part[1])
         for commit in commits(root, [list_part[1], '--not', '--remotes=' + remote]):

@@ -69,7 +69,8 @@ The commit hooks give early feedback, and git skips them for a rebase
 or a cherry-pick, as does anyone with `--no-verify` or a clone without
 `pixi run hooks`. The check of record is `cctool history check`: it
 checks each commit from what it records, however it was made. The
-pre-push hook runs it with `--gate` on what a push would send.
+pre-push hook runs it with `--gate` on the commits a push of a branch
+would send; a pushed tag names history already made, and is passed over.
 
 ## cctool
 
