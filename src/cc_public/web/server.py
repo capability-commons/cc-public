@@ -233,7 +233,7 @@ def _item_page(root:    pathlib.Path,
     graph = _graph(root)
 
     if prefix in (cc_public.web.page.PATH_TYPE, cc_public.web.page.PATH_COMPONENT):
-        return _catalogue_page(graph, prefix, id_item, query)
+        return _catalog_page(graph, prefix, id_item, query)
 
     if prefix == cc_public.web.page.PATH_DECISION:
         decision = graph.decision(id_item)
@@ -250,7 +250,7 @@ def _item_page(root:    pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
-def _catalogue_page(graph:   cc_public.web.argument.Graph,
+def _catalog_page(graph:   cc_public.web.argument.Graph,
                     prefix:  str,
                     id_item: str,
                     query:   str) -> str | None:
