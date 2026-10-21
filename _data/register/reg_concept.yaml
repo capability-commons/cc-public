@@ -156,15 +156,20 @@ table:
     guid_self:          concept_42a4bd80300849a98bf9649ad97d10d9
     title:              Relation
     brief:              |
-                        A named type of directed edge between data
-                        items, declared as an entry in the relation
-                        register.
+                        The registered type of an edge (concept_edge):
+                        an entry in the relation register, and nothing
+                        else.
     description:        |
                         A relation is directional. Where the opposite
                         reading is useful, the entry embeds an
                         inverse: a second identity and surface form
                         for the same relation, and not a relation of
                         its own.
+
+                        A relation is never the edge itself, and never
+                        the list that holds edges. In logic programs
+                        and SQL, what a database calls a relation is
+                        called a predicate here.
     term_preferred:     relation
     alias:              []
     edge:               []
@@ -958,22 +963,18 @@ table:
                         it is a process of that network. It is a node
                         in the sense of Stableflow (software
                         architecture description 2.0.0, clause 5.1).
-                        It is qualified because node is an overloaded
-                        word. ISO/IEC/IEEE 24765:2017 3.2598 gives
-                        node five senses, among them a vertex of a
-                        graph (sense 1) and a unit located in space,
-                        which is a host (sense 2), and Arcadia uses it
-                        for a physical component that hosts others. A
-                        dataflow node is neither: it runs on an OS
-                        process, and an OS process on a host.
+                        It is one kind of node of the graph
+                        (concept_node), and is qualified because node
+                        is an overloaded word. ISO/IEC/IEEE 24765:2017
+                        3.2598 gives node five senses, among them a
+                        vertex of a graph (sense 1) and a unit located
+                        in space, which is a host (sense 2), and
+                        Arcadia uses it for a physical component that
+                        hosts others. A dataflow node is a node in the
+                        first sense only: it runs on an OS process,
+                        and an OS process on a host.
     term_preferred:     dataflow node
-
-    term_admitted:
-      - node
-
-    alias:
-      - concept_node
-
+    alias:              []
     edge:               []
 
   # ---------------------------------------------------------------------------
@@ -1005,14 +1006,10 @@ table:
                         supports first, a dataflow edge is a channel
                         of that network. It is an edge in the sense of
                         Stableflow (software architecture description
-                        2.0.0, clause 5.1). It is qualified because
-                        the graph of items has edges of its own, which
-                        are relations.
+                        2.0.0, clause 5.1). It is one kind of edge
+                        (concept_edge), and is qualified because the
+                        bare word means any edge of the graph.
     term_preferred:     dataflow edge
-
-    term_admitted:
-      - edge
-
     alias:              []
     edge:               []
 
@@ -1300,5 +1297,119 @@ table:
     term_admitted:
       - engineering document
 
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_graph -- Graph
+  #
+  concept_graph:
+    id_self:            concept_graph
+    guid_self:          concept_433bc9466f264dba86b6cb5dcf642e41
+    title:              Graph
+    brief:              |
+                        The one graph: every node (concept_node) and
+                        every edge (concept_edge), from every source,
+                        in every repository of the federation that is
+                        loaded.
+    description:        |
+                        Everything the project records or extracts
+                        goes into this one graph: items, code, tests,
+                        requirements, interfaces, dataflow, logs.
+                        Logic rules work over all of it. There is no
+                        second graph; a dataflow graph is a part of it
+                        with nodes and edges of particular kinds.
+    term_preferred:     graph
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_node -- Node
+  #
+  concept_node:
+    id_self:            concept_node
+    guid_self:          concept_fe04595884914059b0e303959b2ef3aa
+    title:              Node
+    brief:              |
+                        Anything the graph (concept_graph) can
+                        identify uniquely.
+    description:        |
+                        Most nodes are named by id_self and guid_self.
+                        Other ways of identifying a node may be added
+                        as the tools for them are built.
+
+                        Whether a node is a thing or the record about
+                        a thing is still to be discussed, so this
+                        definition leaves it open.
+    note:               |
+                        ISO/IEC/IEEE 24765:2017 3.2598 gives node five
+                        senses. This is the first, a vertex of a
+                        graph. A dataflow node (concept_dataflow_node)
+                        is one kind of node.
+    term_preferred:     node
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_edge -- Edge
+  #
+  concept_edge:
+    id_self:            concept_edge
+    guid_self:          concept_d74e24f3e13047a49ad822fe1528fb9f
+    title:              Edge
+    brief:              |
+                        A directed link from one node (concept_node)
+                        to another, of one relation
+                        (concept_relation).
+    description:        |
+                        Every connection in the graph is an edge,
+                        however it was obtained (concept_edge_origin).
+                        The edge field of an item is one place edges
+                        are recorded, not the only one: a reference
+                        field such as id_concept is an edge too.
+
+                        Kinds of edge are named by qualifying the
+                        word: a dataflow edge (concept_dataflow_edge),
+                        a control-flow edge, an import edge.
+
+                        An edge may have attributes, and which ones
+                        depends on its kind. An edge with attributes
+                        is stored as a record of its own, linked to
+                        both ends, as a dataflow edge is.
+
+                        A link among more than two nodes is not an
+                        edge. It becomes a node of its own, with an
+                        edge to each of the others.
+    term_preferred:     edge
+
+    term_admitted:
+      - link
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_edge_origin -- Edge origin
+  #
+  concept_edge_origin:
+    id_self:            concept_edge_origin
+    guid_self:          concept_6e286d3ef4214b73849efee6a3244497
+    title:              Edge origin
+    brief:              |
+                        Where an edge (concept_edge) came from:
+                        asserted, extracted or derived.
+    description:        |
+                        An asserted edge is written by an author in an
+                        item. An extracted edge is read from source
+                        code, a report or a log by an extractor. A
+                        derived edge is computed by a logic rule from
+                        other edges.
+
+                        An edge is the same whatever its origin, but
+                        the origin decides how it is handled: a
+                        derived edge is never written back, and an
+                        extracted edge goes stale when its source
+                        changes.
+    term_preferred:     edge origin
     alias:              []
     edge:               []
