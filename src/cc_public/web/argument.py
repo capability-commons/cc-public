@@ -48,6 +48,8 @@ KEY_DESCRIPTION   = 'description'
 KEY_EDGE          = 'edge'
 KEY_ID_RELATION   = 'id_relation'
 KEY_ID_TARGET     = 'id_target'
+KEY_PREFERRED     = 'term_preferred'
+KEY_ADMITTED      = 'term_admitted'
 
 PREFIX_DECISION   = 'dec_'
 PREFIX_OPTION     = 'opt_'
@@ -58,6 +60,7 @@ R_IS_ABOUT        = 'relation_is_about'
 R_SUPPORTS        = 'relation_supports'
 R_CHALLENGES      = 'relation_challenges'
 R_UPHOLDS         = 'relation_upholds'
+R_USES_CONCEPT    = 'relation_uses_concept'
 R_REJECTS         = 'relation_rejects'
 R_SPEAKS_FOR      = 'relation_speaks_for_concern'
 R_IS_DRIVEN_BY    = 'relation_is_driven_by'
@@ -216,6 +219,43 @@ class Graph:
         text = '\n'.join((item.title, item.brief, item.description))
         return [id_named for id_named in dict.fromkeys(self.re_id.findall(text))
                 if id_named in self.map_item and id_named != id_item]
+
+    # -------------------------------------------------------------------------
+    def concept_of(self, id_item: str, term: str, concept: str) -> str:
+        """
+        Return the concept that a link to term in the prose of id_item
+        means: concept, if the link names it, or else the one concept
+        id_item uses with a preferred or admitted term of a form of term.
+        Return an empty string if there is no such concept, or more than
+        one.
+
+        """
+
+        if concept:
+            return concept if concept in self.map_item else ''
+
+        item = self.map_item.get(id_item)
+
+        if item is None:
+            return ''
+
+        set_form  = cc_public.graph.extract.forms(term)
+        list_used = [id_concept for id_concept in item.targets(R_USES_CONCEPT)
+                     if set_form & self._designations(id_concept)]
+
+        return list_used[0] if len(list_used) == 1 else ''
+
+    # -------------------------------------------------------------------------
+    def _designations(self, id_concept: str) -> set[str]:
+        """
+        Return the preferred and admitted terms of the concept id_concept,
+        lower-cased.
+
+        """
+
+        node = self.node(id_concept) or {}
+        list_term = [node.get(KEY_PREFERRED), *(node.get(KEY_ADMITTED) or [])]
+        return {term.lower() for term in list_term if isinstance(term, str)}
 
     # -------------------------------------------------------------------------
     def mentioned_by(self, id_item: str) -> list[str]:

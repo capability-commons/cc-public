@@ -100,6 +100,7 @@ import urllib.parse
 
 import htpy
 
+import cc_public.graph.item
 import cc_public.requirement.compose
 import cc_public.requirement.review
 import cc_public.web.argument
@@ -2557,7 +2558,8 @@ def _description(graph:      Graph,
 
     (list_prose, list_note) = cc_public.web.description.description(graph,
                                                                     annotation.description,
-                                                                    key)
+                                                                    key,
+                                                                    annotation.id)
     return _block([htpy.p(class_ = 'description')[list_prose]],
                   [htpy.ol(class_ = 'sources')[list_note] if list_note else None],
                   class_     = 'description',
@@ -2764,11 +2766,12 @@ def _id(id_item: str) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _prose(text: str) -> str:
     """
-    Return text as one run of prose, with its line breaks as spaces.
+    Return text as one run of prose, with its line breaks as spaces and
+    each term it links shown as the term.
 
     """
 
-    return ' '.join(text.split())
+    return ' '.join(cc_public.graph.item.terms(text).split())
 
 
 # -----------------------------------------------------------------------------

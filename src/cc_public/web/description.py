@@ -37,6 +37,7 @@ import re
 
 import htpy
 
+import cc_public.graph.extract
 import cc_public.web.argument
 
 
@@ -56,11 +57,12 @@ Graph             = cc_public.web.argument.Graph
 
 
 # -----------------------------------------------------------------------------
-def description(graph: Graph, text: str, prefix: str) -> tuple[list, list]:
+def description(graph: Graph, text: str, prefix: str, holder: str = '') -> tuple[list, list]:
     """
     Return the description text as prose and its sources as margin notes.
     The prose cites each note by its number; prefix makes the ids of
-    the notes unique on the page.
+    the notes unique on the page. A link to a term is read as the item
+    holder, which holds the text, means it.
 
     """
 
@@ -73,7 +75,7 @@ def description(graph: Graph, text: str, prefix: str) -> tuple[list, list]:
         inside = match.group(1)
         if not REGEX_SOURCE.search(inside) or REGEX_ASSUMPTION.match(inside):
             continue
-        list_prose.extend(_runs(graph, text[position:match.start()]))
+        list_prose.extend(_runs(graph, holder, text[position:match.start()]))
         number = len(list_note) + 1
         key    = '{prefix}-note-{number}'.format(prefix = prefix, number = number)
         list_prose.append(htpy.sup(class_ = 'cite')[
@@ -81,17 +83,17 @@ def description(graph: Graph, text: str, prefix: str) -> tuple[list, list]:
         list_note.append(htpy.li(id = key, value = str(number))[_source(graph, inside)])
         position = match.end()
 
-    list_prose.extend(_runs(graph, text[position:]))
+    list_prose.extend(_runs(graph, holder, text[position:]))
 
     return (list_prose, list_note)
 
 
 # -----------------------------------------------------------------------------
-def _runs(graph: Graph, text: str) -> list:
+def _runs(graph: Graph, holder: str, text: str) -> list:
     """
     Return text as runs of prose: each assumption set apart, from its
-    mark to the end of its sentence or bracket, and each id it names
-    linked to its item.
+    mark to the end of its sentence or bracket, each id it names linked
+    to its item, and each term it links linked to its concept.
 
     """
 
@@ -103,11 +105,38 @@ def _runs(graph: Graph, text: str) -> list:
             continue
         end      = REGEX_END.search(text, match.end())
         stop     = end.start() if end else len(text)
-        list_run.extend(_linked(graph, text[position:match.start()]))
+        list_run.extend(_termed(graph, holder, text[position:match.start()]))
         list_run.append(htpy.span(class_ = 'assumption')[
                             htpy.span(class_ = 'label')[MARK_ASSUMPTION], ' ',
-                            _linked(graph, text[match.end():stop])])
+                            _termed(graph, holder, text[match.end():stop])])
         position = stop + (1 if end and end.group(0) == ')' and match.group(0)[0] == '(' else 0)
+
+    list_run.extend(_termed(graph, holder, text[position:]))
+
+    return list_run
+
+
+# -----------------------------------------------------------------------------
+def _termed(graph: Graph, holder: str, text: str) -> list:
+    """
+    Return text with each term it links shown as the term, linked to the
+    concept that holder means by it where there is one, and with the ids
+    in the rest linked as _linked links them.
+
+    """
+
+    list_run = []
+    position = 0
+
+    for match in cc_public.graph.extract.REGEX_TERM_LINK.finditer(text):
+        (target, label) = (match.group(1).strip(), match.group(2))
+        (term, concept) = (target, '') if label is None else (label.strip(), target)
+        id_concept      = graph.concept_of(holder, term, concept)
+        list_run.extend(_linked(graph, text[position:match.start()]))
+        list_run.append(htpy.a(class_ = 'term', href = '/item/' + id_concept,
+                               title  = graph.map_item[id_concept].brief.strip())[term]
+                        if id_concept else term)
+        position = match.end()
 
     list_run.extend(_linked(graph, text[position:]))
 
