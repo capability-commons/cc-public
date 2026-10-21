@@ -33,11 +33,11 @@ import cc_public.requirement.compose
 
 MAP_NODE = {'lco_x':    {'id_self': 'lco_x',    'title': 'Checker'},
             'lco_user': {'id_self': 'lco_user', 'title': 'Maintainer'},
-            'con_x':   {'id_self': 'con_x',   'term_preferred': 'report'}}
+            'concept_x':   {'id_self': 'concept_x',   'term_preferred': 'report'}}
 
 
 def _requirement(**map_field):
-    list_edge = [('r_has_subject', 'lco_x'), ('r_has_process', 'con_x')]
+    list_edge = [('r_has_subject', 'lco_x'), ('r_has_process', 'concept_x')]
     if map_field.get('activity') == 'interaction':
         list_edge.append(('r_has_actor', 'lco_user'))
     requirement = {'modal_verb': 'shall',
@@ -83,7 +83,7 @@ def test_an_interface_is_able_to():
     _requirement(activity = 'interaction', relation = [{'id_relation': 'r_has_subject',
                                                        'id_target':   'lco_x'},
                                                       {'id_relation': 'r_has_process',
-                                                       'id_target':   'con_x'}]),
+                                                       'id_target':   'concept_x'}]),
     _requirement(object = '')])
 def test_slots_that_do_not_compose_are_refused(requirement):
     with pytest.raises(cc_public.requirement.compose.ErrorCompose):

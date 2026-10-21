@@ -55,8 +55,8 @@ TEXT_ANN = ('id_self:                ann_x\n'
             '\n'
             '  - id_relation:        r_is_about\n'
             '    guid_relation:      r_17ca99102b0b431b85235445a4635ae8\n'
-            '    id_target:          con_concept\n'
-            '    guid_target:        con_820f9604e6134b9fbefd5a75146d4c40\n').format(hex = '1' * 32)
+            '    id_target:          concept_concept\n'
+            '    guid_target:        concept_4c11efe184cd47289cfa3941377d4807\n').format(hex = '1' * 32)
 
 
 # -----------------------------------------------------------------------------

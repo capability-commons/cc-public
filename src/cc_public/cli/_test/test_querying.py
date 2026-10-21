@@ -147,7 +147,7 @@ def test_text_prints_a_header_and_the_best_hits(tree):
 def test_text_says_which_terms_of_a_concept_it_adds(tree):
     result = _run(tree, 'text', 'every regentry')
     assert result.exit_code == 0
-    assert 'Also matching: "register entry" (con_register_entry)' in result.stderr
+    assert 'Also matching: "register entry" (concept_register_entry)' in result.stderr
     result = _run(tree, 'text', '--exact', 'every regentry')
     assert 'Also matching' not in result.stderr
 

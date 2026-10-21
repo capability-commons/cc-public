@@ -1061,8 +1061,8 @@ def test_a_schema_nothing_uses_is_reported(tree):
 
 def test_a_concept_nothing_names_is_reported(tree):
     _replace(tree, '_data/schema/sch_register_entry.yaml',
-             'con_register_entry.', 'a register entry.')
-    assert _check(tree) == {'unused_concept': [('con_register_entry',)]}
+             'concept_register_entry.', 'a register entry.')
+    assert _check(tree) == {'unused_concept': [('concept_register_entry',)]}
 
 
 def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
