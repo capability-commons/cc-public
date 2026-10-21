@@ -198,7 +198,7 @@ def test_every_id_in_the_guides_names_an_item(facts):
     assert not list_wrong, '\n'.join([*list_wrong, MESSAGE_FIX])
 
 # -----------------------------------------------------------------------------
-def test_every_other_name_in_the_guides_is_a_check_relation_or_field(facts):
+def test_every_other_name_in_the_guides_is_a_check_predicate_or_field(facts):
     set_prefix = {prefix for (_, prefix, _) in facts['type_prefix']}
     set_known  = _known() | _fields(cc_public.graph.extract.documents(DIR_REPO))
 

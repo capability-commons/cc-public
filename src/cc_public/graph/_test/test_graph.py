@@ -62,12 +62,12 @@ def test_described_words_each_row_and_gives_the_fix_once():
                'b: r']
 
 
-def test_output_reads_every_relation_named_in_order():
+def test_output_reads_every_predicate_named_in_order():
     text = '#show b/1.\n#show a/2. #show c / 0 . % #show d/1.\n#show b/1.'
     assert cc_public.graph.logic.output(text) == ['b', 'a', 'c']
 
 
-def test_logic_returns_each_output_relation_in_order(tree):
+def test_logic_returns_each_output_predicate_in_order(tree):
     facts = cc_public.graph.extract.extract(tree)
     rules = ('#show t/1. #show i/1.\n'
              't(Type) :- has_type("{c}", Type).\n'
@@ -82,13 +82,13 @@ def test_logic_reports_where_the_rules_begin(tree):
         cc_public.graph.logic.run(facts, '#show o/1. o(X) :- item(X), not p(Y).')
 
 
-def test_logic_refuses_a_relation_that_nothing_defines(tree):
+def test_logic_refuses_a_predicate_that_nothing_defines(tree):
     facts = cc_public.graph.extract.extract(tree)
     with pytest.raises(cc_public.graph.logic.ErrorLogic, match = 'does not occur in any rule head'):
         cc_public.graph.logic.run(facts, '#show o/1. o(X) :- itme(X, _, _, _, _).')
 
 
-def test_logic_accepts_an_input_relation_with_no_rows(tree):
+def test_logic_accepts_an_input_predicate_with_no_rows(tree):
     facts = cc_public.graph.extract.extract(tree)
     facts['inverse_relation'] = set()
     rows  = cc_public.graph.logic.run(facts, '#show o/1. o(X) :- inverse_relation(X, _).')
