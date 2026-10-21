@@ -69,6 +69,25 @@ primary_edge(Target, Relation, Source) :-
 
 
 % -----------------------------------------------------------------------------
+% Every edge of the graph, however it is recorded. An edge in the edge
+% field of an item is labeled by its relation, read as primary_edge
+% reads it. A pair of reference fields id_<field> and guid_<field>
+% outside the edge field is an edge too, labeled by the field.
+%
+% decl graph_edge(source: symbol,
+%                 label:  symbol,
+%                 target: symbol)
+
+graph_edge(Source, Relation, Target) :-
+    primary_edge(Source, Relation, Target).
+
+graph_edge(Holder, Field, Id) :-
+    reference(Holder, Field, Id, _, _, _),
+    Field != "relation",
+    Field != "target".
+
+
+% -----------------------------------------------------------------------------
 % The schemas a YAML document must conform to: the schema its type names
 % for the items of that type, and any schema the document names for
 % itself. A document is an item held by no other, and the items inside
