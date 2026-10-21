@@ -123,6 +123,13 @@ def test_sql_sees_base_and_derived_predicates(tree):
     assert cc_public.graph.sql.query(facts, text) == (('id', 'type'), [(ID_CONCERN, 'type_concern')])
 
 
+def test_a_reference_field_is_an_edge_of_the_graph(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    rows  = cc_public.graph.logic.run(facts, '#show o/2. o(S, T) :- graph_edge(S, "concept", T), '
+                                             'S = "type_concern".')
+    assert rows == {'o': [('type_concern', 'concept_concern')]}
+
+
 def test_sql_reports_an_error(tree):
     facts = cc_public.graph.extract.extract(tree)
     with pytest.raises(sqlite3.Error):

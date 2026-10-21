@@ -129,24 +129,17 @@ is_touched(Id) :-
 
 
 % -----------------------------------------------------------------------------
-% An item links to another by a primary edge, by a reference in a pair
-% of id and guid fields that is not part of an edge, by holding it, by
-% recording an edge of the relation it is, or by being of the type it
-% is. The links of a removed item are those of the graph before the
-% commit. An edge recorded with an inverse is read as primary_edge reads
-% it.
+% An item links to another by an edge of the graph, as graph_edge
+% reads it, by holding it, by recording an edge of the relation it is,
+% or by being of the type it is. The links of a removed item are those
+% of the graph before the commit.
 %
 % decl link(source:   symbol,
 %           relation: symbol,
 %           target:   symbol)
 
-link(Source, Relation, Target) :-
-    primary_edge(Source, Relation, Target).
-
-link(Holder, Field, Id) :-
-    reference(Holder, Field, Id, _, _, _),
-    Field != "relation",
-    Field != "target".
+link(Source, Label, Target) :-
+    graph_edge(Source, Label, Target).
 
 link(Holder, "holds", Id) :-
     item(Id, _, Holder, _, _),
