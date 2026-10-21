@@ -30,7 +30,7 @@ import cc_public.requirement.review
 
 REQUIREMENT = {'condition_kind':      'event',
                'condition':           'the Tooling formats every file faster than before',
-               'obligation':          'shall',
+               'modal_verb':          'shall',
                'activity':            'autonomous',
                'object':              'the configuration as appropriate',
                'rationale':           'A reason.',

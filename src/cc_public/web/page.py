@@ -172,9 +172,9 @@ MAP_VERDICT       = {cc_public.web.contract.AGREES:     'Agrees with the code',
                      cc_public.web.contract.UNSTATED:   'Not stated, so not compared',
                      cc_public.web.contract.UNREALIZED: 'No code realizes it'}
 
-# What each obligation binds the subject to, after ISO/IEC/IEEE 29148.
+# What each modal verb binds the subject to, after ISO/IEC/IEEE 29148.
 #
-MAP_OBLIGATION    = {'shall':  'binding',
+MAP_MODAL_VERB    = {'shall':  'binding',
                      'should': 'a preference',
                      'will':   'a statement of fact or purpose',
                      'may':    'an allowance'}
@@ -1218,7 +1218,7 @@ def requirements(graph: Graph) -> str:
     list_group = _requirement_groups(graph)
     count      = sum(len(list_item) for (_, list_item) in list_group)
     count_bind = sum(1 for (_, list_item) in list_group for each in list_item
-                     if each.node.get('obligation') == 'shall')
+                     if each.node.get('modal_verb') == 'shall')
 
     list_section = [htpy.section[
                         htpy.h2[graph.title(id_subject) if id_subject else 'No subject'],
@@ -1256,7 +1256,7 @@ def _requirement_groups(graph: Graph) -> list[tuple[str, list[Item]]]:
 def _requirement_table(graph: Graph, list_item: list[Item]) -> typing.Any:
     """
     Return a table of the requirements in list_item: each with its
-    statement under its title, its obligation, how it is verified, and
+    statement under its title, its modal verb, how it is verified, and
     what it traces to.
 
     """
@@ -1276,7 +1276,7 @@ def _requirement_table(graph: Graph, list_item: list[Item]) -> typing.Any:
             htpy.tr[
                 htpy.td[htpy.a(href = _href(item.id))[item.title or item.id],
                         htpy.span(class_ = 'statement')[_statement(graph, item)]],
-                htpy.td[item.node.get('obligation', '')],
+                htpy.td[item.node.get('modal_verb', '')],
                 htpy.td[str(item.node.get('verification_method', '')).capitalize()],
                 htpy.td[traced(item)]]
             for item in list_item]]]
@@ -1331,7 +1331,7 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
 def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
     """
     Return the table of facts that stands beside the statement of a
-    requirement: its obligation, subject, process, verification and
+    requirement: its modal verb, subject, process, verification and
     what it traces to.
 
     """
@@ -1340,12 +1340,12 @@ def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
         return htpy.tr[htpy.th(scope = 'row')[label], htpy.td[value]]
 
     node       = item.node
-    obligation = node.get('obligation', '')
+    modal_verb = node.get('modal_verb', '')
     list_trace = item.targets(R_TO_PARENT) + item.targets(R_TO_SOURCE)
 
     return htpy.table(class_ = 'facts')[htpy.tbody[
         row('Obligation',   '{word}, {meaning}'.format(
-                                word = obligation, meaning = MAP_OBLIGATION.get(obligation, ''))),
+                                word = modal_verb, meaning = MAP_MODAL_VERB.get(modal_verb, ''))),
         row('Subject',      [_link(graph, id_subject)
                              for id_subject in item.targets(R_HAS_SUBJECT)]),
         row('Process',      [htpy.a(href = _href(id_process))[process]
@@ -1369,7 +1369,7 @@ def _trace(graph: Graph, item: Item, list_part: list) -> typing.Any:
 
     node       = item.node
     kind       = node.get('condition_kind')
-    obligation = node.get('obligation', '')
+    modal_verb = node.get('modal_verb', '')
 
     def station(label: str, list_main: list, list_note: list, css: str = '') -> typing.Any:
         css_station = ' '.join(['station', css if list_main else 'gap']).strip()
@@ -1405,7 +1405,7 @@ def _trace(graph: Graph, item: Item, list_part: list) -> typing.Any:
                      condition = ', with ' + MAP_CONDITION[kind] if kind in MAP_CONDITION
                                  else '')],
                  htpy.p['‘{word}’ is {meaning}.'.format(
-                     word = obligation, meaning = MAP_OBLIGATION.get(obligation, ''))]],
+                     word = modal_verb, meaning = MAP_MODAL_VERB.get(modal_verb, ''))]],
                 css = 'statement'),
         station('Subject', [htpy.p[_link(graph, id_subject), ' ',
                                    htpy.span(class_ = 'gloss')[
@@ -1770,8 +1770,8 @@ def _member(graph: Graph, member: Member) -> list:
                  _paragraphs(_text(node.get('shape')))]
 
     list_block = [_block(list_main, list_note, class_ = 'member-head')]
-    if _text(node.get('obligation')):
-        list_block.append(_block(_paragraphs(_text(node.get('obligation'))),
+    if _text(node.get('guarantee')):
+        list_block.append(_block(_paragraphs(_text(node.get('guarantee'))),
                                  [htpy.p[htpy.span(class_ = 'label')['Obligation']]]))
     if member.list_parameter or member.list_extra:
         list_block.append(_block([_parameters(member)],
@@ -1813,8 +1813,8 @@ def _parameters(member: Member) -> typing.Any:
                                               != parameter.name else None)],
                             htpy.span(class_ = 'statement')[
                                 _prose(_text(parameter.node.get('brief')))],
-                            [htpy.span(class_ = 'statement obligation')[_prose(text)]
-                             for text in [_text(parameter.node.get('obligation'))] if text]],
+                            [htpy.span(class_ = 'statement guarantee')[_prose(text)]
+                             for text in [_text(parameter.node.get('guarantee'))] if text]],
                     htpy.td[htpy.code[part(parameter, 'type')]],
                     htpy.td[htpy.code[part(parameter, 'default')]],
                     htpy.td[str(parameter.node.get('mode', '')).replace('_', ' ')]]

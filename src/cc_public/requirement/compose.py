@@ -19,7 +19,7 @@ description:            |
                         The statement opens with the condition, by the
                         keyword of its kind: If, As soon as or As long
                         as. Then come the subject, by its title, and
-                        the obligation. An interaction provides the
+                        the modal verb. An interaction provides the
                         actor with the ability to do the process, and
                         an interface is able to do it. The process is
                         the preferred term of its concept, and the
@@ -36,7 +36,7 @@ import typing
 
 KEY_CONDITION_KIND   = 'condition_kind'
 KEY_CONDITION        = 'condition'
-KEY_OBLIGATION       = 'obligation'
+KEY_MODAL_VERB       = 'modal_verb'
 KEY_ACTIVITY         = 'activity'
 KEY_OBJECT           = 'object'
 KEY_QUALIFIER        = 'qualifier'
@@ -128,7 +128,7 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
                                   condition = requirement[KEY_CONDITION])))
 
     list_part += [Part(SLOT_SUBJECT, 'the ' + subject, id_subject),
-                  Part(KEY_OBLIGATION, _slot(requirement, KEY_OBLIGATION))]
+                  Part(KEY_MODAL_VERB, _slot(requirement, KEY_MODAL_VERB))]
 
     if activity == ACTIVITY_INTERACTION:
         id_actor = _target(requirement, R_HAS_ACTOR)
