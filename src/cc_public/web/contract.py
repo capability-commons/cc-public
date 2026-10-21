@@ -56,7 +56,7 @@ import cc_public.web.argument
 
 PREFIX_INTERFACE  = 'icd_'
 PREFIX_MEMBER     = 'icm_'
-R_REALIZES        = 'r_realizes'
+R_REALIZES        = 'relation_realizes'
 KEY_ID_SELF       = cc_public.web.argument.KEY_ID_SELF
 KEY_EDGE          = cc_public.web.argument.KEY_EDGE
 KEY_PARAMETER     = 'parameter'

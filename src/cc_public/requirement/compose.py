@@ -50,9 +50,9 @@ PREFIX_REQUIREMENT   = 'rqt_'
 SLOT_SUBJECT         = 'subject'
 SLOT_PROCESS         = 'process'
 
-R_HAS_SUBJECT        = 'r_has_subject'
-R_HAS_ACTOR          = 'r_has_actor'
-R_HAS_PROCESS        = 'r_has_process'
+R_HAS_SUBJECT        = 'relation_has_subject'
+R_HAS_ACTOR          = 'relation_has_actor'
+R_HAS_PROCESS        = 'relation_has_process'
 
 ACTIVITY_INTERACTION = 'interaction'
 ACTIVITY_INTERFACE   = 'interface'

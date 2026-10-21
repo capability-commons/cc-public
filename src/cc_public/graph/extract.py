@@ -182,7 +182,7 @@ RELATION          = {
     'designation':        (('concept', 'term', 'rating'),
                            'The concept has the term, rated preferred, admitted or '
                            'deprecated.'),
-    'relation_inverse':   (('inverse', 'relation'),
+    'inverse_relation':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
     'register_entry_key': (('register', 'key', 'id'),
                            'The register holds, under key, a register entry with id.'),
@@ -220,7 +220,7 @@ RELATION          = {
                            'one with the prefix of a known type need name an item.'),
     'alias':              (('id', 'alias'),
                            'The item id was once named alias.'),
-    'relation_acyclic':   (('relation',),
+    'acyclic_relation':   (('relation',),
                            'No chain of edges of relation may lead from an item back '
                            'to itself.'),
     'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
@@ -1047,7 +1047,7 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
         facts['type_prefix'].add((id_self, prefix, regex_id))
 
     if node.get(KEY_ACYCLIC) is True:
-        facts['relation_acyclic'].add((id_self,))
+        facts['acyclic_relation'].add((id_self,))
 
     for key in (KEY_FAMILY, KEY_EXCEPTION):
         if isinstance(node.get(key), str):
@@ -1062,7 +1062,7 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     inverse = node.get(KEY_INVERSE)
 
     if isinstance(inverse, dict) and isinstance(inverse.get(KEY_ID_SELF), str):
-        facts['relation_inverse'].add((inverse[KEY_ID_SELF], id_self))
+        facts['inverse_relation'].add((inverse[KEY_ID_SELF], id_self))
 
 
 # -----------------------------------------------------------------------------

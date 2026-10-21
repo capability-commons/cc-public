@@ -37,7 +37,7 @@ import cc_public.graph.item
 
 # The namespaces of the graph. An item, a type and a relation are each
 # named by its id under NS_ITEM, so that cc:ann_x is the item ann_x,
-# cc:type_annotation its type, and cc:r_is_about a relation of it. A field
+# cc:type_annotation its type, and cc:relation_is_about a relation of it. A field
 # of an item is named under NS_FIELD, as f:title.
 #
 NS_ITEM           = 'urn:cc:'
@@ -93,7 +93,7 @@ def store(map_item: dict[str, cc_public.graph.item.Item],
     """
 
     map_inverse = {}
-    for (inverse, relation) in facts['relation_inverse']:
+    for (inverse, relation) in facts['inverse_relation']:
         map_inverse.setdefault(relation, []).append(inverse)
 
     list_quad = []

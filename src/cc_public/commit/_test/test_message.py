@@ -73,7 +73,7 @@ def test_a_composed_message_passes_and_its_id_sorts_by_time():
     'Reformat every document',
     'Rename type_datalog_module to type_datalog_source_file',
     'Move the checker to cc_public.check',
-    'Split r_is_specified_by_schema into two relations',
+    'Split relation_is_specified_by_schema into two relations',
     'Fold testability into maintainability',
     'Merge branch commit-items into main',
     "Merge remote-tracking branch 'origin/main' into main",

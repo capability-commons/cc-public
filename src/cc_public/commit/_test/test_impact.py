@@ -103,14 +103,14 @@ def test_a_changed_annotation_shows_what_it_argues_about(tree, before):
 
     assert _touched(result) == [(ANN, 'changed', '')]
     assert _links(result) == {
-        ('opt_tooling_in_rust',  '1', ANN, 'r_challenges',         'out'),
-        ('dec_tooling_language', '1', ANN, 'r_is_about',           'out'),
-        ('concern_cost',         '1', ANN, 'r_speaks_for_concern', 'out'),
+        ('opt_tooling_in_rust',  '1', ANN, 'relation_challenges',         'out'),
+        ('dec_tooling_language', '1', ANN, 'relation_is_about',           'out'),
+        ('concern_cost',         '1', ANN, 'relation_speaks_for_concern', 'out'),
         ('mark_public',          '1', ANN, 'mark',                 'out'),
         ('type_annotation',         '1', ANN, 'has_type',             'out'),
-        ('r_challenges',         '1', ANN, 'uses',                 'out'),
-        ('r_is_about',           '1', ANN, 'uses',                 'out'),
-        ('r_speaks_for_concern', '1', ANN, 'uses',                 'out')}
+        ('relation_challenges',         '1', ANN, 'uses',                 'out'),
+        ('relation_is_about',           '1', ANN, 'uses',                 'out'),
+        ('relation_speaks_for_concern', '1', ANN, 'uses',                 'out')}
     assert result['touched'][0][3:] == (FILE_ANN, '1')
 
 
@@ -131,7 +131,7 @@ def test_a_removed_item_shows_what_it_linked_to(tree, before):
     result = cc_public.commit.impact.impact_trees(before, tree, direction = 'out')
 
     assert _touched(result) == [(ANN, 'removed', '')]
-    assert ('opt_tooling_in_rust', '1', ANN, 'r_challenges', 'out') in _links(result)
+    assert ('opt_tooling_in_rust', '1', ANN, 'relation_challenges', 'out') in _links(result)
     assert result['touched'][0][3:] == (FILE_ANN, '1')
 
 
@@ -151,7 +151,7 @@ def test_a_change_of_code_touches_its_function_and_module(tree, before):
     result = cc_public.commit.impact.impact_trees(before, tree, direction = 'out')
 
     assert _touched(result) == [(PYF_CHECK, 'changed', ''), (PYM_CHECK, 'changed', '')]
-    assert ('icm_cc_public_check.check', '1', PYF_CHECK, 'r_realizes', 'out') in _links(result)
+    assert ('icm_cc_public_check.check', '1', PYF_CHECK, 'relation_realizes', 'out') in _links(result)
 
 
 # -----------------------------------------------------------------------------
@@ -162,8 +162,8 @@ def test_an_item_reaches_the_items_that_use_its_relation(tree, before):
 
     result = cc_public.commit.impact.impact_trees(before, tree, direction = 'in')
 
-    assert _touched(result) == [('r_challenges', 'changed', '')]
-    assert ('ann_a_port_costs_a_rewrite', '1', 'r_challenges', 'uses', 'in') in _links(result)
+    assert _touched(result) == [('relation_challenges', 'changed', '')]
+    assert ('ann_a_port_costs_a_rewrite', '1', 'relation_challenges', 'uses', 'in') in _links(result)
 
 
 # -----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ def test_cctool_impact_prints_each_neighbor_once(tree, monkeypatch):
     list_line = result.output.splitlines()
     assert list_line[:2] == ['changed  {ann}  {file}:1'.format(ann = ANN, file = FILE_ANN),
                              '1 touched.']
-    assert '     {ann} r_challenges opt_tooling_in_rust'.format(ann = ANN) in list_line
+    assert '     {ann} relation_challenges opt_tooling_in_rust'.format(ann = ANN) in list_line
     assert list_line[-1] == '8 neighbors untouched.'
 
 

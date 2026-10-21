@@ -21,8 +21,8 @@ description:            |
 
 edge:
 
-  - id_relation:        r_realizes
-    guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
     id_target:          lco_tooling
     guid_target:        lco_10147b22f69f495789103cec049b2c6a
 

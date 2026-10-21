@@ -111,7 +111,7 @@ def impact_trees(dir_before: pathlib.Path,
     facts['before_item']             = before['item']
     facts['before_edge']             = before['edge']
     facts['before_reference']        = before['reference']
-    facts['before_relation_inverse'] = before['relation_inverse']
+    facts['before_inverse_relation'] = before['inverse_relation']
     facts['digest']                  = set(digests(dir_after, map_after).items())
     facts['before_digest']           = set(digests(dir_before, map_before).items())
     facts['max_depth']               = {(str(depth),)}

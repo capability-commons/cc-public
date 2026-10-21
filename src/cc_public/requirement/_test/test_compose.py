@@ -37,9 +37,9 @@ MAP_NODE = {'lco_x':    {'id_self': 'lco_x',    'title': 'Checker'},
 
 
 def _requirement(**map_field):
-    list_edge = [('r_has_subject', 'lco_x'), ('r_has_process', 'concept_x')]
+    list_edge = [('relation_has_subject', 'lco_x'), ('relation_has_process', 'concept_x')]
     if map_field.get('activity') == 'interaction':
-        list_edge.append(('r_has_actor', 'lco_user'))
+        list_edge.append(('relation_has_actor', 'lco_user'))
     requirement = {'modal_verb': 'shall',
                    'activity':   'autonomous',
                    'object':     'each failure',
@@ -80,9 +80,9 @@ def test_an_interface_is_able_to():
 @pytest.mark.parametrize('requirement', [
     _requirement(condition = 'the tree is read'),
     _requirement(edge = []),
-    _requirement(activity = 'interaction', edge = [{'id_relation': 'r_has_subject',
+    _requirement(activity = 'interaction', edge = [{'id_relation': 'relation_has_subject',
                                                    'id_target':   'lco_x'},
-                                                  {'id_relation': 'r_has_process',
+                                                  {'id_relation': 'relation_has_process',
                                                    'id_target':   'concept_x'}]),
     _requirement(object = '')])
 def test_slots_that_do_not_compose_are_refused(requirement):

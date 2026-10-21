@@ -74,4 +74,4 @@ decision_without_options(Decision) :-
 % decl answers_some(decision: symbol)
 
 answers_some(Decision) :-
-    primary_edge(_, "r_is_option_for", Decision).
+    primary_edge(_, "relation_is_option_for", Decision).

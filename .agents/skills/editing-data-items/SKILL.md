@@ -61,21 +61,21 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
 - **A deliberation lives in the folder of its decision.** Start one with a
-  decision (`new dec_NAME --link r_is_about lco_NAME`), then give each option
-  `--link r_is_option_for dec_NAME` (`option_count` refuses an option that
-  is linked to no decision, or to two) and each annotation `--link r_is_about
+  decision (`new dec_NAME --link relation_is_about lco_NAME`), then give each option
+  `--link relation_is_option_for dec_NAME` (`option_count` refuses an option that
+  is linked to no decision, or to two) and each annotation `--link relation_is_about
   dec_NAME`. `new` writes all of them, and rulings, in
   `_data/decision/dec_NAME/`; anything moved there by hand is checked by
   `misplaced_document`.
-- **An annotation or decision is refused without `r_is_about`**
-  (`missing_about`). Give `--link r_is_about TARGET` with `new`.
+- **An annotation or decision is refused without `relation_is_about`**
+  (`missing_about`). Give `--link relation_is_about TARGET` with `new`.
 - **A ruling is refused unless it upholds or rejects an option**
-  (`no_option_in_ruling`). Give `--link r_upholds DEC` or
-  `--link r_rejects DEC`. Only record a ruling that a person
+  (`no_option_in_ruling`). Give `--link relation_upholds DEC` or
+  `--link relation_rejects DEC`. Only record a ruling that a person
   has made; the commit that adds it says who and when.
 - **A ruling that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
-  component the decision is about `r_is_driven_by` needs an annotation
+  component the decision is about `relation_is_driven_by` needs an annotation
   for it that supports or challenges the option or another option for
   the same decision. Rejecting an option needs no such annotation.
   Argue it; do not drop the driver to pass.
@@ -85,10 +85,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   in place with `set`, `link` and `unlink`; the commits that change its
   file are the history of the ruling.
 - **`restriction_violation`** means an end of the edge does not meet a
-  relation restriction its relation names (`r_restricts_source` or
-  `r_restricts_target` in `reg_relation.yaml`). A restriction admits or
+  relation restriction its relation names (`relation_restricts_source` or
+  `relation_restricts_target` in `reg_relation.yaml`). A restriction admits or
   excludes roles, and a type's items play the roles its entry in
-  `reg_data_item_type.yaml` names with `r_has_items_that_play`. Do not
+  `reg_data_item_type.yaml` names with `relation_has_items_that_play`. Do not
   pick another relation just to pass. A new type takes part in a
   relation by playing the role it needs, not by changing the relation.
 - **An annotation that supports or challenges an option needs at least

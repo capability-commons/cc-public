@@ -72,7 +72,7 @@ def test_an_option_answers_its_decision(tree):
                        title = 'Tooling in Go', brief = 'Write it in Go.') == [
         {'new':   'opt_tooling_in_go',
          'field': {'title': 'Tooling in Go', 'brief': 'Write it in Go.'},
-         'link':  [['r_is_option_for', ID_OPEN]]}]
+         'link':  [['relation_is_option_for', ID_OPEN]]}]
 
 
 def test_an_argument_bears_on_its_option_and_speaks_for_its_concerns(tree):
@@ -80,24 +80,24 @@ def test_an_argument_bears_on_its_option_and_speaks_for_its_concerns(tree):
                               title = 'A', brief = 'B', id = 'ann_x',
                               concern = ['concern_cost', 'concern_simplicity'])
     assert operation['new'] == 'ann_x'
-    assert operation['link'] == [['r_is_about', ID_DECISION],
-                                 ['r_challenges', ID_UPHELD],
-                                 ['r_speaks_for_concern', 'concern_cost'],
-                                 ['r_speaks_for_concern', 'concern_simplicity']]
+    assert operation['link'] == [['relation_is_about', ID_DECISION],
+                                 ['relation_challenges', ID_UPHELD],
+                                 ['relation_speaks_for_concern', 'concern_cost'],
+                                 ['relation_speaks_for_concern', 'concern_simplicity']]
 
 
 def test_an_answer_bears_on_its_annotation_and_speaks_for_no_concern(tree):
     [operation] = _operations(tree, kind = 'answer', target = ID_ANNOTATION, role = 'for',
                               title = 'A', brief = 'B', concern = 'concern_cost')
-    assert operation['link'] == [['r_is_about', ID_DECISION], ['r_supports', ID_ANNOTATION]]
+    assert operation['link'] == [['relation_is_about', ID_DECISION], ['relation_supports', ID_ANNOTATION]]
 
 
 def test_to_uphold_changes_the_one_ruling_of_the_decision(tree):
     assert _operations(tree, kind = 'determine', target = ID_REJECTED, role = 'uphold',
                        reason = 'Because.') == [
         {'set':    [ID_RULING, 'brief', 'Because.']},
-        {'unlink': [ID_RULING, 'r_rejects', ID_REJECTED]},
-        {'link':   [ID_RULING, 'r_upholds', ID_REJECTED]}]
+        {'unlink': [ID_RULING, 'relation_rejects', ID_REJECTED]},
+        {'link':   [ID_RULING, 'relation_upholds', ID_REJECTED]}]
 
 
 def test_to_reject_an_open_decision_makes_its_ruling(tree):
@@ -107,7 +107,7 @@ def test_to_reject_an_open_decision_makes_its_ruling(tree):
                        reason = 'Because.') == [
         {'new':   'ruling_tooling_language',
          'field': {'title': graph.title(ID_OPEN), 'brief': 'Because.'},
-         'link':  [['r_rejects', id_option]]}]
+         'link':  [['relation_rejects', id_option]]}]
 
 
 def test_a_form_holds_the_fields_of_its_kind(tree):
