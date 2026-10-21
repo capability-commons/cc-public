@@ -42,8 +42,8 @@ TEXT_ABOUT    = ('relation:\n'
                  '\n'
                  '  - id_relation:        r_is_about\n'
                  '    guid_relation:      r_17ca99102b0b431b85235445a4635ae8\n'
-                 '    id_target:          con_concept\n'
-                 '    guid_target:        con_820f9604e6134b9fbefd5a75146d4c40\n')
+                 '    id_target:          concept_concept\n'
+                 '    guid_target:        concept_4c11efe184cd47289cfa3941377d4807\n')
 TEXT_RIGHTS   = ('copyright:              Copyright 2026 William Payne\n'
                  'license:                Apache-2.0\n'
                  '\n'
@@ -112,7 +112,7 @@ def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
 def test_a_new_standalone_item_is_written_in_a_file_of_its_own(tree, zero):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
-                        'link':  [['r_is_about', 'con_concept']]}) == {}
+                        'link':  [['r_is_about', 'concept_concept']]}) == {}
     assert (tree / '_data/annotation/ann_x.yaml').read_text() == (
         'id_self:                ann_x\n'
         'guid_self:              ann_' + HEX_ZERO + '\n'
@@ -195,18 +195,18 @@ def test_an_edit_that_adds_a_failure_is_refused_and_not_written(tree):
 
 def test_a_failure_the_tree_already_has_is_not_added(tree):
     path = tree / '_data/register/reg_concept.yaml'
-    path.write_text(path.read_text().replace('guid_self:          con_820f9604',
-                                             'guid_self:          con_820f9605'))
-    assert _edit(tree, {'set': ['con_concept', 'note', 'A note.']}) == {}
+    path.write_text(path.read_text().replace('guid_self:          concept_820f9604',
+                                             'guid_self:          concept_820f9605'))
+    assert _edit(tree, {'set': ['concept_concept', 'note', 'A note.']}) == {}
 
 
 def test_a_new_concept_needs_an_item_that_names_it(tree):
     field = {'title': 'X', 'brief': 'X.', 'description': 'X.', 'term_preferred': 'x'}
-    assert _edit(tree, {'new': 'con_x', 'field': field}) == {'unused_concept': [('con_x',)]}
-    assert _edit(tree, {'new': 'con_x', 'field': field},
+    assert _edit(tree, {'new': 'concept_x', 'field': field}) == {'unused_concept': [('concept_x',)]}
+    assert _edit(tree, {'new': 'concept_x', 'field': field},
                        {'new':   'ann_x',
                         'field': FIELD_ANN,
-                        'link':  [['r_is_about', 'con_x']]}) == {}
+                        'link':  [['r_is_about', 'concept_x']]}) == {}
 
 
 def test_a_new_schema_opens_with_its_dialect_and_keeps_structured_values(tree, zero):
@@ -230,11 +230,11 @@ def test_a_new_schema_opens_with_its_dialect_and_keeps_structured_values(tree, z
 
 def test_an_embedded_item_given_in_a_field_is_given_a_guid(tree, zero):
     edited = cc_public.edit.edit.Tree(tree)
-    cc_public.edit.edit.batch(edited, [{'set': ['con_concept', 'example',
-                                                {'id_self': 'con_x', 'name': 'x'}]}])
+    cc_public.edit.edit.batch(edited, [{'set': ['concept_concept', 'example',
+                                                {'id_self': 'concept_x', 'name': 'x'}]}])
     assert ('    example:\n'
-            '      id_self:          con_x\n'
-            '      guid_self:        con_' + HEX_ZERO + '\n'
+            '      id_self:          concept_x\n'
+            '      guid_self:        concept_' + HEX_ZERO + '\n'
             '      name:             x\n') in edited.edit['_data/register/reg_concept.yaml']
 
 
@@ -243,9 +243,9 @@ def test_a_new_field_that_names_an_item_is_given_its_guid(tree, zero):
     cc_public.edit.edit.batch(edited, [{'new':   'type_x',
                                         'field': {'title':      'X type',
                                                   'brief':      'X.',
-                                                  'id_concept': 'con_concept'}}])
-    assert ('    id_concept:         con_concept\n'
-            '    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40\n') in (
+                                                  'id_concept': 'concept_concept'}}])
+    assert ('    id_concept:         concept_concept\n'
+            '    guid_concept:       concept_4c11efe184cd47289cfa3941377d4807\n') in (
         edited.text('_data/register/reg_data_item_type.yaml'))
 
 
@@ -265,7 +265,7 @@ def test_a_field_that_names_an_item_at_any_depth_is_given_its_guid(tree, zero):
 
 def test_a_link_turns_an_empty_relation_into_a_list(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN, 'link': []},
-                       {'link': ['ann_x', 'r_is_about', 'con_concept']}) == {}
+                       {'link': ['ann_x', 'r_is_about', 'concept_concept']}) == {}
     assert (tree / '_data/annotation/ann_x.yaml').read_text().endswith(
         'whatever they change.\n\n' + TEXT_ABOUT)
 
@@ -273,15 +273,15 @@ def test_a_link_turns_an_empty_relation_into_a_list(tree):
 def test_a_link_is_added_after_the_edges_there_are(tree):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
-                        'link':  [['r_is_about', 'con_concept']]},
-                       {'link': ['ann_x', 'r_is_about', 'con_relation']}) == {}
+                        'link':  [['r_is_about', 'concept_concept']]},
+                       {'link': ['ann_x', 'r_is_about', 'concept_relation']}) == {}
     assert (tree / '_data/annotation/ann_x.yaml').read_text().endswith(
         TEXT_ABOUT
         + '\n'
         '  - id_relation:        r_is_about\n'
         '    guid_relation:      r_17ca99102b0b431b85235445a4635ae8\n'
-        '    id_target:          con_relation\n'
-        '    guid_target:        con_58ca7869cf9443168d8d96d8d70b972c\n')
+        '    id_target:          concept_relation\n'
+        '    guid_target:        concept_42a4bd80300849a98bf9649ad97d10d9\n')
 
 
 def test_remove_takes_out_a_register_entry_and_its_banner(tree, zero):
@@ -295,25 +295,25 @@ def test_remove_takes_out_a_register_entry_and_its_banner(tree, zero):
 
 def test_remove_takes_out_the_file_of_a_standalone_item(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'con_concept']]}) == {}
+                        'link': [['r_is_about', 'concept_concept']]}) == {}
     assert _edit(tree, {'remove': 'ann_x'}) == {}
     assert not (tree / '_data/annotation/ann_x.yaml').exists()
 
 
 def test_removing_an_item_that_is_named_is_refused(tree):
     text = (tree / '_data/register/reg_concept.yaml').read_text()
-    assert _edit(tree, {'remove': 'con_annotation'}) != {}
+    assert _edit(tree, {'remove': 'concept_annotation'}) != {}
     assert (tree / '_data/register/reg_concept.yaml').read_text() == text
 
 
 def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
-    assert _edit(tree, {'rename': ['con_annotation', 'con_remark']}) == {}
+    assert _edit(tree, {'rename': ['concept_annotation', 'concept_remark']}) == {}
     text = (tree / '_data/register/reg_concept.yaml').read_text()
-    assert '  con_remark:\n    id_self:            con_remark\n' in text
-    assert '  # con_remark -- Annotation\n' in text
-    assert '    alias:\n      - con_annotation\n' in text
-    assert 'con_annotation' not in text.replace('      - con_annotation\n', '')
-    assert 'id_concept:         con_remark\n' in (
+    assert '  concept_remark:\n    id_self:            concept_remark\n' in text
+    assert '  # concept_remark -- Annotation\n' in text
+    assert '    alias:\n      - concept_annotation\n' in text
+    assert 'concept_annotation' not in text.replace('      - concept_annotation\n', '')
+    assert 'id_concept:         concept_remark\n' in (
         tree / '_data/register/reg_data_item_type.yaml').read_text()
 
 
@@ -378,16 +378,16 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
-    ({'rename': ['con_concept', 'sch_concept']},
-     'A rename keeps the type, so sch_concept must have the prefix of con_concept.'),
-    ({'rename': ['con_concept', 'con_relation']}, 'An item with the id con_relation exists.'),
+    ({'rename': ['concept_concept', 'sch_concept']},
+     'A rename keeps the type, so sch_concept must have the prefix of concept_concept.'),
+    ({'rename': ['concept_concept', 'concept_relation']}, 'An item with the id concept_relation exists.'),
     ({'rename': ['pym_cc_public.edit.edit', 'pym_x']},
      'An item of type_python_module lives in the file it names, so move or remove the file '
      'by hand.'),
     ({'remove': 'pyf_cc_public.check.check.check'},
      'An item of type_python_function lives in the file it names, so move or remove the file '
      'by hand.'),
-    ({'remove': 'con_none'}, 'No item has the id con_none.'),
+    ({'remove': 'concept_none'}, 'No item has the id concept_none.'),
 ])
 def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
@@ -584,8 +584,8 @@ def test_set_adds_a_field_after_the_one_before_it_in_order(tree):
 def test_unlink_takes_one_edge_out_and_keeps_the_others(tree):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
-                        'link':  [['r_is_about', 'con_concept'], ['r_is_about', 'con_relation']]},
-                       {'unlink': ['ann_x', 'r_is_about', 'con_relation']}) == {}
+                        'link':  [['r_is_about', 'concept_concept'], ['r_is_about', 'concept_relation']]},
+                       {'unlink': ['ann_x', 'r_is_about', 'concept_relation']}) == {}
     assert (tree / '_data/annotation/ann_x.yaml').read_text().endswith(
         'whatever they change.\n\n' + TEXT_ABOUT)
 
@@ -593,8 +593,8 @@ def test_unlink_takes_one_edge_out_and_keeps_the_others(tree):
 def test_unlink_of_the_last_edge_leaves_an_empty_relation(tree):
     edited = cc_public.edit.edit.Tree(tree)
     cc_public.edit.edit.batch(edited, [{'new': 'ann_x', 'field': FIELD_ANN,
-                                        'link': [['r_is_about', 'con_concept']]},
-                                       {'unlink': ['ann_x', 'r_is_about', 'con_concept']}])
+                                        'link': [['r_is_about', 'concept_concept']]},
+                                       {'unlink': ['ann_x', 'r_is_about', 'concept_concept']}])
     assert edited.edit['_data/annotation/ann_x.yaml'].endswith(
         'whatever they change.\nrelation:               []\n')
 
@@ -640,38 +640,38 @@ def test_a_field_that_names_an_item_keeps_its_guid_beside_it(tree):
 
 def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
     edited = cc_public.edit.edit.Tree(tree)
-    cc_public.edit.edit.batch(edited, [{'set': ['type_annotation', 'id_concept', 'con_concept']}])
-    assert ('    id_concept:         con_concept\n'
-            '    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40\n') in (
+    cc_public.edit.edit.batch(edited, [{'set': ['type_annotation', 'id_concept', 'concept_concept']}])
+    assert ('    id_concept:         concept_concept\n'
+            '    guid_concept:       concept_4c11efe184cd47289cfa3941377d4807\n') in (
                 edited.edit['_data/register/reg_data_item_type.yaml'])
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'new': 'zzz_x'}, 'No type has the prefix zzz. reg_data_item_type.yaml lists the types.'),
-    ({'new': 'con_concept'}, 'An item with the id con_concept exists.'),
+    ({'new': 'concept_concept'}, 'An item with the id concept_concept exists.'),
     ({'new': 'pym_x'}, 'An item of type_python_module is written in the file it names: give the '
                        'file its item with header.'),
-    ({'new': 'ann_x', 'link': [['r_is_about', 'con_none']]}, 'No item has the id con_none.'),
-    ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),
-    ({'set': ['con_concept', 'id_self', 'con_y']}, 'The field id_self is not set this way: cctool rename changes an id.'),
-    ({'set': ['con_none', 'note', 'x']}, 'No item has the id con_none.'),
-    ({'unlink': ['con_concept']}, "An operation of a batch is not one of new, header, link, "
+    ({'new': 'ann_x', 'link': [['r_is_about', 'concept_none']]}, 'No item has the id concept_none.'),
+    ({'link': ['concept_concept', 'r_is_about', 'concept_concept']}, 'concept_concept already has that edge.'),
+    ({'set': ['concept_concept', 'id_self', 'concept_y']}, 'The field id_self is not set this way: cctool rename changes an id.'),
+    ({'set': ['concept_none', 'note', 'x']}, 'No item has the id concept_none.'),
+    ({'unlink': ['concept_concept']}, "An operation of a batch is not one of new, header, link, "
                                   "unlink, set, unset, remove or rename: "
-                                  "{'unlink': ['con_concept']}"),
-    ({'unlink': ['con_concept', 'r_is_about', 'con_type']},
-     'con_concept has no edge of r_is_about to con_type.'),
-    ({'unset': ['con_concept', 'note']}, 'con_concept has no field note.'),
-    ({'unset': ['con_concept', 'alias']}, ('The field alias is not set this way: cctool rename keeps the old id '
+                                  "{'unlink': ['concept_concept']}"),
+    ({'unlink': ['concept_concept', 'r_is_about', 'concept_type']},
+     'concept_concept has no edge of r_is_about to concept_type.'),
+    ({'unset': ['concept_concept', 'note']}, 'concept_concept has no field note.'),
+    ({'unset': ['concept_concept', 'alias']}, ('The field alias is not set this way: cctool rename keeps the old id '
                                                   'as an alias.')),
-    ({'set': ['con_register_entry', 'term_admitted.9', 'x']},
+    ({'set': ['concept_register_entry', 'term_admitted.9', 'x']},
      '9 is not the index of an element of a list of 2.'),
-    ({'set': ['con_concept', 'title.x', 'x']},
+    ({'set': ['concept_concept', 'title.x', 'x']},
      'The path goes into Concept, which has no fields.'),
 ])
 def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     edited = cc_public.edit.edit.Tree(tree)
-    if operation.get('link') and operation['link'][0] == 'con_concept':
-        cc_public.edit.edit.batch(edited, [{'link': ['con_concept', 'r_is_about', 'con_concept']}])
+    if operation.get('link') and operation['link'][0] == 'concept_concept':
+        cc_public.edit.edit.batch(edited, [{'link': ['concept_concept', 'r_is_about', 'concept_concept']}])
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
         cc_public.edit.edit.batch(edited, [operation])
     assert str(info.value) == message

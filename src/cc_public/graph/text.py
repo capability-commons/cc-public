@@ -67,7 +67,7 @@ REGEX_WORD        = re.compile(r'[A-Za-z0-9]+')
 # other senses.
 #
 TUPLE_KEY_TERM    = ('term_preferred', 'term_admitted')
-PREFIX_CONCEPT    = 'con_'
+PREFIX_CONCEPT    = 'concept_'
 
 # The query on its own, stemmed as item_text is, so that a term can be
 # looked for in it as a phrase.

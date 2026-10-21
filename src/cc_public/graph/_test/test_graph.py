@@ -182,12 +182,12 @@ def test_text_by_decision_leads_from_any_hit_to_its_decision(tree):
 
 def test_text_widens_a_query_by_the_other_terms_of_the_concept_it_names(tree):
     list_concept = cc_public.graph.text.terms(cc_public.graph.extract.documents(tree))
-    assert ('con_register_entry', 'register entry') in cc_public.graph.text.widen(
+    assert ('concept_register_entry', 'register entry') in cc_public.graph.text.widen(
         'each regentry', list_concept)
-    assert ('con_register_entry', 'regentry') in cc_public.graph.text.widen(
+    assert ('concept_register_entry', 'regentry') in cc_public.graph.text.widen(
         'the register entries', list_concept)
     assert not [concept for (concept, _) in cc_public.graph.text.widen('a list', list_concept)
-                if concept == 'con_register']
+                if concept == 'concept_register']
     assert cc_public.graph.text.match('each regentry', ['register entry']) == (
         '"each" OR "regentry" OR "register entry"')
 

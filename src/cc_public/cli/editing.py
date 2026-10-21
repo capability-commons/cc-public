@@ -332,13 +332,13 @@ def batch(path_file, root, is_dry_run):
     and the item that names it, are made this way. For example:
 
     \b
-    - new:   con_x
+    - new:   concept_x
       field: {title: X, brief: ..., description: ..., term_preferred: x}
     - new:   ann_x
       field: {title: ..., brief: ...}
-      link:  [[r_is_about, con_x]]
-    - link:  [con_x, r_is_about, con_concept]
-    - set:   [con_x, usage, ...]
+      link:  [[r_is_about, concept_x]]
+    - link:  [concept_x, r_is_about, concept_concept]
+    - set:   [concept_x, usage, ...]
 
     """
 

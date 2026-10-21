@@ -46,7 +46,7 @@ def _run(tree, *list_arg, stdin = None):
 
 
 def test_new_writes_the_item_and_says_where(tree):
-    result = _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept')
+    result = _run(tree, *LIST_ANN, '--link', 'r_is_about', 'concept_concept')
     assert result.exit_code == 0
     assert result.stdout == 'Wrote _data/annotation/ann_x.yaml\n'
     assert (tree / '_data/annotation/ann_x.yaml').exists()
@@ -68,7 +68,7 @@ def test_a_field_named_twice_is_a_list(tree):
 
 
 def test_dry_run_prints_a_diff_and_writes_nothing(tree):
-    result = _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept', '--dry-run')
+    result = _run(tree, *LIST_ANN, '--link', 'r_is_about', 'concept_concept', '--dry-run')
     assert result.exit_code == 0
     assert result.stdout.startswith('--- a/_data/annotation/ann_x.yaml\n'
                                     '+++ b/_data/annotation/ann_x.yaml\n'
@@ -87,18 +87,18 @@ def test_an_edit_that_adds_a_failure_is_refused(tree):
 
 
 def test_an_edit_that_cannot_be_made_exits_with_2(tree):
-    result = _run(tree, 'link', 'ann_none', 'r_is_about', 'con_concept')
+    result = _run(tree, 'link', 'ann_none', 'r_is_about', 'concept_concept')
     assert result.exit_code == 2
     assert result.stderr == 'No item has the id ann_none.\n'
 
 
 def test_batch_makes_items_that_need_each_other_together(tree):
-    stdin  = ('- new:   con_x\n'
+    stdin  = ('- new:   concept_x\n'
               '  field: {title: X, brief: X., description: X., term_preferred: x}\n'
               '- new:   ann_x\n'
               '  field: {title: X, brief: X.}\n'
-              '  link:  [[r_is_about, con_x]]\n'
-              '- set:   [con_x, note, A note.]\n')
+              '  link:  [[r_is_about, concept_x]]\n'
+              '- set:   [concept_x, note, A note.]\n')
     result = _run(tree, 'batch', '-', stdin = stdin)
     assert result.exit_code == 0
     assert result.stdout == ('Wrote _data/register/reg_concept.yaml\n'
@@ -108,15 +108,15 @@ def test_batch_makes_items_that_need_each_other_together(tree):
 def test_set_with_yaml_writes_a_list_and_unset_takes_it_out(tree):
     path = tree / '_data/register/reg_concept.yaml'
     text = path.read_text()
-    result = _run(tree, 'set', 'con_concept', 'term_admitted', '[idea, notion]', '--yaml')
+    result = _run(tree, 'set', 'concept_concept', 'term_admitted', '[idea, notion]', '--yaml')
     assert result.exit_code == 0
     assert '    term_admitted:\n      - idea\n      - notion\n' in path.read_text()
-    assert _run(tree, 'unset', 'con_concept', 'term_admitted').exit_code == 0
+    assert _run(tree, 'unset', 'concept_concept', 'term_admitted').exit_code == 0
     assert path.read_text() == text
 
 
 def test_set_refuses_a_value_that_is_not_yaml(tree):
-    result = _run(tree, 'set', 'con_concept', 'term_admitted', '[idea', '--yaml')
+    result = _run(tree, 'set', 'concept_concept', 'term_admitted', '[idea', '--yaml')
     assert result.exit_code == 2
     assert result.stderr.startswith('VALUE is not YAML: ')
 
@@ -133,17 +133,17 @@ def test_header_gives_a_file_its_item_and_says_where(tree):
 
 
 def test_remove_says_which_file_it_removed(tree):
-    assert _run(tree, *LIST_ANN, '--link', 'r_is_about', 'con_concept').exit_code == 0
+    assert _run(tree, *LIST_ANN, '--link', 'r_is_about', 'concept_concept').exit_code == 0
     result = _run(tree, 'remove', 'ann_x')
     assert result.exit_code == 0
     assert result.stdout == 'Removed _data/annotation/ann_x.yaml\n'
 
 
 def test_rename_lists_the_files_that_still_name_the_old_id(tree):
-    result = _run(tree, 'rename', 'con_annotation', 'con_remark')
+    result = _run(tree, 'rename', 'concept_annotation', 'concept_remark')
     assert result.exit_code == 0
     assert 'Wrote _data/register/reg_concept.yaml\n' in result.stdout
-    assert ('Still names con_annotation: src/cc_public/edit/_test/test_edit.py\n'
+    assert ('Still names concept_annotation: src/cc_public/edit/_test/test_edit.py\n'
             in result.stderr)
 
 

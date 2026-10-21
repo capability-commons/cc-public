@@ -18,7 +18,7 @@ is committed.
 | `src/cc_public/cli`   | `cctool`, the command line                     |
 
 Every item has an id and a guid, each beginning with the prefix of its
-type (`con_concept`, `con_820f...`). A YAML file under `_data` holds a
+type (`concept_concept`, `concept_820f...`). A YAML file under `_data` holds a
 standalone item or a register of entries. A python module holds its
 item in its module docstring, a class or function that something
 points at holds one in its own docstring, and any other file holds
