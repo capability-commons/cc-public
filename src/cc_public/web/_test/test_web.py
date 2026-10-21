@@ -35,7 +35,7 @@ import htpy
 import pytest
 
 import cc_public.web.argument
-import cc_public.web.catalogue
+import cc_public.web.catalog
 import cc_public.web.description
 import cc_public.web.network
 import cc_public.web.page
@@ -679,13 +679,13 @@ def test_home_lists_every_type_with_its_count(tree):
     assert status == http.HTTPStatus.OK
     text      = body.decode()
     graph     = cc_public.web.argument.Graph(tree)
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    catalog   = cc_public.web.catalog.Catalog(graph)
     list_type = [id_item for id_item in graph.map_item if id_item.startswith('type_')]
     for id_type in list_type:
         assert 'href="{href}"'.format(href = cc_public.web.page._type_href(id_type)) in text
     assert '<a href="/decisions">Decision</a>' in text
     assert '<a href="/type/type_option">Option</a>' in text
-    count = len(catalogue.items('type_option'))
+    count = len(catalog.items('type_option'))
     assert re.search(r'href="/type/type_option">.*?<td class="number">{count}<'.format(
         count = count), text, re.DOTALL)
     assert '<tr class="empty">' in text

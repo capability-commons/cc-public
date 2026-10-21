@@ -20,7 +20,7 @@ brief:                  |
                         control documents and the page of one as HTML.
 description:            |
                         The index lists every type, grouped as
-                        pym_cc_public.web.catalogue groups them, with
+                        pym_cc_public.web.catalog groups them, with
                         how many items each has. Each type leads to
                         the list of its items, which a few words
                         filter, or to a fuller list of its own for
@@ -103,7 +103,7 @@ import htpy
 import cc_public.requirement.compose
 import cc_public.requirement.review
 import cc_public.web.argument
-import cc_public.web.catalogue
+import cc_public.web.catalog
 import cc_public.web.contract
 import cc_public.web.description
 import cc_public.web.light
@@ -269,16 +269,16 @@ Request           = cc_public.web.request.Request
 def home(graph: Graph) -> str:
     """
     Return the index of every item: each type, in the groups of the
-    catalogue, with how many items it has and what it is, leading to
+    catalog, with how many items it has and what it is, leading to
     the list of its items.
 
     """
 
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
-    list_type = [id_type for (_, list_group) in catalogue.groups() for id_type in list_group]
+    catalog   = cc_public.web.catalog.Catalog(graph)
+    list_type = [id_type for (_, list_group) in catalog.groups() for id_type in list_group]
 
     def row(id_type: str) -> typing.Any:
-        count = len(catalogue.items(id_type))
+        count = len(catalog.items(id_type))
         return htpy.tr(class_ = None if count else 'empty')[
             htpy.td[htpy.a(href = _type_href(id_type))[_type_name(graph, id_type)],
                     htpy.span(class_ = 'statement')[_prose(_type_brief(graph, id_type))]],
@@ -287,15 +287,15 @@ def home(graph: Graph) -> str:
     return _page('Index',
                  [[htpy.section[
                        htpy.h2[name],
-                       htpy.table(class_ = 'catalogue')[
+                       htpy.table(class_ = 'catalog')[
                            htpy.thead[htpy.tr[htpy.th['Type'],
                                               htpy.th(class_ = 'number')['Items']]],
                            htpy.tbody[[row(id_type) for id_type in list_group]]]]
-                   for (name, list_group) in catalogue.groups()]],
+                   for (name, list_group) in catalog.groups()]],
                  [htpy.h1['Index'],
                   htpy.p(class_ = 'subtitle')[
                       '{count} items of {types} types'.format(
-                          count = sum(len(catalogue.items(id_type)) for id_type in list_type),
+                          count = sum(len(catalog.items(id_type)) for id_type in list_type),
                           types = len(list_type))]])
 
 
@@ -307,14 +307,14 @@ def type_list(graph: Graph, id_type: str, text: str = '') -> str | None:
 
     """
 
-    if not id_type.startswith(cc_public.web.catalogue.PREFIX_TYPE) \
+    if not id_type.startswith(cc_public.web.catalog.PREFIX_TYPE) \
             or id_type not in graph.map_item:
         return None
 
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
-    list_item = catalogue.items(id_type)
+    catalog   = cc_public.web.catalog.Catalog(graph)
+    list_item = catalog.items(id_type)
     if text:
-        set_found = set(catalogue.search(text))
+        set_found = set(catalog.search(text))
         list_item = [id_item for id_item in list_item if id_item in set_found]
 
     list_other = []
@@ -330,10 +330,10 @@ def type_list(graph: Graph, id_type: str, text: str = '') -> str | None:
                   htpy.p(class_ = 'subtitle')[_prose(_type_brief(graph, id_type))]],
                  [htpy.table(class_ = 'facts')[htpy.tbody[
                      htpy.tr[htpy.th(scope = 'row')['Items'],
-                             htpy.td[str(len(catalogue.items(id_type)))]],
+                             htpy.td[str(len(catalog.items(id_type)))]],
                      htpy.tr[htpy.th(scope = 'row')['Prefix'],
                              htpy.td[htpy.code[str(graph.map_item[id_type].node.get(
-                                 cc_public.web.catalogue.KEY_PREFIX, ''))]]],
+                                 cc_public.web.catalog.KEY_PREFIX, ''))]]],
                      htpy.tr[htpy.th(scope = 'row')['Defined'],
                              htpy.td[htpy.a(href = PATH_ITEM + id_type)[id_type]]]]]])
 
@@ -346,7 +346,7 @@ def components(graph: Graph) -> str:
 
     """
 
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
+    catalog = cc_public.web.catalog.Catalog(graph)
 
     def row(id_component: str) -> typing.Any:
         component = graph.map_item[id_component]
@@ -355,14 +355,14 @@ def components(graph: Graph) -> str:
                     htpy.span(class_ = 'statement')[_prose(component.brief)]],
             htpy.td[_titles(graph, component.targets(cc_public.web.argument.R_IS_DRIVEN_BY))],
             htpy.td(class_ = 'number')[
-                str(sum(len(list_item) for (_, list_item) in catalogue.about(id_component)))]]
+                str(sum(len(list_item) for (_, list_item) in catalog.about(id_component)))]]
 
     return _page('Components',
-                 [htpy.table(class_ = 'catalogue components')[
+                 [htpy.table(class_ = 'catalog components')[
                       htpy.thead[htpy.tr[htpy.th['Component'],
                                          htpy.th['Driving concerns'],
                                          htpy.th(class_ = 'number')['Items']]],
-                      htpy.tbody[[row(id_component) for id_component in catalogue.components()]]]],
+                      htpy.tbody[[row(id_component) for id_component in catalog.components()]]]],
                  [htpy.h1['Components'],
                   htpy.p(class_ = 'subtitle')[
                       'The logical components, and what is about each.']])
@@ -377,8 +377,8 @@ def component(graph: Graph, id_component: str) -> str | None:
 
     """
 
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
-    if id_component not in catalogue.components():
+    catalog = cc_public.web.catalog.Catalog(graph)
+    if id_component not in catalog.components():
         return None
 
     item = graph.map_item[id_component]
@@ -392,7 +392,7 @@ def component(graph: Graph, id_component: str) -> str | None:
 
     return _page(item.title or id_component,
                  [[htpy.section[htpy.h2[_type_name(graph, id_type)], listed(id_type, list_id)]
-                   for (id_type, list_id) in catalogue.about(id_component)]
+                   for (id_type, list_id) in catalog.about(id_component)]
                   or htpy.p['Nothing is about this component yet.']],
                  [htpy.h1[item.title or id_component],
                   htpy.p(class_ = 'subtitle')[_prose(item.brief)]],
@@ -413,14 +413,14 @@ def search(graph: Graph, text: str) -> str:
 
     """
 
-    catalogue = cc_public.web.catalogue.Catalogue(graph)
-    list_item = catalogue.search(text)
+    catalog   = cc_public.web.catalog.Catalog(graph)
+    list_item = catalog.search(text)
 
     if not text.strip():
         subtitle = 'Type words from an id, a title or a brief.'
     elif not list_item:
         subtitle = 'No item holds those words.'
-    elif len(list_item) >= cc_public.web.catalogue.COUNT_FOUND:
+    elif len(list_item) >= cc_public.web.catalog.COUNT_FOUND:
         subtitle = 'The first {count} items that hold those words.'.format(count = len(list_item))
     else:
         subtitle = '{count} item{s} hold{verb} those words.'.format(
@@ -429,7 +429,7 @@ def search(graph: Graph, text: str) -> str:
                        verb  = 's' if len(list_item) == 1 else '')
 
     return _page('Search',
-                 [_item_table(graph, list_item, catalogue) if list_item else None],
+                 [_item_table(graph, list_item, catalog) if list_item else None],
                  [htpy.h1['Search'],
                   htpy.p(class_ = 'subtitle')[subtitle]],
                  text_search = text)
@@ -438,11 +438,11 @@ def search(graph: Graph, text: str) -> str:
 # -----------------------------------------------------------------------------
 def _item_table(graph:     Graph,
                 list_id:   list[str],
-                catalogue: cc_public.web.catalogue.Catalogue | None = None) -> typing.Any:
+                catalog: cc_public.web.catalog.Catalog | None = None) -> typing.Any:
     """
     Return a table of the items list_id: each with its brief under its
     title and its id and file under that, and its type beside it if
-    catalogue is given.
+    catalog is given.
 
     """
 
@@ -454,11 +454,11 @@ def _item_table(graph:     Graph,
                     htpy.span(class_ = 'where')[htpy.code[id_item],
                                                 [htpy.span(class_ = 'bar')['|'], item.file]
                                                 if item.file else None]],
-            htpy.td[_type_name(graph, catalogue.has_type(id_item))] if catalogue else None]
+            htpy.td[_type_name(graph, catalog.has_type(id_item))] if catalog else None]
 
-    return htpy.table(class_ = 'catalogue items')[
+    return htpy.table(class_ = 'catalog items')[
         htpy.thead[htpy.tr[htpy.th['Item'],
-                           htpy.th['Type'] if catalogue else None]],
+                           htpy.th['Type'] if catalog else None]],
         htpy.tbody[[row(id_item) for id_item in list_id]]]
 
 
@@ -2693,9 +2693,9 @@ def _href(id_item: str) -> str:
         return PATH_REQUIREMENT + id_item
     if id_item.startswith(cc_public.web.contract.PREFIX_INTERFACE):
         return PATH_INTERFACE + id_item
-    if id_item.startswith(cc_public.web.catalogue.PREFIX_SUBJECT):
+    if id_item.startswith(cc_public.web.catalog.PREFIX_SUBJECT):
         return PATH_COMPONENT + id_item
-    if id_item.startswith(cc_public.web.catalogue.PREFIX_TYPE):
+    if id_item.startswith(cc_public.web.catalog.PREFIX_TYPE):
         return PATH_TYPE + id_item
     return PATH_ITEM + id_item
 
