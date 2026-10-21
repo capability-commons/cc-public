@@ -58,6 +58,21 @@ properties:
                         The pattern every readable id of this type
                         must match.
 
+  prefix_family:
+    type:               string
+    pattern:            ^[a-z][a-z0-9_]*$
+    description:        |
+                        Optional. The family the prefix belongs to.
+                        Prefixes of one family, such as a container
+                        and its members, may differ by one letter.
+
+  prefix_exception:
+    type:               string
+    minLength:          1
+    description:        |
+                        Optional. Why the prefix is neither three
+                        letters nor a word of the preferred term.
+
   id_concept:
     $ref:               https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
     pattern:            ^concept_

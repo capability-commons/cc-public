@@ -104,6 +104,68 @@ duplicate_prefix(Prefix, Type, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% A prefix is three lower-case letters, or one whole word of the
+% preferred term of the concept its type represents. A type whose
+% prefix is neither states why in its prefix_exception field.
+%
+% decl prefix_form(type:   symbol,
+%                  prefix: symbol)
+% did  The prefix {prefix} of {type} is neither three letters nor a word of
+%      its preferred term.
+% fix  Choose three letters from the preferred term, or one whole word of
+%      it, or say in prefix_exception why the prefix must stay.
+#show prefix_form/2.
+
+prefix_form(Type, Prefix) :-
+    type_prefix(Type, Prefix, _),
+    @match("[a-z]{3}", Prefix) = 0,
+    not prefix_is_word(Type),
+    not prefix_exception(Type, _).
+
+prefix_is_word(Type) :-
+    type_prefix(Type, Prefix, _),
+    reference(Type, "concept", Concept, _, _, _),
+    designation(Concept, Term, "preferred"),
+    @match(@cat("(.* )?", Prefix, "( .*)?"), Term) = 1.
+
+
+% -----------------------------------------------------------------------------
+% Two prefixes of the same length differ in more than one letter,
+% unless their types declare one prefix family, as a container and its
+% members do.
+%
+% decl prefix_near(type:   symbol,
+%                  prefix: symbol,
+%                  other:  symbol,
+%                  near:   symbol)
+% did  The prefix {prefix} of {type} differs by one letter from {near}, the
+%      prefix of {other}.
+% fix  Choose a prefix further from the other, or give both types the same
+%      prefix_family if they belong together.
+#show prefix_near/4.
+
+prefix_near(Type, Prefix, Other, Near) :-
+    type_prefix(Type, Prefix, _),
+    type_prefix(Other, Near, _),
+    Type != Other,
+    @strlen(Prefix) = @strlen(Near),
+    #count { Index : prefix_letter_differs(Type, Other, Index) } = 1,
+    not prefix_family_shared(Type, Other).
+
+prefix_letter_differs(Type, Other, Index) :-
+    type_prefix(Type, Prefix, _),
+    type_prefix(Other, Near, _),
+    Type != Other,
+    @strlen(Prefix) = @strlen(Near),
+    Index = 0..@strlen(Prefix) - 1,
+    @substr(Prefix, Index, 1) != @substr(Near, Index, 1).
+
+prefix_family_shared(Type, Other) :-
+    prefix_family(Type, Family),
+    prefix_family(Other, Family).
+
+
+% -----------------------------------------------------------------------------
 % No id names two items.
 %
 % decl duplicate_id(id:    symbol,

@@ -108,6 +108,10 @@ unfinished edits of another.
   it, with `cctool header FILEPATH::NAME`.
 - Never write a guid by hand. A guid is the prefix of the type and 32
   hex digits, minted once and never changed.
+- A new type's prefix is three letters or one whole word of its
+  preferred term, and differs by more than one letter from every other
+  prefix unless both types share a `prefix_family`. The checks
+  prefix_form and prefix_near enforce it.
 - A new concept must be named by some other item, so make the concept
   and the item that names it together, with `cctool batch`.
 - After any edit by hand, run `cctool format`, then `cctool check`.

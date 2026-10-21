@@ -501,6 +501,29 @@ def test_two_types_sharing_a_prefix_are_reported(tree):
                                                 ('ann', 'type_option', 'type_annotation')]
 
 
+def test_a_prefix_neither_three_letters_nor_a_word_of_its_term_is_reported(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'prefix:             opt\n', 'prefix:             op\n')
+    assert _check(tree)['prefix_form'] == [('type_option', 'op')]
+
+
+def test_a_prefix_that_is_a_word_of_its_preferred_term_passes(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'prefix:             opt\n', 'prefix:             option\n')
+    assert 'prefix_form' not in _check(tree)
+
+
+def test_two_prefixes_one_letter_apart_are_reported(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'prefix:             opt\n', 'prefix:             ant\n')
+    assert _check(tree)['prefix_near'] == [('type_annotation', 'ann', 'type_option', 'ant'),
+                                           ('type_option', 'ant', 'type_annotation', 'ann')]
+
+
+def test_two_prefixes_one_letter_apart_in_one_family_pass(tree):
+    assert not any(row[1] in ('icd', 'icm') for row in _check(tree).get('prefix_near', []))
+
+
 def test_an_id_given_to_two_items_is_reported(tree):
     list_edge = [_edge(tree, 'r_is_about', ID_ABOUT)]
     (one, two) = (_guid('ann'), _guid('ann'))

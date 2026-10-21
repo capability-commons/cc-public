@@ -62,6 +62,14 @@ KEY_REGEX_ID      = 'regex_id'
 KEY_INVERSE       = 'inverse'
 KEY_ALIAS         = 'alias'
 KEY_ACYCLIC       = 'acyclic'
+KEY_FAMILY        = 'prefix_family'
+KEY_EXCEPTION     = 'prefix_exception'
+
+# The fields of a concept that hold its terms, by the rating of each.
+#
+MAP_TERM_RATING   = {'term_preferred':  'preferred',
+                     'term_admitted':   'admitted',
+                     'term_deprecated': 'deprecated'}
 KEY_REF           = '$ref'
 
 # The parts of a signature that an item may state, as an interface
@@ -152,6 +160,14 @@ RELATION          = {
                            'as written. primary_edge reads edges through inverses.'),
     'type_prefix':        (('type', 'prefix', 'regex'),
                            'The type has the id prefix, and its ids match regex.'),
+    'prefix_family':      (('type', 'family'),
+                           'The prefix of the type belongs to family, whose prefixes '
+                           'may differ from one another by one letter.'),
+    'prefix_exception':   (('type', 'reason'),
+                           'The prefix of the type breaks the prefix rule, for reason.'),
+    'designation':        (('concept', 'term', 'rating'),
+                           'The concept has the term, rated preferred, admitted or '
+                           'deprecated.'),
     'relation_inverse':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
     'register_entry_key': (('register', 'key', 'id'),
@@ -975,6 +991,16 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
 
     if node.get(KEY_ACYCLIC) is True:
         facts['relation_acyclic'].add((id_self,))
+
+    for key in (KEY_FAMILY, KEY_EXCEPTION):
+        if isinstance(node.get(key), str):
+            facts[key].add((id_self, node[key].strip()))
+
+    for (key, rating) in MAP_TERM_RATING.items():
+        value     = node.get(key)
+        list_term = [value] if isinstance(value, str) else _list_str(value)
+        for term in list_term:
+            facts['designation'].add((id_self, term, rating))
 
     inverse = node.get(KEY_INVERSE)
 
