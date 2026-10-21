@@ -43,6 +43,24 @@ properties:
                         The same sentence written so that it breaks
                         the rule.
 
+  replacement:
+    type:               object
+    minProperties:      1
+
+    propertyNames:
+      pattern:          ^[a-z]+$
+
+    additionalProperties:
+      type:             string
+      pattern:          ^[a-z]+$
+
+    description:        |
+                        Optional. Words the rule asks to replace, each
+                        mapped to the word to write in its place. A
+                        check reports each use in the text of an item,
+                        whatever its case, outside double quotes and
+                        the breaks example.
+
   enforcement:
     $ref:               '#/$defs/enforcement'
     description:        |

@@ -63,6 +63,8 @@ KEY_INVERSE       = 'inverse'
 KEY_ALIAS         = 'alias'
 KEY_ACYCLIC       = 'acyclic'
 KEY_FAMILY        = 'prefix_family'
+KEY_REPLACEMENT   = 'replacement'
+KEY_BREAKS        = 'breaks'
 KEY_EXCEPTION     = 'prefix_exception'
 
 # The fields of a concept that hold its terms, by the rating of each.
@@ -98,6 +100,12 @@ REGEX_MENTION     = re.compile(r'(?<![A-Za-z0-9_$./-])[a-z]{1,8}_[a-z0-9][a-z0-9
                                r'(?:\.[a-z0-9_][a-z0-9_]*)*')
 REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|dl|toml|json|md)$')
 MARK_GLOB         = '*'
+
+# A word, and a span in double quotes, which quotes another's words as
+# they were written and so is not held to the rules of the text around it.
+#
+REGEX_WORD        = re.compile(r'[A-Za-z]+')
+REGEX_QUOTED      = re.compile(r'"[^"\n]*"')
 REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
 PREFIX_ID         = 'id_'
@@ -165,6 +173,12 @@ RELATION          = {
                            'may differ from one another by one letter.'),
     'prefix_exception':   (('type', 'reason'),
                            'The prefix of the type breaks the prefix rule, for reason.'),
+    'word_replacement':   (('rule', 'avoided', 'preferred'),
+                           'The writing style rule asks for preferred in place of the '
+                           'word avoided.'),
+    'avoided_word':       (('holder', 'word', 'file', 'line:number'),
+                           'The text of a field of the item holder uses word, which a '
+                           'writing style rule asks to replace, in file at line.'),
     'designation':        (('concept', 'term', 'rating'),
                            'The concept has the term, rated preferred, admitted or '
                            'deprecated.'),
@@ -432,7 +446,8 @@ def facts_of(map_document: Documents) -> Facts:
 
     """
 
-    facts = {name: set() for name in RELATION}
+    facts                     = {name: set() for name in RELATION}
+    facts['word_replacement'] = _replacements(map_document)
 
     for (file, (document, base)) in map_document.items():
         if file == file_of(file):
@@ -462,6 +477,27 @@ def facts_of(map_document: Documents) -> Facts:
                                       module_name(pathlib.Path(file))))
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _replacements(map_document: Documents) -> set[tuple[str, str, str]]:
+    """
+    Return the rule, the avoided word and the preferred word of each
+    replacement that a register entry lists. They are read before any
+    text, so that every text can be judged against all of them.
+
+    """
+
+    set_row = set()
+
+    for (document, _) in map_document.values():
+        table = document.get(KEY_TABLE) if isinstance(document, dict) else None
+        for entry in _map(table).values():
+            if isinstance(entry, dict):
+                for (avoided, preferred) in _map(entry.get(KEY_REPLACEMENT)).items():
+                    set_row.add((str(entry.get(KEY_ID_SELF)), str(avoided), str(preferred)))
+
+    return set_row
 
 
 # -----------------------------------------------------------------------------
@@ -916,21 +952,29 @@ def _text(node:     dict[str, typing.Any],
                                          _line(node, key, location)))
         if key in SET_KEY_UNNAMED or key.startswith((PREFIX_ID, PREFIX_GUID)):
             continue
+        is_judged = key != KEY_BREAKS
         if isinstance(value, str):
-            _mention(value, holder, location[0], int(_line(node, key, location)), facts)
+            _mention(value, holder, location[0], int(_line(node, key, location)), facts,
+                     is_judged)
         elif isinstance(value, list):
             for (index, each) in enumerate(value):
                 if isinstance(each, str):
                     _mention(each, holder, location[0],
-                             int(_line_item(value, index, location)), facts)
+                             int(_line_item(value, index, location)), facts, is_judged)
 
 
 # -----------------------------------------------------------------------------
-def _mention(text: str, holder: str, file: str, line: int, facts: Facts) -> None:
+def _mention(text:      str,
+             holder:    str,
+             file:      str,
+             line:      int,
+             facts:     Facts,
+             is_judged: bool = True) -> None:
     """
-    Add a fact for each id that text mentions. line is the line of the
-    file that the field holding text is on. The text of a block scalar
-    begins on the line below its key.
+    Add a fact for each id that text mentions, and, if is_judged, for
+    each word outside double quotes that a writing style rule asks to
+    replace. line is the line of the file that the field holding text
+    is on. The text of a block scalar begins on the line below its key.
 
     """
 
@@ -942,6 +986,19 @@ def _mention(text: str, holder: str, file: str, line: int, facts: Facts) -> None
         word = REGEX_SUFFIX.sub('', match.group(0))
         facts['mention'].add((holder, word, file,
                               str(line + offset + text.count('\n', 0, match.start()))))
+
+    set_avoided = {row[1] for row in facts['word_replacement']}
+
+    if not (is_judged and set_avoided):
+        return
+
+    unquoted = REGEX_QUOTED.sub(lambda match: ' ' * len(match.group(0)), text)
+
+    for match in REGEX_WORD.finditer(unquoted):
+        word = match.group(0).lower()
+        if word in set_avoided:
+            facts['avoided_word'].add((holder, word, file,
+                                       str(line + offset + text.count('\n', 0, match.start()))))
 
 
 # -----------------------------------------------------------------------------
