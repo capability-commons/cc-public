@@ -23,7 +23,7 @@ description:            |
                         Tufte: serif text, a margin for notes, and
                         color only in marks that carry meaning. The
                         pages change nothing.
-relation:               []
+edge:                   []
 
 ...
 """

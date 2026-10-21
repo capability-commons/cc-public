@@ -30,7 +30,7 @@ description:            |
                         not an error here: it gives a row of
                         unreadable, so that the checker reports it
                         with every other failure.
-relation:               []
+edge:                   []
 
 ...
 """

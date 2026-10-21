@@ -19,7 +19,7 @@ description:            |
                         the gate over the staged content of a
                         repository and prints the verdict of each
                         stage, and the output of each that fails.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -27,7 +27,7 @@ description:            |
                         is set apart from what was checked, and each
                         id the prose names links to its item, shown by
                         its title.
-relation:               []
+edge:                   []
 
 ...
 """

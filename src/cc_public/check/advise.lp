@@ -26,7 +26,7 @@
 %                         same program as lpf_cc_public.check.check,
 %                         after the facts of the base relations and the
 %                         rules of lpf_cc_public.graph.derive.
-% relation:               []
+% edge:                   []
 %
 % ...
 

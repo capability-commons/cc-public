@@ -20,7 +20,7 @@ description:            |
                         commit message around a new commit item, and
                         message check, which the commit-msg hook runs
                         on each message.
-relation:               []
+edge:                   []
 
 ...
 """

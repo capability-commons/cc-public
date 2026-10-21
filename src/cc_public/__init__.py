@@ -19,7 +19,7 @@ description:            |
                         of facts, the checker and the command line
                         interface.
 
-relation:
+edge:
 
   - id_relation:        r_realizes
     guid_relation:      r_2b5f499c599a435c9a5184462525dd9b

@@ -53,7 +53,7 @@ description:            |
                         for every pair of two relations is slow:
                         @prefix finds the prefix of an id once, where
                         @match would try it against every type.
-relation:               []
+edge:                   []
 
 ...
 """

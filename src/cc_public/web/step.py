@@ -28,7 +28,7 @@ description:            |
                         port carries, links to the row of the port in
                         the table that follows the drawing, and is
                         dashed if the port is optional.
-relation:               []
+edge:                   []
 
 ...
 """

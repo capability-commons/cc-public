@@ -40,7 +40,7 @@ description:            |
                         schema sch_interface_control_document names,
                         with the question the schema asks of it and
                         what the surface states, if anything.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -58,7 +58,7 @@ PREFIX_INTERFACE  = 'icd_'
 PREFIX_MEMBER     = 'icm_'
 R_REALIZES        = 'r_realizes'
 KEY_ID_SELF       = cc_public.web.argument.KEY_ID_SELF
-KEY_RELATION      = cc_public.web.argument.KEY_RELATION
+KEY_EDGE          = cc_public.web.argument.KEY_EDGE
 KEY_PARAMETER     = 'parameter'
 KEY_RETURNS       = 'returns'
 KEY_SURFACE       = 'surface'
@@ -439,7 +439,7 @@ def _walk(node: object, tuple_key: tuple) -> list[tuple[str, str, dict]]:
         group = tuple_key[-2] if len(tuple_key) >= 2 else ''
         return [(group, str(node.get('name', tuple_key[-1] if tuple_key else id_self)), node)]
 
-    return [found for (key, value) in node.items() if key != KEY_RELATION
+    return [found for (key, value) in node.items() if key != KEY_EDGE
             for found in _walk(value, (*tuple_key, key))]
 
 

@@ -21,7 +21,7 @@ description:            |
                         statement of a requirement, which is never
                         stored, and the module that raises the
                         questions and characteristics of its review.
-relation:               []
+edge:                   []
 
 ...
 """

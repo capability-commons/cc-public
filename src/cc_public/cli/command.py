@@ -22,7 +22,7 @@ description:            |
                         else. The commands live with their kind, and
                         what the commands share lives in the group
                         module.
-relation:               []
+edge:                   []
 
 ...
 """

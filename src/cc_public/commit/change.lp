@@ -29,7 +29,7 @@
 %                         facts of the base relations and the rules of
 %                         lpf_cc_public.graph.derive come before this
 %                         file in the program.
-% relation:               []
+% edge:                   []
 %
 % ...
 

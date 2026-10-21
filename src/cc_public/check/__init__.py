@@ -20,7 +20,7 @@ description:            |
                         program rules over the facts that
                         cc_public.graph extracts, and the module that
                         evaluates them.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -26,7 +26,7 @@ description:            |
                         and is cut at --limit rows, with a note on
                         stderr of how many were left out. A jq query
                         prints one result to a line.
-relation:               []
+edge:                   []
 
 ...
 """

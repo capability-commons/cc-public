@@ -27,7 +27,7 @@ description:            |
                         from derive.lp. It also words an edge as a
                         sentence, from the brief of its relation, and
                         finds the ids that prose mentions.
-relation:               []
+edge:                   []
 
 ...
 """

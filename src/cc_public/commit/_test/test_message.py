@@ -19,7 +19,7 @@ description:            |
                         Each test composes or edits a message and
                         checks it against sch_commit as the repository
                         holds it.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -125,7 +125,7 @@ def test_an_id_that_does_not_end_with_the_guid_is_reported():
 
 
 def test_a_verdict_field_is_reported():
-    text = _message().replace('relation:', 'status:                 clean\nrelation:')
+    text = _message().replace('edge:', 'status:                 clean\nedge:')
     assert _found(text) == [
         "item: Unevaluated properties are not allowed ('status' was unexpected)"]
 

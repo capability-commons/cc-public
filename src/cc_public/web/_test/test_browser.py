@@ -29,7 +29,7 @@ description:            |
                         installed (pixi run browsers). CC_CHROMIUM
                         names a Chromium to use instead of
                         Playwright's own.
-relation:               []
+edge:                   []
 
 ...
 """

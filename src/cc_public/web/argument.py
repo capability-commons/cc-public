@@ -26,7 +26,7 @@ description:            |
                         standing of each option, upheld, rejected or
                         open, follows from the ruling of the decision,
                         of which there is at most one.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -45,7 +45,7 @@ KEY_ID_SELF       = 'id_self'
 KEY_TITLE         = 'title'
 KEY_BRIEF         = 'brief'
 KEY_DESCRIPTION   = 'description'
-KEY_RELATION      = 'relation'
+KEY_EDGE          = 'edge'
 KEY_ID_RELATION   = 'id_relation'
 KEY_ID_TARGET     = 'id_target'
 
@@ -316,19 +316,19 @@ def _collect(node: typing.Any, map_item: dict[str, Item], file: str = '') -> Non
                                  title       = _text(node.get(KEY_TITLE)),
                                  brief       = _text(node.get(KEY_BRIEF)),
                                  description = _text(node.get(KEY_DESCRIPTION)),
-                                 map_edge    = _edges(node.get(KEY_RELATION)),
+                                 map_edge    = _edges(node.get(KEY_EDGE)),
                                  node        = node,
                                  file        = file)
 
     for (key, value) in node.items():
-        if key != KEY_RELATION:
+        if key != KEY_EDGE:
             _collect(value, map_item, file)
 
 
 # -----------------------------------------------------------------------------
 def _edges(value: typing.Any) -> dict[str, list[str]]:
     """
-    Return the targets of the edges in the relation list value, keyed
+    Return the targets of the edges in the edge list value, keyed
     by relation.
 
     """

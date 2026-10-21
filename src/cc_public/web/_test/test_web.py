@@ -20,7 +20,7 @@ description:            |
                         whose one settled decision is
                         dec_cross_item_checks_engine, and checks the
                         argument gathered or the page served.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -982,5 +982,5 @@ surface:
                         Kept for seven days, then removed by the
                         logger.
 
-relation:               []
+edge:                   []
 """

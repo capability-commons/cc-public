@@ -25,7 +25,7 @@ note:                   |
                         A stage's output is matched by how it begins,
                         since an interpreter may add warnings of its
                         own after it.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -46,7 +46,7 @@ usage:                  |
                         The commit-msg hook in .githooks runs the
                         check on every commit, and the
                         prepare-commit-msg hook runs draft before it.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -79,7 +79,7 @@ KEY_GUID_SELF   = cc_public.graph.extract.KEY_GUID_SELF
 KEY_TITLE       = 'title'
 KEY_BRIEF       = 'brief'
 KEY_DESCRIPTION = 'description'
-KEY_RELATION    = 'relation'
+KEY_EDGE        = 'edge'
 
 # The subject lines that git drafts for a merge and for a revert. A
 # merge into the main branch is drafted without the branch it is into.
@@ -125,7 +125,7 @@ def compose(title:       str,
 
     if description:
         item[KEY_DESCRIPTION] = description
-    item[KEY_RELATION] = []
+    item[KEY_EDGE] = []
 
     body = cc_public.edit.layout.format(
                 '\n'.join(cc_public.edit.layout.dump(item, 0)) + '\n')

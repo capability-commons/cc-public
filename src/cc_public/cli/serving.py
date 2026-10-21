@@ -18,7 +18,7 @@ description:            |
                         This module holds the serve command, which
                         serves the review pages of a tree until
                         interrupted.
-relation:               []
+edge:                   []
 
 ...
 """

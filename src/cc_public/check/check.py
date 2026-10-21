@@ -32,7 +32,7 @@ description:            |
 usage:                  |
                         cctool check [--root DIR]
 
-relation:
+edge:
 
   - id_relation:        r_realizes
     guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -113,7 +113,7 @@ def check(root: pathlib.Path) -> Failures:
                             keyed by check, with the checks that pass left
                             out.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -147,7 +147,7 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
                             under root, each keyed by check, with the
                             checks that find nothing left out.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -193,7 +193,7 @@ def check_documents(map_document: cc_public.graph.extract.Documents,
                             so that a document the edit leaves as it was
                             is not validated against its schema again.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -232,7 +232,7 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
                             earlier review, under the same rules, are not
                             reviewed again.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -312,7 +312,7 @@ def columns() -> dict[str, tuple[str, ...]]:
                             Return the names of the columns of each check,
                             keyed by check.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
@@ -352,7 +352,7 @@ def wording() -> dict[str, dict[str, str]]:
                             Return what a row of each check records, and
                             what to do about it, keyed by check.
 
-    relation:
+    edge:
 
       - id_relation:        r_realizes
         guid_relation:      r_2b5f499c599a435c9a5184462525dd9b

@@ -19,7 +19,7 @@ description:            |
                         Each test changes a copy of the repository and
                         compares the result with the copy as it was
                         before.
-relation:               []
+edge:                   []
 
 ...
 """

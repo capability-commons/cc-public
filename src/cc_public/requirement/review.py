@@ -35,7 +35,7 @@ description:            |
                         INCOSE Guide to Writing Requirements sets for
                         a single requirement, each with the question
                         it asks and what the tree says toward it.
-relation:               []
+edge:                   []
 
 ...
 """

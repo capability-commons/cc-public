@@ -40,7 +40,7 @@ usage:                  |
 
                         Run before each commit by
                         .githooks/pre-commit.
-relation:               []
+edge:                   []
 
 ...
 """

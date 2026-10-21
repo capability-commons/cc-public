@@ -45,7 +45,7 @@ usage:                  |
                         cctool batch FILEPATH
 
                         cctool format [--check]
-relation:               []
+edge:                   []
 
 ...
 """

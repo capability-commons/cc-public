@@ -21,7 +21,7 @@ description:            |
                         heading and an alias, and its type as a tag.
                         Each item it names is a wikilink to that note,
                         shown by its title.
-relation:               []
+edge:                   []
 
 ...
 """

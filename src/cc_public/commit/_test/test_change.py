@@ -19,7 +19,7 @@ description:            |
                         Each test commits a copy of the repository,
                         stages a change to it, and checks the change
                         under a commit item.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -25,7 +25,7 @@ description:            |
                         sentence is a list of parts, text or a link to
                         an item, which pym_cc_public.web.page lays
                         out.
-relation:               []
+edge:                   []
 
 ...
 """

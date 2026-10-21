@@ -20,7 +20,7 @@ description:            |
                         repository's data items, and checks its
                         output, its notes on stderr and its exit
                         status.
-relation:               []
+edge:                   []
 
 ...
 """

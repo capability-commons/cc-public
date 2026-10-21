@@ -19,7 +19,7 @@ description:            |
                         Each test composes a requirement written in
                         the test, and one composes every requirement
                         in a copy of the repository.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -43,7 +43,7 @@ def _requirement(**map_field):
     requirement = {'modal_verb': 'shall',
                    'activity':   'autonomous',
                    'object':     'each failure',
-                   'relation':   [{'id_relation': id_relation, 'id_target': id_target}
+                   'edge':       [{'id_relation': id_relation, 'id_target': id_target}
                                   for (id_relation, id_target) in list_edge]}
     requirement.update(map_field)
     return requirement
@@ -79,11 +79,11 @@ def test_an_interface_is_able_to():
 
 @pytest.mark.parametrize('requirement', [
     _requirement(condition = 'the tree is read'),
-    _requirement(relation = []),
-    _requirement(activity = 'interaction', relation = [{'id_relation': 'r_has_subject',
-                                                       'id_target':   'lco_x'},
-                                                      {'id_relation': 'r_has_process',
-                                                       'id_target':   'concept_x'}]),
+    _requirement(edge = []),
+    _requirement(activity = 'interaction', edge = [{'id_relation': 'r_has_subject',
+                                                   'id_target':   'lco_x'},
+                                                  {'id_relation': 'r_has_process',
+                                                   'id_target':   'concept_x'}]),
     _requirement(object = '')])
 def test_slots_that_do_not_compose_are_refused(requirement):
     with pytest.raises(cc_public.requirement.compose.ErrorCompose):

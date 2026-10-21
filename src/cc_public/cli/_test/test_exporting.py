@@ -19,7 +19,7 @@ description:            |
                         Each test exports a copy of the repository's
                         data items to a folder, and checks the pages
                         written, or the refusal and its exit status.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -26,7 +26,7 @@ description:            |
                         concepts. The format is specified at
                         https://github.com/GoogleCloudPlatform/open-knowledge-format
                         (SPEC.md, fetched 2026-10-19).
-relation:               []
+edge:                   []
 
 ...
 """

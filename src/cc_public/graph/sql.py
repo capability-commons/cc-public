@@ -25,7 +25,7 @@ description:            |
                         languages. The prose of each item is in
                         item_text, a full-text table. A query changes
                         nothing outside the database it runs in.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -20,7 +20,7 @@ description:            |
                         check the operations a form makes; a few send
                         a form to the server, which checks the whole
                         tree, and see what it writes.
-relation:               []
+edge:                   []
 
 ...
 """

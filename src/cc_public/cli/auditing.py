@@ -26,7 +26,7 @@ description:            |
 usage:                  |
                         cctool history check [RANGE] [--gate]
                         [--pre-push REMOTE]
-relation:               []
+edge:                   []
 
 ...
 """

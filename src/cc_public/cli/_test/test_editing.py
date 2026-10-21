@@ -19,7 +19,7 @@ description:            |
                         Each test runs a command over a copy of the
                         repository, and checks what it writes, what it
                         prints and its exit status.
-relation:               []
+edge:                   []
 
 ...
 """
