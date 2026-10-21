@@ -230,6 +230,7 @@ table:
 
                         The shape of the relation register is defined
                         by the sch_reg_relation schema.
+    prefix_exception:   The change to rel is deferred so that it can be made in one commit with any rename of the relation field, which touches the same lines in every item.
     alias:              []
     prefix:             r
     regex_id:           ^r_[a-z][a-z0-9_]*$
@@ -601,6 +602,7 @@ table:
 
                         The shape of python module data items is
                         defined by the sch_python_module schema.
+    prefix_family:      python
     alias:              []
     prefix:             pym
     regex_id:           ^pym_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
@@ -647,6 +649,7 @@ table:
 
                         The shape of python package data items is
                         defined by the sch_python_package schema.
+    prefix_family:      python
     alias:              []
     prefix:             pyp
     regex_id:           ^pyp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
@@ -863,6 +866,10 @@ table:
                         Ruling data items travel on their own, one per
                         file, in the folder of the decision whose
                         options they settle.
+
+                        The prefix is the whole word ruling, because
+                        rul would read as rule and differ by one
+                        letter from rol, the prefix of roles.
 
                         A decision has at most one ruling. A change of
                         ruling edits it in place, and what was
@@ -1112,6 +1119,8 @@ table:
     regex_id:           ^pycls_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
     id_concept:         concept_python_class
     guid_concept:       concept_c97a730397514643a1b48c4db6fd2c0d
+    prefix_family:      python
+    prefix_exception:   pyc would read as the extension of compiled python files, so the python family takes cls, the usual python abbreviation of class, after py.
     alias:              []
 
     relation:
@@ -1159,6 +1168,7 @@ table:
     regex_id:           ^pyf_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
     id_concept:         concept_python_function
     guid_concept:       concept_b1d0fdbdcfb7433cb286712549529807
+    prefix_family:      python
     alias:              []
 
     relation:
@@ -1205,6 +1215,7 @@ table:
     regex_id:           ^icd_[a-z][a-z0-9_]*$
     id_concept:         concept_interface_control_document
     guid_concept:       concept_3f8513f2edef4a7c838f5c7f2de04aed
+    prefix_family:      interface_control
     alias:              []
 
     relation:
@@ -1255,6 +1266,7 @@ table:
     regex_id:           ^icm_[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$
     id_concept:         concept_interface_member
     guid_concept:       concept_52b54cfa0bcd4c698504fe99bd0bc85a
+    prefix_family:      interface_control
     alias:              []
 
     relation:
@@ -1297,6 +1309,7 @@ table:
     regex_id:           ^dfg_[a-z][a-z0-9_]*$
     id_concept:         concept_dataflow_graph
     guid_concept:       concept_269cf965b22a4a168e33b3b3e4c37f9d
+    prefix_family:      dataflow
 
     alias:
       - type_system_configuration
@@ -1337,6 +1350,7 @@ table:
     regex_id:           ^dfn_[a-z][a-z0-9_]*\.[a-z0-9_]+$
     id_concept:         concept_dataflow_node
     guid_concept:       concept_47a87aafdcaa4281982ae0d00c299aa7
+    prefix_family:      dataflow
 
     alias:
       - type_node
