@@ -263,7 +263,7 @@ def test_a_field_that_names_an_item_at_any_depth_is_given_its_guid(tree, zero):
     assert ['guid_owner:', cc_public.edit.edit.Tree(tree).guid('lco_tooling')] in list_pair
 
 
-def test_a_link_turns_an_empty_relation_into_a_list(tree):
+def test_a_link_turns_an_empty_edge_field_into_a_list(tree):
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN, 'link': []},
                        {'link': ['ann_x', 'relation_is_about', 'concept_concept']}) == {}
     assert (tree / '_data/annotation/ann_x.yaml').read_text().endswith(
@@ -590,7 +590,7 @@ def test_unlink_takes_one_edge_out_and_keeps_the_others(tree):
         'whatever they change.\n\n' + TEXT_ABOUT)
 
 
-def test_unlink_of_the_last_edge_leaves_an_empty_relation(tree):
+def test_unlink_of_the_last_edge_leaves_an_empty_edge_field(tree):
     edited = cc_public.edit.edit.Tree(tree)
     cc_public.edit.edit.batch(edited, [{'new': 'ann_x', 'field': FIELD_ANN,
                                         'link': [['relation_is_about', 'concept_concept']]},
