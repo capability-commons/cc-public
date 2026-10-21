@@ -21,7 +21,7 @@
 %                         file is placed before the rules in every
 %                         program: the checks, a query, and the program
 %                         that fills the derived tables for SQL.
-% relation:               []
+% edge:                   []
 %
 % ...
 

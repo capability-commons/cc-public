@@ -20,7 +20,7 @@ description:            |
                         repository, and checks the text it writes and
                         the failures it adds. A new guid is made from
                         zeros, so that the text is known.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -38,7 +38,7 @@ from cc_public.conftest import DIR_REPO
 
 
 HEX_ZERO      = '0' * 32
-TEXT_ABOUT    = ('relation:\n'
+TEXT_ABOUT    = ('edge:\n'
                  '\n'
                  '  - id_relation:        r_is_about\n'
                  '    guid_relation:      r_17ca99102b0b431b85235445a4635ae8\n'
@@ -154,7 +154,7 @@ def test_a_new_entry_is_written_at_the_end_of_its_register(tree, zero):
         '      - Lines changed, per change.\n'
         '\n'
         '    alias:              []\n'
-        '    relation:           []\n')
+        '    edge:               []\n')
 
 
 def test_a_new_entry_is_written_as_the_first_in_an_empty_register(tree, zero):
@@ -185,7 +185,7 @@ def test_a_new_entry_is_written_as_the_first_in_an_empty_register(tree, zero):
         '      - Lines changed, per change.\n'
         '\n'
         '    alias:              []\n'
-        '    relation:           []\n')
+        '    edge:               []\n')
 
 
 def test_an_edit_that_adds_a_failure_is_refused_and_not_written(tree):
@@ -411,7 +411,7 @@ def test_header_puts_a_module_docstring_above_the_code(tree, zero):
                                 '                        An extra module.\n'
                                 'description:            |\n'
                                 '                        It is extra.\n'
-                                'relation:               []\n'
+                                'edge:                   []\n'
                                 '\n'
                                 '...\n'
                                 '"""\n'
@@ -434,7 +434,7 @@ def test_header_makes_a_logic_program_file_that_is_not_there(tree, zero):
     assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp', 'field': FIELD_HEADER}) == {}
     text = (tree / 'src/cc_public/edit/extra.lp').read_text()
     assert text.startswith('% ---\n%\n% id_self:                lpf_cc_public.edit.extra\n')
-    assert text.endswith('% relation:               []\n%\n% ...\n')
+    assert text.endswith('% edge:                   []\n%\n% ...\n')
 
 
 @pytest.mark.parametrize(('operation', 'message'), [
@@ -482,7 +482,7 @@ def test_header_turns_the_docstring_of_a_method_into_its_item(tree, zero):
         '        title:                  Run\n'
         '        brief:                  |\n'
         '                                Run it.\n'
-        '        relation:               []\n'
+        '        edge:                   []\n'
         '\n'
         '        ...\n'
         '        """\n'
@@ -505,7 +505,7 @@ def test_a_link_from_the_item_of_a_function_keeps_its_indentation(tree):
     path = tree / 'src/cc_public/check/check.py'
     assert _edit(tree, {'link': ['pyf_cc_public.check.check.check', 'r_realizes',
                                  'lco_tooling']}) == {}
-    assert ('    relation:\n'
+    assert ('    edge:\n'
             '\n'
             '      - id_relation:        r_realizes\n') in path.read_text()
 
@@ -596,7 +596,7 @@ def test_unlink_of_the_last_edge_leaves_an_empty_relation(tree):
                                         'link': [['r_is_about', 'concept_concept']]},
                                        {'unlink': ['ann_x', 'r_is_about', 'concept_concept']}])
     assert edited.edit['_data/annotation/ann_x.yaml'].endswith(
-        'whatever they change.\nrelation:               []\n')
+        'whatever they change.\nedge:                   []\n')
 
 
 def test_unset_takes_out_a_field_that_set_added(tree):

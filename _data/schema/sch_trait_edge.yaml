@@ -1,6 +1,6 @@
 $schema:                https://json-schema.org/draft/2020-12/schema
-$id:                    https://capability-commons.org/schema/sch_trait_relation.yaml
-id_self:                sch_trait_relation
+$id:                    https://capability-commons.org/schema/sch_trait_edge.yaml
+id_self:                sch_trait_edge
 guid_self:              sch_74e6e0e2abdc4d839c2f297618e73541
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -10,7 +10,7 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Relation trait
+title:                  Edge trait
 brief:                  |
                         Trait with the outgoing traceability edges.
 description:            |
@@ -33,7 +33,8 @@ note:                   |
                         a _self field, because an edge declares
                         nothing. It only refers, twice, and each
                         reference has a field of its own (relation or
-                        target). See sch_trait_identity.yaml for the
+                        target). The relation is the type of the edge.
+                        See sch_trait_identity.yaml for the
                         convention.
 
                         This is a trait of its own. It is composed
@@ -42,18 +43,17 @@ note:                   |
 type:                   object
 
 required:
-  - relation
+  - edge
 
 properties:
 
-  relation:
+  edge:
     type:               array
     description:        |
                         Outgoing traceability edges to other
                         addressable items. Required wherever this
                         trait is composed; use an empty array where
-                        there are no outgoing relations (relation:
-                        []).
+                        there are no outgoing edges (edge: []).
 
     items:
       $ref:             '#/$defs/edge'

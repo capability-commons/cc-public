@@ -88,7 +88,7 @@ description:            |
                         rejecting of an option with a reason. Uphold
                         waits, greyed, while a driver of the decision
                         is unargued.
-relation:               []
+edge:                   []
 
 ...
 """

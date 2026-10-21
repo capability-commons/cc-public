@@ -35,7 +35,7 @@ description:            |
 usage:                  |
                         Called by the commands of
                         pym_cc_public.cli.editing.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -59,7 +59,7 @@ import cc_public.graph.extract
 
 KEY_ID_SELF       = 'id_self'
 KEY_GUID_SELF     = 'guid_self'
-KEY_RELATION      = 'relation'
+KEY_EDGE          = 'edge'
 KEY_ALIAS         = 'alias'
 KEY_TABLE         = 'table'
 KEY_ID_RELATION   = 'id_relation'
@@ -95,7 +95,7 @@ TUPLE_KEY_LEAD    = ('$schema', '$id')
 #
 MAP_KEY_FIXED     = {KEY_ID_SELF:   'cctool rename changes an id',
                      KEY_GUID_SELF: 'a guid never changes',
-                     KEY_RELATION:  'cctool link and cctool unlink change edges',
+                     KEY_EDGE:  'cctool link and cctool unlink change edges',
                      KEY_ALIAS:     'cctool rename keeps the old id as an alias'}
 SET_KEY_FIXED     = set(MAP_KEY_FIXED)
 
@@ -483,7 +483,7 @@ def _fields(tree:       Tree,
 
     if register is not None:
         map_field[KEY_ALIAS] = []
-    map_field[KEY_RELATION] = [_edge(tree, id_relation, id_target)
+    map_field[KEY_EDGE] = [_edge(tree, id_relation, id_target)
                                for (id_relation, id_target) in list_link]
 
     return map_field
@@ -493,39 +493,39 @@ def _fields(tree:       Tree,
 def link(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
     """
     Return the edit that adds an edge of id_relation from id_source to
-    id_target, at the end of the relation field of id_source.
+    id_target, at the end of the edge field of id_source.
 
     """
 
     edge = _edge(tree, id_relation, id_target)
     item = _Item(tree, id_source)
 
-    if KEY_RELATION not in item.node:
-        raise ErrorEdit('{id} has no relation field.'.format(id = id_source))
+    if KEY_EDGE not in item.node:
+        raise ErrorEdit('{id} has no edge field.'.format(id = id_source))
 
-    list_edge = item.node[KEY_RELATION]
+    list_edge = item.node[KEY_EDGE]
     if any(dict(each) == edge for each in list_edge):
         raise ErrorEdit('{id} already has that edge.'.format(id = id_source))
 
-    (start, end) = item.extent(KEY_RELATION)
-    column       = item.column(KEY_RELATION)
+    (start, end) = item.extent(KEY_EDGE)
+    column       = item.column(KEY_EDGE)
 
     if list_edge:
         return item.replace(end, end, cc_public.edit.layout.dump([edge], column + 2))
 
-    return item.replace(start, end, cc_public.edit.layout.dump({KEY_RELATION: [edge]}, column))
+    return item.replace(start, end, cc_public.edit.layout.dump({KEY_EDGE: [edge]}, column))
 
 
 # -----------------------------------------------------------------------------
 def unlink(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
     """
     Return the edit that takes the edge of id_relation from id_source
-    to id_target out of the relation field of id_source.
+    to id_target out of the edge field of id_source.
 
     """
 
     item      = _Item(tree, id_source)
-    list_edge = [_plain(edge) for edge in item.node.get(KEY_RELATION) or []]
+    list_edge = [_plain(edge) for edge in item.node.get(KEY_EDGE) or []]
     pair      = (id_relation, id_target)
     list_keep = [edge for edge in list_edge
                  if (edge.get(KEY_ID_RELATION), edge.get(KEY_ID_TARGET)) != pair]
@@ -534,7 +534,7 @@ def unlink(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit
         raise ErrorEdit('{id} has no edge of {relation} to {target}.'.format(
                                     id = id_source, relation = id_relation, target = id_target))
 
-    return _put_field(item, KEY_RELATION, list_keep)
+    return _put_field(item, KEY_EDGE, list_keep)
 
 
 # -----------------------------------------------------------------------------
@@ -1285,8 +1285,8 @@ def _after(list_key: list[str], key: str) -> str:
             return list_before[-1]
         return KEY_GUID_SELF if KEY_GUID_SELF in list_key else list_key[0]
 
-    list_before = [each for each in list_key if each not in (KEY_ALIAS, KEY_RELATION)]
-    list_tail   = [each for each in list_key if each in (KEY_ALIAS, KEY_RELATION)]
+    list_before = [each for each in list_key if each not in (KEY_ALIAS, KEY_EDGE)]
+    list_tail   = [each for each in list_key if each in (KEY_ALIAS, KEY_EDGE)]
     if list_tail:
         list_before = list_key[:list_key.index(list_tail[0])]
     return list_before[-1]

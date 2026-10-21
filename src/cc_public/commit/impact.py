@@ -25,7 +25,7 @@ description:            |
                         walks the links out from them.
 usage:                  |
                         Run by cctool impact.
-relation:               []
+edge:                   []
 
 ...
 """

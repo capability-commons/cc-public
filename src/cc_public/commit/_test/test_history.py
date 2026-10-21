@@ -19,7 +19,7 @@ description:            |
                         without hooks, as a rebase, a cherry-pick or a
                         clone without hooks would, and checks the
                         commits it made.
-relation:               []
+edge:                   []
 
 ...
 """

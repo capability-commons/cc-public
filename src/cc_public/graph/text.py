@@ -34,7 +34,7 @@ description:            |
                         the other terms of that concept. The hits can
                         also be given to logic program rules as
                         text_hit facts.
-relation:               []
+edge:                   []
 
 ...
 """

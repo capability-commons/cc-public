@@ -32,7 +32,7 @@ description:            |
                         needed. The title of an annotation links to
                         the same annotation opened in the list below
                         the diagram.
-relation:               []
+edge:                   []
 
 ...
 """

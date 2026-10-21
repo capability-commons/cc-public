@@ -22,7 +22,7 @@ description:            |
                         tree, makes the pages of its format, and
                         writes them to the folder it is given, which
                         must be empty unless --replace is passed.
-relation:               []
+edge:                   []
 
 ...
 """

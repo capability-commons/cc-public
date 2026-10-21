@@ -20,7 +20,7 @@ description:            |
                         failure, one line for each. A checker that
                         cannot run is an error, with its own exit
                         status, never a pass.
-relation:               []
+edge:                   []
 
 ...
 """

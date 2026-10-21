@@ -32,7 +32,7 @@ description:            |
                         search finds the items whose id, title or
                         brief hold every word of a query, those that
                         match by id or title first.
-relation:               []
+edge:                   []
 
 ...
 """

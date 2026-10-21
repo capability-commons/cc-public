@@ -22,7 +22,7 @@ description:            |
                         and nothing else, so a check that fires where
                         it should not is caught as surely as one that
                         stays silent.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -174,7 +174,7 @@ def _fields(root, id_self, list_edge = (), guid = None):
             'title':           'Test item',
             'brief':           'A test item.',
             'description':     'A test item.',
-            'relation':        list(list_edge)}
+            'edge':            list(list_edge)}
 
 
 # -----------------------------------------------------------------------------
@@ -915,13 +915,13 @@ def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
 
 def test_a_schema_with_a_string_for_a_subschema_is_reported(tree):
     _replace(tree, '_data/schema/sch_option.yaml',
-             '  - $ref:               https://capability-commons.org/schema/sch_trait_relation.yaml',
-             '  - https://capability-commons.org/schema/sch_trait_relation.yaml')
+             '  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml',
+             '  - https://capability-commons.org/schema/sch_trait_edge.yaml')
     line = _line(tree, '_data/schema/sch_option.yaml',
-                 '  - https://capability-commons.org/schema/sch_trait_relation.yaml')
+                 '  - https://capability-commons.org/schema/sch_trait_edge.yaml')
     assert _check(tree) == {'schema_violation': [
         ('sch_option', 'sch_schema', '_data/schema/sch_option.yaml', line, 'allOf/1',
-         "'https://capability-commons.org/schema/sch_trait_relation.yaml' "
+         "'https://capability-commons.org/schema/sch_trait_edge.yaml' "
          "is not of type 'object', 'boolean'")]}
 
 
@@ -1166,7 +1166,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
                                 'guid_self':  map_guid[id_node],
                                 'brief':      'Node {key}.'.format(key = key),
                                 'os_process': 'main',
-                                'relation':   [edge],
+                                'edge':       [edge],
                                 **(map_node or {}).get(key, {})}
                           for (id_node, key) in ((id_node, id_node.split('.')[1])
                                                  for id_node in map_guid)},
@@ -1236,7 +1236,7 @@ def test_a_node_named_for_another_place_is_reported(tree):
 
 
 def test_a_node_that_presents_no_interface_is_reported(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'relation': []}})
+    _system(tree, LIST_RING, map_node = {'a': {'edge': []}})
     assert _check(tree) == {'interface_count': [('dfn_x.a', '0')]}
 
 

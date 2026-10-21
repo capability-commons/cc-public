@@ -19,7 +19,7 @@ description:            |
                         Each test queries a copy of the repository's
                         data items, and expects exactly the rows that
                         the query should return.
-relation:               []
+edge:                   []
 
 ...
 """

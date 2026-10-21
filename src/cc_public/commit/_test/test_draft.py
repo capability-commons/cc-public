@@ -20,7 +20,7 @@ description:            |
                         stages what a merge or revert would, and
                         checks the drafted message and the commit it
                         records.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -51,7 +51,7 @@ TEXT_ANN = ('id_self:                ann_x\n'
             'brief:                  |\n'
             '                        X.\n'
             '\n'
-            'relation:\n'
+            'edge:\n'
             '\n'
             '  - id_relation:        r_is_about\n'
             '    guid_relation:      r_17ca99102b0b431b85235445a4635ae8\n'

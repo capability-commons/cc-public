@@ -32,7 +32,7 @@ description:            |
 usage:                  |
                         Run by cctool message check, and so by the
                         commit-msg hook, and by cctool history check.
-relation:               []
+edge:                   []
 
 ...
 """

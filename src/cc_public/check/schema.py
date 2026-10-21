@@ -32,7 +32,7 @@ description:            |
                         not be used and is reported already. A $ref
                         that names no schema is reported once, against
                         the schema that holds it.
-relation:               []
+edge:                   []
 
 ...
 """

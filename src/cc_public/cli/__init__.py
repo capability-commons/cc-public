@@ -19,7 +19,7 @@ description:            |
                         commands registered on it. Each module other
                         than command and group holds the commands of
                         one kind.
-relation:               []
+edge:                   []
 
 ...
 """

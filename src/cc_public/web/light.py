@@ -36,7 +36,7 @@ description:            |
                         every mark in it outside the chain; how a mark
                         dims is up to its class, and is set in
                         review.css.
-relation:               []
+edge:                   []
 
 ...
 """

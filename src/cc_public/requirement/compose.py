@@ -25,7 +25,7 @@ description:            |
                         the preferred term of its concept, and the
                         object and the qualifier follow it. Slots that
                         do not compose are refused with ErrorCompose.
-relation:               []
+edge:                   []
 
 ...
 """
@@ -42,7 +42,7 @@ KEY_OBJECT           = 'object'
 KEY_QUALIFIER        = 'qualifier'
 KEY_TITLE            = 'title'
 KEY_TERM_PREFERRED   = 'term_preferred'
-KEY_RELATION         = 'relation'
+KEY_EDGE             = 'edge'
 KEY_ID_RELATION      = 'id_relation'
 KEY_ID_TARGET        = 'id_target'
 
@@ -169,7 +169,7 @@ def _target(requirement: typing.Mapping[str, typing.Any], id_relation: str) -> s
     """
 
     list_target = [edge.get(KEY_ID_TARGET)
-                   for edge in requirement.get(KEY_RELATION) or []
+                   for edge in requirement.get(KEY_EDGE) or []
                    if isinstance(edge, dict) and edge.get(KEY_ID_RELATION) == id_relation]
     if len(list_target) != 1:
         raise ErrorCompose('The requirement has {count} edges of {relation}, not 1.'.format(

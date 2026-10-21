@@ -26,7 +26,7 @@ description:            |
                         pages are written only to an empty folder,
                         unless the pages already in it are to be
                         replaced.
-relation:               []
+edge:                   []
 
 ...
 """

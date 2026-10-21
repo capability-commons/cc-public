@@ -23,7 +23,7 @@ description:            |
                         triple of its relation, with each inverse
                         relation recorded the other way round. A query
                         changes nothing outside the store it runs in.
-relation:               []
+edge:                   []
 
 ...
 """

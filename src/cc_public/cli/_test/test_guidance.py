@@ -23,7 +23,7 @@ description:            |
                         sends an agent the wrong way, so each test
                         reads the code spans of the guides and fails
                         on any name the code does not have.
-relation:               []
+edge:                   []
 
 ...
 """

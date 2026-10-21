@@ -46,7 +46,7 @@ description:            |
                         the item to show in its query as well as its
                         fragment, since a page that sends a form by
                         script is not told the fragment.
-relation:               []
+edge:                   []
 
 ...
 """

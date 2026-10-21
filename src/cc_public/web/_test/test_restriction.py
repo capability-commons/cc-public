@@ -19,7 +19,7 @@ description:            |
                         Each test reads a copy of the repository and
                         checks the sentences of a relation or role
                         page, served or composed.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -26,7 +26,7 @@ description:            |
                         themselves, nested as they are written. The jq
                         program is run as a subprocess, and changes
                         nothing.
-relation:               []
+edge:                   []
 
 ...
 """

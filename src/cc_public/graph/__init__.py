@@ -19,7 +19,7 @@ description:            |
                         This package extracts the facts of a tree,
                         derives relations from them, and evaluates
                         logic program rules and SQL queries over both.
-relation:               []
+edge:                   []
 
 ...
 """

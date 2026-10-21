@@ -19,7 +19,7 @@ description:            |
                         This module holds the group and the exit
                         statuses. A command module imports it and
                         registers its commands on main.
-relation:               []
+edge:                   []
 
 ...
 """

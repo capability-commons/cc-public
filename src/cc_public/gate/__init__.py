@@ -19,7 +19,7 @@ description:            |
                         This package holds the gate that the
                         pre-commit hook runs over the content a commit
                         would record.
-relation:               []
+edge:                   []
 
 ...
 """

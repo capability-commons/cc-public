@@ -43,7 +43,7 @@ note:                   |
                         original, prose differing only in where its
                         lines break. Ported from the printer of the
                         legacy repository, cc-public-legacy-20260918.
-relation:               []
+edge:                   []
 
 ...
 """

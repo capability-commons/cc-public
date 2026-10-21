@@ -39,7 +39,7 @@ description:            |
                         this computer's, is refused, so that another
                         page open in the browser cannot change the
                         tree.
-relation:               []
+edge:                   []
 
 ...
 """

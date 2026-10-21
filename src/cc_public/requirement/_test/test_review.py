@@ -19,7 +19,7 @@ brief:                  |
 description:            |
                         Each test reviews a requirement written in the
                         test.
-relation:               []
+edge:                   []
 
 ...
 """

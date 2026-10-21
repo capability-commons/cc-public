@@ -23,7 +23,7 @@ description:            |
                         decisions the tests name, so the tests neither
                         slow down nor change meaning as the
                         deliberations in the repository grow.
-relation:               []
+edge:                   []
 
 ...
 """

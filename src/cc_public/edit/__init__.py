@@ -21,7 +21,7 @@ description:            |
                         the files that hold them, in the layout of the
                         repository. Each edit is checked before it is
                         written, and refused if it adds a failure.
-relation:               []
+edge:                   []
 
 ...
 """

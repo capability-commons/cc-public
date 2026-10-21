@@ -19,7 +19,7 @@ description:            |
                         This package holds the module that composes a
                         commit message around a new commit item, and
                         checks a message against sch_commit.
-relation:               []
+edge:                   []
 
 ...
 """

@@ -20,7 +20,7 @@ description:            |
                         shares, and one module for each format: an
                         Obsidian vault and an Open Knowledge Format
                         bundle.
-relation:               []
+edge:                   []
 
 ...
 """

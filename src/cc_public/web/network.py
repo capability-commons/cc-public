@@ -33,7 +33,7 @@ description:            |
                         argues, so no two lines cross. A leaf has its
                         title to its right, and an annotation with
                         answers has its title above it.
-relation:               []
+edge:                   []
 
 ...
 """
