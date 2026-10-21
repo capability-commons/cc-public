@@ -53,7 +53,7 @@ TEXT_RIGHTS   = ('copyright:              Copyright 2026 William Payne\n'
                  '    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f\n')
 # A logical component with no drivers, for a decision to be about.
 #
-NEW_SUBJECT   = {'new': 'lc_x', 'field': {'title': 'Subject',
+NEW_SUBJECT   = {'new': 'lco_x', 'field': {'title': 'Subject',
                                           'brief': 'A logical component for a decision.'}}
 FIELD_ANN     = {'title': 'Edits work',
                  'brief': 'The editing commands keep the tree free of new failures, '
@@ -103,7 +103,7 @@ def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
     monkeypatch.setattr(pathlib.Path, 'write_text', _refuse)
     with pytest.raises(cc_public.edit.edit.ErrorEdit, match = 'nothing was changed'):
         _edit(tree, NEW_SUBJECT,
-                    {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'lc_x']]},
+                    {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['r_is_about', 'lco_x']]},
                     {'new': 'opt_x', 'field': FIELD_ANN, 'link': [['r_is_option_for', 'dec_x']]})
     assert [path for path in (tree / '_data/decision/dec_x').rglob('*') if path.is_file()] == []
     assert list(tree.rglob('*' + cc_public.edit.edit.SUFFIX_STAGED)) == []
@@ -256,11 +256,11 @@ def test_a_field_that_names_an_item_at_any_depth_is_given_its_guid(tree, zero):
                                                   'brief':   'X.',
                                                   'example': {'member': {'id_self': 'icm_x.y'},
                                                               'edges':  [{'id_member': 'icm_x.y',
-                                                                          'id_owner':  'lc_tooling'}]}}}])
+                                                                          'id_owner':  'lco_tooling'}]}}}])
     text = edited.text('_data/interface_control_document/icd_x.yaml')
     list_pair = [line.split() for line in text.splitlines()]
     assert ['guid_member:', 'icm_' + HEX_ZERO] in list_pair
-    assert ['guid_owner:', cc_public.edit.edit.Tree(tree).guid('lc_tooling')] in list_pair
+    assert ['guid_owner:', cc_public.edit.edit.Tree(tree).guid('lco_tooling')] in list_pair
 
 
 def test_a_link_turns_an_empty_relation_into_a_list(tree):
@@ -320,7 +320,7 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
 def test_rename_of_a_decision_moves_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'lc_x']]},
+                        'link': [['r_is_about', 'lco_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
                         'link': [['r_is_option_for', 'dec_x']]}) == {}
     assert _edit(tree, {'rename': ['dec_x', 'dec_y']}) == {}
@@ -341,7 +341,7 @@ def test_rename_of_a_relation_changes_the_rules_that_name_it(tree):
 def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'lc_x']]},
+                        'link': [['r_is_about', 'lco_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
                         'link': [['r_is_option_for', 'dec_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
@@ -355,7 +355,7 @@ def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
 def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'lc_x']]},
+                        'link': [['r_is_about', 'lco_x']]},
                        {'new': 'opt_x', 'field': FIELD_ANN,
                         'link': [['r_is_option_for', 'dec_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN,
@@ -369,7 +369,7 @@ def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
 def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,
-                        'link': [['r_is_about', 'lc_x']]},
+                        'link': [['r_is_about', 'lco_x']]},
                        {'new': 'ann_x', 'field': FIELD_ANN},
                        {'link': ['ann_x', 'r_is_about', 'dec_x']}) == {}
     assert sorted(path.name for path in (tree / '_data/decision/dec_x').iterdir()) == [
@@ -504,7 +504,7 @@ def test_header_writes_a_docstring_for_a_function_without_one(tree, zero):
 def test_a_link_from_the_item_of_a_function_keeps_its_indentation(tree):
     path = tree / 'src/cc_public/check/check.py'
     assert _edit(tree, {'link': ['pyf_cc_public.check.check.check', 'r_realizes',
-                                 'lc_tooling']}) == {}
+                                 'lco_tooling']}) == {}
     assert ('    relation:\n'
             '\n'
             '      - id_relation:        r_realizes\n') in path.read_text()

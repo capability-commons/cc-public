@@ -23,8 +23,8 @@ relation:
 
   - id_relation:        r_realizes
     guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
-    id_target:          lc_tooling
-    guid_target:        lc_cf7da552a58d4d2d91ee21271bd0f800
+    id_target:          lco_tooling
+    guid_target:        lco_10147b22f69f495789103cec049b2c6a
 
 ...
 """

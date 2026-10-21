@@ -61,7 +61,7 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   nothing names it yet. Make it in one `batch` with the item that names
   it, such as the annotation or type that uses it.
 - **A deliberation lives in the folder of its decision.** Start one with a
-  decision (`new dec_NAME --link r_is_about lc_NAME`), then give each option
+  decision (`new dec_NAME --link r_is_about lco_NAME`), then give each option
   `--link r_is_option_for dec_NAME` (`option_count` refuses an option that
   is linked to no decision, or to two) and each annotation `--link r_is_about
   dec_NAME`. `new` writes all of them, and rulings, in

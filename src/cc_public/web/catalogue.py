@@ -46,7 +46,7 @@ import cc_public.web.argument
 
 KEY_PREFIX        = 'prefix'
 PREFIX_TYPE       = 't_'
-PREFIX_SUBJECT    = 'lc_'
+PREFIX_SUBJECT    = 'lco_'
 ID_COMPONENT_TYPE = 't_logical_component'
 DELIM_PREFIX      = '_'
 NAME_OTHER        = 'Other'

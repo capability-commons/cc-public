@@ -46,8 +46,8 @@ from cc_public.conftest import DIR_REPO
 
 
 ID_ABOUT     = 'concern_safety'
-ID_SUBJECT   = 'lc_x'
-FILE_SUBJECT = '_data/logical_component/lc_x.yaml'
+ID_SUBJECT   = 'lco_x'
+FILE_SUBJECT = '_data/logical_component/lco_x.yaml'
 DIR_DECISION = '_data/decision/dec_x/'
 REGEX_ANN    = '^ann_[a-z][a-z0-9_]*$'
 
@@ -406,11 +406,11 @@ def test_a_ruling_that_supersedes_is_reported(tree):
 
 
 def test_a_copy_of_an_item_is_reported(tree):
-    path = tree / '_data/logical_component/lc_tooling.yaml'
-    (tree / '_data/logical_component/lc_tooling_copy.yaml').write_text(path.read_text())
+    path = tree / '_data/logical_component/lco_tooling.yaml'
+    (tree / '_data/logical_component/lco_tooling_copy.yaml').write_text(path.read_text())
     assert _check(tree)['repeated_item'] == [
-        ('lc_tooling', '_data/logical_component/lc_tooling.yaml', '1'),
-        ('lc_tooling', '_data/logical_component/lc_tooling_copy.yaml', '1')]
+        ('lco_tooling', '_data/logical_component/lco_tooling.yaml', '1'),
+        ('lco_tooling', '_data/logical_component/lco_tooling_copy.yaml', '1')]
 
 
 def test_a_ruling_of_nothing_is_reported(tree):
@@ -420,14 +420,14 @@ def test_a_ruling_of_nothing_is_reported(tree):
 
 def _driven_options(tree):
     """
-    Write lc_x, driven by concern_cost, a decision about it, and two
+    Write lco_x, driven by concern_cost, a decision about it, and two
     options that answer the decision.
 
     """
 
-    _item(tree, '_data/logical_component/lc_x.yaml', 'lc_x',
+    _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x',
           [_edge(tree, 'r_is_driven_by', 'concern_cost')])
-    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', 'lco_x')])
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
 
@@ -446,7 +446,7 @@ def test_a_rejection_with_a_driver_unargued_passes(tree):
 
 def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
     _driven_options(tree)
-    _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', 'lc_x')])
+    _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_edge(tree, 'r_is_about', 'lco_x')])
     _item(tree, '_data/decision/dec_y/opt_z.yaml', 'opt_z', [_edge(tree, 'r_is_option_for', 'dec_y')])
     _item(tree, '_data/decision/dec_y/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', 'dec_y'),
                                                           _edge(tree, 'r_challenges', 'opt_z'),
@@ -583,8 +583,8 @@ def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
     # The subject of a requirement must play rol_design_element, which a
     # concern does not.
     _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml',
-             'id_target:          lc_tooling\n'
-             '    guid_target:        ' + _guid_of(tree, 'lc_tooling') + '\n',
+             'id_target:          lco_tooling\n'
+             '    guid_target:        ' + _guid_of(tree, 'lco_tooling') + '\n',
              'id_target:          concern_cost\n'
              '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
     assert _check(tree) == {'restriction_violation': [
@@ -602,7 +602,7 @@ def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
              literal.format(relation = 'r_admits', guid = _guid_of(tree, 'r_admits')),
              literal.format(relation = 'r_excludes', guid = _guid_of(tree, 'r_excludes')))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'r_is_about', ID_ABOUT),
-                                                         _edge(tree, 'r_has_subject', 'lc_tooling')])
+                                                         _edge(tree, 'r_has_subject', 'lco_tooling')])
     failures = _check(tree)
     assert list(failures) == ['restriction_violation']
     assert {row[0] for row in failures['restriction_violation']} == {
