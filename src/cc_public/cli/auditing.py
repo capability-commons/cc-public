@@ -175,7 +175,7 @@ def _gated(root: pathlib.Path, list_tip: list[str]) -> list[str]:
                              'to. both: either.')
 @click.option('--json', 'is_json',
               is_flag = True,
-              help    = 'Print JSON: the touched items and the neighbours, as lists of '
+              help    = 'Print JSON: the touched items and the neighbors, as lists of '
                         'objects.')
 @click.option('--root',
               metavar = 'DIRPATH',
@@ -220,22 +220,22 @@ def impact(rev:       str,
         click.echo(json.dumps(
             {'touched':   [dict(zip(TUPLE_TOUCHED, row, strict = True))
                            for row in result['touched']],
-             'neighbour': [dict(zip(TUPLE_NEIGHBOUR, row, strict = True))
-                           for row in result['neighbour']]}))
+             'neighbor':  [dict(zip(TUPLE_NEIGHBOR, row, strict = True))
+                           for row in result['neighbor']]}))
     else:
         for line in _impact_lines(result):
             click.echo(line)
 
 
 TUPLE_TOUCHED   = ('id', 'delta', 'was', 'file', 'line')
-TUPLE_NEIGHBOUR = ('id', 'depth', 'via', 'relation', 'direction', 'file', 'line')
+TUPLE_NEIGHBOR  = ('id', 'depth', 'via', 'relation', 'direction', 'file', 'line')
 
 
 # -----------------------------------------------------------------------------
 def _impact_lines(result: cc_public.commit.impact.Impact) -> list[str]:
     """
     Return the lines that show result: each touched item, then each
-    neighbour once, with each link that reaches it written as source,
+    neighbor once, with each link that reaches it written as source,
     relation and target.
 
     """
@@ -250,7 +250,7 @@ def _impact_lines(result: cc_public.commit.impact.Impact) -> list[str]:
     list_line.append('{count} touched.'.format(count = len(result['touched'])))
 
     map_link = {}
-    for (id_item, depth, via, relation, direction, file, line) in result['neighbour']:
+    for (id_item, depth, via, relation, direction, file, line) in result['neighbor']:
         link = (via, relation, id_item) if direction == 'out' else (id_item, relation, via)
         map_link.setdefault((id_item, depth, file, line), []).append(' '.join(link))
 
@@ -262,6 +262,6 @@ def _impact_lines(result: cc_public.commit.impact.Impact) -> list[str]:
         list_line += ['     {link}'.format(link = link) for link in list_link]
     list_line.append('{count} {noun} untouched.'.format(
                          count = len(map_link),
-                         noun  = 'neighbour' if len(map_link) == 1 else 'neighbours'))
+                         noun  = 'neighbor' if len(map_link) == 1 else 'neighbors'))
 
     return list_line

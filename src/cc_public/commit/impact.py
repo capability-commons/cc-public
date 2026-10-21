@@ -91,7 +91,7 @@ def impact_trees(dir_before: pathlib.Path,
 
     touched holds a row for each item the change adds, removes, renames
     or changes: its id, its delta, the id it was if renamed, and the
-    file and line that hold it. neighbour holds a row for each link that
+    file and line that hold it. neighbor holds a row for each link that
     reaches an untouched item, within depth links of a touched one, in
     direction: the item, its depth, the item it is reached from, the
     relation, the direction of the link, and the file and line of the
@@ -126,8 +126,8 @@ def impact_trees(dir_before: pathlib.Path,
 
     return {'touched':   [(*row, *map_place.get(row[0], ('', '')))
                           for row in sorted(rows['touched'], key = order)],
-            'neighbour': [(*row, *map_place.get(row[0], ('', '')))
-                          for row in sorted(rows['neighbour'],
+            'neighbor': [(*row, *map_place.get(row[0], ('', '')))
+                          for row in sorted(rows['neighbor'],
                                             key = lambda row: (int(row[1]), row[0], row[2]))]}
 
 

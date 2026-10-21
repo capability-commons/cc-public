@@ -82,17 +82,17 @@ def _touched(result):
 def _links(result):
     """
     Return the id, depth, via, relation and direction of each
-    neighbour of result.
+    neighbor of result.
 
     """
 
-    return {row[:5] for row in result['neighbour']}
+    return {row[:5] for row in result['neighbor']}
 
 
 # -----------------------------------------------------------------------------
 def test_no_change_touches_nothing(tree, before):
     result = cc_public.commit.impact.impact_trees(before, tree)
-    assert result == {'touched': [], 'neighbour': []}
+    assert result == {'touched': [], 'neighbor': []}
 
 
 # -----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ def test_a_walk_keeps_its_direction(tree, before):
     result = cc_public.commit.impact.impact_trees(before, tree, depth = 2, direction = 'in')
 
     assert _touched(result) == [(ANN, 'changed', '')]
-    assert result['neighbour'] == []
+    assert result['neighbor'] == []
 
 
 # -----------------------------------------------------------------------------
@@ -173,7 +173,7 @@ def test_an_unknown_direction_is_refused(tree, before):
 
 
 # -----------------------------------------------------------------------------
-def test_cctool_impact_prints_each_neighbour_once(tree, monkeypatch):
+def test_cctool_impact_prints_each_neighbor_once(tree, monkeypatch):
     for key in [key for key in os.environ if key.startswith('GIT_')]:
         monkeypatch.delenv(key)
     _git(tree, 'init', '--quiet')
@@ -191,7 +191,7 @@ def test_cctool_impact_prints_each_neighbour_once(tree, monkeypatch):
     assert list_line[:2] == ['changed  {ann}  {file}:1'.format(ann = ANN, file = FILE_ANN),
                              '1 touched.']
     assert '     {ann} r_challenges opt_tooling_in_rust'.format(ann = ANN) in list_line
-    assert list_line[-1] == '8 neighbours untouched.'
+    assert list_line[-1] == '8 neighbors untouched.'
 
 
 def _git(root, *list_arg):

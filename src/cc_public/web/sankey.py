@@ -376,7 +376,7 @@ class _Drawing:
     def _column_options(self, top: float) -> dict[str, float]:
         """
         Draw the options from top down, each a bar of its support
-        above its challenge, labelled with its standing and its tally.
+        above its challenge, labeled with its standing and its tally.
         Return the top of each.
 
         """
@@ -449,7 +449,7 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def _column_concerns(self) -> tuple[dict[str, float], float]:
         """
-        Draw the concerns, each a bar as tall as its weight, labelled
+        Draw the concerns, each a bar as tall as its weight, labeled
         with a link that opens or closes it, and beside each open one
         its annotations. Return the top of each concern, and the bottom
         of what is drawn.
@@ -887,7 +887,7 @@ class _Drawing:
               list_css: list[str] = ()) -> None:
         """
         Add a band of width from x_from and y_from to x_to and y_to, in
-        the colour of role.
+        the color of role.
 
         """
 
