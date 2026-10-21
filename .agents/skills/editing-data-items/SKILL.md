@@ -69,6 +69,11 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   `misplaced_document`.
 - **An annotation or decision is refused without `relation_is_about`**
   (`missing_about`). Give `--link relation_is_about TARGET` with `new`.
+- **A bracketed term is refused unless its concept is used**
+  (`unresolved_term`, `ambiguous_term`). Prose may write `[[item]]` or
+  `[[concept_identifiable_data_item|item]]`; give the holding item, or its
+  register, `cctool link ID relation_uses_concept CONCEPT`. Write the explicit
+  form wherever two used concepts share the term.
 - **A ruling is refused unless it upholds or rejects an option**
   (`no_option_in_ruling`). Give `--link relation_upholds DEC` or
   `--link relation_rejects DEC`. Only record a ruling that a person

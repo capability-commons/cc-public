@@ -122,6 +122,13 @@ unfinished edits of another.
   document; change those by hand.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated.
+- A short term may stand for a longer preferred term in prose, written
+  as a wiki link: `[[item]]` for an admitted term, or
+  `[[concept_identifiable_data_item|item]]` (target first) where the
+  item holding the prose uses two concepts with the same term. The item,
+  or the register that holds it, needs an edge `relation_uses_concept`
+  to each concept it links this way. Brackets are optional but
+  encouraged; quoted text is not read. Never declare the sense on a type.
 
 ## Failures and errors
 
