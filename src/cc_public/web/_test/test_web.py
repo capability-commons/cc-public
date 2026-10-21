@@ -369,6 +369,15 @@ def test_description_moves_sources_to_the_margin_and_keeps_other_brackets(tree):
     assert '>{title}</a>'.format(title = graph.title(ID_UPHELD)) in prose
 
 
+def test_description_links_a_term_to_its_concept_and_shows_the_term(tree):
+    graph = cc_public.web.argument.Graph(tree)
+    text  = 'Each [[concept_item|thing]] is an [[item]].'
+    (list_prose, _) = cc_public.web.description.description(graph, text, 'k')
+    prose = str(htpy.p[list_prose])
+    assert '<a class="term" href="/item/concept_item"' in prose
+    assert '>thing</a> is an item.' in prose
+
+
 def test_decision_page_steps_to_the_decisions_before_and_after(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/decision/' + ID_DECISION)
     text = body.decode()

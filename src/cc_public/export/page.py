@@ -266,12 +266,13 @@ def _prose(value:    typing.Any,
     """
     Return value as markdown: each paragraph of text on a line of its
     own, or a list as a list. Each id it mentions is given as link of
-    it.
+    it, and each term it links as the term.
 
     """
 
     if isinstance(value, list):
         return '\n'.join('- ' + _prose(each, map_item, link) for each in value)
 
-    return '\n\n'.join(cc_public.graph.item.mentions(paragraph, map_item, link)
+    return '\n\n'.join(cc_public.graph.item.mentions(cc_public.graph.item.terms(paragraph),
+                                                    map_item, link)
                        for paragraph in cc_public.graph.item.paragraphs(str(value)))
