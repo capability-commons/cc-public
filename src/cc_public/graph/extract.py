@@ -26,10 +26,10 @@ description:            |
                         its columns and what a row of it means, and is
                         the one place they are declared, for logic
                         programs and for SQL alike. A file that ought
-                        to hold a document but cannot be read is not
-                        an error here: it gives a row of unreadable,
-                        so that the checker reports it with every
-                        other failure.
+                        to hold a YAML document but cannot be read is
+                        not an error here: it gives a row of
+                        unreadable, so that the checker reports it
+                        with every other failure.
 relation:               []
 
 ...
@@ -108,7 +108,7 @@ SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
 SUFFIX_PROGRAM    = '.lp'
 
-# A document opens with this line and closes with the next. In a
+# A YAML document opens with this line and closes with the next. In a
 # comment header each line also begins with the comment marker: # in
 # most files, and % in a logic program.
 #
@@ -127,8 +127,8 @@ MARK_SHEBANG      = '#!'
 #
 SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
 
-# The documents read so far, keyed by the path and the digest of the
-# file that holds each. It is emptied when it holds this many.
+# The YAML documents read so far, keyed by the path and the digest of
+# the file that holds each. It is emptied when it holds this many.
 #
 MAP_READ          = {}
 COUNT_READ        = 4096
@@ -213,7 +213,7 @@ RELATION          = {
                            'The schema holder refers to the schema with a $ref, in '
                            'file at line.'),
     'unreadable':         (('file', 'line:number', 'message'),
-                           'The file ought to hold a document, but cannot be read: '
+                           'The file ought to hold a YAML document, but cannot be read: '
                            'message says why, and line is where.'),
     'interface_port':     (('interface', 'kind', 'name', 'member'),
                            'A dataflow step surface of the interface control document '
@@ -251,11 +251,11 @@ PREFIX_PACKAGE    = 'pyp_'
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
 
-# A class or function holds an item in its docstring, as a module
-# does. Its document is keyed by the path of its file and the names of
+# A class or function holds an item in its docstring, as a module does.
+# Its YAML document is keyed by the path of its file and the names of
 # the definitions down to it, in the form pytest uses:
-# src/cc_public/graph/jq.py::query. Its id is the name of its module
-# and those names, in lower case, under the prefix of its kind.
+# src/cc_public/graph/jq.py::query. Its id is the name of its module and
+# those names, in lower case, under the prefix of its kind.
 #
 DELIM_DEFINITION  = '::'
 MAP_PREFIX_KIND   = {ast.ClassDef:        'pycls_',
@@ -282,11 +282,11 @@ KEY_ID_NODE       = 'id_dataflow_node'
 KEY_ID_PORT       = 'id_port'
 FEEDFORWARD       = 'feedforward'
 
-# What the code says of each class or function that holds a document,
+# What the code says of each class or function that holds a YAML document,
 # by its key: the id its place calls for, the parameters of a function,
-# each as its name and a mapping of the parts of python_signature, and
-# the type it returns. None of it is in the document, so it is noted
-# when the file is read. The receiver of a method is not a parameter.
+# each as its name and a mapping of the parts of python_signature, and the
+# type it returns. None of it is in the document, so it is noted when the
+# file is read. The receiver of a method is not a parameter.
 #
 MAP_DEFINITION    = {}
 SET_RECEIVER      = {'self', 'cls'}
@@ -298,8 +298,8 @@ Documents         = dict[str, tuple[typing.Any, int]]
 # -----------------------------------------------------------------------------
 class ErrorRead(Exception):
     """
-    A file that ought to hold a document cannot be read. line is the
-    line of the file where the fault is.
+    A file that ought to hold a YAML document cannot be read. line is
+    the line of the file where the fault is.
 
     """
 
@@ -317,8 +317,8 @@ class ErrorRead(Exception):
 # -----------------------------------------------------------------------------
 class Unreadable:
     """
-    The document of a file that cannot be read, held in its place in
-    the documents of a tree, with the error that says why.
+    The YAML document of a file that cannot be read, held in its place
+    in the documents of a tree, with the error that says why.
 
     """
 
@@ -356,9 +356,9 @@ def extract(root: pathlib.Path) -> Facts:
 # -----------------------------------------------------------------------------
 def documents(root: pathlib.Path) -> Documents:
     """
-    Return each document in the tree under root, with the line of its
-    file that its first line is on, keyed by the file's path relative
-    to root.
+    Return each YAML document in the tree under root, with the line of
+    its file that its first line is on, keyed by the file's path
+    relative to root.
 
     Documents are read from YAML files under a _data directory, from
     the docstrings of a python module and of its classes and functions,
@@ -404,9 +404,9 @@ def _files(root: pathlib.Path) -> list[pathlib.Path]:
 # -----------------------------------------------------------------------------
 def file_of(key: str) -> str:
     """
-    Return the path of the file that holds the document keyed by key:
-    the key itself for the document of a file, and the part before the
-    first :: for that of a class or function.
+    Return the path of the file that holds the YAML document keyed by
+    key: the key itself for the document of a file, and the part before
+    the first :: for that of a class or function.
 
     """
 
@@ -416,8 +416,8 @@ def file_of(key: str) -> str:
 # -----------------------------------------------------------------------------
 def files(map_document: Documents) -> list[str]:
     """
-    Return the path of each file that holds a document that could be
-    read, in order, once each.
+    Return the path of each file that holds a YAML document that could
+    be read, in order, once each.
 
     """
 
@@ -428,7 +428,7 @@ def files(map_document: Documents) -> list[str]:
 # -----------------------------------------------------------------------------
 def facts_of(map_document: Documents) -> Facts:
     """
-    Return the facts that the documents hold, keyed by relation.
+    Return the facts that the YAML documents hold, keyed by relation.
 
     """
 
@@ -500,7 +500,7 @@ def module_name(relative: pathlib.Path) -> str:
 # -----------------------------------------------------------------------------
 def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
     """
-    Return the documents that the file at path holds, as parse_all
+    Return the YAML documents that the file at path holds, as parse_all
     does. relative is the path of the file relative to the root of the
     tree.
 
@@ -543,10 +543,10 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
 # -----------------------------------------------------------------------------
 def parse_all(text: str, relative: pathlib.Path) -> Documents:
     """
-    Return every document that text holds, as the content of the file
-    at relative: the document of the file, keyed by relative, as parse
-    returns it, and that of each class or function of a python module
-    that holds one, keyed as file_of says. Raise ErrorRead if one
+    Return every YAML document that text holds, as the content of the
+    file at relative: the document of the file, keyed by relative, as
+    parse returns it, and that of each class or function of a python
+    module that holds one, keyed as file_of says. Raise ErrorRead if one
     cannot be read.
 
     """
@@ -566,7 +566,7 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
 def definitions(text: str, relative: pathlib.Path) -> list[tuple]:
     """
     Return, for each class or function of the python module text, at
-    relative, whose docstring holds a document: its key, the id its
+    relative, whose docstring holds a YAML document: its key, the id its
     place calls for, its parameters as _parameters gives them, the type
     it returns as _returns gives it, and the document with the line of
     the file that its first line is on. A class or function is one at the top of the
@@ -682,8 +682,8 @@ def definition_id(relative: pathlib.Path, list_name: list[str], node: ast.AST) -
 # -----------------------------------------------------------------------------
 def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
     """
-    Return the document that text holds, as the content of the file at
-    relative, or None if it holds none, and the line of the file that
+    Return the YAML document that text holds, as the content of the file
+    at relative, or None if it holds none, and the line of the file that
     its first line is on. Raise ErrorRead if it cannot be read.
 
     """
@@ -702,9 +702,9 @@ def parse(text: str, relative: pathlib.Path) -> tuple[typing.Any, int]:
 # -----------------------------------------------------------------------------
 def _docstring(text: str) -> tuple[typing.Any, int]:
     """
-    Return the document in the module docstring of the python module
-    text, or None if it holds none, and the line of the file that its
-    first line is on.
+    Return the YAML document in the module docstring of the python
+    module text, or None if it holds none, and the line of the file that
+    its first line is on.
 
     """
 
@@ -729,8 +729,8 @@ def _module(text: str) -> ast.Module:
 # -----------------------------------------------------------------------------
 def _document_of(node: ast.AST) -> tuple[typing.Any, int] | None:
     """
-    Return the document in the docstring of node, a module, class or
-    function, with the line of the file that its first line is on, or
+    Return the YAML document in the docstring of node, a module, class
+    or function, with the line of the file that its first line is on, or
     None if its docstring holds none.
 
     """
@@ -796,7 +796,7 @@ def mark_comment(relative: pathlib.Path) -> str:
 # -----------------------------------------------------------------------------
 def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int]:
     """
-    Return the document in the comment header that the lines open
+    Return the YAML document in the comment header that the lines open
     with, each line beginning with mark, or None if they do not open
     with one, and the line of the file that its first line is on. A
     line that names an interpreter may come before the header.
@@ -828,7 +828,7 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
     """
     Add the facts held by node, whose nearest enclosing item is holder.
     location is the file that holds node, and the line of the file that
-    the first line of its document is on.
+    the first line of its YAML document is on.
 
     """
 
@@ -1067,7 +1067,7 @@ def _system(document: dict[str, typing.Any],
             facts:    Facts) -> None:
     """
     Add the facts of the dataflow nodes, dataflow edges, OS processes
-    and hosts of document, if it is a dataflow graph: a document
+    and hosts of document, if it is a dataflow graph: a YAML document
     whose dataflow_node field maps each key to an item.
 
     """

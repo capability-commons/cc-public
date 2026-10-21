@@ -10,19 +10,19 @@ protective_mark:
 
 title:                  Layout pass on every run of check
 brief:                  |
-                        The chosen printer adds a pass over every
+                        The chosen printer adds a pass over every YAML
                         document to each cctool check. Today it costs
                         about as much as extraction, and it grows with
                         the tree.
 description:            |
-                        check calls layout.violations over every
+                        check calls layout.violations over every YAML
                         document (src/cc_public/check/check.py lines
                         66-79 at 89c74d8, added in b544e09), with no
                         cache (src/cc_public/edit/layout.py lines
                         106-128). Advocate measurement, 2026-10-15, at
-                        89c74d8 on 122 documents: layout pass 0.81 s
-                        and 0.91 s, extraction 0.59 s and 0.73 s,
-                        check_documents 1.17 s. format_file costs
+                        89c74d8 on 122 YAML documents: layout pass
+                        0.81 s and 0.91 s, extraction 0.59 s and 0.73
+                        s, check_documents 1.17 s. format_file costs
                         about 90 us per line (79 ms for 849 lines of
                         reg_data_item_type.yaml). ASSUMPTION: linear
                         growth puts a tenfold tree near 8 to 9 s per

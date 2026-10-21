@@ -11,12 +11,12 @@ protective_mark:
 title:                  Whole-tree check on every edit
 brief:                  |
                         Each editing command reads the whole tree and
-                        validates every document before it writes one
-                        field, so one small edit takes over two
+                        validates every YAML document before it writes
+                        one field, so one small edit takes over two
                         seconds today and its cost follows the tree,
                         not the edit.
 description:            |
-                        Tree.__init__ reads every document
+                        Tree.__init__ reads every YAML document
                         (src/cc_public/edit/edit.py lines 160-171;
                         src/cc_public/graph/extract.py lines 186-206).
                         apply runs check_documents before and after
@@ -24,7 +24,7 @@ description:            |
                         cache lives within one process
                         (src/cc_public/check/check.py, CACHE_SCHEMA).
                         Measured by the advocate on 2026-10-15 at
-                        89c74d8, 128 files read (122 holding a
+                        89c74d8, 128 files read (122 holding a YAML
                         document), 4 CPUs, Python 3.13: one dry-run
                         set takes about 2.25 s, of which 0.19 s is
                         start-up, 0.70 s reading the tree and about

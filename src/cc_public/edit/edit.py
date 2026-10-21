@@ -113,7 +113,7 @@ SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'file', 'shell'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
-# YAML file is a document already, and JSON and Markdown have no
+# YAML file is a YAML document already, and JSON and Markdown have no
 # comment for a header.
 #
 SET_SUFFIX_BARE   = {'.yaml', '.json', '.md'}
@@ -154,8 +154,8 @@ class ErrorEdit(Exception):
 # -----------------------------------------------------------------------------
 class Tree:
     """
-    The documents of a tree and the facts they hold, read once for an
-    edit, with the texts of the edits made so far in place of those
+    The YAML documents of a tree and the facts they hold, read once for
+    an edit, with the texts of the edits made so far in place of those
     they change.
 
     """
@@ -201,7 +201,7 @@ class Tree:
     # -------------------------------------------------------------------------
     def _index(self) -> None:
         """
-        Find the facts of the documents, and index the items by id.
+        Find the facts of the YAML documents, and index the items by id.
 
         """
 
@@ -789,8 +789,8 @@ def remove(tree: Tree, id_item: str) -> Edit:
 # -----------------------------------------------------------------------------
 def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     """
-    Return the edit that gives the item id_old the id id_new: in its
-    own document, in every reference and mention of it in a document,
+    Return the edit that gives the item id_old the id id_new: in its own
+    YAML document, in every reference and mention of it in a document,
     in every string of a logic program that is id_old, and in the name
     of its file, or of its folder, if it is named for it. A register
     entry keeps id_old in its alias list.
@@ -843,8 +843,8 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
 # -----------------------------------------------------------------------------
 def _renamed_documents(tree: Tree, id_old: str, id_new: str) -> Edit:
     """
-    Return the edit that gives id_old the id id_new in every document
-    that names it.
+    Return the edit that gives id_old the id id_new in every YAML
+    document that names it.
 
     """
 
@@ -1371,7 +1371,7 @@ class _Item:
         text             = tree.text(relative)
         (document, base) = cc_public.graph.extract.parse_all(text, path)[key]
 
-        # The document of a class or function is indented as its
+        # The YAML document of a class or function is indented as its
         # docstring is, and the lines of the document are read and
         # written without that indentation.
         #

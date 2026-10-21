@@ -134,8 +134,8 @@ def impact_trees(dir_before: pathlib.Path,
 # -----------------------------------------------------------------------------
 def digests(root: pathlib.Path, map_document: cc_public.graph.extract.Documents) -> dict:
     """
-    Return a digest of what each item of the documents of the tree at
-    root holds, keyed by its id: its own fields, with each item inside
+    Return a digest of what each item of the YAML documents of the tree
+    at root holds, keyed by its id: its own fields, with each item inside
     it reduced to its id, and, for the item of a file other than a YAML
     document or of a class or function, the source text that holds it.
 
@@ -201,9 +201,9 @@ def _id_of(node: typing.Any) -> str | None:
 # -----------------------------------------------------------------------------
 def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
     """
-    Return the source text of what holds the document keyed by key: the
-    text of the class or function for a key that names one, the text of
-    the file for any file but a YAML document, and nothing otherwise.
+    Return the source text of what holds the YAML document keyed by key:
+    the text of the class or function for a key that names one, the text
+    of the file for any file but a YAML document, and nothing otherwise.
 
     """
 

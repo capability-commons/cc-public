@@ -358,7 +358,7 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
 def _warm(root: pathlib.Path) -> None:
     """
     Read and check the tree under root once, so that the first page and
-    the first form do not wait for every document to be parsed and
+    the first form do not wait for every YAML document to be parsed and
     validated. A request that comes meanwhile waits for it.
 
     """

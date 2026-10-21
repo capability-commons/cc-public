@@ -1395,7 +1395,8 @@ def _trace(graph: Graph, item: Item, list_part: list) -> typing.Any:
     return htpy.section(class_ = 'trace')[
         htpy.h2['Trace'],
         station('Source', traced(R_TO_SOURCE),
-                [htpy.p['Where it was found: a stakeholder, a document or a standard.']]),
+                [htpy.p['Where it was found: a stakeholder, an engineering document or a '
+                        'standard.']]),
         station('Parent', traced(R_TO_PARENT),
                 [htpy.p['The need or requirement it helps to meet.']]),
         station('Rationale', _paragraphs(str(node.get('rationale', ''))),

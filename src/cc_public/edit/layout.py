@@ -26,7 +26,7 @@ description:            |
                         anything written on several lines, and
                         precedes any comment, and scalars pack.
 
-                        format_file lays out the documents a file
+                        format_file lays out the YAML documents a file
                         holds: a YAML file under _data, the docstrings
                         of a python module and of its classes and
                         functions, or the comment header of any other
@@ -38,7 +38,7 @@ usage:                  |
                         use format_file, so that a file is laid out
                         the same way whoever writes it.
 note:                   |
-                        Formatting is idempotent, and a formatted
+                        Formatting is idempotent, and a formatted YAML
                         document reads as the same data as the
                         original, prose differing only in where its
                         lines break. Ported from the printer of the
@@ -77,8 +77,8 @@ REGEX_COMMENT     = re.compile(r'^\s*#')
 REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]{1,2}[.)]) ')
 INDENT_LIST_ITEM  = '  '
 
-# The lines that open and close a document, and the blank lines that
-# frame it inside them.
+# The lines that open and close a YAML document, and the blank lines
+# that frame it inside them.
 #
 LINE_OPEN         = cc_public.graph.extract.LINE_OPEN
 LINE_CLOSE        = cc_public.graph.extract.LINE_CLOSE
@@ -111,10 +111,10 @@ Seq               = ruamel.yaml.comments.CommentedSeq
 # -----------------------------------------------------------------------------
 class Unsupported(Exception):
     """
-    The document is outside the subset this printer lays out: anchors,
-    aliases, tags, comments at the end of a line, nested sequences,
-    folded scalars and documents that are not mappings. Refusing is
-    better than guessing at a layout for them, or dropping them.
+    The YAML document is outside the subset this printer lays out: anchors,
+    aliases, tags, comments at the end of a line, nested sequences, folded
+    scalars and documents that are not mappings. Refusing is better than
+    guessing at a layout for them, or dropping them.
 
     """
 
@@ -122,8 +122,8 @@ class Unsupported(Exception):
 # -----------------------------------------------------------------------------
 def violations(root: pathlib.Path, map_document: cc_public.graph.extract.Documents) -> list:
     """
-    Return a row for each file under root that holds a document and is
-    not laid out: its path, the first line that format_file would
+    Return a row for each file under root that holds a YAML document and
+    is not laid out: its path, the first line that format_file would
     change, and why.
 
     """
@@ -181,7 +181,7 @@ def _first_difference(text: str, other: str) -> int:
 def format_file(text: str, relative: pathlib.Path) -> str:
     """
     Return text, the content of the file at relative, with the
-    documents it holds laid out and the rest of it unchanged.
+    YAML documents it holds laid out and the rest of it unchanged.
 
     """
 
@@ -192,9 +192,9 @@ def format_file(text: str, relative: pathlib.Path) -> str:
 
     list_line = text.split('\n')
 
-    # The documents are laid out from the last up, so that a document
-    # laid out on more or fewer lines leaves the spans above it where
-    # they were.
+    # The YAML documents are laid out from the last up, so that a
+    # document laid out on more or fewer lines leaves the spans above it
+    # where they were.
     #
     for (first, last, mark, indent) in reversed(_spans(text, relative)):
         list_doc  = [_unmark(line, mark).removeprefix(indent)
@@ -210,8 +210,8 @@ def format_file(text: str, relative: pathlib.Path) -> str:
 # -----------------------------------------------------------------------------
 def spans(text: str, relative: pathlib.Path) -> list[tuple[int, int]]:
     """
-    Return the indices of the first and the last line of each document
-    in text, the content of the file at relative, in order.
+    Return the indices of the first and the last line of each YAML
+    document in text, the content of the file at relative, in order.
 
     """
 
@@ -228,10 +228,10 @@ def spans(text: str, relative: pathlib.Path) -> list[tuple[int, int]]:
 # -----------------------------------------------------------------------------
 def _spans(text: str, relative: pathlib.Path) -> list[tuple[int, int, str, str]]:
     """
-    Return the indices of the lines that open and close each document
-    in text, the content of the file at relative, other than a YAML
-    file, with what begins each of its lines: the comment marker of a
-    header, and the indentation of the docstring of a class or function.
+    Return the indices of the lines that open and close each YAML document
+    in text, the content of the file at relative, other than a YAML file,
+    with what begins each of its lines: the comment marker of a header,
+    and the indentation of the docstring of a class or function.
 
     """
 
@@ -263,7 +263,7 @@ def _spans(text: str, relative: pathlib.Path) -> list[tuple[int, int, str, str]]
 def _documented(module: ast.Module) -> list[ast.AST]:
     """
     Return the module and each class or function in it whose docstring
-    holds a document, in the order they are written: those that
+    holds a YAML document, in the order they are written: those that
     cc_public.graph.extract reads documents from.
 
     """
@@ -386,9 +386,9 @@ def _prose(key: str, value: typing.Any) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _span_header(list_line: list[str], mark: str) -> tuple[int | None, int | None]:
     """
-    Return the indices of the lines that open and close the document in
-    the comment header the lines open with, or None if there is none. A
-    line that names an interpreter may come before the header.
+    Return the indices of the lines that open and close the YAML document
+    in the comment header the lines open with, or None if there is none.
+    A line that names an interpreter may come before the header.
 
     """
 
@@ -407,7 +407,7 @@ def _span_header(list_line: list[str], mark: str) -> tuple[int | None, int | Non
 # -----------------------------------------------------------------------------
 def _span(list_line: list[str], start: int, end: int, mark: str) -> tuple[int | None, int | None]:
     """
-    Return the indices of the first line from start that opens a
+    Return the indices of the first line from start that opens a YAML
     document, and of the first after it that closes one, both before
     end, or None if there are not both.
 
@@ -502,7 +502,7 @@ def _emit_lead(line:      int,
 
     The rule: one blank line sets apart anything written on several
     lines from what is beside it, and precedes any comment. Scalars
-    pack. Nothing precedes the first line of the document.
+    pack. Nothing precedes the first line of the YAML document.
 
     """
 

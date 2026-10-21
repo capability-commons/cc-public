@@ -19,8 +19,8 @@ brief:                  |
 description:            |
                         This module extracts the facts of the tree,
                         evaluates check.lp over them, and validates
-                        each document against its schemas. Each shown
-                        relation of check.lp is one check, as is
+                        each YAML document against its schemas. Each
+                        shown relation of check.lp is one check, as is
                         schema validation, and each row of a check is
                         one failure.
 
@@ -55,13 +55,13 @@ RULES             = pathlib.Path(__file__).with_name('check.lp')
 ADVICE            = pathlib.Path(__file__).with_name('advise.lp')
 
 # The checks of check.lp, and one more that is not a logic program rule: each
-# document conforms to the schemas that document_schema names for it.
+# YAML document conforms to the schemas that document_schema names for it.
 #
 NAME_PAIR         = 'document_schema'
 NAME_SCHEMA       = 'schema_violation'
 
-# One more again: each document is laid out as cctool format lays it
-# out. An edit lays out every file it writes, so this is checked over
+# One more again: each YAML document is laid out as cctool format lays
+# it out. An edit lays out every file it writes, so this is checked over
 # the files of a tree, and not over the documents of an edit.
 #
 NAME_LAYOUT       = 'unformatted_file'
@@ -77,16 +77,16 @@ WORDING_LAYOUT    = {'did': '{file} is not laid out as cctool format lays it out
 
 Failures          = dict[str, list[tuple[str, ...]]]
 
-# What validation against the schemas has found, kept between checks
-# in one process, for the documents that are the same objects as the
+# What validation against the schemas has found, kept between checks in
+# one process, for the YAML documents that are the same objects as the
 # last time they were read.
 #
 CACHE_SCHEMA      = {}
 
 # The failures and advice of the last reviews, kept in one process and
-# keyed by the documents reviewed, as objects, and by the rules. The
-# review before an edit is that of the tree as it was last checked, so
-# it is found here. It is emptied when it holds this many.
+# keyed by the YAML documents reviewed, as objects, and by the rules.
+# The review before an edit is that of the tree as it was last checked,
+# so it is found here. It is emptied when it holds this many.
 #
 CACHE_REVIEW      = {}
 COUNT_REVIEW      = 8
@@ -183,7 +183,7 @@ def check_documents(map_document: cc_public.graph.extract.Documents,
       - id_mark:            mark_public
         guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-    title:                  Check documents
+    title:                  Check YAML documents
     brief:                  |
                             Return the failures of the documents, keyed by
                             check, with the checks that pass left out. An
@@ -222,9 +222,9 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
       - id_mark:            mark_public
         guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-    title:                  Review documents
+    title:                  Review YAML documents
     brief:                  |
-                            Return the failures and the advice of the
+                            Return the failures and the advice of the YAML
                             documents, each keyed by check, with the
                             checks that find nothing left out. check.lp
                             and advise.lp are evaluated as one program.
@@ -266,7 +266,7 @@ def _review(map_document: cc_public.graph.extract.Documents,
             text_rules:   str,
             text_advice:  str) -> tuple[Failures, Failures]:
     """
-    Return the failures and the advice of the documents, as
+    Return the failures and the advice of the YAML documents, as
     review_documents does, evaluated afresh.
 
     """

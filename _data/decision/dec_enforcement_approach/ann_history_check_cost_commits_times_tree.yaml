@@ -23,24 +23,25 @@ description:            |
                         tarfile (src/cc_public/gate/gate.py lines
                         186-203). change.py lines 78-88 and 105-116
                         extract facts and run clingo. extract.read
-                        caches parsed documents within one run (memory
-                        MEMORY.md, entry on 93a1428); the copies and
-                        the clingo run are not cached. Measured for
-                        this note (scratch clone, 4-CPU container):
-                        about 3 to 5 s per commit on trees of 84 to
-                        129 files (advocate: 36.8 s for 10 commits;
-                        verifier re-run under load: 41 to 56 s for 10,
-                        43 to 48 s for the first 11). Will prefers
-                        fine commits (MEMORY.md, "Commit titles") and
-                        plans much larger graphs (MEMORY.md, "Checker
-                        direction", 2026-10-13). With no range the
-                        check covers the whole history (auditing.py
-                        lines 77-78 and 92). ASSUMPTION: time per
-                        commit grows about linearly with tree size. It
-                        argues for an incremental check, which
-                        finishes the chosen approach rather than
-                        favouring an alternative. CI moves the wait
-                        off the person but not the processor time.
+                        caches parsed YAML documents within one run
+                        (memory MEMORY.md, entry on 93a1428); the
+                        copies and the clingo run are not cached.
+                        Measured for this note (scratch clone, 4-CPU
+                        container): about 3 to 5 s per commit on trees
+                        of 84 to 129 files (advocate: 36.8 s for 10
+                        commits; verifier re-run under load: 41 to 56
+                        s for 10, 43 to 48 s for the first 11). Will
+                        prefers fine commits (MEMORY.md, "Commit
+                        titles") and plans much larger graphs
+                        (MEMORY.md, "Checker direction", 2026-10-13).
+                        With no range the check covers the whole
+                        history (auditing.py lines 77-78 and 92).
+                        ASSUMPTION: time per commit grows about
+                        linearly with tree size. It argues for an
+                        incremental check, which finishes the chosen
+                        approach rather than favouring an alternative.
+                        CI moves the wait off the person but not the
+                        processor time.
 
 relation:
 

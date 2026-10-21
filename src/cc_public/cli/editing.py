@@ -294,12 +294,12 @@ def remove(id_self, root, is_dry_run):
 @_option
 def rename(id_old, id_new, root, is_dry_run):
     """
-    Give the item OLD the id NEW, in every document that names it, in
-    the strings of the logic programs that the rules match it by, and
+    Give the item OLD the id NEW, in every YAML document that names it,
+    in the strings of the logic programs that the rules match it by, and
     in the name of its file. A register entry keeps OLD as an alias.
 
-    Other text outside documents, such as python code, is not changed.
-    Each file that still names OLD is listed afterwards.
+    Other text outside YAML documents, such as python code, is not
+    changed. Each file that still names OLD is listed afterwards.
 
     """
 
@@ -366,7 +366,7 @@ def batch(path_file, root, is_dry_run):
                         'status is 1 when any would.')
 def format_(root, is_check):
     """
-    Lay out every document in the tree under --root, or the working
+    Lay out every YAML document in the tree under --root, or the working
     directory: the YAML files under _data, the module docstrings of
     python modules, and the comment headers of other files.
 

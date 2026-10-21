@@ -18,15 +18,15 @@ description:            |
                         batch calls tree.update after each operation
                         (src/cc_public/edit/edit.py lines 789-822);
                         Tree.update calls _index, which runs
-                        extract.facts_of over all documents (lines
-                        174-205). Measured by the advocate on
+                        extract.facts_of over all YAML documents
+                        (lines 174-205). Measured by the advocate on
                         2026-10-15 at 89c74d8, 128 files read (122
-                        holding a document): each extra operation adds
-                        about 35 ms, of which facts_of is about 18 ms.
-                        ASSUMPTION: facts_of scales linearly, so a
-                        batch of 100 at ten times the tree adds 20 to
-                        35 s. Weak today; an incremental index is a
-                        local change to Tree.
+                        holding a YAML document): each extra operation
+                        adds about 35 ms, of which facts_of is about
+                        18 ms. ASSUMPTION: facts_of scales linearly,
+                        so a batch of 100 at ten times the tree adds
+                        20 to 35 s. Weak today; an incremental index
+                        is a local change to Tree.
 
 relation:
 

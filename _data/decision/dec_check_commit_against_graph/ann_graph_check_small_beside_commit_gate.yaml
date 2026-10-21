@@ -18,19 +18,19 @@ description:            |
                         Measured 2026-10-15 in a 4-CPU session
                         container at 89c74d8: message check end to end
                         6.7 s, its syntax part 0.75 s. The syntax part
-                        also reads every document in the tree to find
-                        sch_commit (src/cc_public/commit/message.py
-                        lines 260-265). The pre-commit gate runs on
-                        each ordinary commit (.githooks/pre-commit,
-                        last line) and took about 75 s after the
-                        clingo port, about 2 min on Will's 2-CPU VM; a
-                        device tool call dies at 180 s
-                        (memory/MEMORY.md lines 45, 54). Holds only
-                        while the gate dominates. Merges and reverts
-                        skip the gate (memory/MEMORY.md line 46), so
-                        there the graph check is most of the hook
-                        time. Proposed by the performance efficiency
-                        advocate.
+                        also reads every YAML document in the tree to
+                        find sch_commit
+                        (src/cc_public/commit/message.py lines
+                        260-265). The pre-commit gate runs on each
+                        ordinary commit (.githooks/pre-commit, last
+                        line) and took about 75 s after the clingo
+                        port, about 2 min on Will's 2-CPU VM; a device
+                        tool call dies at 180 s (memory/MEMORY.md
+                        lines 45, 54). Holds only while the gate
+                        dominates. Merges and reverts skip the gate
+                        (memory/MEMORY.md line 46), so there the graph
+                        check is most of the hook time. Proposed by
+                        the performance efficiency advocate.
 
 relation:
 

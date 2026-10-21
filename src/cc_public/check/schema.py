@@ -13,25 +13,25 @@ protective_mark:
 
 title:                  Schema validation
 brief:                  |
-                        Validate each document in the tree against the
-                        schemas it must conform to.
+                        Validate each YAML document in the tree
+                        against the schemas it must conform to.
 description:            |
-                        A document is an item held by no other. Which
-                        schemas it must conform to is derived in a
-                        logic program, as document_schema, and this
+                        A YAML document is an item held by no other.
+                        Which schemas it must conform to is derived in
+                        a logic program, as document_schema, and this
                         module validates it against each of them with
                         JSON Schema. The items inside a document
                         conform as part of it. Each violation is
                         reported with the line of the file it is found
                         at.
 
-                        A schema is itself a document, and sch_schema
-                        holds it to the metaschema of JSON Schema. No
-                        document is validated against a schema that
-                        fails the metaschema, which could not be used
-                        and is reported already. A $ref that names no
-                        schema is reported once, against the schema
-                        that holds it.
+                        A schema is itself a YAML document, and
+                        sch_schema holds it to the metaschema of JSON
+                        Schema. No document is validated against a
+                        schema that fails the metaschema, which could
+                        not be used and is reported already. A $ref
+                        that names no schema is reported once, against
+                        the schema that holds it.
 relation:               []
 
 ...
@@ -148,12 +148,12 @@ def violations(map_document: cc_public.graph.extract.Documents,
                set_pair:     set[tuple[str, ...]],
                cache:        dict | None = None) -> list[tuple[str, ...]]:
     """
-    Return a row for each violation of a schema by one of the
+    Return a row for each violation of a schema by one of the YAML
     documents. set_pair holds the document_schema rows: each names a
     document and a schema it must conform to.
 
     cache, if given, keeps what each validation found, so that a later
-    call with the same schemas reuses it for a document that is the
+    call with the same schemas reuses it for a YAML document that is the
     same object as before. An edit checks the tree before and after it
     with one cache, and so validates only the documents it changes.
 
@@ -213,7 +213,7 @@ def violations(map_document: cc_public.graph.extract.Documents,
 # -----------------------------------------------------------------------------
 def _cached(cache: dict | None, map_schema: dict[str, dict]) -> dict:
     """
-    Return what the validations kept in cache found, keyed by document
+    Return what the validations kept in cache found, keyed by YAML document
     and schema, emptied first unless every schema is the same object as
     when they were made. With no cache, return a mapping to throw away.
 

@@ -11,15 +11,15 @@ protective_mark:
 title:                  Checker interface
 brief:                  |
                         The python surface by which a tree, or a set
-                        of documents read from one, is checked: the
-                        failures and advice each check finds, and the
-                        columns each check reports.
+                        of YAML documents read from one, is checked:
+                        the failures and advice each check finds, and
+                        the columns each check reports.
 description:            |
                         The command line, the commit gate and the
                         editing commands all check through this
-                        interface. An edit checks its documents before
-                        it writes them, and the gate checks a copy of
-                        what is staged.
+                        interface. An edit checks its YAML documents
+                        before it writes them, and the gate checks a
+                        copy of what is staged.
 version_interface:      '1.0'
 
 declaration:
@@ -129,11 +129,11 @@ surface:
           guid_self:    icm_9774a75d938f498eb8cb82fb00b00039
           name:         check_documents
           brief:        |
-                        Return the failures of documents that need not
-                        be written yet.
+                        Return the failures of YAML documents that
+                        need not be written yet.
           guarantee:    |
-                        Only the documents given are checked, so an
-                        edit can be checked before it is written.
+                        Only the YAML documents given are checked, so
+                        an edit can be checked before it is written.
                         Layout is not checked, since it is a property
                         of the text of a file and not of its
                         documents.
@@ -144,8 +144,8 @@ surface:
               guid_self:  icm_7334b28543244039a4386a53aeccb9d8
               name:     map_document
               brief:    |
-                        The documents of a tree, by the path of the
-                        file that holds each.
+                        The YAML documents of a tree, by the path of
+                        the file that holds each.
 
               type:
                 spelling:  cc_public.graph.extract.Documents
@@ -166,8 +166,8 @@ surface:
               optional:  true
               default:  None
               guarantee:  |
-                        A document that is the same object as at the
-                        last call, with the same schemas, is not
+                        A YAML document that is the same object as at
+                        the last call, with the same schemas, is not
                         validated again. A caller that changes a
                         document in place must not pass the same
                         cache.
@@ -186,7 +186,7 @@ surface:
           guid_self:    icm_b2c517792fd94ff598ebf76c7079f81c
           name:         review_documents
           brief:        |
-                        Return the failures and the advice of
+                        Return the failures and the advice of YAML
                         documents that need not be written yet.
           guarantee:    |
                         As for check_documents, and the advice is kept
@@ -198,8 +198,8 @@ surface:
               guid_self:  icm_c647af8aaa524f33b382b0c9daa5e224
               name:     map_document
               brief:    |
-                        The documents of a tree, by the path of the
-                        file that holds each.
+                        The YAML documents of a tree, by the path of
+                        the file that holds each.
 
               type:
                 spelling:  cc_public.graph.extract.Documents

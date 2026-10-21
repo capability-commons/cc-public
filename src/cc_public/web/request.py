@@ -123,7 +123,7 @@ MAP_LEAD          = {
     KIND_ARGUMENT:  ('Make one assertion that one person could check.',
                      'Tick the concern it speaks for: the one it would weigh for in a ruling.',
                      'Say where it comes from in the description: a file and line, a commit, '
-                     'a document, or your own judgement.'),
+                     'an engineering document, or your own judgment.'),
     KIND_ANSWER:    ('Say what in the annotation is wrong, missing or out of date, and how '
                      'you know.',
                      'An answer settles a fact, so it speaks for no concern.',
