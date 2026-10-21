@@ -883,10 +883,10 @@ def test_a_field_no_schema_allows_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'r_is_about', ID_ABOUT)])
     path     = tree / location
-    path.write_text(path.read_text() + 'colour: red\n')
+    path.write_text(path.read_text() + 'color: red\n')
     assert _check(tree) == {'schema_violation': [
         ('ann_x', 'sch_annotation', location, LINE_ITEM, '',
-         "Unevaluated properties are not allowed ('colour' was unexpected)")]}
+         "Unevaluated properties are not allowed ('color' was unexpected)")]}
 
 
 def test_a_violation_inside_a_register_is_reported_at_its_line(tree):

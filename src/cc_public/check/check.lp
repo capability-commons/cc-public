@@ -785,6 +785,27 @@ dangling_mention(Holder, Id, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
+% A text uses none of the words that a writing style rule asks to
+% replace, outside double quotes and the breaks example of a rule.
+%
+% decl word_to_replace(holder:    symbol,
+%                      word:      symbol,
+%                      preferred: symbol,
+%                      rule:      symbol,
+%                      file:      symbol,
+%                      line:      number)
+% did  The text of {holder} uses {word}, which {rule} asks to write as
+%      {preferred}.
+% fix  Write the preferred word. A quotation keeps its own spelling
+%      inside double quotes.
+#show word_to_replace/6.
+
+word_to_replace(Holder, Word, Preferred, Rule, File, Line) :-
+    avoided_word(Holder, Word, File, Line),
+    word_replacement(Rule, Word, Preferred).
+
+
+% -----------------------------------------------------------------------------
 % An alias is an old id, so no item has it.
 %
 % decl alias_in_use(alias: symbol,
