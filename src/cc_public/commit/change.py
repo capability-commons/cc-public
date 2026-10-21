@@ -21,7 +21,7 @@ description:            |
                         content. change.lp is evaluated over the graph
                         after the commit, the items before it, and the
                         verb and the mentions of the commit item. Each
-                        shown relation of change.lp is one check, and
+                        shown predicate of change.lp is one check, and
                         each row of it is one failure.
 
                         Before the first commit there is no HEAD, and

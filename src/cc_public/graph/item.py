@@ -22,7 +22,7 @@ description:            |
                         own node that are scalars or lists of scalars,
                         the items it names in id_ and guid_ pairs, and
                         the primary edges from it. The type and the
-                        primary edges are the derived relations
+                        primary edges are the derived predicates
                         has_type and primary_edge, computed by clingo
                         from derive.lp. It also words an edge as a
                         sentence, from the brief of its relation, and
@@ -56,7 +56,7 @@ MARK_TARGET       = 'TARGET'
 #
 SET_FIELD_EDGE    = {'relation', 'target'}
 
-# The derived relations an Item needs, computed by clingo from derive.lp,
+# The derived predicates an Item needs, computed by clingo from derive.lp,
 # as every other program over the graph computes them.
 #
 TUPLE_DERIVED     = ('has_type', 'primary_edge')

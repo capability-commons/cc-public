@@ -22,13 +22,13 @@ description:            |
                         classes and functions in them, and the comment
                         headers of other files. It returns the facts
                         they hold, one set of rows for each base
-                        relation. RELATION names each base relation,
-                        its columns and what a row of it means, and is
-                        the one place they are declared, for logic
-                        programs and for SQL alike. A file that ought
-                        to hold a YAML document but cannot be read is
-                        not an error here: it gives a row of
-                        unreadable, so that the checker reports it
+                        predicate. PREDICATE names each base
+                        predicate, its columns and what a row of it
+                        means, and is the one place they are declared,
+                        for logic programs and for SQL alike. A file
+                        that ought to hold a YAML document but cannot
+                        be read is not an error here: it gives a row
+                        of unreadable, so that the checker reports it
                         with every other failure.
 edge:                   []
 
@@ -146,7 +146,7 @@ COUNT_READ        = 4096
 #
 SIZE_HEAD         = 65536
 
-# Each base relation: its columns, and what one row of it states. A
+# Each base predicate: its columns, and what one row of it states. A
 # column is a symbol unless its name is followed by :number. A line
 # is the line of the file, counted from 1, that the key of the field
 # is on: id_self for an item, and id_<field> for a reference.
@@ -154,7 +154,7 @@ SIZE_HEAD         = 65536
 TYPE_SYMBOL       = 'symbol'
 DELIM_TYPE        = ':'
 
-RELATION          = {
+PREDICATE         = {
     'item':               (('id', 'guid', 'holder', 'file', 'line:number'),
                            'The item id, with guid, is written in file at line. holder '
                            'is the id of the item that contains it, or empty if none '
@@ -360,7 +360,7 @@ def is_document(document: typing.Any) -> bool:
 # -----------------------------------------------------------------------------
 def extract(root: pathlib.Path) -> Facts:
     """
-    Return the facts of the tree under root, keyed by relation.
+    Return the facts of the tree under root, keyed by predicate.
 
     """
 
@@ -442,11 +442,11 @@ def files(map_document: Documents) -> list[str]:
 # -----------------------------------------------------------------------------
 def facts_of(map_document: Documents) -> Facts:
     """
-    Return the facts that the YAML documents hold, keyed by relation.
+    Return the facts that the YAML documents hold, keyed by predicate.
 
     """
 
-    facts                     = {name: set() for name in RELATION}
+    facts                     = {name: set() for name in PREDICATE}
     facts['word_replacement'] = _replacements(map_document)
 
     for (file, (document, base)) in map_document.items():

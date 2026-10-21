@@ -133,7 +133,7 @@ agent can act on it without reading the rule behind it.
   `% did` is a sentence that names the columns of a row in braces,
   such as `{holder} names {id} in its {field} field, and no item has
   that id or guid.` `% fix` is the usual remedy, and says what not to
-  do where a wrong remedy is tempting. A test fails any shown relation
+  do where a wrong remedy is tempting. A test fails any shown predicate
   that lacks either. A check written in python gives the same two in
   `cc_public.check.check`.
 - cctool prints each failure as its file and line, where it has them,
@@ -155,7 +155,7 @@ reads them through `.claude/skills`, a link to the same directory.
 
 ## Finding things out
 
-- `cctool query schema` lists every relation and its columns.
+- `cctool query predicates` lists every predicate and its columns.
 - `cctool query text "WORDS"` finds items by the words of their prose,
   best first, and names the decision of each, how it was settled, and
   the concerns it speaks for. With `--decision` it gives one row for each
@@ -184,7 +184,7 @@ reads them through `.claude/skills`, a link to the same directory.
   function, aligned `=`, `.format()` rather than f-strings, whole-module
   imports, and names prefixed by type (`list_NAME`, `map_NAME`, `path_NAME`).
 - Logic programs follow the house style of `check.lp`: a separator and
-  a comment above each relation, a `% decl` line that names its
+  a comment above each predicate, a `% decl` line that names its
   columns, variables named for the columns they fill (capitalized, as
   clingo requires), and one body atom per line.
 - Where a recognized standard covers the ground (ISO 1087, ISO/IEC

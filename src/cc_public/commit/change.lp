@@ -15,18 +15,18 @@
 %                         Checks of a commit against the graph before
 %                         and after it.
 % description:            |
-%                         The base relations hold the graph after the
+%                         The base predicates hold the graph after the
 %                         commit: the staged content. before_item holds
 %                         the items of the graph before it: the content
 %                         of HEAD. commit_verb, commit_mention and
 %                         content_change describe the commit itself.
 %
-%                         Each shown relation is one check, and each row
-%                         of it is one failure. The checks come in this
+%                         Each shown predicate is one check, and each
+%                         row of it is one failure. The checks come in
 %                         order: identity, then the verb of the title.
 % usage:                  |
 %                         Evaluated by pym_cc_public.commit.change. The
-%                         facts of the base relations and the rules of
+%                         facts of the base predicates and the rules of
 %                         lpf_cc_public.graph.derive come before this
 %                         file in the program.
 % edge:                   []
