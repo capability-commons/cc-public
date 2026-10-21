@@ -718,33 +718,40 @@ table:
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
   # ---------------------------------------------------------------------------
-  # type_file -- File type
+  # type_configuration_file -- File type
   #
-  type_file:
-    id_self:            type_file
+  type_configuration_file:
+    id_self:            type_configuration_file
     guid_self:          type_4aff76e000e945aa992f7bde1f9f1219
-    title:              File type
+    title:              Configuration file type
     brief:              |
-                        Type of file data items.
+                        Type of configuration file data items.
     description:        |
-                        Each file data item holds the metadata of one
-                        file that is neither a data item itself nor a
-                        module of source code, in a comment at the
-                        head of the file.
+                        Each configuration file data item holds the
+                        metadata of one configuration file, such as
+                        .gitignore or pyproject.toml, in a comment at
+                        the head of the file.
     usage:              |
-                        File data items let configuration files and
-                        the like be traced and owned like any other
-                        item.
+                        Configuration file data items let files whose
+                        format has no other place for metadata be
+                        traced and owned like any other item.
     note:               |
-                        A module is not a file in this sense. The item
-                        of a python module is held in its docstring
-                        and has the type type_python_module. The item
-                        of a logic program file has the type
-                        type_logic_program_file.
+                        Source code has types of its own. The item of
+                        a python module is held in its docstring and
+                        has the type type_python_module, the item of a
+                        logic program file has the type
+                        type_logic_program_file, and the item of a
+                        shell script has the type type_shell_script.
 
-                        The shape of file data items is defined by the
-                        sch_file schema.
-    alias:              []
+                        The prefix is file, a word of the preferred
+                        term.
+
+                        The shape of configuration file data items is
+                        defined by the sch_configuration_file schema.
+
+    alias:
+      - type_file
+
     prefix:             file
     regex_id:           ^file_[a-z][a-z0-9_]*$
     id_concept:         concept_file
@@ -754,7 +761,7 @@ table:
 
       - id_relation:    r_has_items_specified_by_schema
         guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
-        id_target:      sch_file
+        id_target:      sch_configuration_file
         guid_target:    sch_416542a4956343bfa02a827fcdae43a9
 
       - id_relation:    r_has_items_that_play
@@ -1384,7 +1391,8 @@ table:
                         Shell script items let the git hooks and other
                         scripts be traced and owned like any other
                         item, and be told apart from configuration
-                        files, which have the type type_file.
+                        files, which have the type
+                        type_configuration_file.
     note:               |
                         The prefix is the whole word shell, so that it
                         cannot be read as sch, the prefix of schemas.
