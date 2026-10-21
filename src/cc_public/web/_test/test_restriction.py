@@ -55,29 +55,29 @@ def _excluded(tree, id_role):
 
     path = tree / '_data/register/reg_relation_restriction.yaml'
     text = path.read_text()
-    old  = 'id_relation:    r_admits\n'
+    old  = 'id_relation:    relation_admits\n'
     end  = 'id_target:      {id}\n'.format(id = id_role)
     stop = text.index(end)
     head = text.rindex(old, 0, stop)
-    path.write_text(text[:head] + 'id_relation:    r_excludes\n' + text[head + len(old):])
+    path.write_text(text[:head] + 'id_relation:    relation_excludes\n' + text[head + len(old):])
 
 
 def test_a_relation_page_reads_each_end_by_its_restrictions(tree):
-    body = _body(tree, 'r_supports')
+    body = _body(tree, 'relation_supports')
     assert 'The source <a href="/item/rrs_is_argument">is an argument</a>.' in body
     assert 'The target <a href="/item/rrs_can_be_target_of_an_argument">can be the target of an argument</a>.' in body
 
 
 def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
-    assert 'The target is open to any item.' in _body(tree, 'r_is_about')
+    assert 'The target is open to any item.' in _body(tree, 'relation_is_about')
 
 
 def test_a_role_page_names_its_players_and_the_relations_that_admit_it(tree):
     body = _body(tree, 'rol_can_be_target_of_an_argument')
     assert ('Played by the items of <a href="/type/type_annotation">Annotation type</a> and '
             '<a href="/type/type_option">Option type</a>.') in body
-    assert ('Admitted at the target of <a href="/item/r_challenges">Challenges relation</a> and '
-            '<a href="/item/r_supports">Supports relation</a>.') in body
+    assert ('Admitted at the target of <a href="/item/relation_challenges">Challenges relation</a> and '
+            '<a href="/item/relation_supports">Supports relation</a>.') in body
 
 
 def test_a_role_page_names_the_relations_that_exclude_it(tree):
@@ -85,9 +85,9 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
     graph = cc_public.web.argument.Graph(tree)
     assert cc_public.web.restriction.sentences(graph, 'rol_requirement')[1:] == [
         ['Excluded at the source of ',
-         ('r_has_actor', 'Has actor relation'), ', ',
-         ('r_has_process', 'Has process relation'), ' and ',
-         ('r_has_subject', 'Has subject relation'), '.']]
+         ('relation_has_actor', 'Has actor relation'), ', ',
+         ('relation_has_process', 'Has process relation'), ' and ',
+         ('relation_has_subject', 'Has subject relation'), '.']]
 
 
 def test_an_item_that_is_neither_relation_nor_role_has_no_sentences(tree):

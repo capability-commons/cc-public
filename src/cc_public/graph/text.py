@@ -122,7 +122,7 @@ settle AS MATERIALIZED (
     FROM settles
     JOIN primary_edge AS edge ON edge.source = settles.ruling
                              AND edge.target = settles.option
-                             AND edge.relation IN ('r_upholds', 'r_rejects')
+                             AND edge.relation IN ('relation_upholds', 'relation_rejects')
     JOIN decision_of ON decision_of.id = settles.option
 ),
 found AS MATERIALIZED (
@@ -139,7 +139,7 @@ found AS MATERIALIZED (
 )
 SELECT found.*,
            CASE WHEN type != 'type_option' THEN ''
-                ELSE coalesce((SELECT CASE settle.relation WHEN 'r_upholds' THEN 'upheld'
+                ELSE coalesce((SELECT CASE settle.relation WHEN 'relation_upholds' THEN 'upheld'
                                                            ELSE 'rejected' END
                                FROM settle WHERE settle.option = found.id), 'open')
            END AS standing,
@@ -147,11 +147,12 @@ SELECT found.*,
                      FROM settle WHERE settle.decision = found.decision), '') AS ruling,
            coalesce((SELECT group_concat(option, ' ' ORDER BY option)
                      FROM settle
-                     WHERE settle.decision = found.decision AND settle.relation = 'r_upholds'),
+                     WHERE settle.decision = found.decision
+                       AND settle.relation = 'relation_upholds'),
                     '') AS upheld,
            coalesce((SELECT group_concat(target, ' ' ORDER BY target)
                      FROM primary_edge
-                     WHERE source = found.id AND relation = 'r_speaks_for_concern'),
+                     WHERE source = found.id AND relation = 'relation_speaks_for_concern'),
                     '') AS concerns
 FROM found
 """

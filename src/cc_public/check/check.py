@@ -34,8 +34,8 @@ usage:                  |
 
 edge:
 
-  - id_relation:        r_realizes
-    guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
     id_target:          icm_cc_public_check.module
     guid_target:        icm_22b81d93a0e54bc5aff823ef45a696fa
 
@@ -115,8 +115,8 @@ def check(root: pathlib.Path) -> Failures:
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.check
         guid_target:        icm_987ceb8fcb464178a5206e8cfddf4ad2
 
@@ -149,8 +149,8 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.review
         guid_target:        icm_c89919b74bcc45469035be90dc9682ec
 
@@ -195,8 +195,8 @@ def check_documents(map_document: cc_public.graph.extract.Documents,
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.check_documents
         guid_target:        icm_9774a75d938f498eb8cb82fb00b00039
 
@@ -234,8 +234,8 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.review_documents
         guid_target:        icm_b2c517792fd94ff598ebf76c7079f81c
 
@@ -314,8 +314,8 @@ def columns() -> dict[str, tuple[str, ...]]:
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.columns
         guid_target:        icm_29a8333e7f0847f5a04103b33d61dac2
 
@@ -354,8 +354,8 @@ def wording() -> dict[str, dict[str, str]]:
 
     edge:
 
-      - id_relation:        r_realizes
-        guid_relation:      r_2b5f499c599a435c9a5184462525dd9b
+      - id_relation:        relation_realizes
+        guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
         id_target:          icm_cc_public_check.wording
         guid_target:        icm_6a67c1a8b79d4e739b9662e75b4bd3aa
 

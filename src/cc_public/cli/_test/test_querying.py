@@ -121,7 +121,7 @@ def test_sparql_prints_the_rows_of_a_select(tree):
 
 def test_sparql_sees_fields_and_edges(tree):
     result = _run(tree, 'sparql', 'SELECT ?title WHERE { cc:dec_tooling_language '
-                                  'cc:r_is_about ?lc . ?lc f:title ?title }', '--json')
+                                  'cc:relation_is_about ?lc . ?lc f:title ?title }', '--json')
     assert json.loads(result.stdout) == {'columns': ['title'], 'rows': [['Tooling']], 'count': 1}
 
 

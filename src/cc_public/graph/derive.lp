@@ -61,11 +61,11 @@ has_type(Id, Type) :-
 
 primary_edge(Source, Relation, Target) :-
     edge(Source, Relation, Target),
-    not relation_inverse(Relation, _).
+    not inverse_relation(Relation, _).
 
 primary_edge(Target, Relation, Source) :-
     edge(Source, Inverse, Target),
-    relation_inverse(Inverse, Relation).
+    inverse_relation(Inverse, Relation).
 
 
 % -----------------------------------------------------------------------------
@@ -80,11 +80,11 @@ primary_edge(Target, Relation, Source) :-
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
     has_type(Id, Type),
-    primary_edge(Type, "r_has_items_specified_by_schema", Schema).
+    primary_edge(Type, "relation_has_items_specified_by_schema", Schema).
 
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
-    primary_edge(Id, "r_is_specified_by_schema", Schema).
+    primary_edge(Id, "relation_is_specified_by_schema", Schema).
 
 
 % -----------------------------------------------------------------------------
@@ -95,11 +95,11 @@ document_schema(Id, Schema) :-
 
 settles(Ruling, Option) :-
     has_type(Ruling, "type_ruling"),
-    primary_edge(Ruling, "r_upholds", Option).
+    primary_edge(Ruling, "relation_upholds", Option).
 
 settles(Ruling, Option) :-
     has_type(Ruling, "type_ruling"),
-    primary_edge(Ruling, "r_rejects", Option).
+    primary_edge(Ruling, "relation_rejects", Option).
 
 
 % -----------------------------------------------------------------------------
@@ -115,11 +115,11 @@ decision_of(Id, Id) :-
 
 decision_of(Id, Decision) :-
     has_type(Id, "type_option"),
-    primary_edge(Id, "r_is_option_for", Decision).
+    primary_edge(Id, "relation_is_option_for", Decision).
 
 decision_of(Id, Decision) :-
     has_type(Id, "type_annotation"),
-    primary_edge(Id, "r_is_about", Decision),
+    primary_edge(Id, "relation_is_about", Decision),
     has_type(Decision, "type_decision").
 
 decision_of(Id, Decision) :-
@@ -136,7 +136,7 @@ decision_of(Id, Decision) :-
 
 node_interface(Node, Interface) :-
     has_type(Node, "type_dataflow_node"),
-    primary_edge(Node, "r_realizes", Interface),
+    primary_edge(Node, "relation_realizes", Interface),
     has_type(Interface, "type_interface_control_document").
 
 
@@ -193,7 +193,7 @@ bears_on(Node, Node) :-
 
 bears_on(Item, Node) :-
     has_type(Node, "type_dataflow_node"),
-    primary_edge(Node, "r_realizes", Item).
+    primary_edge(Node, "relation_realizes", Item).
 
 bears_on(Member, Node) :-
     node_interface(Node, Interface),
@@ -202,7 +202,7 @@ bears_on(Member, Node) :-
 bears_on(Code, Node) :-
     node_interface(Node, Interface),
     item(Member, _, Interface, _, _),
-    primary_edge(Code, "r_realizes", Member).
+    primary_edge(Code, "relation_realizes", Member).
 
 
 % -----------------------------------------------------------------------------

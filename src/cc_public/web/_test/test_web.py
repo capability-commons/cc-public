@@ -73,9 +73,9 @@ def test_decision_lists_the_drivers_of_its_subject(tree):
 
 def test_a_ruling_changed_in_place_changes_the_standing(tree):
     path = tree / '_data' / 'decision' / ID_DECISION / (ID_RULING + '.yaml')
-    path.write_text(path.read_text().replace('r_upholds', 'r_placeholder')
-                                    .replace('r_rejects', 'r_upholds', 1)
-                                    .replace('r_placeholder', 'r_rejects'))
+    path.write_text(path.read_text().replace('relation_upholds', 'relation_placeholder')
+                                    .replace('relation_rejects', 'relation_upholds', 1)
+                                    .replace('relation_placeholder', 'relation_rejects'))
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
     assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_REJECTED
     assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
@@ -131,7 +131,7 @@ def test_an_option_counts_its_units_for_and_against(tree):
 
 def test_a_decision_with_only_rejections_is_narrowed(tree):
     path = tree / '_data' / 'decision' / ID_DECISION / (ID_RULING + '.yaml')
-    path.write_text(path.read_text().replace('r_upholds', 'r_rejects'))
+    path.write_text(path.read_text().replace('relation_upholds', 'relation_rejects'))
     graph   = cc_public.web.argument.Graph(tree)
     summary = cc_public.web.page.Summary(graph, graph.decision(ID_DECISION))
     assert summary.standing == cc_public.web.page.STANDING_NARROWED
@@ -537,9 +537,9 @@ def test_static_refuses_a_path_out_of_its_directory(tree):
 
 def test_units_count_each_annotation_concern_and_option(tree):
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
-    count    = sum(len(annotation.targets('r_speaks_for_concern'))
+    count    = sum(len(annotation.targets('relation_speaks_for_concern'))
                 * len([id_target
-                       for id_relation in ('r_supports', 'r_challenges')
+                       for id_relation in ('relation_supports', 'relation_challenges')
                        for id_target in annotation.targets(id_relation)
                        if id_target.startswith('opt_')])
                 for annotation in decision.list_annotation)

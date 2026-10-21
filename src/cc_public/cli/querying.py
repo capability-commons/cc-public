@@ -145,7 +145,7 @@ def sql(text, path_file, root, limit, is_json):
     Examples:
       cctool query sql "SELECT * FROM item WHERE id LIKE 'opt_%'"
       cctool query sql "SELECT type, count(*) AS n FROM has_type GROUP BY type"
-      cctool query sql "SELECT source FROM primary_edge WHERE relation = 'r_is_about'"
+      cctool query sql "SELECT source FROM primary_edge WHERE relation = 'relation_is_about'"
 
     """
 
@@ -290,7 +290,7 @@ def sparql(text, path_file, root, limit, is_json):
 
     Each item is the node cc:ID, such as cc:ann_x. Its type is its
     rdf:type, such as cc:type_annotation, and each primary edge is a
-    triple of its relation, such as cc:r_is_about; an inverse relation
+    triple of its relation, such as cc:relation_is_about; an inverse relation
     may be used too. Its fields are f:NAME: f:guid, f:file, f:line and
     f:holder, every field of text, number or truth, such as f:title,
     and every item it names in an id_NAME field, as f:NAME. The
@@ -301,7 +301,7 @@ def sparql(text, path_file, root, limit, is_json):
     \b
     Examples:
       cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:type_concern ; f:title ?title }'
-      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:dec_licence }'
+      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:relation_is_about cc:dec_licence }'
       cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
       cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:type_option }'
 

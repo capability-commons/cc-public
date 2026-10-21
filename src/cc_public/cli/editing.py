@@ -336,8 +336,8 @@ def batch(path_file, root, is_dry_run):
       field: {title: X, brief: ..., description: ..., term_preferred: x}
     - new:   ann_x
       field: {title: ..., brief: ...}
-      link:  [[r_is_about, concept_x]]
-    - link:  [concept_x, r_is_about, concept_concept]
+      link:  [[relation_is_about, concept_x]]
+    - link:  [concept_x, relation_is_about, concept_concept]
     - set:   [concept_x, usage, ...]
 
     """

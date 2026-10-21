@@ -11,9 +11,9 @@ protective_mark:
 title:                  A schema relation kept only for bindings
 brief:                  |
                         The bindings need a second way to select a
-                        schema, r_is_specified_by_schema, beside the
-                        type edge every other item uses. Only
-                        registers use it, and only to name their
+                        schema, relation_is_specified_by_schema,
+                        beside the type edge every other item uses.
+                        Only registers use it, and only to name their
                         binding.
 description:            |
                         Domain type_register only
@@ -27,10 +27,10 @@ description:            |
                         The relation dates from the placeholder commit
                         bb8c338, where types also used it; f587284
                         (pre-squash) moved types to
-                        r_has_items_specified_by_schema and narrowed
-                        its domain to type_register. Dropping the
-                        bindings would need the checker to apply an
-                        entry schema per table entry and close each
+                        relation_has_items_specified_by_schema and
+                        narrowed its domain to type_register. Dropping
+                        the bindings would need the checker to apply
+                        an entry schema per table entry and close each
                         entry, which sch_reg_* does today. ASSUMPTION:
                         that is one Datalog rule and a small change to
                         src/cc_public/check/schema.py; not sized. From
@@ -38,17 +38,17 @@ description:            |
 
 edge:
 
-  - id_relation:        r_is_about
-    guid_relation:      r_17ca99102b0b431b85235445a4635ae8
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
     id_target:          dec_register_binding_schemas
     guid_target:        dec_4b23594474ec46bd81ba27b8d42ff3d2
 
-  - id_relation:        r_challenges
-    guid_relation:      r_08792b8910554df3a181ecb43aae429d
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
     id_target:          opt_keep_per_register_binding
     guid_target:        opt_433d0e587fb04d9184a15395e14fbf7e
 
-  - id_relation:        r_speaks_for_concern
-    guid_relation:      r_ded2d80983a74f7b8271530a881686bf
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
     id_target:          concern_simplicity
     guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

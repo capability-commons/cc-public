@@ -108,7 +108,7 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # with one of these prefixes has its items in source files, where the
 # name of the file gives the id, so new does not make them.
 #
-ID_HELD           = 'r_has_items_held_in_register'
+ID_HELD           = 'relation_has_items_held_in_register'
 SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'file', 'shell'}
 
 # A file of any other type takes its item in a header: a python module
@@ -795,7 +795,7 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     of its file, or of its folder, if it is named for it. A register
     entry keeps id_old in its alias list.
 
-    The rules match items by id, in strings such as "r_is_option_for". Left
+    The rules match items by id, in strings such as "relation_is_option_for". Left
     as they were, the rules that name id_old would match nothing, and
     so pass without a word.
 
@@ -1105,7 +1105,7 @@ def _register(tree: Tree, id_type: str) -> str | None:
 
     """
 
-    set_inverse = {row[0] for row in tree.facts['relation_inverse'] if row[1] == ID_HELD}
+    set_inverse = {row[0] for row in tree.facts['inverse_relation'] if row[1] == ID_HELD}
 
     for (source, relation, target) in sorted(tree.facts['edge']):
         if source == id_type and relation == ID_HELD:

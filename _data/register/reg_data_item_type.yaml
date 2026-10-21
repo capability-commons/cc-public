@@ -36,8 +36,8 @@ note:                   |
 
 edge:
 
-  - id_relation:        r_is_specified_by_schema
-    guid_relation:      r_d70024bd40444f93b4fc1903379ded81
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
     id_target:          sch_reg_data_item_type
     guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
 
@@ -82,18 +82,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_data_item_type
         guid_target:    reg_c377bd8e87ec4b1ca2bd398488392a3d
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_type
         guid_target:    sch_4a17e1ea6a1143c59c0a634b38f902bc
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_type
         guid_target:    rol_18ab1101e85a449bbed9abc60bad5cdb
 
@@ -125,10 +125,10 @@ table:
                         one data item type.
 
                         The schema for a data item type is named by
-                        the r_has_items_specified_by_schema edge on
-                        its entry in the data item type register. It
-                        can also be inferred from the schema file
-                        name.
+                        the relation_has_items_specified_by_schema
+                        edge on its entry in the data item type
+                        register. It can also be inferred from the
+                        schema file name.
 
                         The shape of schema data items is defined by
                         the sch_schema schema.
@@ -140,13 +140,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_schema
         guid_target:    sch_19b746511dc84ae1b822a98afa81a196
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_schema
         guid_target:    rol_edca64cec69840608954020a8687b4df
 
@@ -186,13 +186,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_register
         guid_target:    sch_a4620d79fab546b3be6c756f0325e069
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_register
         guid_target:    rol_ca2f34ca1dc84113a3f63bc49c63337c
 
@@ -230,27 +230,30 @@ table:
 
                         The shape of the relation register is defined
                         by the sch_reg_relation schema.
-    prefix_exception:   The change to rel is deferred so that it can be made in one commit with any rename of the relation field, which touches the same lines in every item.
+
+                        The prefix is the whole word relation, the
+                        preferred term: rel would be one letter from
+                        reg and from rol.
     alias:              []
-    prefix:             r
-    regex_id:           ^r_[a-z][a-z0-9_]*$
+    prefix:             relation
+    regex_id:           ^relation_[a-z][a-z0-9_]*$
     id_concept:         concept_relation
     guid_concept:       concept_42a4bd80300849a98bf9649ad97d10d9
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_relation
         guid_target:    reg_512fbf5c51be4efaa4517b52310ddf80
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_relation
         guid_target:    sch_4efc46f1bf2c4f7a99b68763cd8d6432
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_relation
         guid_target:    rol_f96d2ff0939c4301b055dac7caff90c4
 
@@ -290,13 +293,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_protective_mark
         guid_target:    reg_0653174dda274015aa95754a37073797
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_protective_mark
         guid_target:    sch_749dc2bbaf6c4a238ca4e02044a633fa
 
@@ -341,13 +344,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_concept
         guid_target:    reg_bcba1ab65d824ac2b2f7af2ded66835a
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_concept
         guid_target:    sch_62e63ec5ebe24650856fe2d275be3b4b
 
@@ -389,13 +392,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_writing_style_rule
         guid_target:    reg_6efc4d246c3d4097ac0010bc004b12ee
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_writing_style_rule
         guid_target:    sch_4895339a23364c1f87462a80ceb3cf24
 
@@ -444,23 +447,23 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_annotation
         guid_target:    sch_c4f5b55fbffa4c3e83e9d04d1a42a5ce
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_argument
         guid_target:    rol_cb8f652e4be644959edfdd48c374ca55
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_can_be_target_of_an_argument
         guid_target:    rol_beff92eeb8034e22b77f3e681744275e
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_can_be_about_an_item
         guid_target:    rol_a955ca53eb9d4a6eb6bcaf6be33821c9
 
@@ -501,23 +504,23 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_option
         guid_target:    sch_6fd91c76629042f394ce1addf6f0cd1b
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_can_be_target_of_an_argument
         guid_target:    rol_beff92eeb8034e22b77f3e681744275e
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_supersedable
         guid_target:    rol_3d3ddc21cfb244168bfbf8080a466196
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_option
         guid_target:    rol_ce75f8f10f8c432386adf334d921a91f
 
@@ -559,18 +562,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_concern
         guid_target:    reg_f1772854ec5947c08f93f8ef2f766b0d
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_concern
         guid_target:    sch_c3c151bc793c468faa80f97ceb67d669
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_concern
         guid_target:    rol_9f5318ce20f74ee684a89aa38ef9098b
 
@@ -611,13 +614,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_python_module
         guid_target:    sch_d1d9d093e52d47a9ba8b4fdd8c47db07
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -658,13 +661,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_python_package
         guid_target:    sch_c2b3fe510fa64c80a4c372a3816ef720
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -707,13 +710,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_logic_program_file
         guid_target:    sch_6724b60b83624c78938faa0f4355cb25
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -760,13 +763,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_file
         guid_target:    sch_416542a4956343bfa02a827fcdae43a9
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -805,8 +808,8 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_commit
         guid_target:    sch_ac7d8ef35a67417ca48cb47a3a98cda9
 
@@ -844,13 +847,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_logical_component
         guid_target:    sch_0f929ae944d14364aaf89735389eda7a
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_design_element
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
 
@@ -896,13 +899,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_ruling
         guid_target:    sch_bc22fad5b8e54f2fa6a099f34cc7dc6c
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_ruling
         guid_target:    rol_d29d91e4122247f0b0aaa44955219209
 
@@ -938,18 +941,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_decision
         guid_target:    sch_41f3412088d54385bdc58036636896ca
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_can_be_about_an_item
         guid_target:    rol_a955ca53eb9d4a6eb6bcaf6be33821c9
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_decision
         guid_target:    rol_0d69e576c425464b90538d7223c1d3b5
 
@@ -983,13 +986,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_requirement
         guid_target:    sch_2ff83912b89346af8ec760a8cc2a4a33
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_requirement
         guid_target:    rol_6c81f99c440442ab83cdcf512f1ed9a4
 
@@ -1029,18 +1032,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_role
         guid_target:    reg_dd6e2d285ae44fe49efbae1eb1568e40
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_role
         guid_target:    sch_f7cad308f0d84d4dab13f27883c8ecc2
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_role
         guid_target:    rol_a8f7e5b25c304e41a32e2c7517e8d738
 
@@ -1082,18 +1085,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_held_in_register
-        guid_relation:  r_016e74a0abea4a3990cc3259942baf92
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
         id_target:      reg_relation_restriction
         guid_target:    reg_52c7901d2dd7494f81285e6e8889a51c
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_relation_restriction
         guid_target:    sch_8735cac167a04016804daac1f6d5dc16
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_relation_restriction
         guid_target:    rol_0775dd9f7f1e40dd81f350bd1690298a
 
@@ -1133,13 +1136,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_python_class
         guid_target:    sch_610fd8f75ecf406cb63c2c62096c5168
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -1181,13 +1184,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_python_function
         guid_target:    sch_d9e817f521cc4c30aa447e4ff8968916
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -1214,7 +1217,7 @@ table:
     note:               |
                         A new version of an interface is a new item,
                         which names the one it replaces with
-                        r_supersedes.
+                        relation_supersedes.
 
                         The shape of interface control document data
                         items is defined by the
@@ -1228,18 +1231,18 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_interface_control_document
         guid_target:    sch_fec3632e3c3942bd903984cc03ddae25
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_design_element
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_supersedable
         guid_target:    rol_3d3ddc21cfb244168bfbf8080a466196
 
@@ -1259,8 +1262,8 @@ table:
     usage:              |
                         An interface member can be named on its own:
                         code names the member it implements with
-                        r_realizes, and a requirement may have one as
-                        its subject.
+                        relation_realizes, and a requirement may have
+                        one as its subject.
     note:               |
                         The id is the id of what the member sits in,
                         then a full stop and a name of its own, with
@@ -1280,13 +1283,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_interface_member
         guid_target:    sch_78d55e71f65b45579d01dee5fc7ce19a
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_design_element
         guid_target:    rol_c7e8771d55e4467bbcdd0f4c0d6d165b
 
@@ -1325,8 +1328,8 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_dataflow_graph
         guid_target:    sch_58645b97dbbe453eb3b5093260d3d576
 
@@ -1366,13 +1369,13 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_dataflow_node
         guid_target:    sch_42abc9d2df5544688e9047a09bc6948a
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
 
@@ -1405,12 +1408,12 @@ table:
 
     edge:
 
-      - id_relation:    r_has_items_specified_by_schema
-        guid_relation:  r_c233cc9d78af4ec6bbaec8a4bbc43344
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_shell_script
         guid_target:    sch_d5d7be40ad4440878fc481b54516cacd
 
-      - id_relation:    r_has_items_that_play
-        guid_relation:  r_7eb3dc69d8ab45e79b18bec97de5ffa9
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972

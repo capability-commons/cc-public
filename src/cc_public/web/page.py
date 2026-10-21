@@ -160,7 +160,7 @@ R_HAS_SUBJECT     = cc_public.requirement.compose.R_HAS_SUBJECT
 R_HAS_PROCESS     = cc_public.requirement.compose.R_HAS_PROCESS
 R_TO_PARENT       = cc_public.requirement.review.R_TRACES_TO_PARENT
 R_TO_SOURCE       = cc_public.requirement.review.R_TRACES_TO_SOURCE
-R_SUPERSEDES      = 'r_supersedes'
+R_SUPERSEDES      = 'relation_supersedes'
 COLUMN_REALIZED   = cc_public.web.contract.COLUMN_REALIZED
 COLUMN_RETURNS    = cc_public.web.contract.COLUMN_RETURNS
 AGREES            = cc_public.web.contract.AGREES
@@ -225,7 +225,7 @@ MAP_SORT_KEY      = {
                                     summary.decision.item.title),
     SORT_SIZE:     lambda summary: (-summary.size(), summary.decision.item.title),
     SORT_TITLE:    lambda summary: summary.decision.item.title}
-R_IS_DRIVEN_BY    = 'r_is_driven_by'
+R_IS_DRIVEN_BY    = 'relation_is_driven_by'
 
 KIND_OPTION       = cc_public.web.request.KIND_OPTION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
@@ -1724,7 +1724,7 @@ def _verdict(graph: Graph, member: Member, column: str) -> typing.Any:
         return htpy.a(class_ = 'cell', href = _href(member.list_realizer[0]), title = title)[
             htpy.span(class_ = 'verdict ' + verdict)[title]]
     if column == COLUMN_REALIZED:
-        title = 'Not realized: nothing records an edge r_realizes to it'
+        title = 'Not realized: nothing records an edge relation_realizes to it'
     return htpy.span(class_ = 'verdict ' + verdict, title = title)[title]
 
 
@@ -2662,7 +2662,7 @@ def _relation(id_relation: str) -> str:
 
     """
 
-    words = id_relation.removeprefix('r_').replace('_', ' ')
+    words = id_relation.removeprefix('relation_').replace('_', ' ')
     return words[:1].upper() + words[1:]
 
 

@@ -277,7 +277,7 @@ misplaced_document(Id, File, Expected) :-
 misplaced_register_entry(Register, Id, Type) :-
     register_entry_key(Register, _, Id),
     has_type(Id, Type),
-    not primary_edge(Type, "r_has_items_held_in_register", Register).
+    not primary_edge(Type, "relation_has_items_held_in_register", Register).
 
 
 % -----------------------------------------------------------------------------
@@ -367,7 +367,7 @@ stated_parameter(Member, Position, Name) :-
 %                        member:   symbol)
 
 realized_function(Function, Member) :-
-    primary_edge(Function, "r_realizes", Member),
+    primary_edge(Function, "relation_realizes", Member),
     has_type(Function, "type_python_function"),
     has_type(Member, "type_interface_member").
 
@@ -505,13 +505,13 @@ guid_mismatch(Holder, Field, Id, Guid, File, Line) :-
 %                restriction: symbol)
 
 satisfies(Type, Restriction) :-
-    primary_edge(Restriction, "r_admits", Role),
-    primary_edge(Type, "r_has_items_that_play", Role).
+    primary_edge(Restriction, "relation_admits", Role),
+    primary_edge(Type, "relation_has_items_that_play", Role).
 
 satisfies(Type, Restriction) :-
-    primary_edge(Restriction, "r_excludes", Role),
+    primary_edge(Restriction, "relation_excludes", Role),
     type_prefix(Type, _, _),
-    not primary_edge(Type, "r_has_items_that_play", Role).
+    not primary_edge(Type, "relation_has_items_that_play", Role).
 
 
 % -----------------------------------------------------------------------------
@@ -532,13 +532,13 @@ satisfies(Type, Restriction) :-
 
 restriction_violation(Source, Relation, Target, "source", Restriction) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "r_restricts_source", Restriction),
+    primary_edge(Relation, "relation_restricts_source", Restriction),
     has_type(Source, Type),
     not satisfies(Type, Restriction).
 
 restriction_violation(Source, Relation, Target, "target", Restriction) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "r_restricts_target", Restriction),
+    primary_edge(Relation, "relation_restricts_target", Restriction),
     has_type(Target, Type),
     not satisfies(Type, Restriction).
 
@@ -547,17 +547,17 @@ restriction_violation(Source, Relation, Target, "target", Restriction) :-
 % Every annotation and every decision is about something.
 %
 % decl missing_about(id: symbol)
-% did  {id} is about nothing: it has no edge of r_is_about.
-% fix  Link it to its subject with cctool link ID r_is_about TARGET.
+% did  {id} is about nothing: it has no edge of relation_is_about.
+% fix  Link it to its subject with cctool link ID relation_is_about TARGET.
 #show missing_about/1.
 
 missing_about(Id) :-
     has_type(Id, "type_annotation"),
-    not primary_edge(Id, "r_is_about", _).
+    not primary_edge(Id, "relation_is_about", _).
 
 missing_about(Id) :-
     has_type(Id, "type_decision"),
-    not primary_edge(Id, "r_is_about", _).
+    not primary_edge(Id, "relation_is_about", _).
 
 
 % -----------------------------------------------------------------------------
@@ -567,12 +567,12 @@ missing_about(Id) :-
 % decl option_count(option:    symbol,
 %                   decisions: number)
 % did  The option {option} is an option for {decisions} decisions, not 1.
-% fix  Give the option one edge of r_is_option_for, to its decision.
+% fix  Give the option one edge of relation_is_option_for, to its decision.
 #show option_count/2.
 
 option_count(Option, Decisions) :-
     has_type(Option, "type_option"),
-    Decisions = #count { Decision : primary_edge(Option, "r_is_option_for", Decision) },
+    Decisions = #count { Decision : primary_edge(Option, "relation_is_option_for", Decision) },
     Decisions != 1.
 
 
@@ -581,13 +581,13 @@ option_count(Option, Decisions) :-
 %
 % decl no_option_in_ruling(id: symbol)
 % did  The ruling {id} neither upholds nor rejects an option.
-% fix  Link it with r_upholds or r_rejects to each option it settles.
+% fix  Link it with relation_upholds or relation_rejects to each option it settles.
 #show no_option_in_ruling/1.
 
 no_option_in_ruling(Id) :-
     has_type(Id, "type_ruling"),
-    not primary_edge(Id, "r_upholds", _),
-    not primary_edge(Id, "r_rejects", _).
+    not primary_edge(Id, "relation_upholds", _),
+    not primary_edge(Id, "relation_rejects", _).
 
 
 % -----------------------------------------------------------------------------
@@ -624,7 +624,7 @@ decisions_mixed_in_ruling(Ruling, Decision, Other) :-
 
 decision_about_non_component(Decision, Target, Type) :-
     has_type(Decision, "type_decision"),
-    primary_edge(Decision, "r_is_about", Target),
+    primary_edge(Decision, "relation_is_about", Target),
     has_type(Target, Type),
     Type != "type_logical_component".
 
@@ -657,8 +657,8 @@ argument_across_decisions(Annotation, Decision, Target, Other) :-
 %
 % decl argues(relation: symbol)
 
-argues("r_supports").
-argues("r_challenges").
+argues("relation_supports").
+argues("relation_challenges").
 
 
 % -----------------------------------------------------------------------------
@@ -672,7 +672,7 @@ argues("r_challenges").
 #show supersession_across_types/2.
 
 supersession_across_types(Source, Target) :-
-    primary_edge(Source, "r_supersedes", Target),
+    primary_edge(Source, "relation_supersedes", Target),
     has_type(Source, Type),
     not has_type(Target, Type).
 
@@ -706,18 +706,18 @@ competing_rulings(Decision, Ruling, Other) :-
 %             concern: symbol)
 
 argued(Option, Concern) :-
-    primary_edge(Option, "r_is_option_for", Decision),
-    primary_edge(Other, "r_is_option_for", Decision),
+    primary_edge(Option, "relation_is_option_for", Decision),
+    primary_edge(Other, "relation_is_option_for", Decision),
     practical(Id),
-    primary_edge(Id, "r_supports", Other),
-    primary_edge(Id, "r_speaks_for_concern", Concern).
+    primary_edge(Id, "relation_supports", Other),
+    primary_edge(Id, "relation_speaks_for_concern", Concern).
 
 argued(Option, Concern) :-
-    primary_edge(Option, "r_is_option_for", Decision),
-    primary_edge(Other, "r_is_option_for", Decision),
+    primary_edge(Option, "relation_is_option_for", Decision),
+    primary_edge(Other, "relation_is_option_for", Decision),
     practical(Id),
-    primary_edge(Id, "r_challenges", Other),
-    primary_edge(Id, "r_speaks_for_concern", Concern).
+    primary_edge(Id, "relation_challenges", Other),
+    primary_edge(Id, "relation_speaks_for_concern", Concern).
 
 
 % -----------------------------------------------------------------------------
@@ -738,10 +738,10 @@ argued(Option, Concern) :-
 
 unargued_driver(Ruling, Option, Concern) :-
     has_type(Ruling, "type_ruling"),
-    primary_edge(Ruling, "r_upholds", Option),
-    primary_edge(Option, "r_is_option_for", Decision),
-    primary_edge(Decision, "r_is_about", Subject),
-    primary_edge(Subject, "r_is_driven_by", Concern),
+    primary_edge(Ruling, "relation_upholds", Option),
+    primary_edge(Option, "relation_is_option_for", Decision),
+    primary_edge(Decision, "relation_is_about", Subject),
+    primary_edge(Subject, "relation_is_driven_by", Concern),
     not argued(Option, Concern).
 
 
@@ -875,7 +875,7 @@ outdated_mention(Holder, Alias, Id, File, Line) :-
 %              target:   symbol)
 
 reaches(Relation, Source, Target) :-
-    relation_acyclic(Relation),
+    acyclic_relation(Relation),
     primary_edge(Source, Relation, Target).
 
 reaches(Relation, Source, Target) :-
@@ -905,12 +905,12 @@ cycle(Relation, Id) :-
 
 practical(Id) :-
     has_type(Id, "type_annotation"),
-    primary_edge(Id, "r_supports", Target),
+    primary_edge(Id, "relation_supports", Target),
     has_type(Target, "type_option").
 
 practical(Id) :-
     has_type(Id, "type_annotation"),
-    primary_edge(Id, "r_challenges", Target),
+    primary_edge(Id, "relation_challenges", Target),
     has_type(Target, "type_option").
 
 
@@ -922,12 +922,12 @@ practical(Id) :-
 % decl argument_without_concern(id: symbol)
 % did  The annotation {id} supports or challenges an option and argues
 %      for no concern.
-% fix  Link it with r_speaks_for_concern to each concern it speaks for.
+% fix  Link it with relation_speaks_for_concern to each concern it speaks for.
 #show argument_without_concern/1.
 
 argument_without_concern(Id) :-
     practical(Id),
-    not primary_edge(Id, "r_speaks_for_concern", _).
+    not primary_edge(Id, "relation_speaks_for_concern", _).
 
 
 % -----------------------------------------------------------------------------
@@ -946,7 +946,7 @@ argument_without_concern(Id) :-
 concern_without_option(Id, Concern) :-
     has_type(Id, "type_annotation"),
     not practical(Id),
-    primary_edge(Id, "r_speaks_for_concern", Concern).
+    primary_edge(Id, "relation_speaks_for_concern", Concern).
 
 
 % -----------------------------------------------------------------------------
@@ -955,13 +955,13 @@ concern_without_option(Id, Concern) :-
 % decl schema_count(type:    symbol,
 %                   schemas: number)
 % did  The type {type} names {schemas} schemas for its items, not 1.
-% fix  Give the type one edge of r_has_items_specified_by_schema.
+% fix  Give the type one edge of relation_has_items_specified_by_schema.
 #show schema_count/2.
 
 schema_count(Type, Schemas) :-
     type_prefix(Type, _, _),
     Schemas = #count { Schema :
-                       primary_edge(Type, "r_has_items_specified_by_schema", Schema) },
+                       primary_edge(Type, "relation_has_items_specified_by_schema", Schema) },
     Schemas != 1.
 
 
@@ -976,8 +976,8 @@ schema_count(Type, Schemas) :-
 
 unused_schema(Id) :-
     has_type(Id, "type_schema"),
-    not primary_edge(_, "r_has_items_specified_by_schema", Id),
-    not primary_edge(_, "r_is_specified_by_schema", Id),
+    not primary_edge(_, "relation_has_items_specified_by_schema", Id),
+    not primary_edge(_, "relation_is_specified_by_schema", Id),
     not schema_ref(_, Id, _, _).
 
 
@@ -1035,7 +1035,7 @@ misnamed_node(Node, Expected) :-
 %                      interfaces: number)
 % did  The node {node} realizes {interfaces} interface control
 %      documents, not 1.
-% fix  Give the node one edge of r_realizes to the interface control
+% fix  Give the node one edge of relation_realizes to the interface control
 %      document whose dataflow step surface it presents.
 #show interface_count/2.
 

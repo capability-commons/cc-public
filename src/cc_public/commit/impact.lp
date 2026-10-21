@@ -40,7 +40,7 @@
 
 % -----------------------------------------------------------------------------
 % Each edge, reference and inverse of the graph before the commit, as
-% edge, reference and relation_inverse give them after.
+% edge, reference and inverse_relation give them after.
 %
 % decl before_edge(source:   symbol,
 %                  relation: symbol,
@@ -53,7 +53,7 @@
 %                       file:   symbol,
 %                       line:   number)
 
-% decl before_relation_inverse(inverse:  symbol,
+% decl before_inverse_relation(inverse:  symbol,
 %                              relation: symbol)
 
 
@@ -165,11 +165,11 @@ link(Id, "has_type", Type) :-
 
 before_link(Source, Relation, Target) :-
     before_edge(Source, Relation, Target),
-    not before_relation_inverse(Relation, _).
+    not before_inverse_relation(Relation, _).
 
 before_link(Target, Relation, Source) :-
     before_edge(Source, Inverse, Target),
-    before_relation_inverse(Inverse, Relation).
+    before_inverse_relation(Inverse, Relation).
 
 before_link(Holder, Field, Id) :-
     before_reference(Holder, Field, Id, _, _, _),

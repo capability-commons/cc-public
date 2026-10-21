@@ -90,8 +90,8 @@ def test_logic_refuses_a_relation_that_nothing_defines(tree):
 
 def test_logic_accepts_an_input_relation_with_no_rows(tree):
     facts = cc_public.graph.extract.extract(tree)
-    facts['relation_inverse'] = set()
-    rows  = cc_public.graph.logic.run(facts, '#show o/1. o(X) :- relation_inverse(X, _).')
+    facts['inverse_relation'] = set()
+    rows  = cc_public.graph.logic.run(facts, '#show o/1. o(X) :- inverse_relation(X, _).')
     assert rows == {'o': []}
 
 

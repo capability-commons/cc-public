@@ -34,12 +34,12 @@ edge:                   []
 import cc_public.web.argument
 
 
-R_HAS_ITEMS_THAT_PLAY = 'r_has_items_that_play'
-R_ADMITS              = 'r_admits'
-R_EXCLUDES            = 'r_excludes'
-R_RESTRICTS_SOURCE    = 'r_restricts_source'
-R_RESTRICTS_TARGET    = 'r_restricts_target'
-PREFIX_RELATION       = 'r_'
+R_HAS_ITEMS_THAT_PLAY = 'relation_has_items_that_play'
+R_ADMITS              = 'relation_admits'
+R_EXCLUDES            = 'relation_excludes'
+R_RESTRICTS_SOURCE    = 'relation_restricts_source'
+R_RESTRICTS_TARGET    = 'relation_restricts_target'
+PREFIX_RELATION       = 'relation_'
 PREFIX_ROLE           = 'rol_'
 LIST_END              = (('source', R_RESTRICTS_SOURCE),
                          ('target', R_RESTRICTS_TARGET))
