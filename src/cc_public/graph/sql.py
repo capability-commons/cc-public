@@ -16,11 +16,11 @@ brief:                  |
                         Evaluate an SQL query over the facts of the
                         graph of data items, with SQLite.
 description:            |
-                        This module loads the base relations and the
-                        derived relations into an in-memory SQLite
+                        This module loads the base predicates and the
+                        derived predicates into an in-memory SQLite
                         database, one table for each, with the columns
                         the logic program gives them. The derived
-                        relations are computed by clingo from
+                        predicates are computed by clingo from
                         derive.lp, so they are defined once, for both
                         languages. The prose of each item is in
                         item_text, a full-text table. A query changes
@@ -52,14 +52,14 @@ SQL_TEXT          = ('CREATE VIRTUAL TABLE item_text USING fts5('
 def connect(facts:    cc_public.graph.extract.Facts,
             list_text: list[tuple[str, str, str]] = ()) -> sqlite3.Connection:
     """
-    Return an in-memory database holding the base relations of facts
-    and the relations derived from them, and item_text, a full-text
+    Return an in-memory database holding the base predicates of facts
+    and the predicates derived from them, and item_text, a full-text
     table that holds the rows of list_text.
 
     """
 
     map_column = {name: tuple(cc_public.graph.extract.column(spec) for spec in tuple_spec)
-                  for (name, (tuple_spec, _)) in cc_public.graph.extract.RELATION.items()}
+                  for (name, (tuple_spec, _)) in cc_public.graph.extract.PREDICATE.items()}
     map_derive = cc_public.graph.logic.derived()
     rules      = ''.join(cc_public.graph.logic.show(name, map_derive) for name in map_derive)
     rows       = {name: sorted(set_row) for (name, set_row) in facts.items()}
@@ -75,7 +75,7 @@ def connect(facts:    cc_public.graph.extract.Facts,
                               column = ', '.join('"{c}" {t}'.format(c = column,
                                                                      t = MAP_TYPE[type_column])
                                                  for (column, type_column) in tuple_column)))
-        # The names are those declared in RELATION and derive.lp, not input.
+        # The names are those declared in PREDICATE and derive.lp, not input.
         connection.executemany('INSERT INTO "{name}" VALUES ({mark})'.format(  # noqa: S608
                                   name = name,
                                   mark = ', '.join('?' * len(tuple_column))),

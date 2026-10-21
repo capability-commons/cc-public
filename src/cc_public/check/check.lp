@@ -14,9 +14,9 @@
 % brief:                  |
 %                         Checks over the graph of data items.
 % description:            |
-%                         Each shown relation is one check, and each row
-%                         of it is one failure. A check that reports a
-%                         file reports the line of it too.
+%                         Each shown predicate is one check, and each
+%                         row of it is one failure. A check that reports
+%                         a file reports the line of it too.
 %
 %                         The checks come in this order: identity,
 %                         references and edges, prose and old ids, the
@@ -24,7 +24,7 @@
 %                         the kernel.
 % usage:                  |
 %                         Evaluated by pym_cc_public.check.check. The
-%                         facts of the base relations and the rules of
+%                         facts of the base predicates and the rules of
 %                         lpf_cc_public.graph.derive come before this
 %                         file in the program.
 % edge:                   []

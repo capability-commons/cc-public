@@ -10,15 +10,15 @@
 %   - id_mark:            mark_public
 %     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 %
-% title:                  Derived relations
+% title:                  Derived predicates
 % brief:                  |
-%                         Relations derived from the base relations, for
+%                         The predicates derived from the base ones, for
 %                         every program over the graph of data items.
 % description:            |
-%                         The base relations are declared by RELATION in
-%                         pym_cc_public.graph.extract, and their facts
-%                         are added by pym_cc_public.graph.logic. This
-%                         file is placed before the rules in every
+%                         The base predicates are declared by PREDICATE
+%                         in pym_cc_public.graph.extract, and their
+%                         facts are added by pym_cc_public.graph.logic.
+%                         This file is placed before the rules in every
 %                         program: the checks, a query, and the program
 %                         that fills the derived tables for SQL.
 % edge:                   []

@@ -18,27 +18,27 @@ brief:                  |
 description:            |
                         The rules are a clingo program. This module
                         adds the facts and a program made of two
-                        parts, the derived relations of derive.lp and
+                        parts, the derived predicates of derive.lp and
                         the rules given, to one clingo control, in the
                         same process. It returns the rows of every
-                        relation the rules given name in a #show
+                        predicate the rules given name in a #show
                         directive, in the order they are named.
 
                         Any message clingo gives is an error, a
                         warning included, and the program must have
-                        exactly one answer set. So a misspelt relation
-                        or a violated constraint is reported, and
-                        never reads as an empty result.
+                        exactly one answer set. So a misspelt
+                        predicate or a violated constraint is
+                        reported, and never reads as an empty result.
 
                         clingo has no declarations of its own, so a
-                        relation is declared in a comment, such as "%
+                        predicate is declared in a comment, such as "%
                         decl item(id: symbol, line: number)". The
                         declaration gives the names of the columns,
-                        and marks those that are numbers. A relation
+                        and marks those that are numbers. A predicate
                         shown without one has no column names, and one
                         shown with one has as many columns as it
-                        declares. The base relations are declared by
-                        RELATION in pym_cc_public.graph.extract.
+                        declares. The base predicates are declared by
+                        PREDICATE in pym_cc_public.graph.extract.
 
                         clingo has no string functions of its own, so
                         five are given in python and called with @:
@@ -50,7 +50,7 @@ description:            |
                         counted from 0; and @prefix(text) is what
                         comes before its first underscore. Each call
                         goes back to python, so a rule that calls one
-                        for every pair of two relations is slow:
+                        for every pair of two predicates is slow:
                         @prefix finds the prefix of an id once, where
                         @match would try it against every type.
 edge:                   []
@@ -71,15 +71,15 @@ import cc_public.graph.extract
 PATH_DERIVE       = pathlib.Path(__file__).with_name('derive.lp')
 TYPE_NUMBER       = 'number'
 
-# A declaration is a comment that names a relation and its columns.
+# A declaration is a comment that names a predicate and its columns.
 # It may go on over more comment lines, one column on each. A show
-# directive names one relation and its arity.
+# directive names one predicate and its arity.
 #
 REGEX_DECL        = re.compile(r'^[ \t]*%[ \t]*decl[ \t]+(\w+)[ \t]*\(((?:[^)\n]|\n[ \t]*%)*)\)',
                                re.MULTILINE)
 REGEX_SHOW        = re.compile(r'#show[ \t]+(\w+)[ \t]*/[ \t]*(\d+)[ \t]*\.')
 
-# The wording of a shown relation is two comments after its
+# The wording of a shown predicate is two comments after its
 # declaration: "% did", a sentence that says what a row of it records,
 # with each column named in braces, and "% fix", what to do about it.
 # Each may go on over more comment lines, indented.
@@ -186,8 +186,8 @@ def _compiled(regex: str) -> re.Pattern:
 # -----------------------------------------------------------------------------
 def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
     """
-    Return the name and the type of each column of each relation that
-    text declares, keyed by relation.
+    Return the name and the type of each column of each predicate that
+    text declares, keyed by predicate.
 
     """
 
@@ -204,8 +204,8 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 # -----------------------------------------------------------------------------
 def worded(text: str) -> dict[str, dict[str, str]]:
     """
-    Return the did and the fix of each relation that text declares
-    with them, keyed by relation. The wording of a declaration runs to
+    Return the did and the fix of each predicate that text declares
+    with them, keyed by predicate. The wording of a declaration runs to
     the next declaration.
 
     """
@@ -230,10 +230,10 @@ def described(rows:        Rows,
               prefix:      str = '') -> list[str]:
     """
     Return a line for each row of rows, and then the fix of its
-    relation once. A row reads as the did of its relation with the
+    predicate once. A row reads as the did of its predicate with the
     columns filled in, after its file and line where it has them, and
-    after the name of the relation, which callers and tests can match
-    on. A relation with no wording gives its row as it is.
+    after the name of the predicate, which callers and tests can match
+    on. A predicate with no wording gives its row as it is.
 
     """
 
@@ -261,7 +261,7 @@ def described(rows:        Rows,
 # -----------------------------------------------------------------------------
 def output(text: str) -> list[str]:
     """
-    Return the relations that text names in show directives, in the
+    Return the predicates that text names in show directives, in the
     order it first names them.
 
     """
@@ -273,7 +273,7 @@ def output(text: str) -> list[str]:
 # -----------------------------------------------------------------------------
 def show(name: str, map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
     """
-    Return the directive that shows the relation name, whose columns
+    Return the directive that shows the predicate name, whose columns
     map_column declares.
 
     """
@@ -285,7 +285,7 @@ def show(name: str, map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
 def derived() -> dict[str, tuple[tuple[str, str], ...]]:
     """
     Return the name and the type of each column of each derived
-    relation, keyed by relation.
+    predicate, keyed by predicate.
 
     """
 
@@ -295,13 +295,13 @@ def derived() -> dict[str, tuple[tuple[str, str], ...]]:
 # -----------------------------------------------------------------------------
 def base() -> dict[str, tuple[tuple[str, str], ...]]:
     """
-    Return the name and the type of each column of each base relation,
-    keyed by relation.
+    Return the name and the type of each column of each base predicate,
+    keyed by predicate.
 
     """
 
     return {name: tuple(map(cc_public.graph.extract.column, tuple_column))
-            for (name, (tuple_column, _)) in cc_public.graph.extract.RELATION.items()}
+            for (name, (tuple_column, _)) in cc_public.graph.extract.PREDICATE.items()}
 
 
 # -----------------------------------------------------------------------------
@@ -357,10 +357,10 @@ def run(facts:      cc_public.graph.extract.Facts,
         rules:      str,
         map_extra:  dict[str, tuple[tuple[str, str], ...]] | None = None) -> Rows:
     """
-    Return the rows of each output relation of rules, evaluated over
-    facts, keyed by relation in the order rules names them. map_extra
-    declares the columns of any relation of facts that is neither a
-    base relation nor derived, such as text_hit.
+    Return the rows of each output predicate of rules, evaluated over
+    facts, keyed by predicate in the order rules names them. map_extra
+    declares the columns of any predicate of facts that is neither a
+    base predicate nor derived, such as text_hit.
 
     """
 
@@ -379,8 +379,8 @@ def run(facts:      cc_public.graph.extract.Facts,
 
     # Every message clingo gives is an error, a warning included: an
     # atom that occurs in no rule head is most often a misspelt
-    # relation, and would otherwise make its rule silently never fire.
-    # An input relation may be empty, so each is declared defined.
+    # predicate, and would otherwise make its rule silently never fire.
+    # An input predicate may be empty, so each is declared defined.
     #
     list_message = []
     control      = clingo.Control(['--models=2'],
@@ -427,7 +427,7 @@ def run(facts:      cc_public.graph.extract.Facts,
 def defined(facts:      cc_public.graph.extract.Facts,
             map_column: dict[str, tuple[tuple[str, str], ...]]) -> str:
     """
-    Return a directive that declares each input relation of facts
+    Return a directive that declares each input predicate of facts
     defined, so that one with no rows is not taken for a misspelling.
 
     """

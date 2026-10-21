@@ -17,7 +17,7 @@ brief:                  |
                         languages that query them.
 description:            |
                         This package extracts the facts of a tree,
-                        derives relations from them, and evaluates
+                        derives predicates from them, and evaluates
                         logic program rules and SQL queries over both.
 edge:                   []
 

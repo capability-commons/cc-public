@@ -38,7 +38,7 @@ import cc_public.graph.text
 ID_CONCERN = 'concern_safety'
 
 
-def test_declared_reads_the_columns_of_each_relation():
+def test_declared_reads_the_columns_of_each_predicate():
     text = '% decl a(x: symbol,\n%        y: number)\n  %decl b(z)\nc(1). % decl c(w)'
     assert cc_public.graph.logic.declared(text) == {'a': (('x', 'symbol'), ('y', 'number')),
                                                       'b': (('z', 'symbol'),)}
@@ -116,7 +116,7 @@ def test_a_fact_with_a_tab_or_a_newline_is_read_as_written(tree):
     assert rows == {'f': [(text,)]}
 
 
-def test_sql_sees_base_and_derived_relations(tree):
+def test_sql_sees_base_and_derived_predicates(tree):
     facts = cc_public.graph.extract.extract(tree)
     text  = ("SELECT item.id, has_type.type FROM item JOIN has_type USING (id) "
              "WHERE id = 'concern_safety'")

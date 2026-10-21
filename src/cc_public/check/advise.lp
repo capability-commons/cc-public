@@ -14,17 +14,17 @@
 % brief:                  |
 %                         Advice over the graph of data items.
 % description:            |
-%                         Each shown relation is one kind of advice, and
-%                         each row of it is one piece of advice. Advice
-%                         is reported by cctool check but is not a
-%                         failure: it names something that may be right
-%                         here and is known to be outside what this tree
-%                         can check, such as an entry held in a
-%                         partner's register.
+%                         Each shown predicate is one kind of advice,
+%                         and each row of it is one piece of advice.
+%                         Advice is reported by cctool check but is not
+%                         a failure: it names something that may be
+%                         right here and is known to be outside what
+%                         this tree can check, such as an entry held in
+%                         a partner's register.
 % usage:                  |
 %                         Evaluated by pym_cc_public.check.check in the
 %                         same program as lpf_cc_public.check.check,
-%                         after the facts of the base relations and the
+%                         after the facts of the base predicates and the
 %                         rules of lpf_cc_public.graph.derive.
 % edge:                   []
 %

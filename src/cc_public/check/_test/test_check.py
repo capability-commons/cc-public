@@ -1090,7 +1090,7 @@ def test_a_concept_nothing_names_is_reported(tree):
 
 
 def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
-    facts = {name: set() for name in cc_public.graph.extract.RELATION}
+    facts = {name: set() for name in cc_public.graph.extract.PREDICATE}
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
     facts['type_prefix'].update({('type_register', 'reg', '.*'), ('type_annotation', 'ann', '.*')})
     facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
@@ -1181,17 +1181,17 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
 
 
 # -----------------------------------------------------------------------------
-def _rows(root, relation, arity):
+def _rows(root, predicate, arity):
     """
-    Return the sorted rows of the derived relation in the tree under
+    Return the sorted rows of the derived predicate in the tree under
     root, less those that name a node of a dataflow graph other
     than dfg_x.
 
     """
 
     facts = cc_public.graph.extract.extract(root)
-    rules = '#show {relation}/{arity}.'.format(relation = relation, arity = arity)
-    return sorted(row for row in cc_public.graph.logic.run(facts, rules)[relation]
+    rules = '#show {predicate}/{arity}.'.format(predicate = predicate, arity = arity)
+    return sorted(row for row in cc_public.graph.logic.run(facts, rules)[predicate]
                   if all(not each.startswith('dfn_') or each.startswith('dfn_x.') for each in row))
 
 

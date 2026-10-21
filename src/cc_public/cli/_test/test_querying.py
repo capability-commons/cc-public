@@ -62,7 +62,7 @@ def test_sql_prints_json_with_the_count_of_all_rows(tree):
                                          'count':   19}
 
 
-def test_logic_prints_each_output_relation(tree):
+def test_logic_prints_each_output_predicate(tree):
     result = _run(tree, 'logic', '% decl o(t: symbol)\n#show o/1. o(T) :- has_type("concern_cost", T).')
     assert result.exit_code == 0
     assert result.stdout == '# o\nt\ntype_concern\n'
@@ -76,7 +76,7 @@ def test_logic_gives_a_number_column_as_numbers(tree):
 def test_logic_without_an_output_is_refused(tree):
     result = _run(tree, 'logic', 'o(T) :- has_type(_, T).')
     assert result.exit_code == 2
-    assert 'no relation in a #show directive' in result.stderr
+    assert 'no predicate in a #show directive' in result.stderr
 
 
 def test_jq_prints_each_result_on_a_line(tree):

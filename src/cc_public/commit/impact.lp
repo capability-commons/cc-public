@@ -15,13 +15,13 @@
 %                         The items a commit touches, and the untouched
 %                         items within a given depth of them.
 % description:            |
-%                         Each shown relation is one part of the result:
-%                         touched holds each item added, removed,
-%                         renamed or changed, and neighbor each link
-%                         that reaches an untouched item.
+%                         Each shown predicate is one part of the
+%                         result: touched holds each item added,
+%                         removed, renamed or changed, and neighbor each
+%                         link that reaches an untouched item.
 % usage:                  |
 %                         Evaluated by pym_cc_public.commit.impact. The
-%                         facts of the base relations and the rules of
+%                         facts of the base predicates and the rules of
 %                         lpf_cc_public.graph.derive come before this
 %                         file in the program.
 % edge:                   []

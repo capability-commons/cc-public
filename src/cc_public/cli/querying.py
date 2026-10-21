@@ -20,7 +20,7 @@ description:            |
                         This module holds the query group and its
                         commands: sql, logic, sparql, jq, text, which
                         finds items by the words of their prose, and
-                        schema, which lists the relations SQL and
+                        predicates, which lists the predicates SQL and
                         logic programs see. Output is tab separated
                         text with a header row, or JSON with --json,
                         and is cut at --limit rows, with a note on
@@ -55,7 +55,7 @@ DELIM_FIELD       = '\t'
 WIDTH_TEXT        = 70
 INDENT_TEXT       = '      '
 
-HINT              = 'Run cctool query schema to list the relations and their columns.'
+HINT              = 'Run cctool query predicates to list the predicates and their columns.'
 HINT_JQ           = 'Run cctool query jq --help to see the shape of its input.'
 HINT_SPARQL       = 'Run cctool query sparql --help to see how the graph is named.'
 HINT_TEXT         = 'Run cctool query text --help to see how a query is read.'
@@ -82,9 +82,9 @@ def query():
     Query the graph of data items, in SQL, in a logic program, in SPARQL or in
     jq, or find items by the words of their prose.
 
-    SQL and logic programs see the same relations: the base relations
-    extracted from the tree, and the relations derived from them.
-    Run cctool query schema to list them. SPARQL sees the items as
+    SQL and logic programs see the same predicates: the base predicates
+    extracted from the tree, and the predicates derived from them.
+    Run cctool query predicates to list them. SPARQL sees the items as
     RDF triples: their types, fields and primary edges. jq sees the
     YAML documents themselves, as they are written.
 
@@ -135,7 +135,7 @@ def sql(text, path_file, root, limit, is_json):
     """
     Evaluate one SQL query over the graph.
 
-    Each relation is a SQLite table. A line is an integer, and every
+    Each predicate is a SQLite table. A line is an integer, and every
     other value is text. The prose of each item is in item_text(id,
     field, text), an FTS5 table that MATCH searches; cctool query text
     does that for you. Give the query as QUERY, as - to read it from
@@ -179,8 +179,8 @@ def logic(text, path_file, root, limit, is_json, text_search, is_exact):
     Evaluate logic program rules over the graph, with clingo.
 
     The rules are clingo rules. They are added to a program that
-    already holds every relation, so they may use any of them. Each
-    relation the rules name in a #show directive is printed. Its
+    already holds every predicate, so they may use any of them. Each
+    predicate the rules name in a #show directive is printed. Its
     columns are named by a comment such as "% decl out(id: symbol)",
     or left unnamed. Variables begin with a capital letter, and a value
     in quotes is a string. Give the rules as QUERY, as - to read them
@@ -204,7 +204,7 @@ def logic(text, path_file, root, limit, is_json, text_search, is_exact):
     text = _read(text, path_file, EXAMPLE_LOGIC)
 
     if not cc_public.graph.logic.output(text):
-        _fail('The rules name no relation in a #show directive, so there is '
+        _fail('The rules name no predicate in a #show directive, so there is '
               'nothing to print.', EXAMPLE_LOGIC)
 
     map_document = cc_public.graph.extract.documents(root.resolve())
@@ -331,31 +331,31 @@ def sparql(text, path_file, root, limit, is_json):
 
 # -----------------------------------------------------------------------------
 @query.command()
-def schema():
+def predicates():
     """
-    List the relations that an SQL or logic program query may use, with
+    List the predicates that an SQL or logic program query may use, with
     their columns.
 
     """
 
-    click.echo('Base relations, extracted from the tree:\n')
+    click.echo('Base predicates, extracted from the tree:\n')
 
-    for (name, (tuple_column, meaning)) in cc_public.graph.extract.RELATION.items():
+    for (name, (tuple_column, meaning)) in cc_public.graph.extract.PREDICATE.items():
         click.echo('  {name}({column})'.format(name = name, column = ', '.join(tuple_column)))
         click.echo(textwrap.fill(meaning,
                                  width             = WIDTH_TEXT,
                                  initial_indent    = INDENT_TEXT,
                                  subsequent_indent = INDENT_TEXT))
 
-    click.echo('\nDerived relations, as defined in cc_public/graph/derive.lp:\n')
+    click.echo('\nDerived predicates, as defined in cc_public/graph/derive.lp:\n')
     click.echo(cc_public.graph.logic.PATH_DERIVE.read_text(encoding = 'utf-8'))
     click.echo('A column is a symbol, or text in SQL, unless it is marked :number,')
-    click.echo('an integer in SQL. In SQL each relation is a table.\n')
+    click.echo('an integer in SQL. In SQL each predicate is a table.\n')
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_LOGIC)
     click.echo('\nA SPARQL query sees the items as triples, and a jq query the YAML documents,')
-    click.echo('not these relations. See cctool query sparql --help and cctool query jq --help.')
+    click.echo('not these predicates. See cctool query sparql --help and cctool query jq --help.')
 
 
 # -----------------------------------------------------------------------------

@@ -20,12 +20,12 @@ description:            |
                         This module extracts the facts of the tree,
                         evaluates check.lp over them, and validates
                         each YAML document against its schemas. Each
-                        shown relation of check.lp is one check, as is
-                        schema validation, and each row of a check is
-                        one failure.
+                        shown predicate of check.lp is one check, as
+                        is schema validation, and each row of a check
+                        is one failure.
 
                         advise.lp is evaluated in the same program.
-                        Each of its shown relations is one kind of
+                        Each of its shown predicates is one kind of
                         advice. cctool check reports advice, but
                         advice is not a failure, so it neither fails
                         the check nor refuses an edit.

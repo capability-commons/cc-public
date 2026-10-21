@@ -81,7 +81,7 @@ pre-push hook runs it with `--gate` on what a push would send.
     cctool format [--check]                 lay out every YAML document
     cctool query sql|logic QUERY            query the graph
     cctool query sparql|jq QUERY            query the graph
-    cctool query schema                     list the relations and columns
+    cctool query predicates                 list the predicates and columns
     cctool export obsidian|okf DIRPATH      write the graph as markdown pages
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
     cctool header FILEPATH [ID] [--field NAME VALUE]... [--link ...]

@@ -215,7 +215,7 @@ def test_every_other_name_in_the_guides_is_a_check_relation_or_field(facts):
         for part in word.split('.'):
             if (REGEX_NAME.fullmatch(part) and part.split('_')[0] not in set_prefix
                     and part not in set_known):
-                list_wrong.append('{guide}: {part} is no check, relation or field.'.format(
+                list_wrong.append('{guide}: {part} is no check, predicate or field.'.format(
                                       guide = guide, part = part))
 
     assert not list_wrong, '\n'.join([*list_wrong, MESSAGE_FIX])
@@ -240,7 +240,7 @@ def test_every_path_in_the_guides_exists():
 # -----------------------------------------------------------------------------
 def _known() -> set[str]:
     """
-    Return the name of every check and every relation that rules may
+    Return the name of every check and every predicate that rules may
     use. Some begin with the prefix of a type, as concern_count would.
 
     """
@@ -248,7 +248,7 @@ def _known() -> set[str]:
     return (set(cc_public.check.check.wording())
             | set(cc_public.graph.logic.worded(
                   cc_public.commit.change.RULES.read_text(encoding = 'utf-8')))
-            | set(cc_public.graph.extract.RELATION)
+            | set(cc_public.graph.extract.PREDICATE)
             | set(cc_public.graph.logic.derived()))
 
 

@@ -85,7 +85,7 @@ GROUP BY id
 ORDER BY score, id
 """
 
-# A text hit as a relation for logic program rules.
+# A text hit as a predicate for logic program rules.
 #
 MAP_COLUMN_HIT    = {'text_hit': (('id',    cc_public.graph.extract.TYPE_SYMBOL),
                                   ('field', cc_public.graph.extract.TYPE_SYMBOL),
