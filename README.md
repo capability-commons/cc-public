@@ -1,10 +1,11 @@
 # Capability commons
 
-A document-oriented engineering system. Every artifact is a data item
-with an identity: a type, a schema, a concept, a concern, a decision,
-an option, an annotation, a python module. Items refer to one another
-by typed edges, and the whole graph is checked mechanically before it
-is committed.
+A graph-oriented engineering system. Every file in it is a data item,
+and the graph is made of the data items that also have an identity:
+a type, a schema, a concept, a concern, a decision, an option, an
+annotation, a python module. These identifiable data items refer to
+one another by typed edges, and the whole graph is checked
+mechanically before it is committed.
 
 ## What is here
 
