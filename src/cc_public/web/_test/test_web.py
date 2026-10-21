@@ -648,7 +648,7 @@ def test_requests_at_once_are_all_answered(tree):
 
 
 def test_requirement_page_shows_its_statement(tree):
-    (status, _, body) = cc_public.web.server.respond(tree, '/item/req_rename_keeps_guid')
+    (status, _, body) = cc_public.web.server.respond(tree, '/item/rqt_rename_keeps_guid')
     assert status == http.HTTPStatus.OK
     assert (b'As soon as the Tooling renames an item, the Tooling shall keep the guid of '
             b'the item.') in body
@@ -737,14 +737,14 @@ def test_requirement_index_groups_requirements_by_subject(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/requirements')
     assert status == http.HTTPStatus.OK
     assert b'<h2>Tooling</h2>' in body
-    assert body.count(b'href="/requirement/req_') == 3
+    assert body.count(b'href="/requirement/rqt_') == 3
     assert (b'If an edit would add a failure to the tree, the Tooling shall refuse the '
             b'edit.') in body
 
 
 def test_requirement_page_reads_down_its_trace(tree):
     (status, _, body) = cc_public.web.server.respond(
-                            tree, '/requirement/req_edit_refuses_new_failure')
+                            tree, '/requirement/rqt_edit_refuses_new_failure')
     assert status == http.HTTPStatus.OK
     text = body.decode()
     list_slot = re.findall(r'<span class="slot">(\w+)</span>', text)
@@ -757,10 +757,10 @@ def test_requirement_page_reads_down_its_trace(tree):
     assert 'Does ‘failure’ name a process' in text
     assert text.count('<td class="said">') == 9
     assert 'class="pill' not in text
-    assert '/requirement/req_format_keeps_formatted_file' in text
+    assert '/requirement/rqt_format_keeps_formatted_file' in text
 
 
-@pytest.mark.parametrize('path', ['/requirement/req_missing',
+@pytest.mark.parametrize('path', ['/requirement/rqt_missing',
                                   '/requirement/lc_tooling'])
 def test_requirement_page_of_anything_else_is_not_found(tree, path):
     (status, _, _) = cc_public.web.server.respond(tree, path)

@@ -101,7 +101,7 @@ def test_every_requirement_in_the_tree_composes(tree):
     for (document, _) in cc_public.graph.extract.documents(tree).values():
         _collect(document, map_node)
     list_requirement = [node for (id_item, node) in map_node.items()
-                        if id_item.startswith('req_')]
+                        if id_item.startswith('rqt_')]
     assert list_requirement
     for requirement in list_requirement:
         assert cc_public.requirement.compose.statement(requirement, map_node.get).endswith('.')

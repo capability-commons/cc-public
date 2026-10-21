@@ -582,13 +582,13 @@ def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
 def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
     # The subject of a requirement must play rol_design_element, which a
     # concern does not.
-    _replace(tree, '_data/requirement/req_rename_keeps_guid.yaml',
+    _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml',
              'id_target:          lc_tooling\n'
              '    guid_target:        ' + _guid_of(tree, 'lc_tooling') + '\n',
              'id_target:          concern_cost\n'
              '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
     assert _check(tree) == {'restriction_violation': [
-        ('req_rename_keeps_guid', 'r_has_subject', 'concern_cost', 'target',
+        ('rqt_rename_keeps_guid', 'r_has_subject', 'concern_cost', 'target',
          'rrs_is_design_element')]}
 
 
@@ -606,7 +606,7 @@ def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
     failures = _check(tree)
     assert list(failures) == ['restriction_violation']
     assert {row[0] for row in failures['restriction_violation']} == {
-        'req_edit_refuses_new_failure', 'req_format_keeps_formatted_file', 'req_rename_keeps_guid'}
+        'rqt_edit_refuses_new_failure', 'rqt_format_keeps_formatted_file', 'rqt_rename_keeps_guid'}
     assert {row[3:] for row in failures['restriction_violation']} == {
         ('source', 'rrs_is_requirement')}
 
