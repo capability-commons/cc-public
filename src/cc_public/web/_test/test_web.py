@@ -623,7 +623,7 @@ def test_decision_page_ends_with_cross_references(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/decision/' + ID_DECISION)
     footer = body.split(b'<footer class="bookend">')[1]
     assert b'Cross-references' in footer
-    assert b'/component/lc_tooling' in footer
+    assert b'/component/lco_tooling' in footer
 
 
 def test_item_page_shows_edges_in_and_out(tree):
@@ -706,8 +706,8 @@ def test_type_page_lists_its_items_and_filters_them(tree):
 def test_subject_page_gathers_what_is_about_it(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/components')
     assert status == http.HTTPStatus.OK
-    assert b'href="/component/lc_tooling"' in body
-    (status, _, body) = cc_public.web.server.respond(tree, '/component/lc_tooling')
+    assert b'href="/component/lco_tooling"' in body
+    (status, _, body) = cc_public.web.server.respond(tree, '/component/lco_tooling')
     assert status == http.HTTPStatus.OK
     assert '/decision/{id}'.format(id = ID_DECISION).encode() in body
     (status, _, _) = cc_public.web.server.respond(tree, '/component/' + ID_UPHELD)
@@ -761,7 +761,7 @@ def test_requirement_page_reads_down_its_trace(tree):
 
 
 @pytest.mark.parametrize('path', ['/requirement/rqt_missing',
-                                  '/requirement/lc_tooling'])
+                                  '/requirement/lco_tooling'])
 def test_requirement_page_of_anything_else_is_not_found(tree, path):
     (status, _, _) = cc_public.web.server.respond(tree, path)
     assert status == http.HTTPStatus.NOT_FOUND
@@ -816,7 +816,7 @@ def test_dataflow_interface_page_draws_the_step_and_its_semantics(tree):
 
 
 @pytest.mark.parametrize('path', ['/interface/icd_missing',
-                                  '/interface/lc_tooling'])
+                                  '/interface/lco_tooling'])
 def test_interface_page_of_anything_else_is_not_found(tree, path):
     (status, _, _) = cc_public.web.server.respond(tree, path)
     assert status == http.HTTPStatus.NOT_FOUND

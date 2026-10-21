@@ -89,11 +89,11 @@ def test_jq_prints_each_result_on_a_line(tree):
 
 
 def test_jq_sees_the_file_and_line_of_each_document(tree):
-    result = _run(tree, 'jq', '.[] | select(.document.id_self? == "lc_tooling") '
+    result = _run(tree, 'jq', '.[] | select(.document.id_self? == "lco_tooling") '
                               '| {file, line}', '--json')
     assert result.exit_code == 0
     assert json.loads(result.stdout) == {
-        'results': [{'file': '_data/logical_component/lc_tooling.yaml', 'line': 1}],
+        'results': [{'file': '_data/logical_component/lco_tooling.yaml', 'line': 1}],
         'count':   1}
 
 
@@ -126,7 +126,7 @@ def test_sparql_sees_fields_and_edges(tree):
 
 
 def test_sparql_ask_prints_true_or_false(tree):
-    result = _run(tree, 'sparql', 'ASK { cc:lc_tooling a cc:t_logical_component }')
+    result = _run(tree, 'sparql', 'ASK { cc:lco_tooling a cc:t_logical_component }')
     assert result.stdout == 'true\n'
 
 
