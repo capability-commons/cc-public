@@ -66,7 +66,7 @@ TUPLE_GROUP       = (
     ('Structure',        ('type_type', 'type_schema', 'type_register', 'type_protective_mark')),
     ('Code and history', ('type_python_package', 'type_python_module', 'type_python_class',
                           'type_python_function', 'type_logic_program_file',
-                          'type_configuration_file', 'type_shell_script', 'type_commit')))
+                          'type_file', 'type_shell_script', 'type_commit')))
 
 Graph             = cc_public.web.argument.Graph
 

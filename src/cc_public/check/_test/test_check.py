@@ -867,7 +867,7 @@ def test_an_item_in_a_comment_header_is_read(tree):
                                    + '# ...\nsetting = 1\n')
     assert _check(tree) == {
         'bad_guid':         [('file_tool', 'file_123', 'tool.cfg', '2')],
-        'schema_violation': [('file_tool', 'sch_configuration_file', 'tool.cfg', '3', 'guid_self',
+        'schema_violation': [('file_tool', 'sch_file', 'tool.cfg', '3', 'guid_self',
                               "'file_123' does not match " + repr(REGEX_GUID))]}
 
 
@@ -1066,18 +1066,18 @@ def test_an_argument_about_an_annotation_without_a_concern_passes(tree):
 def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'r_has_items_specified_by_schema\n        guid_relation:  '
-             'r_c233cc9d78af4ec6bbaec8a4bbc43344\n        id_target:      sch_configuration_file\n',
+             'r_c233cc9d78af4ec6bbaec8a4bbc43344\n        id_target:      sch_file\n',
              'r_is_specified_by_schema\n        guid_relation:  '
-             'r_d70024bd40444f93b4fc1903379ded81\n        id_target:      sch_configuration_file\n')
+             'r_d70024bd40444f93b4fc1903379ded81\n        id_target:      sch_file\n')
     assert _check(tree) == {
         'restriction_violation': [
-            ('type_configuration_file', 'r_is_specified_by_schema', 'sch_configuration_file', 'source', 'rrs_is_register')],
-        'schema_count':          [('type_configuration_file', '0')]}
+            ('type_file', 'r_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
+        'schema_count':          [('type_file', '0')]}
 
 
 def test_a_schema_nothing_uses_is_reported(tree):
-    text = (tree / '_data/schema/sch_configuration_file.yaml').read_text()
-    text = text.replace('sch_configuration_file', 'sch_x').replace(_guid_of(tree, 'sch_configuration_file'), _guid('sch'))
+    text = (tree / '_data/schema/sch_file.yaml').read_text()
+    text = text.replace('sch_file', 'sch_x').replace(_guid_of(tree, 'sch_file'), _guid('sch'))
     (tree / '_data/schema/sch_x.yaml').write_text(text)
     assert _check(tree) == {'unused_schema': [('sch_x',)]}
 
