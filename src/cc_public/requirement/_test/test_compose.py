@@ -40,7 +40,7 @@ def _requirement(**map_field):
     list_edge = [('r_has_subject', 'lc_x'), ('r_has_process', 'con_x')]
     if map_field.get('activity') == 'interaction':
         list_edge.append(('r_has_actor', 'lc_user'))
-    requirement = {'obligation': 'shall',
+    requirement = {'modal_verb': 'shall',
                    'activity':   'autonomous',
                    'object':     'each failure',
                    'relation':   [{'id_relation': id_relation, 'id_target': id_target}
@@ -72,7 +72,7 @@ def test_an_interaction_names_its_actor():
 
 
 def test_an_interface_is_able_to():
-    requirement = _requirement(activity = 'interface', obligation = 'should')
+    requirement = _requirement(activity = 'interface', modal_verb = 'should')
     text        = cc_public.requirement.compose.statement(requirement, MAP_NODE.get)
     assert text == 'The Checker should be able to report each failure.'
 

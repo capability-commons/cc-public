@@ -63,7 +63,7 @@ surface:
           name:         check
           brief:        |
                         Return the failures of the tree under root.
-          obligation:   |
+          guarantee:    |
                         The tree is read and nothing in it is written.
                         Advice is not a failure, so it is left out.
 
@@ -96,7 +96,7 @@ surface:
           brief:        |
                         Return the failures and the advice of the tree
                         under root.
-          obligation:   |
+          guarantee:    |
                         The tree is read and nothing in it is written.
                         A check is either a failure or advice, never
                         both, so a caller may fail on the first and
@@ -131,7 +131,7 @@ surface:
           brief:        |
                         Return the failures of documents that need not
                         be written yet.
-          obligation:   |
+          guarantee:    |
                         Only the documents given are checked, so an
                         edit can be checked before it is written.
                         Layout is not checked, since it is a property
@@ -165,7 +165,7 @@ surface:
               mode:     input_output
               optional:  true
               default:  None
-              obligation:  |
+              guarantee:  |
                         A document that is the same object as at the
                         last call, with the same schemas, is not
                         validated again. A caller that changes a
@@ -188,7 +188,7 @@ surface:
           brief:        |
                         Return the failures and the advice of
                         documents that need not be written yet.
-          obligation:   |
+          guarantee:    |
                         As for check_documents, and the advice is kept
                         apart from the failures.
 
