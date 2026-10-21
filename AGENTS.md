@@ -115,10 +115,10 @@ unfinished edits of another.
 - A new concept must be named by some other item, so make the concept
   and the item that names it together, with `cctool batch`.
 - After any edit by hand, run `cctool format`, then `cctool check`.
-- Rename an id with `cctool rename OLD NEW`. It changes every document
-  that names the id, moves the file of a standalone item, and keeps
-  the old id in the `alias` list of a register entry. It lists any
-  file, such as a test, that still names the old id outside a
+- Rename an id with `cctool rename OLD NEW`. It changes every YAML
+  document that names the id, moves the file of a standalone item, and
+  keeps the old id in the `alias` list of a register entry. It lists
+  any file, such as a test, that still names the old id outside a YAML
   document; change those by hand.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated.
@@ -167,7 +167,7 @@ reads them through `.claude/skills`, a link to the same directory.
 - `cctool query sql "SELECT ..."` for joins and counts, and
   `cctool query logic '...'` for anything recursive, such as reach
   through edges. `cctool query sparql '...'` sees the items as RDF
-  triples, and `cctool query jq '...'` sees the documents as written.
+  triples, and `cctool query jq '...'` sees the YAML documents as written.
 - Read the schema of a type before writing an item of it: the type
   entry in `reg_data_item_type.yaml` names it.
 - `cctool impact REV` lists the items a commit adds, removes, renames

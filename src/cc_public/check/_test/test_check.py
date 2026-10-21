@@ -1139,7 +1139,7 @@ def _system(root, list_flow, map_node = None, map_extra = None, map_port = None,
     list_flow. An end is a node key and a port name, as 'a.out', and a
     third element, if given, is the direction. map_node, if given, adds
     its fields to each node it names, map_extra its fields to the
-    document, and map_port its groups of ports to icd_x, which is
+    YAML document, and map_port its groups of ports to icd_x, which is
     written unless the tree has it. Return the location.
 
     """

@@ -255,7 +255,7 @@ def _known() -> set[str]:
 # -----------------------------------------------------------------------------
 def _fields(map_document: cc_public.graph.extract.Documents) -> set[str]:
     """
-    Return the name of every field that some document uses.
+    Return the name of every field that some YAML document uses.
 
     """
 

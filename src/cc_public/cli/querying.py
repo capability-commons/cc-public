@@ -86,7 +86,7 @@ def query():
     extracted from the tree, and the relations derived from them.
     Run cctool query schema to list them. SPARQL sees the items as
     RDF triples: their types, fields and primary edges. jq sees the
-    documents themselves, as they are written.
+    YAML documents themselves, as they are written.
 
     """
 
@@ -246,7 +246,7 @@ def logic(text, path_file, root, limit, is_json, text_search, is_exact):
 @_option
 def jq(text, path_file, root, limit, is_json):
     """
-    Evaluate one jq filter over the documents of the tree.
+    Evaluate one jq filter over the YAML documents of the tree.
 
     The input is one array, with an object for each file that holds a
     document: {"file": ..., "line": ..., "document": ...}, where line
@@ -354,7 +354,7 @@ def schema():
     click.echo('Examples:')
     click.echo('  ' + EXAMPLE_SQL)
     click.echo('  ' + EXAMPLE_LOGIC)
-    click.echo('\nA SPARQL query sees the items as triples, and a jq query the documents,')
+    click.echo('\nA SPARQL query sees the items as triples, and a jq query the YAML documents,')
     click.echo('not these relations. See cctool query sparql --help and cctool query jq --help.')
 
 

@@ -69,10 +69,10 @@ primary_edge(Target, Relation, Source) :-
 
 
 % -----------------------------------------------------------------------------
-% The schemas a document must conform to: the schema its type names for
-% the items of that type, and any schema the document names for itself.
-% A document is an item held by no other, and the items inside it
-% conform as part of it.
+% The schemas a YAML document must conform to: the schema its type names
+% for the items of that type, and any schema the document names for
+% itself. A document is an item held by no other, and the items inside
+% it conform as part of it.
 %
 % decl document_schema(id:     symbol,
 %                      schema: symbol)

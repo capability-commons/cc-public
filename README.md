@@ -78,7 +78,7 @@ pre-push hook runs it with `--gate` on what a push would send.
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILEPATH           check a commit message
     cctool history check [RANGE] [--gate]   check commits already made
-    cctool format [--check]                 lay out every document
+    cctool format [--check]                 lay out every YAML document
     cctool query sql|logic QUERY            query the graph
     cctool query sparql|jq QUERY            query the graph
     cctool query schema                     list the relations and columns

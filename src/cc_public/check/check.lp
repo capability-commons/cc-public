@@ -232,7 +232,7 @@ misplaced_module(Id, Expected) :-
 
 
 % -----------------------------------------------------------------------------
-% A document under a _data directory is in the folder named for its
+% A YAML document under a _data directory is in the folder named for its
 % type, less the type_, in a file named for its id. A document that
 % belongs to a decision is in the folder of the decision instead, so that
 % everything argued about one decision is kept together.
@@ -746,7 +746,7 @@ unargued_driver(Ruling, Option, Concern) :-
 
 
 % -----------------------------------------------------------------------------
-% Every file that ought to hold a document can be read: a YAML file
+% Every file that ought to hold a YAML document can be read: a YAML file
 % under _data, the module docstring of a python module, or a comment
 % header. One that cannot hides its items from every other check.
 %

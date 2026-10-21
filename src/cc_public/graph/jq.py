@@ -16,10 +16,10 @@ brief:                  |
                         Evaluate a jq filter over the documents of the
                         graph of data items, with the jq program.
 description:            |
-                        This module gives jq the documents of the tree
-                        as one JSON array, with an object for each
-                        file that holds a document: its file, the line
-                        its document starts on, and the document.
+                        This module gives jq the YAML documents of the
+                        tree as one JSON array, with an object for
+                        each file that holds a document: its file, the
+                        line its document starts on, and the document.
                         Unlike the SQL and logic program queries,
                         which see the facts extracted from the
                         documents, a jq filter sees the documents

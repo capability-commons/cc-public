@@ -680,7 +680,7 @@ def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
 # -----------------------------------------------------------------------------
 def _params_document() -> list:
     """
-    Return a parameter for each file of the repository that holds a
+    Return a parameter for each file of the repository that holds a YAML
     document. All but the first file of each folder are marked slow, so
     that the gate lays out one file of each kind and the slow run all.
 
@@ -810,8 +810,8 @@ def test_a_document_outside_the_subset_is_refused():
 # -----------------------------------------------------------------------------
 def _shapes(text, relative):
     """
-    Return the shape of each document text holds, as the content of the
-    file at relative, by its key.
+    Return the shape of each YAML document text holds, as the content of
+    the file at relative, by its key.
 
     """
 
@@ -823,7 +823,7 @@ def _shapes(text, relative):
 def _shape(node):
     """
     Return node with each literal block reduced to its words, so that
-    two documents compare equal when only the breaks in their prose
+    two YAML documents compare equal when only the breaks in their prose
     differ.
 
     """
