@@ -41,6 +41,11 @@ edge:
     id_target:          sch_reg_data_item_type
     guid_target:        sch_8fe14a82efa7444383ba95a9ca55b4c5
 
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_identifiable_data_item
+    guid_target:        concept_a125aa49d2a145368ebb6c79d85c375b
+
 table:
 
   # ---------------------------------------------------------------------------
@@ -269,7 +274,7 @@ table:
     description:        |
                         Each protective mark data item names an
                         authority and a level, and states what may be
-                        done with an item that bears it.
+                        done with an [[item]] that bears it.
     usage:              |
                         Protective mark data items are used to decide
                         what may be disclosed, to whom, and under
@@ -418,14 +423,14 @@ table:
                         Type of annotation data items.
     description:        |
                         Each annotation data item holds one assertion
-                        about one or more items in the graph, offered
-                        for consideration.
+                        about one or more [[items]] in the graph,
+                        offered for consideration.
     usage:              |
                         Annotation data items let anyone record
-                        something worth saying about an item, such as
-                        a worry, an opportunity or a reason to keep a
-                        design as it is, in a form that can be pointed
-                        at and answered.
+                        something worth saying about an [[item]], such
+                        as a worry, an opportunity or a reason to keep
+                        a design as it is, in a form that can be
+                        pointed at and answered.
     note:               |
                         Annotation data items travel on their own, one
                         per file: in the folder of their decision if
@@ -483,7 +488,7 @@ table:
                         Type of option data items.
     description:        |
                         Each option data item records one choice about
-                        one or more items in the graph.
+                        one or more [[items]] in the graph.
     usage:              |
                         Option data items are what annotations argue
                         over. The annotations that support or
@@ -598,8 +603,8 @@ table:
     usage:              |
                         Python module data items let a module be
                         traced, annotated and argued over like any
-                        other item, without a second file to keep in
-                        step with it.
+                        other [[item]], without a second file to keep
+                        in step with it.
     note:               |
                         The id is the prefix and the name the module
                         is imported under, with src as the root of the
@@ -652,8 +657,8 @@ table:
                         import path, in lower case and with its parts
                         separated by full stops. pyp_cc_public.check
                         names src/cc_public/check. The __init__ module
-                        holds the package item and has no python
-                        module item of its own.
+                        holds the package [[item]] and has no python
+                        module [[item]] of its own.
 
                         The shape of python package data items is
                         defined by the sch_python_package schema.
@@ -692,8 +697,8 @@ table:
     usage:              |
                         Logic program file data items let a file of
                         rules be traced, annotated and argued over
-                        like any other item, without a second file to
-                        keep in step with it.
+                        like any other [[item]], without a second file
+                        to keep in step with it.
     note:               |
                         The id is the prefix and the dotted name the
                         file would be imported under if it were a
@@ -741,16 +746,16 @@ table:
                         comment at the head of the file.
     usage:              |
                         File data items let such files be traced and
-                        owned like any other item.
+                        owned like any other [[item]].
     note:               |
                         The type is not limited to configuration
                         files: other kinds of file may need it later.
 
-                        Source code has types of its own. The item of
-                        a python module is held in its docstring and
-                        has the type type_python_module, the item of a
-                        logic program file has the type
-                        type_logic_program_file, and the item of a
+                        Source code has types of its own. The [[item]]
+                        of a python module is held in its docstring
+                        and has the type type_python_module, the
+                        [[item]] of a logic program file has the type
+                        type_logic_program_file, and the [[item]] of a
                         shell script has the type type_shell_script.
 
                         The prefix is file, the preferred term.
@@ -793,7 +798,7 @@ table:
     usage:              |
                         Commit data items let the history of the tree
                         be read, linked and checked like any other
-                        item.
+                        [[item]].
     note:               |
                         A commit data item is held in the message of
                         the git commit it records, after the subject
@@ -834,7 +839,7 @@ table:
     usage:              |
                         Logical component data items are the subjects
                         of decisions about how a part is built. The
-                        items that implement a part realize it, so
+                        [[items]] that implement a part realize it, so
                         that a decision keeps its subject when the
                         implementation is replaced.
     note:               |
@@ -877,7 +882,7 @@ table:
     usage:              |
                         An option that no ruling names is open. A
                         ruling that upholds one option may reject its
-                        alternatives in the same item.
+                        alternatives in the same [[item]].
     note:               |
                         Ruling data items travel on their own, one per
                         file, in the folder of the decision whose
@@ -1063,7 +1068,7 @@ table:
                         Type of relation restriction data items.
     description:        |
                         Each relation restriction data item is one
-                        condition on the items at an end of a
+                        condition on the [[items]] at an end of a
                         relation: an OR of roles admitted or excluded.
     usage:              |
                         Relations name restrictions on their source
@@ -1122,7 +1127,7 @@ table:
                         Python class data items let one class be
                         traced, annotated and argued over, rather than
                         the whole module that holds it. A class is
-                        given an item only when something needs to
+                        given an [[item]] only when something needs to
                         point at it.
     note:               |
                         The id is the prefix, the name of the module,
@@ -1168,7 +1173,7 @@ table:
                         Python function data items let one function be
                         traced, annotated and argued over, rather than
                         the whole module that holds it. A function is
-                        given an item only when something needs to
+                        given an [[item]] only when something needs to
                         point at it.
     note:               |
                         The id is the prefix, the name of the module,
@@ -1220,8 +1225,8 @@ table:
                         an implementation or a test point at one
                         member of it.
     note:               |
-                        A new version of an interface is a new item,
-                        which names the one it replaces with
+                        A new version of an interface is a new
+                        [[item]], which names the one it replaces with
                         relation_supersedes.
 
                         The shape of interface control document data
@@ -1315,10 +1320,10 @@ table:
                         dataflow node runs.
     usage:              |
                         A dataflow graph puts the model of a system in
-                        the graph of items, so that rules can follow
-                        data from dataflow node to dataflow node, and
-                        a decision or an argument can be about one
-                        arrangement of a model.
+                        the graph of [[items]], so that rules can
+                        follow data from dataflow node to dataflow
+                        node, and a decision or an argument can be
+                        about one arrangement of a model.
     note:               |
                         The shape of dataflow graph data items is
                         defined by the sch_dataflow_graph schema.
@@ -1392,16 +1397,17 @@ table:
     guid_self:          type_ba298a0831144a00aa1595a33406f7ea
     title:              Shell script type
     brief:              |
-                        Type of shell script items.
+                        Type of shell script [[items]].
     description:        |
-                        Each shell script item holds the metadata of
-                        one shell script, in a comment at the head of
-                        the script.
+                        Each shell script [[item]] holds the metadata
+                        of one shell script, in a comment at the head
+                        of the script.
     usage:              |
-                        Shell script items let the git hooks and other
-                        scripts be traced and owned like any other
-                        item, and be told apart from configuration
-                        files, which have the type type_file.
+                        Shell script [[items]] let the git hooks and
+                        other scripts be traced and owned like any
+                        other [[item]], and be told apart from
+                        configuration files, which have the type
+                        type_file.
     note:               |
                         The prefix is the whole word shell, so that it
                         cannot be read as sch, the prefix of schemas.
