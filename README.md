@@ -96,6 +96,6 @@ pre-push hook runs it with `--gate` on what a push would send.
 Each edit is checked with the tree as it would be, and written only if
 it adds no failure. `--dry-run` prints it as a diff instead.
 
-## Licence
+## License
 
 Apache License 2.0. See `LICENSE` and `NOTICE`.

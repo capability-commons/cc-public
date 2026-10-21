@@ -20,7 +20,7 @@ brief:                  |
 description:            |
                         SOPHIST reads a requirement for three
                         transformations of what was meant: deletion,
-                        where it leaves something out; generalisation,
+                        where it leaves something out; generalization,
                         where it says more than is meant; and
                         distortion, where words stand in for what is
                         meant. The questions here are raised from the
@@ -34,7 +34,7 @@ description:            |
                         The characteristics C1 to C9 are those the
                         INCOSE Guide to Writing Requirements sets for
                         a single requirement, each with the question
-                        it asks and what the tree says towards it.
+                        it asks and what the tree says toward it.
 relation:               []
 
 ...
@@ -58,7 +58,7 @@ R_TRACES_TO_PARENT   = 'r_traces_to_parent'
 R_TRACES_TO_SOURCE   = 'r_traces_to_source'
 
 CATEGORY_DELETION    = 'deletion'
-CATEGORY_GENERAL     = 'generalisation'
+CATEGORY_GENERAL     = 'generalization'
 CATEGORY_DISTORTION  = 'distortion'
 
 # The transformations SOPHIST reads for, in the order a review asks
@@ -66,7 +66,7 @@ CATEGORY_DISTORTION  = 'distortion'
 #
 LIST_CATEGORY        = ((CATEGORY_DELETION,   'Deletion',
                          'What the statement leaves out.'),
-                        (CATEGORY_GENERAL,    'Generalisation',
+                        (CATEGORY_GENERAL,    'Generalization',
                          'Where it says more than is meant.'),
                         (CATEGORY_DISTORTION, 'Distortion',
                          'Where words stand in for what is meant.'))
@@ -170,7 +170,7 @@ def characteristics(requirement:   Requirement,
                     list_parent:   list[str]) -> list[tuple[str, str, str, str]]:
     """
     Return each characteristic of LIST_CHARACTERISTIC with its code,
-    name and question, and what the tree says towards it: requirement,
+    name and question, and what the tree says toward it: requirement,
     with the questions raised of it and the parents it traces to.
 
     """

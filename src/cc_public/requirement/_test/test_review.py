@@ -46,7 +46,7 @@ def test_questions_ask_after_each_transformation():
         ('deletion',       'It has no qualifier. Is a measure of how well, how soon or how '
                            'often needed?'),
         ('deletion',       'faster'),
-        ('generalisation', 'every'),
+        ('generalization', 'every'),
         ('distortion',     'configuration'),
         ('distortion',     'as appropriate')]
 

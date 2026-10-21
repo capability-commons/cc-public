@@ -99,7 +99,7 @@ def _replace(root, relative, old, new):
 
 def test_a_commit_that_changes_no_item_passes(repo):
     _replace(repo, 'README.md', 'Capability commons', 'Capability Commons')
-    assert _check(repo, 'Change README.md so that its title is capitalised') == {}
+    assert _check(repo, 'Change README.md so that its title is capitalized') == {}
 
 
 def test_an_unannounced_removal_is_reported(repo):

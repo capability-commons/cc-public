@@ -92,7 +92,7 @@ def obsidian(dir_out, root, is_replace):
     Write the graph as an Obsidian vault in the folder DIRPATH.
 
     Each note is named by the id of its item, and shows its title. Its
-    type is a tag, so the graph view can colour the items by type, and
+    type is a tag, so the graph view can color the items by type, and
     its title is an alias, so a link can be found by either.
 
     \b

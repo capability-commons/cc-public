@@ -588,7 +588,7 @@ class Summary:
     # -------------------------------------------------------------------------
     def __init__(self, graph: Graph, decision: Decision) -> None:
         """
-        Summarise decision.
+        Summarize decision.
 
         """
 
@@ -726,7 +726,7 @@ def _mark(stance: str) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _standing(summary: Summary) -> typing.Any:
     """
-    Return the standing of the decision, as a word in the colour of the
+    Return the standing of the decision, as a word in the color of the
     standing of an option.
 
     """
@@ -1073,7 +1073,7 @@ def _controls(graph: Graph, decision: Decision, id_option: str) -> typing.Any:
 def _pill(label: str, role: str, title: str, href: str) -> typing.Any:
     """
     Return a control that changes the data, as a pill that leads to its
-    form at href: for or against in the colours of role, or plain if
+    form at href: for or against in the colors of role, or plain if
     role is ''.
 
     """
@@ -1466,7 +1466,7 @@ def _questions(list_question: list) -> typing.Any:
 def _characteristics(list_said: list) -> typing.Any:
     """
     Return the characteristics a requirement is reviewed against, each
-    with its question and what the tree says towards it.
+    with its question and what the tree says toward it.
 
     """
 

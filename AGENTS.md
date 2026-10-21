@@ -185,9 +185,9 @@ reads them through `.claude/skills`, a link to the same directory.
   imports, and names prefixed by type (`list_NAME`, `map_NAME`, `path_NAME`).
 - Logic programs follow the house style of `check.lp`: a separator and
   a comment above each relation, a `% decl` line that names its
-  columns, variables named for the columns they fill (capitalised, as
+  columns, variables named for the columns they fill (capitalized, as
   clingo requires), and one body atom per line.
-- Where a recognised standard covers the ground (ISO 1087, ISO/IEC
+- Where a recognized standard covers the ground (ISO 1087, ISO/IEC
   25010, ISO/IEC/IEEE 42010), follow its structure and terms, and cite
   it.
 

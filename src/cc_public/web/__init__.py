@@ -21,7 +21,7 @@ description:            |
                         annotations and rulings of a tree, and serves
                         them as pages on this computer, set after
                         Tufte: serif text, a margin for notes, and
-                        colour only in marks that carry meaning. The
+                        color only in marks that carry meaning. The
                         pages change nothing.
 relation:               []
 

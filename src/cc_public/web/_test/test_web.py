@@ -927,7 +927,7 @@ surface:
                         0.5.
       initialization:   |
                         The background model starts empty and is
-                        learnt over the first 50 frames, during which
+                        learned over the first 50 frames, during which
                         no detections are written.
       persistence:      |
                         The background model is kept between

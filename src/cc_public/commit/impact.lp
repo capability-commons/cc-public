@@ -17,7 +17,7 @@
 % description:            |
 %                         Each shown relation is one part of the result:
 %                         touched holds each item added, removed,
-%                         renamed or changed, and neighbour each link
+%                         renamed or changed, and neighbor each link
 %                         that reaches an untouched item.
 % usage:                  |
 %                         Evaluated by pym_cc_public.commit.impact. The
@@ -246,16 +246,16 @@ nearest(Id, Depth) :-
 
 
 % -----------------------------------------------------------------------------
-% Each untouched neighbour of the touched items, at the least depth it
+% Each untouched neighbor of the touched items, at the least depth it
 % is reached at, once for each link that reaches it there.
 %
-% decl neighbour(id:        symbol,
-%                depth:     number,
-%                via:       symbol,
-%                relation:  symbol,
-%                direction: symbol)
-#show neighbour/5.
+% decl neighbor(id:        symbol,
+%               depth:     number,
+%               via:       symbol,
+%               relation:  symbol,
+%               direction: symbol)
+#show neighbor/5.
 
-neighbour(Id, Depth, Via, Relation, Direction) :-
+neighbor(Id, Depth, Via, Relation, Direction) :-
     nearest(Id, Depth),
     reached(Id, Depth, Via, Relation, Direction).

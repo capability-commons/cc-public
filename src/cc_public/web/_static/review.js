@@ -66,7 +66,7 @@ function choose(key) {
 }
 
 // The outline of a brace of height h, 12 units wide, as an SVG path:
-// a centre line from the curled end down to the beak, thickest midway
+// a center line from the curled end down to the beak, thickest midway
 // along the arm and tapering to a hairline at the end and at the point
 // of the beak, and the same line turned over below.
 // The ends and the beak keep their size until the brace is short, then
