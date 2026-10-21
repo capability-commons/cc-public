@@ -46,7 +46,7 @@ KEY_RELATION         = 'relation'
 KEY_ID_RELATION      = 'id_relation'
 KEY_ID_TARGET        = 'id_target'
 
-PREFIX_REQUIREMENT   = 'req_'
+PREFIX_REQUIREMENT   = 'rqt_'
 SLOT_SUBJECT         = 'subject'
 SLOT_PROCESS         = 'process'
 

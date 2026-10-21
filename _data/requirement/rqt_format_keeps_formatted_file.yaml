@@ -1,5 +1,5 @@
-id_self:                req_rename_keeps_guid
-guid_self:              req_2bd087b92cc74fa288ad3dfc55979f51
+id_self:                rqt_format_keeps_formatted_file
+guid_self:              rqt_79af81562fd741139ec8cbe99b435476
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
 
@@ -8,22 +8,24 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Guid kept through a rename
+title:                  Idempotent formatting
 brief:                  |
-                        Renaming an item leaves its guid as it was.
+                        Formatting a file that is already formatted
+                        changes nothing.
 condition_kind:         event
-condition:              the Tooling renames an item
+condition:              the Tooling formats a file that is already formatted
 modal_verb:             shall
 activity:               autonomous
-object:                 the guid of the item
+object:                 each byte of the file unchanged
 rationale:              |
-                        A reference resolves by its guid where its id
-                        does not. A rename that changed the guid would
-                        break every reference to the item at once.
+                        The layout check is that formatting a file
+                        gives back the file. That check means nothing
+                        unless a second pass changes nothing.
 verification_method:    test
 verification_approach:  |
-                        After a rename, the renamed item and every
-                        item it holds have the guid they had before.
+                        Every file the layout check reads, formatted
+                        twice, is byte for byte the same after the
+                        second pass as after the first.
 
 relation:
 
