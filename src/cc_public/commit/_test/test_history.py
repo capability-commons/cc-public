@@ -122,6 +122,15 @@ def test_a_push_sends_only_what_the_remote_does_not_have(repo):
     _commit(repo, cc_public.commit.message.compose('Add nothing', 'Nothing.'))
     tip  = _git(repo, 'rev-parse', 'HEAD').strip()
     text = ('refs/heads/main {tip} refs/heads/main {head}\n'
-            'refs/heads/old {zero} refs/heads/old {head}\n').format(
+            'refs/heads/old {zero} refs/heads/old {head}\n'
+            'refs/tags/old {tip} refs/tags/old {zero}\n').format(
                 tip = tip, head = head, zero = cc_public.commit.history.ZERO)
     assert cc_public.commit.history.pushed(repo, 'origin', text) == ([tip], [tip])
+
+
+def test_a_pushed_tag_is_not_checked(repo):
+    _commit(repo, 'An old message with no item')
+    tip  = _git(repo, 'rev-parse', 'HEAD').strip()
+    text = 'refs/tags/old {tip} refs/tags/old {zero}\n'.format(
+               tip = tip, zero = cc_public.commit.history.ZERO)
+    assert cc_public.commit.history.pushed(repo, 'origin', text) == ([], [])
