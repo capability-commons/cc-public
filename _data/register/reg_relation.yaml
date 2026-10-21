@@ -757,3 +757,44 @@ table:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      rrs_is_relation_restriction
         guid_target:    rrs_96d618138ba0482ca909ebbc8b9fc70b
+
+  # ---------------------------------------------------------------------------
+  # relation_is_narrower_than -- Is narrower than relation
+  #
+  relation_is_narrower_than:
+    id_self:            relation_is_narrower_than
+    guid_self:          relation_698cfb11be904a3f8e7d2821aa926ccd
+    title:              Is narrower than relation
+    brief:              |
+                        SOURCE is narrower than TARGET
+    description:        |
+                        The concept identified by SOURCE is a kind of
+                        the concept identified by TARGET. Whatever
+                        SOURCE applies to, TARGET applies to as well,
+                        and SOURCE has at least one characteristic
+                        that TARGET lacks.
+
+                        A concept may be narrower than several others.
+                        A chain of these edges may not lead back to
+                        where it began.
+    note:               |
+                        ISO 1087:2019 calls this a generic relation,
+                        between a generic and a specific concept, and
+                        ISO 25964-1 records it as a broader and
+                        narrower term link. It is the first relation
+                        between concepts, and starts the concept
+                        register on the way to an ontology.
+    acyclic:            true
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_restricts_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      rrs_is_concept
+        guid_target:    rrs_b52855289a66490b86d64574e6938c7d
+
+      - id_relation:    relation_restricts_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      rrs_is_concept
+        guid_target:    rrs_b52855289a66490b86d64574e6938c7d
