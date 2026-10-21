@@ -437,7 +437,13 @@ table:
                         holds one or more items as YAML documents.
     term_preferred:     file
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_data_item
+        guid_target:    concept_4fe42e5902bf4dbb855bce59a285da4d
 
   # ---------------------------------------------------------------------------
   # concept_commit -- Commit
@@ -975,7 +981,13 @@ table:
                         and an OS process on a host.
     term_preferred:     dataflow node
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_node
+        guid_target:    concept_fe04595884914059b0e303959b2ef3aa
 
   # ---------------------------------------------------------------------------
   # concept_dataflow_edge -- Dataflow edge
@@ -1011,7 +1023,13 @@ table:
                         bare word means any edge of the graph.
     term_preferred:     dataflow edge
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_edge
+        guid_target:    concept_d74e24f3e13047a49ad822fe1528fb9f
 
   # ---------------------------------------------------------------------------
   # concept_os_process -- OS process
@@ -1252,9 +1270,9 @@ table:
                         so is every engineering document
                         (concept_document). A data item need not have
                         an identity in the graph. The data items that
-                        do, with an id_self and a guid_self, are the
-                        ones the graph holds; the term for them is
-                        still to be decided.
+                        do, with an id_self and a guid_self, are
+                        identifiable data items
+                        (concept_identifiable_data_item).
     note:               |
                         The term comes from defense procurement, where
                         a Data Item Description (MIL-STD-963C)
@@ -1269,7 +1287,13 @@ table:
                         and checks it by machine.
     term_preferred:     data item
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_item
+        guid_target:    concept_9699c2351ed64a0f9683f306817d0911
 
   # ---------------------------------------------------------------------------
   # concept_document -- Document
@@ -1298,7 +1322,13 @@ table:
       - engineering document
 
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_data_item
+        guid_target:    concept_4fe42e5902bf4dbb855bce59a285da4d
 
   # ---------------------------------------------------------------------------
   # concept_graph -- Graph
@@ -1413,3 +1443,64 @@ table:
     term_preferred:     edge origin
     alias:              []
     edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_item -- Item
+  #
+  concept_item:
+    id_self:            concept_item
+    guid_self:          concept_9699c2351ed64a0f9683f306817d0911
+    title:              Item
+    brief:              |
+                        Anything that can be told apart and talked
+                        about, physical or not.
+    description:        |
+                        A spanner is an item, and so is a data item
+                        (concept_data_item). A spanner is not a data
+                        item, but a data item may track it, with its
+                        details and its location, as a digital twin
+                        does.
+    term_preferred:     item
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_identifiable_data_item -- Identifiable data item
+  #
+  concept_identifiable_data_item:
+    id_self:            concept_identifiable_data_item
+    guid_self:          concept_a125aa49d2a145368ebb6c79d85c375b
+    title:              Identifiable data item
+    brief:              |
+                        A data item (concept_data_item) with an
+                        identity in the graph: an id_self and a
+                        guid_self.
+    description:        |
+                        Identity is what separates an identifiable
+                        data item from any other data item. Every
+                        identifiable data item is a node of the graph
+                        (concept_node).
+
+                        Other ways of identifying a data item may be
+                        added later, for data items that cannot hold
+                        these two fields as they stand.
+    note:               |
+                        Unqualified, item often means an identifiable
+                        data item in this repository, where the
+                        context is the graph. A way to say in prose
+                        which sense a short term has is still to be
+                        designed.
+    term_preferred:     identifiable data item
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_data_item
+        guid_target:    concept_4fe42e5902bf4dbb855bce59a285da4d
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_node
+        guid_target:    concept_fe04595884914059b0e303959b2ef3aa
