@@ -24,7 +24,7 @@ procedure, and the traps.
    the schema it names. They say which fields an item needs and which
    register, if any, holds it.
 2. Find what you will link to with `cctool query`, for example
-   `cctool query sql "SELECT id FROM type_of WHERE type = 't_concern'"`.
+   `cctool query sql "SELECT id FROM has_type WHERE type = 'type_concern'"`.
 3. Write the edit with `--dry-run` first, and read the diff.
 4. Run it. On success it names each file it wrote.
 5. `cctool check` and `pixi run test` before you commit.

@@ -68,19 +68,19 @@ def test_a_composed_message_passes_and_its_id_sorts_by_time():
 
 
 @pytest.mark.parametrize('title', [
-    'Add the commit type t_commit',
+    'Add the commit type type_commit',
     'Remove status from registers',
     'Reformat every document',
-    'Rename t_datalog_module to t_datalog_source_file',
+    'Rename type_datalog_module to type_datalog_source_file',
     'Move the checker to cc_public.check',
     'Split r_is_specified_by_schema into two relations',
     'Fold testability into maintainability',
     'Merge branch commit-items into main',
     "Merge remote-tracking branch 'origin/main' into main",
     "Merge tag 'v1' into main",
-    'Revert "Add the commit type t_commit"',
-    'Revert "Revert "Add the commit type t_commit""',
-    'Reapply "Add the commit type t_commit"',
+    'Revert "Add the commit type type_commit"',
+    'Revert "Revert "Add the commit type type_commit""',
+    'Reapply "Add the commit type type_commit"',
     'Change cctool batch so that a field keeps its YAML value',
     'Fix the checker so that a malformed subschema is reported',
     'Lock jsonschema at 4.26.0',
@@ -99,7 +99,7 @@ def test_a_title_from_a_template_passes(title):
     'Merge testability into maintainability',
     "Merge branch 'commit-items'",
     'Revert the commit type',
-    'Revert "Add the commit type t_commit',
+    'Revert "Add the commit type type_commit',
 ])
 def test_a_title_from_no_template_is_reported(title):
     assert _found(_message(title)) == [

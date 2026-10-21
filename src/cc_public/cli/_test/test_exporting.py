@@ -63,7 +63,7 @@ def test_obsidian_writes_a_note_for_each_item_with_wikilinks(tree, tmp_path):
     result  = _run(tree, 'obsidian', str(dir_out))
     assert result.exit_code == 0
     text = (dir_out / 'decision' / 'dec_tooling_language.md').read_text()
-    assert _frontmatter(text)[:5] == ['type: "t_decision"',
+    assert _frontmatter(text)[:5] == ['type: "type_decision"',
                                       'title: "Language of the tooling"',
                                       'aliases: ["Language of the tooling"]',
                                       'tags: ["decision"]',

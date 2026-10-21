@@ -680,24 +680,24 @@ def test_home_lists_every_type_with_its_count(tree):
     text      = body.decode()
     graph     = cc_public.web.argument.Graph(tree)
     catalogue = cc_public.web.catalogue.Catalogue(graph)
-    list_type = [id_item for id_item in graph.map_item if id_item.startswith('t_')]
+    list_type = [id_item for id_item in graph.map_item if id_item.startswith('type_')]
     for id_type in list_type:
         assert 'href="{href}"'.format(href = cc_public.web.page._type_href(id_type)) in text
     assert '<a href="/decisions">Decision</a>' in text
-    assert '<a href="/type/t_option">Option</a>' in text
-    count = len(catalogue.items('t_option'))
-    assert re.search(r'href="/type/t_option">.*?<td class="number">{count}<'.format(
+    assert '<a href="/type/type_option">Option</a>' in text
+    count = len(catalogue.items('type_option'))
+    assert re.search(r'href="/type/type_option">.*?<td class="number">{count}<'.format(
         count = count), text, re.DOTALL)
     assert '<tr class="empty">' in text
 
 
 def test_type_page_lists_its_items_and_filters_them(tree):
-    (status, _, body) = cc_public.web.server.respond(tree, '/type/t_option')
+    (status, _, body) = cc_public.web.server.respond(tree, '/type/type_option')
     assert status == http.HTTPStatus.OK
     assert '/item/{id}'.format(id = ID_UPHELD).encode() in body
-    (_, _, body) = cc_public.web.server.respond(tree, '/type/t_option?q=no+such+words+at+all')
+    (_, _, body) = cc_public.web.server.respond(tree, '/type/type_option?q=no+such+words+at+all')
     assert '/item/{id}'.format(id = ID_UPHELD).encode() not in body
-    (status, _, _) = cc_public.web.server.respond(tree, '/type/t_no_such_type')
+    (status, _, _) = cc_public.web.server.respond(tree, '/type/type_no_such_type')
     assert status == http.HTTPStatus.NOT_FOUND
     (status, _, _) = cc_public.web.server.respond(tree, '/type/' + ID_UPHELD)
     assert status == http.HTTPStatus.NOT_FOUND

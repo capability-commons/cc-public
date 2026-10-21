@@ -62,7 +62,7 @@ unknown_prefix(Id, File, Line) :-
 
 bad_id(Id, Regex, File, Line) :-
     item(Id, _, _, File, Line),
-    type_of(Id, Type),
+    has_type(Id, Type),
     type_prefix(Type, _, Regex),
     @match(Regex, Id) = 0.
 
@@ -171,7 +171,7 @@ misplaced_module(Id, Expected) :-
 
 % -----------------------------------------------------------------------------
 % A document under a _data directory is in the folder named for its
-% type, less the t_, in a file named for its id. A document that
+% type, less the type_, in a file named for its id. A document that
 % belongs to a decision is in the folder of the decision instead, so that
 % everything argued about one decision is kept together.
 %
@@ -187,8 +187,8 @@ misplaced_document(Id, File, Expected) :-
     item(Id, _, "", File, _),
     @match("(.*/)?_data/.*\\.yaml", File) = 1,
     not decision_of(Id, _),
-    type_of(Id, Type),
-    Stem     = @substr(Type, 2, @strlen(Type) - 2),
+    has_type(Id, Type),
+    Stem     = @substr(Type, 5, @strlen(Type) - 5),
     Expected = @cat("_data/", Stem, "/", Id, ".yaml"),
     @match(@cat("(.*/)?", Expected), File) = 0.
 
@@ -214,7 +214,7 @@ misplaced_document(Id, File, Expected) :-
 
 misplaced_register_entry(Register, Id, Type) :-
     register_entry_key(Register, _, Id),
-    type_of(Id, Type),
+    has_type(Id, Type),
     not primary_edge(Type, "r_has_items_held_in_register", Register).
 
 
@@ -241,11 +241,11 @@ unrecorded_module(File) :-
 %                  stem:   symbol)
 
 member_stem(Holder, Stem) :-
-    type_of(Holder, "t_interface_control_document"),
+    has_type(Holder, "type_interface_control_document"),
     Stem = @cat("icm_", @substr(Holder, 4, @strlen(Holder) - 4)).
 
 member_stem(Holder, Holder) :-
-    type_of(Holder, "t_interface_member").
+    has_type(Holder, "type_interface_member").
 
 % decl misnamed_member(id:     symbol,
 %                      holder: symbol)
@@ -256,19 +256,19 @@ member_stem(Holder, Holder) :-
 #show misnamed_member/2.
 
 misnamed_member(Id, Holder) :-
-    type_of(Id, "t_interface_member"),
+    has_type(Id, "type_interface_member"),
     item(Id, _, Holder, _, _),
     not member_stem(Holder, _).
 
 misnamed_member(Id, Holder) :-
-    type_of(Id, "t_interface_member"),
+    has_type(Id, "type_interface_member"),
     item(Id, _, Holder, _, _),
     member_stem(Holder, Stem),
     Length = @strlen(Stem) + 1,
     @substr(Id, 0, Length) != @cat(Stem, ".").
 
 misnamed_member(Id, Holder) :-
-    type_of(Id, "t_interface_member"),
+    has_type(Id, "type_interface_member"),
     item(Id, _, Holder, _, _),
     member_stem(Holder, Stem),
     Length = @strlen(Stem) + 1,
@@ -287,9 +287,9 @@ misnamed_member(Id, Holder) :-
 %                       parameter: symbol)
 
 parameter_member(Member, Position, Parameter) :-
-    type_of(Parameter, "t_interface_member"),
+    has_type(Parameter, "type_interface_member"),
     item(Parameter, _, Member, _, _),
-    type_of(Member, "t_interface_member"),
+    has_type(Member, "type_interface_member"),
     position(Parameter, Position).
 
 % decl stated_parameter(member:   symbol,
@@ -306,8 +306,8 @@ stated_parameter(Member, Position, Name) :-
 
 realized_function(Function, Member) :-
     primary_edge(Function, "r_realizes", Member),
-    type_of(Function, "t_python_function"),
-    type_of(Member, "t_interface_member").
+    has_type(Function, "type_python_function"),
+    has_type(Member, "type_interface_member").
 
 % decl parameter_mismatch(member:   symbol,
 %                         function: symbol,
@@ -471,13 +471,13 @@ satisfies(Type, Restriction) :-
 restriction_violation(Source, Relation, Target, "source", Restriction) :-
     primary_edge(Source, Relation, Target),
     primary_edge(Relation, "r_restricts_source", Restriction),
-    type_of(Source, Type),
+    has_type(Source, Type),
     not satisfies(Type, Restriction).
 
 restriction_violation(Source, Relation, Target, "target", Restriction) :-
     primary_edge(Source, Relation, Target),
     primary_edge(Relation, "r_restricts_target", Restriction),
-    type_of(Target, Type),
+    has_type(Target, Type),
     not satisfies(Type, Restriction).
 
 
@@ -490,11 +490,11 @@ restriction_violation(Source, Relation, Target, "target", Restriction) :-
 #show missing_about/1.
 
 missing_about(Id) :-
-    type_of(Id, "t_annotation"),
+    has_type(Id, "type_annotation"),
     not primary_edge(Id, "r_is_about", _).
 
 missing_about(Id) :-
-    type_of(Id, "t_decision"),
+    has_type(Id, "type_decision"),
     not primary_edge(Id, "r_is_about", _).
 
 
@@ -509,7 +509,7 @@ missing_about(Id) :-
 #show option_count/2.
 
 option_count(Option, Decisions) :-
-    type_of(Option, "t_option"),
+    has_type(Option, "type_option"),
     Decisions = #count { Decision : primary_edge(Option, "r_is_option_for", Decision) },
     Decisions != 1.
 
@@ -523,7 +523,7 @@ option_count(Option, Decisions) :-
 #show no_option_in_ruling/1.
 
 no_option_in_ruling(Id) :-
-    type_of(Id, "t_ruling"),
+    has_type(Id, "type_ruling"),
     not primary_edge(Id, "r_upholds", _),
     not primary_edge(Id, "r_rejects", _).
 
@@ -540,7 +540,7 @@ no_option_in_ruling(Id) :-
 #show decisions_mixed_in_ruling/3.
 
 decisions_mixed_in_ruling(Ruling, Decision, Other) :-
-    type_of(Ruling, "t_ruling"),
+    has_type(Ruling, "type_ruling"),
     decision_of(Ruling, Decision),
     decision_of(Ruling, Other),
     Decision < Other.
@@ -561,10 +561,10 @@ decisions_mixed_in_ruling(Ruling, Decision, Other) :-
 #show decision_about_non_component/3.
 
 decision_about_non_component(Decision, Target, Type) :-
-    type_of(Decision, "t_decision"),
+    has_type(Decision, "type_decision"),
     primary_edge(Decision, "r_is_about", Target),
-    type_of(Target, Type),
-    Type != "t_logical_component".
+    has_type(Target, Type),
+    Type != "type_logical_component".
 
 
 % -----------------------------------------------------------------------------
@@ -582,7 +582,7 @@ decision_about_non_component(Decision, Target, Type) :-
 #show argument_across_decisions/4.
 
 argument_across_decisions(Annotation, Decision, Target, Other) :-
-    type_of(Annotation, "t_annotation"),
+    has_type(Annotation, "type_annotation"),
     primary_edge(Annotation, Relation, Target),
     argues(Relation),
     decision_of(Annotation, Decision),
@@ -611,8 +611,8 @@ argues("r_challenges").
 
 supersession_across_types(Source, Target) :-
     primary_edge(Source, "r_supersedes", Target),
-    type_of(Source, Type),
-    not type_of(Target, Type).
+    has_type(Source, Type),
+    not has_type(Target, Type).
 
 
 % -----------------------------------------------------------------------------
@@ -629,8 +629,8 @@ supersession_across_types(Source, Target) :-
 #show competing_rulings/3.
 
 competing_rulings(Decision, Ruling, Other) :-
-    type_of(Ruling, "t_ruling"),
-    type_of(Other, "t_ruling"),
+    has_type(Ruling, "type_ruling"),
+    has_type(Other, "type_ruling"),
     decision_of(Ruling, Decision),
     decision_of(Other, Decision),
     Ruling < Other.
@@ -675,7 +675,7 @@ argued(Option, Concern) :-
 #show unargued_driver/3.
 
 unargued_driver(Ruling, Option, Concern) :-
-    type_of(Ruling, "t_ruling"),
+    has_type(Ruling, "type_ruling"),
     primary_edge(Ruling, "r_upholds", Option),
     primary_edge(Option, "r_is_option_for", Decision),
     primary_edge(Decision, "r_is_about", Subject),
@@ -821,14 +821,14 @@ cycle(Relation, Id) :-
 % decl practical(id: symbol)
 
 practical(Id) :-
-    type_of(Id, "t_annotation"),
+    has_type(Id, "type_annotation"),
     primary_edge(Id, "r_supports", Target),
-    type_of(Target, "t_option").
+    has_type(Target, "type_option").
 
 practical(Id) :-
-    type_of(Id, "t_annotation"),
+    has_type(Id, "type_annotation"),
     primary_edge(Id, "r_challenges", Target),
-    type_of(Target, "t_option").
+    has_type(Target, "type_option").
 
 
 % -----------------------------------------------------------------------------
@@ -861,7 +861,7 @@ argument_without_concern(Id) :-
 #show concern_without_option/2.
 
 concern_without_option(Id, Concern) :-
-    type_of(Id, "t_annotation"),
+    has_type(Id, "type_annotation"),
     not practical(Id),
     primary_edge(Id, "r_speaks_for_concern", Concern).
 
@@ -892,7 +892,7 @@ schema_count(Type, Schemas) :-
 #show unused_schema/1.
 
 unused_schema(Id) :-
-    type_of(Id, "t_schema"),
+    has_type(Id, "type_schema"),
     not primary_edge(_, "r_has_items_specified_by_schema", Id),
     not primary_edge(_, "r_is_specified_by_schema", Id),
     not schema_ref(_, Id, _, _).
@@ -922,7 +922,7 @@ named_by_other(Id) :-
 #show unused_concept/1.
 
 unused_concept(Id) :-
-    type_of(Id, "t_concept"),
+    has_type(Id, "type_concept"),
     not named_by_other(Id).
 
 
@@ -957,7 +957,7 @@ misnamed_node(Node, Expected) :-
 #show interface_count/2.
 
 interface_count(Node, Interfaces) :-
-    type_of(Node, "t_dataflow_node"),
+    has_type(Node, "type_dataflow_node"),
     Interfaces = #count { Interface : node_interface(Node, Interface) },
     Interfaces != 1.
 

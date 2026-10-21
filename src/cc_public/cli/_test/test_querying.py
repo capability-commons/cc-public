@@ -33,7 +33,7 @@ import click.testing
 import cc_public.cli.command
 
 
-SQL_CONCERN = "SELECT id FROM type_of WHERE type = 't_concern' ORDER BY id"
+SQL_CONCERN = "SELECT id FROM has_type WHERE type = 'type_concern' ORDER BY id"
 
 
 # -----------------------------------------------------------------------------
@@ -63,9 +63,9 @@ def test_sql_prints_json_with_the_count_of_all_rows(tree):
 
 
 def test_logic_prints_each_output_relation(tree):
-    result = _run(tree, 'logic', '% decl o(t: symbol)\n#show o/1. o(T) :- type_of("concern_cost", T).')
+    result = _run(tree, 'logic', '% decl o(t: symbol)\n#show o/1. o(T) :- has_type("concern_cost", T).')
     assert result.exit_code == 0
-    assert result.stdout == '# o\nt\nt_concern\n'
+    assert result.stdout == '# o\nt\ntype_concern\n'
 
 
 def test_logic_gives_a_number_column_as_numbers(tree):
@@ -74,7 +74,7 @@ def test_logic_gives_a_number_column_as_numbers(tree):
 
 
 def test_logic_without_an_output_is_refused(tree):
-    result = _run(tree, 'logic', 'o(T) :- type_of(_, T).')
+    result = _run(tree, 'logic', 'o(T) :- has_type(_, T).')
     assert result.exit_code == 2
     assert 'no relation in a #show directive' in result.stderr
 
@@ -112,7 +112,7 @@ def test_a_missing_query_is_refused_with_an_example(tree):
 
 
 def test_sparql_prints_the_rows_of_a_select(tree):
-    result = _run(tree, 'sparql', 'SELECT ?id WHERE { ?id a cc:t_concern } ORDER BY ?id',
+    result = _run(tree, 'sparql', 'SELECT ?id WHERE { ?id a cc:type_concern } ORDER BY ?id',
                   '--limit', '2')
     assert result.exit_code == 0
     assert result.stdout == 'id\nconcern_compatibility\nconcern_cost\n'
@@ -126,7 +126,7 @@ def test_sparql_sees_fields_and_edges(tree):
 
 
 def test_sparql_ask_prints_true_or_false(tree):
-    result = _run(tree, 'sparql', 'ASK { cc:lco_tooling a cc:t_logical_component }')
+    result = _run(tree, 'sparql', 'ASK { cc:lco_tooling a cc:type_logical_component }')
     assert result.stdout == 'true\n'
 
 

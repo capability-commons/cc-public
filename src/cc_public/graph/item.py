@@ -23,7 +23,7 @@ description:            |
                         the items it names in id_ and guid_ pairs, and
                         the primary edges from it. The type and the
                         primary edges are the derived relations
-                        type_of and primary_edge, computed by clingo
+                        has_type and primary_edge, computed by clingo
                         from derive.lp. It also words an edge as a
                         sentence, from the brief of its relation, and
                         finds the ids that prose mentions.
@@ -46,7 +46,7 @@ KEY_TITLE         = 'title'
 KEY_BRIEF         = 'brief'
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
-PREFIX_TYPE       = 't_'
+PREFIX_TYPE       = 'type_'
 NAME_NO_TYPE      = 'Item'
 MARK_SOURCE       = 'SOURCE'
 MARK_TARGET       = 'TARGET'
@@ -59,7 +59,7 @@ SET_FIELD_EDGE    = {'relation', 'target'}
 # The derived relations an Item needs, computed by clingo from derive.lp,
 # as every other program over the graph computes them.
 #
-TUPLE_DERIVED     = ('type_of', 'primary_edge')
+TUPLE_DERIVED     = ('has_type', 'primary_edge')
 
 Scalar            = str | int | float | bool
 
@@ -115,7 +115,7 @@ def items(map_document: cc_public.graph.extract.Documents,
     rules        = ''.join(cc_public.graph.logic.show(name, map_derive)
                            for name in TUPLE_DERIVED)
     rows         = cc_public.graph.logic.run(facts, rules)
-    map_type     = dict(rows['type_of'])
+    map_type     = dict(rows['has_type'])
     map_node     = {}
 
     for (document, _) in map_document.values():
@@ -164,7 +164,7 @@ def title(map_item: dict[str, Item], id_item: str) -> str:
 def type_name(map_item: dict[str, Item], id_type: str) -> str:
     """
     Return the name of the type id_type: its title without the word
-    type, such as Annotation for t_annotation, or Item if id_type is
+    type, such as Annotation for type_annotation, or Item if id_type is
     empty.
 
     """

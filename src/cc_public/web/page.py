@@ -131,9 +131,9 @@ KEY_CONCEPT       = 'id_concept'
 # The types whose items have a list of their own, richer than the list
 # of a type page, which the index leads to instead.
 #
-MAP_TYPE_LIST     = {'t_decision':                      PATH_DECISIONS,
-                     't_requirement':                PATH_REQUIREMENTS,
-                     't_interface_control_document': PATH_INTERFACES}
+MAP_TYPE_LIST     = {'type_decision':                      PATH_DECISIONS,
+                     'type_requirement':                PATH_REQUIREMENTS,
+                     'type_interface_control_document': PATH_INTERFACES}
 PATH_STATIC       = '/static/'
 PATH_DECISION     = '/decision/'
 PATH_REQUIREMENT  = '/requirement/'
@@ -384,9 +384,9 @@ def component(graph: Graph, id_component: str) -> str | None:
     item = graph.map_item[id_component]
 
     def listed(id_type: str, list_id: list[str]) -> typing.Any:
-        if id_type == 't_decision':
+        if id_type == 'type_decision':
             return _decision_table(graph, [graph.decision(id_item) for id_item in list_id])
-        if id_type == 't_requirement':
+        if id_type == 'type_requirement':
             return _requirement_table(graph, [graph.map_item[id_item] for id_item in list_id])
         return _item_table(graph, list_id)
 
@@ -454,7 +454,7 @@ def _item_table(graph:     Graph,
                     htpy.span(class_ = 'where')[htpy.code[id_item],
                                                 [htpy.span(class_ = 'bar')['|'], item.file]
                                                 if item.file else None]],
-            htpy.td[_type_name(graph, catalogue.type_of(id_item))] if catalogue else None]
+            htpy.td[_type_name(graph, catalogue.has_type(id_item))] if catalogue else None]
 
     return htpy.table(class_ = 'catalogue items')[
         htpy.thead[htpy.tr[htpy.th['Item'],

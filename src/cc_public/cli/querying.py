@@ -61,11 +61,11 @@ HINT_SPARQL       = 'Run cctool query sparql --help to see how the graph is name
 HINT_TEXT         = 'Run cctool query text --help to see how a query is read.'
 
 EXAMPLE_SQL       = ('cctool query sql "SELECT type, count(*) AS n '
-                     'FROM type_of GROUP BY type"')
+                     'FROM has_type GROUP BY type"')
 EXAMPLE_LOGIC     = ("cctool query logic '#show out/1. "
-                     "out(Id) :- type_of(Id, \"t_concern\").'")
+                     "out(Id) :- has_type(Id, \"type_concern\").'")
 EXAMPLE_SPARQL    = ("cctool query sparql 'SELECT ?id ?title WHERE "
-                     "{ ?id a cc:t_concern ; f:title ?title }'")
+                     "{ ?id a cc:type_concern ; f:title ?title }'")
 EXAMPLE_TEXT      = 'cctool query text --decision "status field on an option"'
 EXAMPLE_JQ        = ("cctool query jq '.[] | select(.file | startswith(\"_data/decision/\")) "
                      "| .document.id_self'")
@@ -144,7 +144,7 @@ def sql(text, path_file, root, limit, is_json):
     \b
     Examples:
       cctool query sql "SELECT * FROM item WHERE id LIKE 'opt_%'"
-      cctool query sql "SELECT type, count(*) AS n FROM type_of GROUP BY type"
+      cctool query sql "SELECT type, count(*) AS n FROM has_type GROUP BY type"
       cctool query sql "SELECT source FROM primary_edge WHERE relation = 'r_is_about'"
 
     """
@@ -194,7 +194,7 @@ def logic(text, path_file, root, limit, is_json, text_search, is_exact):
     \b
     Examples:
       cctool query logic '#show out/1.
-        out(Id) :- type_of(Id, "t_concern").'
+        out(Id) :- has_type(Id, "type_concern").'
       cctool query logic --file query.lp
       cctool query logic --text "status field" '#show out/2.
         out(Id, Decision) :- text_hit(Id, _, Rank), Rank <= 10, decision_of(Id, Decision).'
@@ -289,7 +289,7 @@ def sparql(text, path_file, root, limit, is_json):
     Evaluate one SPARQL query over the graph, with Oxigraph.
 
     Each item is the node cc:ID, such as cc:ann_x. Its type is its
-    rdf:type, such as cc:t_annotation, and each primary edge is a
+    rdf:type, such as cc:type_annotation, and each primary edge is a
     triple of its relation, such as cc:r_is_about; an inverse relation
     may be used too. Its fields are f:NAME: f:guid, f:file, f:line and
     f:holder, every field of text, number or truth, such as f:title,
@@ -300,10 +300,10 @@ def sparql(text, path_file, root, limit, is_json):
 
     \b
     Examples:
-      cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:t_concern ; f:title ?title }'
+      cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:type_concern ; f:title ?title }'
       cctool query sparql 'SELECT ?ann WHERE { ?ann cc:r_is_about cc:dec_licence }'
       cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
-      cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:t_option }'
+      cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:type_option }'
 
     """
 

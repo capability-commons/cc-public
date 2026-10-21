@@ -157,7 +157,7 @@ link(Source, "uses", Relation) :-
     item(Relation, _, _, _, _).
 
 link(Id, "has_type", Type) :-
-    type_of(Id, Type).
+    has_type(Id, Type).
 
 % decl before_link(source:   symbol,
 %                  relation: symbol,

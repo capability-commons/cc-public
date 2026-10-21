@@ -64,7 +64,7 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 #show decision_without_options/1.
 
 decision_without_options(Decision) :-
-    type_of(Decision, "t_decision"),
+    has_type(Decision, "type_decision"),
     not answers_some(Decision).
 
 
