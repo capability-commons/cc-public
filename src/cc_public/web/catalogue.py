@@ -45,9 +45,9 @@ import cc_public.web.argument
 
 
 KEY_PREFIX        = 'prefix'
-PREFIX_TYPE       = 't_'
+PREFIX_TYPE       = 'type_'
 PREFIX_SUBJECT    = 'lco_'
-ID_COMPONENT_TYPE = 't_logical_component'
+ID_COMPONENT_TYPE = 'type_logical_component'
 DELIM_PREFIX      = '_'
 NAME_OTHER        = 'Other'
 COUNT_FOUND       = 200
@@ -56,17 +56,17 @@ COUNT_FOUND       = 200
 # in the order they are listed under it.
 #
 TUPLE_GROUP       = (
-    ('Deliberation',     ('t_decision', 't_option', 't_annotation', 't_ruling',
-                          't_concern')),
+    ('Deliberation',     ('type_decision', 'type_option', 'type_annotation', 'type_ruling',
+                          'type_concern')),
     ('Requirements and architecture',
-                         ('t_requirement', 't_logical_component',
-                          't_interface_control_document', 't_interface_member')),
-    ('Vocabulary',       ('t_concept', 't_writing_style_rule', 't_relation', 't_role',
-                          't_relation_restriction')),
-    ('Structure',        ('t_type', 't_schema', 't_register', 't_protective_mark')),
-    ('Code and history', ('t_python_package', 't_python_module', 't_python_class',
-                          't_python_function', 't_logic_program_file', 't_file',
-                          't_shell_script', 't_commit')))
+                         ('type_requirement', 'type_logical_component',
+                          'type_interface_control_document', 'type_interface_member')),
+    ('Vocabulary',       ('type_concept', 'type_writing_style_rule', 'type_relation', 'type_role',
+                          'type_relation_restriction')),
+    ('Structure',        ('type_type', 'type_schema', 'type_register', 'type_protective_mark')),
+    ('Code and history', ('type_python_package', 'type_python_module', 'type_python_class',
+                          'type_python_function', 'type_logic_program_file', 'type_file',
+                          'type_shell_script', 'type_commit')))
 
 Graph             = cc_public.web.argument.Graph
 
@@ -92,7 +92,7 @@ class Catalogue:
                            and isinstance(item.node.get(KEY_PREFIX), str)}
         self.map_type   = collections.defaultdict(list)
         for id_item in sorted(graph.map_item, key = self._order):
-            self.map_type[self.type_of(id_item)].append(id_item)
+            self.map_type[self.has_type(id_item)].append(id_item)
 
         self.map_about = collections.defaultdict(list)
         for ((_, id_target), list_source) in graph.map_source.items():
@@ -100,7 +100,7 @@ class Catalogue:
                 self.map_about[id_target] += list_source
 
     # -------------------------------------------------------------------------
-    def type_of(self, id_item: str) -> str:
+    def has_type(self, id_item: str) -> str:
         """
         Return the type of the item id_item, read from the prefix of its
         id, or '' if no type has that prefix.

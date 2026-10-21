@@ -240,7 +240,7 @@ def test_an_embedded_item_given_in_a_field_is_given_a_guid(tree, zero):
 
 def test_a_new_field_that_names_an_item_is_given_its_guid(tree, zero):
     edited = cc_public.edit.edit.Tree(tree)
-    cc_public.edit.edit.batch(edited, [{'new':   't_x',
+    cc_public.edit.edit.batch(edited, [{'new':   'type_x',
                                         'field': {'title':      'X type',
                                                   'brief':      'X.',
                                                   'id_concept': 'con_concept'}}])
@@ -382,10 +382,10 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
      'A rename keeps the type, so sch_concept must have the prefix of con_concept.'),
     ({'rename': ['con_concept', 'con_relation']}, 'An item with the id con_relation exists.'),
     ({'rename': ['pym_cc_public.edit.edit', 'pym_x']},
-     'An item of t_python_module lives in the file it names, so move or remove the file '
+     'An item of type_python_module lives in the file it names, so move or remove the file '
      'by hand.'),
     ({'remove': 'pyf_cc_public.check.check.check'},
-     'An item of t_python_function lives in the file it names, so move or remove the file '
+     'An item of type_python_function lives in the file it names, so move or remove the file '
      'by hand.'),
     ({'remove': 'con_none'}, 'No item has the id con_none.'),
 ])
@@ -640,7 +640,7 @@ def test_a_field_that_names_an_item_keeps_its_guid_beside_it(tree):
 
 def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
     edited = cc_public.edit.edit.Tree(tree)
-    cc_public.edit.edit.batch(edited, [{'set': ['t_annotation', 'id_concept', 'con_concept']}])
+    cc_public.edit.edit.batch(edited, [{'set': ['type_annotation', 'id_concept', 'con_concept']}])
     assert ('    id_concept:         con_concept\n'
             '    guid_concept:       con_820f9604e6134b9fbefd5a75146d4c40\n') in (
                 edited.edit['_data/register/reg_data_item_type.yaml'])
@@ -649,7 +649,7 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'new': 'zzz_x'}, 'No type has the prefix zzz. reg_data_item_type.yaml lists the types.'),
     ({'new': 'con_concept'}, 'An item with the id con_concept exists.'),
-    ({'new': 'pym_x'}, 'An item of t_python_module is written in the file it names: give the '
+    ({'new': 'pym_x'}, 'An item of type_python_module is written in the file it names: give the '
                        'file its item with header.'),
     ({'new': 'ann_x', 'link': [['r_is_about', 'con_none']]}, 'No item has the id con_none.'),
     ({'link': ['con_concept', 'r_is_about', 'con_concept']}, 'con_concept already has that edge.'),

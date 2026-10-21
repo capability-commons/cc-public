@@ -43,10 +43,10 @@ prefix_of(Id, Prefix) :-
 % -----------------------------------------------------------------------------
 % The type of an id is the type whose prefix it has.
 %
-% decl type_of(id:   symbol,
-%              type: symbol)
+% decl has_type(id:   symbol,
+%               type: symbol)
 
-type_of(Id, Type) :-
+has_type(Id, Type) :-
     prefix_of(Id, Prefix),
     type_prefix(Type, Prefix, _).
 
@@ -79,7 +79,7 @@ primary_edge(Target, Relation, Source) :-
 
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
-    type_of(Id, Type),
+    has_type(Id, Type),
     primary_edge(Type, "r_has_items_specified_by_schema", Schema).
 
 document_schema(Id, Schema) :-
@@ -94,11 +94,11 @@ document_schema(Id, Schema) :-
 %              option: symbol)
 
 settles(Ruling, Option) :-
-    type_of(Ruling, "t_ruling"),
+    has_type(Ruling, "type_ruling"),
     primary_edge(Ruling, "r_upholds", Option).
 
 settles(Ruling, Option) :-
-    type_of(Ruling, "t_ruling"),
+    has_type(Ruling, "type_ruling"),
     primary_edge(Ruling, "r_rejects", Option).
 
 
@@ -111,16 +111,16 @@ settles(Ruling, Option) :-
 %                  decision: symbol)
 
 decision_of(Id, Id) :-
-    type_of(Id, "t_decision").
+    has_type(Id, "type_decision").
 
 decision_of(Id, Decision) :-
-    type_of(Id, "t_option"),
+    has_type(Id, "type_option"),
     primary_edge(Id, "r_is_option_for", Decision).
 
 decision_of(Id, Decision) :-
-    type_of(Id, "t_annotation"),
+    has_type(Id, "type_annotation"),
     primary_edge(Id, "r_is_about", Decision),
-    type_of(Decision, "t_decision").
+    has_type(Decision, "type_decision").
 
 decision_of(Id, Decision) :-
     settles(Id, Option),
@@ -135,9 +135,9 @@ decision_of(Id, Decision) :-
 %                     interface: symbol)
 
 node_interface(Node, Interface) :-
-    type_of(Node, "t_dataflow_node"),
+    has_type(Node, "type_dataflow_node"),
     primary_edge(Node, "r_realizes", Interface),
-    type_of(Interface, "t_interface_control_document").
+    has_type(Interface, "type_interface_control_document").
 
 
 % -----------------------------------------------------------------------------
@@ -150,8 +150,8 @@ node_interface(Node, Interface) :-
 
 feeds(Source, Target, Direction) :-
     dataflow_edge(_, Source, _, Target, _, Direction, _, _),
-    type_of(Source, "t_dataflow_node"),
-    type_of(Target, "t_dataflow_node").
+    has_type(Source, "type_dataflow_node"),
+    has_type(Target, "type_dataflow_node").
 
 
 % -----------------------------------------------------------------------------
@@ -189,10 +189,10 @@ upstream(Node, Other) :-
 %               node: symbol)
 
 bears_on(Node, Node) :-
-    type_of(Node, "t_dataflow_node").
+    has_type(Node, "type_dataflow_node").
 
 bears_on(Item, Node) :-
-    type_of(Node, "t_dataflow_node"),
+    has_type(Node, "type_dataflow_node"),
     primary_edge(Node, "r_realizes", Item).
 
 bears_on(Member, Node) :-

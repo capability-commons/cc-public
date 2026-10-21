@@ -70,10 +70,10 @@ def test_output_reads_every_relation_named_in_order():
 def test_logic_returns_each_output_relation_in_order(tree):
     facts = cc_public.graph.extract.extract(tree)
     rules = ('#show t/1. #show i/1.\n'
-             't(Type) :- type_of("{c}", Type).\n'
+             't(Type) :- has_type("{c}", Type).\n'
              'i(Id) :- item(Id, _, _, _, _), Id = "{c}".').format(c = ID_CONCERN)
     rows  = cc_public.graph.logic.run(facts, rules)
-    assert list(rows.items()) == [('t', [('t_concern',)]), ('i', [(ID_CONCERN,)])]
+    assert list(rows.items()) == [('t', [('type_concern',)]), ('i', [(ID_CONCERN,)])]
 
 
 def test_logic_reports_where_the_rules_begin(tree):
@@ -118,9 +118,9 @@ def test_a_fact_with_a_tab_or_a_newline_is_read_as_written(tree):
 
 def test_sql_sees_base_and_derived_relations(tree):
     facts = cc_public.graph.extract.extract(tree)
-    text  = ("SELECT item.id, type_of.type FROM item JOIN type_of USING (id) "
+    text  = ("SELECT item.id, has_type.type FROM item JOIN has_type USING (id) "
              "WHERE id = 'concern_safety'")
-    assert cc_public.graph.sql.query(facts, text) == (('id', 'type'), [(ID_CONCERN, 't_concern')])
+    assert cc_public.graph.sql.query(facts, text) == (('id', 'type'), [(ID_CONCERN, 'type_concern')])
 
 
 def test_sql_reports_an_error(tree):

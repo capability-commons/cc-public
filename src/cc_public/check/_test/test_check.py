@@ -349,7 +349,7 @@ def test_a_ruling_that_upholds_an_option_passes(tree):
 def test_a_decision_about_other_than_a_component_is_reported(tree):
     _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'r_is_about', ID_ABOUT)])
     failures = _check(tree)
-    assert failures['decision_about_non_component'] == [('dec_x', ID_ABOUT, 't_concern')]
+    assert failures['decision_about_non_component'] == [('dec_x', ID_ABOUT, 'type_concern')]
 
 
 def test_an_argument_across_two_decisions_is_reported(tree):
@@ -497,8 +497,8 @@ def test_a_malformed_guid_is_reported(tree):
 def test_two_types_sharing_a_prefix_are_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'prefix:             opt\n', 'prefix:             ann\n')
-    assert _check(tree)['duplicate_prefix'] == [('ann', 't_annotation', 't_option'),
-                                                ('ann', 't_option', 't_annotation')]
+    assert _check(tree)['duplicate_prefix'] == [('ann', 'type_annotation', 'type_option'),
+                                                ('ann', 'type_option', 'type_annotation')]
 
 
 def test_an_id_given_to_two_items_is_reported(tree):
@@ -1048,8 +1048,8 @@ def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
              'r_d70024bd40444f93b4fc1903379ded81\n        id_target:      sch_file\n')
     assert _check(tree) == {
         'restriction_violation': [
-            ('t_file', 'r_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
-        'schema_count':          [('t_file', '0')]}
+            ('type_file', 'r_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
+        'schema_count':          [('type_file', '0')]}
 
 
 def test_a_schema_nothing_uses_is_reported(tree):
@@ -1068,10 +1068,10 @@ def test_a_concept_nothing_names_is_reported(tree):
 def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
     facts = {name: set() for name in cc_public.graph.extract.RELATION}
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
-    facts['type_prefix'].update({('t_register', 'reg', '.*'), ('t_annotation', 'ann', '.*')})
+    facts['type_prefix'].update({('type_register', 'reg', '.*'), ('type_annotation', 'ann', '.*')})
     facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
     rows  = cc_public.graph.logic.run(facts, cc_public.check.check.RULES.read_text())
-    assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 't_annotation')]
+    assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 'type_annotation')]
 
 
 # -----------------------------------------------------------------------------

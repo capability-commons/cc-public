@@ -127,7 +127,7 @@ settle AS MATERIALIZED (
 ),
 found AS MATERIALIZED (
     SELECT best.id,
-           coalesce((SELECT type FROM type_of WHERE type_of.id = best.id), '') AS type,
+           coalesce((SELECT type FROM has_type WHERE has_type.id = best.id), '') AS type,
            round(-best.score, 3) AS score,
            best.score AS bm25,
            best.field,
@@ -138,7 +138,7 @@ found AS MATERIALIZED (
     FROM best
 )
 SELECT found.*,
-           CASE WHEN type != 't_option' THEN ''
+           CASE WHEN type != 'type_option' THEN ''
                 ELSE coalesce((SELECT CASE settle.relation WHEN 'r_upholds' THEN 'upheld'
                                                            ELSE 'rejected' END
                                FROM settle WHERE settle.option = found.id), 'open')

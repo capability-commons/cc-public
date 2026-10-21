@@ -264,7 +264,7 @@ def new(tree:       Tree,
     if register is None:
         relative = '{dir}/{folder}/{id}{suffix}'.format(
                                     dir    = DIR_DATA,
-                                    folder = id_type[2:],
+                                    folder = id_type.partition(DELIM_PREFIX)[2],
                                     id     = id_self,
                                     suffix = SUFFIX_YAML)
         if relative in tree.map_document:

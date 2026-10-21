@@ -107,7 +107,7 @@ def test_a_changed_annotation_shows_what_it_argues_about(tree, before):
         ('dec_tooling_language', '1', ANN, 'r_is_about',           'out'),
         ('concern_cost',         '1', ANN, 'r_speaks_for_concern', 'out'),
         ('mark_public',          '1', ANN, 'mark',                 'out'),
-        ('t_annotation',         '1', ANN, 'has_type',             'out'),
+        ('type_annotation',         '1', ANN, 'has_type',             'out'),
         ('r_challenges',         '1', ANN, 'uses',                 'out'),
         ('r_is_about',           '1', ANN, 'uses',                 'out'),
         ('r_speaks_for_concern', '1', ANN, 'uses',                 'out')}

@@ -74,8 +74,8 @@ def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
 
 def test_a_role_page_names_its_players_and_the_relations_that_admit_it(tree):
     body = _body(tree, 'rol_can_be_target_of_an_argument')
-    assert ('Played by the items of <a href="/type/t_annotation">Annotation type</a> and '
-            '<a href="/type/t_option">Option type</a>.') in body
+    assert ('Played by the items of <a href="/type/type_annotation">Annotation type</a> and '
+            '<a href="/type/type_option">Option type</a>.') in body
     assert ('Admitted at the target of <a href="/item/r_challenges">Challenges relation</a> and '
             '<a href="/item/r_supports">Supports relation</a>.') in body
 
