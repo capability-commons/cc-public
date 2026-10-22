@@ -32,11 +32,15 @@ mechanically before it is committed.
 | `.agents/skills/`                    | procedures for coding agents; `AGENTS.md` is their guide |
 
 Every item has an id and a guid, each beginning with the prefix of its
-type (`concept_concept`, `concept_820f...`). A YAML file under `_data` holds a
-standalone item or a register of entries. A python module holds its
-item in its module docstring, a class or function that something
-points at holds one in its own docstring, and any other file holds
-one in a comment at its head.
+type (`concept_concept`, `concept_4c11...`). A YAML file under `_data`
+holds a standalone item or a register of entries. A python module holds
+its item in its module docstring, a class or function that something
+points at holds one in its own docstring, and most other files hold
+one in a comment at their head. Some files hold no item: the Markdown
+guides (this file, `AGENTS.md` and the skills), the license texts
+(`LICENSE`, `NOTICE` and the license of the fonts), the generated lock
+file `pixi.lock`, the binary fonts, and the style sheet and script of
+the review pages. No check yet asks that a file hold an item.
 
 ## Getting started
 
