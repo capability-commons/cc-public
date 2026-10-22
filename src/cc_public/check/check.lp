@@ -1589,7 +1589,8 @@ fed(Node, Port) :-
 
 
 % -----------------------------------------------------------------------------
-% An input takes its value from at most one edge.
+% An input takes its value from at most one edge. Edges are counted
+% where they are written, so a second copy of one edge counts too.
 %
 % decl input_fed_twice(node:  symbol,
 %                      port:  symbol,
@@ -1601,7 +1602,7 @@ fed(Node, Port) :-
 
 input_fed_twice(Node, Port, Edges) :-
     fed(Node, Port),
-    Edges = #count { Source, Output : dataflow_edge(_, Source, Output, Node, Port, _, _, _) },
+    Edges = #count { File, Line : dataflow_edge(_, _, _, Node, Port, _, File, Line) },
     Edges > 1.
 
 

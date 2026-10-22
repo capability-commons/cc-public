@@ -1325,6 +1325,11 @@ def test_an_input_fed_by_two_edges_is_reported(tree):
     assert _check(tree) == {'input_fed_twice': [('dfn_x.c', 'icm_x.inp', '2')]}
 
 
+def test_an_edge_written_twice_is_reported(tree):
+    _dataflow_graph(tree, LIST_RING + [('b.out', 'c.inp')])
+    assert _check(tree) == {'input_fed_twice': [('dfn_x.c', 'icm_x.inp', '2')]}
+
+
 def test_an_input_no_edge_feeds_is_reported_unless_it_is_optional(tree):
     _dataflow_graph(tree, LIST_RING[:2])
     assert _check(tree) == {'unfed_input': [('dfn_x.a', 'icm_x.inp')]}
