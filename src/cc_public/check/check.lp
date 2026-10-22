@@ -663,6 +663,20 @@ decisions_mixed_in_ruling(Ruling, Decision, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% A ruling either upholds or rejects an option, never both.
+%
+% decl upholds_and_rejects(ruling: symbol,
+%                          option: symbol)
+% did  The ruling {ruling} both upholds and rejects {option}.
+% fix  Keep the one edge the ruling means.
+#show upholds_and_rejects/2.
+
+upholds_and_rejects(Ruling, Option) :-
+    primary_edge(Ruling, "relation_upholds", Option),
+    primary_edge(Ruling, "relation_rejects", Option).
+
+
+% -----------------------------------------------------------------------------
 % A decision is about logical components, since their drivers say which
 % concerns must be argued before an option of the decision is settled.
 % A decision about anything else would escape that check.
