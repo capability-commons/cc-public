@@ -25,6 +25,12 @@ description:            |
                         unstaged edit in the working copy can neither
                         fail a commit nor let one pass.
 
+                        The check of a commit keeps what it finds in a
+                        store in the git directory, and reuses it for
+                        files unchanged since, as long as the code
+                        that found it is unchanged too. The gate of a
+                        push uses no store.
+
                         A stage runs without the git environment of
                         the hook that started it, so that a test which
                         makes a repository of its own cannot touch the
@@ -62,6 +68,8 @@ import sys
 import tarfile
 import tempfile
 
+import cc_public.check.store
+
 
 # The tests that the gate of a push runs, and those that the gate of a
 # commit runs. The tests marked prepush test the commit and history
@@ -91,6 +99,7 @@ NAME_TEST     = 'test'
 TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/')
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
+DIR_STORE     = 'cc_public_store'
 
 # A stage that runs longer than this, in seconds, is stopped and fails,
 # so that a stage that hangs cannot hold a commit for ever. The whole
@@ -130,6 +139,9 @@ def gate(root:        pathlib.Path,
         else:
             copy_commit(root, rev, dir_copy)
         env      = _environment(dir_copy)
+        env.pop(cc_public.check.store.ENV_STORE, None)
+        if rev is None:
+            env[cc_public.check.store.ENV_STORE] = str(store(root))
         list_job = [[arg.format(python = sys.executable) for arg in tuple_arg]
                     for (_, tuple_arg) in tuple_stage]
 
@@ -177,6 +189,28 @@ def is_code_staged(root: pathlib.Path) -> bool:
         return True
 
     return any(path.startswith(TUPLE_CODE) for path in text.splitlines())
+
+
+# -----------------------------------------------------------------------------
+def store(root: pathlib.Path) -> pathlib.Path:
+    """
+    Return the store of the checker for the gate of a commit of the
+    repository at root: a directory in its git directory, which each of
+    its worktrees shares.
+
+    """
+
+    try:
+        name = subprocess.run(['git', 'rev-parse', '--git-common-dir'],
+                              cwd            = root,
+                              capture_output = True,
+                              text           = True,
+                              check          = True).stdout.strip()
+    except subprocess.CalledProcessError as error:
+        raise ErrorGate('The git directory cannot be found: {text}'.format(
+                                                text = error.stderr.strip())) from error
+
+    return (root / name).resolve() / DIR_STORE
 
 
 # -----------------------------------------------------------------------------

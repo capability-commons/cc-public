@@ -50,7 +50,6 @@ edge:                   []
 
 
 import ast
-import hashlib
 import io
 import pathlib
 import re
@@ -61,6 +60,7 @@ import ruamel.yaml.comments
 import ruamel.yaml.scalarstring
 import ruamel.yaml.tokens
 
+import cc_public.check.store
 import cc_public.graph.extract
 
 
@@ -100,6 +100,11 @@ MESSAGE_LAYOUT    = 'Not laid out as cctool format lays it out.'
 MAP_VIOLATION     = {}
 COUNT_VIOLATION   = 4096
 
+# The kind of verdict that the store of the checker keeps for the layout
+# check.
+#
+KIND_STORE        = 'layout'
+
 YAML              = ruamel.yaml.YAML(typ = 'rt')
 YAML.width        = 10 ** 9        # a scalar is never folded across lines
 YAML.preserve_quotes = True
@@ -130,15 +135,26 @@ def violations(root: pathlib.Path, map_document: cc_public.graph.extract.Documen
 
     list_row = []
 
+    map_stored = cc_public.check.store.load(KIND_STORE)
+    map_used   = {}
+
     for relative in cc_public.graph.extract.files(map_document):
         text = (root / relative).read_text(encoding = 'utf-8')
-        key  = (relative, hashlib.blake2b(text.encode('utf-8'), digest_size = 16).digest())
+        key  = cc_public.check.store.key(relative, cc_public.check.store.digest(text))
         if key not in MAP_VIOLATION:
             if len(MAP_VIOLATION) >= COUNT_VIOLATION:
                 MAP_VIOLATION.clear()
-            MAP_VIOLATION[key] = _violation(relative, text)
+            if key in map_stored:
+                row = map_stored[key]
+                MAP_VIOLATION[key] = None if row is None else tuple(row)
+            else:
+                MAP_VIOLATION[key] = _violation(relative, text)
+        map_used[key] = None if MAP_VIOLATION[key] is None else list(MAP_VIOLATION[key])
         if MAP_VIOLATION[key] is not None:
             list_row.append(MAP_VIOLATION[key])
+
+    if map_used != map_stored:
+        cc_public.check.store.save(KIND_STORE, map_used)
 
     return list_row
 

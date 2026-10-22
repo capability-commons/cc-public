@@ -56,7 +56,11 @@ record, and runs the check, the lint and the tests over the copy. A
 failure stops the commit. A commit that stages no code, nothing under
 `src/` or `.githooks/` and no change to `pyproject.toml` or
 `pixi.lock`, is checked and linted but not tested; the pre-push hook
-tests what a push sends. The commit-msg hook then checks that the
+tests what a push sends. The check of a commit keeps what it finds in
+`.git/cc_public_store`, and reuses it for files that have not changed,
+as long as the code of cc_public has not changed either. Set
+`CC_PUBLIC_STORE` to a directory to have `cctool check` use a store
+too. The commit-msg hook then checks that the
 message holds a commit item whose title is built from one of the
 templates in `sch_commit`, and checks the commit against the graph
 before and after it: no item disappears or changes type without the

@@ -148,6 +148,13 @@ SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
 MAP_READ          = {}
 COUNT_READ        = 4096
 
+# The digest of the file that each YAML document read from a YAML file
+# or python module was read from, keyed by the id of the document, which
+# is kept with it so that the id is not reused. It is emptied with
+# MAP_READ.
+#
+MAP_DIGEST        = {}
+
 # How much of the head of a file that is not YAML or python is read to
 # tell whether it has changed. A comment header is far shorter.
 #
@@ -612,12 +619,16 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
         if key not in MAP_READ:
             if len(MAP_READ) >= COUNT_READ:
                 MAP_READ.clear()
+                MAP_DIGEST.clear()
             try:
                 text = data.decode('utf-8')
             except UnicodeDecodeError as error:
                 raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
                                 data.count(b'\n', 0, error.start) + 1) from error
             MAP_READ[key] = parse_all(text, relative)
+            for (document, _) in MAP_READ[key].values():
+                if isinstance(document, dict):
+                    MAP_DIGEST[id(document)] = (document, key[1].hex())
         return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
@@ -632,6 +643,18 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
             MAP_READ.clear()
         MAP_READ[key] = {str(relative): _header(_line_of_file(path), mark_comment(relative))}
     return MAP_READ[key]
+
+
+# -----------------------------------------------------------------------------
+def digest_of(document: typing.Any) -> str | None:
+    """
+    Return the digest of the file that read gave document from, or None
+    if read did not give it from a YAML file or python module.
+
+    """
+
+    (held, digest) = MAP_DIGEST.get(id(document), (None, None))
+    return digest if held is document else None
 
 
 # -----------------------------------------------------------------------------

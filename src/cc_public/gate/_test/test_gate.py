@@ -183,3 +183,18 @@ def test_the_command_says_when_it_leaves_out_the_tests(repo, monkeypatch):
                                               ['gate', '--root', str(repo)])
     assert result.exit_code == 0
     assert result.stdout == 'check: passed\ntest: skipped, as no code is staged\n'
+
+
+def test_the_gate_of_a_commit_keeps_a_store_in_the_git_directory(repo):
+    stage = _stage('store', 'import os; print(os.environ.get("CC_PUBLIC_STORE"))')
+    [(_, _, output)] = cc_public.gate.gate.gate(repo, (stage,))
+    assert output.startswith('{dir}\n'.format(
+                                 dir = (repo / '.git').resolve() / cc_public.gate.gate.DIR_STORE))
+
+
+def test_the_gate_of_a_commit_already_made_uses_no_store(repo, monkeypatch):
+    _commit(repo)
+    monkeypatch.setenv('CC_PUBLIC_STORE', str(repo / 'elsewhere'))
+    stage = _stage('store', 'import os; print(os.environ.get("CC_PUBLIC_STORE"))')
+    [(_, _, output)] = cc_public.gate.gate.gate(repo, (stage,), rev = 'HEAD')
+    assert output.startswith('None\n')
