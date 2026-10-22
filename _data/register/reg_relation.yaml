@@ -876,3 +876,56 @@ table:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_proxy
         guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+  # ---------------------------------------------------------------------------
+  # relation_is_subclass_of -- Is subclass of relation
+  #
+  relation_is_subclass_of:
+    id_self:            relation_is_subclass_of
+    guid_self:          relation_5668e664a93e44a09315b7afa9c96da3
+    title:              Is subclass of relation
+    brief:              |
+                        SOURCE is a subclass of TARGET
+    description:        |
+                        The class that the external class identified
+                        by SOURCE points at is a subclass of the class
+                        that TARGET points at, in the release both
+                        were taken from.
+
+                        The edge reads through the proxies at both
+                        ends: it is about the classes, not about the
+                        data items that stand for them.
+    note:               |
+                        RDFS calls this subClassOf. The edges are
+                        copied from the release, as facts that checks
+                        can compare with the concept register, and not
+                        as axioms to reason with.
+    acyclic:            true
+
+    reads_through:
+      - source
+      - target
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_external_class
+        guid_target:    relcon_3209fa9becb44223b8b7f80213a51b00
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_external_class
+        guid_target:    relcon_3209fa9becb44223b8b7f80213a51b00
