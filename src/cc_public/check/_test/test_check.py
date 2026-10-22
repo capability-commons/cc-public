@@ -1168,6 +1168,15 @@ def test_a_schema_nothing_uses_is_reported(tree):
 def test_a_concept_nothing_names_is_reported(tree):
     _replace(tree, '_data/schema/sch_register_entry.yaml',
              'concept_register_entry.', 'a register entry.')
+    # Point the edges that name it at concept_identifiable_data_item.
+    template = ('id_target:      {id}\n'
+                '        guid_target:    {guid}\n')
+    path     = tree / '_data/register/reg_concept.yaml'
+    path.write_text(path.read_text().replace(
+        template.format(id   = 'concept_register_entry',
+                        guid = _guid_of(tree, 'concept_register_entry')),
+        template.format(id   = 'concept_identifiable_data_item',
+                        guid = _guid_of(tree, 'concept_identifiable_data_item'))))
     assert _check(tree) == {'unused_concept': [('concept_register_entry',)]}
 
 
