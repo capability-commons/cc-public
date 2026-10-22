@@ -1020,6 +1020,27 @@ cycle(Relation, Id) :-
 
 
 % -----------------------------------------------------------------------------
+% A relation that reads through the proxy at an end constrains that end
+% to proxies.
+%
+% decl unconstrained_proxy_end(relation: symbol,
+%                              end:      symbol)
+% did  {relation} reads through the proxy at its {end}, but does not
+%      constrain that end to proxies.
+% fix  Give the relation the constraint relcon_is_proxy at that end, or
+%      take the end out of its reads_through list.
+#show unconstrained_proxy_end/2.
+
+unconstrained_proxy_end(Relation, "source") :-
+    reads_through(Relation, "source"),
+    not primary_edge(Relation, "relation_constrains_source", "relcon_is_proxy").
+
+unconstrained_proxy_end(Relation, "target") :-
+    reads_through(Relation, "target"),
+    not primary_edge(Relation, "relation_constrains_target", "relcon_is_proxy").
+
+
+% -----------------------------------------------------------------------------
 % The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)

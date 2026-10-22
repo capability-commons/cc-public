@@ -1,0 +1,117 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_external_document.yaml
+id_self:                sch_external_document
+guid_self:              sch_834ed6d7baf442b5806c7eb3a5517845
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  External document schema
+brief:                  |
+                        The shape of an external document, a proxy for
+                        a document held outside the graph.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone; the rights are those
+                        of the data item. The edges come from
+                        sch_trait_edge. An external document requires
+                        a brief, and at least one of identifier and
+                        locator, so that the document it points at can
+                        be found.
+
+                        identifier lists outside identifiers of the
+                        document, each a scheme and a value. locator
+                        is a URI where the document can be fetched.
+                        referent_owner names the owner of the document
+                        itself. fixity records a digest of the
+                        document as fetched, and the date it was
+                        checked.
+usage:                  |
+                        Named by type_external_document as the schema
+                        of every item in _data/external_document/.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - brief
+
+    anyOf:
+
+      - required:
+          - identifier
+
+      - required:
+          - locator
+
+    properties:
+
+      identifier:
+        type:           array
+        minItems:       1
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - scheme
+            - value
+
+          properties:
+
+            scheme:
+
+              enum:
+                - designation
+                - doi
+                - isbn
+                - urn
+                - uri
+
+            value:
+              type:     string
+              minLength:  1
+
+      locator:
+        type:           string
+        format:         uri
+
+      referent_owner:
+        type:           string
+        minLength:      1
+
+      fixity:
+        type:           object
+        additionalProperties:  false
+
+        required:
+          - algorithm
+          - digest
+          - checked
+
+        properties:
+
+          algorithm:
+
+            enum:
+              - sha256
+
+          digest:
+            type:       string
+            pattern:    ^[0-9a-f]{64}$
+
+          checked:
+            type:       string
+            format:     date
+
+unevaluatedProperties:  false
+edge:                   []

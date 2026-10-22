@@ -62,6 +62,7 @@ KEY_REGEX_ID      = 'regex_id'
 KEY_INVERSE       = 'inverse'
 KEY_ALIAS         = 'alias'
 KEY_ACYCLIC       = 'acyclic'
+KEY_READS_THROUGH = 'reads_through'
 KEY_FAMILY        = 'prefix_family'
 KEY_REPLACEMENT   = 'replacement'
 KEY_BREAKS        = 'breaks'
@@ -239,6 +240,9 @@ PREDICATE         = {
     'acyclic_relation':   (('relation',),
                            'No chain of edges of relation may lead from an item back '
                            'to itself.'),
+    'reads_through':      (('relation', 'end'),
+                           'An edge of relation is about the thing that the proxy at '
+                           'its end, source or target, points at.'),
     'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
                            'The schema holder refers to the schema with a $ref, in '
                            'file at line.'),
@@ -1110,6 +1114,9 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
 
     if node.get(KEY_ACYCLIC) is True:
         facts['acyclic_relation'].add((id_self,))
+
+    for end in _list_str(node.get(KEY_READS_THROUGH)):
+        facts['reads_through'].add((id_self, end))
 
     for key in (KEY_FAMILY, KEY_EXCEPTION):
         if isinstance(node.get(key), str):
