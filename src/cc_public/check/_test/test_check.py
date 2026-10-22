@@ -1457,36 +1457,45 @@ def test_a_citation_of_an_item_that_is_no_proxy_is_reported(tree):
 
 
 # -----------------------------------------------------------------------------
-def _add_match(root, id_target_old, id_relation, id_target):
+def _add_match(root, id_concept, id_relation, id_target):
     """
-    Add an edge of id_relation to id_target after the edge of the
-    concept entry whose target is id_target_old.
+    Add an edge of id_relation to id_target at the end of the edges of
+    the concept entry id_concept, which has edges already.
 
     """
 
-    old = ('id_target:      {id}\n'
-           '        guid_target:    {guid}\n').format(id   = id_target_old,
-                                                    guid = _guid_of(root, id_target_old))
-    new = old + ('\n'
-                 '      - id_relation:    {relation}\n'
-                 '        guid_relation:  {guid_relation}\n'
-                 '        id_target:      {target}\n'
-                 '        guid_target:    {guid_target}\n').format(
+    path  = root / '_data/register/reg_concept.yaml'
+    text  = path.read_text()
+    start = text.index('\n  {id}:\n'.format(id = id_concept))
+    end   = text.find('\n  # ---', start)
+    end   = len(text) if end < 0 else end
+    edge  = ('\n'
+             '      - id_relation:    {relation}\n'
+             '        guid_relation:  {guid_relation}\n'
+             '        id_target:      {target}\n'
+             '        guid_target:    {guid_target}\n').format(
                                     relation      = id_relation,
                                     guid_relation = _guid_of(root, id_relation),
                                     target        = id_target,
                                     guid_target   = _guid_of(root, id_target))
-    _replace(root, '_data/register/reg_concept.yaml', old, new)
+    entry = text[start:end].rstrip('\n') + '\n' + edge
+    path.write_text(text[:start] + entry + text[end:])
 
 
 def test_two_concepts_with_an_exact_match_in_one_class_are_reported(tree):
-    _add_match(tree, 'extcla_bfo_process', 'relation_has_exact_match', 'extcla_bfo_entity')
-    _add_match(tree, 'extcla_bfo_role', 'relation_has_exact_match', 'extcla_bfo_entity')
+    _add_match(tree, 'concept_os_process', 'relation_has_exact_match', 'extcla_bfo_entity')
+    _add_match(tree, 'concept_role', 'relation_has_exact_match', 'extcla_bfo_entity')
     assert _check(tree)['shared_exact_match'] == [
         ('extcla_bfo_entity', 'concept_os_process', 'concept_role')]
 
 
 def test_an_exact_and_a_related_match_of_one_pair_are_reported(tree):
-    _add_match(tree, 'extcla_bfo_role', 'relation_has_exact_match', 'extcla_bfo_role')
+    _add_match(tree, 'concept_role', 'relation_has_exact_match', 'extcla_bfo_role')
     assert _check(tree)['conflicting_match'] == [
         ('concept_role', 'extcla_bfo_role', 'exact', 'related')]
+
+
+def test_a_mapping_against_the_hierarchy_of_the_release_is_reported(tree):
+    _add_match(tree, 'concept_document', 'relation_has_close_match', 'extcla_bfo_entity')
+    assert ('concept_document', 'concept_data_item', 'extcla_bfo_entity',
+            'extcla_cco_information_content_entity') in _check(tree)['mapping_against_hierarchy']

@@ -1173,6 +1173,46 @@ conflicting_match(Concept, Class, Grade, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% The concept picks out the same things as the external class, or nearly
+% so.
+%
+% decl equivalent_match(concept: symbol,
+%                       class:   symbol)
+
+equivalent_match(Concept, Class) :-
+    match(Concept, "exact", Class).
+
+equivalent_match(Concept, Class) :-
+    match(Concept, "close", Class).
+
+
+% -----------------------------------------------------------------------------
+% A concept narrower than another does not match a class that the release
+% places above the class the broader concept matches. Only exact and
+% close matches are compared, since they say the concept and the class
+% pick out the same things.
+%
+% decl mapping_against_hierarchy(concept:       symbol,
+%                                broader:       symbol,
+%                                class:         symbol,
+%                                broader_class: symbol)
+% did  {concept} is narrower than {broader}, but it matches {class},
+%      which the release places above {broader_class}, the match of
+%      {broader}.
+% fix  Correct the match of one of the two concepts, or the edge of
+%      relation_is_narrower_than between them. Do not change the edges
+%      between external classes by hand; cctool import keeps them as
+%      the release has them.
+#show mapping_against_hierarchy/4.
+
+mapping_against_hierarchy(Concept, Broader, Class, BroaderClass) :-
+    reaches("relation_is_narrower_than", Concept, Broader),
+    equivalent_match(Concept, Class),
+    equivalent_match(Broader, BroaderClass),
+    reaches("relation_is_subclass_of", BroaderClass, Class).
+
+
+% -----------------------------------------------------------------------------
 % The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)
