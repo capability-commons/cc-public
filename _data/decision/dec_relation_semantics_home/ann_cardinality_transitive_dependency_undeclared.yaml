@@ -10,22 +10,23 @@ protective_mark:
 
 title:                  Cardinality, transitive and dependency undeclared
 brief:                  |
-                        The relation entry declares only domain,
-                        range, acyclic and inverse, and cardinality,
-                        transitive and dependency are not declared on
-                        any entry, so the reason describes the
-                        intended entry, not the one built.
+                        The relation entry declares only acyclic,
+                        reads_through and inverse, and relation
+                        constraints for its ends. Cardinality,
+                        transitive and dependency are declared on no
+                        entry, so the reason describes the intended
+                        entry, not the one built.
 description:            |
                         _data/schema/sch_regentry_relation.yaml lines
-                        38-41 ("Cardinality and other properties that
+                        43-46 ("Cardinality and other properties that
                         a checker might read are not yet declared")
-                        and 44-93. The register prose still says an
-                        entry holds "the cardinality at each end"
-                        (_data/register/reg_relation.yaml lines
-                        33-35). grep for transitive over _data and src
-                        finds no field. At HEAD 89c74d8. Raised by the
-                        flexibility, maintainability, simplicity and
-                        traceability advocates.
+                        and 49-102. The register says a property such
+                        as cardinality "is added when a relation needs
+                        it" (_data/register/reg_relation.yaml lines
+                        37-39). grep for transitive over _data and src
+                        finds it only in prose, not as a field. Raised
+                        by the flexibility, maintainability,
+                        simplicity and traceability advocates.
 
 edge:
 

@@ -10,27 +10,28 @@ protective_mark:
 
 title:                  Relation properties read by generic rules
 brief:                  |
-                        Domain, range and acyclic are data in the
-                        register, checked by rules that name no
-                        relation, so a new relation or property use
-                        adds data lines and no checker code.
+                        Relation constraints, acyclic and
+                        reads_through are data, checked by rules that
+                        name no relation they check, so a new relation
+                        or property use adds data lines and no checker
+                        code.
 description:            |
                         Schema fields: sch_regentry_relation.yaml
-                        lines 49-67. Generic rules:
-                        src/cc_public/check/check.lp lines 260-286
-                        (domain, range) and 523-547 (acyclic). acyclic
+                        lines 21-25, 54-76. Generic rules:
+                        src/cc_public/check/check.lp lines 587-597
+                        (constraint_violation), 1141-1142 (cycle),
+                        1157-1163 (unconstrained_proxy_end). acyclic
                         is set by one line each at reg_relation.yaml
-                        lines 205 and 270. Compatibility: a partner
-                        learns what an edge allows by reading a data
-                        file, without the cc-public checker.
+                        lines 215, 285, 804 and 912, and the ends by
+                        63 relation constraint edges. Compatibility: a
+                        partner learns what an edge allows by reading
+                        a data file, without the cc-public checker.
                         Flexibility: in the move from Souffle to
                         clingo (commit 6230e98) reg_relation.yaml
                         changed by one line, a type rename, and the
-                        domain and range rules were already generic in
-                        check.dl (6230e98^ lines 233-252).
+                        rules for each end were already generic.
                         Maintainability: the rule count grows with
-                        declared properties, not with relations. At
-                        HEAD 89c74d8.
+                        declared properties, not with relations.
 
 edge:
 

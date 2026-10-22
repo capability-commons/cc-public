@@ -11,32 +11,32 @@ protective_mark:
 title:                  Tooling that resolves edges by readable id
 brief:                  |
                         As built, the readable id resolves and the
-                        guid is a checked copy. A stale readable id is
-                        fatal, and an edge to an item in another
-                        repository fails as a dangling reference.
+                        guid finds only items whose id names nothing.
+                        A stale readable id is still a failure, and an
+                        edge to an item in another repository fails as
+                        a dangling reference.
 description:            |
                         Edge facts are extracted from id_relation and
                         id_target only (src/cc_public/graph/extract.py
-                        lines 459-462). dangling_reference fails a
-                        reference whose readable id names no item or
-                        alias, whatever its guid
-                        (src/cc_public/check/check.lp lines 227-239).
+                        lines 1146-1149). dangling_reference fails a
+                        reference only when neither its id nor its
+                        guid names an item, and its id is no alias
+                        (src/cc_public/check/check.lp lines 524-529).
                         guid_mismatch reports a guid that differs from
                         the guid of the item its readable id names
-                        (same file lines 243-256). outdated_reference
-                        fails a reference that uses an alias (same
-                        file lines 488-501). Each row of a shown check
-                        is one failure (src/cc_public/check/check.py
-                        lines 19-25), and a test confirms an absent id
-                        is reported
+                        (same file lines 547-550). outdated_reference
+                        fails a reference that uses an alias, or an
+                        old id whose guid names an item (same file
+                        lines 1082-1091). Tests confirm an absent id
+                        is reported and an old id is found by guid
                         (src/cc_public/check/_test/test_check.py lines
-                        427-434). The edit tool fills each guid by
+                        604-618). The edit tool fills each guid by
                         looking up the readable id
-                        (src/cc_public/edit/edit.py lines 207-215 and
-                        1011-1020). Commit 89c74d8. This contradicts
-                        the claim that the guid resolves today, not
-                        the federation case for carrying a guid.
-                        Raised by all five advocates.
+                        (src/cc_public/edit/edit.py lines 217-225 and
+                        1339-1348). This contradicts the claim that
+                        the guid alone resolves today, not the
+                        federation case for carrying a guid. Raised by
+                        all five advocates.
 
 edge:
 
