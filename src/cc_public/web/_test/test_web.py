@@ -53,8 +53,8 @@ def test_decision_gathers_its_options_and_ruling(tree):
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
     assert ID_UPHELD in [option.id for option in decision.list_option]
     assert [ruling.id for ruling in decision.list_ruling] == [ID_RULING]
-    assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
-    assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_REJECTED
+    assert decision.map_standing[ID_UPHELD] == cc_public.web.argument.STANDING_UPHELD
+    assert decision.map_standing[ID_REJECTED] == cc_public.web.argument.STANDING_REJECTED
     assert not decision.is_open()
 
 
@@ -77,8 +77,8 @@ def test_a_ruling_changed_in_place_changes_the_standing(tree):
                                     .replace('relation_rejects', 'relation_upholds', 1)
                                     .replace('relation_placeholder', 'relation_rejects'))
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
-    assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_REJECTED
-    assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
+    assert decision.map_standing[ID_UPHELD] == cc_public.web.argument.STANDING_REJECTED
+    assert decision.map_standing[ID_REJECTED] == cc_public.web.argument.STANDING_UPHELD
 
 
 def test_decision_is_none_for_an_id_that_is_not_a_decision(tree):
@@ -98,7 +98,7 @@ def test_decision_list_folds_each_decision_to_its_title_and_standing(tree):
     (_, _, body) = cc_public.web.server.respond(tree, '/decisions')
     text = body.decode()
     assert '<details class="decision-entry" id="{id}">'.format(id = ID_DECISION) in text
-    assert re.search(r'id="{id}"><summary>.*?<span class="stance stance-upheld">settled<'.format(
+    assert re.search(r'id="{id}"><summary>.*?<span class="standing standing-upheld">settled<'.format(
         id = ID_DECISION), text, re.DOTALL)
     assert '<span class="drivers">Driven by ' in text
 
@@ -112,10 +112,10 @@ def test_a_decision_opens_to_its_question_and_its_options(tree):
         brief = cc_public.web.page._prose(decision.item.brief)) in text
     for option in decision.list_option:
         assert 'href="/decision/{decision}#{id}"'.format(decision = ID_DECISION, id = option.id) in text
-    assert re.search(r'answer-upheld"><div class="main"><p><span class="mark mark-upheld" '
+    assert re.search(r'answer-upheld"><div class="main"><p><span class="glyph glyph-upheld" '
                      r'title="upheld">✓</span><a class="run-in" href="/decision/{decision}#{id}"'.format(
                          decision = ID_DECISION, id = ID_UPHELD), text)
-    assert '<span class="mark mark-rejected" title="rejected">✗</span>' in text
+    assert '<span class="glyph glyph-rejected" title="rejected">✗</span>' in text
     assert '<a href="/decision/{id}">Decision matrix</a>'.format(id = ID_DECISION) in text
 
 
@@ -126,7 +126,7 @@ def test_an_option_counts_its_units_for_and_against(tree):
                  if unit.option == ID_UPHELD]
     assert summary.map_for[ID_UPHELD] == sum(1 for unit in list_unit if unit.is_for())
     assert summary.map_against[ID_UPHELD] == sum(1 for unit in list_unit if not unit.is_for())
-    assert summary.standing == cc_public.web.page.STANDING_SETTLED
+    assert summary.standing == cc_public.web.page.DECISION_SETTLED
 
 
 def test_a_decision_with_only_rejections_is_narrowed(tree):
@@ -134,7 +134,7 @@ def test_a_decision_with_only_rejections_is_narrowed(tree):
     path.write_text(path.read_text().replace('relation_upholds', 'relation_rejects'))
     graph   = cc_public.web.argument.Graph(tree)
     summary = cc_public.web.page.Summary(graph, graph.decision(ID_DECISION))
-    assert summary.standing == cc_public.web.page.STANDING_NARROWED
+    assert summary.standing == cc_public.web.page.DECISION_NARROWED
 
 
 def test_decision_list_opens_every_decision_on_request(tree):
@@ -162,9 +162,9 @@ def test_decision_list_in_another_order_is_not_grouped(tree):
     list_title = re.findall(r'<span class="title">([^<]+)</span>', text)
     assert list_title == sorted(list_title)
     (_, _, body) = cc_public.web.server.respond(tree, '/decisions?sort=standing')
-    list_standing = re.findall(r'<span class="stance stance-\w+">(\w+)</span>', body.decode())
+    list_standing = re.findall(r'<span class="standing standing-\w+">(\w+)</span>', body.decode())
     assert list_standing == sorted(list_standing,
-                                   key = cc_public.web.page.LIST_STANDING.index)
+                                   key = cc_public.web.page.LIST_DECISION_STANDING.index)
 
 
 def test_decision_page_shows_each_annotation(tree):

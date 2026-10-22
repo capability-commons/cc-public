@@ -65,9 +65,9 @@ R_REJECTS         = 'relation_rejects'
 R_SPEAKS_FOR      = 'relation_speaks_for_concern'
 R_IS_DRIVEN_BY    = 'relation_is_driven_by'
 
-STANCE_UPHELD     = 'upheld'
-STANCE_REJECTED   = 'rejected'
-STANCE_OPEN       = 'open'
+STANDING_UPHELD   = 'upheld'
+STANDING_REJECTED = 'rejected'
+STANDING_OPEN     = 'open'
 
 
 # -----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ class Decision:
     list_annotation:    list[Item]
     list_ruling: list[Item]
     list_driver:        list[str]
-    map_stance:         dict[str, str]
+    map_standing:       dict[str, str]
     set_spoken:         set[str]
 
     # -------------------------------------------------------------------------
@@ -311,15 +311,15 @@ class Graph:
                       list_annotation    = list_annotation,
                       list_ruling        = list_ruling,
                       list_driver        = list_driver,
-                      map_stance         = {},
+                      map_standing       = {},
                       set_spoken         = set_spoken)
 
-        decision.map_stance = {option.id: STANCE_OPEN for option in list_option}
+        decision.map_standing = {option.id: STANDING_OPEN for option in list_option}
         for ruling in decision.list_ruling:
             for id_option in ruling.targets(R_UPHOLDS):
-                decision.map_stance[id_option] = STANCE_UPHELD
+                decision.map_standing[id_option] = STANDING_UPHELD
             for id_option in ruling.targets(R_REJECTS):
-                decision.map_stance[id_option] = STANCE_REJECTED
+                decision.map_standing[id_option] = STANDING_REJECTED
 
         return decision
 

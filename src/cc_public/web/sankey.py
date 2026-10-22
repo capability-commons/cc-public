@@ -403,7 +403,7 @@ class _Drawing:
             if not count_total:
                 self._bar(LIST_X[0], y, 2, 'none', list_css)
 
-            stance    = self.decision.map_stance[option.id]
+            standing  = self.decision.map_standing[option.id]
             list_line = _lines_option(option.title)
             top_text  = y + height / 2 - 2 - LINE_OPTION * (len(list_line) - 1) / 2
             name      = cc_public.web.light.chain(option.id)
@@ -421,7 +421,7 @@ class _Drawing:
                           y = _num(top_text + LINE_OPTION * (len(list_line) - 1) + 16),
                           class_ = ' '.join(['tally', cc_public.web.light.CSS_DIMS] + list_css),
                           text_anchor = 'end')[
-                    htpy.tspan(class_ = 'stance-' + stance)['● ' + stance],
+                    htpy.tspan(class_ = 'standing-' + standing)['● ' + standing],
                     ' ',
                     htpy.tspan(class_ = 'for')[
                         '{mark}{count}'.format(mark  = cc_public.web.light.MARK_FOR,

@@ -160,8 +160,8 @@ def test_an_uphold_sent_changes_the_ruling_in_place(tree):
     assert status == http.HTTPStatus.SEE_OTHER
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
     assert [item.id for item in decision.list_ruling] == [ID_RULING]
-    assert decision.map_stance[ID_REJECTED] == cc_public.web.argument.STANCE_UPHELD
-    assert decision.map_stance[ID_UPHELD] == cc_public.web.argument.STANCE_UPHELD
+    assert decision.map_standing[ID_REJECTED] == cc_public.web.argument.STANDING_UPHELD
+    assert decision.map_standing[ID_UPHELD] == cc_public.web.argument.STANDING_UPHELD
     assert decision.list_ruling[0].brief.strip() == 'Both, for now.'
 
 
