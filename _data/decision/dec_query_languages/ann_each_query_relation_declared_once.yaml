@@ -8,22 +8,24 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  One declaration of each relation for both languages
+title:                  One declaration of each predicate for both languages
 brief:                  |
-                        Base relations are declared once in RELATION
-                        and derived relations once in derive.lp, and
+                        Base predicates are declared once in PREDICATE
+                        and derived predicates once in derive.lp, and
                         both languages are built from them, so a
                         change to the facts is made in one place.
 description:            |
-                        RELATION: src/cc_public/graph/extract.py lines
-                        118-159. Datalog reads it (datalog.py lines
-                        210-218); SQL builds its tables from it and
-                        fills derived tables by running clingo on
+                        PREDICATE, named RELATION when this was
+                        written: src/cc_public/graph/extract.py lines
+                        118-159. The logic path reads it (logic.py
+                        lines 210-218); SQL builds its tables from it
+                        and fills derived tables by running clingo on
                         derive.lp (sql.py lines 52-59). Commit
-                        12f83b7: "each is defined once". One schema
-                        command lists the relations for both
-                        (querying.py lines 192-214). The gain grows
-                        with the count of relations. It counts against
+                        12f83b7: "each is defined once". One command,
+                        now cctool query predicates, lists the
+                        predicates for both (querying.py lines
+                        192-214). The gain grows with the count of
+                        predicates. It counts against
                         opt_two_separate_commands only if that means
                         two fact sets (ASSUMPTION: the packet gives
                         only the quoted phrase "One CLI command or two

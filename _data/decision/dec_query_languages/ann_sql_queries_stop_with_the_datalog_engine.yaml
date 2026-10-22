@@ -8,21 +8,21 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  SQL queries stopped by a Datalog engine fault
+title:                  SQL queries stopped by a logic engine fault
 brief:                  |
-                        Each SQL query first runs the Datalog engine
-                        to fill the derived tables, so a broken,
-                        changed or withdrawn engine stops both
-                        languages, and SQL gives no second route.
+                        Each SQL query first runs the logic engine to
+                        fill the derived tables, so a broken, changed
+                        or withdrawn engine stops both languages, and
+                        SQL gives no second route.
 description:            |
-                        sql.connect calls cc_public.graph.datalog.run
+                        sql.connect calls cc_public.graph.logic.run
                         before it fills any table
                         (src/cc_public/graph/sql.py lines 54-59; at
                         the decision, commit 12f83b7, with souffle as
                         a subprocess raising ErrorDatalog). cctool
-                        query sql reports ErrorDatalog as an SQL error
+                        query sql reports ErrorLogic as an SQL error
                         (querying.py lines 129-132). clingo is
-                        imported at module level (datalog.py line 55;
+                        imported at module level (logic.py line 55;
                         querying.py lines 41-43). At the decision
                         Souffle was a hand-kept binary outside the
                         locked environment
