@@ -1413,6 +1413,34 @@ def test_a_concept_used_with_no_link_to_it_is_advice(tree):
     assert advice['concept_used_without_link'] == [('lco_y', 'concept_item')]
 
 
+def test_a_term_a_concept_definition_writes_without_a_link_is_reported(tree):
+    _replace(tree, '_data/register/reg_concept.yaml',
+             'Holding a thing as it is', 'Holding a file as it is')
+    assert [row[:3] for row in _check(tree)['unlinked_term']] == [
+        ('concept_keep', 'brief', 'file')]
+
+
+def test_a_concept_definition_links_any_concept_with_no_edge(tree):
+    _replace(tree, '_data/register/reg_concept.yaml',
+             'Holding a thing as it is', 'Holding a [[file]] as it is')
+    assert _check(tree) == {}
+
+
+def test_a_term_a_requirement_slot_writes_without_a_link_is_reported(tree):
+    _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml',
+             'the Tooling renames an [[item]]', 'the Tooling renames an item')
+    assert [row[:3] for row in _check(tree)['unlinked_term']] == [
+        ('rqt_rename_keeps_guid', 'condition', 'item')]
+
+
+def test_a_term_of_a_declared_concept_written_without_a_link_is_advice(tree):
+    _text_item(tree, 'lco_y', 'Each item has a guid, and the items have titles.',
+               ['concept_identifiable_data_item'])
+    (failures, advice) = cc_public.check.check.review(tree)
+    assert 'unlinked_term' not in failures
+    assert ('lco_y', 'description', 'item') in [row[:3] for row in advice['term_to_link']]
+
+
 def test_a_relation_that_reads_through_an_unconstrained_end_is_reported(tree):
     _replace(tree, '_data/register/reg_relation.yaml',
              '    reads_through:\n      - target\n',

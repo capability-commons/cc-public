@@ -942,6 +942,46 @@ term_has_sense(Holder, Term) :-
 
 
 % -----------------------------------------------------------------------------
+% A strict field links every term it uses. The definition of a concept
+% and the slots of a requirement statement are short, and they are
+% where a term is most often meant in its registered sense, so a term
+% in them is written as a link, which the link checks then hold to its
+% concept. A concept's own terms are exempt from its definition.
+%
+% decl unlinked_term(holder: symbol,
+%                    field:  symbol,
+%                    term:   symbol,
+%                    file:   symbol,
+%                    line:   number)
+% did  The {field} of {holder} uses the term "{term}" without a link.
+% fix  Write the term as a link [[term]], or [[concept|term]] where two
+%      concepts have the term, with an edge of relation_uses_concept to
+%      the concept if the item has none. If the word is not meant as the
+%      term, reword it.
+#show unlinked_term/5.
+
+unlinked_term(Holder, Field, Term, File, Line) :-
+    term_word(Holder, Field, Term, File, Line),
+    strict_field(Holder, Field),
+    not designation(Holder, Term, _).
+
+
+% -----------------------------------------------------------------------------
+% The field of the item is strict: the brief of a concept, which is its
+% definition, or a slot of a requirement that holds text.
+%
+% decl strict_field(holder: symbol,
+%                   field:  symbol)
+
+strict_field(Holder, "brief") :-
+    has_type(Holder, "type_concept").
+
+strict_field(Holder, Field) :-
+    has_type(Holder, "type_requirement"),
+    Field = ("condition"; "object"; "qualifier").
+
+
+% -----------------------------------------------------------------------------
 % An alias is an old id, so no item has it.
 %
 % decl alias_in_use(alias: symbol,

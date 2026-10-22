@@ -126,13 +126,20 @@ unfinished edits of another.
   is held to its concept's sense where it is used as a term: in an id, a
   requirement slot, a title or a link. Elsewhere an everyday word, such
   as keep or refuse, keeps its everyday senses.
+- Two fields are strict: the brief of a concept (its definition) and the
+  text slots of a requirement (condition, object, qualifier). There every
+  registered term is a link (check `unlinked_term`); a word not meant as
+  the term is reworded. A concept's brief may link any concept, with no
+  edge, as a concept is defined in the terms of the others. Elsewhere,
+  `term_to_link` advises where an item writes a term of a concept it
+  declares without a link; it never fails.
 - A short term may stand for a longer preferred term in prose, written
   as a wiki link: `[[item]]` for an admitted term, or
   `[[concept_identifiable_data_item|item]]` (target first) where the
   item holding the prose uses two concepts with the same term. The item,
   or the register that holds it, needs an edge `relation_uses_concept`
-  to each concept it links this way. Brackets are optional but
-  encouraged; quoted text is not read. Never declare the sense on a type.
+  to each concept it links this way. Outside the strict fields, brackets
+  are optional but encouraged; quoted text is not read. Never declare the sense on a type.
 
 ## Failures and errors
 

@@ -234,3 +234,15 @@ def test_a_link_to_a_term_reads_as_the_term():
     assert cc_public.graph.item.terms(text) == 'Each items and thing.'
     assert cc_public.graph.item.terms(text, lambda term, concept: concept or term) == (
         'Each items and concept_item.')
+
+
+def test_a_term_is_found_in_text_by_its_longest_form_and_not_in_links_or_ids(tree):
+    map_document = cc_public.graph.extract.documents(tree)
+    terms        = cc_public.graph.extract._terms(map_document)
+    text         = 'Data items, two entries and a [[data item]] in reg_data_item_type.'
+    plain        = cc_public.graph.extract.REGEX_TERM_LINK.sub(lambda m: ' ' * len(m.group(0)),
+                                                              text)
+    plain        = cc_public.graph.extract.REGEX_MENTION.sub(lambda m: ' ' * len(m.group(0)),
+                                                            plain)
+    assert cc_public.graph.extract._term_words(plain, terms) == [('data item', 0),
+                                                                  ('entry', 16)]
