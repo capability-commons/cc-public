@@ -111,11 +111,12 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.
-- **`new`, `remove` and `rename` refuse pym, pyp, pycls, pyf, lpf and
-  file ids.** Those items live in the file they name. Give a file its
-  item with `cctool header FILEPATH` (a module's id follows from its path;
-  any other file needs ID, such as `shell_githooks_pre_commit`). Move or
-  remove the file by hand, then `cctool format`.
+- **`new`, `remove` and `rename` refuse pym, pyp, pycls, pyf, lpf, file
+  and shell ids.** Those items live in the file they name. Give a file
+  its item with `cctool header FILEPATH` (the id of a python module or
+  of a logic program file follows from its path; any other file needs
+  ID, such as `shell_githooks_pre_commit`). Move or remove the file by
+  hand, then `cctool format`.
 - **A class or function gets an item only when something must point
   at it.** `cctool header src/x.py::Thing::run --field title Run`
   writes it in the docstring, and the prose the docstring held becomes
