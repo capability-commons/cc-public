@@ -624,7 +624,7 @@ def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
              '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
     assert _check(tree) == {'restriction_violation': [
         ('rqt_rename_keeps_guid', 'relation_has_subject', 'concern_cost', 'target',
-         'rrs_is_design_element')]}
+         'rrs_is_design_entity')]}
 
 
 def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
