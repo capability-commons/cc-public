@@ -1424,6 +1424,13 @@ def test_a_concept_used_with_no_link_to_it_is_advice(tree):
     assert advice['concept_used_without_link'] == [('lco_y', 'concept_item')]
 
 
+def test_a_term_a_concept_rates_twice_is_reported(tree):
+    _replace(tree, '_data/register/reg_concept.yaml',
+             '    term_preferred:     keep\n',
+             '    term_preferred:     keep\n    term_admitted:\n      - keep\n')
+    assert _check(tree)['term_rated_twice'] == [('concept_keep', 'keep', 'admitted', 'preferred')]
+
+
 def test_a_term_a_concept_definition_writes_without_a_link_is_reported(tree):
     _replace(tree, '_data/register/reg_concept.yaml',
              'Holding a thing as it is', 'Holding a file as it is')
