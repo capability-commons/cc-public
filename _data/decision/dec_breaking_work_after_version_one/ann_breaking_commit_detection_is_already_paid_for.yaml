@@ -1,0 +1,49 @@
+id_self:                ann_breaking_commit_detection_is_already_paid_for
+guid_self:              ann_7d127b4ca34f4c95ba4ecf2d806751ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Detection of breaking commits already paid for
+brief:                  |
+                        The commit check already detects renames and
+                        removals, so failing a breaking commit on dev,
+                        or warning about it, reuses work the history
+                        check already does and adds almost nothing to
+                        its time.
+description:            |
+                        Sources:
+                        - The commit check already detects renames and
+                          removals (_sources/context.md line 34).
+                        - The history check is the check of record and
+                          runs at pre-push (AGENTS.md lines 93-97;
+                          README.md lines 103-108). Strength: weak,
+                          because it shows only that these two options
+                          cost nothing extra, not that either is
+                          faster than the other.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_warned_only
+    guid_target:        opt_7ea2ad6b72434751a5bab7b1cfcc4d47
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

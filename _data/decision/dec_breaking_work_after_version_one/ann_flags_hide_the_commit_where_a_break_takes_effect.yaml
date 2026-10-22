@@ -1,0 +1,69 @@
+id_self:                ann_flags_hide_the_commit_where_a_break_takes_effect
+guid_self:              ann_5d9cf834c9c74424bdcd20d606edbe55
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Break recorded apart from where it takes effect
+brief:                  |
+                        A break behind a switch lands in one commit
+                        and takes effect in another, whose item says
+                        only that a switch changed. The computed bump
+                        and the derived notes would then trace the
+                        break to the wrong commit or miss it, while
+                        waiting on next or warning on dev keeps the
+                        commit that makes the break as the one that
+                        records it.
+description:            |
+                        Sources:
+                        - The option lands breaking changes on dev
+                          "behind switches that stay off until a major
+                          release"
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_behind_flags.yaml
+                          lines 12-14).
+                        - The commit checks find removals and renames
+                          from the graph before and after each commit
+                          (src/cc_public/commit/change.lp lines 161
+                          and 218; AGENTS.md lines 87-89).
+                        - The computed bump reads the commit items
+                          since the last release
+                          (_data/decision/dec_version_scheme/opt_semver_computed.yaml
+                          lines 11-15).
+                        - Assumption: a switch held in data that
+                          renames or removes ids on the turn of a flag
+                          would not show as a rename or removal in the
+                          commit that turns it. Strength: moderate,
+                          because it rests on an assumption about how
+                          a switch would be built for data items,
+                          which no option spells out.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_warned_only
+    guid_target:        opt_7ea2ad6b72434751a5bab7b1cfcc4d47
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_behind_flags
+    guid_target:        opt_1fbe338e636d440085812c858e945f2c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

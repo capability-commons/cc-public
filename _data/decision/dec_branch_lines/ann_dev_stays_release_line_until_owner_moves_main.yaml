@@ -1,0 +1,70 @@
+id_self:                ann_dev_stays_release_line_until_owner_moves_main
+guid_self:              ann_946d607e22d645208b1854bd0152357f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dev as the release line until the move to main
+brief:                  |
+                        Releasing from dev until the maintainer moves
+                        the line to main keeps one trunk at a time,
+                        changes nothing about how work is landed and
+                        reviewed before 1.0, and points no consumer at
+                        the legacy code that main still holds. A
+                        second line appears only if breaking work is
+                        held on next after 1.0, and the move itself
+                        must replace main in one step.
+description:            |
+                        Sources:
+                        - dev is the integration branch; finished
+                          branches are checked by the history check
+                          and land there by fast-forward merge
+                          (AGENTS.md lines 13-15 and 40-48).
+                        - origin's main branch still holds the legacy
+                          September iteration (_sources/context.md
+                          line 32).
+                        - Owner's statement (2026-10-22T16:30): "I
+                          will decide when to move over to "main" from
+                          "dev". This is going to be before outside
+                          partners use us" (_sources/context.md line
+                          21).
+                        - The maintainer expects to bundle breaking
+                          changes after 1.0 into one major release
+                          (owner's statement, 2026-10-22T16:23;
+                          _sources/context.md line 16). Strength:
+                          moderate. It argues for the period before
+                          1.0, not for the next branch after it; and
+                          all peers are the maintainer's own (owner's
+                          statement, 2026-10-22T16:21), so nobody is
+                          misled by main today.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

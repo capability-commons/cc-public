@@ -1,0 +1,59 @@
+id_self:                ann_next_branch_merge_escapes_earlier_review
+guid_self:              ann_7f1cb821bead44bfab219d78da87b0bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unreviewed conflict resolution in the merge of next
+brief:                  |
+                        A next branch that collects breaking work
+                        until a major release is a queue of changes
+                        off the release line, brought back in one
+                        merge. Until then dev and next diverge, and
+                        any conflict resolved in that merge is new
+                        material no earlier review saw.
+description:            |
+                        Sources:
+                        - The option collects breaking work on a next
+                          branch until a major release
+                          (_data/decision/dec_branch_lines/opt_dev_then_main_then_next.yaml
+                          lines 12-16).
+                        - The owner expects to bundle breaking changes
+                          into one major release after 1.0 (owner's
+                          statement, 2026-10-22T16:23;
+                          _sources/context.md line 16).
+                        - For a merge, the prepare-commit-msg hook
+                          gives it its commit item and names what it
+                          removes or renames (AGENTS.md lines 90-92).
+                        - Assumption: work on next and dev will touch
+                          some of the same files between major
+                          releases, so the merge will need conflict
+                          resolution. Strength: moderate; each commit
+                          on next can still be reviewed as it lands,
+                          so the risk sits mainly in the merge.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trunk_with_release_tags
+    guid_target:        opt_6edb5ffc035d47b2bf0270a2147fe2b0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

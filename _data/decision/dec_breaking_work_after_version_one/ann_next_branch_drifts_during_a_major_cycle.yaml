@@ -1,0 +1,48 @@
+id_self:                ann_next_branch_drifts_during_a_major_cycle
+guid_self:              ann_e65de06f5dd1413bba5bba06e65bf298
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Drift of a branch that waits for a major release
+brief:                  |
+                        Breaking work held on next for a whole major
+                        cycle drifts from dev, and the merge at the
+                        major release can be large and conflict-heavy.
+                        Unless the work on next is rebased on dev
+                        often, the major release becomes the riskiest
+                        one.
+description:            |
+                        Sources:
+                        - Under this option breaking work collects on
+                          next and lands together in a major release
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_waits_on_next.yaml,
+                          brief).
+                        - A rebased branch must pass the history check
+                          on each rebased commit before it lands
+                          (AGENTS.md lines 40-44).
+                        - Assumption: majors will be months apart, so
+                          next will diverge noticeably. Strength:
+                          weak; it bears on how the option is run, not
+                          whether to choose it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

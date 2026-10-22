@@ -1,0 +1,106 @@
+id_self:                ann_git_flow_merges_between_long_lived_branches
+guid_self:              ann_627a5f4a8b944d5b8216471647b768e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge traffic among git flow's long-lived branches
+brief:                  |
+                        Git flow keeps develop, release, hotfix and
+                        main as long-lived branches joined by merge
+                        commits, four kinds of branch for the one
+                        integration job that a single linear line does
+                        now. Each fix then crosses extra merges that
+                        run the gate again, reaches the reviewer
+                        twice, and leaves merge commits whose items
+                        carry only git's wording in the range a
+                        release is computed from. One trunk with
+                        release tags, and the dev line before any next
+                        branch exists, keep one linear history to
+                        read, check and trace.
+description:            |
+                        Sources:
+                        - Git flow keeps separate develop, release,
+                          hotfix and main branches
+                          (_data/decision/dec_branch_lines/opt_git_flow.yaml,
+                          brief); release and hotfix branches merge
+                          into both main and develop, always as a
+                          merge commit rather than a fast-forward
+                          (https://nvie.com/posts/a-successful-git-branching-model/).
+                          Its author suggests simpler workflows for
+                          continuous delivery and keeps git flow for
+                          explicitly versioned software (same page,
+                          note of 2020-03-05).
+                        - dev is the integration branch, only moves
+                          forward by fast-forward merges, and its
+                          history stays linear (AGENTS.md lines 13-15
+                          and 45-48).
+                        - Landing a branch runs the history check with
+                          the gate over each rebased commit (AGENTS.md
+                          lines 40-45); git runs no pre-commit hook
+                          for a merge, so the pre-merge-commit hook
+                          runs the gate in its place (README.md lines
+                          87-89); the history check extracts two full
+                          graphs per commit it checks
+                          (src/cc_public/commit/change.py lines
+                          131-132; src/cc_public/commit/history.py
+                          lines 22-26).
+                        - Merge commit titles are the words git drafts
+                          for them (_data/schema/sch_commit.yaml lines
+                          62-72); the computed bump reads the commit
+                          items since the last release
+                          (_data/decision/dec_version_scheme/opt_semver_computed.yaml
+                          lines 11-15). Strength: moderate overall.
+                          Merges between release lines are rare next
+                          to ordinary commits, so the gate cost is
+                          small; merged commits stay reachable, so the
+                          release range can still be computed, only
+                          less plainly; and cc-public is versioned
+                          software, the case the author of git flow
+                          says it still fits.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trunk_with_release_tags
+    guid_target:        opt_6edb5ffc035d47b2bf0270a2147fe2b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_git_flow
+    guid_target:        opt_28deab81f9d744d6af75d9d8793eb19e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,52 @@
+id_self:                ann_one_rename_map_per_major_release
+guid_self:              ann_dda24e40b51d41d7bd62f71cdd43c1b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One rename map per major release
+brief:                  |
+                        The breaking changes the maintainer expects
+                        are renames such as prefix changes. Collecting
+                        them on next and landing them together gives
+                        one rename map that traces every renamed id of
+                        a major release in one place.
+description:            |
+                        Sources:
+                        - Owner's statement (2026-10-22T16:23): "Once
+                          we've released version 1.0 I'd expect to
+                          bundle together any breaking changes - e.g.
+                          prefix changes - into one release and make
+                          it a major version bump."
+                          (_sources/context.md line 16).
+                        - The release component derives rename maps
+                          for each release
+                          (_data/logical_component/lco_release.yaml
+                          lines 13-16).
+                        - A renamed register entry keeps its old id in
+                          alias, and the commit item must name what it
+                          renames (AGENTS.md lines 98-100). Strength:
+                          weak, because the warned-only option also
+                          confines breaks to major releases and so
+                          also yields one map per major release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
