@@ -77,6 +77,13 @@ def test_an_interface_is_able_to():
     assert text == 'The Checker should be able to report each failure.'
 
 
+def test_a_slot_shows_each_term_it_links_as_the_term():
+    requirement = _requirement(condition_kind = 'logic', condition = 'a [[file]] is read',
+                               object = 'each [[concept_failure|failure]]')
+    text        = cc_public.requirement.compose.statement(requirement, MAP_NODE.get)
+    assert text == 'If a file is read, the Checker shall report each failure.'
+
+
 @pytest.mark.parametrize('requirement', [
     _requirement(condition = 'the tree is read'),
     _requirement(edge = []),

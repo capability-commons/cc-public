@@ -113,7 +113,7 @@ REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 # where the concept is named by its id and the label is shown in its place.
 #
 REGEX_TERM_LINK   = re.compile(r'\[\[([^\[\]|\n]+?)(?:\|([^\[\]|\n]+?))?\]\]')
-TUPLE_PLURAL      = ('es', 's')
+MAP_PLURAL        = {'ies': 'y', 'es': '', 's': ''}
 
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
@@ -203,8 +203,8 @@ PREDICATE         = {
                            '[[concept|term]] names it.'),
     'term_form':          (('text', 'form'),
                            'The text, a term of a concept or the term of a link, has '
-                           'form when lower-cased, and also with a plural s or es '
-                           'dropped if it is the term of a link. Texts with a form in '
+                           'form when lower-cased, and also made singular if it is '
+                           'the term of a link. Texts with a form in '
                            'common name the same term.'),
     'inverse_relation':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
@@ -530,16 +530,17 @@ def _forms(facts: Facts) -> set[tuple[str, str]]:
 def forms(term: str) -> set[str]:
     """
     Return the forms that the term of a link may match a term of a
-    concept by: lower-cased, and also with a plural s or es dropped.
+    concept by: lower-cased, and also with a plural ending made
+    singular: ies to y, and es or s dropped.
 
     """
 
     form     = term.lower()
     set_form = {form}
 
-    for suffix in TUPLE_PLURAL:
+    for (suffix, singular) in MAP_PLURAL.items():
         if form.endswith(suffix):
-            set_form.add(form.removesuffix(suffix))
+            set_form.add(form.removesuffix(suffix) + singular)
 
     return set_form
 
