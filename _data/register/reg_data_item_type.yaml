@@ -708,6 +708,7 @@ table:
 
                         The shape of logic program file data items is
                         defined by the sch_logic_program_file schema.
+    prefix_family:      logic_program
 
     alias:
       - type_datalog_source_file
@@ -1564,3 +1565,52 @@ table:
         guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_design_rule
         guid_target:    sch_1e651842c47d4bf88451f54105266824
+
+  # ---------------------------------------------------------------------------
+  # type_logic_program_predicate -- Logic program predicate type
+  #
+  type_logic_program_predicate:
+    id_self:            type_logic_program_predicate
+    guid_self:          type_dee490873cf44511b7af0aae3b8b1b32
+    title:              Logic program predicate type
+    brief:              |
+                        Type of logic program predicate data items.
+    description:        |
+                        Each logic program predicate data item holds
+                        the metadata of one predicate of a logic
+                        program, in a comment before its declaration.
+    usage:              |
+                        Logic program predicate data items let one
+                        predicate be traced, annotated and argued
+                        over, rather than the whole file that holds
+                        it. A design rule names the check that holds
+                        it by an edge to its [[item]].
+    note:               |
+                        The id is the prefix, the name of the logic
+                        program file and the name of the predicate, in
+                        lower case and separated by full stops.
+                        lpp_cc_public.check.check.bad_id names the
+                        predicate bad_id in
+                        src/cc_public/check/check.lp.
+
+                        The shape of logic program predicate data
+                        items is defined by the
+                        sch_logic_program_predicate schema.
+    prefix:             lpp
+    regex_id:           ^lpp_[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$
+    id_concept:         concept_logic_program_predicate
+    guid_concept:       concept_fe7a5d30313b4fbe8c9740d3d4397a96
+    prefix_family:      logic_program
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_logic_program_predicate
+        guid_target:    sch_e7697eb592204dd2831e2f543932188d
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_implementation
+        guid_target:    rol_991702df92e147e9915b344c4297f972

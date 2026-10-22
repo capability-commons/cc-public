@@ -322,6 +322,17 @@ DELIM_MODULE      = '.'
 # those names, in lower case, under the prefix of its kind.
 #
 DELIM_DEFINITION  = '::'
+# A predicate of a logic program holds an item in a comment, as a
+# function does in its docstring: a YAML document whose lines each begin
+# with %, written before the declaration of the predicate. Its YAML
+# document is keyed by the path of its file and the name of the
+# predicate, src/cc_public/check/check.lp::bad_id, and its id is the name
+# of its logic program file and the name of the predicate, under this
+# prefix.
+#
+PREFIX_PREDICATE  = 'lpp_'
+REGEX_DECL_NAME   = re.compile(r'^%[ \t]*decl[ \t]+(\w+)[ \t]*\(')
+
 MAP_PREFIX_KIND   = {ast.ClassDef:        'pycls_',
                      ast.FunctionDef:     'pyf_',
                      ast.AsyncFunctionDef: 'pyf_'}
@@ -742,7 +753,7 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
 
     """
 
-    if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON):
+    if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON, SUFFIX_PROGRAM):
         data = path.read_bytes()
         key  = (str(relative), hashlib.blake2b(data, digest_size = 16).digest())
         if key not in MAP_READ:
@@ -805,6 +816,11 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
             MAP_DEFINITION[key] = (expected, tuple_parameter, returns)
             map_document[key]   = document
 
+    if relative.suffix == SUFFIX_PROGRAM:
+        for (key, expected, document) in predicates(text, relative):
+            MAP_DEFINITION[key] = (expected, (), None)
+            map_document[key]   = document
+
     return map_document
 
 
@@ -841,6 +857,111 @@ def definitions(text: str, relative: pathlib.Path) -> list[tuple]:
     visit(_module(text).body, [])
 
     return list_found
+
+
+# -----------------------------------------------------------------------------
+def predicates(text: str, relative: pathlib.Path) -> list[tuple]:
+    """
+    Return, for each predicate of the logic program text, at relative,
+    that holds an item: its key, the id its place calls for, and the
+    document with the line of the file that its first line is on. Raise
+    ErrorRead if a document cannot be read, or names no predicate.
+
+    """
+
+    list_found = []
+
+    for (first, name, document) in blocks(text, mark_comment(relative)):
+        if first == 0 or (first == 1 and text.startswith(MARK_SHEBANG)):
+            continue
+        if name is None:
+            raise ErrorRead('The YAML document in this comment is not followed by the '
+                            'declaration of a predicate.', first + 1)
+        list_found.append((DELIM_DEFINITION.join([str(relative), name]),
+                           predicate_id(relative, name),
+                           document))
+
+    return list_found
+
+
+# -----------------------------------------------------------------------------
+def blocks(text: str, mark: str) -> list[tuple[int, str | None, tuple[typing.Any, int]]]:
+    """
+    Return, for each YAML document in a comment of text, whose comment
+    lines begin with mark: the index of its first line, the name of the
+    predicate whose declaration follows it in the same comment, or None
+    if none does, and the document with the line of the file that its
+    first line is on. Raise ErrorRead if a document cannot be read.
+
+    """
+
+    list_line  = text.split('\n')
+    list_found = []
+
+    for (first, last) in spans_marked(list_line, mark):
+        name = None
+        for line in list_line[last + 1:]:
+            if not line.startswith(mark):
+                break
+            match = REGEX_DECL_NAME.match(line)
+            if match:
+                name = match.group(1)
+                break
+        list_doc = [_unmarked(line, mark) for line in list_line[first:last + 1]]
+        list_found.append((first, name, (_load('\n'.join(list_doc), first + 1), first + 1)))
+
+    return list_found
+
+
+# -----------------------------------------------------------------------------
+def spans_marked(list_line: list[str], mark: str) -> list[tuple[int, int]]:
+    """
+    Return the indices of the lines that open and close each YAML
+    document written in a comment of list_line, each line of it
+    beginning with mark.
+
+    """
+
+    list_span = []
+    first     = None
+
+    for (index, line) in enumerate(list_line):
+        if not line.startswith(mark):
+            first = None
+            continue
+        text = _unmarked(line, mark)
+        if first is None and text == LINE_OPEN:
+            first = index
+        elif first is not None and text == LINE_CLOSE:
+            list_span.append((first, index))
+            first = None
+
+    return list_span
+
+
+# -----------------------------------------------------------------------------
+def _unmarked(line: str, mark: str) -> str:
+    """
+    Return line without the comment marker that begins it, and the
+    space after the marker.
+
+    """
+
+    return line[len(mark):].removeprefix(' ') if line.startswith(mark) else line
+
+
+# -----------------------------------------------------------------------------
+def predicate_id(relative: pathlib.Path, name: str) -> str:
+    """
+    Return the id of the item of the predicate name of the logic program
+    at relative: the prefix of a predicate, the name of its file and
+    name, in lower case and separated by full stops.
+
+    """
+
+    (_, _, module) = module_name(relative).partition(DELIM_PREFIX)
+
+    return PREFIX_PREDICATE + DELIM_MODULE.join([module, name]).lower()
 
 
 # -----------------------------------------------------------------------------

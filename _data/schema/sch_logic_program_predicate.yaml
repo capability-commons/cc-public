@@ -1,0 +1,73 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_logic_program_predicate.yaml
+id_self:                sch_logic_program_predicate
+guid_self:              sch_e7697eb592204dd2831e2f543932188d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Logic program predicate schema
+brief:                  |
+                        The shape of a logic program predicate data
+                        item: the metadata of one predicate of a logic
+                        program, held in a comment before its
+                        declaration.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_edge. A shown predicate that is a
+                        check, a kind of advice or a signal of
+                        friction also says what one row of it records,
+                        and what to do about it.
+
+                        What the item names and where it lives are not
+                        fields. The id names the predicate, and the
+                        item lives in the comment before the
+                        declaration of the predicate it names.
+usage:                  |
+                        Named by type_logic_program_predicate as the
+                        schema of the item of a predicate.
+note:                   |
+                        The item is a YAML document in a comment, in
+                        which each line begins with %. The document is
+                        opened by --- and closed by three full stops,
+                        and the declaration of the predicate follows
+                        it in the same comment.
+type:                   object
+
+properties:
+
+  did:
+    type:               string
+    minLength:          1
+    description:        |
+                        A sentence that says what one row of the
+                        predicate records, with each column named in
+                        braces, as {id}.
+
+  fix:
+    type:               string
+    minLength:          1
+    description:        |
+                        What to do about a row: the usual remedy, and
+                        what not to do where a wrong remedy is
+                        tempting.
+
+dependentRequired:
+
+  did:
+    - fix
+
+  fix:
+    - did
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+unevaluatedProperties:  false
+edge:                   []

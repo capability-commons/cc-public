@@ -44,16 +44,38 @@ unknown_prefix(Id, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% Every id matches the regex_id of its type. sch_primitive checks only
-% the form every id shares; the regex_id of each type is data, which a
-% fixed schema cannot read.
+% ---
+%
+% id_self:                lpp_cc_public.check.check.bad_id
+% guid_self:              lpp_28059ac53d6644d0b5187f1ae8357b6d
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Bad id
+% brief:                  |
+%                         Every id matches the regex_id of its type.
+%                         sch_primitive checks only the form every id
+%                         shares; the regex_id of each type is data,
+%                         which a fixed schema cannot read.
+% did:                    |
+%                         {id} does not match {regex}, the regex_id of
+%                         its type.
+% fix:                    |
+%                         Rename the item with cctool rename to an id
+%                         that matches.
+% edge:                   []
+%
+% ...
 %
 % decl bad_id(id:    symbol,
 %             regex: symbol,
 %             file:  symbol,
 %             line:  number)
-% did  {id} does not match {regex}, the regex_id of its type.
-% fix  Rename the item with cctool rename to an id that matches.
 #show bad_id/4.
 
 bad_id(Id, Regex, File, Line) :-
