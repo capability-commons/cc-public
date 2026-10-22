@@ -115,14 +115,36 @@ renamed(Guid, Id, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% A guid keeps its type. The 32 hex digits of a guid that existed
-% before the commit are not given another prefix after it.
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.retyped_guid
+% guid_self:              lpp_4829671b72ff46e59ccde657affc9ae2
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Retyped guid
+% brief:                  |
+%                         A guid keeps its type. The 32 hex digits of a
+%                         guid that existed before the commit are not
+%                         given another prefix after it.
+% did:                    |
+%                         The guid {guid} becomes {other}: its digits
+%                         carry another prefix.
+% fix:                    |
+%                         Keep the type of an item. To change it, remove
+%                         the item, make a new one, and say so in the
+%                         commit.
+% edge:                   []
+%
+% ...
 %
 % decl retyped_guid(guid:  symbol,
 %                   other: symbol)
-% did  The guid {guid} becomes {other}: its digits carry another prefix.
-% fix  Keep the type of an item. To change it, remove the item, make a
-%      new one, and say so in the commit.
 #show retyped_guid/2.
 
 retyped_guid(Guid, Other) :-
@@ -134,14 +156,34 @@ retyped_guid(Guid, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% Nothing disappears without the commit saying so. The commit item
-% names each item that the commit removes.
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.unannounced_removal
+% guid_self:              lpp_98b05af0d0c948c68b2d3acbad5b8c65
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unannounced removal
+% brief:                  |
+%                         Nothing disappears without the commit saying
+%                         so. The commit item names each item that the
+%                         commit removes.
+% did:                    |
+%                         The commit removes {id} and does not name it.
+% fix:                    |
+%                         Name the id of each item removed in the title,
+%                         brief or description of the commit item.
+% edge:                   []
+%
+% ...
 %
 % decl unannounced_removal(id:   symbol,
 %                          guid: symbol)
-% did  The commit removes {id} and does not name it.
-% fix  Name the id of each item removed in the title, brief or
-%      description of the commit item.
 #show unannounced_removal/2.
 
 unannounced_removal(Id, Guid) :-
@@ -171,11 +213,34 @@ announced_rename(Other) :-
     not register_entry_key(_, _, Other),
     announced_rename(Holder).
 
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.unannounced_rename
+% guid_self:              lpp_ff1b5bb4f023436299511b456d3cfa92
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unannounced rename
+% brief:                  |
+%                         The commit item names each item that the
+%                         commit renames, by its old id or its new one.
+% did:                    |
+%                         The commit renames {id} to {other} and names
+%                         neither.
+% fix:                    |
+%                         Name the old id or the new one in the title,
+%                         brief or description of the commit item.
+% edge:                   []
+%
+% ...
+%
 % decl unannounced_rename(id:    symbol,
 %                         other: symbol)
-% did  The commit renames {id} to {other} and names neither.
-% fix  Name the old id or the new one in the title, brief or description
-%      of the commit item.
 #show unannounced_rename/2.
 
 unannounced_rename(Id, Other) :-
@@ -184,20 +249,43 @@ unannounced_rename(Id, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% A register entry given a new id keeps its old id in its alias list,
-% so that references by the old id can be found and resolved. An item
-% embedded in another, such as an interface member or a dataflow node,
-% is not a register entry: its schema allows no alias, and what refers
-% to it carries its guid. A revert is the exception: it restores an
-% entry as it was, with the id and the aliases it had then, and that
-% content passed when it was first committed.
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.rename_without_alias
+% guid_self:              lpp_c6d061822bf64767a87f52705e4f7558
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Rename without alias
+% brief:                  |
+%                         A register entry given a new id keeps its old
+%                         id in its alias list, so that references by
+%                         the old id can be found and resolved. An item
+%                         embedded in another, such as an interface
+%                         member or a dataflow node, is not a register
+%                         entry: its schema allows no alias, and what
+%                         refers to it carries its guid. A revert is the
+%                         exception: it restores an entry as it was,
+%                         with the id and the aliases it had then, and
+%                         that content passed when it was first
+%                         committed.
+% did:                    |
+%                         The register entry {other}, renamed from {id},
+%                         does not keep {id} in its alias list.
+% fix:                    |
+%                         Add the old id to the alias list of the entry.
+%                         cctool rename does this.
+% edge:                   []
+%
+% ...
 %
 % decl rename_without_alias(id:    symbol,
 %                           other: symbol)
-% did  The register entry {other}, renamed from {id}, does not keep {id}
-%      in its alias list.
-% fix  Add the old id to the alias list of the entry. cctool rename does
-%      this.
 #show rename_without_alias/2.
 
 rename_without_alias(Id, Other) :-
@@ -239,16 +327,36 @@ item_change("rename", Other) :-
 
 
 % -----------------------------------------------------------------------------
-% The verb of the title is true of the change. A change of a kind that
-% the verb rules out contradicts it.
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.verb_contradicted
+% guid_self:              lpp_e9c9efad03f141b7b3c2fbed8ecac72a
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Verb contradicted
+% brief:                  |
+%                         The verb of the title is true of the change. A
+%                         change of a kind that the verb rules out
+%                         contradicts it.
+% did:                    |
+%                         The title says {verb}, and the commit makes a
+%                         change of kind {kind} to {id}.
+% fix:                    |
+%                         Use the verb that is true of the change, or
+%                         split the commit so that each does one thing.
+% edge:                   []
+%
+% ...
 %
 % decl verb_contradicted(verb: symbol,
 %                        kind: symbol,
 %                        id:   symbol)
-% did  The title says {verb}, and the commit makes a change of kind
-%      {kind} to {id}.
-% fix  Use the verb that is true of the change, or split the commit so
-%      that each does one thing.
 #show verb_contradicted/3.
 
 verb_contradicted(Verb, Kind, Id) :-
@@ -258,11 +366,33 @@ verb_contradicted(Verb, Kind, Id) :-
 
 
 % -----------------------------------------------------------------------------
-% A commit titled Reformat changes nothing beyond layout.
+% ---
+%
+% id_self:                lpp_cc_public.commit.change.reformat_changes_content
+% guid_self:              lpp_1ffd5319f9fa45c090579296f5087eb6
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Reformat changes content
+% brief:                  |
+%                         A commit titled Reformat changes nothing
+%                         beyond layout.
+% did:                    |
+%                         The commit is titled Reformat and changes the
+%                         content of {file}.
+% fix:                    |
+%                         Commit the change of content on its own, with
+%                         a verb of its own.
+% edge:                   []
+%
+% ...
 %
 % decl reformat_changes_content(file: symbol)
-% did  The commit is titled Reformat and changes the content of {file}.
-% fix  Commit the change of content on its own, with a verb of its own.
 #show reformat_changes_content/1.
 
 reformat_changes_content(File) :-
