@@ -23,9 +23,12 @@ description:            |
                         the relation named twice, and the target named
                         twice.
 
-                        Each end is named by guid and by readable id.
-                        The guid is what resolves; the readable id is
-                        an advisory copy.
+                        Each end is named by readable id and by guid.
+                        The id resolves, as it does in prose. The guid
+                        tells items apart when one id names two, and
+                        finds the item when the id names nothing, as
+                        after a rename. See HOW A NAME RESOLVES in
+                        sch_trait_identity.yaml.
 usage:                  |
                         Composed via allOf by any item that carries
                         outgoing edges.
@@ -101,10 +104,9 @@ $defs:
 
                         A relation is an item like any other. It is
                         held in the relation register with an identity
-                        of its own, so an edge names it by guid for
-                        the same reason it names its target by guid: a
-                        readable id is not reliably resolvable across
-                        a federation.
+                        of its own, so an edge names it the same way
+                        it names its target: by id, with a guid that
+                        settles an ambiguous or overloaded id.
 
       id_target:
         $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/id
@@ -112,27 +114,24 @@ $defs:
                         Readable id of the item at the far end of this
                         edge.
 
-                        Advisory only. It is carried so that edges
-                        stay legible in diffs, and so that a grep for
-                        an item's readable id finds its structured
-                        references as well as its prose mentions.
-                        Never resolve by this field: it is a
-                        denormalised copy, it is not globally unique,
-                        and it may go stale when the target is
-                        renamed. The staleness is harmless, because
-                        the guid is the authoritative value. A linter
-                        may refresh the field within its own
-                        repository but cannot refresh copies held in
-                        foreign ones, so a stale value must remain
-                        non-fatal.
+                        This is the field that resolves. It keeps
+                        edges legible in diffs, and a grep for an
+                        item's id finds its structured references as
+                        well as its prose mentions. An id that names
+                        two items is a nonconformity. An id that names
+                        nothing is resolved by the guid and reported
+                        as outdated. Copies held in a partner's
+                        repository cannot be refreshed from here.
 
       guid_target:
         $ref:           https://capability-commons.org/schema/sch_primitive.yaml#/$defs/guid
         description:    |
                         Guid of the item at the far end of this edge.
 
-                        The sole resolvable reference in the edge, and
-                        the only field a resolver ever needs.
+                        The guid disambiguates. It finds the target
+                        when the id names nothing, and it tells two
+                        items apart when one id names both, so that
+                        the id can be renamed.
 
                         It can target anything that composes
                         sch_trait_identity.yaml, whether that thing
