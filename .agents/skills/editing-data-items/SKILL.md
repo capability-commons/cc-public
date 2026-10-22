@@ -90,8 +90,8 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   in place with `set`, `link` and `unlink`; the commits that change its
   file are the history of the ruling.
 - **`constraint_violation`** means an end of the edge does not meet a
-  relation restriction its relation names (`relation_constrains_source` or
-  `relation_constrains_target` in `reg_relation.yaml`). A restriction admits or
+  relation constraint its relation names (`relation_constrains_source` or
+  `relation_constrains_target` in `reg_relation.yaml`). A constraint admits or
   excludes roles, and a type's items play the roles its entry in
   `reg_data_item_type.yaml` names with `relation_has_items_that_play`. Do not
   pick another relation just to pass. A new type takes part in a

@@ -11,20 +11,19 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Relation restrictions on review pages
+title:                  Relation constraints on review pages
 brief:                  |
                         The sentences that say what may stand at each
                         end of a relation, and where a role is needed.
 description:            |
                         A relation page reads each end of the
                         relation: the briefs of the relation
-                        restrictions it names, or that the end is
-                        open. A role page names the types whose items
-                        play the role, and each end of a relation
-                        whose restrictions admit or exclude it. Each
-                        sentence is a list of parts, text or a link to
-                        an item, which pym_cc_public.web.page lays
-                        out.
+                        constraints it names, or that the end is open.
+                        A role page names the types whose items play
+                        the role, and each end of a relation whose
+                        constraints admit or exclude it. Each sentence
+                        is a list of parts, text or a link to an item,
+                        which pym_cc_public.web.page lays out.
 edge:                   []
 
 ...
@@ -59,7 +58,7 @@ Sentence = list[Part]
 def sentences(graph: Graph, id_item: str) -> list[Sentence]:
     """
     Return the sentences that say how id_item takes part in relation
-    restrictions: for a relation, what may stand at each end; for a
+    constraints: for a relation, what may stand at each end; for a
     role, which types play it and at which ends of which relations it
     is admitted or excluded. Any other item has none.
 
@@ -76,7 +75,7 @@ def sentences(graph: Graph, id_item: str) -> list[Sentence]:
 def _ends(graph: Graph, id_relation: str) -> list[Sentence]:
     """
     Return a sentence for each end of the relation id_relation: the
-    restrictions it names for that end, each read by its brief, or
+    constraints it names for that end, each read by its brief, or
     that the end is open.
 
     """
@@ -84,14 +83,14 @@ def _ends(graph: Graph, id_relation: str) -> list[Sentence]:
     item          = graph.map_item[id_relation]
     list_sentence = []
 
-    for (end, id_restricts) in LIST_END:
-        list_restriction = item.targets(id_restricts)
-        if not list_restriction:
+    for (end, id_constrains) in LIST_END:
+        list_constraint = item.targets(id_constrains)
+        if not list_constraint:
             list_sentence.append(['The {end} is open to any item.'.format(end = end)])
             continue
         sentence = ['The {end} '.format(end = end)]
-        sentence += _joined([(id_restriction, _brief(graph, id_restriction))
-                             for id_restriction in list_restriction], ', and ')
+        sentence += _joined([(id_constraint, _brief(graph, id_constraint))
+                             for id_constraint in list_constraint], ', and ')
         list_sentence.append(sentence + ['.'])
 
     return list_sentence
@@ -116,11 +115,11 @@ def _role(graph: Graph, id_role: str) -> list[Sentence]:
         list_sentence = [['Played by the items of no type.']]
 
     for (verb, id_literal) in LIST_LITERAL:
-        for (end, id_restricts) in LIST_END:
+        for (end, id_constrains) in LIST_END:
             list_relation = sorted({id_relation
-                                    for id_restriction in graph.sources(id_literal, id_role)
-                                    for id_relation in graph.sources(id_restricts,
-                                                                     id_restriction)})
+                                    for id_constraint in graph.sources(id_literal, id_role)
+                                    for id_relation in graph.sources(id_constrains,
+                                                                     id_constraint)})
             if list_relation:
                 list_sentence.append(
                     ['{verb} at the {end} of '.format(verb = verb, end = end)]

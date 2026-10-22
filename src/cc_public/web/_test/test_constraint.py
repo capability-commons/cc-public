@@ -11,10 +11,10 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Relation restriction page tests
+title:                  Relation constraint page tests
 brief:                  |
                         Tests of the sentences that relation and role
-                        pages show about relation restrictions.
+                        pages show about relation constraints.
 description:            |
                         Each test reads a copy of the repository and
                         checks the sentences of a relation or role
@@ -47,7 +47,7 @@ def _body(tree, id_item):
 # -----------------------------------------------------------------------------
 def _excluded(tree, id_role):
     """
-    Turn the literal that admits id_role in the relation restriction
+    Turn the literal that admits id_role in the relation constraint
     register into one that excludes it. The graph of the review reads
     ids, so the guid of the relation is left as it was.
 
@@ -62,13 +62,13 @@ def _excluded(tree, id_role):
     path.write_text(text[:head] + 'id_relation:    relation_excludes\n' + text[head + len(old):])
 
 
-def test_a_relation_page_reads_each_end_by_its_restrictions(tree):
+def test_a_relation_page_reads_each_end_by_its_constraints(tree):
     body = _body(tree, 'relation_supports')
     assert 'The source <a href="/item/relcon_is_argument">is an argument</a>.' in body
     assert 'The target <a href="/item/relcon_can_be_target_of_an_argument">can be the target of an argument</a>.' in body
 
 
-def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
+def test_a_relation_page_says_an_end_without_constraints_is_open(tree):
     assert 'The target is open to any item.' in _body(tree, 'relation_is_about')
 
 
