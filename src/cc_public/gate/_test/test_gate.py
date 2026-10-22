@@ -74,6 +74,16 @@ def _git(root, *list_arg):
     subprocess.run(['git', *list_arg], cwd = root, check = True, capture_output = True)
 
 
+def _commit(root):
+    """
+    Commit what is staged in root.
+
+    """
+
+    _git(root, '-c', 'user.name=Test', '-c', 'user.email=test@example.com',
+         '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--message', 'Start')
+
+
 def _stage(name, code):
     """
     Return a stage that runs the python code.
@@ -136,3 +146,34 @@ def test_the_command_prints_a_failure_before_its_verdict(repo, monkeypatch):
     assert result.stdout.startswith('pass: passed\nWrong.\n')
     assert result.stdout.endswith('\nfail: failed\n')
 
+
+def test_a_commit_that_stages_only_data_leaves_out_the_tests(repo):
+    _commit(repo)
+    (repo / '_data').mkdir()
+    (repo / '_data/item.yaml').write_text('title: Data\n')
+    _git(repo, 'add', '_data/item.yaml')
+    assert not cc_public.gate.gate.is_code_staged(repo)
+    assert [name for (name, _) in cc_public.gate.gate.stages(repo)] == ['check', 'lint']
+
+
+def test_a_commit_that_stages_code_runs_the_tests(repo):
+    _commit(repo)
+    _git(repo, 'rm', '--quiet', '--cached', 'src/marker.py')
+    assert cc_public.gate.gate.is_code_staged(repo)
+    assert cc_public.gate.gate.stages(repo) == cc_public.gate.gate.TUPLE_STAGE
+
+
+def test_the_first_commit_runs_the_tests(repo):
+    assert cc_public.gate.gate.is_code_staged(repo)
+
+
+def test_the_command_says_when_it_leaves_out_the_tests(repo, monkeypatch):
+    _commit(repo)
+    _git(repo, 'add', 'untracked.txt')
+    monkeypatch.setattr(cc_public.gate.gate, 'TUPLE_STAGE',
+                        (_stage('check', 'pass'),
+                         _stage('test', 'import sys; sys.exit(1)')))
+    result = click.testing.CliRunner().invoke(cc_public.cli.command.main,
+                                              ['gate', '--root', str(repo)])
+    assert result.exit_code == 0
+    assert result.stdout == 'check: passed\ntest: skipped, as no code is staged\n'
