@@ -175,6 +175,8 @@ Procedures, and the traps in them, are skills in `.agents/skills/`,
 in the Agent Skills format. Codex reads them there, and Claude Code
 reads them through `.claude/skills`, a link to the same directory.
 `editing-data-items` covers adding and changing items with cctool.
+`reviewing-the-repository` covers the scheduled reviews and
+retrospectives, and how to record what they find.
 
 ## Finding things out
 
@@ -214,6 +216,18 @@ reads them through `.claude/skills`, a link to the same directory.
   25010, ISO/IEC/IEEE 42010), follow its structure and terms, and cite
   it.
 
+## Improving as you go
+
+- Design rules are in `_data/register/reg_design_rule.yaml`. Follow
+  them as you follow the writing style rules.
+- Note what could be better as you work: an awkward name, a check you
+  had to word around, a command that could be simpler. Fix it if it is
+  small and inside the scope of your task. Otherwise say so in your
+  report, so that it can become a decision. Do not widen your task to
+  fix it.
+- Do not word around a check, quote a word to dodge it, or add an
+  exception to a rule without saying so. Each of these is a tension,
+  and it is reported, not hidden.
 ## Keep it small
 
 The previous iteration grew faster than it could be reviewed. Add a
