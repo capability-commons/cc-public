@@ -1,0 +1,76 @@
+id_self:                ann_fixed_target_states_where_personal_data_goes
+guid_self:              ann_72bc5df0a7a14d88ae14bfe7d932d31a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One configured destination for the record of processing
+brief:                  |
+                        A repository fixed in the configuration of
+                        each deployment states where that bot puts
+                        personal data, which is what a record of
+                        processing must show. Routing each item by its
+                        mark makes the destination a judgment per item
+                        that leaves no standing record.
+description:            |
+                        A record of processing lists the purposes, the
+                        categories of people and personal data, and
+                        the categories of recipients [UK GDPR Art
+                        30(1),
+                        https://www.legislation.gov.uk/eur/2016/679/article/30].
+                        An organization with fewer than 250 employees
+                        is exempt, except where the processing is not
+                        occasional, is likely to pose a risk to
+                        people, or involves special category data [UK
+                        GDPR Art 30(5), same URL]. By default,
+                        personal data must not be made accessible to
+                        an unlimited number of people without the
+                        person's involvement [UK GDPR Art 25(2),
+                        https://www.legislation.gov.uk/eur/2016/679/article/25].
+                        The fixed option sets one repository for each
+                        deployment and allows a public one only for a
+                        type that holds no personal data
+                        [_data/decision/dec_chat_target_repository/opt_target_fixed_per_deployment.yaml,
+                        brief]. The mark option chooses the repository
+                        for each item from the protective mark it is
+                        given
+                        [_data/decision/dec_chat_target_repository/opt_target_by_protective_mark.yaml,
+                        brief]. The target repository may be part of
+                        the bot configuration, and so re-configurable
+                        [owner's statement]. Personal data lives only
+                        in private repositories [owner's statement].
+                        ASSUMPTION: a bot that runs for a team all
+                        year is not occasional processing, so the
+                        exemption in Art 30(5) does not apply to it.
+                        ASSUMPTION: a change to the configured target
+                        lands as a reviewed commit, which dates the
+                        change. Holds at ten times the size: yes,
+                        because the record needs one entry per
+                        deployment however many items it writes, while
+                        routing by mark adds one judgment per item.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_target_repository
+    guid_target:        dec_8614f5f232634acd8f9705591f608f87
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_target_fixed_per_deployment
+    guid_target:        opt_37652d8a6e35402fbcbbd070744661e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_target_by_protective_mark
+    guid_target:        opt_b104ec8c8ab349c0a252561c4a26ea9f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_regulatory_compliance
+    guid_target:        concern_63ba3503fd2a4026910ba56b22d984a8
