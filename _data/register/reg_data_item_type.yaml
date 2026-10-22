@@ -1519,3 +1519,48 @@ table:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_external_class
         guid_target:    rol_f5e7945fb35e4fe683adafdc7f716f2c
+
+  # ---------------------------------------------------------------------------
+  # type_design_rule -- Design rule type
+  #
+  type_design_rule:
+    id_self:            type_design_rule
+    guid_self:          type_e9d324b5d33a46a88dcbc7d48d517d24
+    title:              Design rule type
+    brief:              |
+                        Type of design rule data items.
+    description:        |
+                        Each design rule data item states one rule
+                        that the design of the system, and the record
+                        of that design, follows, with the reason for
+                        it.
+    usage:              |
+                        Design rule data items guide whoever designs
+                        and records the system, a person or a model.
+    note:               |
+                        Design rule data items only ever exist as
+                        entries in the design rule register, never as
+                        data items that travel on their own.
+
+                        The shape of design rule data items is defined
+                        by the sch_regentry_design_rule schema.
+
+                        The shape of the design rule register is
+                        defined by the sch_reg_design_rule schema.
+    prefix:             rule
+    regex_id:           ^rule_[a-z][a-z0-9_]*$
+    id_concept:         concept_design_rule
+    guid_concept:       concept_765d72b34b8a4ff38b6d5ca0488be765
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
+        id_target:      reg_design_rule
+        guid_target:    reg_5ce5bd3ee54b42458af9e397495e7cf4
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_regentry_design_rule
+        guid_target:    sch_1e651842c47d4bf88451f54105266824
