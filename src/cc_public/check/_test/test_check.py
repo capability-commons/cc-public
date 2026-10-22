@@ -929,11 +929,11 @@ def test_a_field_no_schema_allows_is_reported(tree):
     path     = tree / location
     path.write_text(path.read_text() + 'color: red\n')
     assert _check(tree) == {'schema_violation': [
-        ('ann_x', 'sch_annotation', location, LINE_ITEM, '',
+        ('ann_x', 'sch_annotation', location, LINE_ITEM, '/',
          "Unevaluated properties are not allowed ('color' was unexpected)")]}
 
 
-def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
+def test_a_violation_inside_a_register_is_reported_once_at_its_line(tree):
     path     = tree / '_data/register/reg_concern.yaml'
     register = ruamel.yaml.YAML().load(path.read_text())
     register['table']['concern_cost']['title'] = 7
@@ -942,9 +942,7 @@ def test_a_violation_inside_a_register_is_reported_at_its_line(tree):
                     if text.strip() == 'title: 7')
     row      = ('_data/register/reg_concern.yaml', str(line), 'table/concern_cost/title',
                 "7 is not of type 'string'")
-    assert _check(tree) == {'schema_violation': [
-        ('reg_concern', 'sch_reg_concern', *row),
-        ('reg_concern', 'sch_register', *row)]}
+    assert _check(tree) == {'schema_violation': [('reg_concern', 'sch_reg_concern', *row)]}
 
 
 def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):

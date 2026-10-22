@@ -228,7 +228,29 @@ def violations(map_document: cc_public.graph.extract.Documents,
 
     kept.save()
 
-    return sorted(set_row)
+    return _once(set_row, kept)
+
+
+# -----------------------------------------------------------------------------
+def _once(set_row: set[tuple[str, ...]], kept: '_Kept') -> list[tuple[str, ...]]:
+    """
+    Return the rows with each violation reported once. A document that
+    must conform to two schemas, one of which refers to the other, such
+    as a register under sch_register and its own sch_reg_* schema, breaks
+    both at the same place with the same message. The row of the schema
+    that reaches more schemas, the more specific, is kept.
+
+    """
+
+    map_row = {}
+
+    for row in sorted(set_row):
+        key      = (row[0], *row[2:])
+        kept_row = map_row.get(key)
+        if kept_row is None or len(kept.reach(row[1])) > len(kept.reach(kept_row[1])):
+            map_row[key] = row
+
+    return sorted(map_row.values())
 
 
 # -----------------------------------------------------------------------------
@@ -268,7 +290,7 @@ class _Kept:
         """
 
         found = self.map_found.get((id_document, id_schema))
-        reach = self._reach(id_schema)
+        reach = self.reach(id_schema)
         key   = self._key(id_document, id_schema, file, document)
 
         if found is not None and found[0] is document and _same(found[1], reach):
@@ -291,7 +313,7 @@ class _Kept:
 
         """
 
-        self.map_found[(id_document, id_schema)] = (document, self._reach(id_schema), list_row)
+        self.map_found[(id_document, id_schema)] = (document, self.reach(id_schema), list_row)
         key = self._key(id_document, id_schema, file, document)
         if key:
             self.map_used[key] = [list(row) for row in list_row]
@@ -308,7 +330,7 @@ class _Kept:
             cc_public.check.store.save(KIND_STORE, self.map_used)
 
     # -------------------------------------------------------------------------
-    def _reach(self, id_schema: str) -> tuple:
+    def reach(self, id_schema: str) -> tuple:
         """
         Return the schema id_schema and each schema it refers to, at
         any depth, as pairs of a name and the schema, in order of name.
@@ -350,7 +372,7 @@ class _Kept:
             return None
         list_digest = ['{name}={digest}'.format(name   = name,
                                                 digest = _known(schema)[2] if schema else '')
-                       for (name, schema) in self._reach(id_schema)]
+                       for (name, schema) in self.reach(id_schema)]
         return cc_public.check.store.key(id_document, id_schema, file, digest,
                                          cc_public.check.store.digest(' '.join(list_digest)))
 
@@ -459,7 +481,7 @@ def _row(id_document, id_schema, file, document, base, error):
             id_schema,
             file,
             str(_line(document, list(error.absolute_path), base)),
-            DELIM_PATH.join(str(part) for part in error.absolute_path),
+            DELIM_PATH.join(str(part) for part in error.absolute_path) or DELIM_PATH,
             ' '.join(error.message.split())[:LENGTH_MESSAGE])
 
 
