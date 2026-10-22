@@ -1,0 +1,77 @@
+id_self:                ann_checks_cannot_judge_sufficiency_or_wording
+guid_self:              ann_06686ada03544ae8bab4c795affce066
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Quality the checks cannot see
+brief:                  |
+                        The mechanized checks judge form and graph
+                        consistency, and most writing rules are not
+                        mechanized, so the checks alone cannot tell a
+                        contributor that an answer is insufficient,
+                        vague or badly phrased. An LLM judge gives
+                        that feedback in the conversation, while the
+                        contributor is still there to fix it, and not
+                        later through a reviewer.
+description:            |
+                        An eval is likely needed to give feedback when
+                        information is insufficient, inaccurate or
+                        poorly phrased (owner's statement). The checks
+                        cover forms such as ids, guids, references and
+                        term links (src/cc_public/check/check.lp lines
+                        39-246, 522 and 1045). Of the 16 writing style
+                        rules, 14 have enforcement none and 2 have
+                        enforcement check
+                        (_data/register/reg_writing_style_rule.yaml,
+                        enforcement fields, lines 58-501). The option
+                        of quality left to the reviewer judges quality
+                        only at review of the branch of the bot
+                        (_data/decision/dec_chat_item_eval/opt_reviewer_judges_quality.yaml,
+                        brief). ASSUMPTION: the reviewer cannot reach
+                        the contributor as easily as the bot can
+                        during the conversation. ASSUMPTION: an LLM
+                        judge sometimes flags a sound answer, which
+                        costs the contributor an extra turn. Holds at
+                        ten times the size: yes, because the judge
+                        runs per draft, more items give a reviewer
+                        more quality to judge with no more access to
+                        the sources, and the gap between mechanized
+                        and unmechanized rules does not shrink with
+                        size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_item_eval
+    guid_target:        dec_918a00778b424525a2f58930707b2cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mechanized_checks_only
+    guid_target:        opt_ac1f2f77237c43b1ae2fab683adce969
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_reviewer_judges_quality
+    guid_target:        opt_bb0596368c25475f830e8a1fca1780fa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

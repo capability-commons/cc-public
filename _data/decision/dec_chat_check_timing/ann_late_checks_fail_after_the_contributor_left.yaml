@@ -1,0 +1,60 @@
+id_self:                ann_late_checks_fail_after_the_contributor_left
+guid_self:              ann_c77f972d0dfd45a98f4b1d2aeb8e4276
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Late checks fail after the contributor has left
+brief:                  |
+                        If nothing is checked until the write, a
+                        refused write arrives after the conversation
+                        is over, and the work is lost unless the
+                        contributor returns. Checking each answer in
+                        the bot and dry running once at the readback
+                        finds the fault while the contributor is still
+                        there, with few runs of cctool.
+description:            |
+                        The dry-run-every-turn option runs cctool on
+                        the whole draft after every message
+                        (opt_dry_run_every_turn, brief). The readback
+                        option checks each answer against the JSON
+                        Schema inside the bot and runs cctool once at
+                        the readback
+                        (opt_schema_per_answer_dry_run_at_readback,
+                        brief). A contributor on a messaging app may
+                        stop replying at any time (ASSUMPTION). Holds
+                        at ten times the size: yes, because a larger
+                        tree makes each cctool run slower, which makes
+                        per-turn runs worse and leaves one run at the
+                        readback tolerable.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_per_answer_dry_run_at_readback
+    guid_target:        opt_fa05d8c663c9453f9b1cd2ccbf6efd6e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_at_write_only
+    guid_target:        opt_e87fff38610745559a63837de7ea497b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dry_run_every_turn
+    guid_target:        opt_e83e85e117af40bd89c6951ce16e05fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

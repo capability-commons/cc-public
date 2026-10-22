@@ -1,0 +1,61 @@
+id_self:                ann_explicit_draft_state_survives_a_restart
+guid_self:              ann_52633ee5269549d4bcfe27dd6ff605d4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Explicit draft state survives a restart
+brief:                  |
+                        A conversation that keeps a draft and a list
+                        of what is still needed can be resumed after
+                        the bot fails. A free conversation that writes
+                        the item only at the end loses everything
+                        gathered when the bot fails before that end.
+description:            |
+                        The checklist option shows the LLM, on every
+                        turn, what is filled, what is still needed and
+                        what failed a check
+                        (opt_checklist_led_conversation, brief). The
+                        form walk asks for one field at a time in the
+                        order of the schema, so the next field is
+                        known from the fields already filled
+                        (opt_form_walk, brief). The free conversation
+                        option lets the LLM talk freely and writes the
+                        item at the end (opt_free_conversation,
+                        brief). A failed process loses whatever it
+                        held only in memory (ASSUMPTION, general
+                        property of processes). Holds at ten times the
+                        size: yes, because more and longer
+                        conversations raise the chance that a failure
+                        lands mid-conversation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_conversation_control
+    guid_target:        dec_ff5347332cff466db395b0855080cdf1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_checklist_led_conversation
+    guid_target:        opt_3e84a5abf3924521b56f570e2bde0b99
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_form_walk
+    guid_target:        opt_8b7834a0c59e461bb3fc50e7dda21de4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_free_conversation
+    guid_target:        opt_5f071af1e0ad4d119d4c216a73d249fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

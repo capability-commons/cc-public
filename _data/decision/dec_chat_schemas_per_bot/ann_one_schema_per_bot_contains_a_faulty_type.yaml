@@ -1,0 +1,51 @@
+id_self:                ann_one_schema_per_bot_contains_a_faulty_type
+guid_self:              ann_4c3907318f3e45b0ae15aea64d891d1a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One schema per bot contains a faulty type
+brief:                  |
+                        With one schema per bot, a faulty schema or a
+                        wrong choice of type cannot spill into the
+                        capture of other types. Several schemas per
+                        bot add a step that picks the type, and that
+                        step can pick wrong.
+description:            |
+                        The one-schema option gives each bot one type
+                        and so one schema (opt_one_schema_per_bot,
+                        brief). The several-schemas option picks the
+                        type from the first message or by asking
+                        (opt_several_schemas_per_bot, brief). A step
+                        that classifies free text with an LLM
+                        sometimes picks the wrong class (ASSUMPTION).
+                        Holds at ten times the size: yes, because more
+                        types per bot give the picking step more ways
+                        to go wrong, while one bot per type only adds
+                        processes to run.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_schemas_per_bot
+    guid_target:        dec_8965eade57a74d7ca4f055e199f46672
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_schema_per_bot
+    guid_target:        opt_11e79fa608eb47638f78b2bb94fd7ad0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_several_schemas_per_bot
+    guid_target:        opt_9213336a79f4409d80de2eca893cd40f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

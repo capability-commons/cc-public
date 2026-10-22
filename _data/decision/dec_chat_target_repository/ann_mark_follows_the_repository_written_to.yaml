@@ -1,0 +1,76 @@
+id_self:                ann_mark_follows_the_repository_written_to
+guid_self:              ann_9ea67890aeb447269ba7fbf4fdc3137c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protective mark taken from the target tree
+brief:                  |
+                        cctool gives a new item the protective mark of
+                        the repository it is written into, and in
+                        cc-public that is mark_public, the only mark
+                        the register holds. Routing by mark reverses
+                        the flow the editing commands have, and would
+                        send personal data to a public repository
+                        unless something else intervenes. A repository
+                        fixed per deployment does not depend on the
+                        mark being right.
+description:            |
+                        A new standalone item takes protective_mark,
+                        with copyright and license, from
+                        file_pyproject of the tree it is written to
+                        (src/cc_public/edit/edit.py lines 104-105,
+                        484-485 and 1204-1216). file_pyproject carries
+                        mark_public (pyproject.toml lines 8-10). The
+                        protective mark register of cc-public holds
+                        one mark, mark_public
+                        (_data/register/reg_protective_mark.yaml lines
+                        67-70). The register says a public item in a
+                        restricted repository is still public
+                        (_data/register/reg_protective_mark.yaml lines
+                        88-91). A mark that no register in the tree
+                        holds is reported as the advice
+                        unresolved_mark, not as a failure
+                        (src/cc_public/check/advise.lp lines 38-57).
+                        The fixed option allows a public repository
+                        only for a type that holds no personal data
+                        (_data/decision/dec_chat_target_repository/opt_target_fixed_per_deployment.yaml,
+                        brief). Personal data lives only in private
+                        repositories (owner's statement). Holds at ten
+                        times the size: yes, because the rule that
+                        rights come from the target tree does not
+                        depend on the number of items or repositories,
+                        and more items mean more chances that one mark
+                        is set wrong, while a fixed target needs one
+                        choice per deployment.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_target_repository
+    guid_target:        dec_8614f5f232634acd8f9705591f608f87
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_target_fixed_per_deployment
+    guid_target:        opt_37652d8a6e35402fbcbbd070744661e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_target_by_protective_mark
+    guid_target:        opt_b104ec8c8ab349c0a252561c4a26ea9f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

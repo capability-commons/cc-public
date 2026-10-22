@@ -1,0 +1,76 @@
+id_self:                ann_listed_contacts_bound_who_can_feed_the_bot
+guid_self:              ann_bf91fe57c6994a048f30312d83d2e2fd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Open admission lets anyone feed the bot
+brief:                  |
+                        Answering anyone who accepts a notice lets any
+                        Signal user who finds the number drive the LLM
+                        and propose items, and the bot receives, and
+                        may pass to a model, messages from people
+                        outside the purpose. A private list of
+                        accounts limits processing to people the
+                        operator meant to ask, and lets the operator
+                        decide, and revoke, who may act.
+description:            |
+                        The open option answers anyone who writes,
+                        once they accept the notice
+                        [_data/decision/dec_chat_signal_admission/opt_admit_anyone_with_consent.yaml,
+                        brief]. The listed option answers only
+                        accounts on a private list that the operator
+                        keeps
+                        [_data/decision/dec_chat_signal_admission/opt_admit_listed_contacts.yaml,
+                        brief]. The adapter knows which Signal account
+                        each contributor writes from
+                        [_data/logical_component/lco_chat_signal.yaml
+                        lines 12-15]. A message sent before the notice
+                        is accepted still reaches the bot
+                        [ASSUMPTION]. A likely first instance is
+                        member skill profiles for a volunteer team
+                        [context.md lines 59-60]. ISO/IEC 29100 sets
+                        out purpose limitation as a privacy principle
+                        [_data/register/reg_concern.yaml lines
+                        728-734]. Security covers the authentication
+                        of those who act and resistance to deliberate
+                        attack [reg_concern.yaml lines 147-151].
+                        ASSUMPTION: accepting a notice proves nothing
+                        about who the sender is or what they intend.
+                        ASSUMPTION: a phone number used by a bot
+                        spreads beyond its first audience over time.
+                        Holds at ten times the size: yes, because a
+                        larger list is still a list, while an open
+                        bot's reach grows with everyone who learns the
+                        number, not with the team it serves.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_admission
+    guid_target:        dec_d2248c4bb9aa4c2caaedbc5b43e9f6cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_admit_listed_contacts
+    guid_target:        opt_b7f5ef8be3b748d8b9680e201df46f48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_admit_anyone_with_consent
+    guid_target:        opt_eaade17aab474ca08961d40eedb5f078
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

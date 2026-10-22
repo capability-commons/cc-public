@@ -1,0 +1,63 @@
+id_self:                ann_readback_confirms_only_with_the_possible_attacker
+guid_self:              ann_cc9ba11be2b64a24858391e454d7fcf3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readback gives no independent check
+brief:                  |
+                        Readback asks the same person who supplied the
+                        text, so it cannot catch a contributor who
+                        means harm. Only a human review of the branch
+                        stands between untrusted chat input and dev.
+description:            |
+                        Under opt_readback_then_dev, an item lands on
+                        dev once the contributor confirms and the
+                        checks pass [opt_readback_then_dev.yaml
+                        brief]. The checks test the graph for
+                        consistency, not whether a statement is true
+                        or was meant to be supplied
+                        (src/cc_public/check/check.lp lines 13-20;
+                        src/cc_public/edit/edit.py lines 26-29). A new
+                        standalone item takes its protective_mark,
+                        with copyright and license, from
+                        file_pyproject [src/cc_public/edit/edit.py
+                        lines 103-105 and 1204-1214]. The only mark in
+                        the register is mark_public
+                        [_data/register/reg_protective_mark.yaml lines
+                        62-94]. The register says mark_public is
+                        affirmative and not a default
+                        [_data/register/reg_protective_mark.yaml lines
+                        82-87]. ASSUMPTION: text a contributor
+                        supplies can carry instructions aimed at the
+                        LLM that drafts the item or at later agents
+                        that read the graph. Holds at ten times the
+                        size: yes, because more contributors raise the
+                        chance that one acts in bad faith, though
+                        review load also grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_review_gates
+    guid_target:        dec_9b9c64f85881461f83ada4fb8a81ab3b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_readback_and_branch_review
+    guid_target:        opt_02b87725578a48dda2e6513bf46d392e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_readback_then_dev
+    guid_target:        opt_7526dd89eb7b4dc089a454bfbb47a952
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

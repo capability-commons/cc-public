@@ -1,0 +1,58 @@
+id_self:                ann_trailer_guid_is_checked_by_nothing
+guid_self:              ann_ad13e31e34a64af684e2f3794acd646f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unchecked contributor trailer
+brief:                  |
+                        No part of the tooling reads a commit author
+                        or trailer, so a contributor named only in a
+                        trailer is never checked. A wrong or stale
+                        name or guid there lands without any failure.
+description:            |
+                        A grep of src/cc_public for author, committer
+                        and trailer finds no code that reads them
+                        (src/cc_public, grep 2026-10-22). git log is
+                        asked only for message bodies and subjects
+                        (src/cc_public/commit/history.py lines 114,
+                        150 and 174). A guid of a person item held in
+                        a private repository does not resolve in
+                        cc-public, whose checks see only its own tree
+                        (src/cc_public/edit/edit.py lines 169-180,
+                        Tree reads one root). The private store of the
+                        bot is outside the graph and its checks
+                        (dec_chat_contributor_attribution,
+                        opt_no_contributor_in_public brief).
+                        ASSUMPTION: the function wanted is to answer
+                        "who supplied this item" correctly, for review
+                        and for follow-up questions. Holds at ten
+                        times the size: yes, because more contributors
+                        give more names or guids to get wrong, and
+                        none of them is checked.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_by_pseudonymous_guid
+    guid_target:        opt_7161a934227944ab9091e6d675d4fc48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_by_name
+    guid_target:        opt_04d34801957840549b38f5bd6b8e128b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

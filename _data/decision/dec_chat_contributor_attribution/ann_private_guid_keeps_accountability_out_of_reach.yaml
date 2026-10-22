@@ -1,0 +1,67 @@
+id_self:                ann_private_guid_keeps_accountability_out_of_reach
+guid_self:              ann_d251b2820dfb403ebbe0642ca1f60b52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pseudonymous trailer keeps a tamper-evident trace
+brief:                  |
+                        A private guid in the commit trailer ties each
+                        item to the person who supplied it in the
+                        shared history, without publishing who they
+                        are. Naming only the bot leaves that trace in
+                        a store the bot itself can rewrite.
+description:            |
+                        Security includes accountability for what
+                        people do and asks whether every action can be
+                        traced to whoever took it [reg_concern.yaml
+                        lines 147-161]. Under
+                        opt_no_contributor_in_public, who said what is
+                        kept only in the private store of the bot
+                        [opt_no_contributor_in_public.yaml brief].
+                        Under opt_contributor_by_name, the
+                        contributor's name is written into a public
+                        commit trailer [opt_contributor_by_name.yaml
+                        brief]. A likely first instance is skill
+                        profiles of a volunteer team [context.md lines
+                        59-60]. ASSUMPTION: once a commit is pushed
+                        and fetched by others, altering it is visible,
+                        while the bot's private store has no such
+                        property. ASSUMPTION: a public list of who in
+                        a small volunteer team supplied which skills
+                        helps an attacker choose targets for social
+                        engineering. Holds at ten times the size: yes,
+                        because more contributors make both the value
+                        of a trace and the size of a public name list
+                        grow.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_contributor_by_pseudonymous_guid
+    guid_target:        opt_7161a934227944ab9091e6d675d4fc48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_contributor_in_public
+    guid_target:        opt_95a7c965aaf847c0b89fc4ec91fe2d3d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_by_name
+    guid_target:        opt_04d34801957840549b38f5bd6b8e128b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

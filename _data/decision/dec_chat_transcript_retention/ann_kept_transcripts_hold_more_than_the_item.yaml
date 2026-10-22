@@ -1,0 +1,67 @@
+id_self:                ann_kept_transcripts_hold_more_than_the_item
+guid_self:              ann_1221ab3bb1e64fe7a4edf89b26380473
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transcripts hold more than the item needs
+brief:                  |
+                        A transcript holds everything said, including
+                        asides and other people mentioned, while the
+                        item holds only the schema fields. Keeping
+                        every transcript indefinitely holds the most
+                        personal data for the longest time.
+description:            |
+                        A bot elicits the fields of one data item type
+                        using the type's JSON Schema [context.md lines
+                        4-7]. The keep option holds every transcript
+                        in the private store as the record of where an
+                        item came from
+                        [_data/decision/dec_chat_transcript_retention/opt_keep_transcript_privately.yaml,
+                        brief]. The delete option keeps a transcript
+                        only until its items land or its draft is
+                        dropped
+                        [_data/decision/dec_chat_transcript_retention/opt_delete_transcript_on_landing.yaml,
+                        brief]. The no-transcript option keeps only
+                        the draft and its checklist
+                        [_data/decision/dec_chat_transcript_retention/opt_keep_no_transcript.yaml,
+                        brief]. A free conversation can carry text
+                        beyond the schema fields, such as remarks
+                        about third parties [ASSUMPTION]. The privacy
+                        concern asks for how long personal data is
+                        kept [_data/register/reg_concern.yaml lines
+                        736-739]. Holds at ten times the size: yes,
+                        because kept transcripts grow with every
+                        conversation, and each removal request then
+                        has to search them all.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_transcript_retention
+    guid_target:        dec_27018135ec0245328b815072e0194054
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_keep_no_transcript
+    guid_target:        opt_bc447d6b017343178527494d373f66cf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_delete_transcript_on_landing
+    guid_target:        opt_77d9b48a76ad46d887a764aaab81f5ce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_keep_transcript_privately
+    guid_target:        opt_a3bfdb5b3f6b41d08064c25258b29458
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

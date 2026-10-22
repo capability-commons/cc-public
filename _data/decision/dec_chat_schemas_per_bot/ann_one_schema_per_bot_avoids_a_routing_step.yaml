@@ -1,0 +1,53 @@
+id_self:                ann_one_schema_per_bot_avoids_a_routing_step
+guid_self:              ann_06ac3cad99414e829a407fffc82f5570
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One schema keeps the core free of type routing
+brief:                  |
+                        One schema per bot leaves out the step that
+                        picks a type from the first message or by
+                        asking, and the state and tests that step
+                        needs. If the core takes its schema as a
+                        parameter, a later move to several schemas
+                        stays local.
+description:            |
+                        The several-schemas option picks a type from
+                        the first message or by asking
+                        (opt_several_schemas_per_bot.yaml, brief). The
+                        repository asks that a type, field or command
+                        be added only when a real instance needs it
+                        (AGENTS.md, "Keep it small", lines 217-221).
+                        ASSUMPTION: type selection needs its own
+                        conversation state and its own tests for a
+                        wrong or unclear pick. Holds at ten times the
+                        size: yes, because ten bots with one schema
+                        each run the same core, while routing logic
+                        grows with the number of types a bot serves.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_schemas_per_bot
+    guid_target:        dec_8965eade57a74d7ca4f055e199f46672
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_schema_per_bot
+    guid_target:        opt_11e79fa608eb47638f78b2bb94fd7ad0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_several_schemas_per_bot
+    guid_target:        opt_9213336a79f4409d80de2eca893cd40f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

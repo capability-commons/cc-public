@@ -1,0 +1,84 @@
+id_self:                ann_matrix_bridge_adds_plaintext_stores_to_defend
+guid_self:              ann_f1e3a22b6da6478086ca6313e62547e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Homeserver and bridge as extra holders of messages
+brief:                  |
+                        The Matrix route passes every message through
+                        a bridge and a homeserver, two more places
+                        that hold message content and personal data,
+                        and each one more service to secure. The
+                        signal-cli daemon keeps the path from Signal
+                        to the bot short and the decrypted messages in
+                        one local process.
+description:            |
+                        The Matrix option speaks Matrix to a
+                        homeserver and reaches Signal through the
+                        mautrix-signal bridge
+                        [_data/decision/dec_chat_signal_route/opt_matrix_bridge.yaml,
+                        brief]. In unencrypted Matrix rooms, events
+                        are stored in plaintext in the homeserver
+                        database
+                        [https://docs.mau.fi/bridges/general/end-to-bridge-encryption.html].
+                        The mautrix docs say end-to-bridge encryption
+                        hides bridged messages from the homeserver,
+                        and that deleting keys prevents the bridge and
+                        bridge admin from reading old messages [same
+                        URL]. End-to-bridge encryption covers the path
+                        between Matrix users and the bridge, and the
+                        page's advice that deleting keys stops the
+                        bridge reading old messages shows that the
+                        bridge itself reads them [same URL]. Without
+                        end-to-bridge encryption a bridged room is
+                        unencrypted, so the homeserver stores its
+                        messages in plaintext [same URL]. The
+                        signal-cli option runs signal-cli as a daemon
+                        and talks to it over JSON-RPC
+                        [_data/decision/dec_chat_signal_route/opt_signal_cli_daemon.yaml,
+                        brief; signal-cli 0.14.1 README, context.md
+                        lines 46-50]. The signal-cli daemon offers a
+                        UNIX or a TCP socket, and its wiki page says
+                        nothing about authentication on it
+                        [https://github.com/AsamK/signal-cli/wiki/JSON-RPC-service].
+                        ASSUMPTION: a UNIX socket with file
+                        permissions limits the signal-cli daemon to
+                        local users, so the TCP socket must not be
+                        used. Holds at ten times the size: yes,
+                        because a homeserver keeps message history for
+                        every room, which grows with the
+                        conversations, and each extra service carries
+                        its own vulnerabilities to track whatever the
+                        volume.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_route
+    guid_target:        dec_61e4c477ce8f4ef29cb310255fb979cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_signal_cli_daemon
+    guid_target:        opt_d348bfb6205f4a8a9966d0a0ec86a675
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_matrix_bridge
+    guid_target:        opt_8a143394a49d49a492e0959082e99cbd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

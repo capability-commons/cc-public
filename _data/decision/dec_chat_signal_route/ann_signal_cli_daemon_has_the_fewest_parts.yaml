@@ -1,0 +1,63 @@
+id_self:                ann_signal_cli_daemon_has_the_fewest_parts
+guid_self:              ann_98f5020b558c46e3bee2cd0f92bb0a1a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  signal-cli daemon has the fewest parts to fail
+brief:                  |
+                        Any route uses an unofficial client that stops
+                        working if it is not kept current. A
+                        signal-cli daemon puts that burden on a
+                        maintained upstream and runs as one
+                        restartable process. A Matrix bridge adds a
+                        homeserver and a bridge, and an own client on
+                        libsignal puts the whole burden on this
+                        project.
+description:            |
+                        signal-cli says that releases older than three
+                        months may not work correctly, because
+                        official clients expire after three months and
+                        the server may change (signal-cli 0.14.1
+                        README,
+                        https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md).
+                        The mautrix-signal bridge is set up on a
+                        Matrix server and logs in to Signal as a
+                        linked secondary device
+                        (https://etke.cc/help/bridges/mautrix-signal/).
+                        Signal has no official bot API (context.md;
+                        not verified on the web, so ASSUMPTION). Holds
+                        at ten times the size: yes, because the count
+                        of parts on the route does not shrink with
+                        more bots.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_route
+    guid_target:        dec_61e4c477ce8f4ef29cb310255fb979cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_signal_cli_daemon
+    guid_target:        opt_d348bfb6205f4a8a9966d0a0ec86a675
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_matrix_bridge
+    guid_target:        opt_8a143394a49d49a492e0959082e99cbd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_own_client_on_libsignal
+    guid_target:        opt_d5180bb412f24d118f8e71fa423bae21
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

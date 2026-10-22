@@ -1,0 +1,73 @@
+id_self:                ann_linked_device_exposes_the_whole_account
+guid_self:              ann_949687bc55f442da98926d1110349dd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Linked device sees the owner's whole account
+brief:                  |
+                        A bot linked to an existing account receives
+                        that account's other chats, including those of
+                        people who never spoke to the bot, so a
+                        compromise of the bot exposes them all. An
+                        account of its own sees only messages sent to
+                        the bot and confines a compromise to bot
+                        traffic.
+description:            |
+                        The linked device option links the bot as a
+                        secondary device of an existing account
+                        [_data/decision/dec_chat_signal_account/opt_linked_device.yaml,
+                        brief]. Signal says that when a device is
+                        linked, all chats and the last 45 days of
+                        media can be synchronized from the phone, at
+                        the user's choice
+                        [https://support.signal.org/hc/en-us/articles/360007320551].
+                        Incoming and outgoing messages appear on all
+                        linked devices of an account
+                        [https://signal.org/blog/a-synchronized-start-for-linked-devices/].
+                        A linked device receives new messages of the
+                        account as the phone does [ASSUMPTION, from
+                        how Signal Desktop works]. The account option
+                        registers a phone number of the bot's own
+                        [_data/decision/dec_chat_signal_account/opt_account_of_its_own.yaml,
+                        brief]. ISO/IEC 29100 sets out data
+                        minimization as a privacy principle
+                        [_data/register/reg_concern.yaml lines
+                        728-734]. ASSUMPTION: the linked account would
+                        be the maintainer's or an operator's personal
+                        account. Holds at ten times the size: yes,
+                        because the other chats of the linked account
+                        grow independently of the bot, and each bot
+                        linked to a personal account adds a full copy
+                        of its traffic.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_account
+    guid_target:        dec_731ab981c3f04e67b8fc395e7c37237e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_account_of_its_own
+    guid_target:        opt_91850f23adfe45ed9ad1e2782b7d068a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_linked_device
+    guid_target:        opt_4c3fec0acad1400ba3bf4983e56ab2c5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

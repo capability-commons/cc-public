@@ -1,0 +1,61 @@
+id_self:                ann_private_guid_gives_stable_trace_to_contributor
+guid_self:              ann_16c98ecc9a9f465aa5c0f07eb40ed3f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stable pointer from each commit to its source
+brief:                  |
+                        A guid of a private person item gives every
+                        public commit a stable pointer to the person
+                        an item came from. Naming only the bot ends
+                        the public trace at the bot.
+description:            |
+                        A guid is minted once and never changed
+                        (AGENTS.md lines 114-115). A personal name is
+                        not an id of the graph and can be shared by
+                        two people or change (ASSUMPTION). No tooling
+                        parses commit trailers: a grep of src for
+                        "trailer" finds only text saying where
+                        trailers go (src/cc_public/commit/message.py
+                        line 21, src/cc_public/cli/messaging.py line
+                        81). A reference that names neither an id, a
+                        guid nor an alias held in the graph is a check
+                        failure, and only references in the mark field
+                        are exempt (src/cc_public/check/check.lp lines
+                        524-529). So a guid in a trailer is a pointer
+                        for a reader with private access, not an edge
+                        the checks resolve. Under
+                        opt_no_contributor_in_public, the link from a
+                        public item to its source exists only in the
+                        private store of the bot
+                        (dec_chat_contributor_attribution/opt_no_contributor_in_public.yaml).
+                        Holds at ten times the size: yes, because a
+                        guid stays unique and unchanged as people and
+                        items grow, while names collide more often.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_contributor_by_pseudonymous_guid
+    guid_target:        opt_7161a934227944ab9091e6d675d4fc48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_contributor_in_public
+    guid_target:        opt_95a7c965aaf847c0b89fc4ec91fe2d3d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

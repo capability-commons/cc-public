@@ -1,0 +1,82 @@
+id_self:                ann_transcript_lets_reviewer_check_item_against_words
+guid_self:              ann_1037162c5c164b4aab48cb6ed2c23524
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transcript at hand while the item is reviewed
+brief:                  |
+                        The reviewer of a bot branch can check an item
+                        against what the contributor said only while
+                        the transcript exists. Keeping it until the
+                        item lands gives review its source, and
+                        keeping none leaves only the draft to judge.
+description:            |
+                        An item from a chat is reviewed on the branch
+                        of the bot before it lands in two of the three
+                        gate options (opt_readback_and_branch_review,
+                        opt_branch_review_only). The no-transcript
+                        option keeps only the draft and its checklist,
+                        never the messages
+                        (_data/decision/dec_chat_transcript_retention/opt_keep_no_transcript.yaml,
+                        line 12-14). The delete-on-landing option
+                        keeps a transcript in private until its items
+                        land or its draft is dropped
+                        (opt_delete_transcript_on_landing.yaml, line
+                        12-14). The keep option keeps every transcript
+                        in the private store
+                        (opt_keep_transcript_privately.yaml, line
+                        12-14). cctool checks form and graph
+                        consistency, not whether a value matches what
+                        was said (src/cc_public/edit/edit.py lines
+                        1075-1098). Data in the graph is expected to
+                        be almost entirely LLM generated (owner's
+                        statement). ASSUMPTION: a conversation over a
+                        messaging app can span more than one session,
+                        so the LLM needs earlier messages to resolve
+                        later answers. ASSUMPTION: a transcript is
+                        many times longer than the item it yields, so
+                        a reviewer reads it only to spot-check, not in
+                        full. Holds at ten times the size: yes for
+                        function, because each item still needs its
+                        own source text at review, whatever the number
+                        of items. For review it holds partly: the
+                        transcript stays useful for spot checks of
+                        chosen items, but no reviewer reads every
+                        transcript at ten times the volume.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_transcript_retention
+    guid_target:        dec_27018135ec0245328b815072e0194054
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_delete_transcript_on_landing
+    guid_target:        opt_77d9b48a76ad46d887a764aaab81f5ce
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_keep_transcript_privately
+    guid_target:        opt_a3bfdb5b3f6b41d08064c25258b29458
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_keep_no_transcript
+    guid_target:        opt_bc447d6b017343178527494d373f66cf
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

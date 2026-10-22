@@ -1,0 +1,51 @@
+id_self:                ann_copyright_field_absent_on_register_entries
+guid_self:              ann_7e7ced5a46d541c1ae7e8a9a952332a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Copyright field only on standalone items
+brief:                  |
+                        cctool gives rights fields only to a
+                        standalone item, so naming the contributor in
+                        the copyright field cannot work for a type
+                        held in a register. The option covers only
+                        part of the types a bot may serve.
+description:            |
+                        A new standalone item takes copyright, license
+                        and protective_mark from file_pyproject
+                        (src/cc_public/edit/edit.py lines 104-105 and
+                        1204-1216). Rights are added only when the
+                        item has no register, and a register entry
+                        gets an alias list instead
+                        (src/cc_public/edit/edit.py lines 470-472 and
+                        484-490). A field given to cctool new is
+                        applied after the rights, so a standalone item
+                        can carry a copyright other than the default
+                        (src/cc_public/edit/edit.py lines 485-487).
+                        Bots are meant to populate items of various
+                        types (owner's statement). Holds at ten times
+                        the size: yes, because the split between
+                        standalone and register types does not change
+                        with the number of items.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_rights_in_contributions
+    guid_target:        dec_bc7bd2a1cfaa4b0aac50d05378b73676
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_in_copyright_field
+    guid_target:        opt_85b86566abeb4ec19dbf09b6b9a4d19e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

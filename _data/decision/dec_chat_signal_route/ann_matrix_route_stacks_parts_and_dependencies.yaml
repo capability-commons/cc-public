@@ -1,0 +1,93 @@
+id_self:                ann_matrix_route_stacks_parts_and_dependencies
+guid_self:              ann_e23019c1fb74404b90f88692bac34938
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outside parts stacked on the Matrix route
+brief:                  |
+                        The Matrix route depends on a homeserver, a
+                        PostgreSQL database, an appservice
+                        registration, the mautrix-signal bridge and
+                        libsignal inside the bridge. Each one can
+                        change or break the route and is one more part
+                        to upgrade and repair, where the signal-cli
+                        route adds one daemon that the adapter talks
+                        to over JSON-RPC.
+description:            |
+                        The Matrix option speaks Matrix to a
+                        homeserver and reaches Signal through the
+                        mautrix-signal bridge
+                        [_data/decision/dec_chat_signal_route/opt_matrix_bridge.yaml
+                        line 13]. mautrix-signal is "A Matrix-Signal
+                        puppeting bridge" licensed AGPL-3.0
+                        [https://pkg.go.dev/github.com/element-hq/mautrix-signal].
+                        mautrix-signal depends on libsignal, and its
+                        license notice says "A license exception for
+                        libsignal must be acquired separately from
+                        Signal"
+                        [https://git.sudo.is/matrix/mautrix-signal/src/branch/main/LICENSE.exceptions].
+                        A mautrix Go bridge needs a homeserver that
+                        supports application services, a PostgreSQL
+                        server v16 or higher, a registered appservice,
+                        a Signal client that can add linked devices,
+                        and ffmpeg
+                        [https://raw.githubusercontent.com/mautrix/docs/master/bridges/go/setup.md].
+                        The signal-cli daemon option runs one program
+                        and talks to it over JSON-RPC
+                        [_data/decision/dec_chat_signal_route/opt_signal_cli_daemon.yaml
+                        line 13]. signal-cli has a daemon mode with
+                        JSON-RPC and D-Bus, and needs JRE 25 or its
+                        native binary [context.md, facts gathered,
+                        signal-cli 0.14.1 README]. signal-cli also
+                        bundles libsignal-client
+                        [https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md].
+                        So both routes rest on libsignal, and the
+                        Matrix route adds a homeserver and a bridge on
+                        top. signal-cli must keep pace with the Signal
+                        server, since releases older than three months
+                        may not work correctly [context.md, facts
+                        gathered, signal-cli 0.14.1 README].
+                        ASSUMPTION: the bridge must keep pace too; the
+                        mautrix setup page does not say so.
+                        ASSUMPTION: a Matrix client library for the
+                        bot would add one more package to the seven
+                        direct dependencies listed today
+                        [pyproject.toml lines 42 to 48]. Holds at ten
+                        times the size: yes, because the chain of
+                        components and the count of parts per
+                        deployment stay the same however many bots use
+                        it. The Matrix route only gains if many other
+                        chat apps are bridged through the same
+                        homeserver, which is not yet a stated goal.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_route
+    guid_target:        dec_61e4c477ce8f4ef29cb310255fb979cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_signal_cli_daemon
+    guid_target:        opt_d348bfb6205f4a8a9966d0a0ec86a675
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_matrix_bridge
+    guid_target:        opt_8a143394a49d49a492e0959082e99cbd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

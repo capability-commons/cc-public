@@ -1,0 +1,50 @@
+id_self:                ann_write_only_check_turns_failures_into_reruns
+guid_self:              ann_d28517ccc0d64be7b465a6e8d3d94c77
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Late failures cost extra whole-tree runs
+brief:                  |
+                        Checking nothing until the write is cheapest
+                        only when the write succeeds first time. Each
+                        refused write costs another whole-tree
+                        evaluation, which a per-answer schema check
+                        avoids for the failures the schema can see.
+description:            |
+                        Each item type has a JSON Schema (README.md
+                        line 15), and there are 45 schema files in
+                        _data/schema (find, counted 2026-10-22).
+                        ASSUMPTION: a large share of the failures of
+                        an elicited item are schema failures (missing
+                        or ill-typed fields), which a schema check per
+                        answer finds without cctool. Holds at ten
+                        times the size: yes, because each avoided
+                        rerun saves a whole-tree evaluation, and that
+                        grows with the tree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_per_answer_dry_run_at_readback
+    guid_target:        opt_fa05d8c663c9453f9b1cd2ccbf6efd6e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_at_write_only
+    guid_target:        opt_e87fff38610745559a63837de7ea497b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

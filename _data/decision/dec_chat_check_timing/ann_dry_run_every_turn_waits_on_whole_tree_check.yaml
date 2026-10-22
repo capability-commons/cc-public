@@ -1,0 +1,69 @@
+id_self:                ann_dry_run_every_turn_waits_on_whole_tree_check
+guid_self:              ann_6310e7ae841f4f45ab995f73bd89293b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-tree dry run on every message
+brief:                  |
+                        A cctool dry run reads and checks the whole
+                        tree, so running one after every message adds
+                        about 17 s or more to every reply. Checking
+                        each answer against the JSON Schema in memory,
+                        and running cctool once at the readback, pays
+                        that cost once per item.
+description:            |
+                        A dry-run batch of 4 items took 17 s, and
+                        cctool check took 24.6 s, in the maintainer's
+                        development VM (context.md, facts measured
+                        2026-10-22). Tree.__init__ reads every
+                        document of the tree for each edit
+                        (src/cc_public/edit/edit.py lines 169-180;
+                        src/cc_public/graph/extract.py lines 426-446).
+                        apply checks the tree before and after the
+                        edit, and a third time when it moves a new
+                        file that the check finds misplaced
+                        (src/cc_public/edit/edit.py lines 1085-1090
+                        and _place, lines 1101-1120). Each evaluation
+                        re-grounds the whole graph in clingo, and only
+                        parsing and schema validation of unchanged
+                        documents are cached
+                        (_data/decision/dec_checker_approach/ann_rules_checker_regrounds_the_whole_tree.yaml).
+                        The snapshot holds 1601 YAML files under _data
+                        (find, counted 2026-10-22). ASSUMPTION:
+                        validating one answer against one item schema
+                        in memory takes well under a second, because
+                        it reads no file of the tree. ASSUMPTION: a
+                        conversation for one item takes ten or more
+                        messages, so a dry run per turn costs ten or
+                        more whole-tree checks per item, against one
+                        at the readback. Holds at ten times the size:
+                        yes, because the per-turn cost follows the
+                        tree while the per-answer schema check follows
+                        only the item.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_per_answer_dry_run_at_readback
+    guid_target:        opt_fa05d8c663c9453f9b1cd2ccbf6efd6e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dry_run_every_turn
+    guid_target:        opt_e83e85e117af40bd89c6951ce16e05fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

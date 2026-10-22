@@ -1,0 +1,61 @@
+id_self:                ann_workstation_host_puts_all_repositories_in_reach
+guid_self:              ann_eef6ea58f8d44de781bc23c1b77f90a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Workstation host widens the blast radius
+brief:                  |
+                        A bot takes untrusted input from anyone who
+                        can message it and feeds it to an LLM. Running
+                        it on the workstation that holds all the
+                        repositories puts them all within reach of a
+                        compromise.
+description:            |
+                        The maintainer's workstation (atlas) holds the
+                        repositories [context.md line 58]. Under
+                        opt_host_maintainer_workstation, the bots run
+                        on that workstation, each from a clone of its
+                        own [opt_host_maintainer_workstation.yaml
+                        brief]. Under opt_host_small_server, the bots
+                        run on a small server that stays up
+                        [opt_host_small_server.yaml brief]. Personal
+                        data lives only in private repositories
+                        [owner's statement]. Security asks what an
+                        attacker can reach and counts known
+                        vulnerabilities open [reg_concern.yaml lines
+                        159-165]. ASSUMPTION: bots on the workstation
+                        run as the maintainer's user or can reach its
+                        files and credentials, so a clone of its own
+                        is not a boundary. ASSUMPTION: a small server
+                        needs only outbound connections to Signal, but
+                        it adds one more machine to patch. Holds at
+                        ten times the size: yes, because more bots
+                        mean more untrusted input on the host, and the
+                        workstation's holdings stay all-or-nothing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_host
+    guid_target:        dec_83b0d4aa49f44c899aca3fc74dca2e5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_host_small_server
+    guid_target:        opt_d954a2d387424d0a9ceeec23f26f3e45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_host_maintainer_workstation
+    guid_target:        opt_e6fa507282824050ab5fdf2e8f7b8024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

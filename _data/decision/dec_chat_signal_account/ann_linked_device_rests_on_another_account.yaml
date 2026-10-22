@@ -1,0 +1,55 @@
+id_self:                ann_linked_device_rests_on_another_account
+guid_self:              ann_c5322e6bd68c4c70a0e240ed2574f2be
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A linked bot lives on another account's terms
+brief:                  |
+                        A linked bot depends on the primary account
+                        staying registered and on Signal's rules for
+                        linked devices. These rules cap the number of
+                        links and drop a device after a period of
+                        inactivity.
+description:            |
+                        The linked device option links the bot as a
+                        secondary device of an existing account
+                        [_data/decision/dec_chat_signal_account/opt_linked_device.yaml
+                        line 13]. signal-cli has a link command: "Link
+                        to an existing device, instead of registering
+                        a new number"
+                        [https://mirrors.edge.kernel.org/gentoo/distfiles/f0/signal-cli-bin-0.13.19.signal-cli.1.adoc].
+                        Signal allows at most 5 linked devices per
+                        phone
+                        [https://support.signal.org/hc/en-us/articles/360007320551].
+                        A linked device unlinks after 45 days of
+                        inactivity [same URL]. After linking, the
+                        phone need not be online for the linked device
+                        to work [same URL]. If the primary account is
+                        deleted or re-registered, the bot loses its
+                        route. ASSUMPTION: linked devices do not
+                        survive the deletion of their primary account.
+                        Holds at ten times the size: no, because ten
+                        bots linked to one account exceed the limit of
+                        5 linked devices per phone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_account
+    guid_target:        dec_731ab981c3f04e67b8fc395e7c37237e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_linked_device
+    guid_target:        opt_4c3fec0acad1400ba3bf4983e56ab2c5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

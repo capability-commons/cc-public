@@ -1,0 +1,49 @@
+id_self:                ann_one_schema_keeps_each_prompt_small
+guid_self:              ann_30b3c8cf256545eea2721c21dd1bb1a7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Smaller prompt with one schema per bot
+brief:                  |
+                        A bot with one schema carries only that schema
+                        in its prompt. A bot with several must carry
+                        all of them, or a summary of them, until it
+                        knows the type, and spends an extra exchange
+                        to pick one.
+description:            |
+                        Schemas range from about 1.3 KB
+                        (sch_reg_concern.yaml) to about 27 KB
+                        (sch_interface_control_document.yaml), and the
+                        45 total about 155 KB (wc -c on _data/schema,
+                        2026-10-22). The several-schemas option picks
+                        a type from the first message or by asking
+                        (_data/decision/dec_chat_schemas_per_bot/opt_several_schemas_per_bot.yaml).
+                        ASSUMPTION: once the type is picked, a
+                        multi-schema bot can drop the other schemas
+                        from its prompt, so the extra cost falls only
+                        on the first turns. Holds at ten times the
+                        size: yes, because the cost grows with the
+                        number of schemas a bot serves, not with the
+                        graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_schemas_per_bot
+    guid_target:        dec_8965eade57a74d7ca4f055e199f46672
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_schema_per_bot
+    guid_target:        opt_11e79fa608eb47638f78b2bb94fd7ad0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

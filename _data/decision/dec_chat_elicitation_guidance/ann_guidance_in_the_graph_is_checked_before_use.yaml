@@ -1,0 +1,87 @@
+id_self:                ann_guidance_in_the_graph_is_checked_before_use
+guid_self:              ann_51c0b2f019d346a68348d84de15af7c3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Guidance in the graph checked before use
+brief:                  |
+                        Guidance kept in schema descriptions or as an
+                        item in the graph is checked by cctool like
+                        every other item, so a broken guide, or a
+                        field it names that does not exist, is found
+                        before a conversation uses it. Guidance in a
+                        private deployment configuration drifts from
+                        the schema unseen and is first exercised in a
+                        live conversation.
+description:            |
+                        25 of the 45 schema files under _data/schema
+                        hold at most one description field (grep
+                        count, 2026-10-22). sch_decision carries
+                        guidance only in its top-level description
+                        (_data/schema/sch_decision.yaml lines 17-25).
+                        Not all needed information is always in the
+                        schema, and an auxiliary guide item is an open
+                        possibility (owner's statement). Every file of
+                        cc-public is a data item, and the whole graph
+                        is checked mechanically before it is committed
+                        (README.md lines 3-8). The editing commands
+                        refuse any edit that adds a check failure
+                        (src/cc_public/edit/edit.py, function apply,
+                        lines 1075-1098, and
+                        src/cc_public/cli/editing.py, lines 500-510).
+                        The checks report references that name no
+                        item, as dangling_reference
+                        (src/cc_public/check/check.lp line 522). The
+                        deployment-configuration option keeps guidance
+                        beyond the schema in the private configuration
+                        of each deployment
+                        (opt_guidance_in_deployment_config, brief).
+                        The guide-item and schema-descriptions options
+                        keep guidance in a guide item or in schema
+                        descriptions (opt_interview_guide_item, brief,
+                        and opt_schema_descriptions_first, brief).
+                        ASSUMPTION: a guide item would name its type
+                        and fields by references that the checks can
+                        resolve. Holds at ten times the size: yes,
+                        because more types and more bots give more
+                        guidance to keep in step with schemas that
+                        change, and each extra deployment adds one
+                        more unchecked configuration under the private
+                        option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_elicitation_guidance
+    guid_target:        dec_ec1af2d888f640dca5d8f9858ca652e8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_descriptions_first
+    guid_target:        opt_4385906c526442c38ec0d616adcb50af
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_interview_guide_item
+    guid_target:        opt_334ff04b440d4f538b8dfaaf8917b4b4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_guidance_in_deployment_config
+    guid_target:        opt_8c7fb9f5e8e4454a830561775726a928
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

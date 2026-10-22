@@ -1,0 +1,53 @@
+id_self:                ann_workstation_host_leaves_contributors_unanswered
+guid_self:              ann_51d0fc0546ee4e90ac9964abe0a04304
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An absent bot breaks a conversation
+brief:                  |
+                        A contributor messages the bot when it suits
+                        them. A bot on the maintainer workstation is
+                        silent whenever that machine is off, so a
+                        conversation stalls and the contributor must
+                        remember to come back.
+description:            |
+                        One option runs the bots on the workstation of
+                        the maintainer
+                        (_data/decision/dec_chat_host/opt_host_maintainer_workstation.yaml,
+                        brief). The other runs them on a small server
+                        that stays up
+                        (_data/decision/dec_chat_host/opt_host_small_server.yaml,
+                        brief). ASSUMPTION: the workstation is not on
+                        at all hours. ASSUMPTION: Signal delivers
+                        queued messages to a client when it comes
+                        back, so messages are delayed, not lost. Holds
+                        at ten times the size: yes, because more
+                        contributors means more messages sent at hours
+                        when the workstation is off.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_host
+    guid_target:        dec_83b0d4aa49f44c899aca3fc74dca2e5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_host_small_server
+    guid_target:        opt_d954a2d387424d0a9ceeec23f26f3e45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_host_maintainer_workstation
+    guid_target:        opt_e6fa507282824050ab5fdf2e8f7b8024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

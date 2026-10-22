@@ -1,0 +1,64 @@
+id_self:                ann_llm_judge_adds_a_model_call_per_draft
+guid_self:              ann_c0cb9fc623a749c5b466acb80ee2c0ac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One extra model call per draft
+brief:                  |
+                        An LLM judge adds a model call, with its
+                        latency and tokens, at each readback. The cost
+                        is bounded per draft, and grows with the graph
+                        only if graph context is put in the judge's
+                        prompt.
+description:            |
+                        The judge option judges each draft with an LLM
+                        against criteria for its type, together with
+                        the graph checks and the mechanized style
+                        rules
+                        (_data/decision/dec_chat_item_eval/opt_llm_judge_and_checks.yaml).
+                        The mechanized-checks option uses only the
+                        checks that are mechanized
+                        (_data/decision/dec_chat_item_eval/opt_mechanized_checks_only.yaml).
+                        The owner wants consistency checks that use
+                        the graph and the ontology (owner's
+                        statement). A cctool dry run is needed by the
+                        mechanized checks anyway, and a dry-run batch
+                        of 4 items took 17 s (context.md, facts
+                        measured 2026-10-22). ASSUMPTION: one model
+                        call over a draft and its criteria takes a few
+                        seconds, small beside the dry run. ASSUMPTION:
+                        the graph checks already cover graph
+                        consistency, so the judge's prompt need hold
+                        only the draft and its criteria. Holds at ten
+                        times the size: yes if the judge's prompt
+                        holds only the draft, because its cost then
+                        follows the item; no if the prompt carries
+                        graph context, because that grows with the
+                        graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_item_eval
+    guid_target:        dec_918a00778b424525a2f58930707b2cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mechanized_checks_only
+    guid_target:        opt_ac1f2f77237c43b1ae2fab683adce969
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
