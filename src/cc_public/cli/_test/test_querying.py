@@ -81,14 +81,14 @@ def test_sql_prints_a_header_and_the_rows_cut_at_the_limit(tree):
     result = _run(tree, 'sql', SQL_CONCERN, '--limit', '2')
     assert result.exit_code == 0
     assert result.stdout == 'id\nconcern_compatibility\nconcern_cost\n'
-    assert result.stderr == '2 of 19 rows shown. Pass --limit 0 to show all.\n'
+    assert result.stderr == '2 of 20 rows shown. Pass --limit 0 to show all.\n'
 
 
 def test_sql_prints_json_with_the_count_of_all_rows(tree):
     result = _run(tree, 'sql', SQL_CONCERN, '--limit', '1', '--json')
     assert json.loads(result.stdout) == {'columns': ['id'],
                                          'rows':    [['concern_compatibility']],
-                                         'count':   19}
+                                         'count':   20}
 
 
 def test_logic_prints_each_output_predicate(tree):
@@ -114,7 +114,7 @@ def test_jq_prints_each_result_on_a_line(tree):
                   '--limit', '2')
     assert result.exit_code == 0
     assert result.stdout == 'concern_compatibility\nconcern_cost\n'
-    assert result.stderr == '2 of 19 rows shown. Pass --limit 0 to show all.\n'
+    assert result.stderr == '2 of 20 rows shown. Pass --limit 0 to show all.\n'
 
 
 def test_jq_sees_the_file_and_line_of_each_document(tree):
@@ -145,7 +145,7 @@ def test_sparql_prints_the_rows_of_a_select(tree):
                   '--limit', '2')
     assert result.exit_code == 0
     assert result.stdout == 'id\nconcern_compatibility\nconcern_cost\n'
-    assert result.stderr == '2 of 19 rows shown. Pass --limit 0 to show all.\n'
+    assert result.stderr == '2 of 20 rows shown. Pass --limit 0 to show all.\n'
 
 
 def test_sparql_sees_fields_and_edges(tree):
