@@ -99,7 +99,7 @@ def _option(function):
     """
 
     list_option = [
-        click.argument('text', metavar = 'QUERY', required = False),
+        click.argument('text', metavar = '[QUERY]', required = False),
         click.option('--file', '-f', 'path_file',
                      metavar = 'FILEPATH',
                      type    = click.Path(exists    = True,

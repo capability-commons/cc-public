@@ -42,12 +42,15 @@ import cc_public.web.server
                                    path_type = pathlib.Path),
               help    = 'The tree to show. Defaults to the working directory.')
 @click.option('--host',
+              metavar = 'HOST',
               default = cc_public.web.server.HOST_DEFAULT,
               help    = 'The address to listen on. Defaults to this computer only.')
 @click.option('--port',
-              default = cc_public.web.server.PORT_DEFAULT,
-              type    = int,
-              help    = 'The port to listen on.')
+              metavar      = 'PORT',
+              default      = cc_public.web.server.PORT_DEFAULT,
+              show_default = True,
+              type         = int,
+              help         = 'The port to listen on.')
 def serve(root: pathlib.Path, host: str, port: int) -> None:
     """
     Serve pages to review the decisions of the tree under --root, and the

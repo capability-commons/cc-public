@@ -56,7 +56,7 @@ def history() -> None:
 
 # -----------------------------------------------------------------------------
 @history.command()
-@click.argument('list_arg', metavar = 'RANGE', nargs = -1)
+@click.argument('list_arg', metavar = '[RANGE]...', nargs = -1)
 @click.option('--pre-push', 'remote',
               default = None,
               metavar = 'REMOTE',
@@ -77,7 +77,7 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
     """
     Check each commit in RANGE, oldest first, however it was made.
 
-    RANGE is what git rev-list takes, such as origin/main..HEAD, and is
+    RANGE is what git rev-list takes, such as dev..HEAD, and is
     HEAD, the whole history, if left out. Each commit is checked as the
     commit-msg hook checks one: its message against sch_commit as its
     own tree holds it, and its change against its first parent. A
@@ -157,7 +157,7 @@ def _gated(root: pathlib.Path, list_tip: list[str]) -> list[str]:
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
-@click.argument('rev', metavar = 'REV', default = 'HEAD')
+@click.argument('rev', metavar = '[REV]', default = 'HEAD')
 @click.option('--staged', 'is_staged',
               is_flag = True,
               help    = 'Show what the staged content would touch as the next commit, in '

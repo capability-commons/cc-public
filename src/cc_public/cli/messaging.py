@@ -121,9 +121,9 @@ def draft(path: pathlib.Path, root: pathlib.Path) -> None:
 
     Run by the prepare-commit-msg hook. A draft that cannot be made,
     for any reason, is reported and the message left as it is, so that
-    the commit-msg hook says what is wrong. The hook runs for a merge
-    or a revert that --no-verify does not skip, so it must never stop
-    one.
+    the commit-msg hook says what is wrong. A merge or a revert runs
+    the hook even with the flag --no-verify, so the hook must never
+    stop one.
 
     """
 

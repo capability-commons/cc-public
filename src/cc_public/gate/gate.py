@@ -49,7 +49,7 @@ description:            |
                         long as its tests take divided among the
                         processors.
 usage:                  |
-                        cctool gate [--root DIR]
+                        cctool gate [--root DIRPATH]
 
                         Run before each commit by
                         .githooks/pre-commit.
