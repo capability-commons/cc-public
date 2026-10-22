@@ -118,9 +118,9 @@ def new(id_self, list_field, list_link, root, is_dry_run):
     Make a new item with the id ID.
 
     The type is the one whose prefix ID has. An item of a type held in
-    a register is added at the end of its table; any other gets a file
-    of its own under _data. The guid is made for it, and a standalone
-    item takes its rights from the item of the project.
+    a register is added after the last entry of its register; any other
+    gets a file of its own under _data. The guid is made for it, and a
+    standalone item takes its rights from the item of pyproject.toml.
 
     """
 
@@ -132,7 +132,7 @@ def new(id_self, list_field, list_link, root, is_dry_run):
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
 @click.argument('path', metavar = 'FILEPATH', type = click.Path(dir_okay = False))
-@click.argument('id_self', metavar = 'ID', required = False)
+@click.argument('id_self', metavar = '[ID]', required = False)
 @click.option('--field',
               'list_field',
               nargs    = 2,
@@ -284,7 +284,8 @@ def unset(id_self, path, root, is_dry_run):
 def remove(id_self, root, is_dry_run):
     """
     Remove the item ID: the file of a standalone item, or the entry of
-    a register entry. An item that anything still names is refused.
+    an item held in a register. An item that anything still names is
+    refused.
 
     """
 
