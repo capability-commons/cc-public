@@ -1328,6 +1328,46 @@ missing_narrower(Concept, Broader, Class, BroaderClass) :-
 
 
 % -----------------------------------------------------------------------------
+% An annotation is about both the concept and the external class, which
+% explains how the two are related.
+%
+% decl explained_pair(concept: symbol,
+%                     class:   symbol)
+
+explained_pair(Concept, Class) :-
+    has_type(Annotation, "type_annotation"),
+    primary_edge(Annotation, "relation_is_about", Concept),
+    primary_edge(Annotation, "relation_is_about", Class),
+    has_type(Class, "type_external_class").
+
+
+% -----------------------------------------------------------------------------
+% A concept whose term is the label of an external class either matches
+% that class exactly or closely, or has an annotation about both that
+% says why not. The same word with another sense is a false friend, and
+% a reader who knows the release will take the wrong sense.
+%
+% decl false_friend(concept: symbol,
+%                   term:    symbol,
+%                   class:   symbol)
+% did  {concept} has the term "{term}", which is the label of {class},
+%      but {concept} has no exact or close match in {class}.
+% fix  Match {concept} in {class} if they pick out the same things.
+%      Otherwise add an annotation about both that says how they
+%      differ, with edges of relation_is_about to each.
+#show false_friend/3.
+
+false_friend(Concept, Term, Class) :-
+    designation(Concept, Term, Rating),
+    Rating != "deprecated",
+    term_form(Term, Form),
+    label(Class, Label),
+    term_form(Label, Form),
+    not equivalent_match(Concept, Class),
+    not explained_pair(Concept, Class).
+
+
+% -----------------------------------------------------------------------------
 % The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)

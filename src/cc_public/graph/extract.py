@@ -67,6 +67,7 @@ KEY_FAMILY        = 'prefix_family'
 KEY_REPLACEMENT   = 'replacement'
 KEY_BREAKS        = 'breaks'
 KEY_EXCEPTION     = 'prefix_exception'
+KEY_LABEL         = 'label'
 
 # The fields of a concept that hold its terms, by the rating of each.
 #
@@ -213,16 +214,19 @@ PREDICATE         = {
     'designation':        (('concept', 'term', 'rating'),
                            'The concept has the term, rated preferred, admitted or '
                            'deprecated.'),
+    'label':              (('id', 'label'),
+                           'The item id, an external class, has label in the release '
+                           'it was brought in from.'),
     'term_link':          (('holder', 'term', 'concept', 'file', 'line:number'),
                            'The text of a field of the item holder links term to a '
                            'concept, in file at line. A link written [[term]] leaves '
                            'concept empty, to be found by the term; one written '
                            '[[concept|term]] names it.'),
     'term_form':          (('text', 'form'),
-                           'The text, a term of a concept or the term of a link, has '
-                           'form when lower-cased, and also made singular if it is '
-                           'the term of a link. Texts with a form in '
-                           'common name the same term.'),
+                           'The text, a term of a concept, the label of an external '
+                           'class or the term of a link, has form when lower-cased, '
+                           'and also made singular if it is the term of a link. Texts '
+                           'with a form in common name the same term.'),
     'inverse_relation':   (('inverse', 'relation'),
                            'An edge of inverse is an edge of relation, reversed.'),
     'register_entry_key': (('register', 'key', 'id'),
@@ -570,13 +574,15 @@ def _facts_of_document(file:             str,
 # -----------------------------------------------------------------------------
 def _forms(facts: Facts) -> set[tuple[str, str]]:
     """
-    Return the forms of each term of a concept, and of each term that a
-    link finds its concept by, so that a link may give a term in the
-    plural or with a capital letter.
+    Return the forms of each term of a concept, of each label of an
+    external class, and of each term that a link finds its concept by,
+    so that a link may give a term in the plural or with a capital
+    letter.
 
     """
 
     set_form = {(term, term.lower()) for (_, term, _) in facts['designation']}
+    set_form.update((label, label.lower()) for (_, label) in facts['label'])
 
     for (_, term, concept, _, _) in facts['term_link']:
         if not concept:
@@ -1286,7 +1292,7 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     for end in _list_str(node.get(KEY_READS_THROUGH)):
         facts['reads_through'].add((id_self, end))
 
-    for key in (KEY_FAMILY, KEY_EXCEPTION):
+    for key in (KEY_FAMILY, KEY_EXCEPTION, KEY_LABEL):
         if isinstance(node.get(key), str):
             facts[key].add((id_self, node[key].strip()))
 
