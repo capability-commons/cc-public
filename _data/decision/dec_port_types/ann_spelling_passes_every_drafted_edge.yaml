@@ -1,0 +1,59 @@
+id_self:                ann_spelling_passes_every_drafted_edge
+guid_self:              ann_f01ceadc7de343d48a613d35514d4e97
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Spelling check that passes every drafted edge today
+brief:                  |
+                        Equal spelling already checks the recorded
+                        smoke test and all 41 edges of the Patrol
+                        draft without a false failure. As a first
+                        check it gives a usable result until data
+                        dictionaries exist.
+description:            |
+                        Sources:
+                        - All 41 edges of the Patrol base draft join
+                          an output to an input, and the two ends of
+                          every edge spell the same type.
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 209-210;
+                          _sources/cc-patrol-notes/draft/tools/edgecheck.py)
+                        - Those ports were spelled to match on
+                          purpose, including caps lists at runtime
+                          boundaries.
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 225-228)
+                        - Every port joined by an edge of the smoke
+                          test is spelled dict, so its three edges
+                          pass.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 99-137;
+                          _data/interface_control_document/icd_process_controller.yaml
+                          lines 42-73; icd_system_controller.yaml
+                          lines 74-98; icd_printer.yaml lines 37-45)
+                          Strength: weak; the edges pass because their
+                          authors made the spellings match, which is
+                          the weakness the annotations for
+                          dictionaries name.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_port_types
+    guid_target:        dec_5fea943b36994061a4dabfebe423837a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_types_by_spelling
+    guid_target:        opt_23ae5ba220ee45f49c372ca3e61008e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

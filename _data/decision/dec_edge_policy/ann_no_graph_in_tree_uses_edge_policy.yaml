@@ -1,0 +1,77 @@
+id_self:                ann_no_graph_in_tree_uses_edge_policy
+guid_self:              ann_30f6a9154904456cb53c056076a8c95f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No graph in the tree that uses edge policy
+brief:                  |
+                        The only dataflow graph in the tree is the
+                        Stableflow smoke test, and the need for
+                        capacity, initial tokens and adapters is
+                        stated only in drafts for a private peer.
+                        Fields added now would hold declarations
+                        nothing uses and trace to nothing in the
+                        graph; waiting adds no mechanism until a real
+                        instance needs one.
+description:            |
+                        Sources:
+                        - The dataflow graph folder holds only the
+                          Stableflow smoke test.
+                          (_data/dataflow_graph/, directory listing)
+                        - The dataflow edge has source, target and
+                          direction only, and no other property is
+                          allowed.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          173-203)
+                        - The need is stated in the cc-patrol plan
+                          draft. (_sources/cc-patrol-notes/plan.md
+                          lines 81-84)
+                        - Patrol code will eventually live in
+                          cc-patrol, a private federated peer.
+                          (owner's statement, 2026-10-21,
+                          _sources/context.md line 9)
+                        - "Add a type, relation, field or command only
+                          when a real instance needs it." (AGENTS.md
+                          lines 236-238)
+                        - The engine is planned C++ with frozen
+                          schedules first; nothing is built.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          103-105; context note, _sources/context.md
+                          line 36) Strength: strong for simplicity
+                          (the growth rule is explicit); moderate for
+                          traceability (the need is real and
+                          documented, but held by no item yet). The
+                          cc-patrol drafts are a real instance waiting
+                          outside the tree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

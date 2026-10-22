@@ -1,0 +1,95 @@
+id_self:                ann_spelled_port_type_has_no_shared_definition
+guid_self:              ann_1209eeb7e0684c1f97deed4c2bd99602
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Spelled port types with no shared definition
+brief:                  |
+                        A port type held as text can be compared but
+                        not followed: one payload is used by seven
+                        Patrol interfaces but declared in only one,
+                        and the other six spell it again with nothing
+                        tying the spellings together, and in the
+                        repository distinct payloads already share one
+                        spelling. A data dictionary entry held as an
+                        item is defined and changed once, follows
+                        renames, and gives ports, edges and
+                        requirements one identity to point at.
+description:            |
+                        Sources:
+                        - The port type check fires when the stated
+                          types of the two ports of an edge differ as
+                          text. (src/cc_public/check/check.lp lines
+                          2996-3034)
+                        - The stated type of a port is the spelling
+                          field of its type reference only.
+                          (src/cc_public/graph/extract.py lines 1443,
+                          1555-1564)
+                        - "The analysis result is used by seven ICDs
+                          but can be declared only inside one; the
+                          others spell AnalysisResult and rely on
+                          equal spelling."
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 220-224)
+                        - Three ports of the process controller ICD, a
+                          control packet, its copy and a
+                          load-and-exceptions report, are all spelled
+                          dict.
+                          (_data/interface_control_document/icd_process_controller.yaml
+                          lines 42-50, 54-63, 65-73)
+                        - A type reference may name a declaration only
+                          of the same document; otherwise it is a
+                          spelling.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 119-145)
+                        - An interface member's identity lets a
+                          requirement name one declaration.
+                          (_data/schema/sch_interface_member.yaml
+                          lines 25-27)
+                        - cctool rename rewrites every reference to a
+                          renamed id. (src/cc_public/edit/edit.py
+                          lines 1014-1034) Strength: strong; the
+                          duplication is measured in real drafts and
+                          the shared spelling is in the repository.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_port_types
+    guid_target:        dec_5fea943b36994061a4dabfebe423837a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_types_from_data_dictionaries
+    guid_target:        opt_cd105a59510b44f3ad5adcb2b7d24f1b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_port_types_by_spelling
+    guid_target:        opt_23ae5ba220ee45f49c372ca3e61008e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
