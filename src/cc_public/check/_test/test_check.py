@@ -407,6 +407,16 @@ def test_two_rulings_of_a_decision_are_reported(tree):
     assert _check(tree) == {'competing_rulings': [('dec_x', 'ruling_x', 'ruling_y')]}
 
 
+def test_an_annotation_that_supports_and_challenges_one_option_is_reported(tree):
+    _option(tree, 'opt_x')
+    _item(tree, DIR_DECISION + 'ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', 'dec_x'),
+                                                _edge(tree, 'relation_supports', 'opt_x'),
+                                                _edge(tree, 'relation_challenges', 'opt_x'),
+                                                _edge(tree, 'relation_speaks_for_concern',
+                                                      'concern_simplicity')])
+    assert _check(tree) == {'supports_and_challenges': [('ann_x', 'opt_x')]}
+
+
 def test_a_ruling_that_upholds_and_rejects_one_option_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x'),

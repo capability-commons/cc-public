@@ -663,6 +663,22 @@ decisions_mixed_in_ruling(Ruling, Decision, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% An annotation either supports or challenges a target, never both.
+% One that qualifies another challenges it.
+%
+% decl supports_and_challenges(annotation: symbol,
+%                              target:     symbol)
+% did  The annotation {annotation} both supports and challenges {target}.
+% fix  Keep the edge the annotation argues, or split it into two
+%      annotations that each argue one way.
+#show supports_and_challenges/2.
+
+supports_and_challenges(Annotation, Target) :-
+    primary_edge(Annotation, "relation_supports", Target),
+    primary_edge(Annotation, "relation_challenges", Target).
+
+
+% -----------------------------------------------------------------------------
 % A ruling either upholds or rejects an option, never both.
 %
 % decl upholds_and_rejects(ruling: symbol,
