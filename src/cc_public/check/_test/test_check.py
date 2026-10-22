@@ -1453,3 +1453,40 @@ def test_a_citation_of_an_item_that_is_no_proxy_is_reported(tree):
              'id_target:      extdoc_ieee_1028_2008',
              'id_target:      lco_tooling')
     assert 'constraint_violation' in _check(tree)
+
+
+
+# -----------------------------------------------------------------------------
+def _add_match(root, id_target_old, id_relation, id_target):
+    """
+    Add an edge of id_relation to id_target after the edge of the
+    concept entry whose target is id_target_old.
+
+    """
+
+    old = ('id_target:      {id}\n'
+           '        guid_target:    {guid}\n').format(id   = id_target_old,
+                                                    guid = _guid_of(root, id_target_old))
+    new = old + ('\n'
+                 '      - id_relation:    {relation}\n'
+                 '        guid_relation:  {guid_relation}\n'
+                 '        id_target:      {target}\n'
+                 '        guid_target:    {guid_target}\n').format(
+                                    relation      = id_relation,
+                                    guid_relation = _guid_of(root, id_relation),
+                                    target        = id_target,
+                                    guid_target   = _guid_of(root, id_target))
+    _replace(root, '_data/register/reg_concept.yaml', old, new)
+
+
+def test_two_concepts_with_an_exact_match_in_one_class_are_reported(tree):
+    _add_match(tree, 'extcla_bfo_process', 'relation_has_exact_match', 'extcla_bfo_entity')
+    _add_match(tree, 'extcla_bfo_role', 'relation_has_exact_match', 'extcla_bfo_entity')
+    assert _check(tree)['shared_exact_match'] == [
+        ('extcla_bfo_entity', 'concept_os_process', 'concept_role')]
+
+
+def test_an_exact_and_a_related_match_of_one_pair_are_reported(tree):
+    _add_match(tree, 'extcla_bfo_role', 'relation_has_exact_match', 'extcla_bfo_role')
+    assert _check(tree)['conflicting_match'] == [
+        ('concept_role', 'extcla_bfo_role', 'exact', 'related')]
