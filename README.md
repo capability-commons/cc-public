@@ -9,14 +9,27 @@ mechanically before it is committed.
 
 ## What is here
 
-| path                  | holds                                          |
-|-----------------------|------------------------------------------------|
-| `_data/register/`     | registers: types, relations, concepts, concerns, protective marks, writing style rules |
-| `_data/schema/`       | the JSON Schema of every type of item          |
-| `src/cc_public/graph` | fact extraction, logic programs and SQL over the graph |
-| `src/cc_public/check` | the checks, as logic program rules, and schema validation |
-| `src/cc_public/edit`  | edits that refuse to add a failure, and the layout printer |
-| `src/cc_public/cli`   | `cctool`, the command line                     |
+| path                                 | holds                                          |
+|--------------------------------------|------------------------------------------------|
+| `_data/register/`                    | the registers: concepts, concerns, types, relations, relation constraints, roles, protective marks, writing style rules |
+| `_data/schema/`                      | the JSON Schema of every type of item          |
+| `_data/decision/`                    | a folder for each decision, with its options, annotations and ruling |
+| `_data/logical_component/`           | the logical components that decisions are about |
+| `_data/requirement/`                 | requirements                                   |
+| `_data/external_document/`           | the standards and other documents that items cite |
+| `_data/interface_control_document/`  | interface control documents                    |
+| `_data/dataflow_graph/`              | dataflow graphs                                |
+| `src/cc_public/graph`                | fact extraction, logic programs, and the SQL, SPARQL, jq and text queries over the graph |
+| `src/cc_public/check`                | the checks, as logic program rules, and schema validation |
+| `src/cc_public/edit`                 | edits that refuse to add a failure, and the layout printer |
+| `src/cc_public/commit`               | the commit item of each commit message, and the checks of a commit and of history |
+| `src/cc_public/gate`                 | the gate: check, lint and test what a commit records |
+| `src/cc_public/export`               | the graph as pages of markdown, for Obsidian and OKF |
+| `src/cc_public/requirement`          | the statement of a requirement, composed from its slots |
+| `src/cc_public/web`                  | the review pages that `cctool serve` serves    |
+| `src/cc_public/cli`                  | `cctool`, the command line                     |
+| `.githooks/`                         | the git hooks that `pixi run hooks` turns on   |
+| `.agents/skills/`                    | procedures for coding agents; `AGENTS.md` is their guide |
 
 Every item has an id and a guid, each beginning with the prefix of its
 type (`concept_concept`, `concept_820f...`). A YAML file under `_data` holds a
@@ -40,6 +53,7 @@ the checker and of logic program queries.
 
     pixi install
     pixi run hooks        # once per clone: gate every commit
+    pixi run browsers     # once: the Chromium that the browser tests drive
     pixi run check        # cctool check: every check over the tree
     pixi run test         # pytest, one worker for each processor
     pixi run lint         # ruff
@@ -95,12 +109,19 @@ would send; a pushed tag names history already made, and is passed over.
     cctool gate                             check, lint and test what is staged
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILEPATH           check a commit message
-    cctool history check [RANGE] [--gate]   check commits already made
+    cctool message draft FILEPATH           give a merge or revert message its item
+    cctool history check [RANGE]... [--gate]
+                                            check commits already made
+    cctool history check --pre-push REMOTE  check what a push would send
+    cctool impact [REV] [--staged]          what a commit touches, and what is near
     cctool format [--check]                 lay out every YAML document
-    cctool query sql|logic QUERY            query the graph
-    cctool query sparql|jq QUERY            query the graph
+    cctool query sql|logic [QUERY]          query the predicates of the graph
+    cctool query sparql [QUERY]             query the graph as RDF triples
+    cctool query jq [QUERY]                 query the YAML documents as written
+    cctool query text [QUERY]               find items by the words of their prose
     cctool query predicates                 list the predicates and columns
     cctool export obsidian|okf DIRPATH      write the graph as markdown pages
+    cctool serve [--port PORT]              serve the review pages of the decisions
     cctool new ID [--field NAME VALUE]... [--link RELATION TARGET]...
     cctool header FILEPATH [ID] [--field NAME VALUE]... [--link ...]
     cctool link SOURCE RELATION TARGET
