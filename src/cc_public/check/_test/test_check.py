@@ -513,6 +513,18 @@ def test_a_prefix_that_is_a_word_of_its_preferred_term_passes(tree):
     assert 'prefix_form' not in _check(tree)
 
 
+def test_a_prefix_of_three_letters_of_words_of_its_term_passes(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'prefix:             icd\n', 'prefix:             intcon\n')
+    assert 'prefix_form' not in _check(tree)
+
+
+def test_a_prefix_of_letters_of_words_not_in_a_row_is_reported(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'prefix:             icd\n', 'prefix:             intdoc\n')
+    assert _check(tree)['prefix_form'] == [('type_interface_control_document', 'intdoc')]
+
+
 def test_two_prefixes_one_letter_apart_are_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'prefix:             opt\n', 'prefix:             ant\n')
