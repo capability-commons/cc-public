@@ -19,20 +19,22 @@ description:            |
                         Every reference carries the whole guid of the
                         item it names, and a mismatch is reported as
                         guid_mismatch (src/cc_public/check/check.lp
-                        lines 243-256). The prefix lets a simple
+                        lines 1004-1007). The prefix lets a simple
                         script tell CC guids from foreign UUIDs
                         (notes/cc-public-session-context.md line 23).
                         guid_self tells apart items whose ids collide
                         across a federation
                         (_data/schema/sch_trait_identity.yaml lines
-                        28-31). Inside this repository retyped_guid
-                        refuses a retype at commit, and domain and
-                        range checks catch an edge whose new type its
-                        relation does not allow (check.lp lines
-                        259-286), but copies held outside get no
-                        check. ASSUMPTION: no federated partner exists
-                        yet, and no cross-repository check exists in
-                        src/.
+                        29-32). Inside this repository retyped_guid
+                        refuses a retype at commit
+                        (src/cc_public/commit/change.lp lines
+                        150-155), and the relation constraint check
+                        catches an edge whose new type its relation
+                        does not allow (constraint_violation, check.lp
+                        lines 1065-1075), but copies held outside get
+                        no check. ASSUMPTION: no federated partner
+                        exists yet, and no cross-repository check
+                        exists in src/.
 
 edge:
 

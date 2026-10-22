@@ -24,18 +24,26 @@ description:            |
                         (_data/schema/sch_reg_concern.yaml lines
                         24-38). sch_register types each table value
                         only as sch_register_entry
-                        (_data/schema/sch_register.yaml lines 77-78).
-                        The checker pairs schemas with YAML documents
-                        in clingo (src/cc_public/graph/derive.lp lines
-                        69-85) and applies them with the stock
-                        jsonschema Draft202012Validator
-                        (src/cc_public/check/schema.py line 107). The
-                        toolchain is declared for osx-arm64 and
-                        linux-64 only (pyproject.toml line 52).
-                        ASSUMPTION: a partner also needs the schema
-                        files locally, since the $id URLs could not be
-                        fetched here. Merged from the compatibility
-                        and flexibility advocates.
+                        (_data/schema/sch_register.yaml lines 76-77),
+                        which leaves an entry open
+                        (_data/schema/sch_register_entry.yaml lines
+                        36-38). The checker pairs schemas with YAML
+                        documents in clingo
+                        (src/cc_public/graph/derive.lp lines 98-106)
+                        and applies them with the jsonschema 2020-12
+                        validator, extended only so that pattern is
+                        read as JSON Schema reads it
+                        (src/cc_public/check/schema.py lines 158-162).
+                        On a copy of the tree, a stray field in a
+                        concern entry is reported under
+                        sch_reg_concern, and passes unreported once
+                        the binding edge is removed. The toolchain is
+                        declared for osx-arm64, osx-64 and linux-64
+                        (pyproject.toml line 59). ASSUMPTION: a
+                        partner also needs the schema files locally,
+                        since the $id URLs could not be fetched here.
+                        Merged from the compatibility and flexibility
+                        advocates.
 
 edge:
 

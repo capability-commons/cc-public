@@ -16,25 +16,28 @@ brief:                  |
                         Only registers use it, and only to name their
                         binding.
 description:            |
-                        Domain type_register only
+                        The relation constrains its source to
+                        relcon_is_register
                         (_data/register/reg_relation.yaml lines
-                        64-82). Every type names exactly one schema
+                        86-89), which only type_register satisfies
+                        (_data/register/reg_data_item_type.yaml lines
+                        199-201). Every type names exactly one schema
                         for its items (src/cc_public/check/check.lp
-                        lines 596-604). One derive rule per mechanism
-                        (src/cc_public/graph/derive.lp lines 78-85);
-                        unused_schema names both
-                        (src/cc_public/check/check.lp lines 614-618).
-                        The relation dates from the placeholder commit
-                        bb8c338, where types also used it; f587284
-                        (pre-squash) moved types to
+                        lines 2624-2628). One derive rule per
+                        mechanism (src/cc_public/graph/derive.lp lines
+                        98-106); unused_schema names both
+                        (src/cc_public/check/check.lp lines
+                        2661-2665). The relation dates from the
+                        placeholder commit bb8c338, where types also
+                        used it; f587284 (pre-squash) moved types to
                         relation_has_items_specified_by_schema and
-                        narrowed its domain to type_register. Dropping
-                        the bindings would need the checker to apply
-                        an entry schema per table entry and close each
-                        entry, which sch_reg_* does today. ASSUMPTION:
-                        that is one rule in check.lp and a small
-                        change to src/cc_public/check/schema.py; not
-                        sized. From the simplicity advocate.
+                        narrowed the relation to type_register.
+                        Dropping the bindings would need the checker
+                        to apply an entry schema per table entry and
+                        close each entry, which sch_reg_* does today.
+                        ASSUMPTION: that is one rule in check.lp and a
+                        small change to src/cc_public/check/schema.py;
+                        not sized. From the simplicity advocate.
 
 edge:
 
