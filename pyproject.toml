@@ -104,7 +104,9 @@ py314                   = ["py314"]
 # does not know, strict_markers a marker nobody registered, and
 # xfail_strict an expected failure that passed. A test marked slow
 # grows with the data or repeats a stage of the gate, so the gate leaves
-# it out; pixi run test and pixi run slow run it.
+# it out; pixi run test and pixi run slow run it. A test marked prepush
+# tests the commit and history machinery, so the pre-commit gate leaves
+# it out and the pre-push gate runs it.
 #
 [tool.pytest.ini_options]
 minversion              = "9.1"
@@ -114,7 +116,8 @@ addopts                 = "-q"
 strict_config           = true
 strict_markers          = true
 xfail_strict            = true
-markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage"]
+markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage",
+                           "prepush: left out of the pre-commit gate, which the pre-push gate is not; it tests the commit and history machinery"]
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it

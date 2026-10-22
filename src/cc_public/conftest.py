@@ -175,18 +175,6 @@ def _module_of(word: str, map_module: dict[str, pathlib.Path]) -> pathlib.Path |
 
 
 # -----------------------------------------------------------------------------
-def pytest_configure(config):
-    """
-    Register the mark prepush, which the pre-commit gate leaves out.
-
-    """
-
-    config.addinivalue_line('markers', 'prepush: left out of the pre-commit gate, which '
-                                       'the pre-push gate is not; it tests the commit '
-                                       'and history machinery')
-
-
-# -----------------------------------------------------------------------------
 @pytest.fixture
 def tree(tmp_path):
     """
