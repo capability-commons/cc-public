@@ -43,6 +43,7 @@ procedure, and the traps.
 | remove an item                          | `cctool remove ID`                  |
 | give an item a new id                   | `cctool rename OLD NEW`             |
 | add items that need each other          | `cctool batch FILEPATH` (or `-` for stdin) |
+| bring in classes of a standard ontology | `cctool import FILEPATH IRI... --namespace IRI SHORT RELEASE` |
 
 A field named twice with `--field` becomes a list. In a batch, a field
 takes any YAML value, so lists and mappings (a schema's `allOf`, say)
