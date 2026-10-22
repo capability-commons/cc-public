@@ -165,9 +165,9 @@ def test_a_concern_lights_its_chains_from_wherever_it_is_hovered(page, selector)
 
 
 def test_an_annotation_in_the_sankey_diagram_lights_the_graph_and_matrix(page):
-    _hover(page, 'figure.sankey text.annotation', 'Graphs will grow large')
+    _hover(page, 'figure.sankey text.annotation', 'Graphs expected to grow large')
     assert _astray(page, 'ann_graphs_will_grow') == []
-    outline = page.locator('figure.network a.pick', has_text = 'Graphs will grow large').first \
+    outline = page.locator('figure.network a.pick', has_text = 'Graphs expected to grow large').first \
               .locator('.shape').evaluate('e => getComputedStyle(e).strokeWidth')
     assert float(outline.removeprefix('calc(').removesuffix('px)').removesuffix('px')) > 1.2
 
@@ -187,7 +187,7 @@ def test_a_pin_holds_until_a_hover_and_a_click_off_clears_it(page):
 
 
 def test_clicking_an_annotation_in_the_graph_pins_it_in_place(page):
-    node = page.locator('figure.network a.pick', has_text = 'Graphs will grow large').last
+    node = page.locator('figure.network a.pick', has_text = 'Graphs expected to grow large').last
     node.scroll_into_view_if_needed()
     scroll = page.evaluate('window.scrollY')
     node.locator('.shape').click()
