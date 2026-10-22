@@ -407,6 +407,13 @@ def test_two_rulings_of_a_decision_are_reported(tree):
     assert _check(tree) == {'competing_rulings': [('dec_x', 'ruling_x', 'ruling_y')]}
 
 
+def test_a_ruling_that_upholds_and_rejects_one_option_is_reported(tree):
+    _option(tree, 'opt_x')
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x'),
+                                                    _edge(tree, 'relation_rejects', 'opt_x')])
+    assert _check(tree) == {'upholds_and_rejects': [('ruling_x', 'opt_x')]}
+
+
 def test_an_option_that_supersedes_a_ruling_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
