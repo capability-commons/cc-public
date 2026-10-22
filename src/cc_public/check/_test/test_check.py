@@ -1374,3 +1374,17 @@ def test_a_concept_used_with_no_link_to_it_is_advice(tree):
     _text_item(tree, 'lco_y', 'Each item has a guid.', ['concept_item'])
     (failures, advice) = cc_public.check.check.review(tree)
     assert advice['concept_used_without_link'] == [('lco_y', 'concept_item')]
+
+
+def test_a_relation_that_reads_through_an_unconstrained_end_is_reported(tree):
+    _replace(tree, '_data/register/reg_relation.yaml',
+             '    reads_through:\n      - target\n',
+             '    reads_through:\n      - source\n      - target\n')
+    assert _check(tree)['unconstrained_proxy_end'] == [('relation_cites', 'source')]
+
+
+def test_a_citation_of_an_item_that_is_no_proxy_is_reported(tree):
+    _replace(tree, '_data/register/reg_concern.yaml',
+             'id_target:      extdoc_ieee_1028_2008',
+             'id_target:      lco_tooling')
+    assert 'constraint_violation' in _check(tree)

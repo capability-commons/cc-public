@@ -34,22 +34,39 @@ usage:                  |
                         sch_reg_relation as the shape of every entry
                         in the relation register.
 note:                   |
-                        An inverse holds an identity and a surface
-                        form and nothing else. Every other fact about
-                        the relation is held by the primary entry, and
-                        an edge recorded with the inverse is read as
-                        the primary edge in the opposite direction.
+                        An inverse holds an identity and a reading and
+                        nothing else. Every other fact about the
+                        relation is held by the primary entry, and an
+                        edge recorded with the inverse is read as the
+                        primary edge in the opposite direction.
 
                         Cardinality and other properties that a
                         checker might read are not yet declared. Each
                         is added when a relation needs it, as acyclic
-                        was.
+                        and reads_through were.
 type:                   object
 
 properties:
 
   brief:
-    $ref:               '#/$defs/surface_form'
+    $ref:               '#/$defs/reading'
+
+  reads_through:
+    type:               array
+    uniqueItems:        true
+    description:        |
+                        Optional. The ends, source or target, at which
+                        an edge of this relation reads through a
+                        proxy, so that the edge is about the thing the
+                        proxy points at and not about the proxy.
+                        Absent means the edge is about the items
+                        themselves.
+
+    items:
+
+      enum:
+        - source
+        - target
 
   acyclic:
     type:               boolean
@@ -82,11 +99,11 @@ properties:
         pattern:        ^relation_
 
       brief:
-        $ref:           '#/$defs/surface_form'
+        $ref:           '#/$defs/reading'
 
 $defs:
 
-  surface_form:
+  reading:
     type:               string
     pattern:            ^SOURCE .+ TARGET\n?$
     description:        |

@@ -1428,3 +1428,45 @@ table:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
+
+  # ---------------------------------------------------------------------------
+  # type_external_document -- External document type
+  #
+  type_external_document:
+    id_self:            type_external_document
+    guid_self:          type_c7a4a03fc2a94f76bf5d029d132330c0
+    title:              External document type
+    brief:              |
+                        Type of external document data items.
+    description:        |
+                        Each external document data item is a proxy
+                        for one document held outside the graph, such
+                        as a standard, a paper or a web page.
+    usage:              |
+                        External document data items let a data item
+                        cite a document by an edge, such as
+                        relation_cites, instead of naming it in prose.
+    note:               |
+                        External document data items travel on their
+                        own, one per file, in
+                        _data/external_document/.
+
+                        The shape of external document data items is
+                        defined by the sch_external_document schema.
+    prefix:             extdoc
+    regex_id:           ^extdoc_[a-z][a-z0-9_]*$
+    id_concept:         concept_external_document
+    guid_concept:       concept_0a109bde1d404712a465f3f4cde74ba6
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_external_document
+        guid_target:    sch_834ed6d7baf442b5806c7eb3a5517845
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_proxy
+        guid_target:    rol_2a876d5a023b42d981a1e87b3acce1fc
