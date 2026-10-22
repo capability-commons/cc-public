@@ -124,3 +124,11 @@ def test_replace_removes_old_pages_and_keeps_other_files(tree, tmp_path):
     assert (dir_out / '.obsidian' / 'app.json').read_text() == '{}\n'
     assert not (dir_out / 'gone').exists()
     assert (dir_out / 'decision' / 'dec_tooling_language.md').exists()
+
+
+def test_a_folder_that_cannot_be_made_is_an_error(tree, tmp_path):
+    (tmp_path / 'file').write_text('not a folder\n')
+    result = _run(tree, 'obsidian', str(tmp_path / 'file' / 'vault'))
+    assert result.exit_code == 2
+    assert 'The pages cannot be written to' in result.stderr
+    assert 'Traceback' not in result.output
