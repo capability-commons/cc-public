@@ -77,8 +77,10 @@ unfinished edits of another.
   your change is still yours to report, not to hide.
 - Commit locally. Do not push unless asked.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
-  tests the staged content. Never bypass it with `--no-verify`. If it
-  fails, fix the cause, or report it.
+  tests the staged content. The tests run only when code is staged,
+  and leave out the tests marked slow and prepush; a commit of data
+  alone is checked and linted, but not tested. Never bypass it with
+  `--no-verify`. If it fails, fix the cause, or report it.
 - Write each commit message with `cctool message new TITLE --brief
   TEXT`, then add the trailers. The title is an imperative sentence
   built from a template in `sch_commit`, such as `Add OBJECT` or
