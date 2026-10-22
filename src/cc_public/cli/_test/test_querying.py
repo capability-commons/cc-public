@@ -27,13 +27,42 @@ edge:                   []
 
 
 import json
+import shlex
 
 import click.testing
+import pytest
 
 import cc_public.cli.command
+import cc_public.conftest
 
 
-SQL_CONCERN = "SELECT id FROM has_type WHERE type = 'type_concern' ORDER BY id"
+SQL_CONCERN      = "SELECT id FROM has_type WHERE type = 'type_concern' ORDER BY id"
+PREFIX_EXAMPLE   = 'cctool query '
+HEAD_EXAMPLE     = 'Examples:'
+
+
+# -----------------------------------------------------------------------------
+def _examples():
+    """
+    Return each example in the help of the query commands, as its words
+    after cctool, with its continuation lines joined to it. An example
+    that reads its query from a file is left out, as the file is not in
+    the tree.
+
+    """
+
+    list_example = []
+
+    for command in cc_public.cli.command.main.commands['query'].commands.values():
+        (_, _, text) = (command.help or '').partition(HEAD_EXAMPLE)
+        for line in text.splitlines():
+            if line.strip().startswith(PREFIX_EXAMPLE):
+                list_example.append(line.strip())
+            elif line.strip() and list_example:
+                list_example[-1] += ' ' + line.strip()
+
+    return [shlex.split(example)[1:] for example in list_example
+            if '--file' not in example]
 
 
 # -----------------------------------------------------------------------------
@@ -165,3 +194,20 @@ def test_text_with_no_words_is_refused_with_an_example(tree):
     assert result.exit_code == 2
     assert 'no words to search for' in result.stderr
     assert 'For example: cctool query text' in result.stderr
+
+
+# A help example that names an id the tree lacks, or that is refused,
+# prints nothing useful to a reader who copies it.
+#
+@pytest.mark.slow
+@pytest.mark.parametrize('list_arg', _examples(), ids = ' '.join)
+def test_every_query_example_in_the_help_returns_rows(list_arg):
+    runner = click.testing.CliRunner()
+    result = runner.invoke(cc_public.cli.command.main,
+                           [*list_arg, '--json', '--root', str(cc_public.conftest.DIR_REPO)])
+    assert result.exit_code == 0, result.stderr
+    found  = json.loads(result.stdout)
+    if 'results' in found or 'boolean' in found or 'count' in found:
+        found = {'': found}
+    for each in found.values():
+        assert each.get('count') or each.get('boolean'), result.stdout

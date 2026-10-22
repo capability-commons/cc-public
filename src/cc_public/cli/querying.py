@@ -301,7 +301,7 @@ def sparql(text, path_file, root, limit, is_json):
     \b
     Examples:
       cctool query sparql 'SELECT ?id ?title WHERE { ?id a cc:type_concern ; f:title ?title }'
-      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:relation_is_about cc:dec_licence }'
+      cctool query sparql 'SELECT ?ann WHERE { ?ann cc:relation_is_about cc:dec_license }'
       cctool query sparql 'SELECT ?item WHERE { ?item f:holder+ cc:reg_relation }'
       cctool query sparql 'ASK { cc:opt_apache_2_0 a cc:type_option }'
 
