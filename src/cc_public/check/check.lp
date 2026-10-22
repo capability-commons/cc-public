@@ -335,7 +335,9 @@ member_stem(Holder, Holder) :-
 % did  The id of {id} is not the stem of {holder}, a full stop and a
 %      name.
 % fix  Rename the member with cctool rename to the stem of what it sits
-%      in, a full stop, and its own name.
+%      in, a full stop, and its own name. To rename the interface
+%      control document, use cctool rename, which renames its members
+%      with it.
 #show misnamed_member/2.
 
 misnamed_member(Id, Holder) :-
@@ -1333,6 +1335,8 @@ unused_concept(Id) :-
 % did  The node {node} is not named for the dataflow graph that
 %      holds it and its key. Its id is {expected}.
 % fix  Rename the node with cctool rename to the id the check expects.
+%      To rename the dataflow graph, use cctool rename, which renames
+%      its nodes with it.
 #show misnamed_node/2.
 
 misnamed_node(Node, Expected) :-
