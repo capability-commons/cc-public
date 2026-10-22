@@ -110,7 +110,8 @@ def check(file, root: pathlib.Path) -> None:
 
 # -----------------------------------------------------------------------------
 @message.command()
-@click.argument('path', metavar = 'FILEPATH', type = click.Path(dir_okay  = False,
+@click.argument('path', metavar = 'FILEPATH', type = click.Path(exists    = True,
+                                                            dir_okay  = False,
                                                             path_type = pathlib.Path))
 @OPTION_ROOT
 def draft(path: pathlib.Path, root: pathlib.Path) -> None:
@@ -123,19 +124,18 @@ def draft(path: pathlib.Path, root: pathlib.Path) -> None:
     for any reason, is reported and the message left as it is, so that
     the commit-msg hook says what is wrong. A merge or a revert runs
     the hook even with the flag --no-verify, so the hook must never
-    stop one.
+    stop one, and it succeeds whatever this command does. A FILEPATH
+    that does not exist is an error, with exit status 2.
 
     """
 
-    text = path.read_text(encoding = 'utf-8')
     try:
+        text    = path.read_text(encoding = 'utf-8')
         drafted = cc_public.commit.message.draft(root.resolve(), text)
+        if drafted != text:
+            path.write_text(drafted, encoding = 'utf-8')
     except Exception as error:
         click.echo('No draft: {error}'.format(error = error), err = True)
-        return
-
-    if drafted != text:
-        path.write_text(drafted, encoding = 'utf-8')
 
 
 # -----------------------------------------------------------------------------

@@ -143,5 +143,11 @@ def _write(pages, dir_out, root, is_replace):
     except cc_public.export.page.ErrorExport as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
+    except OSError as error:
+        click.echo('The pages cannot be written to {dir}: {error}. Give a folder that can '
+                   'be made and written.'.format(dir   = dir_out,
+                                                 error = error.strerror or error),
+                   err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
 
     click.echo('{count} pages written to {dir}.'.format(count = len(map_text), dir = dir_out))

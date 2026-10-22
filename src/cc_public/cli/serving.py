@@ -25,6 +25,7 @@ edge:                   []
 
 
 import pathlib
+import sys
 
 import click
 
@@ -49,7 +50,7 @@ import cc_public.web.server
               metavar      = 'PORT',
               default      = cc_public.web.server.PORT_DEFAULT,
               show_default = True,
-              type         = int,
+              type         = click.IntRange(0, 65535),
               help         = 'The port to listen on.')
 def serve(root: pathlib.Path, host: str, port: int) -> None:
     """
@@ -73,3 +74,10 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
         cc_public.web.server.serve(root.resolve(), host, port)
     except KeyboardInterrupt:
         click.echo('Stopped.')
+    except OSError as error:
+        click.echo('Cannot serve at {host}:{port}: {error}. Give another --port, or stop '
+                   'what listens there.'.format(host  = host,
+                                                port  = port,
+                                                error = error.strerror or error),
+                   err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
