@@ -1,0 +1,41 @@
+id_self:                ann_hooks_run_with_locked_is_stale
+guid_self:              ann_5864e305bc2e40b3ad1043fb563bae3c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hooks that now run pixi with --locked
+brief:                  |
+                        ann_frozen_lock_makes_gate_runs_repeatable
+                        says every hook runs pixi run --frozen, so a
+                        manifest changed without a new lock goes
+                        unseen. Every hook now runs pixi run --locked,
+                        which refuses that case, as the annotation
+                        itself notes.
+description:            |
+                        .githooks/commit-msg line 29, pre-commit line
+                        30, pre-merge-commit line 34, pre-push line 33
+                        and prepare-commit-msg line 34 each run "pixi
+                        run --locked ...". No hook in .githooks uses
+                        --frozen. The annotation cites the pixi
+                        documentation for the point that --locked
+                        refuses to run when pyproject.toml and
+                        pixi.lock disagree. So the limit it names no
+                        longer applies to the hooks. Found in the
+                        review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_frozen_lock_makes_gate_runs_repeatable
+    guid_target:        ann_c675783e2fdc4c809ed51738a1738810

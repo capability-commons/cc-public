@@ -1,0 +1,54 @@
+id_self:                ann_superseded_ruling_on_record_is_stale
+guid_self:              ann_e6da4425cc2e4cf5b9d7413ec689863f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ruling now edited in place, like a status
+brief:                  |
+                        The old annotation says that a later ruling
+                        supersedes the earlier one, which stays on
+                        record, while a status edit keeps the earlier
+                        outcome only in git history. Now a decision
+                        has at most one ruling, and a change of ruling
+                        edits it in place, so a ruling also keeps its
+                        earlier outcome only in git history.
+description:            |
+                        ruling_change_of_a_ruling
+                        (_data/decision/dec_change_of_a_ruling/, lines
+                        12-19) rules that a decision has at most one
+                        ruling and that a change of ruling edits it in
+                        place. The note of type_ruling says the same
+                        (_data/register/reg_data_item_type.yaml lines
+                        900-902). The check competing_rulings reports
+                        a second ruling on a decision and says to edit
+                        the one ruling in place
+                        (src/cc_public/check/check.lp lines
+                        1446-1457). A ruling cannot be superseded:
+                        relation_supersedes admits only items that
+                        play rol_supersedable at either end, and only
+                        type_option and
+                        type_interface_control_document play it
+                        (_data/register/reg_relation.yaml lines
+                        265-297;
+                        _data/register/reg_data_item_type.yaml lines
+                        533 and 1262). A ruling still settles a set of
+                        alternatives in one act, so that part of the
+                        contrast holds. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_outcome_stored_or_computed
+    guid_target:        dec_4de3062be8ee4a3fbb21cb29944d4629
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_status_field_holds_one_value_per_option
+    guid_target:        ann_fcd7e29e24214abc8575bf8258123e4e

@@ -1,0 +1,43 @@
+id_self:                ann_skill_unseen_by_any_code_is_stale
+guid_self:              ann_43de627774a146eeab395bea3c5db9c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Agent guides now read by a test
+brief:                  |
+                        ann_skill_restates_agents_md_commands says no
+                        Python file refers to .agents or SKILL.md, so
+                        nothing checks the restated commands. A test
+                        now reads AGENTS.md and every SKILL.md and
+                        fails on any command, task, id or path the
+                        code lacks.
+description:            |
+                        src/cc_public/cli/_test/test_guidance.py reads
+                        AGENTS.md and .agents/skills/*/SKILL.md
+                        (TUPLE_GUIDE) and has
+                        test_every_cctool_command_in_the_guides_exists,
+                        test_every_pixi_task_in_the_guides_exists,
+                        test_every_id_in_the_guides_names_an_item,
+                        test_every_other_name_in_the_guides_is_a_check_predicate_or_field
+                        and test_every_path_in_the_guides_exists. It
+                        catches a stale name in either guide, but it
+                        does not check that the two guides agree, and
+                        cctool check still does not read them. Found
+                        in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_agent_skills
+    guid_target:        dec_6be96ce488394ba892982995b40e154c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_skill_restates_agents_md_commands
+    guid_target:        ann_2833fda8a4094b928a3d4d8ec443770e

@@ -1,0 +1,47 @@
+id_self:                ann_decision_subject_unchecked_is_stale
+guid_self:              ann_f81aa3bbf4364df08672f55893cbb774
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Check now on the subject of a decision
+brief:                  |
+                        The annotation says nothing makes a decision
+                        be about a logical component, and that
+                        relation_is_about has no range. Now
+                        decision_about_non_component reports a
+                        decision about anything else, and relations
+                        have no domain or range.
+description:            |
+                        decision_about_non_component
+                        (src/cc_public/check/check.lp line 1334)
+                        reports a decision whose relation_is_about
+                        target is not of type_logical_component, so
+                        the driver check can no longer pass silently
+                        on another subject.
+                        test_a_decision_about_other_than_a_component_is_reported
+                        (src/cc_public/check/_test/test_check.py line
+                        367) covers it.
+                        _data/register/reg_relation.yaml holds no
+                        domain or range field, and
+                        src/cc_public/check/check.lp has no
+                        range_violation. Relation ends are governed by
+                        relation constraints over roles, which
+                        constraint_violation checks (check.lp line
+                        1063). Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_subject_of_a_decision
+    guid_target:        dec_5ddead5ed64c43e8aacc41b5b1f3d286
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_driver_check_silent_on_other_subjects
+    guid_target:        ann_b7a4a158c7914a93bf68ab0d76de0e0b

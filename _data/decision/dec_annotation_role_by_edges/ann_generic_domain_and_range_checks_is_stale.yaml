@@ -1,0 +1,48 @@
+id_self:                ann_generic_domain_and_range_checks_is_stale
+guid_self:              ann_994b5771711c4a60a8f40360bfce0ca6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relation ends now checked by constraints over roles
+brief:                  |
+                        ann_annotation_roles_reuse_the_edge_mechanism
+                        says the domain and range checks are generic
+                        over every relation. Relations no longer have
+                        a domain or range. Their ends are governed by
+                        relation constraints over roles, checked by
+                        one generic rule.
+description:            |
+                        Entries in _data/register/reg_relation.yaml
+                        hold no domain or range field. Each names its
+                        end constraints with
+                        relation_constrains_source and
+                        relation_constrains_target, which point to
+                        relcon_ entries in
+                        reg_relation_constraint.yaml, and each relcon_
+                        admits a role from reg_role.yaml. A type plays
+                        roles by relation_has_items_that_play in
+                        reg_data_item_type.yaml.
+                        src/cc_public/check/check.lp derives satisfies
+                        (lines 1011-1025) and reports
+                        constraint_violation (lines 1065-1075); no
+                        range_violation rule exists. The check is
+                        still generic, but the edge mechanism now also
+                        needs the constraint and role registers. Found
+                        in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_annotation_role_by_edges
+    guid_target:        dec_3fbf2c4793cc4ed1b0c0ee9582f65808
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_annotation_roles_reuse_the_edge_mechanism
+    guid_target:        ann_52bfb8728e5f46189124a8f8841bcba6

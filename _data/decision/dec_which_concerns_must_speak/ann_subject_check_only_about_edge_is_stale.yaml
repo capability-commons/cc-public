@@ -1,0 +1,44 @@
+id_self:                ann_subject_check_only_about_edge_is_stale
+guid_self:              ann_815559f695a64a9fbcd2f49342d36f86
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Subject of a decision now checked for type
+brief:                  |
+                        The annotation says the only check on a
+                        decision's subject is its relation_is_about
+                        edge, that relation_is_about has no range, and
+                        that only a logical component can have
+                        drivers. Now a decision must be about a
+                        logical component, and any design entity may
+                        have drivers.
+description:            |
+                        decision_about_non_component
+                        (src/cc_public/check/check.lp line 1334)
+                        reports a decision about anything but a
+                        logical component, so a decision about
+                        concern_safety now fails. Relations have no
+                        range: relation_is_driven_by takes
+                        relcon_is_design_entity at its source
+                        (_data/register/reg_relation.yaml lines
+                        452-495). No rule yet refuses a logical
+                        component with no driver, so that part of the
+                        point stands; all six components now name
+                        drivers. Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_concerns_must_speak
+    guid_target:        dec_35e41ba3ea5d452cbcbf289f44ae8979
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_component_with_no_drivers_passes_unargued
+    guid_target:        ann_462d091d686848d1995a95a0a0609e52

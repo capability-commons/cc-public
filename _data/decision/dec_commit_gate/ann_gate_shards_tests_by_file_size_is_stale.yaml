@@ -1,0 +1,38 @@
+id_self:                ann_gate_shards_tests_by_file_size_is_stale
+guid_self:              ann_2899ce40b1fd45e2b9a8497cbdfcd114
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate tests now handed out by pytest-xdist
+brief:                  |
+                        ann_gate_shards_by_size_not_run_time says the
+                        gate splits the tests into one shard per
+                        processor by file size. It no longer shards.
+                        It runs pytest-xdist with one worker per
+                        processor, each taking the next test when
+                        free.
+description:            |
+                        TUPLE_STAGE in src/cc_public/gate/gate.py
+                        (lines 87-89) runs pytest with -n auto --dist
+                        worksteal. The pixi test task does the same
+                        (pyproject.toml, [tool.pixi.tasks]). Check,
+                        lint and test still run side by side as three
+                        jobs (gate.py lines 148-150). Found in the
+                        review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commit_gate
+    guid_target:        dec_8ef6be254d2d4bba95d353c4c412a818
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_gate_shards_by_size_not_run_time
+    guid_target:        ann_3ca860cd0d324f16ba4c99478af1d5b1

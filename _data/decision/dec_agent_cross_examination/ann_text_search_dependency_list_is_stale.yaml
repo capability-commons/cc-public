@@ -1,0 +1,38 @@
+id_self:                ann_text_search_dependency_list_is_stale
+guid_self:              ann_dc9d8473d7574359aacfec2ea175a52e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime dependency list now includes pyoxigraph
+brief:                  |
+                        ann_text_search_reuses_the_sqlite_graph lists
+                        the runtime dependencies as click, clingo,
+                        htpy, jsonschema, referencing and ruamel.yaml.
+                        pyoxigraph is now a runtime dependency too.
+description:            |
+                        pyproject.toml line 46 declares
+                        pyoxigraph>=0.5.12,<0.6, which
+                        src/cc_public/graph/sparql.py imports for
+                        cctool query sparql. The FTS5 text search
+                        still adds no library:
+                        src/cc_public/graph/sql.py builds item_text
+                        with sqlite3 (lines 47-48, 70, 85), and
+                        src/cc_public/graph/text.py ranks it with
+                        BM25. Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_agent_cross_examination
+    guid_target:        dec_2be9ee5dba28465b82b2692163fe92e8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_text_search_reuses_the_sqlite_graph
+    guid_target:        ann_14d771c238a8496bb47c21a190ac9cd7

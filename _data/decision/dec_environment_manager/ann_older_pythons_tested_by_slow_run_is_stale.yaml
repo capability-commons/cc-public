@@ -1,0 +1,45 @@
+id_self:                ann_older_pythons_tested_by_slow_run_is_stale
+guid_self:              ann_e6aa5a1fbc7c4b48b55220562c6e7d68
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lowest claimed Python now tested by the slow run
+brief:                  |
+                        ann_gate_tests_only_the_locked_python says
+                        pixi.lock holds Python 3.15 only and nothing
+                        checks the lowest version the project claims.
+                        The lock now holds environments for Python
+                        3.12, 3.13 and 3.14, and pixi run slow runs
+                        the tests in each. The gate itself still runs
+                        one Python.
+description:            |
+                        pyproject.toml lines 85-87 define the task
+                        slow, which runs the test task in the
+                        environments py312, py313 and py314. Lines
+                        89-101 pin python to 3.12.*, 3.13.* and 3.14.*
+                        in those environments. pixi.lock holds them at
+                        lines 169, 332 and 496, with python 3.12.15,
+                        3.13.16 and 3.14.8 for linux-64 (lines 211,
+                        373 and 537). requires-python is still ">=
+                        3.12" (line 41). The comment above the task
+                        says it is too slow for the gate and is run on
+                        its own. So the lowest claimed version is
+                        checked, though not at each commit. Found in
+                        the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_environment_manager
+    guid_target:        dec_5a13b64eb9004f8cb5c922b0bd350eab
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_gate_tests_only_the_locked_python
+    guid_target:        ann_bb654b777161402296cf88645a204178

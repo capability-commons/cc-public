@@ -1,0 +1,43 @@
+id_self:                ann_tests_copy_whole_tree_is_stale
+guid_self:              ann_c50ce25fbab54331a58644bb9ddfbfac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test copies now keep a fixed slice of the tree
+brief:                  |
+                        The annotation says each check test copies the
+                        whole repository, so the time of every test
+                        rises with the graph. Now a copy keeps only
+                        two decisions and the source it names, so the
+                        tests do not slow as deliberations grow.
+description:            |
+                        src/cc_public/conftest.py lines 52-56 keep
+                        only dec_cross_item_checks_engine and
+                        dec_tooling_language of _data/decision, and
+                        lines 59-70 keep only the source that the rest
+                        of the copy names. Its description says the
+                        copy keeps "a fixed slice of the deliberations
+                        ... so the tests neither slow down nor change
+                        meaning as the deliberations in the repository
+                        grow". The gate leaves out tests marked slow,
+                        which "grow with the data"
+                        (src/cc_public/gate/gate.py lines 78-85).
+                        Registers and schemas are still copied whole.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_full_check_per_test_grows_with_graph
+    guid_target:        ann_3fb89941e84f4e469798c906ec43a71a

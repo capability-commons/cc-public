@@ -1,0 +1,44 @@
+id_self:                ann_drivers_only_on_components_is_stale
+guid_self:              ann_351f6102d2724a2dbb760e8bb936d2b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Drivers now open to any design entity
+brief:                  |
+                        The annotation says relation_is_driven_by has
+                        domain type_logical_component only. Now
+                        relations have no domain, and the source of
+                        relation_is_driven_by may be any design
+                        entity.
+description:            |
+                        relation_is_driven_by constrains its source
+                        with relcon_is_design_entity
+                        (_data/register/reg_relation.yaml lines
+                        452-495). That constraint admits
+                        rol_design_entity
+                        (_data/register/reg_relation_constraint.yaml
+                        line 212), which type_logical_component,
+                        type_interface_control_document and
+                        type_interface_member play
+                        (_data/register/reg_data_item_type.yaml). A
+                        decision must still be about a logical
+                        component (decision_about_non_component,
+                        src/cc_public/check/check.lp line 1334). Found
+                        in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_subject_of_a_decision
+    guid_target:        dec_5ddead5ed64c43e8aacc41b5b1f3d286
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_drivers_reach_only_logical_components
+    guid_target:        ann_43bf7d78fa6f4f9bb65c50072cc8726f

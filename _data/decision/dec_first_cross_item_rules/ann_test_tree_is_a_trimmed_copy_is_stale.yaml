@@ -1,0 +1,43 @@
+id_self:                ann_test_tree_is_a_trimmed_copy_is_stale
+guid_self:              ann_71ee4092443b43b3ad6de4fb5866a315
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test tree now a trimmed copy of the repository
+brief:                  |
+                        ann_checker_tests_rest_on_whole_repository
+                        says the tree fixture copies the whole
+                        repository, so a defect anywhere fails each
+                        checker test. The fixture now leaves out every
+                        decision folder but two, and every source file
+                        that the copy does not name.
+description:            |
+                        The tree fixture in src/cc_public/conftest.py
+                        (lines 179-197) copies the repository with an
+                        ignore function. TUPLE_DECISION_KEPT (line 56)
+                        keeps only dec_cross_item_checks_engine and
+                        dec_tooling_language of _data/decision. Lines
+                        59-70 keep under src only the files named in
+                        TUPLE_SOURCE_KEPT and what they mention in
+                        turn. So a defect in another decision folder,
+                        or in a source file the copy leaves out, no
+                        longer fails the checker tests. A defect in
+                        the registers, schemas or other data still
+                        does. Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_cross_item_rules
+    guid_target:        dec_9226ef2ca11b42e1b558831f156985b9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_checker_tests_rest_on_whole_repository
+    guid_target:        ann_1840042c55d649178e01d8c75865716b

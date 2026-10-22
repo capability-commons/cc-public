@@ -1,0 +1,45 @@
+id_self:                ann_edit_package_imports_pyoxigraph_is_stale
+guid_self:              ann_c636f4945df64ee7917edc21e08a3af2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edit package that now imports pyoxigraph
+brief:                  |
+                        ann_editing_adds_no_third_party_package says
+                        the edit package imports only the standard
+                        library, ruamel.yaml and cc_public, and uses
+                        only the three dependencies the checker had.
+                        The edit package now imports pyoxigraph, which
+                        the checker does not use.
+description:            |
+                        src/cc_public/edit/ontology.py
+                        (pym_cc_public.edit.ontology) imports
+                        pyoxigraph at line 46. The import command of
+                        src/cc_public/cli/editing.py uses it (line 69
+                        and lines 394-415). Under src only
+                        edit/ontology.py and graph/sparql.py import
+                        pyoxigraph, so the checker does not.
+                        pyproject.toml lines 42-48 now list seven
+                        direct dependencies: click, clingo, htpy,
+                        jsonschema, pyoxigraph, referencing and
+                        ruamel.yaml. edit.py and layout.py still
+                        import only the standard library, ruamel.yaml
+                        and cc_public. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_editing_adds_no_third_party_package
+    guid_target:        ann_5355fb63958e4366a54d5144409abbf2

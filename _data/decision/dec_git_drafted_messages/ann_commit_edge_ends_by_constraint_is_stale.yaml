@@ -1,0 +1,49 @@
+id_self:                ann_commit_edge_ends_by_constraint_is_stale
+guid_self:              ann_83f9077830dc44a7a431aa99967d019e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit edges governed by constraints, not domains
+brief:                  |
+                        ann_revert_names_target_by_git_hash says no
+                        relation has type_commit in its domain.
+                        Relations have no domain now: their ends are
+                        governed by relation constraints over roles.
+                        Its conclusion still holds, as no relation can
+                        link a commit to another commit.
+description:            |
+                        _data/register/reg_relation.yaml holds no
+                        domain or range field. Each relation names
+                        constraints on its ends with
+                        relation_constrains_source and
+                        relation_constrains_target, as ruled in
+                        ruling_relation_end_governance. An end with no
+                        constraint is open
+                        (opt_unconstrained_end_is_open), and
+                        constraint_violation in
+                        src/cc_public/check/check.lp (lines 1065-1075)
+                        checks the rest. type_commit plays no role
+                        (its only edge names sch_commit), so a commit
+                        can be the source only of relation_cites and
+                        relation_uses_concept, the two relations with
+                        no source constraint. Their targets must play
+                        the proxy or concept role, so neither can
+                        reach a commit. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_git_drafted_messages
+    guid_target:        dec_519395acf62e492a8163bfa6247e5964
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_revert_names_target_by_git_hash
+    guid_target:        ann_dedabf51774c47249b14a54bd37abc83

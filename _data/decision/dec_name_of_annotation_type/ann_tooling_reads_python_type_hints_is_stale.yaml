@@ -1,0 +1,41 @@
+id_self:                ann_tooling_reads_python_type_hints_is_stale
+guid_self:              ann_bbc33d5f14c247059a5f0b02efa570d7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tooling that now reads Python type hints
+brief:                  |
+                        ann_annotation_names_python_type_hints says
+                        the code never uses annotation in the Python
+                        sense and the cost grows only if the tooling
+                        inspects type hints. The extractor now reads
+                        the type hint of each parameter and the return
+                        type to check signatures.
+description:            |
+                        _parameters in src/cc_public/graph/extract.py
+                        (lines 971-1002) reads arg.annotation, the
+                        Python type hint, as the type of each
+                        parameter (line 997), and _returns (line 1005)
+                        reads the return type. signature_mismatch in
+                        src/cc_public/check/check.lp (lines 872-883)
+                        compares them with what an interface member
+                        states. So the word now has its Python sense
+                        in the code that builds the graph. Found in
+                        the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_name_of_annotation_type
+    guid_target:        dec_d900e5300ad6469e85478b8bd8d798a8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_annotation_names_python_type_hints
+    guid_target:        ann_3b5db9ced8454e4ca1c2c998ee118f9d

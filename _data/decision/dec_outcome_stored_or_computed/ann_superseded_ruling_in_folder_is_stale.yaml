@@ -1,0 +1,48 @@
+id_self:                ann_superseded_ruling_in_folder_is_stale
+guid_self:              ann_1e0a3ff494f34b88bcb1bfb9f3206070
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No superseded ruling left in a decision folder
+brief:                  |
+                        The old annotation says that a superseded
+                        ruling stays in the decision folder. Now a
+                        decision has at most one ruling, and a change
+                        of ruling edits that file in place, so the
+                        earlier act is in the history of the file, not
+                        in a second ruling.
+description:            |
+                        The note of type_ruling says "A decision has
+                        at most one ruling. A change of ruling edits
+                        it in place, and what was ruled before is in
+                        the history of its file"
+                        (_data/register/reg_data_item_type.yaml lines
+                        900-902). ruling_change_of_a_ruling rules the
+                        same, and the check competing_rulings reports
+                        a second ruling on one decision
+                        (src/cc_public/check/check.lp lines
+                        1446-1457). relation_supersedes admits only
+                        options and interface control documents
+                        (_data/register/reg_relation.yaml lines
+                        265-297). The rest of the trace holds: upholds
+                        and rejects edges name each settled option,
+                        and who and when come from the commits
+                        (_data/schema/sch_ruling.yaml, note). Found in
+                        the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_outcome_stored_or_computed
+    guid_target:        dec_4de3062be8ee4a3fbb21cb29944d4629
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_ruling_names_who_settled_what
+    guid_target:        ann_cda2035bac0b4eef8e22a40f006e0a88
