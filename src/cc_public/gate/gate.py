@@ -30,6 +30,10 @@ description:            |
                         makes a repository of its own cannot touch the
                         index of the commit.
 
+                        A commit that stages no code, only data, is
+                        not tested: the tests test the code. The gate
+                        of a push runs them on what is pushed.
+
                         The stages run side by side, and pytest-xdist
                         hands the tests out to one worker for each
                         processor, so that the gate takes about as
@@ -67,6 +71,14 @@ TUPLE_STAGE   = (('check', ('{python}', '-m', 'cc_public.cli.command', 'check'))
                  ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider',
                             '-n', 'auto', '--dist', 'worksteal', '-m', 'not slow')))
 DIR_SOURCE    = 'src'
+NAME_TEST     = 'test'
+
+# The paths that hold code, or what the code runs with. A commit that
+# stages none of them changes no code, so its gate leaves out the
+# tests, which test the code. The gate of a push runs every stage on
+# what is pushed, so a test that the data breaks is still caught there.
+#
+TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/')
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
 
@@ -117,6 +129,42 @@ def gate(root:        pathlib.Path,
 
     return [(name_stage, *done)
             for ((name_stage, _), done) in zip(tuple_stage, list_done, strict = True)]
+
+
+# -----------------------------------------------------------------------------
+def stages(root: pathlib.Path) -> tuple:
+    """
+    Return the stages that gate the staged content of the repository at
+    root: TUPLE_STAGE, less the tests if no code is staged.
+
+    """
+
+    if is_code_staged(root):
+        return TUPLE_STAGE
+
+    return tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
+
+
+# -----------------------------------------------------------------------------
+def is_code_staged(root: pathlib.Path) -> bool:
+    """
+    Return whether the staged content of the repository at root adds,
+    changes or removes a path of TUPLE_CODE. Before the first commit,
+    everything staged is new, and code is taken to be staged.
+
+    """
+
+    try:
+        text = subprocess.run(['git', 'diff', '--cached', '--name-only', '--no-renames',
+                               'HEAD'],
+                              cwd            = root,
+                              capture_output = True,
+                              text           = True,
+                              check          = True).stdout
+    except subprocess.CalledProcessError:
+        return True
+
+    return any(path.startswith(TUPLE_CODE) for path in text.splitlines())
 
 
 # -----------------------------------------------------------------------------

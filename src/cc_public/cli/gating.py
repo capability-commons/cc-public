@@ -50,13 +50,15 @@ def gate(root: pathlib.Path) -> None:
 
     The staged content is copied out, and each stage runs in the copy.
     The output of a stage that fails is printed before its verdict.
-    The exit status is 1 when any stage fails, and 2 when the gate
-    cannot run.
+    The tests are left out when no code is staged. The exit status is
+    1 when any stage fails, and 2 when the gate cannot run.
 
     """
 
     try:
-        list_result = cc_public.gate.gate.gate(root.resolve())
+        root        = root.resolve()
+        tuple_stage = cc_public.gate.gate.stages(root)
+        list_result = cc_public.gate.gate.gate(root, tuple_stage)
     except cc_public.gate.gate.ErrorGate as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
@@ -66,6 +68,10 @@ def gate(root: pathlib.Path) -> None:
             click.echo(output.rstrip('\n'))
         click.echo('{name}: {verdict}'.format(name    = name,
                                               verdict = 'passed' if is_passed else 'failed'))
+
+    if len(tuple_stage) < len(cc_public.gate.gate.TUPLE_STAGE):
+        click.echo('{name}: skipped, as no code is staged'.format(
+                       name = cc_public.gate.gate.NAME_TEST))
 
     sys.exit(cc_public.cli.group.EXIT_OK if all(row[1] for row in list_result)
              else cc_public.cli.group.EXIT_NONCONFORMITY)
