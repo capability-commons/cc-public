@@ -1,0 +1,56 @@
+id_self:                ann_runtime_refuses_a_mismatched_wiring
+guid_self:              ann_3ad4772b603b4aebb6bc7d73e14252c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime refusal of a mismatched wiring
+brief:                  |
+                        A runtime that loads a graph is not unsafe by
+                        itself: the drafted host checks every edge
+                        when it wires it and refuses a mismatch, and
+                        it rewires only between steps, so a refused
+                        change leaves the last consistent graph
+                        running. It gives up build-time assurance but
+                        keeps a defined fallback.
+description:            |
+                        Sources: The dynamic host checks every edge at
+                        wiring time and refuses the change on a
+                        mismatch
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 67). Start, stop, restart and rewire
+                        happen only between steps, so a step always
+                        sees a consistent graph and replay stays
+                        deterministic (same file, lines 70-72).
+                        ASSUMPTION: a refusal at wiring time leaves
+                        the running system in its previous state
+                        rather than partly wired. Strength: weak; the
+                        check catches errors in service rather than
+                        before deployment, and the frozen option makes
+                        the same check earlier, in the generator.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

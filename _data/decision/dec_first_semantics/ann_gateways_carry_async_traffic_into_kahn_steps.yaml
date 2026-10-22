@@ -1,0 +1,75 @@
+id_self:                ann_gateways_carry_async_traffic_into_kahn_steps
+guid_self:              ann_182006db6dd144658c5ab6c153107af0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gateway nodes in place of actors for asynchronous traffic
+brief:                  |
+                        Patrol's asynchronous parts, such as commands
+                        from a FastAPI service, streams and the edges
+                        that cross hosts, are handled at gateway nodes
+                        that turn traffic into step tokens. A
+                        Kahn-first engine therefore covers the known
+                        Patrol host layouts, and actors can follow
+                        when choreographed fleets need them.
+description:            |
+                        Sources: A gateway node turns asynchronous
+                        traffic into Kahn tokens and back, and
+                        functional components never access pub-sub
+                        directly, decided 2026-10-16
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 184-193 and 226-227). Tightly coupled
+                        distributed systems may be orchestrated as one
+                        segment with gateway nodes on each link (same
+                        file, lines 169-173). Commands come from
+                        outside systems through a FastAPI command
+                        node, a Python runtime
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 88-92). The Orin mixed variant has four
+                        edges that cross hosts (same README, lines
+                        75-78). Patrol's review has an open point on
+                        an Actor profile
+                        (_sources/cc-patrol-notes/plan.md lines
+                        31-32). Owner's statement, 2026-10-20: "I
+                        imagine that eventually we will want to
+                        additionally support at least Actor semantics
+                        as well." Strength: moderate; it rests on the
+                        drafts of one system, though that system is
+                        the first planned user.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_semantics
+    guid_target:        dec_d39b302c1fc446d7828deba12544097e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_kpn_first
+    guid_target:        opt_6675dee41619488b8e4f8d84b2a126d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_first
+    guid_target:        opt_622ae4ec5987467e8383587cc00303f5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_kpn_and_actors_together
+    guid_target:        opt_ef6ef347393946df9871ef060a18b962
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

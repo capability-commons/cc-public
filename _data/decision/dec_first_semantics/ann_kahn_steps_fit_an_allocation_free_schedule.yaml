@@ -1,0 +1,64 @@
+id_self:                ann_kahn_steps_fit_an_allocation_free_schedule
+guid_self:              ann_b52a27513fc944cdb3393f45cc6067a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Kahn steps in a static, allocation-free schedule
+brief:                  |
+                        Synchronous Kahn steps run every node once per
+                        step in a fixed order over fixed-capacity
+                        buffers, so they compile into the
+                        straight-line schedule and allocate nothing
+                        while stepping. Actors that act on each
+                        message need queues whose fill varies at run
+                        time and dispatch that depends on which
+                        messages arrive.
+description:            |
+                        Sources: Every sequence has a fixed capacity,
+                        every buffer size is known before the system
+                        starts, and nothing is allocated on the heap
+                        while stepping
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 145-151). The frozen schedule is a
+                        straight list of calls in schedule order
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 39-41). Patrol lists allocation-free
+                        stepping as a conformance goal
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 100-112). ASSUMPTION: an actor runtime
+                        needs per-actor message queues and a scheduler
+                        that picks the next ready actor at run time.
+                        Strength: moderate; bounded actor queues could
+                        narrow the gap.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_semantics
+    guid_target:        dec_d39b302c1fc446d7828deba12544097e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_kpn_first
+    guid_target:        opt_6675dee41619488b8e4f8d84b2a126d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_first
+    guid_target:        opt_622ae4ec5987467e8383587cc00303f5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_kpn_and_actors_together
+    guid_target:        opt_ef6ef347393946df9871ef060a18b962
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

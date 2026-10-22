@@ -1,0 +1,67 @@
+id_self:                ann_actors_suit_a_varying_number_of_platforms
+guid_self:              ann_4442a08915624b198509409a381e2b9a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actors for a varying number of platforms
+brief:                  |
+                        Where the number of hosts changes and links
+                        are unreliable, the drafts choose choreography
+                        over pub-sub, which matches actor semantics.
+                        Kahn semantics need blocking reads across
+                        processes, and the drafts apply them within
+                        orchestrated segments whose topologies are
+                        known, so scaling out across hosts leans on
+                        gateway nodes.
+description:            |
+                        Sources: Swarms and fleets have variable
+                        numbers of platforms and unreliable links, so
+                        a fixed topology cannot be assumed and
+                        choreography applies
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 174-176). "Kahn semantics need blocking
+                        reads across processes" (same file, line 152).
+                        Within a segment, topologies are known and
+                        validated (same file, lines 169-171). Owner's
+                        statement, 2026-10-20: "I imagine that
+                        eventually we will want to additionally
+                        support at least Actor semantics as well."
+                        Patrol's headless configuration needs
+                        cross-host edges with a declared delivery
+                        policy (_sources/cc-patrol-notes/plan.md lines
+                        168-171). Strength: weak; the first targets
+                        are a fixed set of one or two hosts, where a
+                        varying number of platforms does not yet
+                        arise.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_semantics
+    guid_target:        dec_d39b302c1fc446d7828deba12544097e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_first
+    guid_target:        opt_622ae4ec5987467e8383587cc00303f5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_kpn_and_actors_together
+    guid_target:        opt_ef6ef347393946df9871ef060a18b962
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_kpn_first
+    guid_target:        opt_6675dee41619488b8e4f8d84b2a126d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

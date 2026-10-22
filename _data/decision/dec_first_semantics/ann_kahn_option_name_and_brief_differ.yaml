@@ -1,0 +1,51 @@
+id_self:                ann_kahn_option_name_and_brief_differ
+guid_self:              ann_09577d4b1b1b48ebbe53e443e56bbb42
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mismatch between the Kahn option's name and brief
+brief:                  |
+                        The option is named Kahn process networks, but
+                        its brief describes synchronous steps, while
+                        the engine drafts take Kahn semantics to mean
+                        blocking reads. An acceptance check needs one
+                        stated semantics to test against, so whichever
+                        is meant should be named and stated the same
+                        way before the engine is built.
+description:            |
+                        Sources: The option's brief is "Synchronous
+                        steps in which a feedback edge carries the
+                        value of the step before"
+                        (_data/decision/dec_first_semantics/opt_kpn_first.yaml
+                        lines 12-14). The engine draft says "Kahn
+                        semantics need blocking reads across
+                        processes"
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 152). The ICD's dataflow step surface has
+                        twelve named parts of execution semantics,
+                        among them invocation, determinism and back
+                        pressure (_sources/mapping.md lines 41-42).
+                        Strength: weak; it asks for a correction of
+                        wording, not a different choice.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_semantics
+    guid_target:        dec_d39b302c1fc446d7828deba12544097e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_kpn_first
+    guid_target:        opt_6675dee41619488b8e4f8d84b2a126d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

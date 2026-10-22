@@ -1,0 +1,52 @@
+id_self:                ann_loaded_graph_overhead_small_per_frame
+guid_self:              ann_cbc502a0754649caa8429265be169ce4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Small per-frame cost of a loaded graph
+brief:                  |
+                        In a loaded graph the wiring checks and buffer
+                        allocation happen when the graph is wired, not
+                        on each step, leaving one indirect call per
+                        node per step. At Patrol's 30 Hz frame rate
+                        that is small against a 33 ms frame, and hot
+                        paths can later be loaded as optimized frozen
+                        islands.
+description:            |
+                        Sources: The dynamic host allocates buffers
+                        and checks edges at wiring time, and rewires
+                        only between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 63-72). A frozen subgraph can be loaded
+                        as one node in a dynamic graph, decided
+                        2026-10-16 (same file, lines 74-80). The Orin
+                        configuration must hold a 720p 30 Hz camera
+                        rate, and 29-30 of 30 frames were measured on
+                        16 October (_sources/cc-patrol-notes/plan.md
+                        lines 178-182). ASSUMPTION: an indirect call
+                        costs on the order of nanoseconds, and a
+                        Patrol graph has tens of nodes, not thousands.
+                        Strength: moderate; the argument weakens for a
+                        high-rate or many-node graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

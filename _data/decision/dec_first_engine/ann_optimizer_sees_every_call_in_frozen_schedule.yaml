@@ -1,0 +1,61 @@
+id_self:                ann_optimizer_sees_every_call_in_frozen_schedule
+guid_self:              ann_8127cd9ea8934740b5375e35b3a987ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Frozen schedule open to whole-program optimization
+brief:                  |
+                        A generated schedule is a straight list of
+                        direct calls over static buffers whose
+                        addresses are constant at link time, so with
+                        LTO or a unity build the compiler can inline
+                        small components and fold the pointer casts
+                        away. A runtime that loads a graph calls each
+                        node through a function pointer from a loaded
+                        library, and the compiler cannot optimize
+                        across that boundary.
+description:            |
+                        Sources: The generated file holds static
+                        storage and static const slot arrays whose
+                        addresses are constant at link time, and the
+                        step is a straight list of direct calls
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 35-41). With -flto or a unity build the
+                        optimizer sees every call and slot address as
+                        a constant, and small components inline into
+                        the schedule (same file, lines 54-57). The
+                        dynamic host dlopens component libraries and
+                        steps nodes through function pointers (same
+                        file, lines 63-68). Patrol's nodes are native
+                        C++ step functions, with no Python on the hot
+                        path (_sources/cc-patrol-notes/plan.md lines
+                        88-92). Strength: strong; per-step overhead is
+                        lowest when the whole schedule is known to the
+                        compiler.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

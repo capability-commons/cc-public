@@ -1,0 +1,64 @@
+id_self:                ann_in_process_kahn_steps_need_no_transport
+guid_self:              ann_0306e222312b4c6cb88e6d3dee090cd9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No transport library for in-process Kahn steps
+brief:                  |
+                        Synchronous Kahn steps inside one process pass
+                        data through plain shared buffers, with no
+                        queue or messaging library. Actors are likely
+                        to call for a message queue and, across
+                        processes or hosts, the still undecided
+                        transport, most likely ZeroMQ.
+description:            |
+                        Sources: Within one process, edges are plain
+                        shared buffers: "No queue is needed and there
+                        is no reason to use anything else"
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 124-125). Between machines the transport
+                        is "very likely ZeroMQ"; between processes on
+                        one host it is ZeroMQ or a shared-memory
+                        queue, still open (same file, lines 126-128).
+                        Owner's statement, 2026-10-20: actors are
+                        expected later. ASSUMPTION: an in-process
+                        actor mailbox could be written without a
+                        third-party library, so the dependency arrives
+                        mainly with cross-process actors. Strength:
+                        moderate; it defers rather than removes the
+                        transport dependency, since Patrol's
+                        cross-host edges will want one anyway
+                        (_sources/cc-patrol-notes/plan.md lines
+                        168-171).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_semantics
+    guid_target:        dec_d39b302c1fc446d7828deba12544097e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_kpn_first
+    guid_target:        opt_6675dee41619488b8e4f8d84b2a126d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_first
+    guid_target:        opt_622ae4ec5987467e8383587cc00303f5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_kpn_and_actors_together
+    guid_target:        opt_ef6ef347393946df9871ef060a18b962
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

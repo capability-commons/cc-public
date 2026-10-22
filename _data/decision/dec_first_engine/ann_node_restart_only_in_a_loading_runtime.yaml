@@ -1,0 +1,56 @@
+id_self:                ann_node_restart_only_in_a_loading_runtime
+guid_self:              ann_aaf860e5ba7e4c3ebdbc7b449d3cc260
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node restart only in a loading runtime
+brief:                  |
+                        A runtime that loads a graph can stop, restart
+                        and rewire a node between steps, so one faulty
+                        node can be reset while the rest keep running.
+                        A frozen schedule can only switch a node off,
+                        so recovering a faulted node means restarting
+                        its whole process.
+description:            |
+                        Sources: In the dynamic host, start, stop,
+                        restart and rewire happen between steps, and a
+                        rewire resets the affected nodes
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). In a frozen schedule only a
+                        per-node enable flag changes at runtime (same
+                        file, lines 39-40), and a frozen island always
+                        runs within a single OS process (same file,
+                        line 80). Owner's statement, 2026-10-20: the
+                        engine is to "incorporate the dynamic-graph
+                        capabilities I'd postponed in the past".
+                        Strength: moderate; frozen islands can later
+                        be loaded as nodes of a dynamic graph (same
+                        file, lines 76-80), so frozen first defers
+                        this rather than losing it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,56 @@
+id_self:                ann_generated_cpp17_builds_on_any_toolchain
+guid_self:              ann_e52b2eca3aa444bc812ed9b120ec7444
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generated C++17 for any toolchain
+brief:                  |
+                        A generated frozen schedule is plain C++17
+                        calls over static storage, so it builds for
+                        any target with a C++17 compiler, including
+                        nvcc and boards without a dynamic loader, and
+                        needs no runtime library ported to each
+                        platform.
+description:            |
+                        Sources: A frozen process is a generated .cpp
+                        with static storage and a straight-line list
+                        of direct calls
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 35-40). C++17 is supported by every
+                        toolchain likely to be met, including CUDA's
+                        nvcc; targets are compute-rich Linux boards,
+                        Jetson Orin Nano first and a Qualcomm board
+                        later
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 155-158). The dynamic host loads
+                        components with dlopen
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 65). ASSUMPTION: dlopen is a POSIX
+                        interface, so a runtime that relies on it
+                        needs another loader on a platform without
+                        one. Strength: moderate; the generated
+                        schedule has the fewer platform dependencies
+                        of the two, but the named targets are Linux
+                        boards, where dlopen is available.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
