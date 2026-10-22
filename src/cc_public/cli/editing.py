@@ -17,12 +17,12 @@ brief:                  |
                         tree.
 description:            |
                         This module holds the new, header, link,
-                        unlink, set, unset, remove, rename, batch and
-                        format commands. Each makes its edit, checks
-                        the tree with the edit in place, and writes it
-                        only if it adds no failure. With --dry-run,
-                        each prints the edit as a diff and writes
-                        nothing.
+                        unlink, set, unset, remove, rename, batch,
+                        import and format commands. Each makes its
+                        edit, checks the tree with the edit in place,
+                        and writes it only if it adds no failure. With
+                        --dry-run, each prints the edit as a diff and
+                        writes nothing.
 usage:                  |
                         cctool new ID [--field NAME VALUE]... [--link
                         RELATION TARGET]...
@@ -44,6 +44,9 @@ usage:                  |
 
                         cctool batch FILEPATH
 
+                        cctool import FILEPATH IRI... --namespace IRI
+                        SHORT RELEASE...
+
                         cctool format [--check]
 edge:                   []
 
@@ -63,6 +66,7 @@ import cc_public.check.check
 import cc_public.cli.group
 import cc_public.edit.edit
 import cc_public.edit.layout
+import cc_public.edit.ontology
 import cc_public.graph.logic
 import cc_public.graph.extract
 
@@ -348,6 +352,50 @@ def batch(path_file, root, is_dry_run):
         click.echo('FILEPATH is not YAML: {error}'.format(error = error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
+    _run(root, is_dry_run, list_operation)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command('import')
+@click.argument('path_ttl', metavar = 'FILEPATH',
+                type = click.Path(exists = True, dir_okay = False, path_type = pathlib.Path))
+@click.argument('list_iri', metavar = 'IRI...', nargs = -1, required = True)
+@click.option('--namespace', 'list_namespace',
+              metavar  = 'IRI SHORT RELEASE',
+              nargs    = 3,
+              multiple = True,
+              required = True,
+              help     = 'Classes whose IRI begins with IRI get ids extcla_SHORT_LABEL and '
+                         'cite the external document RELEASE. Name one for each namespace.')
+@_option
+def import_(path_ttl, list_iri, list_namespace, root, is_dry_run):
+    """
+    Make an external class for each class IRI of the ontology release
+    in the Turtle file FILEPATH, and for every class above it, or bring
+    the external classes made before up to date with the release. Only
+    labels and named superclasses are read; axioms are not. For example:
+
+    \b
+    cctool import CommonCoreOntologiesMerged.ttl \\
+        --namespace http://purl.obolibrary.org/obo/BFO_ bfo extdoc_bfo_2020 \\
+        --namespace https://www.commoncoreontologies.org/ cco extdoc_cco_2_2 \\
+        https://www.commoncoreontologies.org/ont00000958
+
+    """
+
+    list_namespace = [cc_public.edit.ontology.Namespace(*each) for each in list_namespace]
+    try:
+        ontology       = cc_public.edit.ontology.Ontology(path_ttl)
+        list_operation = cc_public.edit.ontology.operations(
+                                cc_public.edit.edit.Tree(root.resolve()),
+                                ontology, list_namespace, list(list_iri))
+    except cc_public.edit.edit.ErrorEdit as error:
+        click.echo(str(error), err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    if not list_operation:
+        click.echo('The external classes agree with the release already.')
+        return
     _run(root, is_dry_run, list_operation)
 
 

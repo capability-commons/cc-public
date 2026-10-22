@@ -158,3 +158,70 @@ def test_format_names_the_files_it_would_change_and_then_changes_them(tree):
     assert result.exit_code == 0
     assert result.stdout == 'Changed _data/register/reg_concern.yaml\n'
     assert _run(tree, 'format', '--check').stdout == ''
+
+
+TEXT_ONTOLOGY = '''\
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix x:    <https://example.org/x/> .
+x:entity    a owl:Class ; rdfs:label "entity"@en .
+x:continuant a owl:Class ; rdfs:label "continuant"@en ; rdfs:subClassOf x:entity .
+x:record    a owl:Class ; rdfs:label "Record Entity"@en ; rdfs:subClassOf x:continuant .
+x:unused    a owl:Class ; rdfs:label "unused"@en ; rdfs:subClassOf x:entity .
+'''
+LIST_IMPORT   = ['--namespace', 'https://example.org/x/', 'x', 'extdoc_iso_1087_2019',
+                 'https://example.org/x/record']
+
+
+# -----------------------------------------------------------------------------
+def _import(tree, text = TEXT_ONTOLOGY, list_arg = LIST_IMPORT):
+    """
+    Return the result of cctool import of text, as a Turtle file in tree.
+
+    """
+
+    path = tree / 'ontology.ttl'
+    path.write_text(text)
+    return _run(tree, 'import', str(path), *list_arg)
+
+
+def test_import_makes_the_class_and_every_class_above_it(tree):
+    result = _import(tree)
+    assert result.exit_code == 0, result.output
+    assert sorted(path.name for path in (tree / '_data/external_class').glob('extcla_x_*')) == [
+        'extcla_x_continuant.yaml', 'extcla_x_entity.yaml', 'extcla_x_record_entity.yaml']
+    text = (tree / '_data/external_class/extcla_x_record_entity.yaml').read_text()
+    assert 'title:                  X Record Entity\n' in text
+    assert 'label:                  Record Entity\n' in text
+    assert '    value:              https://example.org/x/record\n' in text
+    assert 'id_target:          extcla_x_continuant\n' in text
+    assert 'id_target:          extdoc_iso_1087_2019\n' in text
+
+
+def test_import_again_changes_nothing(tree):
+    assert _import(tree).exit_code == 0
+    result = _import(tree)
+    assert result.exit_code == 0
+    assert result.stdout == 'The external classes agree with the release already.\n'
+
+
+def test_import_of_a_new_release_changes_only_what_differs(tree):
+    assert _import(tree).exit_code == 0
+    result = _import(tree, TEXT_ONTOLOGY.replace('"continuant"', '"enduring entity"'))
+    assert result.exit_code == 0, result.output
+    assert result.stdout == 'Wrote _data/external_class/extcla_x_continuant.yaml\n'
+    text = (tree / '_data/external_class/extcla_x_continuant.yaml').read_text()
+    assert 'label:                  enduring entity\n' in text
+
+
+def test_import_refuses_a_class_the_release_lacks(tree):
+    result = _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/missing'])
+    assert result.exit_code == 2
+    assert 'The release has no labelled class https://example.org/x/missing.' in result.stderr
+
+
+def test_import_refuses_a_class_no_namespace_covers(tree):
+    result = _import(tree, list_arg = ['--namespace', 'https://example.org/y/', 'y',
+                                       'extdoc_iso_1087_2019', 'https://example.org/x/record'])
+    assert result.exit_code == 2
+    assert 'No --namespace covers the class https://example.org/x/' in result.stderr
