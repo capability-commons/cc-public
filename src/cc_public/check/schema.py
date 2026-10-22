@@ -39,6 +39,7 @@ edge:                   []
 
 
 import functools
+import json
 import re
 
 import jsonschema
@@ -47,6 +48,7 @@ import jsonschema.validators
 import referencing
 import referencing.exceptions
 
+import cc_public.check.store
 import cc_public.graph.extract
 
 
@@ -78,6 +80,11 @@ COUNT_META        = 4096
 # those that a test changes, and comes back to the first.
 #
 COUNT_SIGNATURE   = 4
+
+# The kind of verdict that the store of the checker keeps for schema
+# validation.
+#
+KIND_STORE        = 'schema'
 ESCAPE            = '\\'
 CLASS_OPEN        = '['
 CLASS_CLOSE       = ']'
@@ -189,22 +196,21 @@ def violations(map_document: cc_public.graph.extract.Documents,
                                  if id_schema not in set_invalid])
     map_validator = {}
     set_row       = set()
-    map_found     = _cached(cache, map_schema)
+    kept          = _Kept(cache, map_schema)
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:
             continue
         if id_schema in set_invalid:
             continue
-        document = map_document[map_file[id_document]][0]
-        found    = map_found.get((id_document, id_schema))
-        if found is not None and found[0] is document:
-            set_row.update(found[1])
+        file             = map_file[id_document]
+        (document, base) = map_document[file]
+        list_row         = kept.get(id_document, id_schema, file, document)
+        if list_row is not None:
+            set_row.update(list_row)
             continue
         if id_schema not in map_validator:
             map_validator[id_schema] = Validator(map_schema[id_schema], registry = registry)
-        file             = map_file[id_document]
-        (document, base) = map_document[file]
         try:
             list_error = errors(map_validator[id_schema], document)
         except referencing.exceptions.Unresolvable as error:
@@ -219,10 +225,109 @@ def violations(map_document: cc_public.graph.extract.Documents,
             continue
         list_row = [_row(id_document, id_schema, file, document, base, error)
                     for error in list_error]
-        map_found[(id_document, id_schema)] = (document, list_row)
+        kept.put(id_document, id_schema, file, document, list_row)
         set_row.update(list_row)
 
+    kept.save()
+
     return sorted(set_row)
+
+
+# -----------------------------------------------------------------------------
+class _Kept:
+    """
+    What validations found before: those that cache keeps, made in this
+    process, and those that the store of the checker keeps, made in an
+    earlier run. Each is reused only with the same schemas.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, cache: dict | None, map_schema: dict[str, dict]):
+        """
+        Gather what validations with the schemas of map_schema found.
+
+        """
+
+        self.map_found  = _cached(cache, map_schema)
+        self.is_stored  = cc_public.check.store.directory() is not None
+        self.digest_set = _digest_set(map_schema) if self.is_stored else ''
+        self.map_stored = (cc_public.check.store.load(KIND_STORE).get(self.digest_set, {})
+                           if self.is_stored else {})
+        self.map_used   = {}
+
+    # -------------------------------------------------------------------------
+    def get(self, id_document, id_schema, file, document) -> list | None:
+        """
+        Return the rows found for document, held in file, under the
+        schema id_schema, or None if they were not kept.
+
+        """
+
+        found = self.map_found.get((id_document, id_schema))
+        key   = self._key(id_document, id_schema, file, document)
+
+        if found is not None and found[0] is document:
+            list_row = found[1]
+        elif key in self.map_stored:
+            list_row = [tuple(row) for row in self.map_stored[key]]
+            self.map_found[(id_document, id_schema)] = (document, list_row)
+        else:
+            return None
+
+        if key:
+            self.map_used[key] = [list(row) for row in list_row]
+        return list_row
+
+    # -------------------------------------------------------------------------
+    def put(self, id_document, id_schema, file, document, list_row) -> None:
+        """
+        Keep list_row, the rows found for document, held in file, under
+        the schema id_schema.
+
+        """
+
+        self.map_found[(id_document, id_schema)] = (document, list_row)
+        key = self._key(id_document, id_schema, file, document)
+        if key:
+            self.map_used[key] = [list(row) for row in list_row]
+
+    # -------------------------------------------------------------------------
+    def save(self) -> None:
+        """
+        Write what was used to the store, in place of what it held, if
+        there is a store and that has changed.
+
+        """
+
+        if self.is_stored and self.map_used != self.map_stored:
+            cc_public.check.store.save(KIND_STORE, {self.digest_set: self.map_used})
+
+    # -------------------------------------------------------------------------
+    def _key(self, id_document, id_schema, file, document) -> str | None:
+        """
+        Return the key of the store for document, held in file, under
+        the schema id_schema, or None if there is no store or the
+        digest of the file is not known.
+
+        """
+
+        digest = cc_public.graph.extract.digest_of(document) if self.is_stored else None
+        if digest is None:
+            return None
+        return cc_public.check.store.key(id_document, id_schema, file, digest)
+
+
+# -----------------------------------------------------------------------------
+def _digest_set(map_schema: dict[str, dict]) -> str:
+    """
+    Return a digest of the schemas of map_schema, which what a document
+    is found to violate depends on.
+
+    """
+
+    return cc_public.check.store.digest(json.dumps(sorted(map_schema.items()),
+                                                   sort_keys = True, default = str))
 
 
 # -----------------------------------------------------------------------------
