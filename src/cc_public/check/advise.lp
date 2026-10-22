@@ -109,3 +109,30 @@ links_to(Holder, Concept) :-
     item(Inner, _, Holder, _, _),
     links_to(Inner, Concept).
 
+
+
+% -----------------------------------------------------------------------------
+% An item that declares it uses a concept, and writes a term of the
+% concept without a link, may mean the concept there. Prose outside the
+% strict fields may use the word in its everyday sense, so this is
+% advice, not a failure. Titles are left to the checks of titles.
+%
+% decl term_to_link(holder: symbol,
+%                   field:  symbol,
+%                   term:   symbol,
+%                   file:   symbol,
+%                   line:   number)
+% did  The {field} of {holder} uses "{term}", a term of a concept it
+%      declares, without a link.
+% fix  Write the term as a link if the concept is meant, or nothing if the word
+%      is meant in its everyday sense.
+#show term_to_link/5.
+
+term_to_link(Holder, Field, Term, File, Line) :-
+    term_word(Holder, Field, Term, File, Line),
+    not strict_field(Holder, Field),
+    Field != "title",
+    declares_concept(Holder, Concept),
+    designation(Concept, Term, Rating),
+    Rating != "deprecated",
+    not designation(Holder, Term, _).

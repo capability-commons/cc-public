@@ -70,9 +70,10 @@ KEY_EXCEPTION     = 'prefix_exception'
 
 # The fields of a concept that hold its terms, by the rating of each.
 #
+RATING_DEPRECATED = 'deprecated'
 MAP_TERM_RATING   = {'term_preferred':  'preferred',
                      'term_admitted':   'admitted',
-                     'term_deprecated': 'deprecated'}
+                     'term_deprecated': RATING_DEPRECATED}
 KEY_REF           = '$ref'
 
 # The parts of a signature that an item may state, as an interface
@@ -193,6 +194,12 @@ PREDICATE         = {
     'avoided_word':       (('holder', 'word', 'file', 'line:number'),
                            'The text of a field of the item holder uses word, which a '
                            'writing style rule asks to replace, in file at line.'),
+    'term_word':          (('holder', 'field', 'term', 'file', 'line:number'),
+                           'The text of the field of the item holder uses the words of '
+                           'term, a preferred or admitted term of a concept, outside '
+                           'any link or double quotes, in file at line. The words may '
+                           'differ from term in case or by a plural ending. Where '
+                           'terms overlap, the longest is taken.'),
     'designation':        (('concept', 'term', 'rating'),
                            'The concept has the term, rated preferred, admitted or '
                            'deprecated.'),
@@ -335,6 +342,11 @@ SET_RECEIVER      = {'self', 'cls'}
 Facts             = dict[str, set[tuple[str, ...]]]
 Documents         = dict[str, tuple[typing.Any, int]]
 
+# The terms to search text for, keyed by their words in lower case, and
+# the first word of each term of more than one word.
+#
+Terms             = tuple[dict[str, str], set[str]]
+
 
 # -----------------------------------------------------------------------------
 class ErrorRead(Exception):
@@ -475,6 +487,7 @@ def facts_of(map_document: Documents) -> Facts:
 
     facts                     = {name: set() for name in PREDICATE}
     facts['word_replacement'] = _replacements(map_document)
+    terms                     = _terms(map_document)
 
     for (file, (document, base)) in map_document.items():
         if file == file_of(file):
@@ -484,7 +497,7 @@ def facts_of(map_document: Documents) -> Facts:
             continue
         if document is None:
             continue
-        _walk(document, '', (file, base), facts)
+        _walk(document, '', (file, base), facts, terms)
         if not isinstance(document, dict):
             continue
         _ports(document, facts)
@@ -524,6 +537,69 @@ def _forms(facts: Facts) -> set[tuple[str, str]]:
             set_form.update((term, form) for form in forms(term))
 
     return set_form
+
+
+# -----------------------------------------------------------------------------
+def _terms(map_document: Documents) -> Terms:
+    """
+    Return each preferred or admitted term that a register entry gives,
+    keyed by its words in lower case, and the first word of each term of
+    more than one word. They are read before any text, so that every
+    text can be searched for all of them.
+
+    """
+
+    map_term  = {}
+    set_first = set()
+
+    for (document, _) in map_document.values():
+        table = document.get(KEY_TABLE) if isinstance(document, dict) else None
+        for entry in _map(table).values():
+            if not isinstance(entry, dict):
+                continue
+            for key in (key for (key, rating) in MAP_TERM_RATING.items()
+                        if rating != RATING_DEPRECATED):
+                value = entry.get(key)
+                for term in [value] if isinstance(value, str) else _list_str(value):
+                    list_word                     = REGEX_WORD.findall(term.lower())
+                    map_term[' '.join(list_word)] = term
+                    if len(list_word) > 1:
+                        set_first.add(list_word[0])
+
+    return (map_term, set_first)
+
+
+# -----------------------------------------------------------------------------
+def _term_words(text: str, terms: Terms) -> list[tuple[str, int]]:
+    """
+    Return each term of terms whose words text uses, with the offset in
+    text where they begin. The longest term is taken where terms
+    overlap, and the last word may have a plural ending.
+
+    """
+
+    (map_term, set_first) = terms
+    size_max              = max((key.count(' ') + 1 for key in map_term), default = 0)
+
+    list_match = list(REGEX_WORD.finditer(text))
+    list_word  = [match.group(0).lower() for match in list_match]
+    list_found = []
+    index      = 0
+
+    while index < len(list_word):
+        size_top = min(size_max, len(list_word) - index) if list_word[index] in set_first else 1
+        for size in range(size_top, 0, -1):
+            words = ' '.join(list_word[index:index + size])
+            term  = next((map_term[form] for form in forms(words) if form in map_term),
+                         None)
+            if term is not None:
+                list_found.append((term, list_match[index].start()))
+                index += size
+                break
+        else:
+            index += 1
+
+    return list_found
 
 
 # -----------------------------------------------------------------------------
@@ -942,11 +1018,16 @@ def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int
 
 
 # -----------------------------------------------------------------------------
-def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts) -> None:
+def _walk(node:     typing.Any,
+          holder:   str,
+          location: tuple[str, int],
+          facts:    Facts,
+          terms:    Terms) -> None:
     """
     Add the facts held by node, whose nearest enclosing item is holder.
     location is the file that holds node, and the line of the file that
-    the first line of its YAML document is on.
+    the first line of its YAML document is on. terms are the terms that
+    its text is searched for.
 
     """
 
@@ -955,7 +1036,7 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
         for (position, value) in enumerate(node):
             if isinstance(value, dict) and isinstance(value.get(KEY_ID_SELF), str):
                 facts['position'].add((value[KEY_ID_SELF], str(position)))
-            _walk(value, holder, location, facts)
+            _walk(value, holder, location, facts, terms)
         return
 
     if not isinstance(node, dict):
@@ -977,7 +1058,7 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
         holder = id_self
 
     _reference(node, holder, location, facts)
-    _text(node, holder, location, facts)
+    _text(node, holder, location, facts, terms)
 
     table = node.get(KEY_TABLE)
 
@@ -989,7 +1070,7 @@ def _walk(node: typing.Any, holder: str, location: tuple[str, int], facts: Facts
                                                  str(entry.get(KEY_ID_SELF))))
 
     for value in node.values():
-        _walk(value, holder, location, facts)
+        _walk(value, holder, location, facts, terms)
 
 
 # -----------------------------------------------------------------------------
@@ -1020,10 +1101,12 @@ def _reference(node:     dict[str, typing.Any],
 def _text(node:     dict[str, typing.Any],
           holder:   str,
           location: tuple[str, int],
-          facts:    Facts) -> None:
+          facts:    Facts,
+          terms:    Terms) -> None:
     """
-    Add a fact for each id that the text of a field of node mentions,
-    and for each schema that node refers to with a $ref.
+    Add a fact for each id and each of terms that the text of a field
+    of node mentions, and for each schema that node refers to with a
+    $ref. The fields that give terms are not searched for terms.
 
     """
 
@@ -1035,14 +1118,16 @@ def _text(node:     dict[str, typing.Any],
         if key in SET_KEY_UNNAMED or key.startswith((PREFIX_ID, PREFIX_GUID)):
             continue
         is_judged = key != KEY_BREAKS
+        field     = (str(key), ({}, set()) if key in MAP_TERM_RATING else terms)
         if isinstance(value, str):
             _mention(value, holder, location[0], int(_line(node, key, location)), facts,
-                     is_judged)
+                     is_judged, field)
         elif isinstance(value, list):
             for (index, each) in enumerate(value):
                 if isinstance(each, str):
                     _mention(each, holder, location[0],
-                             int(_line_item(value, index, location)), facts, is_judged)
+                             int(_line_item(value, index, location)), facts, is_judged,
+                             field)
 
 
 # -----------------------------------------------------------------------------
@@ -1051,12 +1136,15 @@ def _mention(text:      str,
              file:      str,
              line:      int,
              facts:     Facts,
-             is_judged: bool = True) -> None:
+             is_judged: bool                        = True,
+             field:     tuple[str, Terms]          = ('', ({}, set()))) -> None:
     """
     Add a fact for each id that text mentions, and, if is_judged, for
-    each link to a concept and each word that a writing style rule asks
-    to replace, outside double quotes. line is the line of the file that the field holding text
-    is on. The text of a block scalar begins on the line below its key.
+    each link to a concept, each word that a writing style rule asks to
+    replace, and each term that field, the name of the field and the
+    terms to search it for, uses outside a link, all outside double
+    quotes. line is the line of the file that the field holding text is
+    on. The text of a block scalar begins on the line below its key.
 
     """
 
@@ -1077,12 +1165,19 @@ def _mention(text:      str,
             facts['term_link'].add((holder, term, concept, file,
                                     str(line + offset + text.count('\n', 0, match.start()))))
 
-    set_avoided = {row[1] for row in facts['word_replacement']}
-
-    if not (is_judged and set_avoided):
+    if not is_judged:
         return
 
     unquoted = REGEX_QUOTED.sub(lambda match: ' ' * len(match.group(0)), text)
+    plain    = unquoted
+    for regex in (REGEX_TERM_LINK, REGEX_MENTION):
+        plain = regex.sub(lambda match: ' ' * len(match.group(0)), plain)
+
+    for (term, start) in _term_words(plain, field[1]):
+        facts['term_word'].add((holder, field[0], term, file,
+                                str(line + offset + text.count('\n', 0, start))))
+
+    set_avoided = {row[1] for row in facts['word_replacement']}
 
     for match in REGEX_WORD.finditer(unquoted):
         word = match.group(0).lower()
