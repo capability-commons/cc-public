@@ -22,16 +22,23 @@ description:            |
                         lines 108-112). term_type had guid
                         term_0d0e04ed926841818a9ef3a06243a4fa (git
                         show 232f001^:_data/register/reg_concept.yaml
-                        lines 153-155); concept_type has
-                        concept_1fbd78a10f1244f2b8df91eceb7bb739
+                        lines 153-155); at 232f001 con_type had
+                        con_0d0e04ed926841818a9ef3a06243a4fa
                         (232f001:_data/register/reg_concept.yaml line
                         55). Of 138 term_ guids, 7 survive with a new
-                        prefix and none unchanged. guid_target is the
-                        sole resolvable reference
-                        (_data/schema/sch_trait_edge.yaml). The later
+                        prefix and none unchanged. The later move from
+                        con_ to concept_ minted new hex digits:
+                        concept_type now has
+                        concept_1fbd78a10f1244f2b8df91eceb7bb739
+                        (_data/register/reg_concept.yaml lines 72-73).
+                        A reference resolves by its id, and the guid
+                        finds the item only when the id names nothing
+                        (_data/schema/sch_trait_edge.yaml lines
+                        26-31), so a foreign edge whose old id and old
+                        guid both name nothing dangles. The later
                         check retyped_guid flags this pattern
                         (src/cc_public/commit/change.lp lines
-                        104-118). ASSUMPTION: no record shows whether
+                        120-155). ASSUMPTION: no record shows whether
                         any repository outside cc-public held edges to
                         term_ guids, so the harm done may be nil; the
                         cost grows with partners.

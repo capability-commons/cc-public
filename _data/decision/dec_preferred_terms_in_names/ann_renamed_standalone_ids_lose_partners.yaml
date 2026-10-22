@@ -12,21 +12,29 @@ title:                  Renamed ids that partners may hold
 brief:                  |
                         Renaming to follow a new deprecation keeps the
                         old id as an alias for a register entry, but
-                        not for a standalone item, so a partner that
-                        refers to a standalone item by id loses it.
+                        not for a standalone item. A partner that
+                        refers to a standalone item by its old id is
+                        found by the guid but fails as outdated, and a
+                        mention of the old id leads nowhere.
 description:            |
                         cctool rename keeps the old id in the alias
                         list of a register entry (AGENTS.md lines
-                        49-53), and rename_without_alias applies only
-                        to embedded items, such as register entries
+                        124-128), and rename_without_alias applies
+                        only to register entries
                         (src/cc_public/commit/change.lp lines
-                        148-166). A guid never changes (AGENTS.md
-                        lines 44-45). The renames in dc5f35f touched
-                        predicate names in the rule files, not data
-                        item ids. ASSUMPTION: predicate names are
-                        internal and do not reach partners. If
-                        partners refer by guid, the point shrinks to a
-                        documentation matter.
+                        291-296). A guid never changes (AGENTS.md
+                        lines 114-115), and a reference whose id names
+                        nothing is found by its guid and reported as
+                        outdated_reference
+                        (src/cc_public/check/check.lp lines
+                        2031-2035). The renames in dc5f35f touched
+                        predicate names in the rule files. Each shown
+                        predicate is now an item with an lpp_ id, such
+                        as lpp_cc_public.check.check.unargued_driver
+                        (check.lp line 1500), so a predicate rename
+                        now renames an item id too. If partners refer
+                        by guid, the point shrinks to a documentation
+                        matter.
 
 edge:
 

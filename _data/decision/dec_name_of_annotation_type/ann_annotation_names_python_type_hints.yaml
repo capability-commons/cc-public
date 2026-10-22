@@ -12,18 +12,27 @@ title:                  Python meaning of annotation
 brief:                  |
                         In Python, annotation names a type hint, and
                         the tooling is Python with type hints
-                        throughout. The code never uses the word in
-                        that sense today, so the cost is latent.
+                        throughout. The extractor already reads type
+                        hints through the attribute named annotation
+                        to check signatures, so the Python sense is in
+                        the code that builds the graph.
 description:            |
                         Python glossary, term annotation
                         (https://docs.python.org/3/glossary.html#term-annotation).
-                        Type hints, for example
-                        src/cc_public/edit/edit.py line 474. Under src
-                        the word appears only in the graph sense
-                        (src/cc_public/check/check.lp lines 135, 290,
-                        418, 551, 567-580; edit.py line 117). The cost
-                        grows only if the tooling inspects type hints
-                        by name. A weak challenge.
+                        Type hints are on every function, for example
+                        src/cc_public/edit/edit.py line 233.
+                        _parameters in src/cc_public/graph/extract.py
+                        reads arg.annotation as the type of each
+                        parameter (line 997), _returns reads
+                        node.returns (line 1014), and
+                        signature_mismatch compares them with what an
+                        interface member states
+                        (src/cc_public/check/check.lp lines 872-883).
+                        Elsewhere under src the word has the graph
+                        sense (check.lp line 1109;
+                        src/cc_public/web/page.py lines 251-252). The
+                        cost grows as more tooling inspects type
+                        hints. A weak challenge.
 
 edge:
 
