@@ -1,0 +1,69 @@
+id_self:                ann_engine_build_joins_cc_public_gate
+guid_self:              ann_6f389031db8b4278a6a189758ae6c0f5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine build time in cc-public's gate
+brief:                  |
+                        With the engine in cc-public, a C++ build and
+                        its tests join a commit gate that already
+                        takes about 78 s on 2 CPUs, under half of the
+                        180 s at which a remote device call dies; in a
+                        peer of its own or in cc-patrol the tooling's
+                        gate stays as it is. How often cc-public pays
+                        depends on the decision on when the gate
+                        builds the C++, so this argues for care there
+                        as much as against this option, and the
+                        engine's run-time speed does not depend on
+                        where its source lives.
+description:            |
+                        Sources:
+                        - A code commit takes about 78 s in the gate
+                          on atlas, which has
+                          2 CPUs (context note, _sources/context.md line 31).
+                        - Device tool calls in a remote session die at
+                          180 s
+                          (_data/decision/dec_growth_policy/ann_small_tree_keeps_gate_in_session_limit.yaml).
+                        - The gate runs its stages in a temporary copy
+                          of the staged
+                          content (src/cc_public/gate/gate.py lines 19-21).
+                        - Assumption: a C++ build and its tests add
+                          tens of seconds or
+                          more to a gate that runs them; this is not measured.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_engine_code
+    guid_target:        dec_2ddc5f47766f4d52a75350025a963a3c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_code_in_its_own_peer
+    guid_target:        opt_bc23cb20ef3341baafe3306a7cc71ce9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_code_in_cc_patrol
+    guid_target:        opt_a96dc6904d8343e9b08caf269edc0753
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_code_in_cc_public
+    guid_target:        opt_1dc2ca2f5b6d48e9934b3ed0ec007733
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

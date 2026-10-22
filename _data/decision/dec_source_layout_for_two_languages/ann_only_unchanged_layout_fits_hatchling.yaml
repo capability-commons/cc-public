@@ -1,0 +1,65 @@
+id_self:                ann_only_unchanged_layout_fits_hatchling
+guid_self:              ann_a6f938ebaafb46d1abb6c13d3511213e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fit with hatchling's default package discovery
+brief:                  |
+                        hatchling finds the package to ship from the
+                        project name, at src/cc_public, with no
+                        configuration. Renaming the package to cctool
+                        or moving it to src/python breaks that match,
+                        so the build needs explicit file selection
+                        that must then track hatchling's options; the
+                        effect on dependencies is small.
+description:            |
+                        Sources:
+                        - Without file selection options, hatchling's
+                          wheel builder
+                          looks for NAME/__init__.py, src/NAME/__init__.py, NAME.py and
+                          NAMESPACE/NAME/__init__.py, and raises an error if none match
+                          (https://hatch.pypa.io/latest/plugins/builder/wheel/).
+                        - The project is named cc-public, uses
+                          hatchling, and has no
+                          hatch build section (pyproject.toml lines 37 and 53-55).
+                        - The Python package is at src/cc_public
+                          (pyproject.toml line
+                          51; AGENTS.md line 39).
+                        - No PyPI project named cctool existed on
+                          2026-10-22
+                          (https://pypi.org/pypi/cctool/json returned 404), so the
+                          rename meets no name already taken there.
+                        - Strength: weak; explicit file selection is a
+                          few lines.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_engine_beside_cc_public
+    guid_target:        opt_c55debeb1a2f4ba081d550b3008a6f26
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_component_renamed
+    guid_target:        opt_58bca82f40e645448df2b92d0fa33bfb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_language
+    guid_target:        opt_a41368e5b75b439cb7a8d9ed8a1329f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

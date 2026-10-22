@@ -1,0 +1,92 @@
+id_self:                ann_generator_and_engine_in_one_commit_and_gate
+guid_self:              ann_3d618875716440c8b6490d232bd1423e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generator and engine in one commit and one gate
+brief:                  |
+                        The schedule generator writes the C++ that the
+                        engine compiles and runs, so a change to one
+                        is right only if the other agrees. With the
+                        engine in cc-public, one commit changes both,
+                        one gate tests them together and one impact
+                        listing shows the whole change to a reviewer;
+                        elsewhere the same change spans two
+                        repositories and a release between them, and
+                        the two can disagree without either gate
+                        seeing it.
+description:            |
+                        Sources:
+                        - The dataflow engine component covers the C++
+                          engine and the
+                          generator that turns a resolved dataflow graph into what the
+                          engine runs (_data/logical_component/lco_dataflow_engine.yaml
+                          lines 12-15).
+                        - Generated code includes the engine header
+                          and calls component
+                          functions through its signature, with slot arrays
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines
+                          19-26 and 33-52).
+                        - cctool resolves a variant and generates the
+                          frozen C++
+                          schedule from it (_sources/cc-patrol-notes/variants.md lines
+                          92-95).
+                        - The peer option keeps the dataflow model,
+                          its checks and the
+                          schedule generator in cc-public and the engine elsewhere
+                          (_data/decision/dec_home_of_the_engine_code/opt_engine_code_in_its_own_peer.yaml
+                          lines 12-16).
+                        - cctool impact lists the items a commit adds,
+                          removes, renames
+                          or changes and the untouched items linked to them, for review
+                          (AGENTS.md lines 201-204).
+                        - Owner's statement, 2026-10-22T15:10: "I want
+                          the engine's C++
+                          to live in the cc-public repository - but that may require us
+                          to re-arrange the cc-tool source code a bit."
+                        - Strength: strong for maintainability and
+                          functional
+                          suitability; moderate for reviewability, since how often a
+                          change crosses the model and the engine is not yet known.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_engine_code
+    guid_target:        dec_2ddc5f47766f4d52a75350025a963a3c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_code_in_cc_public
+    guid_target:        opt_1dc2ca2f5b6d48e9934b3ed0ec007733
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_code_in_its_own_peer
+    guid_target:        opt_bc23cb20ef3341baafe3306a7cc71ce9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_code_in_cc_patrol
+    guid_target:        opt_a96dc6904d8343e9b08caf269edc0753
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

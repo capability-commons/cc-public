@@ -1,0 +1,54 @@
+id_self:                ann_pre_push_still_gates_before_release
+guid_self:              ann_2824e3f17d544070a1cb7fc5d5ecd268
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Push gate still ahead of any release
+brief:                  |
+                        Leaving the C++ to the push gate lets a broken
+                        C++ commit land in local history, but the push
+                        gate still runs before anything reaches
+                        origin, whose dev branch is to become main
+                        with the first public release. Defects found
+                        after release do not rise; what rises is the
+                        number of commits between a defect and its
+                        discovery.
+description:            |
+                        Sources:
+                        - The pre-push hook runs the history check,
+                          which is the check
+                          of record (AGENTS.md lines 93-97).
+                        - The gate of a push runs every stage on what
+                          is pushed and uses
+                          no verdict store (src/cc_public/gate/gate.py lines 28-32 and
+                          94-97; context note, _sources/context.md line 31).
+                        - No release has been made yet, and dev on
+                          origin will move to
+                          main, likely with the first public release (owner's statement,
+                          2026-10-22T16:17; context note, _sources/context.md lines
+                          32-33).
+                        - Strength: weak; it limits the functional
+                          harm of the option
+                          rather than showing a benefit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_the_gate_builds_cpp
+    guid_target:        dec_b63623ea1f6540aca21138b2ee8dece6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_build_cpp_at_pre_push
+    guid_target:        opt_cf0dfccddfdb410080280e047809c088
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

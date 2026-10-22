@@ -1,0 +1,58 @@
+id_self:                ann_cpp_extractor_needed_for_first_slice
+guid_self:              ann_ea5375f70a894919ace50459e62e8d79
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extractor dependency needed for the first slice anyway
+brief:                  |
+                        The plan expects every Patrol interface to
+                        have a C++ surface, and 17 of the 18 drafts
+                        run in GStreamer or the engine, so the
+                        extractor and its dependency are not optional
+                        for long, and deferring them only defers the
+                        same dependency. Taking it from the start
+                        means it is chosen and locked once, before C++
+                        interfaces pile up unchecked.
+description:            |
+                        Sources:
+                        - Every Patrol interface control document will
+                          have a cpp native
+                          surface or a dataflow step surface implemented in C++, so a
+                          C++ extractor moves from later to needed for the first slice,
+                          or the first documents go in unchecked
+                          (_sources/cc-patrol-notes/plan.md lines 99-102).
+                        - The cc-patrol drafts hold 18 interface
+                          control documents, 8
+                          GStreamer, 9 engine and 1 Python
+                          (_sources/cc-patrol-notes/decomposition-readiness.md line
+                          197).
+                        - Strength: weak; from the dependency view it
+                          argues timing
+                          only, not whether the dependency is taken.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_accept_unchecked_cpp_icds
+    guid_target:        opt_4266cad00ec24961add68a4f4512d07e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

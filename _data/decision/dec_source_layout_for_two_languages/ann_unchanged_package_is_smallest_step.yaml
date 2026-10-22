@@ -1,0 +1,68 @@
+id_self:                ann_unchanged_package_is_smallest_step
+guid_self:              ann_154459bed65c4369849c94aa605d1064
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unchanged package as the smallest step
+brief:                  |
+                        Adding a dataflow_engine folder beside
+                        cc_public changes no module id, no import and
+                        not the cctool command, so no existing check
+                        or command changes its result and the change
+                        that brings in C++ stays in the new folder. It
+                        keeps the two names for the tooling.
+description:            |
+                        Sources:
+                        - Module ids follow from the path under src
+                          (AGENTS.md lines
+                          110-112; src/cc_public/graph/extract.py lines 723-741).
+                        - The package is cc_public and the command is
+                          cctool
+                          (pyproject.toml lines 51 and 62).
+                        - pytest collects tests under src with src on
+                          the path
+                          (pyproject.toml lines 113-114).
+                        - The gate treats any path under src as code,
+                          so C++ there is
+                          gated as code under all three layouts
+                          (src/cc_public/gate/gate.py lines 94-99 and 173-191).
+                        - Owner's statement, 2026-10-22T15:10:
+                          rearranging the cc-tool
+                          source "may" be required.
+                        - Strength: moderate for maintainability; weak
+                          for simplicity
+                          and functional suitability, since it shows the absence of a
+                          cost now more than a gain, and the rename's costs are
+                          temporary.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_engine_beside_cc_public
+    guid_target:        opt_c55debeb1a2f4ba081d550b3008a6f26
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

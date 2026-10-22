@@ -1,0 +1,82 @@
+id_self:                ann_unchecked_cpp_interfaces_drift_silently
+guid_self:              ann_091331b217db49769805a3ef90a95cab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silent drift of unchecked C++ interfaces
+brief:                  |
+                        An interface control document whose C++
+                        signatures nothing compares with the code can
+                        drift from it with no check failing, and the
+                        mismatch then surfaces only when parts are
+                        joined or a person notices. The first Patrol
+                        slice is planned as a document with a native
+                        C++ surface, so the gap opens with the first
+                        document.
+description:            |
+                        Sources:
+                        - Today only Python signatures are checked
+                          against interface
+                          control documents; there is no C++ extractor (context note,
+                          _sources/context.md line 37).
+                        - The parameter and signature mismatch checks
+                          compare stated
+                          parts with Python facts only, and their fix text reads change
+                          the member if the interface has changed, or the code if it has
+                          drifted (src/cc_public/check/check.lp lines 775-825 and
+                          841-883).
+                        - The schema already admits language cpp on a
+                          surface
+                          (_data/schema/sch_interface_control_document.yaml lines
+                          606-612).
+                        - Existing C++ step functions map to documents
+                          with a native cpp
+                          surface, and the first slice is a retiming document with a cpp
+                          surface (_sources/cc-patrol-notes/plan.md lines 49, 55-58 and
+                          200).
+                        - A rule claims no more than something holds
+                          (_data/register/reg_design_rule.yaml lines 44-51).
+                        - Limit noted by reliability and functional
+                          suitability: the
+                          engine's own checks cover dataflow edges, by a hash of the
+                          dtype at wiring time and a static_assert on size in generated
+                          code, so the gap is widest for native surfaces
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines 59,
+                          67 and 98-101).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_accept_unchecked_cpp_icds
+    guid_target:        opt_4266cad00ec24961add68a4f4512d07e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

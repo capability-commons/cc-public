@@ -1,0 +1,74 @@
+id_self:                ann_libclang_dependency_size_and_packaging
+guid_self:              ann_2673f4a308ea4195982c43e1240fd8d6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Size and packaging of the libclang dependency
+brief:                  |
+                        A libclang extractor adds the Clang libraries,
+                        tens of megabytes per platform, and Python
+                        bindings whose PyPI packagings are each kept
+                        by one person, one with no release since March
+                        2024; conda-forge carries current builds of
+                        both under a license compatible with
+                        Apache-2.0. Adding it edits pyproject.toml,
+                        which only the owner can relock, and leaves a
+                        new dependency to keep working.
+description:            |
+                        Sources:
+                        - The libclang wheel on PyPI bundles the
+                          shared library, has one
+                          maintainer, and its latest release is 18.1.1 of 2024-03-17
+                          (https://pypi.org/project/libclang/).
+                        - The clang package on PyPI has only the
+                          bindings, one
+                          maintainer, latest 21.1.7 of 2025-12-18
+                          (https://pypi.org/project/clang/).
+                        - conda-forge carries libclang-cpp22.1 at
+                          22.1.8, Apache-2.0
+                          WITH LLVM-exception, about 23 MB for linux-64 and 15 to 16 MB
+                          for macOS, and python-clang at 23.1.4 under the same license
+                          (https://prefix.dev/channels/conda-forge/packages/libclang-cpp22.1;
+                          https://prefix.dev/channels/conda-forge/packages/python-clang).
+                        - cc-public is licensed Apache-2.0 (LICENSE
+                          line 2;
+                          pyproject.toml line 40), and its environment already takes
+                          clingo from conda-forge (pyproject.toml lines 58 and 66).
+                        - Any edit to pyproject.toml makes pixi.lock
+                          stale, and only the
+                          owner can relock (context note, _sources/context.md line 30).
+                        - Strength: moderate; conda-forge's current
+                          builds largely
+                          answer the packaging risk.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_accept_unchecked_cpp_icds
+    guid_target:        opt_4266cad00ec24961add68a4f4512d07e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

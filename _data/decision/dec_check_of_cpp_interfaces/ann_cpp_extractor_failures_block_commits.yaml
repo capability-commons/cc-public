@@ -1,0 +1,52 @@
+id_self:                ann_cpp_extractor_failures_block_commits
+guid_self:              ann_318255277800408790a33899fb17cf52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extractor failures that block commits
+brief:                  |
+                        A libclang extractor run in the gate is a new
+                        part that can fail on code it cannot parse,
+                        such as C++20 or CUDA sources, and a failure
+                        there stops every commit until it is fixed.
+                        Building it before the first document puts
+                        that risk on the critical path at once.
+description:            |
+                        Sources:
+                        - libclang is the planned route for the
+                          extractor
+                          (_sources/cc-patrol-notes/plan.md lines 77-80).
+                        - Patrol host code is C++20 and its CUDA is
+                          C++17
+                          (_sources/cc-patrol-notes/plan.md lines 95-98).
+                        - A failure in any gate stage stops the commit
+                          (README.md lines
+                          71-74).
+                        - Assumption: libclang will not parse every
+                          Patrol source
+                          cleanly without per-file flags.
+                        - Strength: weak; it argues for a careful
+                          build of the extractor
+                          more than for leaving C++ unchecked.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

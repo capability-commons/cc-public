@@ -1,0 +1,63 @@
+id_self:                ann_cpp_toolchain_in_every_environment
+guid_self:              ann_362f0c9934494d0e9984c93f2cd7426d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Toolchain in every working environment
+brief:                  |
+                        If every code commit builds the C++, every
+                        working environment, including one used only
+                        for Python, must carry the compiler and build
+                        tools. Building at pre-push still needs them
+                        where the push happens but keeps the commit
+                        gate free of them, though with one pixi
+                        environment per project the toolchain enters
+                        the lock either way.
+description:            |
+                        Sources:
+                        - The current environment holds no C++
+                          compiler or build tool
+                          (search of pixi.lock).
+                        - The atlas VM has no network, so only the
+                          owner can relock
+                          (context note, _sources/context.md line 30).
+                        - A commit gate for a code commit takes about
+                          78 s on atlas
+                          (context note, _sources/context.md line 31).
+                        - Assumption: the toolchain would come from
+                          conda-forge compiler
+                          packages added to the pixi environment.
+                        - Strength: weak; only where the toolchain is
+                          exercised differs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_the_gate_builds_cpp
+    guid_target:        dec_b63623ea1f6540aca21138b2ee8dece6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_build_cpp_at_pre_push
+    guid_target:        opt_cf0dfccddfdb410080280e047809c088
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_build_cpp_when_staged
+    guid_target:        opt_1c2a66a2cb7c4721bc839dd5b8312231
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_build_cpp_every_code_commit
+    guid_target:        opt_af1f3802836d418795b072f88061aa84
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
