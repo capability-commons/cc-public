@@ -1,0 +1,60 @@
+id_self:                ann_commit_items_already_hold_the_release_content
+guid_self:              ann_15fbaa52a26b4162b620883ae336b6a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release content already held by the commit items
+brief:                  |
+                        The release notes and the bump can be computed
+                        from the commit items between two tags, so a
+                        release item adds a record whose content the
+                        commit items already hold. A plain tag is the
+                        one option that adds no new mechanism for the
+                        record.
+description:            |
+                        Sources: every commit carries a commit item
+                        with a templated title verb, and the commit
+                        check detects renames and removals (context
+                        note, _sources/context.md line 34). The commit
+                        check compares the graph before and after a
+                        commit and finds renamed items by guid
+                        (src/cc_public/commit/change.lp lines 107-111;
+                        src/cc_public/commit/change.py lines 19-25).
+                        The owner values that the notes can be
+                        generated mechanically from the graph (owner's
+                        statement, 2026-10-22T16:28). Strength:
+                        moderate; it holds only while a release states
+                        nothing beyond its version and the commits it
+                        covers, which is not yet shown either way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_plain_release_tag
+    guid_target:        opt_092d384f798740f8a08672ea995badfd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_file_in_data
+    guid_target:        opt_9992b9fe32dd44318c32f41dd89fcc57
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

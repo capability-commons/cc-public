@@ -1,0 +1,93 @@
+id_self:                ann_commit_verbs_do_not_say_what_breaks
+guid_self:              ann_af06a569dacf4189b8af9eb1afa9a645
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Breaking changes the commit verbs do not classify
+brief:                  |
+                        A computed bump is only as true as the commit
+                        items, and a Change or Fix commit, a behavior
+                        change that touches no item id, or a Lock
+                        commit that pulls in a breaking upstream
+                        release can each be counted as minor or patch.
+                        SemVer also judges breaks against a declared
+                        public API that cc-public has not declared,
+                        and the rule for 0.y.z bumps is not stated.
+                        Until these are recorded, the scheme needs a
+                        way for a person to set or raise the bump.
+description:            |
+                        Sources: the title templates include "Change
+                        OBJECT so that STATEMENT" and "Fix OBJECT so
+                        that STATEMENT", with no field for
+                        compatibility (_data/schema/sch_commit.yaml
+                        lines 56-60 and 84). The verbs include Change,
+                        Fix and Lock as well as Remove and Rename
+                        (context note, _sources/context.md line 34). A
+                        commit that changes pyproject.toml or
+                        pixi.lock is treated as code (README.md lines
+                        74-77). A class or function gets an item only
+                        when something must point at it (AGENTS.md
+                        lines 110-113). The per-commit history check
+                        does not cover dangling_reference or
+                        dangling_mention
+                        (_data/decision/dec_commit_gate/ann_commit_gate_misses_rebased_commits.yaml
+                        lines 23-27). SemVer 2.0.0 item 1 requires a
+                        declared public API and item 4 says anything
+                        may change under major version zero
+                        (https://semver.org/). cc-public is at 0.1.0
+                        and has never released (context note,
+                        _sources/context.md line 33); the owner
+                        accepts heavy churn before 1.0 (owner's
+                        statement, 2026-10-22T16:23). The owner will
+                        ship the whole of _data (owner's statement,
+                        2026-10-22T16:30). Assumptions: no rule yet
+                        classifies a Change or Lock commit as
+                        breaking; no item marks the public API; some
+                        breaking changes, such as a changed default,
+                        touch no item id. Strength: moderate; it is a
+                        gap to fill before the computed bump is
+                        trusted, and a rule that treats Lock commits
+                        as at least minor plus a manual override would
+                        close most of it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_version_scheme
+    guid_target:        dec_527664463a1c4bc3b14fe1674fe6a73b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_semver_computed
+    guid_target:        opt_b4e5e12839114b09b432000ff179b5e1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_semver_by_hand
+    guid_target:        opt_dbea9645dac3468ebc17d4088a023199
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

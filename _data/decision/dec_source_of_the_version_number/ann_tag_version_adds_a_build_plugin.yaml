@@ -1,0 +1,66 @@
+id_self:                ann_tag_version_adds_a_build_plugin
+guid_self:              ann_5e70c58d35194f95baf5ceefd57c5f48
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build plugin needed to read the version from the tag
+brief:                  |
+                        Reading the version from a git tag needs a
+                        version-source plugin for hatchling, such as
+                        hatch-vcs, and a dynamic version field, which
+                        adds a third-party build dependency that every
+                        build of the package must resolve. Writing the
+                        version in pyproject.toml needs nothing beyond
+                        hatchling.
+description:            |
+                        Sources: the build backend is hatchling, with
+                        no other build requirement (pyproject.toml
+                        lines 53-55). hatch-vcs is an MIT licensed
+                        hatchling plugin that takes the version from
+                        VCS tags; its latest release is 0.5.0 of
+                        2025-05-27, and it takes setuptools-scm
+                        parameters
+                        (https://pypi.org/project/hatch-vcs).
+                        pixi.lock hashes the local package's metadata
+                        (context note, _sources/context.md line 30).
+                        hatch-vcs requires setuptools-scm>=8.2.0
+                        (https://pypi.org/pypi/hatch-vcs/json,
+                        requires_dist), so the build gains two
+                        packages. Assumption: a dynamic version may
+                        interact with how pixi.lock records the local
+                        package, which nobody has tested here.
+                        Strength: moderate for dependency risk, weak
+                        for simplicity, since one small plugin weighs
+                        against a standing duplicate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_in_pyproject
+    guid_target:        opt_27a3b53a8c8f40aea67a32d53a10bc1f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

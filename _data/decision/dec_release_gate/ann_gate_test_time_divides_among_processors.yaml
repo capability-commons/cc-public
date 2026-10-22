@@ -1,0 +1,45 @@
+id_self:                ann_gate_test_time_divides_among_processors
+guid_self:              ann_81f8d3d3940741f3a6e7e7a0e7929416
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Division of gate test time among processors
+brief:                  |
+                        The test stage gives one worker to each
+                        processor and the stages run side by side, so
+                        a release gate run on a larger machine than
+                        atlas costs much less wall-clock time than the
+                        atlas figures suggest.
+description:            |
+                        Sources: the tests run with -n auto --dist
+                        worksteal (src/cc_public/gate/gate.py line 90;
+                        pyproject.toml line 75). The stages run side
+                        by side (gate.py lines 46-49). The atlas
+                        figures were taken on 2 CPUs (context note,
+                        _sources/context.md line 31). Assumption: the
+                        release runs on a machine with more than 2
+                        processors, or on CI. Strength: weak; the
+                        package build and fresh install do not
+                        parallelize this way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

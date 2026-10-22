@@ -1,0 +1,57 @@
+id_self:                ann_tag_dependency_names_the_exact_source
+guid_self:              ann_41a14c35ee1f4583a41f2a675ed811ae
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Exact source named by a tag dependency
+brief:                  |
+                        A peer that depends on a release tag resolves
+                        to one commit, whose tree holds the items and
+                        whose history holds the commit items, so what
+                        the peer runs traces straight back to its
+                        reasons. A built package traces back to its
+                        source only through what its build records.
+description:            |
+                        Sources: a git tag names a commit
+                        (https://git-scm.com/docs/git-tag). The git
+                        tags option has a peer build cc-public from
+                        source at a release tag
+                        (_data/decision/dec_publishing_route/opt_publish_git_tags_only.yaml
+                        lines 11-14). Assumption: a conda package
+                        records the commit it was built from only if
+                        the recipe or build tool is set up to do so;
+                        not checked against a specific tool. Strength:
+                        weak; a channel build can be made to record
+                        the tag.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_git_tags_only
+    guid_target:        opt_4b11ea3f16e14deea2f43f853e01ee99
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_then_channel
+    guid_target:        opt_5cbfac86902e46e0ac04d3a1c0a38eff
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_conda_channel
+    guid_target:        opt_edf84187cc424525ba40431a7c9847d3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

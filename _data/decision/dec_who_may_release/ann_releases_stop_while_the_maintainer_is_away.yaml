@@ -1,0 +1,43 @@
+id_self:                ann_releases_stop_while_the_maintainer_is_away
+guid_self:              ann_a14a8f7ec65c46da8d16c13099bb0030
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Single point of failure in the maintainer
+brief:                  |
+                        If only the maintainer can cut a release, a
+                        fix cannot ship while he is unavailable, and
+                        only he can relock today. This counts against
+                        the maintainer option unless its scripted path
+                        for minor and patch releases is built early.
+description:            |
+                        Sources: under the maintainer option the
+                        maintainer decides and runs each release
+                        (_data/decision/dec_who_may_release/opt_maintainer_decides_each_release.yaml
+                        lines 13-16). Only the owner can relock, since
+                        atlas has no network (context note,
+                        _sources/context.md line 30). Strength: weak;
+                        with all peers the owner's own, his absence
+                        also pauses the demand.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_may_release
+    guid_target:        dec_90b9fce2338b487aade5b163702eee6d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_maintainer_decides_each_release
+    guid_target:        opt_545e0b3fc14e4b19a4732ddb15ef57da
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

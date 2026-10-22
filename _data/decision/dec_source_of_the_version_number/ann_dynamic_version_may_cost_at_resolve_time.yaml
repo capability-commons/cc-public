@@ -1,0 +1,51 @@
+id_self:                ann_dynamic_version_may_cost_at_resolve_time
+guid_self:              ann_19dd6614667b42f58ee8939025aa9c72
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Possible resolve-time cost of a dynamic version
+brief:                  |
+                        A version read from git at build time is
+                        dynamic metadata, which a resolver can learn
+                        only by running the build backend, and that
+                        may add work whenever an environment is
+                        checked or installed. This point is not
+                        verified.
+description:            |
+                        Sources: the package is built by hatchling
+                        (pyproject.toml lines 53-55) and installed as
+                        an editable path dependency (pyproject.toml
+                        line 62). pixi lock file version 7 removed
+                        input hashes for source trees, and the
+                        satisfiability check now agrees with the
+                        resolution
+                        (https://prefix.dev/blog/lock-file-v7); this
+                        repository's lock is at version 6 (pixi.lock
+                        line 1). Assumption: pixi must build or query
+                        metadata to learn a dynamic version, at lock
+                        time or at --locked checks; the sources
+                        checked do not confirm this. Strength: weak;
+                        the claim is unverified and the cost, if real,
+                        is likely seconds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

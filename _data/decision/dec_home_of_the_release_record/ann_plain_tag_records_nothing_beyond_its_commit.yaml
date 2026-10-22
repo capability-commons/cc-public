@@ -1,0 +1,80 @@
+id_self:                ann_plain_tag_records_nothing_beyond_its_commit
+guid_self:              ann_3ab03a8d96e04754aeb4a5fdadff9d1e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain tag that records nothing beyond its commit
+brief:                  |
+                        A plain tag names a commit but holds no item,
+                        so nothing records why the release was made,
+                        which needs and decisions it meets, or which
+                        upstream package set it was built and tested
+                        against. Either item option can hold those, so
+                        that when a peer reports a fault after an
+                        upstream change the known good set is on
+                        record and graph items can point at the
+                        release.
+description:            |
+                        Sources: the plain tag option is "a tag with
+                        no item"
+                        (_data/decision/dec_home_of_the_release_record/opt_plain_release_tag.yaml
+                        lines 11-13). A lightweight git tag is only a
+                        name for a commit; only an annotated tag
+                        object holds a tagger, a date and a message
+                        (https://git-scm.com/docs/git-tag). Every
+                        commit already carries a commit item that
+                        records what it changes and why
+                        (_data/register/reg_data_item_type.yaml lines
+                        800-812; context note, _sources/context.md
+                        line 34). The release component is to derive
+                        the notes and rename maps for each release
+                        (_data/logical_component/lco_release.yaml
+                        lines 13-16). The exact versions of the
+                        environment are held in pixi.lock by URL
+                        (pixi.lock lines 12-66), each package with a
+                        sha256 (such as pixi.lock lines 735-737),
+                        while a consumer resolves the ranges in
+                        requires_dist (pixi.lock lines 722-733;
+                        pyproject.toml lines 42-48). Assumption: the
+                        release item's schema is not written, so
+                        whether it carries the upstream set is still
+                        open. Strength: strong for traceability,
+                        moderate for the upstream set, which depends
+                        on a field not yet defined.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_file_in_data
+    guid_target:        opt_9992b9fe32dd44318c32f41dd89fcc57
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_plain_release_tag
+    guid_target:        opt_092d384f798740f8a08672ea995badfd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

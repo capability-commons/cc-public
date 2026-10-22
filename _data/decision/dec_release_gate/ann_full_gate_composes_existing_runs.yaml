@@ -1,0 +1,49 @@
+id_self:                ann_full_gate_composes_existing_runs
+guid_self:              ann_954ad29c25f14ece832b9e98dc250d84
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full gate composed from existing runs
+brief:                  |
+                        The every-check-and-test part of the full gate
+                        is already a named run, pixi run slow, which
+                        the README sets aside for before a release,
+                        and the push gate already runs without cached
+                        verdicts. The full gate need add only the
+                        build, install and fixture peer steps, though
+                        the fixture peer depends on federation
+                        mechanisms that are not built.
+description:            |
+                        Sources: pixi run slow runs the tests on
+                        Python 3.12, 3.13 and 3.14 and is meant to run
+                        on its own, such as overnight or before a
+                        release (README.md lines 64-67; pyproject.toml
+                        lines 85-87). The gate of a push uses no store
+                        (README.md lines 99-100). A fixture peer that
+                        consumes cc-public needs segments and a
+                        multi-root check, which are not built
+                        (_data/decision/dec_references_across_instances/ann_segments_need_a_multi_root_check.yaml;
+                        _sources/cc-patrol-notes/plan.md lines 65-68).
+                        Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

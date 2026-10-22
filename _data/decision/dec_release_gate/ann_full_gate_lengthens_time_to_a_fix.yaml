@@ -1,0 +1,72 @@
+id_self:                ann_full_gate_lengthens_time_to_a_fix
+guid_self:              ann_c1416894f5cd4897a5b4ca48a01a9650
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Time to a fix release lengthened by the full gate
+brief:                  |
+                        The full gate runs every test with no cached
+                        verdicts, the slow run on three Python
+                        versions, a package build and a fresh solve
+                        and install, so it costs many times the 78 s
+                        commit gate. When a release breaks a peer,
+                        that time sits between the fix and its
+                        release, and the owner wants to respond
+                        quickly, so the full gate should let a patch
+                        pass quickly or its length counts against it.
+description:            |
+                        Sources: a code commit takes about 78 s in the
+                        gate on atlas, with 2 CPUs (context note,
+                        _sources/context.md line 31;
+                        src/cc_public/gate/gate.py lines 105-106). The
+                        slow run tests on Python 3.12, 3.13 and 3.14
+                        and is "too slow for every commit" (README.md
+                        lines 64-67; pyproject.toml lines 85-87). The
+                        full suite in one process took 361 s in one
+                        rough measurement
+                        (_data/decision/dec_commit_gate/ann_gate_cost_scales_with_whole_graph.yaml
+                        lines 29-35). Each stage may run up to 600 s
+                        (gate.py line 108). Owner's statements:
+                        "performance DOES still matter a lot, as we
+                        will need to be able to respond quickly to
+                        things." (2026-10-22T16:31); "I'd like to be
+                        able to respond to reported problems quickly
+                        and largely automatically" (2026-10-22T16:33).
+                        Assumption: a fresh solve and install takes
+                        minutes. Strength: moderate; the delay is
+                        minutes, not hours, and a reduced patch path
+                        could recover most of it, so it bounds how
+                        heavy the full gate may become rather than
+                        overturning it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_normal_gate_for_release
+    guid_target:        opt_f70397f5624447e48e291747391761ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

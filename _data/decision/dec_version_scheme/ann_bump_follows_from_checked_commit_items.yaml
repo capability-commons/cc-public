@@ -1,0 +1,87 @@
+id_self:                ann_bump_follows_from_checked_commit_items
+guid_self:              ann_bc87ff4fd2304ef29c763cbe4c1f8f29
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bump derived from the checked commit items
+brief:                  |
+                        Every commit already carries a checked item
+                        with a verb, and the commit check already
+                        finds removals and renames, so a computed bump
+                        adds a computation but no new record. Each
+                        part of the number then traces to the commits
+                        that called for it, and a release that removes
+                        or renames an item cannot be labeled a patch
+                        by mistake. A bump chosen by hand repeats a
+                        judgment the items already record, and a
+                        calendar number traces only to a date.
+description:            |
+                        Sources: every commit carries a commit item
+                        with a templated title verb, and the commit
+                        check detects renames and removals (context
+                        note, _sources/context.md line 34). The verb
+                        must be true of the change: Add removes
+                        nothing, Remove adds nothing, Rename and Move
+                        neither add nor remove, and a commit names
+                        each id it removes or renames (AGENTS.md lines
+                        98-102; README.md lines 82-86). Commit titles
+                        use a closed list of verbs so that most can
+                        later be checked against the graph
+                        (_data/schema/sch_commit.yaml lines 49-82).
+                        The checks unannounced_removal and
+                        unannounced_rename find what a commit item
+                        does not name (src/cc_public/commit/change.lp
+                        lines 161 and 218). SemVer 2.0.0 ties major,
+                        minor and patch to incompatible changes,
+                        compatible additions and compatible fixes
+                        (https://semver.org/spec/v2.0.0.html, items
+                        6-8). Owner's statements: "the graph can
+                        mechanically determine the right SemVer bump
+                        on a release" (2026-10-22T16:24); "Let's use
+                        SemVer 2.0.0" (2026-10-22T16:27). Only the
+                        traceability point also counts against the
+                        calendar number. Strength: strong, since the
+                        inputs exist and are checked; the protection
+                        against under-labeling applies after 1.0.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_version_scheme
+    guid_target:        dec_527664463a1c4bc3b14fe1674fe6a73b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_semver_computed
+    guid_target:        opt_b4e5e12839114b09b432000ff179b5e1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_semver_by_hand
+    guid_target:        opt_dbea9645dac3468ebc17d4088a023199
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_calver
+    guid_target:        opt_ea34fa4912b9465390d8d206a132ba28
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

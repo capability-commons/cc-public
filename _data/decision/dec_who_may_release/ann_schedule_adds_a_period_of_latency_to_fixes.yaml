@@ -1,0 +1,67 @@
+id_self:                ann_schedule_adds_a_period_of_latency_to_fixes
+guid_self:              ann_a7a527eee602425da5c9242361fdccd7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Period of latency added to fixes by a schedule
+brief:                  |
+                        Under a fixed schedule a finished fix waits
+                        for the next slot, which adds up to a whole
+                        period to the time to recover from a broken
+                        release. A triggered release ships the fix
+                        when the checks pass, and a scripted release a
+                        person starts falls between the two.
+description:            |
+                        Sources: the scheduled option cuts releases on
+                        a fixed schedule
+                        (_data/decision/dec_who_may_release/opt_scheduled_release.yaml
+                        line 13). The triggered option cuts minor and
+                        patch releases when the checks pass
+                        (_data/decision/dec_who_may_release/opt_triggered_minor_and_patch_now.yaml).
+                        The maintainer option is scripted so minor and
+                        patch releases may later be triggered
+                        (_data/decision/dec_who_may_release/opt_maintainer_decides_each_release.yaml).
+                        "I'd like to be able to respond to reported
+                        problems quickly and largely automatically"
+                        (owner's statement, 2026-10-22T16:33).
+                        Strength: moderate; the delay depends on a
+                        period nobody has set, and an out of band
+                        patch would soften it, which the option does
+                        not provide.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_may_release
+    guid_target:        dec_90b9fce2338b487aade5b163702eee6d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_scheduled_release
+    guid_target:        opt_a125806ebd984b419e95dc01ce6e988e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_triggered_minor_and_patch_now
+    guid_target:        opt_745bf03807734bfb84f2423ea28e28c9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maintainer_decides_each_release
+    guid_target:        opt_545e0b3fc14e4b19a4732ddb15ef57da
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

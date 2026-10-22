@@ -1,0 +1,84 @@
+id_self:                ann_version_edit_forces_a_relock_at_release
+guid_self:              ann_636baedea69a4283bcd2a898652fba18
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Relock forced by a version edit at each release
+brief:                  |
+                        Any edit to pyproject.toml makes pixi.lock
+                        stale, so a version written there means a code
+                        gate run of about 78 s instead of 10 s and a
+                        relock at every release, urgent patches
+                        included. The pre-push hook refuses until
+                        someone with network access relocks against
+                        the live package indexes, which atlas cannot
+                        do. Reading the version from the tag edits
+                        nothing, so it should avoid all three, though
+                        whether the lock stays stable with a version
+                        read from tags is untested.
+description:            |
+                        Sources: pixi.lock hashes the local package's
+                        metadata; any edit to pyproject.toml makes the
+                        lock stale and the pre-push hook, run with
+                        --locked, refuses; the atlas VM has no
+                        network, so only the owner can relock (context
+                        note, _sources/context.md line 30). Every hook
+                        runs pixi with --locked (.githooks/pre-commit
+                        line 30; .githooks/pre-push line 33). The lock
+                        records the local package's version and a
+                        sha256 of its metadata (pixi.lock lines
+                        722-725). The gate treats src, pyproject.toml,
+                        pixi.lock and .githooks as code and runs the
+                        tests only when one is staged
+                        (src/cc_public/gate/gate.py line 99; README.md
+                        lines 74-77). A code commit takes about 78 s
+                        in the gate and a data-only commit about 10 s
+                        (context note, _sources/context.md line 31).
+                        Assumptions: a relock that changes only the
+                        local version keeps the other locked versions
+                        where they still satisfy their ranges; whether
+                        a version read from tags leaves the lock
+                        stable between tags is not checked. Limit: the
+                        lock is at version 6 (pixi.lock line 1), and
+                        lock file version 7 removes the input hashes
+                        of source trees
+                        (https://prefix.dev/blog/lock-file-v7), which
+                        may change this. Strength: strong on observed
+                        behavior.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_in_pyproject
+    guid_target:        opt_27a3b53a8c8f40aea67a32d53a10bc1f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
