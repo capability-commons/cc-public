@@ -1,0 +1,76 @@
+id_self:                ann_facts_free_segment_backing_store
+guid_self:              ann_4de0a0ebb6b841b58962c3a6b2244e42
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Facts independent of a segment's backing store
+brief:                  |
+                        Shipping base predicates lets each segment
+                        keep its items in files and git or in a graph
+                        database, and change its store later without
+                        its consumers changing, since it need only
+                        emit the declared rows. Reading files ties
+                        every segment to a YAML tree laid out as
+                        cc-public's, which a segment held in a
+                        database does not have.
+description:            |
+                        Sources:
+                        - "it's possible (likely even) that partner
+                          segments will use a graph-database or
+                          something similar as the backing for their
+                          part of the engineering graph." (owner's
+                          statement, 2026-10-22T16:20)
+                        - The extractor reads a tree and returns one
+                          set of rows for each base predicate, and the
+                          predicates and their columns are declared in
+                          one place, for logic programs and SQL alike
+                          (src/cc_public/graph/extract.py lines 18-32
+                          and 184).
+                        - The files option has a consuming segment
+                          read the YAML documents of the other
+                          segment's tree as files
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_exchange_files.yaml,
+                          brief).
+                        - A consumer's gate checks its own items
+                          together with everything it consumes
+                          (_data/decision/dec_references_across_instances/ann_consumer_checks_the_union.yaml).
+                          Strength: strong; the owner names a change
+                          of backing as likely, and only the files
+                          option cannot follow it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_files
+    guid_target:        opt_0cb976f756af487c8e4d03352fc3928b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

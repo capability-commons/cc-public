@@ -1,0 +1,92 @@
+id_self:                ann_pinned_release_names_peer_baseline
+guid_self:              ann_3819bfad0d42473eb31bd8a2101a5404
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pinned release as the peer's baseline
+brief:                  |
+                        A versioned package pins a named release in
+                        the peer's environment, so a change in
+                        cc-public reaches a peer only when the peer
+                        moves its pin, and anyone can later tell which
+                        release the peer ran. A sibling checkout pins
+                        nothing: whatever that folder holds reaches
+                        the peer at once, unchecked, and leaves no
+                        record of the version.
+description:            |
+                        Sources:
+                        - The sibling checkout option says "A peer
+                          reads a checkout of cc-public in a
+                          neighboring folder" and names no pin
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_read_a_sibling_checkout.yaml,
+                          brief).
+                        - The package option is pinned by the peer "in
+                          its own environment", and the submodule
+                          option also pins, "at a pinned commit"
+                          (opt_peers_take_a_versioned_package.yaml and
+                          opt_peers_take_a_submodule.yaml in the same
+                          folder, briefs).
+                        - The repository's own workflow keeps several
+                          sibling folders of cc-public, one per
+                          worktree, and dev only moves forward as
+                          branches land (AGENTS.md lines 13-27 and
+                          46-47).
+                        - SemVer 2.0.0 is the chosen scheme (owner's
+                          statement, 2026-10-22T16:27), the bump can
+                          be determined mechanically (16:24) and the
+                          notes generated from the graph (16:28).
+                        - The plan recommended a dependency pinned to
+                          a tag with a path override for local work,
+                          over a path dependency on the sibling
+                          checkout (_sources/cc-patrol-notes/plan.md
+                          lines 69-72).
+                        - The owner chose the versioned package
+                          (owner's statement, 2026-10-22T15:14).
+                          Strength: strong; integrity, accountability
+                          and a bounded change all depend on a pin,
+                          and this option has none. Simplicity notes
+                          that the sibling checkout adds no mechanism,
+                          but leaves the recording of a version
+                          undone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_read_a_sibling_checkout
+    guid_target:        opt_a7be740118c34b2c8cba834a3b6ea76c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

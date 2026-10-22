@@ -1,0 +1,109 @@
+id_self:                ann_rename_maps_upgrade_peers_mechanically
+guid_self:              ann_753e28894073480ea24be3f1fa713c55
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mechanical peer upgrade by guid-keyed maps
+brief:                  |
+                        Renames and prefix changes are expected often
+                        before 1.0, and cctool rename rewrites only
+                        the local tree. A map of renamed ids keyed by
+                        guid, which never changes, lets a command
+                        rewrite every reference in a peer to exactly
+                        the item it named before, across every skipped
+                        release and with the same effort for any
+                        number of peers, where a hand edit costs time
+                        per rename per peer and can miss a reference
+                        or point it at the wrong item. Each map does
+                        keep the old ids in every release that ships
+                        it.
+description:            |
+                        Sources:
+                        - The rename edit rewrites every YAML document
+                          of the local tree that names the old id
+                          (src/cc_public/edit/edit.py lines
+                          1014-1034).
+                        - "Copies held in a partner's repository
+                          cannot be refreshed from here."
+                          (_data/schema/sch_trait_edge.yaml lines
+                          120-124)
+                        - A reference whose id names nothing but whose
+                          guid resolves is reported as outdated
+                          (src/cc_public/check/check.lp lines
+                          2031-2035).
+                        - A guid is minted once and never changed
+                          (AGENTS.md lines 113-115).
+                        - The commit check already detects renames and
+                          removals, and every commit carries a commit
+                          item (context note, _sources/context.md line
+                          34); the history check compares the graph
+                          before and after each commit by guid
+                          (_data/decision/dec_author_and_time_of_items/ann_commit_items_trace_each_item_change.yaml).
+                        - The owner accepts "lots of churn in this
+                          pre-version-1.0 phase", and after 1.0
+                          expects to bundle breaking changes such as
+                          prefix changes into one major release
+                          (owner's statement, 2026-10-22T16:23;
+                          owner's memory note, 2026-10-21).
+                        - The option ships a map of renamed ids,
+                          matched by guid, and a command applies the
+                          maps of every release in between
+                          (_data/decision/dec_how_peers_absorb_renames/opt_upgrade_by_rename_maps.yaml,
+                          brief); the hand option has the peer's
+                          maintainer edit references from the release
+                          notes (opt_upgrade_by_hand.yaml in the same
+                          folder, brief).
+                        - Assumption: a prefix change renames every
+                          item of a type at once, so one release can
+                          rename hundreds of ids, and a hand edit
+                          across many references is more likely to
+                          miss one than a command. Strength: strong;
+                          churn is stated policy, and a hand upgrade
+                          multiplies it by the number of peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_by_hand
+    guid_target:        opt_31a51dc6f9ac4b03a326b6b1a4f03c5e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

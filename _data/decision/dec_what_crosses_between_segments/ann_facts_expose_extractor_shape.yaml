@@ -1,0 +1,65 @@
+id_self:                ann_facts_expose_extractor_shape
+guid_self:              ann_3753e7d0055949e8bf0000656b977cc1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extractor columns as a published interface
+brief:                  |
+                        Once facts cross segments, a change to a base
+                        predicate's columns is a breaking change for
+                        every consumer, and the file and line columns
+                        of items and references assume file storage
+                        that a graph database segment must imitate. No
+                        format for exchanging the rows exists yet, so
+                        facts need a stated serialization and a rule
+                        for those columns before a partner can produce
+                        them without cctool.
+description:            |
+                        Sources:
+                        - The item predicate's columns are id, guid,
+                          holder, file and line, and the reference
+                          predicate also has file and line
+                          (src/cc_public/graph/extract.py lines
+                          185-192).
+                        - Failure reports print each failure with its
+                          file and line where they have them
+                          (AGENTS.md lines 165-168).
+                        - The graph is also exposed as RDF triples
+                          under urn:cc: namespaces
+                          (src/cc_public/graph/sparql.py lines 18-25
+                          and 38-52).
+                        - Assumption: no command writes the base
+                          predicates to a file for another segment;
+                          the only JSON dump found serves jq queries
+                          (src/cc_public/graph/jq.py line 81).
+                          Strength: moderate; the gap is a format to
+                          define and a coupling to manage through the
+                          release's versioning, not a flaw in the
+                          choice.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

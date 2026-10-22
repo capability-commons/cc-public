@@ -1,0 +1,52 @@
+id_self:                ann_offline_hosts_need_local_release_install
+guid_self:              ann_b337b79ced0a433e802616a8516a2ca0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release install on offline hosts
+brief:                  |
+                        A peer on a host without network access cannot
+                        fetch a new package or submodule commit
+                        itself, while a sibling checkout can be
+                        updated by copying a folder. Whichever option
+                        is chosen should leave a way to install a
+                        release from a local copy, such as a local
+                        channel or a bundled submodule.
+description:            |
+                        Sources:
+                        - The atlas VM has no network, so only the
+                          owner can relock there (context note,
+                          _sources/context.md line 30).
+                        - cc-patrol is local to atlas only
+                          (_sources/cc-patrol-notes/plan.md line 109).
+                        - Any edit to pyproject.toml makes pixi.lock
+                          stale, and the pre-push hook refuses a stale
+                          lock (context note, _sources/context.md line
+                          30).
+                        - Assumption: a package or a submodule can
+                          also be installed from a local file or
+                          mirror, so this bears more on how the chosen
+                          option is set up than on which is chosen.
+                          Strength: weak.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_read_a_sibling_checkout
+    guid_target:        opt_a7be740118c34b2c8cba834a3b6ea76c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

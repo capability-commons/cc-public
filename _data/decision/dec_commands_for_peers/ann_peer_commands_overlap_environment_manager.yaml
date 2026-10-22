@@ -1,0 +1,74 @@
+id_self:                ann_peer_commands_overlap_environment_manager
+guid_self:              ann_8a1e912550f94b6bbd0d66c3e91e3e46
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer commands tied to the environment manager
+brief:                  |
+                        Setting up, pinning and upgrading a dependency
+                        are jobs the environment manager already does,
+                        and switching a peer between a release and a
+                        local checkout means editing that manager's
+                        manifest. A command group would either do
+                        those jobs twice or know only pixi's manifest,
+                        so a partner would have to adopt pixi to use
+                        it, while documented steps can name the change
+                        for any manager.
+description:            |
+                        Sources:
+                        - cc-public's environment and its tasks are
+                          defined in pixi tables of pyproject.toml
+                          (pyproject.toml lines 57-79; README.md lines
+                          54-56).
+                        - pixi has commands to add, update and upgrade
+                          dependencies
+                          (https://pixi.sh/latest/reference/cli/pixi/).
+                        - The plan recommends a pixi git dependency
+                          pinned to a tag, with a path override for
+                          local work (_sources/cc-patrol-notes/plan.md
+                          lines 69-72).
+                        - cctool impact already lists the items a
+                          commit adds, removes, renames or changes
+                          (AGENTS.md lines 201-204).
+                        - Every hook runs through pixi, so a host
+                          without pixi cannot commit
+                          (_data/decision/dec_environment_manager/ann_hooks_and_guidance_bound_to_pixi.yaml).
+                        - Assumption: the command group would be
+                          written for pixi first, as the only manager
+                          in use. Strength: weak to moderate;
+                          switching to a local checkout and applying
+                          rename maps are not plainly pixi's jobs, and
+                          the commands could support more than one
+                          manager or print the steps.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_manual_steps
+    guid_target:        opt_7b0a69fc0da047aa92ec2550fe5dba1d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

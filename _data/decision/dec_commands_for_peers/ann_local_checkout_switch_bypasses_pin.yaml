@@ -1,0 +1,51 @@
+id_self:                ann_local_checkout_switch_bypasses_pin
+guid_self:              ann_bbf03aeb52614a999ad510cd1326a3f8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Local checkout switch around the pin
+brief:                  |
+                        While a peer is switched to a local checkout
+                        it runs whatever that checkout holds rather
+                        than a pinned release, so the command must
+                        make that state visible and easy to leave, or
+                        it becomes a quiet way around the pin. The
+                        same risk exists in local work without a
+                        command, which a command that reports the
+                        switch may reduce.
+description:            |
+                        Sources:
+                        - The command group "switches it between a
+                          release and a local checkout"
+                          (_data/decision/dec_commands_for_peers/opt_peer_command_group.yaml,
+                          brief).
+                        - The plan recommended "the pixi git
+                          dependency pinned to a tag, with a path
+                          override for local work"
+                          (_sources/cc-patrol-notes/plan.md lines
+                          71-72).
+                        - "All peers are my own, so this is acceptable
+                          for now." (owner's statement,
+                          2026-10-22T16:21) Strength: weak.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

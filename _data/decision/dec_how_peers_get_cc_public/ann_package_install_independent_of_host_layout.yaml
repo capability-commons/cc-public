@@ -1,0 +1,66 @@
+id_self:                ann_package_install_independent_of_host_layout
+guid_self:              ann_b03147d11f1841ac93c749ab88c94483
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Package install independent of host layout
+brief:                  |
+                        A package lets a peer on any platform it is
+                        built for take a release with its own
+                        environment manager, without a checkout of
+                        cc-public, a set folder layout or a build
+                        toolchain on that host, and lets many peers on
+                        many hosts each pin their own release. A
+                        sibling checkout works only where someone has
+                        placed both checkouts side by side.
+description:            |
+                        Sources:
+                        - The package option builds each release into
+                          one package holding the tooling, the shared
+                          data and the engine, which a peer pins in
+                          its own environment
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml,
+                          brief).
+                        - Patrol targets a Lenovo Legion laptop and a
+                          Jetson Orin Nano, with the user interface on
+                          another machine
+                          (_sources/cc-patrol-notes/plan.md lines
+                          128-131).
+                        - Paths that depend on where a folder sits
+                          differ on each machine and in each remote
+                          session (AGENTS.md lines 30-32).
+                        - "Strong agreement on building a versioned
+                          package." (owner's statement,
+                          2026-10-22T15:14)
+                        - Assumption: a hosted runner or a new partner
+                          does not place two checkouts side by side on
+                          its own. Strength: strong; it is the only
+                          option whose install step does not depend on
+                          the host's folders or toolchain.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_read_a_sibling_checkout
+    guid_target:        opt_a7be740118c34b2c8cba834a3b6ea76c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

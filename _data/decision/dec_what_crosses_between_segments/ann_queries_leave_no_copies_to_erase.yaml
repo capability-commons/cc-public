@@ -1,0 +1,71 @@
+id_self:                ann_queries_leave_no_copies_to_erase
+guid_self:              ann_ac5c28c2f3d04526b2fc2ca860d5f149
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No consumer copies to erase under queries
+brief:                  |
+                        When a segment answers queries, its content
+                        stays where it is held, so correcting or
+                        removing a person's data there takes effect
+                        for every consumer at once. Facts and files
+                        both leave copies in each consuming segment,
+                        which a removal reaches only when each
+                        consumer next reloads.
+description:            |
+                        Sources:
+                        - Under the queries option each segment
+                          answers queries from the others through a
+                          service
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
+                          brief).
+                        - Under the facts option a consuming segment
+                          loads the predicates another segment ships
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_exchange_facts.yaml,
+                          brief).
+                        - "Some federated segments may hold
+                          information which requires them to meet
+                          certain security or privacy requirements.
+                          For example, PII on DTU members will require
+                          compliance with the GDPR." (owner's
+                          statement, 2026-10-22T20:19)
+                        - The GDPR gives a data subject the right to
+                          erasure without undue delay (GDPR Article
+                          17, https://gdpr-info.eu/art-17-gdpr/).
+                        - Assumption: a consuming segment keeps loaded
+                          facts or files until it reloads them.
+                          Strength: moderate; the gain is real only
+                          for segments that hold personal data, and a
+                          facts design could add a withdrawal step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_answer_queries
+    guid_target:        opt_5ece0891c1904abf873550f2b8a4b00c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_files
+    guid_target:        opt_0cb976f756af487c8e4d03352fc3928b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

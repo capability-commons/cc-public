@@ -1,0 +1,79 @@
+id_self:                ann_submodule_repeats_source_build_per_peer
+guid_self:              ann_644c4b72212d49dab15dc721fba9c04e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Source build repeated in every submodule peer
+brief:                  |
+                        A submodule asks each peer to build the
+                        tooling and the C++ engine from source and to
+                        learn the submodule clone and update steps, so
+                        the build and its failures repeat in every
+                        peer. One package gives a peer one pinned
+                        dependency for the tooling, the shared data
+                        and the engine, and follows from cc-public
+                        already being a built Python package.
+description:            |
+                        Sources:
+                        - The submodule option holds cc-public at a
+                          pinned commit and builds the tooling and
+                          engine from source
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_submodule.yaml,
+                          brief).
+                        - A plain git clone leaves submodule
+                          directories empty unless
+                          --recurse-submodules is given or git
+                          submodule update --init is run
+                          (https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+                        - The engine is new C++, C++17 planned
+                          (owner's statement, 2026-10-21, paraphrase;
+                          _sources/context.md line 9).
+                        - cc-public is a Python package with a
+                          hatchling build backend and the cctool entry
+                          point (pyproject.toml lines 35-55).
+                        - The owner wants peers to use the engine and
+                          all the other tooling, and chose the
+                          versioned package (owner's statements,
+                          2026-10-22T15:13 and 15:14).
+                        - Assumption: bundling the C++ engine needs a
+                          build step the Python build backend does not
+                          have yet. Strength: moderate to strong; well
+                          known friction that repeats per peer, though
+                          with one peer today the repetition is small.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_take_a_submodule
+    guid_target:        opt_f2b5ad0a43ce49529fbd77acb4546cb3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

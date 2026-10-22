@@ -1,0 +1,56 @@
+id_self:                ann_package_hash_lets_peer_verify_release
+guid_self:              ann_5088f50b2691478d978519ab7f22e8ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hash-verifiable release artifact
+brief:                  |
+                        One package per release gives a single
+                        artifact whose hash the peer's lock file
+                        records, so a peer can check that it got
+                        exactly what was released and can pin a patch
+                        release that carries a security fix. It adds a
+                        trust point in whoever builds and hosts the
+                        package, a route not yet decided.
+description:            |
+                        Sources:
+                        - pixi.lock records a sha256 hash for each
+                          package it locks (pixi.lock, for example
+                          line 665; 180 such entries).
+                        - pixi.lock hashes the local package's
+                          metadata, and the pre-push hook runs with
+                          --locked (context note, _sources/context.md
+                          line 30).
+                        - "Let's use SemVer 2.0.0 as per
+                          https://semver.org/" (owner's statement,
+                          2026-10-22T16:27).
+                        - On the publishing route: "Will require
+                          further discussion. Hosting can be
+                          arranged." (owner's statement,
+                          2026-10-22T16:29)
+                        - The owner chose the versioned package
+                          (owner's statement, 2026-10-22T15:14).
+                          Strength: strong, provided the build and the
+                          hosting are secured when they are designed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

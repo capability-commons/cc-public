@@ -1,0 +1,46 @@
+id_self:                ann_loaded_facts_must_be_ground_only
+guid_self:              ann_fde48d7506754418bbd88b256b247f6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ground facts only in a loaded shipment
+brief:                  |
+                        The checks are logic programs whose input can
+                        hold rules as well as facts, so a consumer
+                        that loads another segment's predicates must
+                        admit ground facts only, or a crafted shipment
+                        could change what its checks conclude. It is a
+                        condition on the facts option, cheap to meet
+                        with a parser that admits only facts.
+description:            |
+                        Sources:
+                        - The checks are written as clingo logic
+                          programs (src/cc_public/check/check.lp,
+                          src/cc_public/check/advise.lp).
+                        - cctool writes the extracted facts as clingo
+                          program text and adds them to the same
+                          program as the rules
+                          (src/cc_public/graph/logic.py lines 307-325
+                          and 389-391). Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

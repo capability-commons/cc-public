@@ -1,0 +1,71 @@
+id_self:                ann_upgrade_report_shows_what_changes
+guid_self:              ann_c8a9caeec04b438a81033adca1d39505
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Report of what an upgrade would touch
+brief:                  |
+                        A command that reports which release a peer
+                        pins and what an upgrade would touch lets the
+                        peer's maintainer see every item an incoming
+                        release changes before accepting it, including
+                        items that hold personal data. Manual steps
+                        leave that review to what the maintainer
+                        remembers to look at, so an unwanted or
+                        tampered change is easier to miss. Both
+                        options run inside the peer and send none of
+                        its data out.
+description:            |
+                        Sources:
+                        - The command group "reports which release it
+                          pins and what an upgrade would touch"
+                          (_data/decision/dec_commands_for_peers/opt_peer_command_group.yaml,
+                          brief).
+                        - cctool impact already lists the items a
+                          commit adds, removes, renames or changes
+                          (AGENTS.md lines 201-204), and cctool edits
+                          offer --dry-run to show an edit first
+                          (AGENTS.md lines 109-110).
+                        - Some federated segments will hold personal
+                          data under the GDPR (owner's statement,
+                          2026-10-22T20:19).
+                        - All peers are the owner's own for now
+                          (owner's statement, 2026-10-22T16:21).
+                        - Assumption: a step done by hand from prose
+                          is skipped or done partly more often than a
+                          step a command does every time, and the
+                          commands run locally. Strength: moderate; a
+                          real integrity control, though the threat is
+                          small while all peers are the owner's.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_manual_steps
+    guid_target:        opt_7b0a69fc0da047aa92ec2550fe5dba1d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
