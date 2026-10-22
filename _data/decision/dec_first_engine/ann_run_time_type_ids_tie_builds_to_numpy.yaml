@@ -1,0 +1,56 @@
+id_self:                ann_run_time_type_ids_tie_builds_to_numpy
+guid_self:              ann_1d538d0a67b84942bdfd431c852517ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run-time type ids tied to one NumPy
+brief:                  |
+                        The dynamic host checks edges at wiring time
+                        by a type id that is a hash of the NumPy dtype
+                        description, so libraries built at different
+                        times must agree on that description. A frozen
+                        schedule is checked by the generator before
+                        compiling and can leave the run-time header
+                        out.
+description:            |
+                        Sources: The type id is the hash of the
+                        canonical dtype description
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 98). The dynamic host checks every edge
+                        at wiring time (same file, line 67). Frozen
+                        islands, checked by the generator, can leave
+                        the header out (same file, line 118). NumPy is
+                        not among cc-public's declared dependencies
+                        today (pyproject.toml lines 42-48). The
+                        type-id choice is only tentatively decided
+                        (same file, lines 224-225). ASSUMPTION:
+                        NumPy's canonical dtype string could change
+                        between NumPy versions; not checked. Strength:
+                        weak.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

@@ -1,0 +1,63 @@
+id_self:                ann_smallest_engine_checked_by_parity
+guid_self:              ann_b8f63a448575485ca8180f0c40b0f4eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Smallest first engine, checked by parity
+brief:                  |
+                        A generated frozen schedule is the smallest
+                        engine that runs Patrol's first slice, a
+                        straight list of direct calls that a newcomer
+                        can read in the generated file. Its order is
+                        fixed and deterministic, so a failed parity
+                        run against detector_dump points at a node,
+                        not at the runtime.
+description:            |
+                        Sources: "Generating plain C++ calls from a
+                        validated dataflow graph is the smallest
+                        working engine, and fits the first slice
+                        (retiming) and analysis parity runs against
+                        detector_dump"
+                        (_sources/cc-patrol-notes/plan.md lines
+                        103-105 and 206-207). The generated step is "a
+                        straight-line list of direct calls in schedule
+                        order"
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 35-52), with types checked in the
+                        generator before anything is compiled (same
+                        file, line 59). The framework steps nodes in a
+                        fixed, deterministic order
+                        (_sources/axair-orchestrator/README.md lines
+                        5-7). Each Patrol decomposition step ends with
+                        detector_dump parity
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 172-177). Strength: strong; the
+                        acceptance check for the first slice is named
+                        and fits this option directly.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

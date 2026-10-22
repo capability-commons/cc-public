@@ -1,0 +1,85 @@
+id_self:                ann_graph_changes_without_a_rebuild
+guid_self:              ann_a4293644d66547d49d39bf63b746a545
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph changes without a rebuild
+brief:                  |
+                        A runtime that loads a graph can take a new or
+                        corrected graph, or a new variant, without
+                        regenerating and recompiling, so one build for
+                        a host can run several graphs and variants,
+                        and a wiring flaw can be remedied quickly. A
+                        frozen schedule must be generated and compiled
+                        again, with link-time optimization, for every
+                        graph change, which costs build and gate time
+                        though not run-time speed.
+description:            |
+                        Sources: The dynamic host loads, starts,
+                        stops, restarts and rewires components from
+                        configuration between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 9-10 and 61-72). A frozen schedule is
+                        fixed at build time
+                        (_data/decision/dec_first_engine/opt_frozen_schedule_generated.yaml
+                        lines 12-15) and is built with LTO or as a
+                        unity build
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 33-57). Patrol needs two configurations,
+                        on a Legion laptop and on a headless Jetson
+                        Orin Nano (_sources/cc-patrol-notes/plan.md
+                        lines 126-134). Variants are meant as
+                        documented experiments, design permutations
+                        captured as graph data
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 8-9). The drafts limit run-time
+                        reconfiguration to a finite set of
+                        pre-validated modes
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 212-215). Owner's statement, 2026-10-20:
+                        the engine is intended "to incorporate the
+                        dynamic-graph capabilities I'd postponed in
+                        the past". ASSUMPTION: LTO and unity builds
+                        take longer than incremental builds. Strength:
+                        weak to moderate; the first Patrol
+                        configurations are known in advance and can be
+                        built as separate frozen schedules, graph
+                        changes are rare compared with steps, and the
+                        remedy gain covers wiring, not component code.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
