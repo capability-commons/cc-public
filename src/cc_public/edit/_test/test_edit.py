@@ -352,6 +352,74 @@ def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
     assert 'id_target:          opt_y\n' in (tree / '_data/annotation/ann_x.yaml').read_text()
 
 
+ICD           = '_data/interface_control_document/icd_cc_public_check.yaml'
+DFG           = '_data/dataflow_graph/dfg_stableflow_smoketest.yaml'
+GUID_MEMBER   = 'icm_e34e682f8f4343da97c01c1b04594c92'
+GUID_ROOT     = 'icm_e58153d9700745929efb45b4d8873fe4'
+GUID_NODE     = 'dfn_1ddea9503ffe480f8f98787c422c5b98'
+
+
+def test_rename_of_an_interface_member_keeps_its_guid_and_adds_no_alias(tree):
+    assert _edit(tree, {'rename': ['icm_cc_public_check.failures',
+                                   'icm_cc_public_check.failure_map']}) == {}
+    text = (tree / ICD).read_text()
+    assert ('    id_self:            icm_cc_public_check.failure_map\n'
+            '    guid_self:          ' + GUID_MEMBER + '\n') in text
+    assert 'icm_cc_public_check.failures' not in text
+    assert 'alias' not in text
+
+
+def test_rename_of_an_interface_member_renames_the_members_it_holds(tree):
+    assert _edit(tree, {'rename': ['icm_cc_public_check.check',
+                                   'icm_cc_public_check.check_tree']}) == {}
+    text = (tree / ICD).read_text()
+    assert ('- id_self:  icm_cc_public_check.check_tree.root\n'
+            '              guid_self:  ' + GUID_ROOT + '\n') in text
+    assert 'icm_cc_public_check.check.' not in text
+    assert 'icm_cc_public_check.check_documents' in text
+
+
+def test_rename_of_a_dataflow_node_changes_its_key_and_what_names_it(tree):
+    assert _edit(tree, {'rename': ['dfn_stableflow_smoketest.ctrl_proc',
+                                   'dfn_stableflow_smoketest.proc_ctrl']}) == {}
+    text = (tree / DFG).read_text()
+    assert ('  proc_ctrl:\n'
+            '    id_self:            dfn_stableflow_smoketest.proc_ctrl\n'
+            '    guid_self:          ' + GUID_NODE + '\n') in text
+    assert text.count('id_dataflow_node:  dfn_stableflow_smoketest.proc_ctrl\n') == 3
+    assert 'ctrl_proc' not in text
+    assert 'alias' not in text
+
+
+def test_rename_of_an_interface_control_document_renames_its_members(tree):
+    assert _edit(tree, {'rename': ['icd_cc_public_check', 'icd_cc_public_checks']}) == {}
+    assert not (tree / ICD).exists()
+    text = (tree / '_data/interface_control_document/icd_cc_public_checks.yaml').read_text()
+    assert 'id_self:                icd_cc_public_checks\n' in text
+    assert ('    id_self:            icm_cc_public_checks.failures\n'
+            '    guid_self:          ' + GUID_MEMBER + '\n') in text
+    assert 'icm_cc_public_checks.check.root\n' in text
+    assert 'cc_public_check.' not in text
+    assert 'cc_public_check\n' not in text
+
+
+def test_rename_of_a_dataflow_graph_renames_its_nodes(tree):
+    assert _edit(tree, {'rename': ['dfg_stableflow_smoketest', 'dfg_stableflow_smoke']}) == {}
+    assert not (tree / DFG).exists()
+    text = (tree / '_data/dataflow_graph/dfg_stableflow_smoke.yaml').read_text()
+    assert ('  ctrl_proc:\n'
+            '    id_self:            dfn_stableflow_smoke.ctrl_proc\n'
+            '    guid_self:          ' + GUID_NODE + '\n') in text
+    assert 'stableflow_smoketest' not in text
+
+
+def test_set_changes_a_field_of_an_interface_member(tree):
+    assert _edit(tree, {'set': ['icm_cc_public_check.failures', 'name', 'FailureMap']}) == {}
+    assert ('    id_self:            icm_cc_public_check.failures\n'
+            '    guid_self:          ' + GUID_MEMBER + '\n'
+            '    name:               FailureMap\n') in (tree / ICD).read_text()
+
+
 def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,
@@ -388,6 +456,9 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
      'An item of type_python_function lives in the file it names, so move or remove the file '
      'by hand.'),
     ({'remove': 'concept_none'}, 'No item has the id concept_none.'),
+    ({'remove': 'icm_cc_public_check.failures'},
+     'icm_cc_public_check.failures is embedded in icd_cc_public_check and is not an entry of '
+     'its table, so take it out of icd_cc_public_check with cctool unset.'),
 ])
 def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:

@@ -134,6 +134,11 @@ PREFIX_GUID       = 'guid_'
 MARK_COMMENT      = '#'
 DELIM_PATH        = '.'
 
+# An embedded item, such as an interface member, has the id of what
+# holds it, a full stop and a name of its own.
+#
+DELIM_NAME        = '.'
+
 # An id as a word of its own, and as the name of a file: not inside a
 # longer id, and not part of a dotted name.
 #
@@ -768,6 +773,11 @@ def remove(tree: Tree, id_item: str) -> Edit:
 
     (_, _, holder, relative, _) = tree.map_item[id_item]
 
+    if holder and not any(row[2] == id_item for row in tree.facts['register_entry_key']):
+        raise ErrorEdit('{id} is embedded in {holder} and is not an entry of its table, so '
+                        'take it out of {holder} with cctool unset.'.format(
+                                                                id = id_item, holder = holder))
+
     if not holder:
         if pathlib.Path(relative).stem != id_item:
             raise ErrorEdit('{file} holds more than {id}, so it is not removed.'.format(
@@ -789,15 +799,14 @@ def remove(tree: Tree, id_item: str) -> Edit:
 # -----------------------------------------------------------------------------
 def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     """
-    Return the edit that gives the item id_old the id id_new: in its own
-    YAML document, in every reference and mention of it in a document,
-    in every string of a logic program that is id_old, and in the name
-    of its file, or of its folder, if it is named for it. A register
-    entry keeps id_old in its alias list.
+    Return the edit that gives the item id_old the id id_new, and gives
+    each item whose id is made from id_old an id made from id_new in the
+    same way.
 
-    The rules match items by id, in strings such as "relation_is_option_for". Left
-    as they were, the rules that name id_old would match nothing, and
-    so pass without a word.
+    An interface control document or a dataflow graph holds members or
+    nodes whose ids are its own name after a prefix of theirs, a full
+    stop and a name, so they are renamed with it, and the members a
+    member holds are renamed with that member. Each keeps its guid.
 
     """
 
@@ -807,10 +816,75 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     if id_new.partition(DELIM_PREFIX)[0] != id_old.partition(DELIM_PREFIX)[0]:
         raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
                                                                     new = id_new, old = id_old))
-    if id_new in tree.map_item:
-        raise ErrorEdit('An item with the id {id} exists.'.format(id = id_new))
+
+    list_pair = [*_derived(tree, id_old, id_new), (id_old, id_new)]
+    edit      = {}
+
+    for (_, id_to) in list_pair:
+        if id_to in tree.map_item:
+            raise ErrorEdit('An item with the id {id} exists.'.format(id = id_to))
+
+    for (id_from, id_to) in list_pair:
+        edit_one = _rename_one(tree, id_from, id_to)
+        tree.update(edit_one)
+        edit.update(edit_one)
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _derived(tree: Tree, id_old: str, id_new: str) -> list[tuple[str, str]]:
+    """
+    Return each item that id_old holds, at any depth, whose id is made
+    from id_old: a prefix of its own, the name of id_old after its
+    prefix, a full stop and a name. Each is paired with the id made the
+    same way from id_new, the longest ids first, so that no id is
+    renamed after a shorter one that it starts with.
+
+    """
+
+    name_old   = id_old.partition(DELIM_PREFIX)[2] + DELIM_NAME
+    name_new   = id_new.partition(DELIM_PREFIX)[2] + DELIM_NAME
+    map_holder = {row[0]: row[2] for row in tree.facts['item']}
+    list_pair  = []
+
+    for (id_item, id_holder) in map_holder.items():
+        (prefix, _, name) = id_item.partition(DELIM_PREFIX)
+        if not name.startswith(name_old):
+            continue
+        holder = id_holder
+        while holder and holder != id_old:
+            holder = map_holder.get(holder, '')
+        if holder == id_old:
+            list_pair.append((id_item, prefix + DELIM_PREFIX + name_new + name[len(name_old):]))
+
+    return sorted(list_pair, key = lambda pair: (-len(pair[0]), pair[0]))
+
+
+# -----------------------------------------------------------------------------
+def _rename_one(tree: Tree, id_old: str, id_new: str) -> Edit:
+    """
+    Return the edit that gives the item id_old the id id_new: in its own
+    YAML document, in every reference and mention of it in a document,
+    in every string of a logic program that is id_old, and in the name
+    of its file, or of its folder, if it is named for it. A register
+    entry keeps id_old in its alias list. A dataflow node is filed
+    under the last part of its id, so its key changes with it.
+
+    An item embedded in another, such as an interface member, keeps no
+    alias: its schema allows none, and whatever refers to it carries
+    its guid, which does not change.
+
+    The rules match items by id, in strings such as "relation_is_option_for". Left
+    as they were, the rules that name id_old would match nothing, and
+    so pass without a word.
+
+    """
 
     (_, _, holder, relative, _) = tree.map_item[id_old]
+    is_entry                    = any(row[2] == id_old for row in tree.facts['register_entry_key'])
+    list_node                   = [(row[0], row[1]) for row in tree.facts['dataflow_node']
+                                   if row[2] == id_old]
     edit                        = _renamed_documents(tree, id_old, id_new)
 
     for file in tree.map_document:
@@ -830,12 +904,22 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
 
     tree.update(edit)
 
-    if holder:
+    if is_entry:
         item          = _Item(tree, id_new)
         (start, end)  = item.extent(KEY_ALIAS)
         list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []]
         edit.update(item.replace(start, end, cc_public.edit.layout.dump(
                                     {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS))))
+
+    key_new = id_new.rpartition(DELIM_NAME)[2]
+    for (graph, key) in list_node:
+        if key == key_new:
+            continue
+        item       = _Item(tree, graph)
+        item.node  = item.node[cc_public.graph.extract.KEY_NODE]
+        index      = item.base + item.node.lc.key(key)[0]
+        text       = item.line(index)
+        edit.update(item.replace(index, index + 1, [text.replace(key + ':', key_new + ':', 1)]))
 
     return edit
 
@@ -1346,6 +1430,30 @@ def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
 
 
 # -----------------------------------------------------------------------------
+def _node(node: typing.Any, id_item: str) -> typing.Any:
+    """
+    Return the mapping within node whose id_self is id_item: a register
+    entry in its table, or an item embedded at any depth, such as an
+    interface member or a dataflow node. Return None if there is none.
+
+    """
+
+    if isinstance(node, dict) and node.get(KEY_ID_SELF) == id_item:
+        return node
+
+    if isinstance(node, dict):
+        node = list(node.values())
+    if not isinstance(node, list):
+        return None
+
+    for value in node:
+        found = _node(value, id_item)
+        if found is not None:
+            return found
+    return None
+
+
+# -----------------------------------------------------------------------------
 class _Item:
     """
     An item in the text of its file: its node as YAML reads it, and the
@@ -1384,13 +1492,10 @@ class _Item:
         line_open      = self.list_line[self.base]
         self.indent    = line_open[:len(line_open) - len(line_open.lstrip())]
 
-        if holder:
-            if not (isinstance(document.get(KEY_TABLE), dict) and id_item in document[KEY_TABLE]):
-                raise ErrorEdit('{id} is not an entry of the table of {holder}.'.format(
-                                                                    id = id_item, holder = holder))
-            self.node = document[KEY_TABLE][id_item]
-        else:
-            self.node = document
+        self.node = _node(document, id_item) if holder else document
+
+        if self.node is None:
+            raise ErrorEdit('{id} is not found in {file}.'.format(id = id_item, file = relative))
 
     # -------------------------------------------------------------------------
     def line(self, index: int) -> str:
