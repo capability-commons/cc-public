@@ -77,9 +77,14 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   register, `cctool link ID relation_uses_concept CONCEPT`. Write the explicit
   form wherever two used concepts share the term.
 - **A ruling is refused unless it upholds or rejects an option**
-  (`no_option_in_ruling`). Give `--link relation_upholds DEC` or
-  `--link relation_rejects DEC`. Only record a ruling that a person
-  has made; the commit that adds it says who and when.
+  (`no_option_in_ruling`). Link it to the option, not to the decision:
+  give `--link relation_upholds OPT` or `--link relation_rejects OPT`,
+  once for each option it settles. A link to the decision breaks
+  `constraint_violation`. A ruling also needs a `title` and a `brief`,
+  as `sch_ruling` requires:
+  `cctool new ruling_NAME --field title TITLE --field brief TEXT --link relation_rejects OPT`.
+  Only record a ruling that a person has made; the commit that adds it
+  says who and when.
 - **A ruling that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
   component the decision is about `relation_is_driven_by` needs an annotation
