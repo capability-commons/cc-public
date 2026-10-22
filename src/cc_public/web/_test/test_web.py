@@ -515,10 +515,10 @@ def test_sankey_inks_an_answer_by_its_net_effect_on_an_option(tree):
         return re.search(pattern.format(title = title), body).group(1).split()
 
     name = 'opt_tooling_in_python'
-    assert 'lit-for-' + name in css('Python is fast enough')
-    assert 'lit-against-' + name in css('Graphs will grow large')
+    assert 'lit-for-' + name in css('Python fast enough')
+    assert 'lit-against-' + name in css('Graphs expected to grow large')
     assert 'lit-for-' + name in css('Cross-item checks run in clingo')
-    assert 'lit-against-ann_python_is_fast_enough' in css('Graphs will grow large')
+    assert 'lit-against-ann_python_is_fast_enough' in css('Graphs expected to grow large')
 
 
 def test_item_page_names_the_decision_of_an_option(tree):
