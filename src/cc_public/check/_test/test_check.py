@@ -385,6 +385,7 @@ def test_a_decision_no_option_answers_is_advice(tree):
     (failures, advice) = cc_public.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
+    advice.pop('unmapped_concept', None)
     assert advice == {'decision_without_options': [('dec_x',)]}
 
 
@@ -1544,3 +1545,11 @@ def test_a_term_that_is_the_label_of_an_unmatched_class_is_a_false_friend(tree):
 
 def test_a_false_friend_with_an_annotation_about_both_is_not_reported(tree):
     assert 'false_friend' not in _check(tree)
+
+
+def test_the_concept_of_a_type_with_no_match_is_advice(tree):
+    (failures, advice) = cc_public.check.check.review(tree)
+    list_row = advice['unmapped_concept']
+    assert ('type_decision', 'concept_decision') in list_row
+    assert ('type_role', 'concept_role') in list_row
+    assert ('type_requirement', 'concept_requirement') not in list_row
