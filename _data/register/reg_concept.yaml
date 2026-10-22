@@ -175,9 +175,8 @@ table:
     description:        |
                         A relation is directional. Where the opposite
                         reading is useful, the entry embeds an
-                        inverse: a second identity and surface form
-                        for the same relation, and not a relation of
-                        its own.
+                        inverse: a second identity and reading for the
+                        same relation, and not a relation of its own.
 
                         A relation is never the edge itself, and never
                         the list that holds edges. In logic programs
@@ -963,16 +962,16 @@ table:
     guid_self:          concept_47a87aafdcaa4281982ae0d00c299aa7
     title:              Dataflow node
     brief:              |
-                        One step of a dataflow graph: it reads its
-                        inputs, writes its outputs and keeps state
-                        between invocations.
+                        One use of a dataflow step
+                        (concept_dataflow_step) in a dataflow graph:
+                        it reads its inputs, writes its outputs and
+                        keeps state between invocations.
     description:        |
-                        A dataflow node is one use of a step within a
-                        dataflow graph. Its interface is a dataflow
-                        step surface of an interface control document,
-                        and its settings are the values it is
-                        configured with. Many dataflow nodes may
-                        present the same interface.
+                        Its interface is the dataflow step surface of
+                        an interface control document, and its
+                        settings are the values it is configured with.
+                        Many dataflow nodes may present the same
+                        interface.
     note:               |
                         A dataflow node runs in the dataflow engine
                         (concept_dataflow_engine). Under the semantics
@@ -1212,11 +1211,23 @@ table:
                         the place where the graph breaks it, what was
                         found, and how to fix it.
     description:        |
-                        A failure stops a commit at the gate. It is
-                        not an error. An error is cctool failing to do
+                        A failure stops a commit at the commit gate
+                        (concept_commit_gate). It is not an error. An
+                        error (concept_error) is cctool failing to do
                         what it was asked, such as a query that does
                         not parse, and is reported with exit status 2.
+    note:               |
+                        The runtime sense of ISO/IEC 25010 and
+                        ISO/IEC/IEEE 24765, a system not performing a
+                        required function, is a different concept. It
+                        is the sense used by concern_reliability and
+                        by the failure field of an interface member,
+                        and it is not held to this entry.
     term_preferred:     failure
+
+    term_admitted:
+      - check failure
+
     alias:              []
     edge:               []
 
@@ -1409,7 +1420,8 @@ table:
                         however it was obtained (concept_edge_origin).
                         The edge field of an item is one place edges
                         are recorded, not the only one: a reference
-                        field such as id_concept is an edge too.
+                        field (concept_field) such as id_concept is an
+                        edge too.
 
                         Kinds of edge are named by qualifying the
                         word: a dataflow edge (concept_dataflow_edge),
@@ -1523,3 +1535,345 @@ table:
         guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
         id_target:      concept_node
         guid_target:    concept_fe04595884914059b0e303959b2ef3aa
+
+  # ---------------------------------------------------------------------------
+  # concept_owner -- Owner
+  #
+  concept_owner:
+    id_self:            concept_owner
+    guid_self:          concept_16f112eab5764ddb9e3ae2dea7f00882
+    title:              Owner
+    brief:              |
+                        The holder of the rights in a data item, as
+                        its copyright field names them.
+    description:        |
+                        The owner decides who may change a data item.
+                        In a federation (concept_federation), an
+                        author writes only to data items whose owner
+                        they are or act for. A thing outside the graph
+                        that a proxy (concept_proxy) points at may
+                        have an owner of its own, such as ISO for a
+                        standard it publishes. That owner is recorded
+                        on the proxy as a fact about the thing; it is
+                        not the owner of the proxy.
+    note:               |
+                        The person who maintains the project is its
+                        maintainer (concept_maintainer), and the
+                        holder of a worktree is its claimant
+                        (concept_claimant). Neither is called an
+                        owner.
+    term_preferred:     owner
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_maintainer -- Maintainer
+  #
+  concept_maintainer:
+    id_self:            concept_maintainer
+    guid_self:          concept_88c8533070354896839680bf2ec7e75a
+    title:              Maintainer
+    brief:              |
+                        The person who maintains the project: they
+                        settle its decisions by ruling on them, and
+                        land its changes.
+    description:        |
+                        The maintainer is the person whose rulings
+                        settle decisions today. Concern advocates
+                        (concept_concern_advocate) argue; the
+                        maintainer rules.
+    term_preferred:     maintainer
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_claimant -- Claimant
+  #
+  concept_claimant:
+    id_self:            concept_claimant
+    guid_self:          concept_96c8980ce5474a5987d2991f643884d4
+    title:              Claimant
+    brief:              |
+                        The agent or person that holds a worktree, as
+                        the lock file of the worktree names them, so
+                        that no one else works in it.
+    description:        |
+                        A worktree is claimed by a lock file holding
+                        the claimant and the area of work, so that
+                        parallel work does not collide.
+    term_preferred:     claimant
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_error -- Error
+  #
+  concept_error:
+    id_self:            concept_error
+    guid_self:          concept_ec5e3fb479274f78804a5b749ebf5e68
+    title:              Error
+    brief:              |
+                        cctool failing to do what it was asked, such
+                        as a query that does not parse. An error is
+                        reported with exit status 2, and is not a
+                        failure (concept_failure).
+    description:        |
+                        An error says what went wrong and gives an
+                        example of a correct call. A failure, by
+                        contrast, is a finding about the graph.
+    term_preferred:     error
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_dataflow_step -- Dataflow step
+  #
+  concept_dataflow_step:
+    id_self:            concept_dataflow_step
+    guid_self:          concept_00662bd60fc740748e7029bea254bdf8
+    title:              Dataflow step
+    brief:              |
+                        The behavior an interface presents at run
+                        time: it reads its input ports, writes its
+                        output ports and keeps state between
+                        invocations.
+    description:        |
+                        A dataflow step is one surface
+                        (concept_surface) of an interface control
+                        document. Each dataflow node
+                        (concept_dataflow_node) is one use of a
+                        dataflow step in a dataflow graph. One run of
+                        a dataflow step is an invocation.
+    note:               |
+                        From Stableflow, software architecture
+                        description 2.0.0, clause 5.1. The bare word
+                        "step" is admitted where the dataflow sense is
+                        clear; a step of a procedure is everyday
+                        language.
+    term_preferred:     dataflow step
+
+    term_admitted:
+      - step
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_surface
+        guid_target:    concept_787eec2373ee4812b4ff10899c5802c7
+
+  # ---------------------------------------------------------------------------
+  # concept_surface -- Surface
+  #
+  concept_surface:
+    id_self:            concept_surface
+    guid_self:          concept_787eec2373ee4812b4ff10899c5802c7
+    title:              Surface
+    brief:              |
+                        One form in which an interface control
+                        document presents its interface: an API in one
+                        language, a dataflow step, or an artifact.
+    description:        |
+                        Coined for this project, when the interface
+                        control document was ported with all of its
+                        forms.
+    term_preferred:     surface
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_federated_repository -- Federated repository
+  #
+  concept_federated_repository:
+    id_self:            concept_federated_repository
+    guid_self:          concept_650632820e2346cc8ed4d33b944fe79e
+    title:              Federated repository
+    brief:              |
+                        One repository that holds data items under the
+                        conventions of cc-public and refers to data
+                        items in other repositories of its federation
+                        (concept_federation).
+    description:        |
+                        After Sheth and Larson, "Federated database
+                        systems for managing distributed,
+                        heterogeneous, and autonomous databases", ACM
+                        Computing Surveys 22(3), 1990, where the
+                        members are component databases. The word
+                        "instance" is not used for this: it has other
+                        senses in the interface control document and
+                        in Python.
+    term_preferred:     federated repository
+
+    term_admitted:
+      - member repository
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_federation -- Federation
+  #
+  concept_federation:
+    id_self:            concept_federation
+    guid_self:          concept_b9ec833c9a1a40678a4c52b041c38f22
+    title:              Federation
+    brief:              |
+                        The set of federated repositories
+                        (concept_federated_repository) whose data
+                        items refer to one another across repository
+                        boundaries, each repository owning its own
+                        data items. Each is held by a partner
+                        (concept_partner).
+    description:        |
+                        After Sheth and Larson, ACM Computing Surveys
+                        22(3), 1990.
+    term_preferred:     federation
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_partner -- Partner
+  #
+  concept_partner:
+    id_self:            concept_partner
+    guid_self:          concept_8946ae9bf1e84f9fbaa10b527d68edfb
+    title:              Partner
+    brief:              |
+                        An organization or project that holds a
+                        federated repository
+                        (concept_federated_repository) and consumes
+                        the registers of cc-public.
+    description:        |
+                        A partner may hold registers of its own, and
+                        its data items may refer to those of
+                        cc-public.
+    term_preferred:     partner
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_field -- Field
+  #
+  concept_field:
+    id_self:            concept_field
+    guid_self:          concept_214b2bdbf9844afc96260a8aff6a8246
+    title:              Field
+    brief:              |
+                        A key of a mapping in a data item, with its
+                        value. In a reference, the part of the key
+                        after id_ or guid_, as target in id_target.
+    description:        |
+                        JSON Schema calls a field a property.
+    term_preferred:     field
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_driver_concern -- Driver concern
+  #
+  concept_driver_concern:
+    id_self:            concept_driver_concern
+    guid_self:          concept_58ed5b69d634459db5c1f6a5a9e1325c
+    title:              Driver concern
+    brief:              |
+                        A concern (concept_concern) that a logical
+                        component should favor, named by an edge of
+                        relation_is_driven_by.
+    description:        |
+                        After the architecture drivers of the Arcadia
+                        user guide, clause 4.3.1.
+    term_preferred:     driver concern
+
+    term_admitted:
+      - driver
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_concern
+        guid_target:    concept_a1eb797dc146461aaafc47ce31058f48
+
+  # ---------------------------------------------------------------------------
+  # concept_concern_advocate -- Concern advocate
+  #
+  concept_concern_advocate:
+    id_self:            concept_concern_advocate
+    guid_self:          concept_70ce062ff65a4201960b9b33840d4390
+    title:              Concern advocate
+    brief:              |
+                        An agent that writes annotations on decisions
+                        on behalf of one concern (concept_concern).
+    description:        |
+                        Each concern advocate argues for its concern
+                        only, so that a ruling shows which concerns
+                        were heard.
+    term_preferred:     concern advocate
+
+    term_admitted:
+      - advocate
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_commit_gate -- Commit gate
+  #
+  concept_commit_gate:
+    id_self:            concept_commit_gate
+    guid_self:          concept_33206a1ae68747a08422bbcd4ea385ab
+    title:              Commit gate
+    brief:              |
+                        The check, lint and test of staged content
+                        that cctool gate runs before a commit is made.
+    description:        |
+                        The commit gate runs on a copy of the staged
+                        index, so that what is checked is exactly what
+                        is committed. A commit is refused when any
+                        stage fails.
+    term_preferred:     commit gate
+
+    term_admitted:
+      - gate
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_proxy -- Proxy
+  #
+  concept_proxy:
+    id_self:            concept_proxy
+    guid_self:          concept_36dffd88734d4aa8a93f38c97b228ae2
+    title:              Proxy
+    brief:              |
+                        A data item that stands in the graph for
+                        something outside it, such as an external
+                        document or a physical thing.
+    description:        |
+                        The id and guid of a proxy address the proxy,
+                        not the thing it points at. Its type says what
+                        kind of thing that is. A relation may read
+                        through a proxy at one or both ends, so that
+                        its edges join the things pointed at rather
+                        than the proxies. Two proxies may point at one
+                        thing; where both carry the same outside
+                        identifier, such as a DOI or an ISBN, they
+                        point at the same thing. A concept entry is
+                        not a proxy: it is the concept itself, as the
+                        record of our convention for its use. The
+                        owner (concept_owner) of the thing is recorded
+                        on the proxy.
+    term_preferred:     proxy
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_identifiable_data_item
+        guid_target:    concept_a125aa49d2a145368ebb6c79d85c375b
