@@ -34,20 +34,42 @@
 % ...
 
 % -----------------------------------------------------------------------------
-% A protective mark names an entry that is held nowhere here. It may
-% be held in a partner's register, so this is advice, not a failure.
-% reg_protective_mark asks that, until it resolves, the mark be read
-% as more restrictive than any mark that resolves.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.unresolved_mark
+% guid_self:              lpp_7f764633cd96467f8ec1fb9d4ee56ddc
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unresolved mark
+% brief:                  |
+%                         A protective mark names an entry that is held
+%                         nowhere here. It may be held in a partner's
+%                         register, so this is advice, not a failure.
+%                         reg_protective_mark asks that, until it
+%                         resolves, the mark be read as more restrictive
+%                         than any mark that resolves.
+% did:                    |
+%                         {holder} has the protective mark {id}, which
+%                         no register here holds.
+% fix:                    |
+%                         Nothing, if a partner holds the mark. Until it
+%                         resolves, read it as more restrictive than any
+%                         mark that does.
+% edge:                   []
+%
+% ...
 %
 % decl unresolved_mark(holder: symbol,
 %                      id:     symbol,
 %                      guid:   symbol,
 %                      file:   symbol,
 %                      line:   number)
-% did  {holder} has the protective mark {id}, which no register here
-%      holds.
-% fix  Nothing, if a partner holds the mark. Until it resolves, read it
-%      as more restrictive than any mark that does.
 #show unresolved_mark/5.
 
 unresolved_mark(Holder, Id, Guid, File, Line) :-
@@ -58,12 +80,32 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% A decision without options is open, which is normal while it is
-% argued. It is reported so that it is not forgotten.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.decision_without_options
+% guid_self:              lpp_e123f282b1a646c0a193068b4c509e3c
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Decision without options
+% brief:                  |
+%                         A decision without options is open, which is
+%                         normal while it is argued. It is reported so
+%                         that it is not forgotten.
+% did:                    |
+%                         The decision {decision} has no options.
+% fix:                    |
+%                         Add its options as the decision is argued.
+% edge:                   []
+%
+% ...
 %
 % decl decision_without_options(decision: symbol)
-% did  The decision {decision} has no options.
-% fix  Add its options as the decision is argued.
 #show decision_without_options/1.
 
 decision_without_options(Decision) :-
@@ -81,14 +123,35 @@ answers_some(Decision) :-
 
 
 % -----------------------------------------------------------------------------
-% An item that uses a concept links one of its terms somewhere in its
-% text, or the edge says nothing a reader can see.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.concept_used_without_link
+% guid_self:              lpp_bf685ecb1c4c43edacab3f7e2a71d3ec
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Concept used without link
+% brief:                  |
+%                         An item that uses a concept links one of its
+%                         terms somewhere in its text, or the edge says
+%                         nothing a reader can see.
+% did:                    |
+%                         {holder} uses {concept}, and no link in its
+%                         text is to it.
+% fix:                    |
+%                         Write a link "[[term]]" where the text means
+%                         the concept, or take the edge out.
+% edge:                   []
+%
+% ...
 %
 % decl concept_used_without_link(holder:  symbol,
 %                                concept: symbol)
-% did  {holder} uses {concept}, and no link in its text is to it.
-% fix  Write a link [[term]] where the text means the concept, or take
-%      the edge out.
 #show concept_used_without_link/2.
 
 concept_used_without_link(Holder, Concept) :-
@@ -115,20 +178,42 @@ links_to(Holder, Concept) :-
 
 
 % -----------------------------------------------------------------------------
-% An item that declares it uses a concept, and writes a term of the
-% concept without a link, may mean the concept there. Prose outside the
-% strict fields may use the word in its everyday sense, so this is
-% advice, not a failure. Titles are left to the checks of titles.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.term_to_link
+% guid_self:              lpp_975c0655b9114bf39edb1aece2563420
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Term to link
+% brief:                  |
+%                         An item that declares it uses a concept, and
+%                         writes a term of the concept without a link,
+%                         may mean the concept there. Prose outside the
+%                         strict fields may use the word in its everyday
+%                         sense, so this is advice, not a failure.
+%                         Titles are left to the checks of titles.
+% did:                    |
+%                         The {field} of {holder} uses "{term}", a term
+%                         of a concept it declares, without a link.
+% fix:                    |
+%                         Write the term as a link if the concept is
+%                         meant, or nothing if the word is meant in its
+%                         everyday sense.
+% edge:                   []
+%
+% ...
 %
 % decl term_to_link(holder: symbol,
 %                   field:  symbol,
 %                   term:   symbol,
 %                   file:   symbol,
 %                   line:   number)
-% did  The {field} of {holder} uses "{term}", a term of a concept it
-%      declares, without a link.
-% fix  Write the term as a link if the concept is meant, or nothing if the word
-%      is meant in its everyday sense.
 #show term_to_link/5.
 
 term_to_link(Holder, Field, Term, File, Line) :-
@@ -142,17 +227,40 @@ term_to_link(Holder, Field, Term, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% The concept of a type of data item has a match in an external class,
-% so that a reader who knows the release can place the type. A related
-% match does not place it. Until the mappings cover every type, a type
-% without one is advice, not a failure.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.unmapped_concept
+% guid_self:              lpp_6fafc9c970e6466e991aabcfe10279cd
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unmapped concept
+% brief:                  |
+%                         The concept of a type of data item has a match
+%                         in an external class, so that a reader who
+%                         knows the release can place the type. A
+%                         related match does not place it. Until the
+%                         mappings cover every type, a type without one
+%                         is advice, not a failure.
+% did:                    |
+%                         {concept}, the concept of {type}, has no
+%                         exact, close, broad or narrow match in an
+%                         external class.
+% fix:                    |
+%                         Add the match that says how {concept} relates
+%                         to the nearest class of the release, with an
+%                         annotation that gives the reason.
+% edge:                   []
+%
+% ...
 %
 % decl unmapped_concept(type:    symbol,
 %                       concept: symbol)
-% did  {concept}, the concept of {type}, has no exact, close, broad or
-%      narrow match in an external class.
-% fix  Add the match that says how {concept} relates to the nearest
-%      class of the release, with an annotation that gives the reason.
 #show unmapped_concept/2.
 
 unmapped_concept(Type, Concept) :-
@@ -172,16 +280,38 @@ placed_concept(Concept) :-
 
 
 % -----------------------------------------------------------------------------
-% A narrower-than or subclass-of edge that a chain of edges of the same
-% relation already implies. It is not false, so this is advice: either
-% the edge is redundant, or the chain is the thing that is wrong.
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.redundant_hierarchy_edge
+% guid_self:              lpp_2a5dbd6e5ded448296f2c75ad34311e9
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Redundant hierarchy edge
+% brief:                  |
+%                         A narrower-than or subclass-of edge that a
+%                         chain of edges of the same relation already
+%                         implies. It is not false, so this is advice:
+%                         either the edge is redundant, or the chain is
+%                         the thing that is wrong.
+% did:                    |
+%                         The edge {source} {relation} {target} says
+%                         what a chain of its edges already says.
+% fix:                    |
+%                         Remove the edge, unless the chain is the thing
+%                         that is wrong.
+% edge:                   []
+%
+% ...
 %
 % decl redundant_hierarchy_edge(source:   symbol,
 %                               relation: symbol,
 %                               target:   symbol)
-% did  The edge {source} {relation} {target} says what a chain of its
-%      edges already says.
-% fix  Remove the edge, unless the chain is the thing that is wrong.
 #show redundant_hierarchy_edge/3.
 
 redundant_hierarchy_edge(Source, Relation, Target) :-
