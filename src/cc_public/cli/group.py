@@ -37,6 +37,6 @@ EXIT_ERROR         = 2
 @click.group()
 def main():
     """
-    Capability commons tooling.
+    Capability Commons tooling.
 
     """

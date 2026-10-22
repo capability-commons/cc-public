@@ -11,7 +11,7 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Capability commons
+title:                  Capability Commons
 brief:                  |
                         Tooling for the capability commons.
 description:            |
