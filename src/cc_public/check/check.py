@@ -67,7 +67,7 @@ NAME_SCHEMA       = 'schema_violation'
 NAME_LAYOUT       = 'unformatted_file'
 
 # The wording of the two checks that are not logic program rules. The checks of
-# check.lp are worded there, after their declarations.
+# check.lp are worded there, in the item before each declaration.
 #
 WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
                      'fix': 'Correct the field to what the schema asks. cctool set refuses '

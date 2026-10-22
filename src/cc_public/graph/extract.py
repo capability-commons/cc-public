@@ -68,6 +68,7 @@ KEY_REPLACEMENT   = 'replacement'
 KEY_BREAKS        = 'breaks'
 KEY_EXCEPTION     = 'prefix_exception'
 KEY_LABEL         = 'label'
+KEY_ENFORCEMENT   = 'enforcement'
 
 # The fields of a concept that hold its terms, by the rating of each.
 #
@@ -199,6 +200,8 @@ PREDICATE         = {
                            'may differ from one another by one letter.'),
     'prefix_exception':   (('type', 'reason'),
                            'The prefix of the type breaks the prefix rule, for reason.'),
+    'enforcement':        (('rule', 'mechanism'),
+                           'The writing style rule says that mechanism holds it today.'),
     'word_replacement':   (('rule', 'avoided', 'preferred'),
                            'The writing style rule asks for preferred in place of the '
                            'word avoided.'),
@@ -1413,7 +1416,7 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     for end in _list_str(node.get(KEY_READS_THROUGH)):
         facts['reads_through'].add((id_self, end))
 
-    for key in (KEY_FAMILY, KEY_EXCEPTION, KEY_LABEL):
+    for key in (KEY_FAMILY, KEY_EXCEPTION, KEY_LABEL, KEY_ENFORCEMENT):
         if isinstance(node.get(key), str):
             facts[key].add((id_self, node[key].strip()))
 
