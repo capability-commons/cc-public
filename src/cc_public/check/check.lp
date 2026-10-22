@@ -884,19 +884,34 @@ unused_linked_concept(Holder, Concept, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% The item uses the concept: it, or an item that holds it, has an edge
-% of relation_uses_concept to the concept.
+% The item uses the concept: it declares the use, or it is a concept
+% itself, since a concept is defined in the terms of the others.
 %
 % decl uses_concept(holder:  symbol,
 %                   concept: symbol)
 
 uses_concept(Holder, Concept) :-
-    primary_edge(Holder, "relation_uses_concept", Concept).
+    declares_concept(Holder, Concept).
 
 uses_concept(Holder, Concept) :-
+    has_type(Holder, "type_concept"),
+    has_type(Concept, "type_concept").
+
+
+% -----------------------------------------------------------------------------
+% The item declares that it uses the concept: it, or an item that holds
+% it, has an edge of relation_uses_concept to the concept.
+%
+% decl declares_concept(holder:  symbol,
+%                       concept: symbol)
+
+declares_concept(Holder, Concept) :-
+    primary_edge(Holder, "relation_uses_concept", Concept).
+
+declares_concept(Holder, Concept) :-
     item(Holder, _, Container, _, _),
     Container != "",
-    uses_concept(Container, Concept).
+    declares_concept(Container, Concept).
 
 
 % -----------------------------------------------------------------------------

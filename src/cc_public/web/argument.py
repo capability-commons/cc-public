@@ -54,6 +54,7 @@ KEY_ADMITTED      = 'term_admitted'
 PREFIX_DECISION   = 'dec_'
 PREFIX_OPTION     = 'opt_'
 PREFIX_ANNOTATION = 'ann_'
+PREFIX_CONCEPT    = 'concept_'
 
 R_IS_OPTION_FOR   = 'relation_is_option_for'
 R_IS_ABOUT        = 'relation_is_about'
@@ -75,8 +76,8 @@ STANDING_OPEN     = 'open'
 class Item:
     """
     An item of the graph, as the review shows it: its id, its prose,
-    its edges as written, keyed by relation, and the file that holds
-    it.
+    its edges as written, keyed by relation, the file that holds it,
+    and the item that holds it, if any.
 
     """
 
@@ -87,6 +88,7 @@ class Item:
     map_edge:    dict[str, list[str]]
     node:        dict = dataclasses.field(default_factory = dict, repr = False)
     file:        str = ''
+    container:   str = ''
 
     # -------------------------------------------------------------------------
     def targets(self, id_relation: str) -> list[str]:
@@ -234,16 +236,34 @@ class Graph:
         if concept:
             return concept if concept in self.map_item else ''
 
-        item = self.map_item.get(id_item)
-
-        if item is None:
-            return ''
-
         set_form  = cc_public.graph.extract.forms(term)
-        list_used = [id_concept for id_concept in item.targets(R_USES_CONCEPT)
+        list_used = [id_concept for id_concept in self.uses(id_item)
                      if set_form & self._designations(id_concept)]
 
         return list_used[0] if len(list_used) == 1 else ''
+
+    # -------------------------------------------------------------------------
+    def uses(self, id_item: str) -> list[str]:
+        """
+        Return the concepts that the item id_item uses: those it or an
+        item that holds it has an edge of relation_uses_concept to, and,
+        if it is a concept, every concept, as a concept is defined in the
+        terms of the others.
+
+        """
+
+        set_used = set()
+        item     = self.map_item.get(id_item)
+
+        while item is not None:
+            set_used.update(item.targets(R_USES_CONCEPT))
+            item = self.map_item.get(item.container)
+
+        if id_item.startswith(PREFIX_CONCEPT):
+            set_used.update(id_concept for id_concept in self.map_item
+                            if id_concept.startswith(PREFIX_CONCEPT))
+
+        return sorted(set_used)
 
     # -------------------------------------------------------------------------
     def _designations(self, id_concept: str) -> set[str]:
@@ -335,16 +355,19 @@ class Graph:
 
 
 # -----------------------------------------------------------------------------
-def _collect(node: typing.Any, map_item: dict[str, Item], file: str = '') -> None:
+def _collect(node:      typing.Any,
+             map_item:  dict[str, Item],
+             file:      str = '',
+             container: str = '') -> None:
     """
     Add to map_item an Item for node and for every item nested in it,
-    each held in file.
+    each held in file, and node held by the item container.
 
     """
 
     if isinstance(node, list):
         for value in node:
-            _collect(value, map_item, file)
+            _collect(value, map_item, file, container)
         return
 
     if not isinstance(node, dict):
@@ -358,11 +381,13 @@ def _collect(node: typing.Any, map_item: dict[str, Item], file: str = '') -> Non
                                  description = _text(node.get(KEY_DESCRIPTION)),
                                  map_edge    = _edges(node.get(KEY_EDGE)),
                                  node        = node,
-                                 file        = file)
+                                 file        = file,
+                                 container   = container)
+        container = id_self
 
     for (key, value) in node.items():
         if key != KEY_EDGE:
-            _collect(value, map_item, file)
+            _collect(value, map_item, file, container)
 
 
 # -----------------------------------------------------------------------------

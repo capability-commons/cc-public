@@ -23,8 +23,10 @@ description:            |
                         actor with the ability to do the process, and
                         an interface is able to do it. The process is
                         the preferred term of its concept, and the
-                        object and the qualifier follow it. Slots that
-                        do not compose are refused with ErrorCompose.
+                        object and the qualifier follow it. A slot
+                        shows each term it links as the term alone.
+                        Slots that do not compose are refused with
+                        ErrorCompose.
 edge:                   []
 
 ...
@@ -32,6 +34,8 @@ edge:                   []
 
 
 import typing
+
+import cc_public.graph.item
 
 
 KEY_CONDITION_KIND   = 'condition_kind'
@@ -125,7 +129,8 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
         list_part.append(Part(KEY_CONDITION,
                               '{keyword} {condition},'.format(
                                   keyword   = MAP_KEYWORD[kind],
-                                  condition = requirement[KEY_CONDITION])))
+                                  condition = cc_public.graph.item.terms(
+                                                  str(requirement[KEY_CONDITION])))))
 
     list_part += [Part(SLOT_SUBJECT, 'the ' + subject, id_subject),
                   Part(KEY_MODAL_VERB, _slot(requirement, KEY_MODAL_VERB))]
@@ -150,14 +155,15 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
 # -----------------------------------------------------------------------------
 def _slot(requirement: typing.Mapping[str, typing.Any], key: str) -> str:
     """
-    Return the text slot key of requirement.
+    Return the text slot key of requirement, with each term it links
+    shown as the term alone.
 
     """
 
     value = requirement.get(key)
     if not isinstance(value, str) or not value.strip():
         raise ErrorCompose('The slot {key} is missing.'.format(key = key))
-    return value.strip()
+    return cc_public.graph.item.terms(value.strip())
 
 
 # -----------------------------------------------------------------------------
