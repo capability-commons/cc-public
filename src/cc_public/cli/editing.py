@@ -44,8 +44,8 @@ usage:                  |
 
                         cctool batch FILEPATH
 
-                        cctool import FILEPATH IRI... --namespace IRI
-                        SHORT RELEASE...
+                        cctool import FILEPATH [IRI]... --namespace
+                        IRI SHORT RELEASE... [--check]
 
                         cctool format [--check]
 edge:                   []
@@ -359,7 +359,7 @@ def batch(path_file, root, is_dry_run):
 @cc_public.cli.group.main.command('import')
 @click.argument('path_ttl', metavar = 'FILEPATH',
                 type = click.Path(exists = True, dir_okay = False, path_type = pathlib.Path))
-@click.argument('list_iri', metavar = 'IRI...', nargs = -1, required = True)
+@click.argument('list_iri', metavar = '[IRI]...', nargs = -1)
 @click.option('--namespace', 'list_namespace',
               metavar  = 'IRI SHORT RELEASE',
               nargs    = 3,
@@ -367,13 +367,20 @@ def batch(path_file, root, is_dry_run):
               required = True,
               help     = 'Classes whose IRI begins with IRI get ids extcla_SHORT_LABEL and '
                          'cite the external document RELEASE. Name one for each namespace.')
+@click.option('--check', 'is_check',
+              is_flag = True,
+              help    = 'Name each way the external classes differ from the release, and '
+                        'write nothing. Without IRI, every external class the namespaces '
+                        'cover is compared. The exit status is 1 when any differs.')
 @_option
-def import_(path_ttl, list_iri, list_namespace, root, is_dry_run):
+def import_(path_ttl, list_iri, list_namespace, is_check, root, is_dry_run):
     """
     Make an external class for each class IRI of the ontology release
     in the Turtle file FILEPATH, and for every class above it, or bring
     the external classes made before up to date with the release. Only
-    labels and named superclasses are read; axioms are not. For example:
+    labels and named superclasses are read; axioms are not. A file whose
+    digest differs from the fixity its release records is refused. For
+    example:
 
     \b
     cctool import CommonCoreOntologiesMerged.ttl \\
@@ -385,10 +392,17 @@ def import_(path_ttl, list_iri, list_namespace, root, is_dry_run):
 
     list_namespace = [cc_public.edit.ontology.Namespace(*each) for each in list_namespace]
     try:
+        tree = cc_public.edit.edit.Tree(root.resolve())
+        cc_public.edit.ontology.refuse_other_release(tree, path_ttl, list_namespace)
+        list_iri = list(list_iri)
+        if not list_iri and is_check:
+            list_iri = cc_public.edit.ontology.known(tree, list_namespace)
+        if not list_iri:
+            raise cc_public.edit.edit.ErrorEdit(
+                'Give the IRI of at least one class to import, or use --check.')
         ontology       = cc_public.edit.ontology.Ontology(path_ttl)
-        list_operation = cc_public.edit.ontology.operations(
-                                cc_public.edit.edit.Tree(root.resolve()),
-                                ontology, list_namespace, list(list_iri))
+        list_operation = cc_public.edit.ontology.operations(tree, ontology, list_namespace,
+                                                            list_iri)
     except cc_public.edit.edit.ErrorEdit as error:
         click.echo(str(error), err = True)
         sys.exit(cc_public.cli.group.EXIT_ERROR)
@@ -396,6 +410,11 @@ def import_(path_ttl, list_iri, list_namespace, root, is_dry_run):
     if not list_operation:
         click.echo('The external classes agree with the release already.')
         return
+    if is_check:
+        for sentence in cc_public.edit.ontology.differences(list_operation):
+            click.echo(sentence)
+        click.echo('Run the same command without --check to bring them up to date.')
+        sys.exit(cc_public.cli.group.EXIT_NONCONFORMITY)
     _run(root, is_dry_run, list_operation)
 
 
