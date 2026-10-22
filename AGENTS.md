@@ -38,8 +38,11 @@ unfinished edits of another.
   of the main checkout with `src` first on the path:
   `PYTHONPATH=src ../cc-public/.pixi/envs/default/bin/python -B -m cc_public.cli.command check`.
 - Land the branch only when its work is agreed. In the worktree, run
-  `git rebase dev`, then `cctool history check dev..TOPIC` and
-  `pixi run gate`. Then, in the main checkout, run
+  `git rebase dev`, then `cctool history check dev..TOPIC --gate`. It
+  checks each rebased commit, and checks, lints and tests the content
+  of the newest with every test but those marked slow. `pixi run gate`
+  does not do this: it gates only what is staged, and after a rebase
+  nothing is. Then, in the main checkout, run
   `git merge --ff-only TOPIC`. `dev` only moves forward, so its
   history stays linear. If the merge refuses because `dev` has moved,
   rebase again.
