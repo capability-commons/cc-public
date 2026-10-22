@@ -615,7 +615,7 @@ def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
 
 
 def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
-    # The subject of a requirement must play rol_design_element, which a
+    # The subject of a requirement must play rol_design_entity, which a
     # concern does not.
     _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml',
              'id_target:          lco_tooling\n'
