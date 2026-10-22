@@ -27,6 +27,12 @@ description:            |
                         first six hex digits of the guid, which a
                         schema cannot say.
 
+                        A Contributor trailer names the team member
+                        who supplied the content of the commit, by the
+                        guid of their entry in reg_team_member. The
+                        check fails a guid that the register in the
+                        tree does not hold.
+
                         git drafts the message of a merge or a revert
                         itself, with no item. draft turns such a draft
                         into a message that conforms: it keeps the
@@ -80,6 +86,13 @@ KEY_TITLE       = 'title'
 KEY_BRIEF       = 'brief'
 KEY_DESCRIPTION = 'description'
 KEY_EDGE        = 'edge'
+KEY_TABLE       = 'table'
+ID_MEMBERS      = 'reg_team_member'
+
+# A trailer that names the team member who supplied the content of the
+# commit, by the guid of their register entry.
+#
+REGEX_CONTRIBUTOR = re.compile(r'^Contributor:\s*(.*?)\s*$')
 
 # The subject lines that git drafts for a merge and for a revert. A
 # merge into the main branch is drafted without the branch it is into.
@@ -283,7 +296,49 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
         list_found.append('The id does not end with the first {count} hex digits of the '
                           'guid.'.format(count = LENGTH_SUFFIX))
 
+    set_member = _members(map_document)
+    for guid in contributors(text):
+        if guid not in set_member:
+            list_found.append('The Contributor trailer names {guid}, which {id} does not '
+                              'hold.'.format(guid = guid or 'no guid', id = ID_MEMBERS))
+
     return sorted(set(list_found), key = list_found.index)
+
+
+# -----------------------------------------------------------------------------
+def contributors(text: str) -> list[str]:
+    """
+    Return the guid that each Contributor trailer of the commit message
+    text names, in order. Trailers follow the commit item.
+
+    """
+
+    list_line = [line for line in text.split('\n') if not line.startswith(MARK_COMMENT)]
+
+    if LINE_CLOSE not in list_line:
+        return []
+
+    end = list_line.index(LINE_CLOSE)
+
+    return [match.group(1) for match in map(REGEX_CONTRIBUTOR.match, list_line[end + 1:])
+            if match]
+
+
+# -----------------------------------------------------------------------------
+def _members(map_document: dict) -> set[str]:
+    """
+    Return the guid of each team member that the team member register
+    in map_document holds.
+
+    """
+
+    for (document, _) in map_document.values():
+        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
+            return {str(entry.get(KEY_GUID_SELF))
+                    for entry in (document.get(KEY_TABLE) or {}).values()
+                    if isinstance(entry, dict)}
+
+    return set()
 
 
 # -----------------------------------------------------------------------------
