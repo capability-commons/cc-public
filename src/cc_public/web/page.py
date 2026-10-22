@@ -1926,7 +1926,7 @@ def _ports(graph: Graph, surface: Surface) -> typing.Any:
     """
     Return the table of the ports of a dataflow step, by direction:
     each with its brief under its name, the type it carries, whether a
-    step may run with no value there, and the code that realizes it.
+    invocation may run with no value there, and the code that realizes it.
 
     """
 

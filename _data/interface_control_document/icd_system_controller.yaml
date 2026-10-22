@@ -12,16 +12,16 @@ title:                  System controller interface
 brief:                  |
                         The dataflow step that paces a whole system
                         and tells it when to halt: it sends a control
-                        packet on every step.
+                        packet on every invocation.
 description:            |
                         The system controller is the first node of a
-                        system. Each step it sends one control packet,
-                        which the process controllers pass on to the
-                        nodes of their processes. It halts the system
-                        after a number of steps or a length of time,
-                        or when a process reports an exception, and it
-                        enters a degraded mode when the queues it
-                        hears of grow too long.
+                        system. On each invocation it sends one
+                        control packet, which the process controllers
+                        pass on to the nodes of their processes. It
+                        halts the system after a number of invocations
+                        or a length of time, or when a process reports
+                        an exception, and it enters a degraded mode
+                        when the queues it hears of grow too long.
 note:                   |
                         Ported from the system controller of the
                         Stableflow test library in Design Factory
@@ -37,15 +37,16 @@ declaration:
     guid_self:          icm_249a303158ad4e3f93d639edff18773e
     name:               control packet
     brief:              |
-                        What a controller sends on each step.
+                        What a controller sends on each invocation.
     shape:              |
                         A mapping with ena, true when the packet
-                        carries data; idx, the number of the step;
-                        ts_rel_us, the time of the step in
-                        microseconds from an arbitrary zero; id_year,
-                        id_day, id_hour, id_min and id_sec, the UTC
-                        time of the step as codes for aggregation;
-                        load_rel, the share of the step period used;
+                        carries data; idx, the number of the
+                        invocation; ts_rel_us, the time of the
+                        invocation in microseconds from an arbitrary
+                        zero; id_year, id_day, id_hour, id_min and
+                        id_sec, the UTC time of the invocation as
+                        codes for aggregation; load_rel, the share of
+                        the period between invocations used;
                         do_degraded and do_halt, the mode flags; and
                         retval, the exit code once do_halt is set.
 
@@ -90,7 +91,7 @@ surface:
           guid_self:    icm_a12935f6526b4b91b956edea9aa26210
           name:         control
           brief:        |
-                        The control packet of this step.
+                        The control packet of this invocation.
 
           type:
             declaration:  control_packet
@@ -103,8 +104,8 @@ surface:
           guid_self:    icm_7f96286dd6f24564839b0035d7ed3fc5
           name:         frequency_hz
           brief:        |
-                        The rate of steps. With none given, steps run
-                        as fast as they can.
+                        The rate of invocations. With none given,
+                        invocations run as fast as they can.
 
           type:
             spelling:   float
@@ -116,8 +117,8 @@ surface:
           guid_self:    icm_7388fad104ce479887b049d58f821571
           name:         idx_max
           brief:        |
-                        The number of steps after which the system
-                        halts.
+                        The number of invocations after which the
+                        system halts.
 
           type:
             spelling:   int
@@ -163,9 +164,10 @@ surface:
           default:      '3'
 
       invocation:       |
-                        Once for each step of the system. With
-                        frequency_hz given, a step waits until its
-                        time comes, so that steps keep to the rate.
+                        Over and over, each invocation starting one
+                        cycle of the system. With frequency_hz given,
+                        an invocation waits until its time comes, so
+                        that invocations keep to the rate.
       determinism:      |
                         Not deterministic. The step reads the wall
                         clock to pace itself and to time each packet,

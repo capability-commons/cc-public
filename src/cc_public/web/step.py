@@ -16,18 +16,19 @@ brief:                  |
                         Draw a dataflow step as a box with its inputs,
                         outputs and state as named arrows.
 description:            |
-                        figure draws the step of a dataflow step
-                        surface, read by pym_cc_public.web.contract,
-                        as a box named by the interface. Each input is
-                        an arrow into the box from the left and each
-                        output an arrow out of it to the right, spread
-                        evenly down its sides, and each part of its
-                        state a two-headed arrow under it, since a
-                        step both reads and writes its state. Each
-                        arrow is named by its port and the type the
-                        port carries, links to the row of the port in
-                        the table that follows the drawing, and is
-                        dashed if the port is optional.
+                        figure draws the dataflow step of a dataflow
+                        step surface, read by
+                        pym_cc_public.web.contract, as a box named by
+                        the interface. Each input is an arrow into the
+                        box from the left and each output an arrow out
+                        of it to the right, spread evenly down its
+                        sides, and each part of its state a two-headed
+                        arrow under it, since a step both reads and
+                        writes its state. Each arrow is named by its
+                        port and the type the port carries, links to
+                        the row of the port in the table that follows
+                        the drawing, and is dashed if the port is
+                        optional.
 edge:                   []
 
 ...
