@@ -72,6 +72,20 @@ before_guid(Guid) :-
 after_guid(Guid) :-
     item(_, Guid, _, _, _).
 
+% The 32 hex digits that end a guid, found once for each guid, so
+% that guids are matched by their digits rather than pair by pair.
+%
+% decl digits(guid:   symbol,
+%             digits: symbol)
+
+digits(Guid, @substr(Guid, @strlen(Guid) - 32, 32)) :-
+    before_guid(Guid),
+    @strlen(Guid) >= 32.
+
+digits(Guid, @substr(Guid, @strlen(Guid) - 32, 32)) :-
+    after_guid(Guid),
+    @strlen(Guid) >= 32.
+
 
 % -----------------------------------------------------------------------------
 % An item the commit adds, removes, or gives a new id.
@@ -113,12 +127,10 @@ renamed(Guid, Id, Other) :-
 
 retyped_guid(Guid, Other) :-
     before_guid(Guid),
+    digits(Guid, Digits),
+    digits(Other, Digits),
     after_guid(Other),
-    Guid != Other,
-    @strlen(Guid) >= 32,
-    @strlen(Other) >= 32,
-    @substr(Guid, @strlen(Guid) - 32, 32) =
-        @substr(Other, @strlen(Other) - 32, 32).
+    Guid != Other.
 
 
 % -----------------------------------------------------------------------------
