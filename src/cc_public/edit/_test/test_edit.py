@@ -607,7 +607,7 @@ def test_a_header_on_a_definition_that_cannot_be_made_says_why(tree, operation, 
     assert str(info.value) == message
 
 
-def test_header_turns_the_comment_and_wording_of_a_predicate_into_its_item(tree, zero):
+def test_header_turns_the_comment_above_a_predicate_into_its_item(tree, zero):
     path = tree / 'src/cc_public/edit/extra.lp'
     assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp', 'field': FIELD_HEADER}) == {}
     path.write_text(path.read_text()
@@ -615,11 +615,10 @@ def test_header_turns_the_comment_and_wording_of_a_predicate_into_its_item(tree,
                     + '% Every item is odd.\n'
                     + '%\n'
                     + '% decl odd(id: symbol)\n'
-                    + '% did  {id} is odd, and\n'
-                    + '%      stays odd.\n'
-                    + '% fix  Make it even.\n'
                     + '#show odd/1.\n')
-    assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp::odd'}) == {}
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp::odd',
+                        'field':  {'did': '{id} is odd, and stays odd.',
+                                   'fix': 'Make it even.'}}) == {}
     text = path.read_text()
     assert text[text.index('% ' + '-' * 77):] == (
         '% ' + '-' * 77 + '\n'
@@ -633,10 +632,8 @@ def test_header_turns_the_comment_and_wording_of_a_predicate_into_its_item(tree,
         '% title:                  Odd\n'
         '% brief:                  |\n'
         '%                         Every item is odd.\n'
-        '% did:                    |\n'
-        '%                         {id} is odd, and stays odd.\n'
-        '% fix:                    |\n'
-        '%                         Make it even.\n'
+        "% did:                    '{id} is odd, and stays odd.'\n"
+        '% fix:                    Make it even.\n'
         '% edge:                   []\n'
         '%\n'
         '% ...\n'
