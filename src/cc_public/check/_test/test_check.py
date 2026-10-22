@@ -1542,6 +1542,13 @@ def test_a_narrower_edge_that_the_release_implies_is_reported_when_missing(tree)
             'extcla_cco_information_content_entity') in list_row
 
 
+def test_a_narrower_edge_that_a_chain_implies_is_advice(tree):
+    _add_match(tree, 'concept_file', 'relation_is_narrower_than', 'concept_item')
+    (failures, advice) = cc_public.check.check.review(tree)
+    assert advice['redundant_hierarchy_edge'] == [
+        ('concept_file', 'relation_is_narrower_than', 'concept_item')]
+
+
 def test_a_narrower_edge_that_the_register_has_already_is_not_reported(tree):
     _add_match(tree, 'concept_file', 'relation_has_broad_match',
                'extcla_cco_document_content_entity')

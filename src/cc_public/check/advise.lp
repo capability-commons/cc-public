@@ -169,3 +169,33 @@ unmapped_concept(Type, Concept) :-
 placed_concept(Concept) :-
     match(Concept, Grade, _),
     Grade != "related".
+
+
+% -----------------------------------------------------------------------------
+% A narrower-than or subclass-of edge that a chain of edges of the same
+% relation already implies. It is not false, so this is advice: either
+% the edge is redundant, or the chain is the thing that is wrong.
+%
+% decl redundant_hierarchy_edge(source:   symbol,
+%                               relation: symbol,
+%                               target:   symbol)
+% did  The edge {source} {relation} {target} says what a chain of its
+%      edges already says.
+% fix  Remove the edge, unless the chain is the thing that is wrong.
+#show redundant_hierarchy_edge/3.
+
+redundant_hierarchy_edge(Source, Relation, Target) :-
+    hierarchy_relation(Relation),
+    primary_edge(Source, Relation, Target),
+    primary_edge(Source, Relation, Middle),
+    Middle != Target,
+    reaches(Relation, Middle, Target).
+
+
+% -----------------------------------------------------------------------------
+% A relation that orders concepts or classes from narrow to broad.
+%
+% decl hierarchy_relation(relation: symbol)
+
+hierarchy_relation("relation_is_narrower_than").
+hierarchy_relation("relation_is_subclass_of").
