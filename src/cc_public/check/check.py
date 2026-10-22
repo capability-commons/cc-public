@@ -86,7 +86,9 @@ CACHE_SCHEMA      = {}
 # The failures and advice of the last reviews, kept in one process and
 # keyed by the YAML documents reviewed, as objects, and by the rules.
 # The review before an edit is that of the tree as it was last checked,
-# so it is found here. It is emptied when it holds this many.
+# so it is found here. It is emptied when it holds this many. Each
+# review keeps its documents, so that no other document can take the id
+# of one while the review is kept.
 #
 CACHE_REVIEW      = {}
 COUNT_REVIEW      = 8
@@ -253,9 +255,10 @@ def review_documents(map_document: cc_public.graph.extract.Documents,
     if key not in CACHE_REVIEW:
         if len(CACHE_REVIEW) >= COUNT_REVIEW:
             CACHE_REVIEW.clear()
-        CACHE_REVIEW[key] = _review(map_document, cache, text_rules, text_advice)
+        CACHE_REVIEW[key] = (tuple(map_document.values()),
+                             _review(map_document, cache, text_rules, text_advice))
 
-    (failures, advice) = CACHE_REVIEW[key]
+    (_, (failures, advice)) = CACHE_REVIEW[key]
     return ({name: list(list_row) for (name, list_row) in failures.items()},
             {name: list(list_row) for (name, list_row) in advice.items()})
 
