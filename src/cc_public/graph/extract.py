@@ -547,7 +547,7 @@ def _facts_of_document(file:             str,
     _walk(document, '', (file, base), facts, terms)
     if isinstance(document, dict):
         _ports(document, facts)
-        _system(document, (file, base), facts)
+        _dataflow_graph(document, (file, base), facts)
         if file in MAP_DEFINITION:
             id_self                              = str(document.get(KEY_ID_SELF))
             (expected, tuple_parameter, returns) = MAP_DEFINITION[file]
@@ -1356,9 +1356,9 @@ def _ports(document: dict[str, typing.Any], facts: Facts) -> None:
 
 
 # -----------------------------------------------------------------------------
-def _system(document: dict[str, typing.Any],
-            location: tuple[str, int],
-            facts:    Facts) -> None:
+def _dataflow_graph(document: dict[str, typing.Any],
+                    location: tuple[str, int],
+                    facts:    Facts) -> None:
     """
     Add the facts of the dataflow nodes, dataflow edges, OS processes
     and hosts of document, if it is a dataflow graph: a YAML document

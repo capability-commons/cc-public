@@ -1193,7 +1193,7 @@ def _step(root, id_icd = 'icd_x', map_extra = None):
 
 
 # -----------------------------------------------------------------------------
-def _system(root, list_flow, map_node = None, map_extra = None, map_port = None, stem = 'x'):
+def _dataflow_graph(root, list_flow, map_node = None, map_extra = None, map_port = None, stem = 'x'):
     """
     Write the dataflow graph dfg_<stem>, with the nodes a, b and
     c, each presenting icd_x, and an edge for each (source, target) of
@@ -1261,27 +1261,27 @@ def _rows(root, predicate, arity):
 LIST_RING = [('a.out', 'b.inp'), ('b.out', 'c.inp'), ('c.out', 'a.inp', 'feedback')]
 
 
-def test_a_system_whose_edges_meet_the_ports_of_its_nodes_passes(tree):
-    _system(tree, LIST_RING)
+def test_a_dataflow_graph_whose_edges_meet_the_ports_of_its_nodes_passes(tree):
+    _dataflow_graph(tree, LIST_RING)
     assert _check(tree) == {}
 
 
 def test_downstream_follows_data_through_every_edge(tree):
-    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    _dataflow_graph(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
     assert _rows(tree, 'downstream', 2) == [('dfn_x.a', 'dfn_x.b'),
                                             ('dfn_x.a', 'dfn_x.c'),
                                             ('dfn_x.b', 'dfn_x.c')]
 
 
 def test_upstream_is_downstream_reversed(tree):
-    _system(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
+    _dataflow_graph(tree, [('a.out', 'b.inp'), ('b.out', 'c.inp')])
     assert _rows(tree, 'upstream', 2) == [('dfn_x.b', 'dfn_x.a'),
                                           ('dfn_x.c', 'dfn_x.a'),
                                           ('dfn_x.c', 'dfn_x.b')]
 
 
 def test_the_blast_radius_of_a_port_is_every_node_that_presents_it_and_beyond(tree):
-    _system(tree, [('a.out', 'b.inp')])
+    _dataflow_graph(tree, [('a.out', 'b.inp')])
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
             if item == 'icm_x.inp'} == {'dfn_x.a', 'dfn_x.b', 'dfn_x.c'}
     assert {node for (item, node) in _rows(tree, 'blast_radius', 2)
@@ -1291,19 +1291,19 @@ def test_the_blast_radius_of_a_port_is_every_node_that_presents_it_and_beyond(tr
 
 
 def test_a_node_named_for_another_place_is_reported(tree):
-    path = tree / _system(tree, LIST_RING)
+    path = tree / _dataflow_graph(tree, LIST_RING)
     path.write_text(path.read_text().replace('dfn_x.c', 'dfn_x.d'))
     assert _check(tree) == {'misnamed_node': [('dfn_x.d', 'dfn_x.c')]}
 
 
 def test_a_node_that_presents_no_interface_is_reported(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'edge': []}})
+    _dataflow_graph(tree, LIST_RING, map_node = {'a': {'edge': []}})
     assert _check(tree) == {'interface_count': [('dfn_x.a', '0')]}
 
 
-def test_an_edge_to_a_node_of_another_system_is_reported(tree):
-    _system(tree, LIST_RING, stem = 'y')
-    location = _system(tree, LIST_RING)
+def test_an_edge_to_a_node_of_another_dataflow_graph_is_reported(tree):
+    _dataflow_graph(tree, LIST_RING, stem = 'y')
+    location = _dataflow_graph(tree, LIST_RING)
     _replace(tree, location, 'id_dataflow_node: dfn_x.a\n',
              'id_dataflow_node: dfn_y.a\n')
     _replace(tree, location, 'guid_dataflow_node: ' + _guid_of(tree, 'dfn_x.a'),
@@ -1313,24 +1313,24 @@ def test_an_edge_to_a_node_of_another_system_is_reported(tree):
 
 
 def test_an_edge_from_an_input_is_reported(tree):
-    location = _system(tree, [('a.inp', 'b.inp'), ('b.out', 'c.inp'),
+    location = _dataflow_graph(tree, [('a.inp', 'b.inp'), ('b.out', 'c.inp'),
                               ('c.out', 'a.inp', 'feedback')])
     assert _check(tree) == {'unknown_port': [('dfn_x.a', 'icm_x.inp', 'output', location,
                                               _line(tree, location, '- source:'))]}
 
 
 def test_an_input_fed_by_two_edges_is_reported(tree):
-    _system(tree, LIST_RING + [('a.out', 'c.inp')])
+    _dataflow_graph(tree, LIST_RING + [('a.out', 'c.inp')])
     assert _check(tree) == {'input_fed_twice': [('dfn_x.c', 'icm_x.inp', '2')]}
 
 
 def test_an_input_no_edge_feeds_is_reported_unless_it_is_optional(tree):
-    _system(tree, LIST_RING[:2])
+    _dataflow_graph(tree, LIST_RING[:2])
     assert _check(tree) == {'unfed_input': [('dfn_x.a', 'icm_x.inp')]}
 
 
 def test_an_edge_between_ports_of_two_types_is_reported(tree):
-    location = _system(tree, [('a.text', 'b.inp'), ('b.out', 'c.inp'),
+    location = _dataflow_graph(tree, [('a.text', 'b.inp'), ('b.out', 'c.inp'),
                               ('c.out', 'a.inp', 'feedback')],
                        map_port = {'output': {'text': ('str',)}})
     assert _check(tree) == {'port_type_mismatch': [('icm_x.text', 'str', 'icm_x.inp', 'int',
@@ -1338,28 +1338,28 @@ def test_an_edge_between_ports_of_two_types_is_reported(tree):
 
 
 def test_a_loop_of_feedforward_edges_is_reported(tree):
-    _system(tree, LIST_RING[:2] + [('c.out', 'a.inp')])
+    _dataflow_graph(tree, LIST_RING[:2] + [('c.out', 'a.inp')])
     assert _check(tree) == {'feedforward_loop': [('dfn_x.a',), ('dfn_x.b',), ('dfn_x.c',)]}
 
 
 def test_a_loop_closed_by_a_feedback_edge_reaches_back_to_where_it_began(tree):
-    _system(tree, LIST_RING)
+    _dataflow_graph(tree, LIST_RING)
     assert ('dfn_x.b', 'dfn_x.b') in _rows(tree, 'downstream', 2)
 
 
 def test_a_setting_the_interface_does_not_declare_is_reported(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'settings': {'rate': 2.0, 'speed': 1}}})
+    _dataflow_graph(tree, LIST_RING, map_node = {'a': {'settings': {'rate': 2.0, 'speed': 1}}})
     assert _check(tree) == {'unknown_setting': [('dfn_x.a', 'speed')]}
 
 
 def test_a_setting_the_interface_needs_is_reported_when_left_out(tree):
-    _system(tree, LIST_RING, map_node = {'a': {'settings': {'size': 3}}},
+    _dataflow_graph(tree, LIST_RING, map_node = {'a': {'settings': {'size': 3}}},
             map_port = {'settings': {'size': ('int',)}})
     assert _check(tree) == {'missing_setting': [('dfn_x.b', 'size'), ('dfn_x.c', 'size')]}
 
 
-def test_a_node_on_a_process_the_system_does_not_list_is_reported(tree):
-    _system(tree, LIST_RING, map_node  = {'c': {'os_process': 'other'}},
+def test_a_node_on_a_process_its_dataflow_graph_does_not_list_is_reported(tree):
+    _dataflow_graph(tree, LIST_RING, map_node  = {'c': {'os_process': 'other'}},
             map_extra = {'os_process': {'main': {'host': 'remote'}}})
     assert _check(tree) == {'unplaced': [('dfg_x', 'dfn_x.c', 'other'),
                                          ('dfg_x', 'main', 'remote')]}
