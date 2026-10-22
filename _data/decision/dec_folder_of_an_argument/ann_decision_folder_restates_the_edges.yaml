@@ -15,12 +15,13 @@ brief:                  |
                         not the path. The folder records the same fact
                         again and adds no check result and no trace.
 description:            |
-                        The extractor reads every file by rglob,
-                        whatever its folder
-                        (src/cc_public/graph/extract.py lines
-                        201-205). argued and unargued_driver join on
+                        The extractor reads every file under the root
+                        by os.walk, whatever its folder (_files in
+                        src/cc_public/graph/extract.py lines 468-484).
+                        argued and unargued_driver join on
                         relation_is_option_for, with no file path
-                        (check.lp lines 423-453). type_decision and
+                        (src/cc_public/check/check.lp lines 1482-1494
+                        and 1536-1542). type_decision and
                         relation_is_option_for were added in 52e3e6d;
                         options took relation_is_option_for and the
                         driver check came to read it in 1ba2895, the
@@ -30,9 +31,9 @@ description:            |
                         The test that two decisions do not count each
                         other's arguments works by edges
                         (src/cc_public/check/_test/test_check.py lines
-                        344-355). The second misplaced_document clause
+                        483-492). The second misplaced_document clause
                         exists to keep the path in step with the edges
-                        (check.lp lines 178-184).
+                        (check.lp lines 590-595).
 
 edge:
 

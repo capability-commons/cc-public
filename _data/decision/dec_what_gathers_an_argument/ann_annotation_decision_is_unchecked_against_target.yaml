@@ -12,20 +12,29 @@ title:                  Decision of an annotation held twice and unchecked
 brief:                  |
                         An annotation joins a decision by its
                         relation_is_about edge and again by the option
-                        it argues. No check keeps the two equal, so a
-                        misfiled annotation can make a driver count as
-                        argued in the wrong decision.
+                        it argues. The two are held apart, so the
+                        decision item needs a check of its own,
+                        argument_across_decisions, to keep them equal.
 description:            |
-                        decision_of reads relation_is_about (check.lp
-                        lines 148-151). argued reads relation_supports
-                        and relation_challenges to an option and its
-                        relation_is_option_for (check.lp lines
-                        423-436). No rule compares the two (search of
-                        check.lp and src/ for relation_supports). All
-                        29 annotations in _data/decision/ agree today
-                        (count by script). An annotation that bears on
-                        no option has only relation_is_about. One rule
-                        would close the gap.
+                        decision_of places an annotation by its
+                        relation_is_about edge to a decision
+                        (src/cc_public/graph/derive.lp lines 139-142).
+                        argued reads relation_supports and
+                        relation_challenges to an option and its
+                        relation_is_option_for
+                        (src/cc_public/check/check.lp lines
+                        1482-1494). argument_across_decisions compares
+                        the two and fails where they differ (check.lp
+                        lines 1378-1384), and
+                        test_an_argument_across_two_decisions_is_reported
+                        covers it
+                        (src/cc_public/check/_test/test_check.py line
+                        373). All 1341 annotations under
+                        _data/decision/ pass it (review of the tree: 0
+                        failures). An annotation that bears on no
+                        option has only relation_is_about. The rule is
+                        the price of holding the decision of an
+                        annotation twice.
 
 edge:
 

@@ -19,18 +19,26 @@ description:            |
                         relation_is_about allows several edges where
                         an item concerns how two items meet
                         (_data/register/reg_relation.yaml lines
-                        160-165). decision_of gives an annotation one
-                        fact per decision it is about (check.lp lines
-                        148-151), and misplaced_document reports each
-                        mismatch (lines 178-183). Tried on a copy of
-                        the tree (2026-10-15): a second
-                        relation_is_about edge from
+                        177-181). decision_of gives an annotation one
+                        fact per decision it is about
+                        (src/cc_public/graph/derive.lp lines 139-142),
+                        and misplaced_document reports each mismatch
+                        (src/cc_public/check/check.lp lines 590-595).
+                        argument_across_decisions also fails an
+                        annotation that argues an item of another of
+                        its decisions (check.lp lines 1378-1384).
+                        Tried on a copy of the tree (2026-10-22): a
+                        second relation_is_about edge from
                         ann_graphs_will_grow to
                         dec_cross_item_checks_engine gives one
-                        misplaced_document failure. Under the type
-                        layout every annotation sat in
-                        _data/annotation/. ASSUMPTION: some arguments
-                        will bear on two decisions; none does today.
+                        misplaced_document failure and three
+                        argument_across_decisions failures.
+                        argument_across_decisions reads edges, not
+                        paths, so it would refuse the same edge under
+                        either layout. Under the type layout every
+                        annotation sat in _data/annotation/.
+                        ASSUMPTION: some arguments will bear on two
+                        decisions; none does today.
 
 edge:
 

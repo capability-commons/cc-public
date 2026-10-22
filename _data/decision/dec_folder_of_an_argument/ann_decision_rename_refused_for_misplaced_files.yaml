@@ -10,23 +10,32 @@ protective_mark:
 
 title:                  Decision rename refused by the folder check
 brief:                  |
-                        cctool rename renames the decision's file but
-                        not its folder, so every item of the
-                        deliberation is then reported misplaced and
-                        the rename is refused. Renaming a decision
-                        needs the files moved by hand.
+                        cctool rename now moves a decision's folder
+                        with it, so a decision rename is one command.
+                        It still moves every file of the deliberation,
+                        while under the type layout it changes one
+                        file name and the references to it.
 description:            |
-                        rename in src/cc_public/edit/edit.py lines
-                        722-771 renames a file named for the item in
-                        place and moves no folder. Tried on a copy of
-                        the tree with dec_tooling_language: "Refused:
-                        the edit adds 18 failures", all
-                        misplaced_document (2026-10-15).
-                        memory/MEMORY.md line 55 notes that a rename
-                        of a decision does not move its folder. Under
-                        the type layout a decision rename changes one
-                        file name and the references to it. The cost
-                        grows as decisions are renamed more often.
+                        rename in src/cc_public/edit/edit.py (line
+                        886) moves the folder named for the item
+                        through _move_folder (lines 988-989 and
+                        1038-1060), and
+                        test_rename_of_a_decision_moves_its_folder
+                        covers it
+                        (src/cc_public/edit/_test/test_edit.py line
+                        325; passes on 2026-10-22). When this was
+                        argued (2026-10-15), rename moved no folder,
+                        and on a copy of the tree a rename of
+                        dec_tooling_language was refused with 18
+                        misplaced_document failures;
+                        ann_decision_rename_folder_move_is_fixed
+                        records the fix. Each option and annotation of
+                        the deliberation names the decision in an
+                        edge, so a decision rename edits those files
+                        under either layout; under the decision layout
+                        it also moves every file of the folder. The
+                        cost grows as decisions are renamed more
+                        often.
 
 edge:
 

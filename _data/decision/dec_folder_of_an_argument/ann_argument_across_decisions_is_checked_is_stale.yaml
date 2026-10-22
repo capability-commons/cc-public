@@ -17,16 +17,24 @@ brief:                  |
 description:            |
                         argument_across_decisions in
                         src/cc_public/check/check.lp (item at lines
-                        1344-1374, rule at lines 1378-1384) fails an
+                        1344-1376, rule at lines 1378-1384) fails an
                         annotation whose relation_supports or
                         relation_challenges target belongs to another
                         decision than its own, by decision_of on both
                         ends. With misplaced_document, which keeps
                         each annotation in the folder of the decision
-                        it is about (check.lp lines 590-595), the
-                        folder now holds every annotation that argues
-                        the decision's options, and only those. Found
-                        in the review of 2026-10-22.
+                        it is about (check.lp lines 590-595), an
+                        annotation in a decision folder argues only
+                        that decision's options. The rule needs a
+                        decision on both ends, so an annotation about
+                        no decision can still argue an option from
+                        _data/annotation/. Tried on a copy of the tree
+                        (2026-10-22): an annotation there about
+                        lco_argumentation that supports
+                        opt_folder_per_type for concern_traceability
+                        gives no failure, and the driver check counts
+                        it (check.lp lines 1482-1494). Found in the
+                        review of 2026-10-22.
 
 edge:
 
