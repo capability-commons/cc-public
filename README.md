@@ -46,31 +46,41 @@ the checker and of logic program queries.
     pixi run slow         # the tests on Python 3.12, 3.13 and 3.14
 
 The slow run is too slow for every commit, so the gate leaves it out.
-The gate also leaves out the tests marked slow, which grow with the
-data or repeat its check stage; `pixi run test` runs them.
-Run it on its own, such as overnight or before a release.
+Run it on its own, such as overnight or before a release. The gate
+also leaves out the tests marked slow, which grow with the data or
+repeat its check stage; `pixi run test` runs them.
 
 Once `pixi run hooks` has run, git runs `cctool gate` before each
 commit. It copies the staged content, which is what the commit will
 record, and runs the check, the lint and the tests over the copy. A
-failure stops the commit. A commit that stages no code, nothing under
-`src/` or `.githooks/` and no change to `pyproject.toml` or
-`pixi.lock`, is checked and linted but not tested; the pre-push hook
-tests what a push sends. The check of a commit keeps what it finds in
-`.git/cc_public_store`, and reuses it for files that have not changed,
-as long as the code of cc_public has not changed either. Set
-`CC_PUBLIC_STORE` to a directory to have `cctool check` use a store
-too. The commit-msg hook then checks that the
-message holds a commit item whose title is built from one of the
-templates in `sch_commit`, and checks the commit against the graph
-before and after it: no item disappears or changes type without the
-commit naming it, and the verb of the title is true of the change.
-For a merge or a revert, the prepare-commit-msg hook first makes the
-message git drafts into one that passes. git runs no pre-commit hook
-for a merge, so the pre-merge-commit hook runs the gate in its place.
-A revert is not gated: it restores content that passed when it was
-committed. git runs no commit-msg hook for a revert either, so the
-message of a revert is first checked by the pre-push hook.
+failure stops the commit. The tests run only when code is staged:
+something under `src/` or `.githooks/`, or a change to
+`pyproject.toml` or `pixi.lock`. A commit of data alone is checked and
+linted, but not tested. The gate of a commit also leaves out the tests
+marked prepush, which test the commit and history machinery. The gate
+of a push runs every test but those marked slow, on what the push
+sends.
+
+The commit-msg hook then checks that the message holds a commit item
+whose title is built from one of the templates in `sch_commit`, and
+checks the commit against the graph before and after it: no item
+disappears or changes type without the commit naming it, and the verb
+of the title is true of the change. For a merge or a revert, the
+prepare-commit-msg hook first makes the message git drafts into one
+that passes. git runs no pre-commit hook for a merge, so the
+pre-merge-commit hook runs the gate in its place. A revert is not
+gated: it restores content that passed when it was committed. git runs
+no commit-msg hook for a revert either, so the message of a revert is
+first checked by the pre-push hook.
+
+The check in the gate of a commit keeps two kinds of verdict in a
+store, `.git/cc_public_store`, which every worktree of the clone
+shares: whether each file is laid out as `cctool format` writes it,
+and whether each document conforms to its schema. A verdict is reused
+for the same text checked by the same code of cc_public. The checks of
+the logic programs are run afresh each time. The gate of a push uses
+no store. Set `CC_PUBLIC_STORE` to a directory to have `cctool check`
+use a store too.
 
 The commit hooks give early feedback, and git skips them for a rebase
 or a cherry-pick, as does anyone with `--no-verify` or a clone without
