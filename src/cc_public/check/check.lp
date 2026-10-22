@@ -2415,8 +2415,8 @@ implied_narrower(Concept, Other, Class, Class) :-
 %                         than {broader}.
 % fix:                    |
 %                         Add an edge of relation_is_narrower_than from
-%                         {concept} to {broader}, or to a concept
-%                         narrower than {broader}, or correct the match
+%                         the concept to the broader one, or to a
+%                         concept narrower than it, or correct the match
 %                         of one of the two concepts.
 % edge:                   []
 %
@@ -2474,10 +2474,11 @@ explained_pair(Concept, Class) :-
 %                         label of {class}, but {concept} has no exact
 %                         or close match in {class}.
 % fix:                    |
-%                         Match {concept} in {class} if they pick out
-%                         the same things. Otherwise add an annotation
-%                         about both that says how they differ, with
-%                         edges of relation_is_about to each.
+%                         Match the concept in the class if they pick
+%                         out the same things. Otherwise add an
+%                         annotation about both that says how they
+%                         differ, with edges of relation_is_about to
+%                         each.
 % edge:                   []
 %
 % ...

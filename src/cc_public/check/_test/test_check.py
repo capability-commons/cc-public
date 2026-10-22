@@ -1633,3 +1633,10 @@ def test_a_style_rule_that_claims_a_check_and_names_none_is_reported(tree):
              'enforcement:        none', 'enforcement:        check')
     assert [row[:2] for row in _check(tree)['unheld_claim']] == [
         ('style_say_the_thing', 'check')]
+
+
+def test_no_fix_names_a_column_since_a_fix_is_not_filled_in():
+    for path in (cc_public.check.check.RULES, cc_public.check.check.ADVICE):
+        map_wording = cc_public.graph.logic.worded(path.read_text(encoding = 'utf-8'))
+        assert [name for (name, map_key) in map_wording.items()
+                if '{' in map_key.get('fix', '')] == []

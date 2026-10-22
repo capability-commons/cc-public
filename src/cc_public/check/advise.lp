@@ -252,9 +252,9 @@ term_to_link(Holder, Field, Term, File, Line) :-
 %                         exact, close, broad or narrow match in an
 %                         external class.
 % fix:                    |
-%                         Add the match that says how {concept} relates
-%                         to the nearest class of the release, with an
-%                         annotation that gives the reason.
+%                         Add the match that says how the concept
+%                         relates to the nearest class of the release,
+%                         with an annotation that gives the reason.
 % edge:                   []
 %
 % ...
