@@ -87,12 +87,6 @@ REGEX_SHOW        = re.compile(r'#show[ \t]+(\w+)[ \t]*/[ \t]*(\d+)[ \t]*\.')
 #
 TUPLE_WORDING     = ('did', 'fix')
 
-# The older form of the wording, two comments after the declaration:
-# "% did" and "% fix", each going on over more comment lines, indented.
-#
-REGEX_WORDING     = re.compile(r'^[ \t]*%[ \t]*(did|fix)[ \t]+(.*(?:\n[ \t]*%[ \t]{2,}\S.*)*)',
-                               re.MULTILINE)
-
 # Text in a comment is never read as a directive. A comment runs from
 # % to the end of the line, or from %* to *%.
 #
@@ -211,20 +205,11 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 def worded(text: str) -> dict[str, dict[str, str]]:
     """
     Return the did and the fix of each predicate that text gives them
-    to, in the item written before its declaration, or in the older form
-    of did and fix comments after it, keyed by predicate.
+    to, in the item written before its declaration, keyed by predicate.
 
     """
 
     map_wording = {}
-    list_match  = list(REGEX_DECL.finditer(text))
-
-    for (index, match) in enumerate(list_match):
-        end     = list_match[index + 1].start() if index + 1 < len(list_match) else len(text)
-        map_key = {each.group(1): ' '.join(each.group(2).replace('%', ' ').split())
-                   for each in REGEX_WORDING.finditer(text, match.end(), end)}
-        if map_key:
-            map_wording[match.group(1)] = map_key
 
     for (_, name, (document, _)) in cc_public.graph.extract.blocks(text, MARK_PROGRAM):
         if name is None or not isinstance(document, dict):

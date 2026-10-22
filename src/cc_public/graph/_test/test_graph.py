@@ -45,9 +45,12 @@ def test_declared_reads_the_columns_of_each_predicate():
                                                       'b': (('z', 'symbol'),)}
 
 
-def test_worded_reads_the_did_and_fix_after_each_declaration():
-    text = ('% decl a(x: symbol)\n% did  {x} is\n%      wrong.\n% fix  Mend it.\n#show a/1.\n'
-            '% decl b(y: symbol)\n#show b/1.\n% decl c(z: symbol)\n% fix  Only this.')
+def test_worded_reads_the_did_and_fix_in_the_item_of_each_predicate():
+    text = ('% ---\n% did: |\n%   {x} is\n%   wrong.\n% fix: Mend it.\n% ...\n'
+            '% decl a(x: symbol)\n#show a/1.\n'
+            '% decl b(y: symbol)\n#show b/1.\n'
+            '% ---\n% fix: Only this.\n% ...\n% decl c(z: symbol)\n'
+            '% did  The older form,\n% fix  which is not read.\n')
     assert cc_public.graph.logic.worded(text) == {'a': {'did': '{x} is wrong.', 'fix': 'Mend it.'},
                                                     'c': {'fix': 'Only this.'}}
 

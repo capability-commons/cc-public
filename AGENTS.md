@@ -152,12 +152,15 @@ Every failure and error that cctool reports says what is wrong, in
 terms of the items and files it names, and what to do about it. An
 agent can act on it without reading the rule behind it.
 
-- A check in a logic program has two comments after its `% decl`.
-  `% did` is a sentence that names the columns of a row in braces,
+- Each shown predicate of a logic program holds an item in the
+  comment header above its `% decl`, with the prefix `lpp`. Its
+  `did` field is a sentence that names the columns of a row in braces,
   such as `{holder} names {id} in its {field} field, and no item has
-  that id or guid.` `% fix` is the usual remedy, and says what not to
-  do where a wrong remedy is tempting. A test fails any shown predicate
-  that lacks either. A check written in python gives the same two in
+  that id or guid.` Its `fix` field is the usual remedy, and says what
+  not to do where a wrong remedy is tempting. A test fails any shown
+  predicate that lacks either. `cctool header PATH::NAME` makes the
+  item from the comment above the declaration; give `did` and `fix`
+  as fields. A check written in python gives the same two in
   `cc_public.check.check`.
 - cctool prints each failure as its file and line, where it has them,
   the name of the check, and the did sentence, then the fix once for

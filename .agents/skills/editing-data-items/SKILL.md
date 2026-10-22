@@ -36,6 +36,7 @@ procedure, and the traps.
 | add one item                            | `cctool new ID --field ... --link ...` |
 | give a source file its item             | `cctool header FILEPATH [ID] --field ...` |
 | give a python class or function its item | `cctool header FILEPATH::NAME --field title ...` |
+| give a predicate of a logic program its item | `cctool header FILEPATH::NAME --field did ... --field fix ...` |
 | add an edge                             | `cctool link SOURCE RELATION TARGET` |
 | take an edge away                       | `cctool unlink SOURCE RELATION TARGET` |
 | change a field                          | `cctool set ID FIELDPATH VALUE [--yaml]` |
